@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>隱私權政策 - VoltSketch</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    body { background: #f6f8fc; margin: 0; }
+    .doc { max-width: 760px; margin: 32px auto; padding: 0 20px 60px; color: #1e293b; line-height: 1.85; font-size: 15px; }
+    .doc h1 { color: #0f172a; } .doc h2 { color: #0f172a; margin-top: 28px; font-size: 18px; }
+    .doc li { margin: 4px 0; }
+    .upd { color: #94a3b8; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>VoltSketch 硬體實驗室</h1><p>隱私權政策</p></div></div>
+      <nav class="main-nav"><a href="index.html" class="nav-link">線路圖</a><a href="ic-library.html" class="nav-link">IC 元件庫</a>  <a href="contact.html" class="nav-link">聯絡資訊</a>
+        </nav>
+    </header>
+    <div class="doc">
+      <h1>隱私權政策</h1>
+      <p class="upd">最後更新：2026-07-01</p>
+      <p>VoltSketch（下稱「本站」）在您登入、建立專案、匯入/匯出檔案、購買方案或使用 AI 輔助功能時，會處理必要之個人資料。本政策說明我們收集什麼、如何使用與保護。</p>
+
+      <h2>一、我們收集的資料</h2>
+      <ul>
+        <li><b>帳號資料</b>：Email、使用者 ID、登入狀態（由 Supabase Auth 管理）。</li>
+        <li><b>專案資料</b>：您建立的線路圖、IC 元件、pin 定義、BOM、匯入與匯出設定。</li>
+        <li><b>使用量資料</b>：每月匯出次數、匯出格式、方案（免費/VIP）狀態、訂單紀錄。</li>
+        <li><b>技術資料</b>：錯誤紀錄、瀏覽器資訊、請求時間與系統日誌（除錯與安全防護用）。</li>
+        <li><b>本機儲存</b>：登入憑證（token）與未登入時的專案暫存，存於瀏覽器 localStorage。</li>
+      </ul>
+
+      <h2>二、金流資料</h2>
+      <p>付款由綠界科技（ECPay）處理。<b>本站不經手、不儲存您的信用卡號或任何卡片資料</b>；本站僅保存訂單編號、方案、金額與付款狀態，用於開通服務與對帳。</p>
+
+      <h2>三、我們不會做的事</h2>
+      <ul>
+        <li>不公開您的私有設計檔；其他使用者無法讀取您的專案。</li>
+        <li>不將您的電路圖或 IC 資料出售或提供給第三方作行銷用途。</li>
+        <li>不在前端程式放置可繞過權限的金鑰（service role 金鑰僅存在於伺服器端）。</li>
+      </ul>
+
+      <h2>四、資料用途</h2>
+      <ul>
+        <li>提供登入、專案保存、匯入/匯出與下載功能。</li>
+        <li>匯出使用量限制與 VIP 方案判斷。</li>
+        <li>錯誤排查、防止濫用與安全防護。</li>
+        <li>您主動要求的 AI 分析功能：<b>使用該功能時，相關電路資料會傳送至 AI 模型供應商處理</b>；不使用則不傳送。</li>
+      </ul>
+
+      <h2>五、資料保護方式</h2>
+      <p>本站使用 Supabase Auth 驗證、資料庫 Row Level Security（每位使用者只能存取自己的資料）、私有 Storage 與伺服器端 Edge Function 控管敏感操作。</p>
+
+      <h2>六、資料保存與刪除</h2>
+      <ul>
+        <li>匯出使用量紀錄保存 12 個月後定期清除。</li>
+        <li>您可隨時要求刪除帳號：帳號、專案、使用量與訂單之個資將一併刪除（法律要求保存之交易紀錄除外）。</li>
+        <li>刪除請求與其他個資權利行使（查詢、更正、停止利用），請聯絡下方信箱。</li>
+      </ul>
+
+      <h2>七、聯絡方式</h2>
+      <p>隱私相關問題請聯絡：<b>legal@voltsketch.example</b>（上線前請換成實際信箱）。</p>
+    </div>
+  </div>
+  <script src="./i18n.js?v=2026-07-03c"></script>
+</body>
+</html>

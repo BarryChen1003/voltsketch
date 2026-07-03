@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>聯絡資訊 - VoltSketch</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    .contact-wrap { max-width: 760px; margin: 0 auto; padding: 40px 20px; }
+    .contact-card { background: #fff; border: 1px solid var(--line, #e2e8f0); border-radius: 12px; padding: 24px; margin-bottom: 18px; }
+    .contact-card h3 { margin: 0 0 10px; color: var(--heading, #0f172a); font-size: 18px; }
+    .contact-card p { margin: 0; color: var(--muted, #475569); font-size: 14px; line-height: 1.9; }
+    .mail-box { display: inline-block; margin-top: 10px; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 10px; padding: 12px 22px; font-size: 17px; font-weight: 700; color: #1f4fd1; text-decoration: none; letter-spacing: .3px; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">VS</div>
+        <div>
+          <h1>VoltSketch 硬體實驗室</h1>
+          <p data-i18n="contact_sub">合作邀約・BUG 回報</p>
+        </div>
+      </div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">線路圖</a>
+        <a href="ic-library.html" class="nav-link">IC 元件庫</a>
+        <a href="knowledge.html" class="nav-link">硬體知識庫</a>
+        <a href="pcb.html" class="nav-link">PCB Layout</a>
+        <a href="pcb-viewer.html" class="nav-link">PCB 檢視器</a>
+        <a href="interview.html" class="nav-link">面試考題</a>
+        <a href="upgrade.html" class="nav-link">升級 VIP</a>
+        <a href="contact.html" class="nav-link active">聯絡資訊</a>
+      </nav>
+    </header>
+
+    <main class="contact-wrap">
+      <div style="text-align:center;margin-bottom:26px">
+        <div style="font-size:48px">📮</div>
+        <h2 style="font-size:24px;color:var(--heading,#0f172a);margin:8px 0" data-i18n="nav_contact">聯絡資訊</h2>
+      </div>
+
+      <div class="contact-card">
+        <h3 data-i18n="contact_coop_h">🤝 合作邀約</h3>
+        <p data-i18n="contact_coop_p">學術界、業界、廠商合作皆歡迎：課程與教學合作、企業內訓、元件庫共建、內容授權、贊助與行銷合作。歡迎世界各地的朋友來信洽談。</p>
+      </div>
+
+      <div class="contact-card">
+        <h3 data-i18n="contact_bug_h">🐞 回報 BUG 送會員</h3>
+        <p data-i18n="contact_bug_p">找到網站錯誤（功能、內容、翻譯都算）請來信描述問題與重現步驟，經確認後贈送會員資格。</p>
+      </div>
+
+      <div class="contact-card" style="text-align:center">
+        <h3 data-i18n="contact_mail_h">✉️ Email</h3>
+        <a class="mail-box" href="mailto:smallshark1003@gmail.com">smallshark1003@gmail.com</a>
+        <p style="margin-top:10px" data-i18n="contact_reply_p">來信請註明主題（合作／BUG 回報／其他），會盡快回覆。</p>
+      </div>
+    </main>
+  </div>
+  <script src="./i18n.js?v=2026-07-03c"></script>
+</body>
+</html>

@@ -1,0 +1,559 @@
+{
+ "format": "vs-board-extract",
+ "version": 1,
+ "board": "demo-board.brd",
+ "units": "mm",
+ "components": [
+  {
+   "refdes": "U1",
+   "part": "ADS112C14",
+   "footprint": "WQFN16",
+   "layer": "TOP",
+   "x": 30,
+   "y": 50,
+   "rot": 0
+  },
+  {
+   "refdes": "U2",
+   "part": "TPS562246B",
+   "footprint": "SOT23-6",
+   "layer": "TOP",
+   "x": 62,
+   "y": 62,
+   "rot": 90
+  },
+  {
+   "refdes": "U3",
+   "part": "TXB0606",
+   "footprint": "SOT16",
+   "layer": "BOTTOM",
+   "x": 70,
+   "y": 30,
+   "rot": 180
+  },
+  {
+   "refdes": "J1",
+   "part": "CONN-HDR6",
+   "footprint": "HDR6",
+   "layer": "TOP",
+   "x": 8,
+   "y": 40,
+   "rot": 270
+  },
+  {
+   "refdes": "R1",
+   "part": "RES-10K",
+   "footprint": "R0402",
+   "layer": "TOP",
+   "x": 45,
+   "y": 55,
+   "rot": 0
+  },
+  {
+   "refdes": "R2",
+   "part": "RES-10K",
+   "footprint": "R0402",
+   "layer": "TOP",
+   "x": 45,
+   "y": 52,
+   "rot": 0
+  },
+  {
+   "refdes": "R3",
+   "part": "RES-1K",
+   "footprint": "R0402",
+   "layer": "TOP",
+   "x": 50,
+   "y": 40,
+   "rot": 90
+  },
+  {
+   "refdes": "R4",
+   "part": "RES-0R",
+   "footprint": "R0402",
+   "layer": "BOTTOM",
+   "x": 55,
+   "y": 20,
+   "rot": 0
+  },
+  {
+   "refdes": "C1",
+   "part": "CAP-100N",
+   "footprint": "C0402",
+   "layer": "TOP",
+   "x": 52,
+   "y": 44,
+   "rot": 0
+  },
+  {
+   "refdes": "C2",
+   "part": "CAP-10U",
+   "footprint": "C0805",
+   "layer": "TOP",
+   "x": 66,
+   "y": 66,
+   "rot": 0
+  },
+  {
+   "refdes": "C3",
+   "part": "CAP-22U",
+   "footprint": "C0805",
+   "layer": "TOP",
+   "x": 58,
+   "y": 56,
+   "rot": 0
+  },
+  {
+   "refdes": "C4",
+   "part": "CAP-100N",
+   "footprint": "C0402",
+   "layer": "BOTTOM",
+   "x": 72,
+   "y": 26,
+   "rot": 0
+  },
+  {
+   "refdes": "TP1",
+   "part": "TP",
+   "footprint": "TP1206",
+   "layer": "TOP",
+   "x": 20,
+   "y": 70,
+   "rot": 0
+  },
+  {
+   "refdes": "TP2",
+   "part": "TP",
+   "footprint": "TP1206",
+   "layer": "TOP",
+   "x": 24,
+   "y": 70,
+   "rot": 0
+  },
+  {
+   "refdes": "TP3",
+   "part": "TP",
+   "footprint": "TP1206",
+   "layer": "TOP",
+   "x": 28,
+   "y": 70,
+   "rot": 0
+  },
+  {
+   "refdes": "TP4",
+   "part": "TP",
+   "footprint": "TP1206",
+   "layer": "TOP",
+   "x": 32,
+   "y": 70,
+   "rot": 0
+  },
+  {
+   "refdes": "TP5",
+   "part": "TP",
+   "footprint": "TP1206",
+   "layer": "TOP",
+   "x": 36,
+   "y": 70,
+   "rot": 0
+  },
+  {
+   "refdes": "MTG1",
+   "part": "SCREW-M3",
+   "footprint": "MTG125",
+   "layer": "TOP",
+   "x": 5,
+   "y": 5,
+   "rot": 0
+  },
+  {
+   "refdes": "MTG2",
+   "part": "SCREW-M3",
+   "footprint": "MTG125",
+   "layer": "TOP",
+   "x": 95,
+   "y": 5,
+   "rot": 0
+  },
+  {
+   "refdes": "MTG3",
+   "part": "SCREW-M3",
+   "footprint": "MTG125",
+   "layer": "TOP",
+   "x": 5,
+   "y": 75,
+   "rot": 0
+  },
+  {
+   "refdes": "MTG4",
+   "part": "SCREW-M3",
+   "footprint": "MTG125",
+   "layer": "TOP",
+   "x": 95,
+   "y": 75,
+   "rot": 0
+  }
+ ],
+ "pins": [
+  {
+   "refdes": "U1",
+   "pin": "1",
+   "net": "SIG_AIN0",
+   "x": 27,
+   "y": 53
+  },
+  {
+   "refdes": "U1",
+   "pin": "2",
+   "net": "SIG_AIN1",
+   "x": 27,
+   "y": 51
+  },
+  {
+   "refdes": "U1",
+   "pin": "3",
+   "net": "SIG_AIN2",
+   "x": 27,
+   "y": 49
+  },
+  {
+   "refdes": "U1",
+   "pin": "4",
+   "net": "SIG_AIN3",
+   "x": 27,
+   "y": 47
+  },
+  {
+   "refdes": "U1",
+   "pin": "9",
+   "net": "I2C_SDA",
+   "x": 33,
+   "y": 47
+  },
+  {
+   "refdes": "U1",
+   "pin": "10",
+   "net": "I2C_SCL",
+   "x": 33,
+   "y": 49
+  },
+  {
+   "refdes": "U1",
+   "pin": "13",
+   "net": "VCC_3V3",
+   "x": 30,
+   "y": 53
+  },
+  {
+   "refdes": "U1",
+   "pin": "14",
+   "net": "GND",
+   "x": 31,
+   "y": 53
+  },
+  {
+   "refdes": "U2",
+   "pin": "1",
+   "net": "VIN_5V",
+   "x": 60,
+   "y": 64
+  },
+  {
+   "refdes": "U2",
+   "pin": "2",
+   "net": "SW_NODE",
+   "x": 60,
+   "y": 62
+  },
+  {
+   "refdes": "U2",
+   "pin": "3",
+   "net": "GND",
+   "x": 60,
+   "y": 60
+  },
+  {
+   "refdes": "U2",
+   "pin": "5",
+   "net": "EN",
+   "x": 64,
+   "y": 62
+  },
+  {
+   "refdes": "U2",
+   "pin": "6",
+   "net": "FB_3V3",
+   "x": 64,
+   "y": 60
+  },
+  {
+   "refdes": "U3",
+   "pin": "1",
+   "net": "I2C_SDA",
+   "x": 67,
+   "y": 33
+  },
+  {
+   "refdes": "U3",
+   "pin": "2",
+   "net": "VCC_1V8",
+   "x": 67,
+   "y": 31
+  },
+  {
+   "refdes": "U3",
+   "pin": "9",
+   "net": "GND",
+   "x": 73,
+   "y": 27
+  },
+  {
+   "refdes": "U3",
+   "pin": "16",
+   "net": "I2C_SDA_B",
+   "x": 73,
+   "y": 33
+  },
+  {
+   "refdes": "J1",
+   "pin": "1",
+   "net": "VIN_5V",
+   "x": 8,
+   "y": 50
+  },
+  {
+   "refdes": "J1",
+   "pin": "2",
+   "net": "GND",
+   "x": 8,
+   "y": 46
+  },
+  {
+   "refdes": "J1",
+   "pin": "3",
+   "net": "I2C_SDA",
+   "x": 8,
+   "y": 42
+  },
+  {
+   "refdes": "J1",
+   "pin": "4",
+   "net": "I2C_SCL",
+   "x": 8,
+   "y": 38
+  },
+  {
+   "refdes": "J1",
+   "pin": "5",
+   "net": "SIG_AIN0",
+   "x": 8,
+   "y": 34
+  },
+  {
+   "refdes": "J1",
+   "pin": "6",
+   "net": "NC",
+   "x": 8,
+   "y": 30
+  },
+  {
+   "refdes": "R1",
+   "pin": "1",
+   "net": "I2C_SDA",
+   "x": 44,
+   "y": 55
+  },
+  {
+   "refdes": "R1",
+   "pin": "2",
+   "net": "VCC_3V3",
+   "x": 46,
+   "y": 55
+  },
+  {
+   "refdes": "R2",
+   "pin": "1",
+   "net": "I2C_SCL",
+   "x": 44,
+   "y": 52
+  },
+  {
+   "refdes": "R2",
+   "pin": "2",
+   "net": "VCC_3V3",
+   "x": 46,
+   "y": 52
+  },
+  {
+   "refdes": "R3",
+   "pin": "1",
+   "net": "SIG_AIN0",
+   "x": 50,
+   "y": 39
+  },
+  {
+   "refdes": "R3",
+   "pin": "2",
+   "net": "SIG_FILT",
+   "x": 50,
+   "y": 41
+  },
+  {
+   "refdes": "R4",
+   "pin": "1",
+   "net": "SW_NODE",
+   "x": 54,
+   "y": 20
+  },
+  {
+   "refdes": "R4",
+   "pin": "2",
+   "net": "VOUT_3V3",
+   "x": 56,
+   "y": 20
+  },
+  {
+   "refdes": "C1",
+   "pin": "1",
+   "net": "SIG_FILT",
+   "x": 51,
+   "y": 44
+  },
+  {
+   "refdes": "C1",
+   "pin": "2",
+   "net": "GND",
+   "x": 53,
+   "y": 44
+  },
+  {
+   "refdes": "C2",
+   "pin": "1",
+   "net": "VIN_5V",
+   "x": 65,
+   "y": 66
+  },
+  {
+   "refdes": "C2",
+   "pin": "2",
+   "net": "GND",
+   "x": 67,
+   "y": 66
+  },
+  {
+   "refdes": "C3",
+   "pin": "1",
+   "net": "VOUT_3V3",
+   "x": 57,
+   "y": 56
+  },
+  {
+   "refdes": "C3",
+   "pin": "2",
+   "net": "GND",
+   "x": 59,
+   "y": 56
+  },
+  {
+   "refdes": "C4",
+   "pin": "1",
+   "net": "VCC_1V8",
+   "x": 71,
+   "y": 26
+  },
+  {
+   "refdes": "C4",
+   "pin": "2",
+   "net": "GND",
+   "x": 73,
+   "y": 26
+  },
+  {
+   "refdes": "TP1",
+   "pin": "1",
+   "net": "VCC_3V3",
+   "x": 20,
+   "y": 70
+  },
+  {
+   "refdes": "TP2",
+   "pin": "1",
+   "net": "GND",
+   "x": 24,
+   "y": 70
+  },
+  {
+   "refdes": "TP3",
+   "pin": "1",
+   "net": "I2C_SDA",
+   "x": 28,
+   "y": 70
+  },
+  {
+   "refdes": "TP4",
+   "pin": "1",
+   "net": "SIG_FILT",
+   "x": 32,
+   "y": 70
+  },
+  {
+   "refdes": "TP5",
+   "pin": "1",
+   "net": "VOUT_3V3",
+   "x": 36,
+   "y": 70
+  }
+ ],
+ "vias": [
+  {
+   "net": "GND",
+   "x": 40,
+   "y": 50
+  },
+  {
+   "net": "GND",
+   "x": 48,
+   "y": 58
+  },
+  {
+   "net": "GND",
+   "x": 63,
+   "y": 58
+  },
+  {
+   "net": "GND",
+   "x": 70,
+   "y": 40
+  },
+  {
+   "net": "VCC_3V3",
+   "x": 35,
+   "y": 30
+  },
+  {
+   "net": "VOUT_3V3",
+   "x": 57,
+   "y": 50
+  },
+  {
+   "net": "I2C_SDA",
+   "x": 68,
+   "y": 35
+  },
+  {
+   "net": "I2C_SCL",
+   "x": 44,
+   "y": 47
+  },
+  {
+   "net": "GND",
+   "x": 20,
+   "y": 20
+  },
+  {
+   "net": "GND",
+   "x": 80,
+   "y": 60
+  }
+ ]
+}

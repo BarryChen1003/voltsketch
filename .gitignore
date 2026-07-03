@@ -1,0 +1,15 @@
+# 大型資料（不進 git / GitHub Pages）：本機保留
+hardware-pdfs/
+IC-spec/
+pdf_parser/
+rtk/
+Ref/
+datasheets/
+
+# 環境與雜項
+node_modules/
+.claude/
+*.log
+.env
+.env.*
+__pycache__/

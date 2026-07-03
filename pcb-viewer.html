@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PCB 檢視器 - VoltSketch</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    body { background: #f6f8fc; margin: 0; }
+    .pv { display: grid; grid-template-columns: 1fr 300px; height: calc(100vh - 60px); }
+    @media (max-width: 800px) { .pv { grid-template-columns: 1fr; } }
+    .cvwrap { position: relative; background: #0b1220; overflow: hidden; }
+    #cv { display: block; width: 100%; height: 100%; cursor: grab; }
+    .side { border-left: 1px solid #e2e8f0; background: #fff; padding: 10px; overflow-y: auto; font-size: 12px; }
+    .side h3 { margin: 10px 0 6px; font-size: 13px; color: #0f172a; }
+    .side input[type=search], .side input[type=text] { width: 100%; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 6px; box-sizing: border-box; }
+    .lay { display: flex; align-items: center; gap: 6px; margin: 3px 0; }
+    .lay input[type=color] { width: 26px; height: 20px; border: none; padding: 0; background: none; cursor: pointer; }
+    .hit { padding: 4px 6px; border-radius: 5px; cursor: pointer; font-family: ui-monospace, monospace; }
+    .hit:hover { background: #eef2ff; }
+    .hit.sel { background: #dbeafe; }
+    .qbtn { padding: 3px 8px; border: 1px solid #cbd5e1; border-radius: 999px; background: #fff; font-size: 11px; cursor: pointer; margin: 2px; }
+    .qbtn.on { background: #1d2943; color: #fff; border-color: #1d2943; }
+    .tools { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 12px; background: #fff; border-bottom: 1px solid #e2e8f0; align-items: center; font-size: 13px; }
+    #info { background: #f8fafc; border: 1px solid #eef2f7; border-radius: 8px; padding: 8px; margin-top: 8px; font-size: 12px; line-height: 1.6; }
+    .badge { font-size: 10px; padding: 1px 6px; border-radius: 999px; background: #eef2ff; color: #1f4fd1; }
+  </style>
+</head>
+<body class="editor-lock">
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>VoltSketch 硬體實驗室</h1><p>PCB 檢視器（vs-board-extract）</p></div></div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">線路圖</a>
+        <a href="ic-library.html" class="nav-link">IC 元件庫</a>
+        <a href="pcb.html" class="nav-link">PCB Layout</a>
+          <a href="pcb-viewer.html" class="nav-link">PCB 檢視器</a>
+        <a href="contact.html" class="nav-link">聯絡資訊</a>
+        </nav>
+    </header>
+    <div class="tools">
+      <button class="small-button" id="loadDemo">載入範例板</button>
+      <button class="small-button" id="loadFile">匯入 vsboard.json</button>
+      <input type="file" id="file" accept=".json,.brd" style="display:none" />
+      <button class="small-button" id="loadOverlay">＋ co-lay 疊圖</button>
+      <input type="file" id="fileOv" accept=".json" style="display:none" />
+      <a class="small-button" href="tools/allegro-extract.il" download style="text-decoration:none" title="Allegro 內 skill load 後執行 vsExtract() 產 vsboard.json">下載 Allegro 匯出腳本 (.il)</a>
+      <button class="small-button" id="exJson" title="目前板面資料存成 vsboard.json（可再匯入/co-lay）">匯出 vsboard.json</button>
+      <button class="small-button" id="exPlace" title=".brd 為專有二進位不可自寫；此腳本在 Allegro 內重放元件位置（等價匯出）">匯出佈局 SKILL (.il)</button>
+      <span id="stat" style="color:#94a3b8;font-size:12px"></span>
+      <span style="flex:1"></span>
+      <span style="color:#94a3b8;font-size:11px">.brd 為 Cadence 專有二進位：本工具讀「SKILL 匯出的中繼 JSON」，改板用產出的 SKILL 腳本回 Allegro 執行</span>
+    </div>
+    <div class="pv">
+      <div class="cvwrap"><canvas id="cv"></canvas></div>
+      <div class="side">
+        <h3>搜尋（refdes / 料號 / net）</h3>
+        <input id="q" type="search" placeholder="U1、ADS112C14、GND、TP…" />
+        <div style="margin-top:6px">
+          <button class="qbtn" data-q="^TP">測試點 TP</button>
+          <button class="qbtn" data-q="SCREW|MTG">螺絲/固定孔</button>
+          <button class="qbtn" data-q="^U\d">IC</button>
+          <button class="qbtn" data-q="^J\d">連接器</button>
+          <button class="qbtn" id="clearHl">清除</button>
+        </div>
+        <div id="hits" style="max-height:180px;overflow-y:auto;margin-top:6px"></div>
+        <div id="info" hidden></div>
+        <h3>圖層</h3>
+        <div id="layers"></div>
+        <h3>換料（產 SKILL 回 Allegro 跑）</h3>
+        <div id="swapBox" style="font-size:12px;color:#64748b">先搜尋並選一顆料</div>
+        <h3>co-lay 比對</h3>
+        <div id="colay" style="font-size:12px;color:#64748b">載入第二片板做疊圖 + 差異清單</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./ic-data.js"></script>
+  <script src="./skill-swap.js"></script>
+  <script src="./i18n.js?v=2026-07-03c"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    let board = null, overlay = null;
+    let view = { x: 0, y: 0, k: 6 };            // 平移/縮放
+    let hl = new Set(), selRef = null;          // 高亮 refdes 集合、選取
+    let hlNet = null;
+
+    const LAYERS = {
+      TOP:    { label: 'TOP 元件',    color: '#e11d48', on: true },
+      BOTTOM: { label: 'BOTTOM 元件', color: '#3b82f6', on: true },
+      PINS:   { label: '接腳/焊點',   color: '#facc15', on: true },
+      VIAS:   { label: 'Via',        color: '#22c55e', on: true },
+      LABELS: { label: 'Refdes 文字', color: '#e2e8f0', on: true },
+      OVERLAY:{ label: 'co-lay 疊圖', color: '#a78bfa', on: true }
+    };
+
+    function renderLayerUI() {
+      $('layers').innerHTML = Object.entries(LAYERS).map(([k, l]) =>
+        `<div class="lay"><input type="checkbox" data-l="${k}" ${l.on ? 'checked' : ''}/><input type="color" data-c="${k}" value="${l.color}"/><span>${l.label}</span></div>`).join('');
+      $('layers').querySelectorAll('[data-l]').forEach(el => el.addEventListener('change', () => { LAYERS[el.dataset.l].on = el.checked; draw(); }));
+      $('layers').querySelectorAll('[data-c]').forEach(el => el.addEventListener('input', () => { LAYERS[el.dataset.c].color = el.value; draw(); }));
+    }
+
+    // ---- 座標轉換 ----
+    const sx = x => (x - view.x) * view.k;
+    const sy = y => { const cv = $('cv'); return cv.height - (y - view.y) * view.k; };  // 板座標 y 向上
+
+    function fit() {
+      if (!board || !board.components.length) return;
+      const xs = board.components.map(c => c.x), ys = board.components.map(c => c.y);
+      const minX = Math.min(...xs) - 8, maxX = Math.max(...xs) + 8;
+      const minY = Math.min(...ys) - 8, maxY = Math.max(...ys) + 8;
+      const cv = $('cv');
+      view.k = Math.min(cv.width / (maxX - minX), cv.height / (maxY - minY));
+      view.x = minX; view.y = minY;
+    }
+
+    // ---- 繪製 ----
+    function draw() {
+      const cv = $('cv'), ctx = cv.getContext('2d');
+      const wrap = cv.parentElement;
+      if (cv.width !== wrap.clientWidth) { cv.width = wrap.clientWidth; cv.height = wrap.clientHeight; }
+      ctx.fillStyle = '#0b1220'; ctx.fillRect(0, 0, cv.width, cv.height);
+      if (!board) { ctx.fillStyle = '#475569'; ctx.font = '14px system-ui'; ctx.fillText('載入範例板或匯入 vsboard.json（Allegro 端用 tools/allegro-extract.il 產出）', 30, 40); return; }
+
+      const netPins = n => board.pins.filter(p => p.net === n);
+      // 高亮 net 的連線（星狀示意）
+      if (hlNet) {
+        const ps = netPins(hlNet);
+        ctx.strokeStyle = '#f97316'; ctx.lineWidth = 1;
+        for (let i = 1; i < ps.length; i++) {
+          ctx.beginPath(); ctx.moveTo(sx(ps[0].x), sy(ps[0].y)); ctx.lineTo(sx(ps[i].x), sy(ps[i].y)); ctx.stroke();
+        }
+      }
+      // vias
+      if (LAYERS.VIAS.on) (board.vias || []).forEach(v => {
+        ctx.fillStyle = (hlNet && v.net === hlNet) ? '#f97316' : LAYERS.VIAS.color;
+        ctx.beginPath(); ctx.arc(sx(v.x), sy(v.y), 3, 0, 7); ctx.fill();
+        ctx.fillStyle = '#0b1220'; ctx.beginPath(); ctx.arc(sx(v.x), sy(v.y), 1.2, 0, 7); ctx.fill();
+      });
+      // pins
+      if (LAYERS.PINS.on) (board.pins || []).forEach(p => {
+        ctx.fillStyle = (hlNet && p.net === hlNet) ? '#f97316' : LAYERS.PINS.color;
+        ctx.fillRect(sx(p.x) - 1.5, sy(p.y) - 1.5, 3, 3);
+      });
+      // components
+      (board.components || []).forEach(c => {
+        const L = LAYERS[c.layer] || LAYERS.TOP;
+        if (!L.on) return;
+        const isHl = hl.has(c.refdes), isSel = c.refdes === selRef;
+        const x = sx(c.x), y = sy(c.y);
+        const w = /^U/.test(c.refdes) ? 14 : /^(J|MTG)/.test(c.refdes) ? 10 : 7;
+        ctx.strokeStyle = isSel ? '#fff' : isHl ? '#f97316' : L.color;
+        ctx.lineWidth = isSel || isHl ? 2.4 : 1.2;
+        ctx.strokeRect(x - w / 2, y - w / 2, w, w);
+        if (/^TP/.test(c.refdes)) { ctx.beginPath(); ctx.arc(x, y, w / 2, 0, 7); ctx.stroke(); }
+        if (/MTG|SCREW/.test(c.refdes + c.part)) { ctx.beginPath(); ctx.arc(x, y, w / 2 + 2, 0, 7); ctx.stroke(); }
+        if (isHl || isSel) { // 十字標
+          ctx.beginPath(); ctx.moveTo(x - w, y); ctx.lineTo(x + w, y); ctx.moveTo(x, y - w); ctx.lineTo(x, y + w); ctx.stroke();
+        }
+        if (LAYERS.LABELS.on) {
+          ctx.fillStyle = isHl || isSel ? '#f97316' : LAYERS.LABELS.color;
+          ctx.font = '10px ui-monospace';
+          ctx.fillText(c.refdes, x + w / 2 + 2, y - 2);
+        }
+      });
+      // overlay（co-lay）
+      if (overlay && LAYERS.OVERLAY.on) {
+        ctx.globalAlpha = 0.5;
+        (overlay.components || []).forEach(c => {
+          const x = sx(c.x), y = sy(c.y);
+          ctx.strokeStyle = LAYERS.OVERLAY.color; ctx.lineWidth = 1.2;
+          ctx.strokeRect(x - 5, y - 5, 10, 10);
+        });
+        ctx.globalAlpha = 1;
+      }
+      $('stat').textContent = `${board.board || ''} · ${board.components.length} 料 · ${board.pins.length} pin · ${(board.vias || []).length} via · ${board.units || ''}` + (overlay ? ` ｜ 疊圖: ${overlay.board}` : '');
+    }
+
+    // ---- 搜尋 ----
+    function search(q) {
+      if (!board || !q) { $('hits').innerHTML = ''; return; }
+      let re; try { re = new RegExp(q, 'i'); } catch (e) { re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'); }
+      const comps = board.components.filter(c => re.test(c.refdes) || re.test(c.part) || re.test(c.footprint));
+      const nets = [...new Set(board.pins.map(p => p.net))].filter(n => n && re.test(n));
+      hl = new Set(comps.map(c => c.refdes)); hlNet = null;
+      $('hits').innerHTML =
+        comps.slice(0, 40).map(c => `<div class="hit" data-ref="${esc(c.refdes)}">${esc(c.refdes)} <span class="badge">${esc(c.part)}</span> ${esc(c.layer)}</div>`).join('') +
+        nets.slice(0, 15).map(n => `<div class="hit" data-net="${esc(n)}">net: ${esc(n)}（${board.pins.filter(p => p.net === n).length} pin）</div>`).join('') ||
+        '<p style="color:#94a3b8">無符合</p>';
+      draw();
+    }
+
+    function selectRef(ref) {
+      selRef = ref; hlNet = null;
+      const c = board.components.find(x => x.refdes === ref);
+      if (!c) return;
+      // 置中
+      const cv = $('cv');
+      view.x = c.x - cv.width / view.k / 2; view.y = c.y - cv.height / view.k / 2;
+      const pinsOf = board.pins.filter(p => p.refdes === ref);
+      $('info').hidden = false;
+      $('info').innerHTML = `<b>${esc(c.refdes)}</b> <span class="badge">${esc(c.part)}</span><br/>
+        footprint: ${esc(c.footprint)} ｜ ${esc(c.layer)} ｜ (${c.x.toFixed(2)}, ${c.y.toFixed(2)}) rot ${c.rot}°<br/>
+        pins: ${pinsOf.map(p => esc(p.pin) + '→' + esc(p.net || '—')).join('、') || '（無 pin 資料）'}`;
+      renderSwap(c);
+      draw();
+    }
+    function selectNet(n) { hlNet = n; selRef = null; hl = new Set(board.pins.filter(p => p.net === n).map(p => p.refdes)); $('info').hidden = true; draw(); }
+
+    // ---- 換料 ----
+    function renderSwap(c) {
+      const sameRefs = board.components.filter(x => x.part === c.part).map(x => x.refdes);
+      const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const ic = (window.IC_DATA || []).find(i => norm(i.part) === norm(c.part));
+      const sugg = ic ? (ic.dropIn || []).map(d => d.part) : [];
+      $('swapBox').innerHTML = `<div><b>${esc(c.part)}</b> × ${sameRefs.length}顆：${sameRefs.map(esc).join(' ')}</div>
+        <div style="margin:6px 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap">換成
+          <input id="swapTgt" list="swapSugg" type="text" style="width:150px" value="${esc(sugg[0] || '')}" placeholder="目標料號"/>
+          <datalist id="swapSugg">${sugg.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
+          <button class="small-button" id="swapGen">產生 SKILL</button></div>
+        ${sugg.length ? `<div style="color:#15803d">IC 庫 pin-to-pin 建議：${sugg.map(esc).join('、')}</div>` : '<div style="color:#94a3b8">IC 庫無此料 dropIn 建議（可手填目標料號）</div>'}`;
+      $('swapGen').onclick = () => {
+        const tgt = $('swapTgt').value.trim();
+        if (!tgt) return;
+        const il = SkillSwap.genSkill(c.part, tgt, c.footprint, sameRefs);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([il], { type: 'text/plain' }));
+        a.download = `swap_${c.part}_to_${tgt}.il`; a.click();
+      };
+    }
+
+    // ---- co-lay 差異 ----
+    function renderColay() {
+      if (!board || !overlay) return;
+      const A = new Map(board.components.map(c => [c.refdes, c]));
+      const B = new Map(overlay.components.map(c => [c.refdes, c]));
+      const onlyA = [...A.keys()].filter(r => !B.has(r));
+      const onlyB = [...B.keys()].filter(r => !A.has(r));
+      const diff = [...A.keys()].filter(r => B.has(r) && A.get(r).part !== B.get(r).part);
+      $('colay').innerHTML = `<div>共用：${[...A.keys()].filter(r => B.has(r)).length} 顆</div>
+        <div style="color:#b91c1c">只在本板：${onlyA.map(esc).join(' ') || '無'}</div>
+        <div style="color:#6d28d9">只在疊圖板：${onlyB.map(esc).join(' ') || '無'}</div>
+        <div style="color:#b45309">同位置不同料：${diff.map(r => `${esc(r)}(${esc(A.get(r).part)}→${esc(B.get(r).part)})`).join(' ') || '無'}</div>`;
+    }
+
+    // ---- 事件 ----
+    $('q').addEventListener('input', e => search(e.target.value.trim()));
+    document.querySelectorAll('.qbtn[data-q]').forEach(b => b.addEventListener('click', () => { $('q').value = b.dataset.q; search(b.dataset.q); }));
+    $('clearHl').addEventListener('click', () => { hl.clear(); hlNet = null; selRef = null; $('q').value = ''; $('hits').innerHTML = ''; $('info').hidden = true; draw(); });
+    $('hits').addEventListener('click', e => {
+      const h = e.target.closest('.hit'); if (!h) return;
+      document.querySelectorAll('.hit').forEach(x => x.classList.toggle('sel', x === h));
+      if (h.dataset.ref) selectRef(h.dataset.ref); else if (h.dataset.net) selectNet(h.dataset.net);
+    });
+    $('loadDemo').addEventListener('click', async () => { board = await (await fetch('demo-board.json')).json(); fit(); draw(); });
+    $('loadFile').addEventListener('click', () => $('file').click());
+    $('file').addEventListener('change', e => {
+      const f = e.target.files[0]; if (!f) return;
+      if (/\.brd$/i.test(f.name)) { showBrdGuide(f.name); e.target.value = ''; return; }   // .brd → 引導
+      const r = new FileReader();
+      r.onload = () => { try { const j = JSON.parse(r.result); if (j.format !== 'vs-board-extract') throw new Error('非 vs-board-extract JSON'); board = j; fit(); draw(); } catch (err) { alert('匯入失敗：' + err.message); } };
+      r.readAsText(f); e.target.value = '';
+    });
+
+    // .brd 引導：專有二進位無法直讀，指路一鍵匯出腳本
+    function showBrdGuide(name) {
+      let g = document.getElementById('brdGuide');
+      if (!g) {
+        g = document.createElement('div');
+        g.id = 'brdGuide';
+        g.style.cssText = 'position:fixed;inset:0;background:rgba(15,22,38,.88);z-index:9999;display:grid;place-items:center';
+        g.innerHTML = `<div style="background:#fff;border-radius:14px;padding:26px 30px;width:min(520px,92vw);color:#1d2943">
+          <h3 style="margin:0 0 10px">讀取 .brd：需要先經 Allegro 匯出（3 步驟）</h3>
+          <p style="color:#64748b;font-size:13px;line-height:1.8">.brd 是 Cadence 專有二進位格式，瀏覽器無法可靠直讀。<br/>
+          1️⃣ 下載 <a href="tools/allegro-extract.il" download><b>allegro-extract.il</b></a>（只讀不改板，安全）<br/>
+          2️⃣ Allegro 開你的 .brd → 命令列輸入 <code>skill load("allegro-extract.il")</code> → 再輸入 <code>vsExtract()</code><br/>
+          3️⃣ 產出的 <b>vsboard.json</b> 回這裡「匯入」→ 分層/搜尋/找料/換料全部可用</p>
+          <div style="text-align:right;margin-top:12px"><button class="small-button" onclick="document.getElementById('brdGuide').remove()">知道了</button></div>
+        </div>`;
+        document.body.appendChild(g);
+      }
+    }
+
+    // 匯出：vsboard.json（可再匯入/co-lay）
+    $('exJson').addEventListener('click', () => {
+      if (!board) { alert('先載入板面資料'); return; }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(board, null, 1)], { type: 'application/json' }));
+      a.download = (board.board || 'board').replace(/\.brd$/i, '') + '.vsboard.json'; a.click();
+    });
+    // 匯出：佈局 SKILL —— 在 Allegro 重放元件位置（.brd 匯出的誠實等價物）
+    $('exPlace').addEventListener('click', () => {
+      if (!board) { alert('先載入板面資料'); return; }
+      const rows = board.components.map(c =>
+        `  ("${c.refdes}" "${c.footprint}" ${c.x.toFixed(3)} ${c.y.toFixed(3)} ${c.rot || 0} "${c.layer}")`).join('\n');
+      const il = `; ===== VoltSketch 佈局重放腳本（由 pcb-viewer 產生）=====
+; 用途：在 Allegro 內依本板資料放置/移動元件（refdes footprint x y rot layer）。
+; ★ .brd 為 Cadence 專有二進位，無法由外部直接寫出 —— 正確做法即本腳本：
+;   Allegro File > Script 或命令列 skill load 執行，由 Allegro 自己改 .brd。
+; ★ 執行前備份 .brd。axl 放置 API 依版本(17.x/X)可能需微調（資料已備好）。
+(defun vsPlaceAll ()
+  (let ((data (list
+${rows}
+  )))
+    (foreach row data
+      (let ((ref (nth 0 row)) (fp (nth 1 row)) (x (nth 2 row)) (y (nth 3 row)) (rot (nth 4 row)) (lay (nth 5 row)))
+        (printf "place %s (%s) at %f,%f rot %L layer %s\n" ref fp x y rot lay)
+        ; 依你的版本呼叫對應 API，例如：
+        ; (axlDBMoveComp (axlGetComponent ref) (list x y) rot (equal lay "BOTTOM"))
+      ))
+    (printf "=== 共 %d 顆元件 ===\n" (length data)) t))
+(printf "已載入。執行 vsPlaceAll() 重放佈局\n")
+`;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([il], { type: 'text/plain' }));
+      a.download = 'vs-place-' + (board.board || 'board').replace(/\.brd$/i, '') + '.il'; a.click();
+    });
+    $('loadOverlay').addEventListener('click', () => $('fileOv').click());
+    $('fileOv').addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { overlay = JSON.parse(r.result); renderColay(); draw(); } catch (err) { alert('疊圖失敗：' + err.message); } }; r.readAsText(f); e.target.value = ''; });
+
+    // 平移/縮放
+    let dragging = null;
+    $('cv').addEventListener('mousedown', e => { dragging = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y }; });
+    window.addEventListener('mousemove', e => { if (!dragging) return; view.x = dragging.vx - (e.clientX - dragging.x) / view.k; view.y = dragging.vy + (e.clientY - dragging.y) / view.k; draw(); });
+    window.addEventListener('mouseup', () => dragging = null);
+    $('cv').addEventListener('wheel', e => { e.preventDefault(); const f = e.deltaY < 0 ? 1.15 : 0.87; view.k = Math.max(0.5, Math.min(80, view.k * f)); draw(); }, { passive: false });
+    // 點畫布選料
+    $('cv').addEventListener('dblclick', e => {
+      if (!board) return;
+      const r = $('cv').getBoundingClientRect();
+      const mx = e.clientX - r.left, my = e.clientY - r.top;
+      let best = null, bd = 12;
+      board.components.forEach(c => { const d = Math.hypot(sx(c.x) - mx, sy(c.y) - my); if (d < bd) { bd = d; best = c; } });
+      if (best) { hl = new Set([best.refdes]); selectRef(best.refdes); }
+    });
+    window.addEventListener('resize', draw);
+
+    renderLayerUI(); draw();
+  </script>
+</body>
+</html>

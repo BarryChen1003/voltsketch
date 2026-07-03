@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>登入 - VoltSketch</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .auth-wrap { max-width: 420px; margin: 48px auto; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 28px; }
+      .auth-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+      .auth-tab { flex: 1; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: #fff; cursor: pointer; font-size: 13px; }
+      .auth-tab.active { background: var(--accent, #1f4fd1); color: #fff; border-color: var(--accent, #1f4fd1); }
+      .auth-wrap input { width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px; margin: 6px 0; }
+      .auth-msg { font-size: 13px; margin-top: 10px; min-height: 18px; }
+      .muted { color: var(--muted); font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand"><div class="brand-mark">VS</div><div><h1>VoltSketch 硬體實驗室</h1><p>帳號登入</p></div></div>
+        <nav class="main-nav"><a href="index.html" class="nav-link">← 回線路圖</a>  <a href="contact.html" class="nav-link">聯絡資訊</a>
+        </nav>
+      </header>
+
+      <div class="auth-wrap">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-mode="login">登入</button>
+          <button class="auth-tab" data-mode="signup">註冊</button>
+          <button class="auth-tab" data-mode="forgot">忘記密碼</button>
+        </div>
+
+        <div id="demoNote" class="muted" hidden style="margin-bottom:10px;color:#b45309">
+          ⚠ 尚未設定 Supabase（auth-config.js）。目前為本機 demo 模式，無法真正登入。
+        </div>
+
+        <input id="email" type="email" placeholder="email" autocomplete="email" />
+        <input id="password" type="password" placeholder="密碼（至少 6 碼）" autocomplete="current-password" />
+        <button class="primary-button" id="submitBtn" style="width:100%;margin-top:6px">登入</button>
+
+        <div style="text-align:center;margin:12px 0;color:var(--muted);font-size:12px">或</div>
+        <button class="small-button" id="googleBtn" style="width:100%;padding:9px">使用 Google 登入</button>
+
+        <p class="muted" style="margin-top:14px">手機註冊：可在 Supabase 開啟 Phone Auth 後於此擴充；目前先支援 email + Google。</p>
+        <div id="msg" class="auth-msg"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./auth-config.js"></script>
+    <script src="./auth.js"></script>
+    <script>
+      const $ = id => document.getElementById(id);
+      let mode = 'login';
+      const msg = (t, ok) => { const m = $('msg'); m.textContent = t; m.style.color = ok ? '#16a34a' : '#dc2626'; };
+
+      if (!Auth.enabled()) $('demoNote').hidden = false;
+
+      document.querySelectorAll('.auth-tab').forEach(b => b.addEventListener('click', () => {
+        document.querySelectorAll('.auth-tab').forEach(x => x.classList.remove('active'));
+        b.classList.add('active'); mode = b.dataset.mode;
+        $('password').style.display = (mode === 'forgot') ? 'none' : '';
+        $('submitBtn').textContent = mode === 'login' ? '登入' : mode === 'signup' ? '註冊' : '寄送重設信';
+        msg('');
+      }));
+
+      $('submitBtn').addEventListener('click', async () => {
+        if (!Auth.enabled()) { msg('請先設定 Supabase（auth-config.js）'); return; }
+        const email = $('email').value.trim(), pw = $('password').value;
+        try {
+          if (mode === 'login') {
+            const { error } = await Auth.signIn(email, pw);
+            if (error) throw error; msg('登入成功，導向…', true);
+            const nx = new URLSearchParams(location.search).get('next');
+            const dest = (nx && /^[\w-]+\.html$/.test(nx)) ? nx : 'index.html';  // 白名單：站內頁檔名
+            setTimeout(() => location.href = dest, 800);
+          } else if (mode === 'signup') {
+            const { error } = await Auth.signUp(email, pw);
+            if (error) throw error; msg('註冊成功，請收信驗證後再登入', true);
+          } else {
+            const { error } = await Auth.reset(email);
+            if (error) throw error; msg('重設密碼信已寄出，請收信', true);
+          }
+        } catch (e) { msg(e.message || '失敗'); }
+      });
+
+      $('googleBtn').addEventListener('click', async () => {
+        if (!Auth.enabled()) { msg('請先設定 Supabase'); return; }
+        try { await Auth.oauth('google'); } catch (e) { msg(e.message); }
+      });
+    </script>
+    <script src="./i18n.js?v=2026-07-03c"></script>
+</body>
+</html>

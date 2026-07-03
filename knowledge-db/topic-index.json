@@ -1,0 +1,3024 @@
+{
+  "topics": {
+    "adc_dac": {
+      "label_zh": "ADC / DAC / 資料轉換",
+      "label_en": "ADC / DAC / Data Conversion",
+      "count": 4,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/2026-04-08-153917-17756339574289530.pdf",
+          "title_guess": "HZ8756_Text.PDF",
+          "file_type": "pdf",
+          "page_count": 44
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/1加速硅后验证：ADC及PMIC 案例实践.pdf",
+          "title_guess": "1加速硅后验证：ADC及PMIC 案例实践",
+          "file_type": "pdf",
+          "page_count": 31
+        },
+        {
+          "relative_path": "hardware-pdfs/538917c691ba83d0ee940d9b1a60ccae9bc4053b.pdf",
+          "title_guess": "德州仪器高性能模拟器件高效应用指南之电源_TI 大学计划",
+          "file_type": "pdf",
+          "page_count": 201
+        },
+        {
+          "relative_path": "hardware-pdfs/5757ed4d2333723eb8f7e24576fadce122953734.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 92
+        }
+      ]
+    },
+    "automotive": {
+      "label_zh": "車用電子",
+      "label_en": "Automotive Electronics",
+      "count": 29,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/1e18a71e42bfd23615b6bc1bbffdcea16d05cca2.pdf",
+          "title_guess": "1e18a71e42bfd23615b6bc1bbffdcea16d05cca2",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/6智能驾驶及多域融合测试：方法与实例.pdf",
+          "title_guess": "6智能驾驶及多域融合测试：方法与实例",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/3b1c3eaf0dc672bacfc291ddf44aff68b8eac636.pdf",
+          "title_guess": "低压降稳压器快速参考指南",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/5c32bd2cd44da527be90f0a0a024d7a57a5f169c/电源开关设计秘笈30例.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 42
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC开关节点布局注意事项.pdf",
+          "title_guess": "EMC开关节点布局注意事项",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC测试计划及关键因素.pdf",
+          "title_guess": "EMC测试计划及关键因素",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPQ3367助力优化背光显示屏设计 .pdf",
+          "title_guess": "MPQ3367助力优化背光显示屏设计 ",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS 功能安全汽车开发流程MPSAFETM 简介.pdf",
+          "title_guess": "MPS 功能安全汽车开发流程MPSAFETM 简介",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS智能驾驶解决方案.pdf",
+          "title_guess": "MPS智能驾驶解决方案",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/从冷启动到负载突降：汽车瞬态入门.pdf",
+          "title_guess": "从冷启动到负载突降：汽车瞬态入门",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（上）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（下）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（下）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（中）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（中）",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/毫米波雷达的电源设计.pdf",
+          "title_guess": "毫米波雷达的电源设计",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车 SoC电源架构设计.pdf",
+          "title_guess": "汽车 SoC电源架构设计",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车LED驱动器设计：确保符合EMC标准的优良惯例.pdf",
+          "title_guess": "汽车LED驱动器设计：确保符合EMC标准的优良惯例",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（上）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（下）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（下）",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子产品的可靠性测试始终围绕任务配置文件进行.pdf",
+          "title_guess": "汽车电子产品的可靠性测试始终围绕任务配置文件进行",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/简单低成本的汽车冷启动预升压器.pdf",
+          "title_guess": "简单低成本的汽车冷启动预升压器",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（上）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（上）",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（下）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（下）",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案.pdf",
+          "title_guess": "采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（上篇）.pdf",
+          "title_guess": "防反保护电路的设计（上篇）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（下篇）.pdf",
+          "title_guess": "防反保护电路的设计（下篇）",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/9699d694130468cfa5da967705696bb7b60424fd.pdf",
+          "title_guess": "9699d694130468cfa5da967705696bb7b60424fd",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/f2497377849416c9e0475932c40a9aa89d111baa.pdf",
+          "title_guess": "电源管理指南 2013 (Rev. G)",
+          "file_type": "pdf",
+          "page_count": 121
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6ffca3c9530817ad0daea3e15af70a80b0f739c7.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 42
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/a480f6fafbf37e645c84ace9155fc1c7d643d62e.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 64
+        }
+      ]
+    },
+    "digital_protocols": {
+      "label_zh": "數位介面 / 通訊協定",
+      "label_en": "Digital Interfaces / Protocols",
+      "count": 17,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/1e18a71e42bfd23615b6bc1bbffdcea16d05cca2.pdf",
+          "title_guess": "1e18a71e42bfd23615b6bc1bbffdcea16d05cca2",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-04-08-153917-17756339574289530.pdf",
+          "title_guess": "HZ8756_Text.PDF",
+          "file_type": "pdf",
+          "page_count": 44
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/2高速和低速协议测试解决方案.pdf",
+          "title_guess": "2高速和低速协议测试解决方案",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/3掌握链路训练，确保 USB4 和 DisplayPort 设计成功.pdf",
+          "title_guess": "掌握链路训练，确保USB4和DisplayPort设计成功",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/4i2c通信协议理解i2c入门pmbus和smbus.pdf",
+          "title_guess": "i2c-communication-protocol-understanding-i2c-primer-pmbus-and-smbus_cn",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8e802a0549a379aec7faa2f5cac67c0e99a9ba32.pdf",
+          "title_guess": "DN496 - 面向大电流便携式电子产品的完整电池充电器解决方案",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/从冷启动到负载突降：汽车瞬态入门.pdf",
+          "title_guess": "从冷启动到负载突降：汽车瞬态入门",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（上）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车 SoC电源架构设计.pdf",
+          "title_guess": "汽车 SoC电源架构设计",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（上）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（上）",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（下）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（下）",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（下篇）.pdf",
+          "title_guess": "防反保护电路的设计（下篇）",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/939e5910917ce94f490a9c86aa9c51a303015a1a.pdf",
+          "title_guess": "信号完整性与电源完整性的仿真分析与设计",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/PmMdWW7c4ErFH5jfDR.pdf",
+          "title_guess": "RF PCB Simulation Cookbook",
+          "file_type": "pdf",
+          "page_count": 27
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/e889cf344626b5dc015335a54c1817ea03627369.pdf",
+          "title_guess": "Feedback Loop Design of an LLC Resonant Power Converter (Rev. A)",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/wfKcRHxEFSQSFjtdss/CAN、I2S、I2C、SPI、SSP各类总线精讲.pdf",
+          "title_guess": "bingdian001.com",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/WPBFNf8PRMtW3tbiCz.pdf",
+          "title_guess": "WPBFNf8PRMtW3tbiCz",
+          "file_type": "pdf",
+          "page_count": 118
+        }
+      ]
+    },
+    "electronics_basics": {
+      "label_zh": "電子學基礎 / 電路原理",
+      "label_en": "Electronics Basics / Circuit Theory",
+      "count": 88,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/07b2f0f577a49d6547a63c3de8cd62e2e00cdd81.pdf",
+          "title_guess": "???????????BUCK-BOOST???",
+          "file_type": "pdf",
+          "page_count": 33
+        },
+        {
+          "relative_path": "hardware-pdfs/0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a.pdf",
+          "title_guess": "0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/12ed09d2df1294e6a172f25747174730e1d8574d.pdf",
+          "title_guess": "关于单端反激式变压器的三个设计公式",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/1d8247659b1d520b5b2bace3c78427ba91c15703/power design experience.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/1e18a71e42bfd23615b6bc1bbffdcea16d05cca2.pdf",
+          "title_guess": "1e18a71e42bfd23615b6bc1bbffdcea16d05cca2",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/3掌握链路训练，确保 USB4 和 DisplayPort 设计成功.pdf",
+          "title_guess": "掌握链路训练，确保USB4和DisplayPort设计成功",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/4i2c通信协议理解i2c入门pmbus和smbus.pdf",
+          "title_guess": "i2c-communication-protocol-understanding-i2c-primer-pmbus-and-smbus_cn",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/5利用全 GaN 技术推进 800 VDC 架构.pdf",
+          "title_guess": "5利用全 GaN 技术推进 800 VDC 架构",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/6智能驾驶及多域融合测试：方法与实例.pdf",
+          "title_guess": "6智能驾驶及多域融合测试：方法与实例",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/22e81b23e751835ab8d1ca8247c49df0a3e4467a.pdf",
+          "title_guess": "22e81b23e751835ab8d1ca8247c49df0a3e4467a",
+          "file_type": "pdf",
+          "page_count": 33
+        },
+        {
+          "relative_path": "hardware-pdfs/25fb720aa71e8ea178fc140fa98eb5f7a6c24a5e.pdf",
+          "title_guess": "04-Buck变换器的DCM稳态关系.doc",
+          "file_type": "pdf",
+          "page_count": 1
+        },
+        {
+          "relative_path": "hardware-pdfs/2dd652c369d8b2d79d54cd3d1a697e8fe8765417.pdf",
+          "title_guess": "Microsoft Word - 模块电源的热处理--已《今日电子》.doc",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/34f6717ef4999c4aa989573aaa32559fb5884fb0.pdf",
+          "title_guess": "DN491 - &#32420;&#24039;&#22411;&#21452;&#30005;&#27744;&#22826;&#38451;&#33021;&#26495;&#32473;&#32039;&#20945;&#21644;&#31163;&#32593;&#22411;&#35774;&#22791;&#20013;&#30340;&#30005;&#27744;&#20805;&#30005;",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/3a8Dhft4YwGRhcHEfD/电源设计基础知识精选PDF电子书.pdf",
+          "title_guess": "电源设计基础知识精选PDF电子书",
+          "file_type": "pdf",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/3b1c3eaf0dc672bacfc291ddf44aff68b8eac636.pdf",
+          "title_guess": "低压降稳压器快速参考指南",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/40bc9df8cfc69932acf805dd9d7fa80a590b2ea5.pdf",
+          "title_guess": "Basics of Load Switches",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/4af587860e6e30513666d4080d4904b313ad1275.pdf",
+          "title_guess": "4af587860e6e30513666d4080d4904b313ad1275",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/538917c691ba83d0ee940d9b1a60ccae9bc4053b.pdf",
+          "title_guess": "德州仪器高性能模拟器件高效应用指南之电源_TI 大学计划",
+          "file_type": "pdf",
+          "page_count": 201
+        },
+        {
+          "relative_path": "hardware-pdfs/55fa683a597a574844e0878ddb8cd480183e397f.pdf",
+          "title_guess": "DN-62 开关电源拓扑电压模式与 电流模式",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/57yfbCBE22eH3A5eBe.pdf",
+          "title_guess": "57yfbCBE22eH3A5eBe",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/5c32bd2cd44da527be90f0a0a024d7a57a5f169c/电源开关设计秘笈30例.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 42
+        },
+        {
+          "relative_path": "hardware-pdfs/5Jn5xreEmk4N48b3dH/湮釦囀窒橈躇13920趼PCB褫秶婖俶扢數寞毓ㄛ昦俋換ㄐ.pdf",
+          "title_guess": "湮釦囀窒橈躇13920趼PCB褫秶婖俶扢數寞毓ㄛ昦俋換ㄐ",
+          "file_type": "pdf",
+          "page_count": 13
+        },
+        {
+          "relative_path": "hardware-pdfs/6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/8e802a0549a379aec7faa2f5cac67c0e99a9ba32.pdf",
+          "title_guess": "DN496 - 面向大电流便携式电子产品的完整电池充电器解决方案",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC开关节点布局注意事项.pdf",
+          "title_guess": "EMC开关节点布局注意事项",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC测试计划及关键因素.pdf",
+          "title_guess": "EMC测试计划及关键因素",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPQ3367助力优化背光显示屏设计 .pdf",
+          "title_guess": "MPQ3367助力优化背光显示屏设计 ",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS 功能安全汽车开发流程MPSAFETM 简介.pdf",
+          "title_guess": "MPS 功能安全汽车开发流程MPSAFETM 简介",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS智能驾驶解决方案.pdf",
+          "title_guess": "MPS智能驾驶解决方案",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/从冷启动到负载突降：汽车瞬态入门.pdf",
+          "title_guess": "从冷启动到负载突降：汽车瞬态入门",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（上）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（下）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（下）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（中）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（中）",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/毫米波雷达的电源设计.pdf",
+          "title_guess": "毫米波雷达的电源设计",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车 SoC电源架构设计.pdf",
+          "title_guess": "汽车 SoC电源架构设计",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车LED驱动器设计：确保符合EMC标准的优良惯例.pdf",
+          "title_guess": "汽车LED驱动器设计：确保符合EMC标准的优良惯例",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（上）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（下）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（下）",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子产品的可靠性测试始终围绕任务配置文件进行.pdf",
+          "title_guess": "汽车电子产品的可靠性测试始终围绕任务配置文件进行",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/简单低成本的汽车冷启动预升压器.pdf",
+          "title_guess": "简单低成本的汽车冷启动预升压器",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（上）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（上）",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（下）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（下）",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案.pdf",
+          "title_guess": "采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（上篇）.pdf",
+          "title_guess": "防反保护电路的设计（上篇）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（下篇）.pdf",
+          "title_guess": "防反保护电路的设计（下篇）",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/939e5910917ce94f490a9c86aa9c51a303015a1a.pdf",
+          "title_guess": "信号完整性与电源完整性的仿真分析与设计",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/9699d694130468cfa5da967705696bb7b60424fd.pdf",
+          "title_guess": "9699d694130468cfa5da967705696bb7b60424fd",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/99687f733fe71ada10c74c0c0983eba374dc542b.pdf",
+          "title_guess": "大学电子技术类教材特点是强调基础理论，侧重于电路的设计、计算，纯理论性内容占据主导地位，所以教材中的计算公式、证明比较多，它适合于培养学生电路设计的能力",
+          "file_type": "pdf",
+          "page_count": 26
+        },
+        {
+          "relative_path": "hardware-pdfs/a1c6c312ddaafa0dd0e047629d5bb57c51738923.pdf",
+          "title_guess": "03-Buck变换器的CCM稳态关系.doc",
+          "file_type": "pdf",
+          "page_count": 1
+        },
+        {
+          "relative_path": "hardware-pdfs/aac006055db617235670ea7e76cf084a11336976.pdf",
+          "title_guess": "开关电源基础知识",
+          "file_type": "pdf",
+          "page_count": 38
+        },
+        {
+          "relative_path": "hardware-pdfs/ab08b24973b984b5b7b54c319ff223e46dae9357.pdf",
+          "title_guess": "ab08b24973b984b5b7b54c319ff223e46dae9357",
+          "file_type": "pdf",
+          "page_count": 12
+        },
+        {
+          "relative_path": "hardware-pdfs/AG7Dp4S3sbZWp4ZcQK.pdf",
+          "title_guess": "电子元器件从入门到精通：全2册",
+          "file_type": "pdf",
+          "page_count": 624
+        },
+        {
+          "relative_path": "hardware-pdfs/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/b78a3fb3cf3814e71a1882e6bcf62b27786e40d0.pdf",
+          "title_guess": "Bandgap要求工作在1",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/DAXeFkHGrEMnpYkQmi.pdf",
+          "title_guess": "<4D6963726F736F667420576F7264202D20CEDEB8D0CEDECBA2D6B1C1F7B5E7BBFAD6AEB5E7B5F7C9E8BCC6C8ABB9A5C2D4>",
+          "file_type": "pdf",
+          "page_count": 97
+        },
+        {
+          "relative_path": "hardware-pdfs/DC-DC升压和降压电路电感参数选择详解.docx",
+          "title_guess": "DC-DC升压和降压电路电感参数选择详解",
+          "file_type": "word",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/DKjmQikfBtjfeEjDzK.pdf",
+          "title_guess": "DKjmQikfBtjfeEjDzK",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/DRsHdxC6RAsRNfT7ma/实例解读模拟电子技术.pdf",
+          "title_guess": "实例解读模拟电子技术完全学习与应用",
+          "file_type": "pdf",
+          "page_count": 55
+        },
+        {
+          "relative_path": "hardware-pdfs/DYacjaYaXwE5mbnDrx.pdf",
+          "title_guess": "DYacjaYaXwE5mbnDrx",
+          "file_type": "pdf",
+          "page_count": 359
+        },
+        {
+          "relative_path": "hardware-pdfs/electronics.pdf",
+          "title_guess": "电子学（第二版 吴利民）",
+          "file_type": "pdf",
+          "page_count": 930
+        },
+        {
+          "relative_path": "hardware-pdfs/F82QCwYNMKEDeyfDZf.pdf",
+          "title_guess": "Table of Contents",
+          "file_type": "pdf",
+          "page_count": 391
+        },
+        {
+          "relative_path": "hardware-pdfs/FJC4NwxmnRWfidFCMn.pdf",
+          "title_guess": "555集成电路应用800例",
+          "file_type": "pdf",
+          "page_count": 490
+        },
+        {
+          "relative_path": "hardware-pdfs/fNZHZPB7fFwsBmH4pr.pdf",
+          "title_guess": "fNZHZPB7fFwsBmH4pr",
+          "file_type": "pdf",
+          "page_count": 18
+        },
+        {
+          "relative_path": "hardware-pdfs/FtwBS7XbyPwDawkfEk.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 342
+        },
+        {
+          "relative_path": "hardware-pdfs/M6hedajTnhwrcEy8Kt.pdf",
+          "title_guess": "M6hedajTnhwrcEy8Kt",
+          "file_type": "pdf",
+          "page_count": 13
+        },
+        {
+          "relative_path": "hardware-pdfs/NY7fkTDpD7Y6N2ikEQ.pdf",
+          "title_guess": "NY7fkTDpD7Y6N2ikEQ",
+          "file_type": "pdf",
+          "page_count": 1135
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/30c55de35d8ae751406b969d6480dd2d4da4bd87.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 49
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/588ec1d46f1abc724ded05475edfb20b8045e457.pdf",
+          "title_guess": "开关电源基础知识",
+          "file_type": "pdf",
+          "page_count": 27
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6ec975510a0d4a6e3e87b9bc816aa0e16a44892a.pdf",
+          "title_guess": "摘要：详细介绍了一个带有中间抽头高频大功率变压器设计过程和计算方法，以及要注意问题",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6ffca3c9530817ad0daea3e15af70a80b0f739c7.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 42
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/8a37aabf1c7f1b7ed276a2b545a11d3b13738a46.pdf",
+          "title_guess": "Microsoft Word - 2222.doc",
+          "file_type": "pdf",
+          "page_count": 11
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/9fde19133c2d9a15efb39fb3a13bf9f32e52503e.pdf",
+          "title_guess": "9fde19133c2d9a15efb39fb3a13bf9f32e52503e",
+          "file_type": "pdf",
+          "page_count": 47
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/a480f6fafbf37e645c84ace9155fc1c7d643d62e.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 64
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/aac006055db617235670ea7e76cf084a11336976.pdf",
+          "title_guess": "开关电源基础知识",
+          "file_type": "pdf",
+          "page_count": 38
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/deef66c0dfdc068a9dcfd41e1bfa94eeb3ae37d6.pdf",
+          "title_guess": "开关电源基础知识",
+          "file_type": "pdf",
+          "page_count": 51
+        },
+        {
+          "relative_path": "hardware-pdfs/tjZJczemHHpH7mtYtJ.pdf",
+          "title_guess": "第一篇 PCB布线",
+          "file_type": "pdf",
+          "page_count": 79
+        },
+        {
+          "relative_path": "hardware-pdfs/Transistor_circuit_design-1.pdf",
+          "title_guess": "晶体管电路设计（上）放大电路技术的实验解析",
+          "file_type": "pdf",
+          "page_count": 286
+        },
+        {
+          "relative_path": "hardware-pdfs/Transistorcircuitdesign_Part2.pdf",
+          "title_guess": "晶体管电路设计（下）FET/功率MOS/开关电路的实验解析",
+          "file_type": "pdf",
+          "page_count": 323
+        },
+        {
+          "relative_path": "hardware-pdfs/WPBFNf8PRMtW3tbiCz.pdf",
+          "title_guess": "WPBFNf8PRMtW3tbiCz",
+          "file_type": "pdf",
+          "page_count": 118
+        },
+        {
+          "relative_path": "hardware-pdfs/xyBtTQXyaN34YkKMNY/集成运放应用电路设计360例.pdf",
+          "title_guess": "集成运放应用电路设计360例",
+          "file_type": "pdf",
+          "page_count": 379
+        },
+        {
+          "relative_path": "hardware-pdfs/yicyEN2Gm7PaMhibZr.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/双向可控硅实用电路500例.pdf",
+          "title_guess": "双向可控硅实用电路500例",
+          "file_type": "pdf",
+          "page_count": 256
+        },
+        {
+          "relative_path": "hardware-pdfs/双向可控硅工作原理.pdf",
+          "title_guess": "Microsoft Word - 文档 1",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/开关电源电路图讲解.pdf",
+          "title_guess": "开关电源电路图讲解",
+          "file_type": "pdf",
+          "page_count": 10
+        }
+      ]
+    },
+    "embedded_systems": {
+      "label_zh": "嵌入式系統 / 硬體架構",
+      "label_en": "Embedded Systems / Hardware Architecture",
+      "count": 6,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/3掌握链路训练，确保 USB4 和 DisplayPort 设计成功.pdf",
+          "title_guess": "掌握链路训练，确保USB4和DisplayPort设计成功",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/3b6aFDAp7QFcxkzJbD.pdf",
+          "title_guess": "3b6aFDAp7QFcxkzJbD",
+          "file_type": "pdf",
+          "page_count": 298
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车 SoC电源架构设计.pdf",
+          "title_guess": "汽车 SoC电源架构设计",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/DKjmQikfBtjfeEjDzK.pdf",
+          "title_guess": "DKjmQikfBtjfeEjDzK",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/John-catsoulis.pdf",
+          "title_guess": "嵌入式硬件设计",
+          "file_type": "pdf",
+          "page_count": 329
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/e889cf344626b5dc015335a54c1817ea03627369.pdf",
+          "title_guess": "Feedback Loop Design of an LLC Resonant Power Converter (Rev. A)",
+          "file_type": "pdf",
+          "page_count": 9
+        }
+      ]
+    },
+    "emi_emc": {
+      "label_zh": "EMI / EMC / 雜訊",
+      "label_en": "EMI / EMC / Noise",
+      "count": 42,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/1d8247659b1d520b5b2bace3c78427ba91c15703/power design experience.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/5利用全 GaN 技术推进 800 VDC 架构.pdf",
+          "title_guess": "5利用全 GaN 技术推进 800 VDC 架构",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/22e81b23e751835ab8d1ca8247c49df0a3e4467a.pdf",
+          "title_guess": "22e81b23e751835ab8d1ca8247c49df0a3e4467a",
+          "file_type": "pdf",
+          "page_count": 33
+        },
+        {
+          "relative_path": "hardware-pdfs/2dd652c369d8b2d79d54cd3d1a697e8fe8765417.pdf",
+          "title_guess": "Microsoft Word - 模块电源的热处理--已《今日电子》.doc",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/34f6717ef4999c4aa989573aaa32559fb5884fb0.pdf",
+          "title_guess": "DN491 - &#32420;&#24039;&#22411;&#21452;&#30005;&#27744;&#22826;&#38451;&#33021;&#26495;&#32473;&#32039;&#20945;&#21644;&#31163;&#32593;&#22411;&#35774;&#22791;&#20013;&#30340;&#30005;&#27744;&#20805;&#30005;",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC开关节点布局注意事项.pdf",
+          "title_guess": "EMC开关节点布局注意事项",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC测试计划及关键因素.pdf",
+          "title_guess": "EMC测试计划及关键因素",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPQ3367助力优化背光显示屏设计 .pdf",
+          "title_guess": "MPQ3367助力优化背光显示屏设计 ",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS 功能安全汽车开发流程MPSAFETM 简介.pdf",
+          "title_guess": "MPS 功能安全汽车开发流程MPSAFETM 简介",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS智能驾驶解决方案.pdf",
+          "title_guess": "MPS智能驾驶解决方案",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/从冷启动到负载突降：汽车瞬态入门.pdf",
+          "title_guess": "从冷启动到负载突降：汽车瞬态入门",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（上）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（下）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（下）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（中）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（中）",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/毫米波雷达的电源设计.pdf",
+          "title_guess": "毫米波雷达的电源设计",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车 SoC电源架构设计.pdf",
+          "title_guess": "汽车 SoC电源架构设计",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车LED驱动器设计：确保符合EMC标准的优良惯例.pdf",
+          "title_guess": "汽车LED驱动器设计：确保符合EMC标准的优良惯例",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（上）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（下）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（下）",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子产品的可靠性测试始终围绕任务配置文件进行.pdf",
+          "title_guess": "汽车电子产品的可靠性测试始终围绕任务配置文件进行",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/简单低成本的汽车冷启动预升压器.pdf",
+          "title_guess": "简单低成本的汽车冷启动预升压器",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（上）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（上）",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（下）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（下）",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案.pdf",
+          "title_guess": "采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（上篇）.pdf",
+          "title_guess": "防反保护电路的设计（上篇）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（下篇）.pdf",
+          "title_guess": "防反保护电路的设计（下篇）",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/939e5910917ce94f490a9c86aa9c51a303015a1a.pdf",
+          "title_guess": "信号完整性与电源完整性的仿真分析与设计",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/ab08b24973b984b5b7b54c319ff223e46dae9357.pdf",
+          "title_guess": "ab08b24973b984b5b7b54c319ff223e46dae9357",
+          "file_type": "pdf",
+          "page_count": 12
+        },
+        {
+          "relative_path": "hardware-pdfs/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/M6hedajTnhwrcEy8Kt.pdf",
+          "title_guess": "M6hedajTnhwrcEy8Kt",
+          "file_type": "pdf",
+          "page_count": 13
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/30c55de35d8ae751406b969d6480dd2d4da4bd87.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 49
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6ec975510a0d4a6e3e87b9bc816aa0e16a44892a.pdf",
+          "title_guess": "摘要：详细介绍了一个带有中间抽头高频大功率变压器设计过程和计算方法，以及要注意问题",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/tjZJczemHHpH7mtYtJ.pdf",
+          "title_guess": "第一篇 PCB布线",
+          "file_type": "pdf",
+          "page_count": 79
+        },
+        {
+          "relative_path": "hardware-pdfs/WMEw6pjJDD8mxTj33s.pdf",
+          "title_guess": "容航科技 EMC设计及选项手册",
+          "file_type": "pdf",
+          "page_count": 20
+        },
+        {
+          "relative_path": "hardware-pdfs/WPBFNf8PRMtW3tbiCz.pdf",
+          "title_guess": "WPBFNf8PRMtW3tbiCz",
+          "file_type": "pdf",
+          "page_count": 118
+        },
+        {
+          "relative_path": "hardware-pdfs/yicyEN2Gm7PaMhibZr.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/yXfCd5cTDeP7fyYHQK.pdf",
+          "title_guess": "技术文档编写格式管理办法",
+          "file_type": "pdf",
+          "page_count": 73
+        }
+      ]
+    },
+    "high_speed": {
+      "label_zh": "高速數位 / 訊號完整性",
+      "label_en": "High-Speed Digital / Signal Integrity",
+      "count": 70,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a.pdf",
+          "title_guess": "0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/0e5e88f3b343bd9c2f070260b048e437282b9b57.pdf",
+          "title_guess": "0e5e88f3b343bd9c2f070260b048e437282b9b57",
+          "file_type": "pdf",
+          "page_count": 229
+        },
+        {
+          "relative_path": "hardware-pdfs/12ed09d2df1294e6a172f25747174730e1d8574d.pdf",
+          "title_guess": "关于单端反激式变压器的三个设计公式",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/1d8247659b1d520b5b2bace3c78427ba91c15703/power design experience.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/1e18a71e42bfd23615b6bc1bbffdcea16d05cca2.pdf",
+          "title_guess": "1e18a71e42bfd23615b6bc1bbffdcea16d05cca2",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/1加速硅后验证：ADC及PMIC 案例实践.pdf",
+          "title_guess": "1加速硅后验证：ADC及PMIC 案例实践",
+          "file_type": "pdf",
+          "page_count": 31
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/2高速和低速协议测试解决方案.pdf",
+          "title_guess": "2高速和低速协议测试解决方案",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/3掌握链路训练，确保 USB4 和 DisplayPort 设计成功.pdf",
+          "title_guess": "掌握链路训练，确保USB4和DisplayPort设计成功",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/4i2c通信协议理解i2c入门pmbus和smbus.pdf",
+          "title_guess": "i2c-communication-protocol-understanding-i2c-primer-pmbus-and-smbus_cn",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/5利用全 GaN 技术推进 800 VDC 架构.pdf",
+          "title_guess": "5利用全 GaN 技术推进 800 VDC 架构",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/22e5296bbb14c0d8e7255ed2cb514f3e7cef4aa3.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 341
+        },
+        {
+          "relative_path": "hardware-pdfs/248rHynCWpGmA5TFpK.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 296
+        },
+        {
+          "relative_path": "hardware-pdfs/25fb720aa71e8ea178fc140fa98eb5f7a6c24a5e.pdf",
+          "title_guess": "04-Buck变换器的DCM稳态关系.doc",
+          "file_type": "pdf",
+          "page_count": 1
+        },
+        {
+          "relative_path": "hardware-pdfs/2dd652c369d8b2d79d54cd3d1a697e8fe8765417.pdf",
+          "title_guess": "Microsoft Word - 模块电源的热处理--已《今日电子》.doc",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/34f6717ef4999c4aa989573aaa32559fb5884fb0.pdf",
+          "title_guess": "DN491 - &#32420;&#24039;&#22411;&#21452;&#30005;&#27744;&#22826;&#38451;&#33021;&#26495;&#32473;&#32039;&#20945;&#21644;&#31163;&#32593;&#22411;&#35774;&#22791;&#20013;&#30340;&#30005;&#27744;&#20805;&#30005;",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/3b1c3eaf0dc672bacfc291ddf44aff68b8eac636.pdf",
+          "title_guess": "低压降稳压器快速参考指南",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/40bc9df8cfc69932acf805dd9d7fa80a590b2ea5.pdf",
+          "title_guess": "Basics of Load Switches",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/4a94ccff94b396d54363599dccfeba628881d9bf.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 478
+        },
+        {
+          "relative_path": "hardware-pdfs/4af587860e6e30513666d4080d4904b313ad1275.pdf",
+          "title_guess": "4af587860e6e30513666d4080d4904b313ad1275",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/55fa683a597a574844e0878ddb8cd480183e397f.pdf",
+          "title_guess": "DN-62 开关电源拓扑电压模式与 电流模式",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/5757ed4d2333723eb8f7e24576fadce122953734.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 92
+        },
+        {
+          "relative_path": "hardware-pdfs/654dd0d4f4b09ddbb282c30b934b6e9bf4154e56.pdf",
+          "title_guess": "C:\\Program Files\\Founder\\Apabi Reader 1.8\\ceb\\lb52b0cf0b-5736-4c82-94cf-6916c577f78e27467.ceb",
+          "file_type": "pdf",
+          "page_count": 106
+        },
+        {
+          "relative_path": "hardware-pdfs/6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/6itRQhCGPhpw4XPeGt.pdf",
+          "title_guess": "6itRQhCGPhpw4XPeGt",
+          "file_type": "pdf",
+          "page_count": 30
+        },
+        {
+          "relative_path": "hardware-pdfs/745a1fa69523208510e4e8727a30a9007ad4acf7.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 262
+        },
+        {
+          "relative_path": "hardware-pdfs/7d0a777a9173d8112f42148e36df5d33896b76f3.pdf",
+          "title_guess": "output design",
+          "file_type": "pdf",
+          "page_count": 41
+        },
+        {
+          "relative_path": "hardware-pdfs/7jxJ3TemD6jhED4KTs.pdf",
+          "title_guess": "7jxJ3TemD6jhED4KTs",
+          "file_type": "pdf",
+          "page_count": 208
+        },
+        {
+          "relative_path": "hardware-pdfs/8a9a6b357124e2a6c9905f3d884e05528539170f.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 296
+        },
+        {
+          "relative_path": "hardware-pdfs/8e802a0549a379aec7faa2f5cac67c0e99a9ba32.pdf",
+          "title_guess": "DN496 - 面向大电流便携式电子产品的完整电池充电器解决方案",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS 功能安全汽车开发流程MPSAFETM 简介.pdf",
+          "title_guess": "MPS 功能安全汽车开发流程MPSAFETM 简介",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（上）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（下）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（下）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（中）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（中）",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/939e5910917ce94f490a9c86aa9c51a303015a1a.pdf",
+          "title_guess": "信号完整性与电源完整性的仿真分析与设计",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/9699d694130468cfa5da967705696bb7b60424fd.pdf",
+          "title_guess": "9699d694130468cfa5da967705696bb7b60424fd",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/a0e74ad85b55b935dbb68e1c23e578818998187f.pdf",
+          "title_guess": "Transformer Engineering: Design and Practice",
+          "file_type": "pdf",
+          "page_count": 488
+        },
+        {
+          "relative_path": "hardware-pdfs/a1c6c312ddaafa0dd0e047629d5bb57c51738923.pdf",
+          "title_guess": "03-Buck变换器的CCM稳态关系.doc",
+          "file_type": "pdf",
+          "page_count": 1
+        },
+        {
+          "relative_path": "hardware-pdfs/ab08b24973b984b5b7b54c319ff223e46dae9357.pdf",
+          "title_guess": "ab08b24973b984b5b7b54c319ff223e46dae9357",
+          "file_type": "pdf",
+          "page_count": 12
+        },
+        {
+          "relative_path": "hardware-pdfs/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/d78b7a223305527c6bb1a8e2c51738e71ed7fb70.pdf",
+          "title_guess": "E:\\Program Files\\Founder\\Apabi Reader\\ceb\\lb896b0d5e-c809-4b4a-9ecb-eb704605bad547046.ceb",
+          "file_type": "pdf",
+          "page_count": 215
+        },
+        {
+          "relative_path": "hardware-pdfs/Design_and_application_of_switching_regulator_power_supply.pdf",
+          "title_guess": "Design_and_application_of_switching_regulator_power_supply",
+          "file_type": "pdf",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/DKjmQikfBtjfeEjDzK.pdf",
+          "title_guess": "DKjmQikfBtjfeEjDzK",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/f2497377849416c9e0475932c40a9aa89d111baa.pdf",
+          "title_guess": "电源管理指南 2013 (Rev. G)",
+          "file_type": "pdf",
+          "page_count": 121
+        },
+        {
+          "relative_path": "hardware-pdfs/F82QCwYNMKEDeyfDZf.pdf",
+          "title_guess": "Table of Contents",
+          "file_type": "pdf",
+          "page_count": 391
+        },
+        {
+          "relative_path": "hardware-pdfs/ffc0150ec4c5c0223eb92c36027200884c68a331.pdf",
+          "title_guess": "Microsoft PowerPoint - LLC.ppt",
+          "file_type": "pdf",
+          "page_count": 67
+        },
+        {
+          "relative_path": "hardware-pdfs/fFSb2ZB4wmJhsxMnss.pdf",
+          "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "file_type": "pdf",
+          "page_count": 23
+        },
+        {
+          "relative_path": "hardware-pdfs/hdpeynKew8zmJTnEJj/运算放大器应用技术手册.pdf",
+          "title_guess": "运算放大器应用技术手册",
+          "file_type": "pdf",
+          "page_count": 701
+        },
+        {
+          "relative_path": "hardware-pdfs/highSpeeddigitalDesign.pdf",
+          "title_guess": "highSpeeddigitalDesign",
+          "file_type": "pdf",
+          "page_count": 374
+        },
+        {
+          "relative_path": "hardware-pdfs/M6hedajTnhwrcEy8Kt.pdf",
+          "title_guess": "M6hedajTnhwrcEy8Kt",
+          "file_type": "pdf",
+          "page_count": 13
+        },
+        {
+          "relative_path": "hardware-pdfs/MR3QMpXX38FHGFfYJ8.pdf",
+          "title_guess": "ABC Amber PDF Merger",
+          "file_type": "pdf",
+          "page_count": 451
+        },
+        {
+          "relative_path": "hardware-pdfs/ms8DzAmF88mdfHzsps.pdf",
+          "title_guess": "ms8DzAmF88mdfHzsps",
+          "file_type": "pdf",
+          "page_count": 411
+        },
+        {
+          "relative_path": "hardware-pdfs/New_switch_power_optimization_design_and_examples_of_detailed_explanation.pdf",
+          "title_guess": "New_switch_power_optimization_design_and_examples_of_detailed_explanation",
+          "file_type": "pdf",
+          "page_count": 1715
+        },
+        {
+          "relative_path": "hardware-pdfs/PmMdWW7c4ErFH5jfDR.pdf",
+          "title_guess": "RF PCB Simulation Cookbook",
+          "file_type": "pdf",
+          "page_count": 27
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/2683b93a48860030f59527875071dad4b571a4ea.pdf",
+          "title_guess": "2683b93a48860030f59527875071dad4b571a4ea",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/a0c3301aff2a9c5693c8eef8aab1cea6e5edec9b.pdf",
+          "title_guess": "a0c3301aff2a9c5693c8eef8aab1cea6e5edec9b",
+          "file_type": "pdf",
+          "page_count": 234
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/Design_and_application_of_switching_regulator_power_supply.pdf",
+          "title_guess": "Design_and_application_of_switching_regulator_power_supply",
+          "file_type": "pdf",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/e889cf344626b5dc015335a54c1817ea03627369.pdf",
+          "title_guess": "Feedback Loop Design of an LLC Resonant Power Converter (Rev. A)",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/tjZJczemHHpH7mtYtJ.pdf",
+          "title_guess": "第一篇 PCB布线",
+          "file_type": "pdf",
+          "page_count": 79
+        },
+        {
+          "relative_path": "hardware-pdfs/tN6JHD3xnkGdBn6RAB.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 771
+        },
+        {
+          "relative_path": "hardware-pdfs/Transistor_circuit_design-1.pdf",
+          "title_guess": "晶体管电路设计（上）放大电路技术的实验解析",
+          "file_type": "pdf",
+          "page_count": 286
+        },
+        {
+          "relative_path": "hardware-pdfs/Transistorcircuitdesign_Part2.pdf",
+          "title_guess": "晶体管电路设计（下）FET/功率MOS/开关电路的实验解析",
+          "file_type": "pdf",
+          "page_count": 323
+        },
+        {
+          "relative_path": "hardware-pdfs/WMEw6pjJDD8mxTj33s.pdf",
+          "title_guess": "容航科技 EMC设计及选项手册",
+          "file_type": "pdf",
+          "page_count": 20
+        },
+        {
+          "relative_path": "hardware-pdfs/WPBFNf8PRMtW3tbiCz.pdf",
+          "title_guess": "WPBFNf8PRMtW3tbiCz",
+          "file_type": "pdf",
+          "page_count": 118
+        },
+        {
+          "relative_path": "hardware-pdfs/XrFWkpA44CWBfBRen7/怢俜茞璃馱最呇15爛layout冪桄訧蹋.pdf",
+          "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "file_type": "pdf",
+          "page_count": 23
+        },
+        {
+          "relative_path": "hardware-pdfs/yicyEN2Gm7PaMhibZr.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/双向可控硅工作原理.pdf",
+          "title_guess": "Microsoft Word - 文档 1",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/开关电源工程调试技术.pdf",
+          "title_guess": "开关电源工程调试技术",
+          "file_type": "pdf",
+          "page_count": 258
+        },
+        {
+          "relative_path": "hardware-pdfs/现代电源设计大全.pdf",
+          "title_guess": "现代电源设计大全",
+          "file_type": "pdf",
+          "page_count": 282
+        }
+      ]
+    },
+    "op_amp_analog": {
+      "label_zh": "OP Amp / 類比電路",
+      "label_en": "Op Amp / Analog Circuits",
+      "count": 18,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/1578980866/集成运算放大器应用.pdf",
+          "title_guess": "集成运算放大器应用",
+          "file_type": "pdf",
+          "page_count": 274
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/4i2c通信协议理解i2c入门pmbus和smbus.pdf",
+          "title_guess": "i2c-communication-protocol-understanding-i2c-primer-pmbus-and-smbus_cn",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/34f6717ef4999c4aa989573aaa32559fb5884fb0.pdf",
+          "title_guess": "DN491 - &#32420;&#24039;&#22411;&#21452;&#30005;&#27744;&#22826;&#38451;&#33021;&#26495;&#32473;&#32039;&#20945;&#21644;&#31163;&#32593;&#22411;&#35774;&#22791;&#20013;&#30340;&#30005;&#27744;&#20805;&#30005;",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/4af587860e6e30513666d4080d4904b313ad1275.pdf",
+          "title_guess": "4af587860e6e30513666d4080d4904b313ad1275",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/538917c691ba83d0ee940d9b1a60ccae9bc4053b.pdf",
+          "title_guess": "德州仪器高性能模拟器件高效应用指南之电源_TI 大学计划",
+          "file_type": "pdf",
+          "page_count": 201
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPQ3367助力优化背光显示屏设计 .pdf",
+          "title_guess": "MPQ3367助力优化背光显示屏设计 ",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（上）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车 SoC电源架构设计.pdf",
+          "title_guess": "汽车 SoC电源架构设计",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子产品的可靠性测试始终围绕任务配置文件进行.pdf",
+          "title_guess": "汽车电子产品的可靠性测试始终围绕任务配置文件进行",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案.pdf",
+          "title_guess": "采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（上篇）.pdf",
+          "title_guess": "防反保护电路的设计（上篇）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/99687f733fe71ada10c74c0c0983eba374dc542b.pdf",
+          "title_guess": "大学电子技术类教材特点是强调基础理论，侧重于电路的设计、计算，纯理论性内容占据主导地位，所以教材中的计算公式、证明比较多，它适合于培养学生电路设计的能力",
+          "file_type": "pdf",
+          "page_count": 26
+        },
+        {
+          "relative_path": "hardware-pdfs/ab08b24973b984b5b7b54c319ff223e46dae9357.pdf",
+          "title_guess": "ab08b24973b984b5b7b54c319ff223e46dae9357",
+          "file_type": "pdf",
+          "page_count": 12
+        },
+        {
+          "relative_path": "hardware-pdfs/DRsHdxC6RAsRNfT7ma/实例解读模拟电子技术.pdf",
+          "title_guess": "实例解读模拟电子技术完全学习与应用",
+          "file_type": "pdf",
+          "page_count": 55
+        },
+        {
+          "relative_path": "hardware-pdfs/hdpeynKew8zmJTnEJj/运算放大器应用技术手册.pdf",
+          "title_guess": "运算放大器应用技术手册",
+          "file_type": "pdf",
+          "page_count": 701
+        },
+        {
+          "relative_path": "hardware-pdfs/M6hedajTnhwrcEy8Kt.pdf",
+          "title_guess": "M6hedajTnhwrcEy8Kt",
+          "file_type": "pdf",
+          "page_count": 13
+        },
+        {
+          "relative_path": "hardware-pdfs/WPBFNf8PRMtW3tbiCz.pdf",
+          "title_guess": "WPBFNf8PRMtW3tbiCz",
+          "file_type": "pdf",
+          "page_count": 118
+        },
+        {
+          "relative_path": "hardware-pdfs/xyBtTQXyaN34YkKMNY/集成运放应用电路设计360例.pdf",
+          "title_guess": "集成运放应用电路设计360例",
+          "file_type": "pdf",
+          "page_count": 379
+        }
+      ]
+    },
+    "pcb_layout": {
+      "label_zh": "PCB Layout / 走線",
+      "label_en": "PCB Layout / Routing",
+      "count": 25,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/07b2f0f577a49d6547a63c3de8cd62e2e00cdd81.pdf",
+          "title_guess": "???????????BUCK-BOOST???",
+          "file_type": "pdf",
+          "page_count": 33
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/3掌握链路训练，确保 USB4 和 DisplayPort 设计成功.pdf",
+          "title_guess": "掌握链路训练，确保USB4和DisplayPort设计成功",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/22e81b23e751835ab8d1ca8247c49df0a3e4467a.pdf",
+          "title_guess": "22e81b23e751835ab8d1ca8247c49df0a3e4467a",
+          "file_type": "pdf",
+          "page_count": 33
+        },
+        {
+          "relative_path": "hardware-pdfs/40bc9df8cfc69932acf805dd9d7fa80a590b2ea5.pdf",
+          "title_guess": "Basics of Load Switches",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/538917c691ba83d0ee940d9b1a60ccae9bc4053b.pdf",
+          "title_guess": "德州仪器高性能模拟器件高效应用指南之电源_TI 大学计划",
+          "file_type": "pdf",
+          "page_count": 201
+        },
+        {
+          "relative_path": "hardware-pdfs/5Jn5xreEmk4N48b3dH/湮釦囀窒橈躇13920趼PCB褫秶婖俶扢數寞毓ㄛ昦俋換ㄐ.pdf",
+          "title_guess": "湮釦囀窒橈躇13920趼PCB褫秶婖俶扢數寞毓ㄛ昦俋換ㄐ",
+          "file_type": "pdf",
+          "page_count": 13
+        },
+        {
+          "relative_path": "hardware-pdfs/5Jn5xreEmk4N48b3dH/轎煤PCB layout斛掘朸.txt",
+          "title_guess": "轎煤PCB layout斛掘朸",
+          "file_type": "text",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/5Jn5xreEmk4N48b3dH/轎煤PCB layout斛掘朸.url",
+          "title_guess": "轎煤PCB layout斛掘朸",
+          "file_type": "web",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC开关节点布局注意事项.pdf",
+          "title_guess": "EMC开关节点布局注意事项",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（下）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（下）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车LED驱动器设计：确保符合EMC标准的优良惯例.pdf",
+          "title_guess": "汽车LED驱动器设计：确保符合EMC标准的优良惯例",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（上）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（下）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（下）",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（下）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（下）",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/939e5910917ce94f490a9c86aa9c51a303015a1a.pdf",
+          "title_guess": "信号完整性与电源完整性的仿真分析与设计",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/F82QCwYNMKEDeyfDZf.pdf",
+          "title_guess": "Table of Contents",
+          "file_type": "pdf",
+          "page_count": 391
+        },
+        {
+          "relative_path": "hardware-pdfs/fFSb2ZB4wmJhsxMnss.pdf",
+          "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "file_type": "pdf",
+          "page_count": 23
+        },
+        {
+          "relative_path": "hardware-pdfs/M6hedajTnhwrcEy8Kt.pdf",
+          "title_guess": "M6hedajTnhwrcEy8Kt",
+          "file_type": "pdf",
+          "page_count": 13
+        },
+        {
+          "relative_path": "hardware-pdfs/ms8DzAmF88mdfHzsps.pdf",
+          "title_guess": "ms8DzAmF88mdfHzsps",
+          "file_type": "pdf",
+          "page_count": 411
+        },
+        {
+          "relative_path": "hardware-pdfs/PmMdWW7c4ErFH5jfDR.pdf",
+          "title_guess": "RF PCB Simulation Cookbook",
+          "file_type": "pdf",
+          "page_count": 27
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6ec975510a0d4a6e3e87b9bc816aa0e16a44892a.pdf",
+          "title_guess": "摘要：详细介绍了一个带有中间抽头高频大功率变压器设计过程和计算方法，以及要注意问题",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/tjZJczemHHpH7mtYtJ.pdf",
+          "title_guess": "第一篇 PCB布线",
+          "file_type": "pdf",
+          "page_count": 79
+        },
+        {
+          "relative_path": "hardware-pdfs/WPBFNf8PRMtW3tbiCz.pdf",
+          "title_guess": "WPBFNf8PRMtW3tbiCz",
+          "file_type": "pdf",
+          "page_count": 118
+        },
+        {
+          "relative_path": "hardware-pdfs/XrFWkpA44CWBfBRen7/怢俜茞璃馱最呇15爛layout冪桄訧蹋.pdf",
+          "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "file_type": "pdf",
+          "page_count": 23
+        },
+        {
+          "relative_path": "hardware-pdfs/yXfCd5cTDeP7fyYHQK.pdf",
+          "title_guess": "技术文档编写格式管理办法",
+          "file_type": "pdf",
+          "page_count": 73
+        }
+      ]
+    },
+    "power_supply": {
+      "label_zh": "電源設計 / DC-DC / PMIC",
+      "label_en": "Power Supply / DC-DC / PMIC",
+      "count": 64,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/07b2f0f577a49d6547a63c3de8cd62e2e00cdd81.pdf",
+          "title_guess": "???????????BUCK-BOOST???",
+          "file_type": "pdf",
+          "page_count": 33
+        },
+        {
+          "relative_path": "hardware-pdfs/0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a.pdf",
+          "title_guess": "0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/12ed09d2df1294e6a172f25747174730e1d8574d.pdf",
+          "title_guess": "关于单端反激式变压器的三个设计公式",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/1d8247659b1d520b5b2bace3c78427ba91c15703/power design experience.pdf",
+          "title_guess": "电源设计提示",
+          "file_type": "pdf",
+          "page_count": 99
+        },
+        {
+          "relative_path": "hardware-pdfs/1e18a71e42bfd23615b6bc1bbffdcea16d05cca2.pdf",
+          "title_guess": "1e18a71e42bfd23615b6bc1bbffdcea16d05cca2",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-04-08-153917-17756339574289530.pdf",
+          "title_guess": "HZ8756_Text.PDF",
+          "file_type": "pdf",
+          "page_count": 44
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/1加速硅后验证：ADC及PMIC 案例实践.pdf",
+          "title_guess": "1加速硅后验证：ADC及PMIC 案例实践",
+          "file_type": "pdf",
+          "page_count": 31
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/5利用全 GaN 技术推进 800 VDC 架构.pdf",
+          "title_guess": "5利用全 GaN 技术推进 800 VDC 架构",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/25fb720aa71e8ea178fc140fa98eb5f7a6c24a5e.pdf",
+          "title_guess": "04-Buck变换器的DCM稳态关系.doc",
+          "file_type": "pdf",
+          "page_count": 1
+        },
+        {
+          "relative_path": "hardware-pdfs/2ee911160ee382124f5e2559185de39de7b4626d.pdf",
+          "title_guess": "Microsoft Word - 反激式开关电源设计全过程.doc",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/34f6717ef4999c4aa989573aaa32559fb5884fb0.pdf",
+          "title_guess": "DN491 - &#32420;&#24039;&#22411;&#21452;&#30005;&#27744;&#22826;&#38451;&#33021;&#26495;&#32473;&#32039;&#20945;&#21644;&#31163;&#32593;&#22411;&#35774;&#22791;&#20013;&#30340;&#30005;&#27744;&#20805;&#30005;",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/3b1c3eaf0dc672bacfc291ddf44aff68b8eac636.pdf",
+          "title_guess": "低压降稳压器快速参考指南",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/4a94ccff94b396d54363599dccfeba628881d9bf.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 478
+        },
+        {
+          "relative_path": "hardware-pdfs/4af587860e6e30513666d4080d4904b313ad1275.pdf",
+          "title_guess": "4af587860e6e30513666d4080d4904b313ad1275",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/538917c691ba83d0ee940d9b1a60ccae9bc4053b.pdf",
+          "title_guess": "德州仪器高性能模拟器件高效应用指南之电源_TI 大学计划",
+          "file_type": "pdf",
+          "page_count": 201
+        },
+        {
+          "relative_path": "hardware-pdfs/55fa683a597a574844e0878ddb8cd480183e397f.pdf",
+          "title_guess": "DN-62 开关电源拓扑电压模式与 电流模式",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/5c32bd2cd44da527be90f0a0a024d7a57a5f169c/电源开关设计秘笈30例.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 42
+        },
+        {
+          "relative_path": "hardware-pdfs/8e802a0549a379aec7faa2f5cac67c0e99a9ba32.pdf",
+          "title_guess": "DN496 - 面向大电流便携式电子产品的完整电池充电器解决方案",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC开关节点布局注意事项.pdf",
+          "title_guess": "EMC开关节点布局注意事项",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPQ3367助力优化背光显示屏设计 .pdf",
+          "title_guess": "MPQ3367助力优化背光显示屏设计 ",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS智能驾驶解决方案.pdf",
+          "title_guess": "MPS智能驾驶解决方案",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/从冷启动到负载突降：汽车瞬态入门.pdf",
+          "title_guess": "从冷启动到负载突降：汽车瞬态入门",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/毫米波雷达的电源设计.pdf",
+          "title_guess": "毫米波雷达的电源设计",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车LED驱动器设计：确保符合EMC标准的优良惯例.pdf",
+          "title_guess": "汽车LED驱动器设计：确保符合EMC标准的优良惯例",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（上）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（下）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（下）",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子产品的可靠性测试始终围绕任务配置文件进行.pdf",
+          "title_guess": "汽车电子产品的可靠性测试始终围绕任务配置文件进行",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/简单低成本的汽车冷启动预升压器.pdf",
+          "title_guess": "简单低成本的汽车冷启动预升压器",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（上）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（上）",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（下）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（下）",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案.pdf",
+          "title_guess": "采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（下篇）.pdf",
+          "title_guess": "防反保护电路的设计（下篇）",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/9699d694130468cfa5da967705696bb7b60424fd.pdf",
+          "title_guess": "9699d694130468cfa5da967705696bb7b60424fd",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/99687f733fe71ada10c74c0c0983eba374dc542b.pdf",
+          "title_guess": "大学电子技术类教材特点是强调基础理论，侧重于电路的设计、计算，纯理论性内容占据主导地位，所以教材中的计算公式、证明比较多，它适合于培养学生电路设计的能力",
+          "file_type": "pdf",
+          "page_count": 26
+        },
+        {
+          "relative_path": "hardware-pdfs/a1c6c312ddaafa0dd0e047629d5bb57c51738923.pdf",
+          "title_guess": "03-Buck变换器的CCM稳态关系.doc",
+          "file_type": "pdf",
+          "page_count": 1
+        },
+        {
+          "relative_path": "hardware-pdfs/aac006055db617235670ea7e76cf084a11336976.pdf",
+          "title_guess": "开关电源基础知识",
+          "file_type": "pdf",
+          "page_count": 38
+        },
+        {
+          "relative_path": "hardware-pdfs/ab08b24973b984b5b7b54c319ff223e46dae9357.pdf",
+          "title_guess": "ab08b24973b984b5b7b54c319ff223e46dae9357",
+          "file_type": "pdf",
+          "page_count": 12
+        },
+        {
+          "relative_path": "hardware-pdfs/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/b78a3fb3cf3814e71a1882e6bcf62b27786e40d0.pdf",
+          "title_guess": "Bandgap要求工作在1",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/DC-DC升压和降压电路电感参数选择详解.docx",
+          "title_guess": "DC-DC升压和降压电路电感参数选择详解",
+          "file_type": "word",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/Design_and_application_of_switching_regulator_power_supply.pdf",
+          "title_guess": "Design_and_application_of_switching_regulator_power_supply",
+          "file_type": "pdf",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/f2497377849416c9e0475932c40a9aa89d111baa.pdf",
+          "title_guess": "电源管理指南 2013 (Rev. G)",
+          "file_type": "pdf",
+          "page_count": 121
+        },
+        {
+          "relative_path": "hardware-pdfs/ffc0150ec4c5c0223eb92c36027200884c68a331.pdf",
+          "title_guess": "Microsoft PowerPoint - LLC.ppt",
+          "file_type": "pdf",
+          "page_count": 67
+        },
+        {
+          "relative_path": "hardware-pdfs/fFSb2ZB4wmJhsxMnss.pdf",
+          "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "file_type": "pdf",
+          "page_count": 23
+        },
+        {
+          "relative_path": "hardware-pdfs/M6hedajTnhwrcEy8Kt.pdf",
+          "title_guess": "M6hedajTnhwrcEy8Kt",
+          "file_type": "pdf",
+          "page_count": 13
+        },
+        {
+          "relative_path": "hardware-pdfs/New_switch_power_optimization_design_and_examples_of_detailed_explanation.pdf",
+          "title_guess": "New_switch_power_optimization_design_and_examples_of_detailed_explanation",
+          "file_type": "pdf",
+          "page_count": 1715
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/2683b93a48860030f59527875071dad4b571a4ea.pdf",
+          "title_guess": "2683b93a48860030f59527875071dad4b571a4ea",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/30c55de35d8ae751406b969d6480dd2d4da4bd87.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 49
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/588ec1d46f1abc724ded05475edfb20b8045e457.pdf",
+          "title_guess": "开关电源基础知识",
+          "file_type": "pdf",
+          "page_count": 27
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6ec975510a0d4a6e3e87b9bc816aa0e16a44892a.pdf",
+          "title_guess": "摘要：详细介绍了一个带有中间抽头高频大功率变压器设计过程和计算方法，以及要注意问题",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6ffca3c9530817ad0daea3e15af70a80b0f739c7.pdf",
+          "title_guess": "电源开关设计秘笈30例",
+          "file_type": "pdf",
+          "page_count": 42
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/8a37aabf1c7f1b7ed276a2b545a11d3b13738a46.pdf",
+          "title_guess": "Microsoft Word - 2222.doc",
+          "file_type": "pdf",
+          "page_count": 11
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/9fde19133c2d9a15efb39fb3a13bf9f32e52503e.pdf",
+          "title_guess": "9fde19133c2d9a15efb39fb3a13bf9f32e52503e",
+          "file_type": "pdf",
+          "page_count": 47
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/aac006055db617235670ea7e76cf084a11336976.pdf",
+          "title_guess": "开关电源基础知识",
+          "file_type": "pdf",
+          "page_count": 38
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/deef66c0dfdc068a9dcfd41e1bfa94eeb3ae37d6.pdf",
+          "title_guess": "开关电源基础知识",
+          "file_type": "pdf",
+          "page_count": 51
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/Design_and_application_of_switching_regulator_power_supply.pdf",
+          "title_guess": "Design_and_application_of_switching_regulator_power_supply",
+          "file_type": "pdf",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/e889cf344626b5dc015335a54c1817ea03627369.pdf",
+          "title_guess": "Feedback Loop Design of an LLC Resonant Power Converter (Rev. A)",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/tjZJczemHHpH7mtYtJ.pdf",
+          "title_guess": "第一篇 PCB布线",
+          "file_type": "pdf",
+          "page_count": 79
+        },
+        {
+          "relative_path": "hardware-pdfs/XrFWkpA44CWBfBRen7/怢俜茞璃馱最呇15爛layout冪桄訧蹋.pdf",
+          "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "file_type": "pdf",
+          "page_count": 23
+        },
+        {
+          "relative_path": "hardware-pdfs/开关电源工程调试技术.pdf",
+          "title_guess": "开关电源工程调试技术",
+          "file_type": "pdf",
+          "page_count": 258
+        },
+        {
+          "relative_path": "hardware-pdfs/开关电源电路图讲解.pdf",
+          "title_guess": "开关电源电路图讲解",
+          "file_type": "pdf",
+          "page_count": 10
+        }
+      ]
+    },
+    "protection_reliability": {
+      "label_zh": "保護電路 / 可靠度",
+      "label_en": "Protection / Reliability",
+      "count": 29,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/12ed09d2df1294e6a172f25747174730e1d8574d.pdf",
+          "title_guess": "关于单端反激式变压器的三个设计公式",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/1e18a71e42bfd23615b6bc1bbffdcea16d05cca2.pdf",
+          "title_guess": "1e18a71e42bfd23615b6bc1bbffdcea16d05cca2",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/4i2c通信协议理解i2c入门pmbus和smbus.pdf",
+          "title_guess": "i2c-communication-protocol-understanding-i2c-primer-pmbus-and-smbus_cn",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/2dd652c369d8b2d79d54cd3d1a697e8fe8765417.pdf",
+          "title_guess": "Microsoft Word - 模块电源的热处理--已《今日电子》.doc",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/3b1c3eaf0dc672bacfc291ddf44aff68b8eac636.pdf",
+          "title_guess": "低压降稳压器快速参考指南",
+          "file_type": "pdf",
+          "page_count": 3
+        },
+        {
+          "relative_path": "hardware-pdfs/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/40bc9df8cfc69932acf805dd9d7fa80a590b2ea5.pdf",
+          "title_guess": "Basics of Load Switches",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/4af587860e6e30513666d4080d4904b313ad1275.pdf",
+          "title_guess": "4af587860e6e30513666d4080d4904b313ad1275",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/8e802a0549a379aec7faa2f5cac67c0e99a9ba32.pdf",
+          "title_guess": "DN496 - 面向大电流便携式电子产品的完整电池充电器解决方案",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS 功能安全汽车开发流程MPSAFETM 简介.pdf",
+          "title_guess": "MPS 功能安全汽车开发流程MPSAFETM 简介",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS智能驾驶解决方案.pdf",
+          "title_guess": "MPS智能驾驶解决方案",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（上）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/毫米波雷达的电源设计.pdf",
+          "title_guess": "毫米波雷达的电源设计",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车LED驱动器设计：确保符合EMC标准的优良惯例.pdf",
+          "title_guess": "汽车LED驱动器设计：确保符合EMC标准的优良惯例",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子产品的可靠性测试始终围绕任务配置文件进行.pdf",
+          "title_guess": "汽车电子产品的可靠性测试始终围绕任务配置文件进行",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/简单低成本的汽车冷启动预升压器.pdf",
+          "title_guess": "简单低成本的汽车冷启动预升压器",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（上）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（上）",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（上篇）.pdf",
+          "title_guess": "防反保护电路的设计（上篇）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（下篇）.pdf",
+          "title_guess": "防反保护电路的设计（下篇）",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/f2497377849416c9e0475932c40a9aa89d111baa.pdf",
+          "title_guess": "电源管理指南 2013 (Rev. G)",
+          "file_type": "pdf",
+          "page_count": 121
+        },
+        {
+          "relative_path": "hardware-pdfs/M6hedajTnhwrcEy8Kt.pdf",
+          "title_guess": "M6hedajTnhwrcEy8Kt",
+          "file_type": "pdf",
+          "page_count": 13
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/2683b93a48860030f59527875071dad4b571a4ea.pdf",
+          "title_guess": "2683b93a48860030f59527875071dad4b571a4ea",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/8a37aabf1c7f1b7ed276a2b545a11d3b13738a46.pdf",
+          "title_guess": "Microsoft Word - 2222.doc",
+          "file_type": "pdf",
+          "page_count": 11
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/9fde19133c2d9a15efb39fb3a13bf9f32e52503e.pdf",
+          "title_guess": "9fde19133c2d9a15efb39fb3a13bf9f32e52503e",
+          "file_type": "pdf",
+          "page_count": 47
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/tjZJczemHHpH7mtYtJ.pdf",
+          "title_guess": "第一篇 PCB布线",
+          "file_type": "pdf",
+          "page_count": 79
+        },
+        {
+          "relative_path": "hardware-pdfs/xyBtTQXyaN34YkKMNY/集成运放应用电路设计360例.pdf",
+          "title_guess": "集成运放应用电路设计360例",
+          "file_type": "pdf",
+          "page_count": 379
+        }
+      ]
+    },
+    "test_measurement": {
+      "label_zh": "測試 / 驗證 / 量測",
+      "label_en": "Test / Validation / Measurement",
+      "count": 27,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/1加速硅后验证：ADC及PMIC 案例实践.pdf",
+          "title_guess": "1加速硅后验证：ADC及PMIC 案例实践",
+          "file_type": "pdf",
+          "page_count": 31
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/2高速和低速协议测试解决方案.pdf",
+          "title_guess": "2高速和低速协议测试解决方案",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/3掌握链路训练，确保 USB4 和 DisplayPort 设计成功.pdf",
+          "title_guess": "掌握链路训练，确保USB4和DisplayPort设计成功",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/6智能驾驶及多域融合测试：方法与实例.pdf",
+          "title_guess": "6智能驾驶及多域融合测试：方法与实例",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC测试计划及关键因素.pdf",
+          "title_guess": "EMC测试计划及关键因素",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS 功能安全汽车开发流程MPSAFETM 简介.pdf",
+          "title_guess": "MPS 功能安全汽车开发流程MPSAFETM 简介",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/从冷启动到负载突降：汽车瞬态入门.pdf",
+          "title_guess": "从冷启动到负载突降：汽车瞬态入门",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（上）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（下）.pdf",
+          "title_guess": "如何控制使用长输出线时的传导 EMI（下）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子产品的可靠性测试始终围绕任务配置文件进行.pdf",
+          "title_guess": "汽车电子产品的可靠性测试始终围绕任务配置文件进行",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/简单低成本的汽车冷启动预升压器.pdf",
+          "title_guess": "简单低成本的汽车冷启动预升压器",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（上）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（上）",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（下）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（下）",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案.pdf",
+          "title_guess": "采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（上篇）.pdf",
+          "title_guess": "防反保护电路的设计（上篇）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/F82QCwYNMKEDeyfDZf.pdf",
+          "title_guess": "Table of Contents",
+          "file_type": "pdf",
+          "page_count": 391
+        },
+        {
+          "relative_path": "hardware-pdfs/fFSb2ZB4wmJhsxMnss.pdf",
+          "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "file_type": "pdf",
+          "page_count": 23
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/6ec975510a0d4a6e3e87b9bc816aa0e16a44892a.pdf",
+          "title_guess": "摘要：详细介绍了一个带有中间抽头高频大功率变压器设计过程和计算方法，以及要注意问题",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/8a37aabf1c7f1b7ed276a2b545a11d3b13738a46.pdf",
+          "title_guess": "Microsoft Word - 2222.doc",
+          "file_type": "pdf",
+          "page_count": 11
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/9fde19133c2d9a15efb39fb3a13bf9f32e52503e.pdf",
+          "title_guess": "9fde19133c2d9a15efb39fb3a13bf9f32e52503e",
+          "file_type": "pdf",
+          "page_count": 47
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/e889cf344626b5dc015335a54c1817ea03627369.pdf",
+          "title_guess": "Feedback Loop Design of an LLC Resonant Power Converter (Rev. A)",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/tjZJczemHHpH7mtYtJ.pdf",
+          "title_guess": "第一篇 PCB布线",
+          "file_type": "pdf",
+          "page_count": 79
+        },
+        {
+          "relative_path": "hardware-pdfs/WPBFNf8PRMtW3tbiCz.pdf",
+          "title_guess": "WPBFNf8PRMtW3tbiCz",
+          "file_type": "pdf",
+          "page_count": 118
+        },
+        {
+          "relative_path": "hardware-pdfs/XrFWkpA44CWBfBRen7/怢俜茞璃馱最呇15爛layout冪桄訧蹋.pdf",
+          "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "file_type": "pdf",
+          "page_count": 23
+        },
+        {
+          "relative_path": "hardware-pdfs/xyBtTQXyaN34YkKMNY/集成运放应用电路设计360例.pdf",
+          "title_guess": "集成运放应用电路设计360例",
+          "file_type": "pdf",
+          "page_count": 379
+        }
+      ]
+    },
+    "transistor_mosfet": {
+      "label_zh": "BJT / MOSFET / 功率元件",
+      "label_en": "BJT / MOSFET / Power Devices",
+      "count": 36,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/07b2f0f577a49d6547a63c3de8cd62e2e00cdd81.pdf",
+          "title_guess": "???????????BUCK-BOOST???",
+          "file_type": "pdf",
+          "page_count": 33
+        },
+        {
+          "relative_path": "hardware-pdfs/0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a.pdf",
+          "title_guess": "0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/1e18a71e42bfd23615b6bc1bbffdcea16d05cca2.pdf",
+          "title_guess": "1e18a71e42bfd23615b6bc1bbffdcea16d05cca2",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/5利用全 GaN 技术推进 800 VDC 架构.pdf",
+          "title_guess": "5利用全 GaN 技术推进 800 VDC 架构",
+          "file_type": "pdf",
+          "page_count": 8
+        },
+        {
+          "relative_path": "hardware-pdfs/22e5296bbb14c0d8e7255ed2cb514f3e7cef4aa3.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 341
+        },
+        {
+          "relative_path": "hardware-pdfs/248rHynCWpGmA5TFpK.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 296
+        },
+        {
+          "relative_path": "hardware-pdfs/2dd652c369d8b2d79d54cd3d1a697e8fe8765417.pdf",
+          "title_guess": "Microsoft Word - 模块电源的热处理--已《今日电子》.doc",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/5757ed4d2333723eb8f7e24576fadce122953734.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 92
+        },
+        {
+          "relative_path": "hardware-pdfs/654dd0d4f4b09ddbb282c30b934b6e9bf4154e56.pdf",
+          "title_guess": "C:\\Program Files\\Founder\\Apabi Reader 1.8\\ceb\\lb52b0cf0b-5736-4c82-94cf-6916c577f78e27467.ceb",
+          "file_type": "pdf",
+          "page_count": 106
+        },
+        {
+          "relative_path": "hardware-pdfs/745a1fa69523208510e4e8727a30a9007ad4acf7.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 262
+        },
+        {
+          "relative_path": "hardware-pdfs/8a9a6b357124e2a6c9905f3d884e05528539170f.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 296
+        },
+        {
+          "relative_path": "hardware-pdfs/8e802a0549a379aec7faa2f5cac67c0e99a9ba32.pdf",
+          "title_guess": "DN496 - 面向大电流便携式电子产品的完整电池充电器解决方案",
+          "file_type": "pdf",
+          "page_count": 2
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC开关节点布局注意事项.pdf",
+          "title_guess": "EMC开关节点布局注意事项",
+          "file_type": "pdf",
+          "page_count": 6
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS 功能安全汽车开发流程MPSAFETM 简介.pdf",
+          "title_guess": "MPS 功能安全汽车开发流程MPSAFETM 简介",
+          "file_type": "pdf",
+          "page_count": 7
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS智能驾驶解决方案.pdf",
+          "title_guess": "MPS智能驾驶解决方案",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（上）.pdf",
+          "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（上）",
+          "file_type": "pdf",
+          "page_count": 5
+        },
+        {
+          "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（上）.pdf",
+          "title_guess": "车载信息娱乐系统中的电源设计（上）",
+          "file_type": "pdf",
+          "page_count": 10
+        },
+        {
+          "relative_path": "hardware-pdfs/939e5910917ce94f490a9c86aa9c51a303015a1a.pdf",
+          "title_guess": "信号完整性与电源完整性的仿真分析与设计",
+          "file_type": "pdf",
+          "page_count": 19
+        },
+        {
+          "relative_path": "hardware-pdfs/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/d78b7a223305527c6bb1a8e2c51738e71ed7fb70.pdf",
+          "title_guess": "E:\\Program Files\\Founder\\Apabi Reader\\ceb\\lb896b0d5e-c809-4b4a-9ecb-eb704605bad547046.ceb",
+          "file_type": "pdf",
+          "page_count": 215
+        },
+        {
+          "relative_path": "hardware-pdfs/f2497377849416c9e0475932c40a9aa89d111baa.pdf",
+          "title_guess": "电源管理指南 2013 (Rev. G)",
+          "file_type": "pdf",
+          "page_count": 121
+        },
+        {
+          "relative_path": "hardware-pdfs/ffc0150ec4c5c0223eb92c36027200884c68a331.pdf",
+          "title_guess": "Microsoft PowerPoint - LLC.ppt",
+          "file_type": "pdf",
+          "page_count": 67
+        },
+        {
+          "relative_path": "hardware-pdfs/fFSb2ZB4wmJhsxMnss.pdf",
+          "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "file_type": "pdf",
+          "page_count": 23
+        },
+        {
+          "relative_path": "hardware-pdfs/PmMdWW7c4ErFH5jfDR.pdf",
+          "title_guess": "RF PCB Simulation Cookbook",
+          "file_type": "pdf",
+          "page_count": 27
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/2683b93a48860030f59527875071dad4b571a4ea.pdf",
+          "title_guess": "2683b93a48860030f59527875071dad4b571a4ea",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "file_type": "pdf",
+          "page_count": 14
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "file_type": "pdf",
+          "page_count": 127
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/e889cf344626b5dc015335a54c1817ea03627369.pdf",
+          "title_guess": "Feedback Loop Design of an LLC Resonant Power Converter (Rev. A)",
+          "file_type": "pdf",
+          "page_count": 9
+        },
+        {
+          "relative_path": "hardware-pdfs/tN6JHD3xnkGdBn6RAB.pdf",
+          "title_guess": "SSReader Print.",
+          "file_type": "pdf",
+          "page_count": 771
+        },
+        {
+          "relative_path": "hardware-pdfs/Transistor_circuit_design-1.pdf",
+          "title_guess": "晶体管电路设计（上）放大电路技术的实验解析",
+          "file_type": "pdf",
+          "page_count": 286
+        },
+        {
+          "relative_path": "hardware-pdfs/Transistorcircuitdesign_Part2.pdf",
+          "title_guess": "晶体管电路设计（下）FET/功率MOS/开关电路的实验解析",
+          "file_type": "pdf",
+          "page_count": 323
+        },
+        {
+          "relative_path": "hardware-pdfs/WMEw6pjJDD8mxTj33s.pdf",
+          "title_guess": "容航科技 EMC设计及选项手册",
+          "file_type": "pdf",
+          "page_count": 20
+        },
+        {
+          "relative_path": "hardware-pdfs/XrFWkpA44CWBfBRen7/怢俜茞璃馱最呇15爛layout冪桄訧蹋.pdf",
+          "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "file_type": "pdf",
+          "page_count": 23
+        },
+        {
+          "relative_path": "hardware-pdfs/双向可控硅实用电路500例.pdf",
+          "title_guess": "双向可控硅实用电路500例",
+          "file_type": "pdf",
+          "page_count": 256
+        },
+        {
+          "relative_path": "hardware-pdfs/双向可控硅工作原理.pdf",
+          "title_guess": "Microsoft Word - 文档 1",
+          "file_type": "pdf",
+          "page_count": 4
+        }
+      ]
+    },
+    "uncategorized": {
+      "label_zh": "未分類",
+      "label_en": "Uncategorized",
+      "count": 32,
+      "files": [
+        {
+          "relative_path": "hardware-pdfs/1578980866/52RD.txt",
+          "title_guess": "52RD",
+          "file_type": "text",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/15e8208cfc7ec0e6bd844acb039326876227fb00.docx",
+          "title_guess": "15e8208cfc7ec0e6bd844acb039326876227fb00",
+          "file_type": "word",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/27b5a0efcbcff2bcbc3b59c738e920a25558c286.ppt",
+          "title_guess": "27b5a0efcbcff2bcbc3b59c738e920a25558c286",
+          "file_type": "presentation",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/28c031f3c7695dc0cfc61612c34e531aa4720877.pdf",
+          "title_guess": "28c031f3c7695dc0cfc61612c34e531aa4720877",
+          "file_type": "pdf",
+          "page_count": 140
+        },
+        {
+          "relative_path": "hardware-pdfs/5Jn5xreEmk4N48b3dH/▽閉絳呇淝▼轎煤眻畦啎豢.png",
+          "title_guess": "▽閉絳呇淝▼轎煤眻畦啎豢",
+          "file_type": "image",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/769f33320b04fa6021bc27eefdc4d8a5c0d764a6.ppt",
+          "title_guess": "769f33320b04fa6021bc27eefdc4d8a5c0d764a6",
+          "file_type": "presentation",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/7eeb74e2d5a9639057c58dd5547920125c95db1a.pdf",
+          "title_guess": "7eeb74e2d5a9639057c58dd5547920125c95db1a",
+          "file_type": "pdf",
+          "page_count": 474
+        },
+        {
+          "relative_path": "hardware-pdfs/87411b3150d028d41789fe8f79682ada38d441eb.pptx",
+          "title_guess": "87411b3150d028d41789fe8f79682ada38d441eb",
+          "file_type": "presentation",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/a02214de8a9b5e3eef2a6b84688223c63b0bf01f.pdf",
+          "title_guess": "变压器与电感器设计手册 第4版",
+          "file_type": "pdf",
+          "page_count": 57
+        },
+        {
+          "relative_path": "hardware-pdfs/b6ed0aad25e1901dc361cc5b4a109bf24c31e2b5.doc",
+          "title_guess": "b6ed0aad25e1901dc361cc5b4a109bf24c31e2b5",
+          "file_type": "word",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/bdb427e65d80adf5d9bca830b023675034665f0f.doc",
+          "title_guess": "bdb427e65d80adf5d9bca830b023675034665f0f",
+          "file_type": "word",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/be1d83bd4a5d22c8470dcd9cfeb688c12eec0a85.pdf",
+          "title_guess": "untitled",
+          "file_type": "pdf",
+          "page_count": 4
+        },
+        {
+          "relative_path": "hardware-pdfs/c2e56aefec2d6210fdc2398913d89c5b7b7def6d.pdf",
+          "title_guess": "c2e56aefec2d6210fdc2398913d89c5b7b7def6d",
+          "file_type": "pdf",
+          "page_count": 288
+        },
+        {
+          "relative_path": "hardware-pdfs/d5901b6e76374baa13d3db89be2ff1ccf760c4e6.pdf",
+          "title_guess": "d5901b6e76374baa13d3db89be2ff1ccf760c4e6",
+          "file_type": "pdf",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/eb1565fa5a0c4286648a020225f40649289bfc0b.doc",
+          "title_guess": "eb1565fa5a0c4286648a020225f40649289bfc0b",
+          "file_type": "word",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/ec51463434d0b6abdb51c89a594f10e685e12423.doc",
+          "title_guess": "ec51463434d0b6abdb51c89a594f10e685e12423",
+          "file_type": "word",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/FnXFbTQmQnh5XHj4Qh.pdf",
+          "title_guess": "FnXFbTQmQnh5XHj4Qh",
+          "file_type": "pdf",
+          "page_count": 521
+        },
+        {
+          "relative_path": "hardware-pdfs/Fx2J8a4TrkEKZHajza.pdf",
+          "title_guess": "Fx2J8a4TrkEKZHajza",
+          "file_type": "pdf",
+          "page_count": 649
+        },
+        {
+          "relative_path": "hardware-pdfs/iWGTFfzZJGrNCQZPBy.pdf",
+          "title_guess": "iWGTFfzZJGrNCQZPBy",
+          "file_type": "pdf",
+          "page_count": 575
+        },
+        {
+          "relative_path": "hardware-pdfs/jPNBe2yaHGrZWx667k.pdf",
+          "title_guess": "jPNBe2yaHGrZWx667k",
+          "file_type": "pdf",
+          "page_count": 324
+        },
+        {
+          "relative_path": "hardware-pdfs/nzbEzsWmpnBZZrFTbG.docx",
+          "title_guess": "nzbEzsWmpnBZZrFTbG",
+          "file_type": "word",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/077359adbd6d7aa369e031390b113e8c51df023f.rar",
+          "title_guess": "077359adbd6d7aa369e031390b113e8c51df023f",
+          "file_type": "archive",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/5131f1161da878c8f8d1e06a769f546e4356e4d4.zip",
+          "title_guess": "5131f1161da878c8f8d1e06a769f546e4356e4d4",
+          "file_type": "archive",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/8f1cc3540ace707ffd2d324688f0d4f17ce442b4.rar",
+          "title_guess": "8f1cc3540ace707ffd2d324688f0d4f17ce442b4",
+          "file_type": "archive",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/919f66299f98a112c0bc31a543c4f377febfe5ff.rar",
+          "title_guess": "919f66299f98a112c0bc31a543c4f377febfe5ff",
+          "file_type": "archive",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/a02214de8a9b5e3eef2a6b84688223c63b0bf01f.pdf",
+          "title_guess": "变压器与电感器设计手册 第4版",
+          "file_type": "pdf",
+          "page_count": 57
+        },
+        {
+          "relative_path": "hardware-pdfs/TI/a38c9f70562757d9d922c4b4eec9184e33e802df.rar",
+          "title_guess": "a38c9f70562757d9d922c4b4eec9184e33e802df",
+          "file_type": "archive",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/tnmXWKrcxA854eZ6w2.pdf",
+          "title_guess": "tnmXWKrcxA854eZ6w2",
+          "file_type": "pdf",
+          "page_count": 13
+        },
+        {
+          "relative_path": "hardware-pdfs/xDXsPpirZtZPQTPxCJ.pdf",
+          "title_guess": "xDXsPpirZtZPQTPxCJ",
+          "file_type": "pdf",
+          "page_count": 696
+        },
+        {
+          "relative_path": "hardware-pdfs/XrFWkpA44CWBfBRen7/Readme_download.txt",
+          "title_guess": "Readme_download",
+          "file_type": "text",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/XrFWkpA44CWBfBRen7/使用说明更多帮助.html",
+          "title_guess": "使用说明更多帮助",
+          "file_type": "web",
+          "page_count": null
+        },
+        {
+          "relative_path": "hardware-pdfs/ZJ8p7Y75ktK3pPXEpD.pdf",
+          "title_guess": "ZJ8p7Y75ktK3pPXEpD",
+          "file_type": "pdf",
+          "page_count": 609
+        }
+      ]
+    }
+  }
+}

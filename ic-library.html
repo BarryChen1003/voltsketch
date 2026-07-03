@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IC 元件庫 - VoltSketch</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    html, body { height: auto; min-height: 100%; overflow-y: auto; }
+    body { background: #f6f8fc; margin: 0; }
+    .iclib { display: grid; grid-template-columns: 220px 260px 1fr; gap: 0; height: calc(100vh - 60px); }
+    @media (max-width: 900px) { .iclib { grid-template-columns: 1fr; height: auto; } }
+    .col { overflow-y: auto; padding: 12px; }
+    .cats { background: #fff; border-right: 1px solid #e2e8f0; }
+    .cat-btn { display: block; width: 100%; text-align: left; padding: 7px 10px; border: none; background: none; border-radius: 6px; cursor: pointer; font-size: 13px; color: #334155; }
+    .cat-btn:hover { background: #f1f5f9; }
+    .cat-btn.active { background: #1d2943; color: #fff; }
+    .cat-btn .n { color: #94a3b8; font-size: 11px; float: right; }
+    .cat-btn.active .n { color: #cbd5e1; }
+    .list { background: #fbfcfe; border-right: 1px solid #e2e8f0; }
+    .ic-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 13px; font-family: ui-monospace, monospace; color: #0f172a; }
+    .ic-item:hover { background: #eef2ff; }
+    .ic-item.active { background: #dbeafe; }
+    .ic-item .badge { font-size: 10px; padding: 1px 6px; border-radius: 999px; }
+    .ic-item .filled { background: #dcfce7; color: #15803d; }
+    .ic-item .empty { background: #f1f5f9; color: #94a3b8; }
+    .detail { background: #fff; }
+    .srch { width: 100%; padding: 7px 10px; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 8px; font-size: 13px; box-sizing: border-box; }
+    .ic-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+    .ic-head h2 { margin: 0; color: #0f172a; }
+    .spec-box { border: 1px solid #eef2f7; border-radius: 8px; overflow: hidden; margin-top: 8px; }
+    .spec-box h3 { margin: 0; padding: 8px 12px; background: #1d2943; color: #fff; font-size: 14px; }
+    .spec-row { display: grid; grid-template-columns: 130px 1fr; border-top: 1px solid #f1f5f9; font-size: 13px; }
+    .spec-row .k { background: #f8fafc; color: #475569; padding: 6px 10px; font-weight: 600; }
+    .spec-row .v { padding: 6px 10px; color: #0f172a; }
+    .sec { margin-top: 14px; } .sec h4 { margin: 0 0 6px; font-size: 14px; } .sec ul { margin: 0; padding-left: 18px; color: #334155; font-size: 13px; line-height: 1.6; }
+    .symbol-box { border: 1px solid #eef2f7; border-radius: 8px; padding: 8px; text-align: center; overflow: auto; }
+    .symbol-box svg { max-width: 100%; height: auto; }
+    .pintab { margin-top: 16px; } .pintab table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .pintab th { background: #1d2943; color: #fff; text-align: left; padding: 6px 10px; } .pintab th:first-child { text-align: center; width: 40px; }
+    .pintab td { border-bottom: 1px solid #eef2f7; padding: 6px 10px; vertical-align: top; } .pintab tbody tr:nth-child(even) { background: #f8fafc; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>VoltSketch 硬體實驗室</h1><p>IC 元件庫</p></div></div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">線路圖</a>
+        <a href="ic-library.html" class="nav-link active">IC 元件庫</a>
+        <a href="knowledge.html" class="nav-link">硬體知識庫</a>
+        <a href="pcb.html" class="nav-link">PCB Layout</a>
+          <a href="pcb-viewer.html" class="nav-link">PCB 檢視器</a>
+        <a href="interview.html" class="nav-link">面試考題</a>
+        <a href="contact.html" class="nav-link">聯絡資訊</a>
+        </nav>
+    </header>
+    <div class="iclib">
+      <div class="col cats" id="cats"></div>
+      <div class="col list"><input class="srch" id="srch" type="search" placeholder="搜尋料號…"/><div id="icList"></div></div>
+      <div class="col detail" id="detail"><p style="color:#94a3b8;padding:20px">← 左邊選分類，中間點料號看詳細頁</p></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./auth-config.js"></script>
+  <script src="./auth.js"></script>
+  <script src="./ic-symbol.js"></script>
+  <script src="./ic-data.js"></script>
+  <script src="./ic-classification.js"></script>
+  <script src="./ic-export.js"></script>
+  <script src="./vs-model.js"></script>
+  <script src="./vs-adapters.js"></script>
+  <script src="./export-gate.js"></script>
+  <script src="./skill-swap.js"></script>
+  <script>
+    const esc = s => String(s == null ? '' : s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const CL = window.IC_CLASSIFICATION || {};
+    const DATA = window.IC_DATA || [];
+    const dataMap = {}; DATA.forEach(ic => dataMap[norm(ic.part)] = ic);
+    const catLabel = {}; (window.IC_CATEGORIES || []).forEach(c => catLabel[c.id] = c.label);
+    catLabel['_unclassified'] = '未分類（待複核）'; catLabel['_misc-non-ti'] = '其他/非 TI（待複核）';
+    let curCat = null;
+
+    function renderCats() {
+      const keys = Object.keys(CL).sort((a, b) => CL[b].length - CL[a].length);
+      document.getElementById('cats').innerHTML = keys.map(k =>
+        `<button class="cat-btn" data-cat="${k}">${esc(catLabel[k] || k)}<span class="n">${CL[k].length}</span></button>`).join('');
+    }
+    function renderList(filter) {
+      if (!curCat) { document.getElementById('icList').innerHTML = '<p style="color:#94a3b8;font-size:12px;padding:8px">選一個分類</p>'; return; }
+      let parts = CL[curCat].slice().sort();
+      if (filter) parts = parts.filter(p => p.toLowerCase().includes(filter));
+      document.getElementById('icList').innerHTML = parts.map(p => {
+        const has = !!dataMap[norm(p)];
+        return `<div class="ic-item" data-ic="${esc(p)}"><span>${esc(p)}</span><span class="badge ${has ? 'filled' : 'empty'}">${has ? '已建檔' : '待補'}</span></div>`;
+      }).join('') || '<p style="color:#94a3b8;font-size:12px;padding:8px">無符合</p>';
+    }
+
+    const nameHTML = n => String(n).split(/(\{[^}]*\})/).filter(s => s !== '').map(p => /^\{.*\}$/.test(p) ? `<span style="text-decoration:overline">${esc(p.slice(1, -1))}</span>` : esc(p)).join('');
+    function pinTable(ic) {
+      const pins = (ic.pins || []).slice().sort((a, b) => (a.num || 0) - (b.num || 0));
+      const rows = pins.map(p => `<tr><td style="text-align:center;font-weight:600">${esc(p.num)}</td><td style="font-family:ui-monospace,monospace">${nameHTML(p.name)}</td><td style="white-space:nowrap;color:#475569">${esc(p.type || '')}</td><td>${esc(p.desc || '')}</td></tr>`).join('');
+      return `<div class="pintab"><h4>接腳定義（Pin Functions）</h4><table><thead><tr><th>腳</th><th>名稱</th><th>類型</th><th>功能</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+    function detailCard(ic) {
+      const sym = ICSymbol.render(ic);
+      const specs = (ic.specs || []).map(s => `<div class="spec-row"><div class="k">${esc(s.k)}</div><div class="v">${esc(s.v)}</div></div>`).join('');
+      const drop = (ic.dropIn || []).map(d => `<li><b style="color:#15803d">${esc(d.part)}</b> — ${esc(d.note || '')}</li>`).join('');
+      const crit = (ic.secondSource || []).map(s => `<li>${esc(s)}</li>`).join('');
+      const row = (l, v) => v ? `<div style="display:grid;grid-template-columns:64px 1fr;gap:8px;margin:3px 0"><div style="color:#64748b;font-weight:600">${l}</div><div>${esc(v)}</div></div>` : '';
+      return `<div style="padding:18px">
+        <div class="ic-head"><div><h2>${esc(ic.part)}</h2><div style="color:#64748b;font-size:13px">${esc(ic.subcategory || '')} · ${esc(ic.package || '')}</div></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <a class="primary-button" style="padding:6px 14px;font-size:13px" href="index.html?addIC=${encodeURIComponent('data:' + ic.part)}">＋ 放到線路圖</a>
+            <select id="exportFmt" style="padding:5px 8px;border:1px solid #e2e8f0;border-radius:5px;font-size:13px">
+              <optgroup label="直接可用（本站自寫）">${VSAdapters.list().filter(a => a.kind === 'native').map(a => `<option value="${a.id}" title="${esc(a.note)}">${esc(a.label)}</option>`).join('')}</optgroup>
+              <optgroup label="經工具生成（.olb 為專有二進位，不自寫）">${VSAdapters.list().filter(a => a.kind === 'via-tool').map(a => `<option value="${a.id}" title="${esc(a.note)}">${esc(a.label)}</option>`).join('')}</optgroup>
+            </select>
+            <button class="small-button" data-export="go" data-part="${esc(ic.part)}">匯出</button>
+            <span id="exportMsg" style="font-size:12px;color:#94a3b8"></span>
+          </div></div>
+        <div style="background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;padding:12px;margin:12px 0;font-size:13px">${row('是什麼', ic.whatIs)}${row('功用', ic.func)}${row('用在哪', ic.usedIn)}</div>
+        <div class="symbol-box">${sym.svg}</div>
+        <div class="spec-box"><h3>重點規格</h3>${specs}</div>
+        <div class="sec"><h4 style="color:#15803d">可直接替換（pin-to-pin 相容）</h4>${drop ? `<ul>${drop}</ul>` : '<p style="color:#64748b;font-size:13px">尚無</p>'}</div>
+        ${crit ? `<div class="sec"><h4>替換必須符合的條件</h4><ul>${crit}</ul></div>` : ''}
+        ${(ic.dropIn && ic.dropIn.length) ? `<div class="sec"><h4>PCB 換料腳本（Allegro SKILL）</h4>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px">
+            <span>把 <b>${esc(ic.part)}</b> 換成</span>
+            <select id="swapTarget">${ic.dropIn.map(d => `<option value="${esc(d.part)}">${esc(d.part)}</option>`).join('')}</select>
+            <span>refdes</span><input id="swapRefs" placeholder="U3 U7 U12" style="padding:4px 8px;border:1px solid #e2e8f0;border-radius:5px;width:160px"/>
+            <button class="small-button" data-skill="gen" data-part="${esc(ic.part)}">產生 SKILL (.il)</button>
+          </div>
+          <p style="color:#94a3b8;font-size:12px;margin:6px 0 0">只允許 pin 相容（同 footprint）的料當目標；產出腳本在 Allegro 跑、保留接線，執行前先備份 .brd。</p></div>` : ''}
+        ${pinTable(ic)}
+      </div>`;
+    }
+    function showDetail(part) {
+      const ic = dataMap[norm(part)];
+      const d = document.getElementById('detail');
+      if (ic) { d.innerHTML = detailCard(ic); return; }
+      d.innerHTML = `<div style="padding:24px"><h2 style="color:#0f172a;font-family:ui-monospace,monospace">${esc(part)}</h2>
+        <p style="color:#b45309">尚未建檔（無 pinout/規格資料）。</p>
+        <p style="color:#475569;font-size:13px">datasheet：<a href="IC-spec/${esc(part)}.pdf" target="_blank">${esc(part)}.pdf</a></p>
+        <p style="color:#94a3b8;font-size:13px">建檔後此處會顯示：白話簡述 + 符號 + 重點規格 + pin 相容替換 + 接腳定義，並可放到線路圖。</p></div>`;
+    }
+
+    document.getElementById('cats').addEventListener('click', e => {
+      const b = e.target.closest('.cat-btn'); if (!b) return;
+      curCat = b.dataset.cat;
+      document.querySelectorAll('.cat-btn').forEach(x => x.classList.toggle('active', x === b));
+      document.getElementById('srch').value = ''; renderList('');
+    });
+    document.getElementById('icList').addEventListener('click', e => {
+      const it = e.target.closest('.ic-item'); if (!it) return;
+      document.querySelectorAll('.ic-item').forEach(x => x.classList.toggle('active', x === it));
+      showDetail(it.dataset.ic);
+    });
+    document.getElementById('srch').addEventListener('input', e => renderList(e.target.value.toLowerCase().trim()));
+    document.getElementById('detail').addEventListener('click', async e => {
+      const ex = e.target.closest('[data-export]');
+      if (ex) {
+        const ic = dataMap[norm(ex.dataset.part)]; if (!ic || !window.VSAdapters) return;
+        const fmt = document.getElementById('exportFmt').value;
+        const msg = document.getElementById('exportMsg');
+        const r = await VSAdapters.exportIC(fmt, ic);
+        if (!r.ok) {
+          msg.style.color = '#b91c1c';
+          msg.textContent = r.reason === 'not_authenticated' ? '請先登入才能匯出'
+            : r.reason === 'quota_exceeded' ? '已達本月匯出上限（升級 VIP 可增加）'
+            : r.reason;
+        } else { msg.style.color = '#15803d'; msg.textContent = r.remaining >= 0 ? ('已匯出，本月剩 ' + r.remaining + ' 次') : '已匯出'; }
+        return;
+      }
+      const sk = e.target.closest('[data-skill]');
+      if (sk && window.SkillSwap) {
+        const ic = dataMap[norm(sk.dataset.part)]; if (!ic) return;
+        const tgt = document.getElementById('swapTarget').value;
+        const refs = document.getElementById('swapRefs').value.split(/[\s,]+/);
+        const il = SkillSwap.genSkill(ic.part, tgt, ic.package || '', refs);
+        ICExport.download('swap_' + ic.part + '_to_' + tgt + '.il', il);
+      }
+    });
+
+    renderCats();
+    const firstFilled = Object.keys(CL).find(k => CL[k].some(p => dataMap[norm(p)]));
+    if (firstFilled) { document.querySelector(`[data-cat="${firstFilled}"]`)?.click(); }
+  </script>
+  <script src="./i18n.js?v=2026-07-03c"></script>
+</body>
+</html>

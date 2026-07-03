@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VoltSketch - PCB Layout</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .pcb-page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .pcb-main {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 220px 1fr 280px;
+        gap: 12px;
+        padding: 12px;
+      }
+      
+      .pcb-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .pcb-tool-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      
+      .pcb-tool-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 10px 6px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel-soft);
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.15s ease;
+      }
+      
+      .pcb-tool-btn:hover,
+      .pcb-tool-btn.active {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+      }
+      
+      .pcb-tool-icon {
+        font-size: 18px;
+      }
+      
+      .pcb-canvas-container {
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+      
+      .pcb-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--line);
+        background: var(--panel-soft);
+      }
+      
+      .pcb-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .pcb-status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+      
+      .pcb-canvas {
+        flex: 1;
+        position: relative;
+        background: #1a1a2e;
+        overflow: hidden;
+      }
+      
+      #pcbCanvas {
+        width: 100%;
+        height: 100%;
+        cursor: crosshair;
+      }
+      
+      .pcb-inspector {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .drc-results {
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      
+      .drc-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 8px;
+        border-bottom: 1px solid var(--line);
+        font-size: 13px;
+      }
+      
+      .drc-icon {
+        width: 20px;
+        height: 20px;
+        display: grid;
+        place-items: center;
+        border-radius: 4px;
+        font-size: 12px;
+        flex-shrink: 0;
+      }
+      
+      .drc-icon.error {
+        background: #fee;
+        color: var(--danger);
+      }
+      
+      .drc-icon.warning {
+        background: #fff3cd;
+        color: var(--warn);
+      }
+      
+      .drc-icon.info {
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+      }
+      
+      .layer-list {
+        display: grid;
+        gap: 4px;
+      }
+      
+      .layer-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        cursor: pointer;
+      }
+      
+      .layer-color {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+      }
+      
+      .layer-name {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      
+      .layer-visibility {
+        margin-left: auto;
+        cursor: pointer;
+        opacity: 0.6;
+      }
+      
+      .layer-visibility:hover {
+        opacity: 1;
+      }
+
+      /* Tutorial Styles */
+      .tutorial-item {
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .tutorial-item:hover {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      .tutorial-title {
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+
+      .tutorial-desc {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .tutorial-steps {
+        font-size: 11px;
+        color: var(--accent-strong);
+      }
+
+      .lesson-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .lesson-progress {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .progress-bar {
+        width: 60px;
+        height: 4px;
+        background: var(--line);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .progress-bar::after {
+        content: '';
+        display: block;
+        height: 100%;
+        background: var(--accent);
+        transition: width 0.3s ease;
+      }
+
+      .lesson-step {
+        margin-bottom: 16px;
+      }
+
+      .lesson-step h4 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .lesson-step p {
+        line-height: 1.6;
+        margin-bottom: 12px;
+      }
+
+      .lesson-tips {
+        background: var(--accent-soft);
+        padding: 12px;
+        border-radius: var(--radius);
+        margin-top: 12px;
+      }
+
+      .lesson-tips ul {
+        margin: 8px 0 0 0;
+        padding-left: 20px;
+      }
+
+      .lesson-tips li {
+        margin-bottom: 4px;
+        font-size: 13px;
+      }
+
+      .lesson-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+
+      /* Practice Styles */
+      .practice-item {
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .practice-item:hover {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      .practice-title {
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+
+      .practice-desc {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .practice-meta {
+        display: flex;
+        gap: 8px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .difficulty {
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+      }
+
+      .difficulty.beginner {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .difficulty.intermediate {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .difficulty.advanced {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .exercise-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .exercise-description {
+        margin-bottom: 16px;
+      }
+
+      .exercise-components,
+      .exercise-connections,
+      .exercise-hints {
+        margin-bottom: 16px;
+      }
+
+      .exercise-components h4,
+      .exercise-connections h4,
+      .exercise-hints h4 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .component-list {
+        display: grid;
+        gap: 4px;
+      }
+
+      .component-item {
+        display: flex;
+        gap: 8px;
+        padding: 6px 8px;
+        background: var(--panel-soft);
+        border-radius: 4px;
+        font-size: 12px;
+      }
+
+      .component-type {
+        font-weight: 600;
+        color: var(--accent-strong);
+      }
+
+      .connection-list {
+        display: grid;
+        gap: 4px;
+      }
+
+      .connection-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 8px;
+        background: var(--panel-soft);
+        border-radius: 4px;
+        font-size: 12px;
+      }
+
+      .arrow {
+        color: var(--accent-strong);
+      }
+
+      .net {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .exercise-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+
+      .exercise-result {
+        margin-top: 16px;
+        padding: 12px;
+        border-radius: var(--radius);
+        border: 1px solid var(--line);
+      }
+
+      .result-success {
+        color: #155724;
+      }
+
+      .result-solution {
+        color: var(--ink);
+      }
+
+      .solution-circuit {
+        margin: 12px 0;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- PCB 邀請碼門面（前端門面；正式硬鎖 = profiles.pcb_access 後端 RLS，12 個月方案自動開通） -->
+    <div id="pcbGate" style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.96);display:flex;align-items:center;justify-content:center;padding:16px">
+      <div style="background:#fff;border-radius:14px;padding:32px 28px;max-width:380px;width:100%;text-align:center">
+        <div style="font-size:40px">🔐</div>
+        <h2 style="margin:8px 0;color:#0f172a;font-size:20px">PCB Layout 邀請制</h2>
+        <p style="color:#64748b;font-size:13px;margin:0 0 14px;line-height:1.7">目前以邀請碼開放。索取邀請碼或洽談合作請見<a href="contact.html">聯絡資訊</a>；訂閱 <a href="upgrade.html">12 個月方案</a>亦自動開通。</p>
+        <input id="pcbCode" placeholder="輸入邀請碼" autocomplete="off" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;text-align:center;letter-spacing:1px" />
+        <button id="pcbGo" class="primary-button" style="width:100%;margin-top:10px;padding:10px;font-size:14px">進入</button>
+        <p id="pcbErr" style="color:#b91c1c;font-size:12px;min-height:16px;margin:8px 0 0"></p>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var CODES = ['VSPCB-7K3M9', 'VSPCB-2QX8F', 'VSPCB-R5TN4', 'VSPCB-J8WD6', 'VSPCB-M3ZK7'];
+        var gate = document.getElementById('pcbGate');
+        if (localStorage.getItem('pcb-invite-ok') === '1') { gate.remove(); return; }
+        function tryCode() {
+          var v = (document.getElementById('pcbCode').value || '').trim().toUpperCase();
+          if (CODES.indexOf(v) >= 0) { localStorage.setItem('pcb-invite-ok', '1'); gate.remove(); }
+          else document.getElementById('pcbErr').textContent = '邀請碼不正確';
+        }
+        document.getElementById('pcbGo').addEventListener('click', tryCode);
+        document.getElementById('pcbCode').addEventListener('keydown', function (e) { if (e.key === 'Enter') tryCode(); });
+      })();
+    </script>
+    <div class="pcb-page">
+      <div id="viewerEntryCard" style="margin:12px 16px 0;background:linear-gradient(90deg,#1d2943,#1f4fd1);color:#fff;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <span style="font-size:26px">🔍</span>
+        <div style="flex:1;min-width:240px">
+          <b>PCB 板面檢視器</b> — 讀取 Allegro 匯出的板面資料：分層開關、顏色自調、搜尋 refdes / net / 測試點 TP / 螺絲孔、找料位置、產換料 SKILL、co-lay 疊圖比對。
+          <div style="font-size:12px;opacity:.85;margin-top:2px">.brd 是 Cadence 專有二進位 → 先在 Allegro 跑一鍵匯出腳本（檢視器內可下載），得 vsboard.json 再匯入。</div>
+        </div>
+        <a href="pcb-viewer.html" class="primary-button" style="background:#fff;color:#1d2943;padding:9px 20px;text-decoration:none;border-radius:8px;font-weight:700">開啟檢視器 →</a>
+      </div>
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">VS</div>
+          <div>
+            <h1>VoltSketch 硬體實驗室</h1>
+            <p>繪製、分析並保存你的直流線路圖</p>
+          </div>
+        </div>
+
+        <nav class="main-nav">
+          <a href="index.html" class="nav-link">線路圖</a>
+          <a href="ic-library.html" class="nav-link">IC 元件庫</a>
+          <a href="knowledge.html" class="nav-link">硬體知識庫</a>
+          <a href="pcb.html" class="nav-link active">PCB Layout</a>
+          <a href="pcb-viewer.html" class="nav-link">PCB 檢視器</a>
+          <a href="interview.html" class="nav-link">面試考題</a>
+          <a href="contact.html" class="nav-link">聯絡資訊</a>
+        </nav>
+
+        <div class="top-actions">
+          <button class="icon-button" type="button" id="newPcb">
+            <span aria-hidden="true">+ 新建</span>
+          </button>
+          <button class="icon-button" type="button" id="savePcb">
+            <span aria-hidden="true">💾 儲存</span>
+          </button>
+          <button class="icon-button" type="button" id="exportPcb">
+            <span aria-hidden="true">📤 匯出</span>
+          </button>
+          <div class="segmented" aria-label="Language">
+            <button type="button" class="lang-option active" data-lang="zh">中</button>
+            <button type="button" class="lang-option" data-lang="en">EN</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="pcb-main">
+        <aside class="pcb-sidebar">
+          <section class="panel-section">
+            <h2>PCB 工具</h2>
+            <div class="pcb-tool-grid">
+              <button class="pcb-tool-btn active" data-tool="select">
+                <span class="pcb-tool-icon">↖</span>
+                <span>選取</span>
+              </button>
+              <button class="pcb-tool-btn" data-tool="trace">
+                <span class="pcb-tool-icon">─</span>
+                <span>走線</span>
+              </button>
+              <button class="pcb-tool-btn" data-tool="via">
+                <span class="pcb-tool-icon">⊙</span>
+                <span>Via</span>
+              </button>
+              <button class="pcb-tool-btn" data-tool="pad">
+                <span class="pcb-tool-icon">□</span>
+                <span>Pad</span>
+              </button>
+              <button class="pcb-tool-btn" data-tool="via">
+                <span class="pcb-tool-icon">◎</span>
+                <span>過孔</span>
+              </button>
+              <button class="pcb-tool-btn" data-tool="plane">
+                <span class="pcb-tool-icon">▧</span>
+                <span>銅箔</span>
+              </button>
+              <button class="pcb-tool-btn" data-tool="keepout">
+                <span class="pcb-tool-icon">⊘</span>
+                <span>禁止區</span>
+              </button>
+              <button class="pcb-tool-btn" data-tool="text">
+                <span class="pcb-tool-icon">T</span>
+                <span>文字</span>
+              </button>
+              <button class="pcb-tool-btn" data-tool="dimension">
+                <span class="pcb-tool-icon">↔</span>
+                <span>尺寸</span>
+              </button>
+              <button class="pcb-tool-btn" data-tool="netlabel">
+                <span class="pcb-tool-icon">⏚</span>
+                <span>Net Label</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2>板框設定</h2>
+            <div style="display: grid; gap: 8px;">
+              <label style="display: grid; gap: 4px; font-size: 13px;">
+                <span>寬度 (mm)</span>
+                <input type="number" id="boardWidth" value="100" min="10" max="500" style="padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px;" />
+              </label>
+              <label style="display: grid; gap: 4px; font-size: 13px;">
+                <span>高度 (mm)</span>
+                <input type="number" id="boardHeight" value="80" min="10" max="500" style="padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px;" />
+              </label>
+              <label style="display: grid; gap: 4px; font-size: 13px;">
+                <span>層數 (1~40 自訂)</span>
+                <input type="number" id="boardLayers" value="2" min="1" max="40" style="padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px;" />
+              </label>
+              <button class="primary-button" id="applyBoardSettings" style="margin-top: 8px;">套用設定</button>
+            </div>
+          </section>
+        </aside>
+
+        <div class="pcb-canvas-container">
+          <div class="pcb-toolbar">
+            <div class="pcb-status">
+              <div class="pcb-status-dot"></div>
+              <span id="pcbStatusText">就緒</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="small-button" id="zoomIn">+</button>
+              <button class="small-button" id="zoomOut">-</button>
+              <button class="small-button" id="zoomFit">適合</button>
+              <span id="zoomLevel" style="font-size: 12px; color: var(--muted);">100%</span>
+            </div>
+          </div>
+          <div class="pcb-canvas">
+            <canvas id="pcbCanvas"></canvas>
+          </div>
+        </div>
+
+        <aside class="pcb-inspector">
+          <section class="panel-section">
+            <h2>圖層管理</h2>
+            <div class="layer-list" id="layerList"></div>
+          </section>
+
+          <section class="panel-section">
+            <div class="section-head">
+              <h2>DRC 檢查</h2>
+              <button class="small-button" id="runDrc">執行檢查</button>
+            </div>
+            <details style="margin-bottom:8px">
+              <summary style="cursor:pointer;font-size:12px;color:var(--muted)">規則設定（mm）</summary>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-top:6px">
+                <label style="display:grid;gap:2px">最小間距<input type="number" id="ruleClearance" value="0.15" step="0.05" min="0.05" style="padding:3px"></label>
+                <label style="display:grid;gap:2px">最小線寬<input type="number" id="ruleMinTrace" value="0.1" step="0.05" min="0.05" style="padding:3px"></label>
+                <label style="display:grid;gap:2px">電源線寬<input type="number" id="ruleMinPower" value="0.3" step="0.05" min="0.1" style="padding:3px"></label>
+                <label style="display:grid;gap:2px">板邊間距<input type="number" id="ruleEdge" value="0.3" step="0.05" min="0.1" style="padding:3px"></label>
+                <label style="display:grid;gap:2px">元件間距<input type="number" id="ruleCompSpace" value="2" step="0.5" min="0.5" style="padding:3px"></label>
+                <label style="display:grid;gap:2px">Cin→IC<input type="number" id="ruleCinDist" value="5" step="0.5" min="1" style="padding:3px"></label>
+              </div>
+            </details>
+            <div class="drc-results" id="drcResults">
+              <p style="color: var(--muted); font-size: 13px; padding: 12px;">尚未執行 DRC 檢查</p>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2>⚡ EMI 環路檢查（心中有環）</h2>
+            <p style="font-size:12px;color:var(--muted);margin:0 0 8px">指派關鍵元件 → 估算輸入熱環/輸出環面積（越小越好；輸入環優先）。</p>
+            <div id="emiRoles" style="display:grid;gap:6px;font-size:12px;">
+              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">輸入電容 Cin <select data-role="cin" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
+              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">IC / SW <select data-role="ic" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
+              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">二極體/上管 D <select data-role="d" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
+              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">電感 L <select data-role="l" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
+              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">輸出電容 Cout <select data-role="cout" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
+            </div>
+            <button class="primary-button" id="runEmi" style="margin-top:8px;width:100%">檢查環路</button>
+            <div id="emiResults" style="margin-top:8px;font-size:12px;"></div>
+          </section>
+
+          <section class="panel-section">
+            <h2>🌡️ 熱 / 散熱估算</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;">
+              <label style="display:grid;gap:2px">銅厚<select id="thCu" style="padding:3px"><option value="0.5">0.5 oz</option><option value="1" selected>1 oz</option><option value="2">2 oz</option><option value="3">3 oz</option></select></label>
+              <label style="display:grid;gap:2px">溫升 ΔT(°C)<input type="number" id="thDT" value="10" step="1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">環溫 Ta(°C)<input type="number" id="thTa" value="25" step="1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">目標電流(A)<input type="number" id="thI" value="1" step="0.1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">功耗 P(W)<input type="number" id="thP" value="0.5" step="0.1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">散熱銅(cm²)<input type="number" id="thArea" value="1" step="0.5" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">散熱孔數<input type="number" id="thVias" value="0" step="1" style="padding:3px"></label>
+            </div>
+            <button class="primary-button" id="runThermal" style="margin-top:8px;width:100%">熱估算</button>
+            <div id="thermalResults" style="margin-top:8px;font-size:12px;"></div>
+          </section>
+
+          <section class="panel-section">
+            <h2>Netlist</h2>
+            <div id="netlistContent" style="font-size: 13px; max-height: 200px; overflow-y: auto;">
+              <p style="color: var(--muted);">尚無 Netlist 資料</p>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2>📚 教學模式</h2>
+            <div id="tutorialList" style="font-size: 13px; max-height: 250px; overflow-y: auto;">
+              <!-- Tutorial list will be rendered here -->
+            </div>
+            <div id="tutorialContent" style="margin-top: 12px; font-size: 13px;">
+              <p style="color: var(--muted);">選擇一個課程開始學習</p>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2>🎯 練習模式</h2>
+            <div id="practiceList" style="font-size: 13px; max-height: 250px; overflow-y: auto;">
+              <!-- Practice list will be rendered here -->
+            </div>
+            <div id="practiceContent" style="margin-top: 12px; font-size: 13px;">
+              <p style="color: var(--muted);">選擇一個練習開始實作</p>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2>📝 PCB Layout 面試題</h2>
+            <div style="font-size: 13px; max-height: 320px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;">
+              <details>
+                <summary style="cursor:pointer;font-weight:600;">電源去耦電容怎麼放？</summary>
+                <p style="color:var(--muted);margin-top:6px;">越靠近 IC 電源腳越好，小容值(0.1µF/1nF)最靠腳、大容值(10µF)稍遠；過孔直接打到電源/地平面，縮短迴路電感。每個電源腳至少一顆。</p>
+              </details>
+              <details>
+                <summary style="cursor:pointer;font-weight:600;">高速差分對走線要點？</summary>
+                <p style="color:var(--muted);margin-top:6px;">等長(長度匹配控制 skew)、等距(維持差分阻抗如 90Ω/100Ω)、同層走線、少過孔、避免急轉(用 45°或弧線)、遠離噪聲源、參考完整地平面。</p>
+              </details>
+              <details>
+                <summary style="cursor:pointer;font-weight:600;">為什麼要完整的地平面(return path)？</summary>
+                <p style="color:var(--muted);margin-top:6px;">高頻回流電流走訊號正下方的地，路徑斷裂(跨分割/挖空)會迫使繞路 → 增大迴路面積、EMI 與串擾。換層時鄰近放回流過孔。</p>
+              </details>
+              <details>
+                <summary style="cursor:pointer;font-weight:600;">開關電源(SW 節點)佈局注意？</summary>
+                <p style="color:var(--muted);margin-top:6px;">SW 節點銅面要小(降 EMI 又要散熱權衡)、高頻迴路(Vin-開關-二極體-Cin)面積最小、輸入電容最靠 IC、回授走線遠離 SW、單點接地。</p>
+              </details>
+              <details>
+                <summary style="cursor:pointer;font-weight:600;">疊層怎麼選(4 層)？</summary>
+                <p style="color:var(--muted);margin-top:6px;">常見 訊號-地-電源-訊號：訊號層緊鄰完整地平面以控阻抗與回流；電源地相鄰形成平面電容；高速線走在靠地的外層或內層 stripline。</p>
+              </details>
+              <details>
+                <summary style="cursor:pointer;font-weight:600;">散熱怎麼處理？</summary>
+                <p style="color:var(--muted);margin-top:6px;">熱源下方加散熱過孔陣列接內層/底層大銅面、加大銅厚與銅面、必要時鋁基板或散熱片、考慮氣流方向、功率元件分散避免熱集中。</p>
+              </details>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2>屬性</h2>
+            <div id="pcbInspectorContent" style="font-size: 13px;">
+              <p style="color: var(--muted);">尚未選取元件</p>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <template id="toastTemplate">
+      <div class="toast"></div>
+    </template>
+    <div id="toastHost" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./auth-config.js"></script>
+    <script src="./auth.js?v=79f-interview"></script>
+    <script src="./pcb-tutorial.js?v=5"></script>
+    <script src="./pcb-practice.js?v=5"></script>
+    <script src="./pcb.js?v=6"></script>
+    <script>
+      // Initialize tutorial and practice after page load
+      document.addEventListener('DOMContentLoaded', () => {
+        if (typeof PCBTutorial !== 'undefined') {
+          PCBTutorial.renderTutorialList();
+        }
+        if (typeof PCBPractice !== 'undefined') {
+          PCBPractice.renderExerciseList();
+        }
+      });
+    </script>
+    <script src="./i18n.js?v=2026-07-03c"></script>
+</body>
+</html>

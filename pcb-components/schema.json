@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PCB Component Schema",
+  "description": "PCB 元件資料結構定義",
+  "type": "object",
+  "required": ["id", "name", "type", "footprint"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "元件唯一識別碼"
+    },
+    "name": {
+      "type": "string",
+      "description": "元件名稱"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["resistor", "capacitor", "inductor", "ic", "connector", "diode", "led", "transistor", "crystal", "led", "switch", "testpoint"],
+      "description": "元件類型"
+    },
+    "footprint": {
+      "type": "string",
+      "description": "封裝類型（0402, 0603, 0805, SOT-23, QFP-48, QFN-32, BGA-100, etc.）"
+    },
+    "package": {
+      "type": "string",
+      "enum": ["smd", "tht", "bga", "qfp", "qfn", "soic", "tssop", "sot", "power"],
+      "description": "封裝類別"
+    },
+    "pads": {
+      "type": "array",
+      "description": "焊盤定義",
+      "items": {
+        "type": "object",
+        "properties": {
+          "number": {"type": "integer"},
+          "name": {"type": "string"},
+          "x": {"type": "number"},
+          "y": {"type": "number"},
+          "width": {"type": "number"},
+          "height": {"type": "number"},
+          "shape": {"type": "string", "enum": ["rect", "circle", "oval", "polygon"]},
+          "net": {"type": "string"}
+        }
+      }
+    },
+    "silkscreen": {
+      "type": "array",
+      "description": "絲印層圖形",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {"type": "string", "enum": ["line", "arc", "circle", "rect", "text"]},
+          "points": {"type": "array"},
+          "text": {"type": "string"}
+        }
+      }
+    },
+    "courtyard": {
+      "type": "array",
+      "description": " courtyard 邊界",
+      "items": {
+        "type": "object",
+        "properties": {
+          "x": {"type": "number"},
+          "y": {"type": "number"}
+        }
+      }
+    },
+    "fab": {
+      "type": "array",
+      "description": "製造層圖形",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {"type": "string"},
+          "points": {"type": "array"}
+        }
+      }
+    },
+    "3dModel": {
+      "type": "string",
+      "description": "3D 模型檔案路徑"
+    },
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  }
+}

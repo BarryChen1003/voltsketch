@@ -1,0 +1,75 @@
+/**
+ * knowledge-extra.js — 特殊線路知識卡（自撰工程內容；sourcePdf 指向館內 IC-spec 參考）
+ * 由 knowledge.js getSampleData() 併入。首批：PCH sideband / TPM / Regulator 選型 / AC-DC 返馳。
+ * 後續從 IC-spec 263 份 PDF 再擴（每卡一個特殊線路主題）。
+ */
+window.KNOWLEDGE_EXTRA = [
+  {
+    id: 'pch-sideband',
+    title: 'PCH Sideband 訊號（平台邊帶線路）',
+    category: 'communication',
+    products: ['筆電', 'AI 伺服器'],
+    description: '主資料通道（PCIe/DMI）之外的低速輔助訊號：電源時序、復位、喚醒、事件通知。主機板 debug 最常量的一群線。',
+    principles: 'Sideband＝不走主協定匯流排的專用旁路線。典型：SLP_S3#/SLP_S4#/SLP_S5#（睡眠狀態指示，控制各電源域開關）、PLTRST#（平台復位）、PWROK/SYS_PWROK（電源良好握手）、PWRBTN#（電源鍵）、SMBALERT#、WAKE#、CLKREQ#。多為 3.3V/1.8V、低有效、開汲極或 CMOS。上電流程即 EC↔PCH↔CPU 靠這群線逐步握手：電源域依序建立 → PWROK 拉高 → PLTRST# 釋放 → 平台開跑。',
+    circuits: [],
+    keyFormulas: ['時序：SLP_S5# → SLP_S4# → SLP_S3# 依序釋放', 'PWROK 必須在對應電源穩定後才拉高', 'PLTRST# 釋放 = 平台離開復位', '開汲極線一律上拉到「對的電源域」'],
+    designNotes: ['先畫電源域圖：每條 sideband 屬 S0/S3/S5 哪個域、上拉電阻接哪個域', '跨電壓域（1.8V↔3.3V）要 level shift，不能硬接', '每條關鍵 sideband 預留 TP 測試點（debug 靠它）', 'EC 韌體與硬體時序要對表（spec 的 timing diagram）', '串小電阻（22~100Ω）方便切線量測與防振鈴'],
+    commonMistakes: ['上拉接錯電源域：S0 域上拉、S3 睡眠斷電 → 假訊號/漏電', 'PWROK 提早拉高 → 電源未穩平台就跑，偶發開機失敗', 'PLTRST# 還沒釋放就量測下游，誤判故障', '開汲極線忘了上拉 → 浮接亂觸發'],
+    examples: [{ title: '筆電不開機 debug', application: '量 SLP_S4#/SLP_S3# → PWROK → PLTRST# 順序找卡在哪一步', circuit: '示波器多通道抓時序' }],
+    relatedTopics: ['tpm-circuit', 'power-sequencing', 'rc-delay'],
+    i18n: {"en": {"title": "PCH Sideband Signals (Platform Auxiliary Lines)", "description": "Low-speed auxiliary signals outside the main data channels (PCIe/DMI): power sequencing, reset, wake and event notification. The most-probed nets in motherboard debug.", "principles": "Sidebands are dedicated lines bypassing the main protocol buses. Typical: SLP_S3#/SLP_S4#/SLP_S5# (sleep-state indicators gating power rails), PLTRST# (platform reset), PWROK/SYS_PWROK (power-good handshake), PWRBTN#, SMBALERT#, WAKE#, CLKREQ#. Mostly 3.3V/1.8V, active-low, open-drain or CMOS. Boot is an EC-PCH-CPU handshake over these lines: rails come up in order, PWROK asserts, PLTRST# de-asserts, platform runs.", "designNotes": ["Draw the power-domain map first: which domain (S0/S3/S5) powers each sideband and its pull-up", "Level-shift across 1.8V/3.3V domains, never tie directly", "Reserve a test point on every key sideband", "Cross-check EC firmware timing against spec timing diagrams", "Series resistors (22-100 ohm) ease probing and damp ringing"], "commonMistakes": ["Pull-up on wrong domain: S0 pull-up dies in S3 sleep, phantom signals/leakage", "PWROK asserted early: platform starts on unstable rails, intermittent boot failure", "Probing downstream before PLTRST# release and misdiagnosing", "Missing pull-up on open-drain line: floating, random triggers"]}, "ja": {"title": "PCH サイドバンド信号（プラットフォーム補助線）", "description": "主データ経路（PCIe/DMI）外の低速補助信号：電源シーケンス、リセット、ウェイク、イベント通知。基板デバッグで最も測定する信号群。", "principles": "サイドバンド＝主プロトコルバスを通らない専用線。代表：SLP_S3#/S4#/S5#（スリープ状態表示・電源レール制御）、PLTRST#（プラットフォームリセット）、PWROK/SYS_PWROK（電源良好ハンドシェイク）、PWRBTN#、SMBALERT#、WAKE#、CLKREQ#。多くは 3.3V/1.8V・負論理・オープンドレイン。起動は EC・PCH・CPU がこれらの線で握手：レール順次確立、PWROK、PLTRST# 解除、動作開始。", "designNotes": ["まず電源ドメイン図：各線とプルアップが S0/S3/S5 のどれに属すか", "1.8V/3.3V 間はレベルシフト必須", "重要線には必ずテストポイント", "EC ファームのタイミングを仕様のタイミング図と照合", "直列抵抗（22〜100Ω）で測定とリンギング対策"], "commonMistakes": ["プルアップのドメイン誤り：S3 スリープで S0 プルアップが落ち誤信号", "PWROK が早すぎ：電源不安定のまま起動、間欠不良", "PLTRST# 解除前に下流を測って誤診", "オープンドレインのプルアップ忘れ：浮遊で誤動作"]}, "ko": {"title": "PCH 사이드밴드 신호(플랫폼 보조 라인)", "description": "주 데이터 채널(PCIe/DMI) 밖의 저속 보조 신호: 전원 시퀀스, 리셋, 웨이크, 이벤트 알림. 메인보드 디버깅에서 가장 많이 측정하는 신호군.", "principles": "사이드밴드=주 프로토콜 버스를 거치지 않는 전용선. 대표: SLP_S3#/S4#/S5#(슬립 상태 표시, 전원 레일 제어), PLTRST#(플랫폼 리셋), PWROK/SYS_PWROK(전원 양호 핸드셰이크), PWRBTN#, SMBALERT#, WAKE#, CLKREQ#. 대부분 3.3V/1.8V, 액티브 로우, 오픈 드레인. 부팅은 EC-PCH-CPU가 이 신호들로 순차 핸드셰이크: 레일 확립, PWROK, PLTRST# 해제, 동작.", "designNotes": ["전원 도메인 맵 먼저: 각 신호와 풀업이 S0/S3/S5 중 어디 소속인지", "1.8V/3.3V 도메인 간 레벨 시프트 필수", "핵심 신호마다 테스트 포인트 확보", "EC 펌웨어 타이밍을 스펙 타이밍도와 대조", "직렬 저항(22~100Ω)으로 측정 편의와 링잉 억제"], "commonMistakes": ["풀업 도메인 오류: S3 슬립에서 S0 풀업 전원 차단, 가짜 신호/누설", "PWROK 조기 어서트: 불안정 전원에서 기동, 간헐 부팅 불량", "PLTRST# 해제 전 하류 측정으로 오진", "오픈 드레인 풀업 누락: 플로팅 오동작"]}},
+    sourcePdf: 'IC-spec/334661_7th-gen-core-family-mobile-u-y-processor-lines-datasheet-vol1-rev008.pdf',
+    createdAt: '2026-07-03T10:00:00Z', updatedAt: '2026-07-03T10:00:00Z'
+  },
+  {
+    id: 'tpm-circuit',
+    title: 'TPM 安全晶片線路（SPI 介面）',
+    category: 'embedded',
+    products: ['筆電', 'AI 伺服器'],
+    description: 'TPM 2.0 信任平台模組：存金鑰、記錄開機量測（PCR）。現代平台走 SPI 掛在 PCH/SoC 上。',
+    principles: 'TPM 以 SPI（舊平台為 LPC）掛在 PCH：CLK/MOSI/MISO + 專用 CS#。輔助腳：RST#（跟平台復位域聯動，常接 PLTRST#）、PP（Physical Presence，實體在場證明）、PIRQ#（中斷，開汲極）。供電 3.3V（S0 域；部分設計要求 S3 保持）。開機時 BIOS/BootGuard 把量測值寫入 TPM PCR，作信任鏈根基。',
+    circuits: [],
+    keyFormulas: ['SPI 頻率依 TPM 規格上限（常見 ≤ 24/33MHz）', 'CS# 專用、不可與其他 SPI 裝置共用', 'RST# 域 = 平台復位域（PLTRST#）', 'PIRQ# 開汲極 → 上拉到 3.3V'],
+    designNotes: ['SPI 走線短、遠離開關電源與時脈源', 'PP 腳依安全政策固定上/下拉，不可浮接', '預留 12-1 pin SPI TPM header 相容腳位（除錯/替換）', '每支訊號留 TP，量 SPI 波形驗證通訊', '版面靠近 PCH 減少 stub'],
+    commonMistakes: ['SPI 跑超過 TPM 規格頻率 → 間歇通訊失敗', 'RST# 接錯域 → TPM 沒跟平台同步復位，BIOS 量測失敗', 'PP 浮接 → 安全功能行為不定', 'BIOS 設定與硬體不一致（TPM 停用但硬體在線）'],
+    examples: [{ title: 'BitLocker/量測啟動', application: '金鑰綁 PCR，換板/改 BIOS 需重新綁定', circuit: 'PCH SPI ↔ TPM + RST#/PP/PIRQ#' }],
+    relatedTopics: ['pch-sideband', 'spi-basics'],
+    i18n: {"en": {"title": "TPM Security Chip Circuit (SPI Interface)", "description": "TPM 2.0 stores keys and records boot measurements (PCRs). Modern platforms hang it on the PCH/SoC SPI bus.", "principles": "TPM connects via SPI (legacy: LPC): CLK/MOSI/MISO plus a dedicated CS#. Auxiliary pins: RST# (tied to platform reset domain, usually PLTRST#), PP (Physical Presence), PIRQ# (open-drain interrupt). 3.3V supply on the S0 domain (some designs need S3 retention). At boot, BIOS/BootGuard extends measurements into TPM PCRs as the root of trust.", "designNotes": ["Dedicated CS#, never shared", "Keep SPI traces short, away from switching supplies and clocks", "RST# belongs to the platform reset domain", "Strap PP per security policy, never floating", "Reserve the 12-1 pin SPI TPM header footprint for debug/replacement"], "commonMistakes": ["SPI clocked beyond TPM spec: intermittent communication failures", "Wrong RST# domain: TPM out of sync with platform reset, BIOS measurement fails", "Floating PP pin: undefined security behavior", "BIOS setting inconsistent with hardware state"]}, "ja": {"title": "TPM セキュリティチップ回路（SPI 接続）", "description": "TPM 2.0：鍵の保管と起動計測（PCR）記録。現行プラットフォームは PCH/SoC の SPI に接続。", "principles": "TPM は SPI（旧世代は LPC）で接続：CLK/MOSI/MISO＋専用 CS#。補助ピン：RST#（プラットフォームリセットドメイン、通常 PLTRST# 連動）、PP（物理的存在）、PIRQ#（オープンドレイン割込み）。電源は S0 ドメインの 3.3V（S3 保持要求の設計もあり）。起動時 BIOS/BootGuard が計測値を PCR に書き、信頼の起点となる。", "designNotes": ["CS# は専用・共有禁止", "SPI 配線は短く、スイッチング電源・クロックから離す", "RST# はプラットフォームリセットドメインに接続", "PP はセキュリティポリシーに従い固定（浮遊禁止）", "12-1 ピン SPI TPM ヘッダ互換ランドを予約"], "commonMistakes": ["TPM 規格超えの SPI クロック：間欠通信不良", "RST# ドメイン誤り：リセット非同期で BIOS 計測失敗", "PP 浮遊：セキュリティ動作不定", "BIOS 設定とハードの不一致"]}, "ko": {"title": "TPM 보안 칩 회로(SPI 인터페이스)", "description": "TPM 2.0: 키 보관과 부팅 무결성 측정(PCR) 기록. 최신 플랫폼은 PCH/SoC의 SPI에 연결.", "principles": "TPM은 SPI(구형은 LPC)로 연결: CLK/MOSI/MISO + 전용 CS#. 보조 핀: RST#(플랫폼 리셋 도메인, 보통 PLTRST# 연동), PP(물리적 존재), PIRQ#(오픈 드레인 인터럽트). 전원은 S0 도메인 3.3V(S3 유지 요구 설계도 있음). 부팅 시 BIOS/BootGuard가 측정값을 PCR에 기록해 신뢰 사슬의 뿌리가 된다.", "designNotes": ["CS#는 전용, 공유 금지", "SPI 배선은 짧게, 스위칭 전원과 클럭에서 멀리", "RST#는 플랫폼 리셋 도메인에", "PP는 보안 정책대로 고정(플로팅 금지)", "12-1핀 SPI TPM 헤더 풋프린트 예약"], "commonMistakes": ["TPM 스펙 초과 SPI 클럭: 간헐 통신 실패", "RST# 도메인 오류: 리셋 비동기, BIOS 측정 실패", "PP 플로팅: 보안 동작 불정", "BIOS 설정과 하드웨어 불일치"]}},
+    sourcePdf: 'IC-spec/TPM1R408RH_datasheet_en_20251208.pdf',
+    createdAt: '2026-07-03T10:00:00Z', updatedAt: '2026-07-03T10:00:00Z'
+  },
+  {
+    id: 'regulator-ldo-vs-buck',
+    title: 'Regulator 選型：LDO vs Buck 降壓',
+    category: 'power-management',
+    products: ['通用', '筆電', '手機'],
+    description: '同樣把高壓變低壓：LDO 線性燒掉壓差、Buck 開關搬能量。選錯拓樸＝白燒功耗或白吃噪聲。',
+    principles: 'LDO：pass 元件工作在線性區，損耗 P=(Vin−Vout)×Iout 全變熱；優點是低噪聲、高 PSRR、零開關漣波、外件少、響應快。Buck：開關+電感儲能搬運，效率 85~95%，但有開關漣波與 EMI、需要 L/C、瞬態響應受頻寬限制。實務常見「Buck 先降到接近目標 + LDO 淨化」（post-regulation）供 RF/ADC/PLL 等噪聲敏感軌。',
+    circuits: [],
+    keyFormulas: ['LDO 損耗 P = (Vin − Vout) × Iout', 'LDO 效率 ≈ Vout / Vin', 'Buck 效率 85~95%（開關/電感品質決定）', '判斷點：壓差 × 電流 = 你要燒掉的熱'],
+    designNotes: ['壓差小（<0.5V）且電流小 → LDO 直上', '壓差大或電流大 → Buck，否則熱處理不了', '噪聲敏感軌（VCO/ADC 基準/PLL）→ Buck+LDO 兩級', 'LDO 要看 dropout 與穩定所需的輸出電容 ESR 範圍', 'Buck 佈局：功率迴路面積最小化（SW 節點短）'],
+    commonMistakes: ['12V→1.8V 用 LDO：85% 功率變熱、燙手又降額', 'RF 前端直接吃 Buck 輸出：開關雜散打進接收機', '忽略 LDO 最小負載/穩定條件', 'Buck 省輸入電容 → 輸入漣波超標'],
+    examples: [{ title: '感測前端供電', application: '5V→3.3V Buck →3.0V LDO 供 ADC 基準', circuit: 'TPS562246B + LDO post-regulator' }],
+    relatedTopics: ['acdc-flyback', 'buck-advanced', 'ldo-lownoise'],
+    i18n: {"en": {"title": "Regulator Selection: LDO vs Buck", "description": "Both step voltage down: an LDO burns the headroom linearly, a buck switches energy across. Picking wrong wastes power or injects noise.", "principles": "LDO: pass element in linear region, loss P=(Vin-Vout)*Iout all becomes heat; in return you get low noise, high PSRR, zero switching ripple, few externals, fast response. Buck: switch + inductor move energy at 85-95% efficiency, but bring switching ripple and EMI, need L/C, and transient response is bandwidth-limited. Common practice: buck down close to target, then LDO post-regulation for noise-sensitive rails (RF/ADC/PLL).", "designNotes": ["Small drop (<0.5V) and low current: LDO", "Large drop or high current: buck, or the heat is unmanageable", "Noise-sensitive rails (VCO/ADC reference/PLL): buck + LDO two-stage", "Check LDO dropout and output-cap ESR stability range", "Buck layout: minimize the power loop, keep SW node short"], "commonMistakes": ["12V to 1.8V with an LDO: 85% of power becomes heat", "Feeding an RF front-end straight from a buck: spurs enter the receiver", "Ignoring LDO minimum-load/stability conditions", "Skimping input capacitance on a buck: input ripple violation"]}, "ja": {"title": "レギュレータ選定：LDO vs 降圧（Buck）", "description": "同じ降圧でも LDO は差分を熱で捨て、Buck はエネルギーを転送。選定を誤ると電力かノイズを無駄にする。", "principles": "LDO：パス素子が線形領域で動作、損失 P=(Vin-Vout)×Iout はすべて熱。低ノイズ・高 PSRR・リップルゼロ・少部品・高速応答が利点。Buck：スイッチ＋インダクタで 85〜95% 効率だが、スイッチングリップルと EMI があり L/C が必要。実務では Buck で目標付近まで降圧し LDO で浄化（ポストレギュレーション）が RF/ADC/PLL 系の定石。", "designNotes": ["差分小（<0.5V）かつ小電流：LDO", "差分大・大電流：Buck（熱処理不能）", "ノイズ敏感レール（VCO/ADC 基準/PLL）：Buck+LDO 二段", "LDO はドロップアウトと出力コンデンサ ESR 安定範囲を確認", "Buck レイアウトは電力ループ最小・SW ノード短く"], "commonMistakes": ["12V→1.8V を LDO：電力の 85% が熱に", "RF フロントエンドに Buck 直結：スプリアス混入", "LDO の最小負荷/安定条件を無視", "Buck の入力コンデンサ節約：入力リップル超過"]}, "ko": {"title": "레귤레이터 선정: LDO vs 벅(Buck)", "description": "같은 강압이라도 LDO는 전압차를 열로 태우고, 벅은 에너지를 스위칭으로 전달. 잘못 고르면 전력 낭비 아니면 노이즈 유입.", "principles": "LDO: 패스 소자가 선형 영역에서 동작, 손실 P=(Vin-Vout)*Iout 전부 열. 대신 저노이즈, 높은 PSRR, 리플 없음, 부품 적음, 빠른 응답. 벅: 스위치+인덕터로 85~95% 효율이나 스위칭 리플과 EMI, L/C 필요. 실무 정석: 벅으로 목표 근처까지 강압 후 LDO 포스트 레귤레이션(RF/ADC/PLL 등 민감 레일).", "designNotes": ["전압차 작고(<0.5V) 전류 작으면 LDO", "전압차 크거나 대전류면 벅(아니면 열 처리 불가)", "노이즈 민감 레일(VCO/ADC 기준/PLL): 벅+LDO 2단", "LDO는 드롭아웃과 출력 커패시터 ESR 안정 범위 확인", "벅 레이아웃: 전력 루프 최소화, SW 노드 짧게"], "commonMistakes": ["12V에서 1.8V를 LDO로: 전력 85%가 열", "RF 프런트엔드에 벅 직결: 스퍼가 수신기로", "LDO 최소 부하/안정 조건 무시", "벅 입력 커패시터 절약: 입력 리플 초과"]}},
+    sourcePdf: 'IC-spec/tps562246b.pdf',
+    createdAt: '2026-07-03T10:00:00Z', updatedAt: '2026-07-03T10:00:00Z'
+  },
+  {
+    id: 'acdc-flyback',
+    title: 'AC-DC 返馳式轉換（Flyback）',
+    category: 'power-management',
+    products: ['電器', '通用'],
+    description: '市電整流後經變壓器隔離降壓——小功率（<100W）充電器/家電輔助電源的主流 AC-DC 拓樸。',
+    principles: '開關導通：能量存進變壓器磁化電感（次級二極體反偏、不導通）。開關關斷：磁能經次級繞組釋放到輸出——「先存後放」故名返馳（Flyback）。穩壓：輸出經光耦＋TL431 回授到一次側控制器調占空比。QR（準諧振）等 VDS 振鈴到谷底才開通，開關損耗與 EMI 都降。新款把 GaN 開關整合進控制器（如自偏壓 QR flyback），頻率拉高、變壓器縮小。',
+    circuits: [],
+    keyFormulas: ['反射電壓 VOR = Vout × Np/Ns（加在開關上）', '開關耐壓 ≥ Vin(peak) + VOR + 漏感尖峰', '匝比決定占空比與一次/二次應力分配', 'QR 谷底開通：損耗與 EMI 雙降'],
+    designNotes: ['一次側 RCD 或 TVS 箝位吸收漏感尖峰（必配）', '變壓器安規：一二次爬電/間隙距離、三重絕緣線', 'Y 電容跨隔離帶抑制共模 EMI，容量受漏電流安規限制', '光耦回授迴路要補償（TL431 週邊 RC）', '一次地與二次地絕不可誤短'],
+    commonMistakes: ['沒箝位或箝位不足 → 漏感尖峰打爆開關', '回授極性接反 → 輸出失控飆高', 'Y 電容過大 → 漏電流超安規', '變壓器爬電距離不足 → 安規測試炸掉'],
+    examples: [{ title: 'USB 充電器', application: '90~264VAC 進、5V/9V 出、隔離', circuit: '橋式整流 + GaN QR Flyback（UCG28846 類）+ 光耦回授' }],
+    relatedTopics: ['regulator-ldo-vs-buck', 'emi-basics'],
+    i18n: {"en": {"title": "AC-DC Flyback Converter", "description": "Rectified mains stepped down through an isolated transformer - the dominant AC-DC topology below ~100W (chargers, appliance auxiliary supplies).", "principles": "Switch ON: energy stores in the transformer magnetizing inductance (secondary diode reverse-biased). Switch OFF: stored energy flies back through the secondary to the output - hence flyback. Regulation: output feeds back via optocoupler + TL431 to the primary-side controller. QR (quasi-resonant) switching waits for the VDS valley to turn on, cutting switching loss and EMI. Integrated GaN switches push frequency up and shrink the transformer.", "designNotes": ["Primary RCD or TVS clamp for leakage-inductance spikes is mandatory", "Transformer safety: creepage/clearance, triple-insulated wire", "Y-capacitor across the isolation barrier tames common-mode EMI, sized against leakage-current limits", "Compensate the optocoupler/TL431 feedback loop", "Never short primary ground to secondary ground"], "commonMistakes": ["No or undersized clamp: leakage spike kills the switch", "Reversed feedback polarity: output runs away high", "Oversized Y-cap: leakage current fails safety", "Insufficient creepage: fails safety testing"]}, "ja": {"title": "AC-DC フライバックコンバータ", "description": "整流した商用電源をトランス絶縁で降圧——100W 以下（充電器・家電補助電源）の主流 AC-DC トポロジ。", "principles": "スイッチ ON：エネルギーをトランス励磁インダクタンスに蓄積（二次ダイオードは逆バイアス）。OFF：蓄積エネルギーが二次側へ放出——先に蓄えて後で放つのでフライバック。安定化はフォトカプラ＋TL431 で一次側制御 IC へ帰還。QR（擬似共振）は VDS の谷で ON し損失と EMI を低減。GaN 統合品は高周波化でトランス小型化。", "designNotes": ["一次側 RCD/TVS クランプ（漏れインダクタンス尖頭吸収）は必須", "トランス安全規格：沿面/空間距離、三層絶縁線", "絶縁バリア跨ぎの Y コンデンサは漏れ電流規格内で", "フォトカプラ/TL431 帰還ループ補償", "一次 GND と二次 GND を絶対に短絡しない"], "commonMistakes": ["クランプ不足：漏れ尖頭でスイッチ破壊", "帰還極性逆：出力暴走", "Y コンデンサ過大：漏れ電流超過", "沿面距離不足：安全試験不合格"]}, "ko": {"title": "AC-DC 플라이백 컨버터", "description": "정류된 상용 전원을 변압기 절연으로 강압 - 100W 이하(충전기, 가전 보조 전원)의 주류 AC-DC 토폴로지.", "principles": "스위치 ON: 에너지를 변압기 자화 인덕턴스에 저장(2차 다이오드 역바이어스). OFF: 저장 에너지가 2차로 방출 - 먼저 저장하고 나중에 방출해서 플라이백. 정전압은 포토커플러+TL431로 1차측 컨트롤러에 피드백. QR(준공진)은 VDS 골에서 턴온해 손실과 EMI 저감. GaN 통합형은 고주파화로 변압기 소형화.", "designNotes": ["1차측 RCD/TVS 클램프(누설 인덕턴스 스파이크 흡수) 필수", "변압기 안전 규격: 연면/공간 거리, 3중 절연선", "절연 장벽 넘는 Y 커패시터는 누설 전류 규격 내로", "포토커플러/TL431 피드백 루프 보상", "1차 GND와 2차 GND 절대 단락 금지"], "commonMistakes": ["클램프 부족: 누설 스파이크로 스위치 파손", "피드백 극성 반전: 출력 폭주", "Y 커패시터 과대: 누설 전류 초과", "연면 거리 부족: 안전 시험 탈락"]}},
+    sourcePdf: 'IC-spec/ucg28846.pdf',
+    createdAt: '2026-07-03T10:00:00Z', updatedAt: '2026-07-03T10:00:00Z'
+  }
+];

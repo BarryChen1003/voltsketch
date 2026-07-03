@@ -1,0 +1,4319 @@
+{
+  "summary": {
+    "generated_at": "2026-06-01T13:19:31.804010+00:00",
+    "source_dir": "hardware-pdfs",
+    "total_files": 163,
+    "extension_counts": {
+      ".doc": 4,
+      ".docx": 3,
+      ".html": 1,
+      ".pdf": 142,
+      ".png": 1,
+      ".ppt": 2,
+      ".pptx": 1,
+      ".rar": 4,
+      ".txt": 3,
+      ".url": 1,
+      ".zip": 1
+    },
+    "topic_counts": {
+      "adc_dac": 4,
+      "automotive": 29,
+      "digital_protocols": 17,
+      "electronics_basics": 88,
+      "embedded_systems": 6,
+      "emi_emc": 42,
+      "high_speed": 70,
+      "op_amp_analog": 18,
+      "pcb_layout": 25,
+      "power_supply": 64,
+      "protection_reliability": 29,
+      "test_measurement": 27,
+      "transistor_mosfet": 36,
+      "uncategorized": 32
+    },
+    "duplicate_groups": [
+      {
+        "sha256": "12ed0378a5b1c6b32037c35ad66ee461351ed2dc296784f901ce6b4be5eb4b79",
+        "files": [
+          "hardware-pdfs/1d8247659b1d520b5b2bace3c78427ba91c15703/power design experience.pdf",
+          "hardware-pdfs/6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+          "hardware-pdfs/TI/6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+          "hardware-pdfs/yicyEN2Gm7PaMhibZr.pdf"
+        ]
+      },
+      {
+        "sha256": "82590af56cb7a3b7ac1b6c5aaba07797b97e6204dbe49220657b7c77d9a4d011",
+        "files": [
+          "hardware-pdfs/248rHynCWpGmA5TFpK.pdf",
+          "hardware-pdfs/8a9a6b357124e2a6c9905f3d884e05528539170f.pdf"
+        ]
+      },
+      {
+        "sha256": "c7111ad373df6b07ee2a83575b3db05bbd374c27a06c46b96366326b5fe92fdf",
+        "files": [
+          "hardware-pdfs/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+          "hardware-pdfs/TI/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf"
+        ]
+      },
+      {
+        "sha256": "bdbcfd603a026d75f3e28c09337eb5a02f765c97fdf9d4c4b62a9845b8192a74",
+        "files": [
+          "hardware-pdfs/5c32bd2cd44da527be90f0a0a024d7a57a5f169c/电源开关设计秘笈30例.pdf",
+          "hardware-pdfs/TI/6ffca3c9530817ad0daea3e15af70a80b0f739c7.pdf"
+        ]
+      },
+      {
+        "sha256": "570cee37f0c8fa4004cd9cb373b33b8f39e0e6a164ba5ac4a238354106e59283",
+        "files": [
+          "hardware-pdfs/a02214de8a9b5e3eef2a6b84688223c63b0bf01f.pdf",
+          "hardware-pdfs/TI/a02214de8a9b5e3eef2a6b84688223c63b0bf01f.pdf"
+        ]
+      },
+      {
+        "sha256": "cb1b978054d16738923fe4383ca44438255d124a985ab56043c169cc8d926e80",
+        "files": [
+          "hardware-pdfs/aac006055db617235670ea7e76cf084a11336976.pdf",
+          "hardware-pdfs/TI/aac006055db617235670ea7e76cf084a11336976.pdf"
+        ]
+      },
+      {
+        "sha256": "4c2833177eadbcd034105ea5deec48cc9aa01ef77d893dc05b89906298ac6b23",
+        "files": [
+          "hardware-pdfs/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+          "hardware-pdfs/TI/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf"
+        ]
+      },
+      {
+        "sha256": "3ea65a518590d237ba452355856ad78d78ddfd3bc906ef22c2c0f3b601e2c0d8",
+        "files": [
+          "hardware-pdfs/Design_and_application_of_switching_regulator_power_supply.pdf",
+          "hardware-pdfs/TI/Design_and_application_of_switching_regulator_power_supply.pdf"
+        ]
+      },
+      {
+        "sha256": "748528bb59f7ebe9b8a07f5612b1cdf4a614a798108cd7fd5030679150035d3a",
+        "files": [
+          "hardware-pdfs/fFSb2ZB4wmJhsxMnss.pdf",
+          "hardware-pdfs/XrFWkpA44CWBfBRen7/怢俜茞璃馱最呇15爛layout冪桄訧蹋.pdf"
+        ]
+      }
+    ]
+  },
+  "files": [
+    {
+      "relative_path": "hardware-pdfs/07b2f0f577a49d6547a63c3de8cd62e2e00cdd81.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "07b2f0f577a49d6547a63c3de8cd62e2e00cdd81.pdf",
+      "stem": "07b2f0f577a49d6547a63c3de8cd62e2e00cdd81",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 2259077,
+      "modified_at": "2026-05-06T12:47:00.637650+00:00",
+      "sha256": "63d68c73e1673839b5f49ec6611c1db8e6b8fee15d75b155697fa5130c9cb1ed",
+      "pdf": {
+        "page_count": 33,
+        "encrypted": false,
+        "metadata": {
+          "title": "???????????BUCK-BOOST???",
+          "author": "Texas Instruments, Incorporated [ZHCA041,*]",
+          "subject": "Application Reports",
+          "creator": "SPDF",
+          "producer": "AppendPDF 3.2.1 Solaris SPDF_1092 Jan 21 2004"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "transistor_mosfet",
+        "electronics_basics"
+      ],
+      "title_guess": "???????????BUCK-BOOST???"
+    },
+    {
+      "relative_path": "hardware-pdfs/0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a.pdf",
+      "stem": "0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 345924,
+      "modified_at": "2026-05-09T12:31:34.192487+00:00",
+      "sha256": "630be8dd9d198e77c1aa493a6b49c1af67bd8a51e08eb44ca4c0ff103141498d",
+      "pdf": {
+        "page_count": 2,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe InDesign CC (Macintosh)",
+          "producer": "Adobe PDF Library 11.0"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "transistor_mosfet",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "0b3f52f1a3ee8882dbff22bc41e45bd323c5e10a"
+    },
+    {
+      "relative_path": "hardware-pdfs/0e5e88f3b343bd9c2f070260b048e437282b9b57.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "0e5e88f3b343bd9c2f070260b048e437282b9b57.pdf",
+      "stem": "0e5e88f3b343bd9c2f070260b048e437282b9b57",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 5566172,
+      "modified_at": "2026-05-09T12:11:41.795094+00:00",
+      "sha256": "6e5ce3adfcf75fb85f2c69bfbd8a3c3e9e28de63402ee9e8608a441b45499fce",
+      "pdf": {
+        "page_count": 229,
+        "encrypted": false,
+        "metadata": {
+          "author": "feifei45",
+          "creator": "Adobe Acrobat 7.0",
+          "producer": "Adobe Acrobat 7.0 Image Conversion Plug-in"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "high_speed"
+      ],
+      "title_guess": "0e5e88f3b343bd9c2f070260b048e437282b9b57"
+    },
+    {
+      "relative_path": "hardware-pdfs/12ed09d2df1294e6a172f25747174730e1d8574d.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "12ed09d2df1294e6a172f25747174730e1d8574d.pdf",
+      "stem": "12ed09d2df1294e6a172f25747174730e1d8574d",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 391693,
+      "modified_at": "2026-05-09T12:13:58.167533+00:00",
+      "sha256": "08bec2ee66b1722392e1cd1af76c8a4e8d105b51fa71a7d08f9ebd4d50c404c7",
+      "pdf": {
+        "page_count": 10,
+        "encrypted": false,
+        "metadata": {
+          "title": "关于单端反激式变压器的三个设计公式",
+          "author": "微软用户",
+          "creator": "Acrobat PDFMaker 7.0 for Word",
+          "producer": "Acrobat Distiller 7.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "high_speed",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "关于单端反激式变压器的三个设计公式"
+    },
+    {
+      "relative_path": "hardware-pdfs/1578980866/52RD.txt",
+      "source_folder": "hardware-pdfs/1578980866",
+      "file_name": "52RD.txt",
+      "stem": "52RD",
+      "extension": ".txt",
+      "file_type": "text",
+      "size_bytes": 822,
+      "modified_at": "2008-03-03T14:13:30.468750+00:00",
+      "sha256": "a04b806271b996e7f20c9bbc8861fb8c6b4707e506d61910fb3876e5a4851e37",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "52RD"
+    },
+    {
+      "relative_path": "hardware-pdfs/1578980866/集成运算放大器应用.pdf",
+      "source_folder": "hardware-pdfs/1578980866",
+      "file_name": "集成运算放大器应用.pdf",
+      "stem": "集成运算放大器应用",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 3581423,
+      "modified_at": "2008-08-20T05:30:52+00:00",
+      "sha256": "4e0a3da0c840f2a22352c704efa80c9f0f9fb6f43e0c8f49c0dfeb0056c353de",
+      "pdf": {
+        "page_count": 274,
+        "encrypted": false,
+        "metadata": {},
+        "parse_error": null
+      },
+      "topics": [
+        "op_amp_analog"
+      ],
+      "title_guess": "集成运算放大器应用"
+    },
+    {
+      "relative_path": "hardware-pdfs/15e8208cfc7ec0e6bd844acb039326876227fb00.docx",
+      "source_folder": "hardware-pdfs",
+      "file_name": "15e8208cfc7ec0e6bd844acb039326876227fb00.docx",
+      "stem": "15e8208cfc7ec0e6bd844acb039326876227fb00",
+      "extension": ".docx",
+      "file_type": "word",
+      "size_bytes": 264893,
+      "modified_at": "2026-05-09T12:28:40.193546+00:00",
+      "sha256": "930e2bd7577ac4c8be32801796999f6e524ba5089ed247ccf7e28a989846e122",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "15e8208cfc7ec0e6bd844acb039326876227fb00"
+    },
+    {
+      "relative_path": "hardware-pdfs/1d8247659b1d520b5b2bace3c78427ba91c15703/power design experience.pdf",
+      "source_folder": "hardware-pdfs/1d8247659b1d520b5b2bace3c78427ba91c15703",
+      "file_name": "power design experience.pdf",
+      "stem": "power design experience",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 5385762,
+      "modified_at": "2016-07-15T06:25:16.406019+00:00",
+      "sha256": "12ed0378a5b1c6b32037c35ad66ee461351ed2dc296784f901ce6b4be5eb4b79",
+      "pdf": {
+        "page_count": 99,
+        "encrypted": false,
+        "metadata": {
+          "title": "电源设计提示",
+          "author": "Texas Instruments, Incorporated [ZHCC344,*]",
+          "subject": "Master Selection Guide",
+          "creator": "Microsoft® Office Word 2007",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "电源设计提示"
+    },
+    {
+      "relative_path": "hardware-pdfs/1e18a71e42bfd23615b6bc1bbffdcea16d05cca2.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "1e18a71e42bfd23615b6bc1bbffdcea16d05cca2.pdf",
+      "stem": "1e18a71e42bfd23615b6bc1bbffdcea16d05cca2",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 318209,
+      "modified_at": "2026-05-09T12:31:56.684716+00:00",
+      "sha256": "2187f8a093bbe2a59502091267bf38b71ef8158b52aae4531a87ccc7f6e2bac8",
+      "pdf": {
+        "page_count": 2,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe InDesign CC 2015 (Macintosh)",
+          "producer": "Adobe PDF Library 15.0"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "transistor_mosfet",
+        "digital_protocols",
+        "automotive",
+        "high_speed",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "1e18a71e42bfd23615b6bc1bbffdcea16d05cca2"
+    },
+    {
+      "relative_path": "hardware-pdfs/2026-04-08-153917-17756339574289530.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "2026-04-08-153917-17756339574289530.pdf",
+      "stem": "2026-04-08-153917-17756339574289530",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 14465834,
+      "modified_at": "2026-05-01T14:53:00.392021+00:00",
+      "sha256": "e654946df4bebd8f31a2a21dea32152e1eba77c9669f60b0399d676ea20be977",
+      "pdf": {
+        "page_count": 44,
+        "encrypted": false,
+        "metadata": {
+          "title": "HZ8756_Text.PDF",
+          "author": "macuser",
+          "creator": "Switch 25.07",
+          "producer": "Switch 25.07"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "digital_protocols",
+        "adc_dac"
+      ],
+      "title_guess": "HZ8756_Text.PDF"
+    },
+    {
+      "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/1加速硅后验证：ADC及PMIC 案例实践.pdf",
+      "source_folder": "hardware-pdfs/2026-05-06-154629-17780535892340826",
+      "file_name": "1加速硅后验证：ADC及PMIC 案例实践.pdf",
+      "stem": "1加速硅后验证：ADC及PMIC 案例实践",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 2454380,
+      "modified_at": "2026-05-06T07:27:05+00:00",
+      "sha256": "943695560b3b0bf5d5e6da42f4cf3f5a3715082af2b142f488779886f3efc185",
+      "pdf": {
+        "page_count": 31,
+        "encrypted": false,
+        "metadata": {},
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "adc_dac",
+        "high_speed",
+        "test_measurement"
+      ],
+      "title_guess": "1加速硅后验证：ADC及PMIC 案例实践"
+    },
+    {
+      "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/2高速和低速协议测试解决方案.pdf",
+      "source_folder": "hardware-pdfs/2026-05-06-154629-17780535892340826",
+      "file_name": "2高速和低速协议测试解决方案.pdf",
+      "stem": "2高速和低速协议测试解决方案",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 437893,
+      "modified_at": "2026-05-06T07:29:19+00:00",
+      "sha256": "b5f392a7a3191bffc71e9d69918b91686c822902dcf5e2a686fb9fd0439389c7",
+      "pdf": {
+        "page_count": 4,
+        "encrypted": false,
+        "metadata": {
+          "author": "pranav j",
+          "creator": "WPS 文字"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "digital_protocols",
+        "high_speed",
+        "test_measurement"
+      ],
+      "title_guess": "2高速和低速协议测试解决方案"
+    },
+    {
+      "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/3掌握链路训练，确保 USB4 和 DisplayPort 设计成功.pdf",
+      "source_folder": "hardware-pdfs/2026-05-06-154629-17780535892340826",
+      "file_name": "3掌握链路训练，确保 USB4 和 DisplayPort 设计成功.pdf",
+      "stem": "3掌握链路训练，确保 USB4 和 DisplayPort 设计成功",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 3233339,
+      "modified_at": "2026-05-06T07:30:24+00:00",
+      "sha256": "a19bdd5d059e06004729ee4568f39ee09ddfc1d6efa7217677603f9186c22e93",
+      "pdf": {
+        "page_count": 19,
+        "encrypted": false,
+        "metadata": {
+          "title": "掌握链路训练，确保USB4和DisplayPort设计成功",
+          "author": "Teledyne LeCroy",
+          "creator": "Microsoft® Word for Microsoft 365",
+          "producer": "Microsoft® Word for Microsoft 365"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "digital_protocols",
+        "high_speed",
+        "test_measurement",
+        "electronics_basics",
+        "embedded_systems"
+      ],
+      "title_guess": "掌握链路训练，确保USB4和DisplayPort设计成功"
+    },
+    {
+      "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/4i2c通信协议理解i2c入门pmbus和smbus.pdf",
+      "source_folder": "hardware-pdfs/2026-05-06-154629-17780535892340826",
+      "file_name": "4i2c通信协议理解i2c入门pmbus和smbus.pdf",
+      "stem": "4i2c通信协议理解i2c入门pmbus和smbus",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 2701164,
+      "modified_at": "2026-05-06T07:32:20+00:00",
+      "sha256": "051729fdd500cc2fbf9c8764c6d3689074ea76f2c4f2ad3f60b6f22aaff2ccb0",
+      "pdf": {
+        "page_count": 9,
+        "encrypted": false,
+        "metadata": {
+          "title": "i2c-communication-protocol-understanding-i2c-primer-pmbus-and-smbus_cn",
+          "author": "Del Jones",
+          "subject": "An explanation of some new features of the JESD204C standard.",
+          "creator": "Adobe InDesign 15.0 (Windows)",
+          "producer": "Adobe PDF Library 15.0"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "op_amp_analog",
+        "digital_protocols",
+        "high_speed",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "i2c-communication-protocol-understanding-i2c-primer-pmbus-and-smbus_cn"
+    },
+    {
+      "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/5利用全 GaN 技术推进 800 VDC 架构.pdf",
+      "source_folder": "hardware-pdfs/2026-05-06-154629-17780535892340826",
+      "file_name": "5利用全 GaN 技术推进 800 VDC 架构.pdf",
+      "stem": "5利用全 GaN 技术推进 800 VDC 架构",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 605823,
+      "modified_at": "2026-05-06T07:36:59+00:00",
+      "sha256": "c0b6c65f8dee6ba99c8bfed0d6269618d6e9ed61715fbfb5efd9a365facc80d5",
+      "pdf": {
+        "page_count": 8,
+        "encrypted": false,
+        "metadata": {
+          "author": "Jiaxin Huang 黄佳鑫",
+          "creator": "Microsoft® Word LTSC",
+          "producer": "Microsoft® Word LTSC"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "transistor_mosfet",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "5利用全 GaN 技术推进 800 VDC 架构"
+    },
+    {
+      "relative_path": "hardware-pdfs/2026-05-06-154629-17780535892340826/6智能驾驶及多域融合测试：方法与实例.pdf",
+      "source_folder": "hardware-pdfs/2026-05-06-154629-17780535892340826",
+      "file_name": "6智能驾驶及多域融合测试：方法与实例.pdf",
+      "stem": "6智能驾驶及多域融合测试：方法与实例",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 3557536,
+      "modified_at": "2026-05-06T07:39:15+00:00",
+      "sha256": "d76d589fdbdd3c7b1997a3fe239662cffa50c470bd4246b3246d8db8bfedf389",
+      "pdf": {
+        "page_count": 19,
+        "encrypted": false,
+        "metadata": {},
+        "parse_error": null
+      },
+      "topics": [
+        "automotive",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "6智能驾驶及多域融合测试：方法与实例"
+    },
+    {
+      "relative_path": "hardware-pdfs/22e5296bbb14c0d8e7255ed2cb514f3e7cef4aa3.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "22e5296bbb14c0d8e7255ed2cb514f3e7cef4aa3.pdf",
+      "stem": "22e5296bbb14c0d8e7255ed2cb514f3e7cef4aa3",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 10212309,
+      "modified_at": "2026-05-09T12:29:42.846917+00:00",
+      "sha256": "16da107a8238fdecec2fa98dfccbc959fda87b2fae0cccce7875dacef532534a",
+      "pdf": {
+        "page_count": 341,
+        "encrypted": false,
+        "metadata": {
+          "title": "SSReader Print.",
+          "author": "lei",
+          "creator": "PScript5.dll Version 5.2.2",
+          "producer": "Acrobat Distiller 7.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "high_speed"
+      ],
+      "title_guess": "SSReader Print."
+    },
+    {
+      "relative_path": "hardware-pdfs/22e81b23e751835ab8d1ca8247c49df0a3e4467a.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "22e81b23e751835ab8d1ca8247c49df0a3e4467a.pdf",
+      "stem": "22e81b23e751835ab8d1ca8247c49df0a3e4467a",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1493853,
+      "modified_at": "2026-05-09T12:30:23.056998+00:00",
+      "sha256": "998e135d4fcce6970a4a56010372156b72fffc2f60de4f0f76ad718190d6db8b",
+      "pdf": {
+        "page_count": 33,
+        "encrypted": false,
+        "metadata": {
+          "author": "User",
+          "creator": "Microsoft® Word 2010",
+          "producer": "Microsoft® Word 2010"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "emi_emc",
+        "electronics_basics"
+      ],
+      "title_guess": "22e81b23e751835ab8d1ca8247c49df0a3e4467a"
+    },
+    {
+      "relative_path": "hardware-pdfs/248rHynCWpGmA5TFpK.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "248rHynCWpGmA5TFpK.pdf",
+      "stem": "248rHynCWpGmA5TFpK",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 8203411,
+      "modified_at": "2026-04-30T07:33:55.542114+00:00",
+      "sha256": "82590af56cb7a3b7ac1b6c5aaba07797b97e6204dbe49220657b7c77d9a4d011",
+      "pdf": {
+        "page_count": 296,
+        "encrypted": false,
+        "metadata": {
+          "title": "SSReader Print.",
+          "author": "liu",
+          "creator": "PScript5.dll Version 5.2",
+          "producer": "AFPL Ghostscript 7.04"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "high_speed"
+      ],
+      "title_guess": "SSReader Print."
+    },
+    {
+      "relative_path": "hardware-pdfs/25fb720aa71e8ea178fc140fa98eb5f7a6c24a5e.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "25fb720aa71e8ea178fc140fa98eb5f7a6c24a5e.pdf",
+      "stem": "25fb720aa71e8ea178fc140fa98eb5f7a6c24a5e",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 11361,
+      "modified_at": "2026-05-08T13:54:19.363764+00:00",
+      "sha256": "4010dc9be657285c6992f864f8aa22a7f617dd929fa0417be6e04ff40c35a90f",
+      "pdf": {
+        "page_count": 1,
+        "encrypted": false,
+        "metadata": {
+          "title": "04-Buck变换器的DCM稳态关系.doc",
+          "author": "Administrator",
+          "creator": "04-Buck变换器的DCM稳态关系 - Microsoft Word",
+          "producer": "Acrobat PDFWriter 5.0 for Windows NT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "04-Buck变换器的DCM稳态关系.doc"
+    },
+    {
+      "relative_path": "hardware-pdfs/27b5a0efcbcff2bcbc3b59c738e920a25558c286.ppt",
+      "source_folder": "hardware-pdfs",
+      "file_name": "27b5a0efcbcff2bcbc3b59c738e920a25558c286.ppt",
+      "stem": "27b5a0efcbcff2bcbc3b59c738e920a25558c286",
+      "extension": ".ppt",
+      "file_type": "presentation",
+      "size_bytes": 2588160,
+      "modified_at": "2026-05-09T12:11:51.005508+00:00",
+      "sha256": "9eb118d049dcb0bfaf288cc53460af97af533da8d8e1bfc3ba7c21f4b1238700",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "27b5a0efcbcff2bcbc3b59c738e920a25558c286"
+    },
+    {
+      "relative_path": "hardware-pdfs/28c031f3c7695dc0cfc61612c34e531aa4720877.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "28c031f3c7695dc0cfc61612c34e531aa4720877.pdf",
+      "stem": "28c031f3c7695dc0cfc61612c34e531aa4720877",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 11315228,
+      "modified_at": "2026-05-09T12:28:58.342721+00:00",
+      "sha256": "9a9ac4f0352977f0d7cf9af2a7d996ce995e22fb57191efadd333f5a04dc33cb",
+      "pdf": {
+        "page_count": 140,
+        "encrypted": false,
+        "metadata": {
+          "producer": "iTextSharp 4.1.6 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "28c031f3c7695dc0cfc61612c34e531aa4720877"
+    },
+    {
+      "relative_path": "hardware-pdfs/2dd652c369d8b2d79d54cd3d1a697e8fe8765417.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "2dd652c369d8b2d79d54cd3d1a697e8fe8765417.pdf",
+      "stem": "2dd652c369d8b2d79d54cd3d1a697e8fe8765417",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 233703,
+      "modified_at": "2026-05-09T12:29:17.647352+00:00",
+      "sha256": "ea2277464ef7bed8753497b3b40ebdcb9a6dfa945c86ac1ccd3dc88812a60a6d",
+      "pdf": {
+        "page_count": 7,
+        "encrypted": false,
+        "metadata": {
+          "title": "Microsoft Word - 模块电源的热处理--已《今日电子》.doc",
+          "author": "market05",
+          "creator": "pdfFactory Pro www.fineprint.com.cn",
+          "producer": "pdfFactory Pro 1.64 (Windows XP Chinese)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "transistor_mosfet",
+        "high_speed",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "Microsoft Word - 模块电源的热处理--已《今日电子》.doc"
+    },
+    {
+      "relative_path": "hardware-pdfs/2ee911160ee382124f5e2559185de39de7b4626d.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "2ee911160ee382124f5e2559185de39de7b4626d.pdf",
+      "stem": "2ee911160ee382124f5e2559185de39de7b4626d",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 598837,
+      "modified_at": "2026-05-06T12:45:38.853916+00:00",
+      "sha256": "fc3389f786c05f6c1771dc784f096121c9033698a2ec7528eafeb97de6cd34a5",
+      "pdf": {
+        "page_count": 10,
+        "encrypted": false,
+        "metadata": {
+          "title": "Microsoft Word - 反激式开关电源设计全过程.doc",
+          "author": "珠海龙头老大唐锦龙",
+          "creator": "Microsoft Word - 反激式开关电源设计全过程.doc",
+          "producer": "doPDF Ver 6.0 Build 258 (Windows XP x32)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply"
+      ],
+      "title_guess": "Microsoft Word - 反激式开关电源设计全过程.doc"
+    },
+    {
+      "relative_path": "hardware-pdfs/34f6717ef4999c4aa989573aaa32559fb5884fb0.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "34f6717ef4999c4aa989573aaa32559fb5884fb0.pdf",
+      "stem": "34f6717ef4999c4aa989573aaa32559fb5884fb0",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 593076,
+      "modified_at": "2026-05-09T12:32:08.078473+00:00",
+      "sha256": "db995abbb976f74f0aacffe9f08e6dc06aaf01b13c81d0cde05de01f131e08e7",
+      "pdf": {
+        "page_count": 2,
+        "encrypted": false,
+        "metadata": {
+          "title": "DN491 - &#32420;&#24039;&#22411;&#21452;&#30005;&#27744;&#22826;&#38451;&#33021;&#26495;&#32473;&#32039;&#20945;&#21644;&#31163;&#32593;&#22411;&#35774;&#22791;&#20013;&#30340;&#30005;&#27744;&#20805;&#30005;",
+          "author": "Linear Technology Corporation",
+          "creator": "Adobe InDesign CS5 (7.0)",
+          "producer": "Adobe PDF Library 9.9"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "op_amp_analog",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "DN491 - &#32420;&#24039;&#22411;&#21452;&#30005;&#27744;&#22826;&#38451;&#33021;&#26495;&#32473;&#32039;&#20945;&#21644;&#31163;&#32593;&#22411;&#35774;&#22791;&#20013;&#30340;&#30005;&#27744;&#20805;&#30005;"
+    },
+    {
+      "relative_path": "hardware-pdfs/3a8Dhft4YwGRhcHEfD/电源设计基础知识精选PDF电子书.pdf",
+      "source_folder": "hardware-pdfs/3a8Dhft4YwGRhcHEfD",
+      "file_name": "电源设计基础知识精选PDF电子书.pdf",
+      "stem": "电源设计基础知识精选PDF电子书",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 25868275,
+      "modified_at": "2020-12-07T14:36:43.752170+00:00",
+      "sha256": "fd7fe8bd6f9396df463d67afb4599efab05532428165aa93a64ee09e76166e16",
+      "pdf": {
+        "page_count": null,
+        "encrypted": true,
+        "metadata": {},
+        "parse_error": "DependencyError: cryptography>=3.1 is required for AES algorithm"
+      },
+      "topics": [
+        "electronics_basics"
+      ],
+      "title_guess": "电源设计基础知识精选PDF电子书"
+    },
+    {
+      "relative_path": "hardware-pdfs/3b1c3eaf0dc672bacfc291ddf44aff68b8eac636.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "3b1c3eaf0dc672bacfc291ddf44aff68b8eac636.pdf",
+      "stem": "3b1c3eaf0dc672bacfc291ddf44aff68b8eac636",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 538665,
+      "modified_at": "2026-05-09T12:15:59.226307+00:00",
+      "sha256": "7d33a3058f37c17306d5408ab785c0d897ede19c65a7082976e82152f0d9e5f6",
+      "pdf": {
+        "page_count": 3,
+        "encrypted": false,
+        "metadata": {
+          "title": "低压降稳压器快速参考指南",
+          "author": "Texas Instruments, Incorporated [ZHCT320,*]",
+          "subject": "Marketing Selection Guide",
+          "creator": "Adobe InDesign CC 2014 (Macintosh)",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "automotive",
+        "high_speed",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "低压降稳压器快速参考指南"
+    },
+    {
+      "relative_path": "hardware-pdfs/3b6aFDAp7QFcxkzJbD.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "3b6aFDAp7QFcxkzJbD.pdf",
+      "stem": "3b6aFDAp7QFcxkzJbD",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 16428451,
+      "modified_at": "2026-04-17T14:50:22.387803+00:00",
+      "sha256": "0c1a772c0bcc1d7b9768c8597557096b86d70180f26f9836838771145400ca9c",
+      "pdf": {
+        "page_count": 298,
+        "encrypted": false,
+        "metadata": {
+          "author": "Blue Lucky",
+          "creator": "Adobe Acrobat 8.1 Combine Files",
+          "producer": "Acrobat Distiller 8.1.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "embedded_systems"
+      ],
+      "title_guess": "3b6aFDAp7QFcxkzJbD"
+    },
+    {
+      "relative_path": "hardware-pdfs/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+      "stem": "3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 563185,
+      "modified_at": "2026-05-06T12:48:04.718237+00:00",
+      "sha256": "c7111ad373df6b07ee2a83575b3db05bbd374c27a06c46b96366326b5fe92fdf",
+      "pdf": {
+        "page_count": 14,
+        "encrypted": false,
+        "metadata": {
+          "title": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "author": "IBM",
+          "creator": "Acrobat PDFMaker 7.0 for Word",
+          "producer": "Acrobat Distiller 7.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "transistor_mosfet",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗"
+    },
+    {
+      "relative_path": "hardware-pdfs/40bc9df8cfc69932acf805dd9d7fa80a590b2ea5.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "40bc9df8cfc69932acf805dd9d7fa80a590b2ea5.pdf",
+      "stem": "40bc9df8cfc69932acf805dd9d7fa80a590b2ea5",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 376540,
+      "modified_at": "2026-05-09T12:30:49.175027+00:00",
+      "sha256": "c3f45ed095e678ef97ad7068af6392147c708f53567c262eeed321bf50960f3c",
+      "pdf": {
+        "page_count": 14,
+        "encrypted": false,
+        "metadata": {
+          "title": "Basics of Load Switches",
+          "author": "Texas Instruments, Incorporated [ZHCA612,*]",
+          "subject": "Application Notes",
+          "creator": "TopLeaf 7.6.061",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "high_speed",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "Basics of Load Switches"
+    },
+    {
+      "relative_path": "hardware-pdfs/4a94ccff94b396d54363599dccfeba628881d9bf.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "4a94ccff94b396d54363599dccfeba628881d9bf.pdf",
+      "stem": "4a94ccff94b396d54363599dccfeba628881d9bf",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 9634479,
+      "modified_at": "2026-05-08T13:55:29.504997+00:00",
+      "sha256": "381b666e33db8dd2782fe75c6b4093f806d0ed9316679b898857dfa031ae225c",
+      "pdf": {
+        "page_count": 478,
+        "encrypted": false,
+        "metadata": {
+          "title": "SSReader Print.",
+          "author": "m",
+          "creator": "pdfFactory Pro www.fineprint.com.cn",
+          "producer": "pdfFactory Pro 2.31 (Windows 2000 Professional Chinese); modified using iTextSharp 4.1.6 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "high_speed"
+      ],
+      "title_guess": "SSReader Print."
+    },
+    {
+      "relative_path": "hardware-pdfs/4af587860e6e30513666d4080d4904b313ad1275.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "4af587860e6e30513666d4080d4904b313ad1275.pdf",
+      "stem": "4af587860e6e30513666d4080d4904b313ad1275",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 603081,
+      "modified_at": "2026-05-09T12:31:21.655657+00:00",
+      "sha256": "3bed4b5bb327c15cbb9021492ebed1d2864c2cf7d298817a1a952f23fdbb0772",
+      "pdf": {
+        "page_count": 2,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe InDesign CS5 (7.0)",
+          "producer": "Adobe PDF Library 9.9"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "op_amp_analog",
+        "high_speed",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "4af587860e6e30513666d4080d4904b313ad1275"
+    },
+    {
+      "relative_path": "hardware-pdfs/538917c691ba83d0ee940d9b1a60ccae9bc4053b.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "538917c691ba83d0ee940d9b1a60ccae9bc4053b.pdf",
+      "stem": "538917c691ba83d0ee940d9b1a60ccae9bc4053b",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 5789267,
+      "modified_at": "2026-05-06T12:41:34.494462+00:00",
+      "sha256": "74b691eda20ccf3d94b851eb6bee19a9315ce359e9fa932255cc496ff59a638e",
+      "pdf": {
+        "page_count": 201,
+        "encrypted": false,
+        "metadata": {
+          "title": "德州仪器高性能模拟器件高效应用指南之电源_TI 大学计划",
+          "author": "Texas Instruments, Incorporated [ZHCP056,*]",
+          "subject": "Training Kit",
+          "creator": "Microsoft® Word 2010",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "op_amp_analog",
+        "adc_dac",
+        "electronics_basics"
+      ],
+      "title_guess": "德州仪器高性能模拟器件高效应用指南之电源_TI 大学计划"
+    },
+    {
+      "relative_path": "hardware-pdfs/55fa683a597a574844e0878ddb8cd480183e397f.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "55fa683a597a574844e0878ddb8cd480183e397f.pdf",
+      "stem": "55fa683a597a574844e0878ddb8cd480183e397f",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1170204,
+      "modified_at": "2026-05-06T12:47:50.411971+00:00",
+      "sha256": "5e6b32377859f1bd96ad5518a0321d20c18f7263bbc4be890b301a44d57a8024",
+      "pdf": {
+        "page_count": 5,
+        "encrypted": false,
+        "metadata": {
+          "title": "DN-62 开关电源拓扑电压模式与 电流模式",
+          "author": "Texas Instruments, Incorporated [ZHCA086,*]",
+          "subject": "Application Notes",
+          "creator": "Adobe InDesign CS2 (4.0)",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "DN-62 开关电源拓扑电压模式与 电流模式"
+    },
+    {
+      "relative_path": "hardware-pdfs/5757ed4d2333723eb8f7e24576fadce122953734.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "5757ed4d2333723eb8f7e24576fadce122953734.pdf",
+      "stem": "5757ed4d2333723eb8f7e24576fadce122953734",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1644943,
+      "modified_at": "2026-05-09T12:12:18.084287+00:00",
+      "sha256": "05914f4a26b9d8a2c6d238001171264724e1442deca987c886793901df4c02b7",
+      "pdf": {
+        "page_count": 92,
+        "encrypted": false,
+        "metadata": {
+          "title": "SSReader Print.",
+          "creator": "PScript5.dll Version 5.2",
+          "producer": "Acrobat Distiller 7.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "adc_dac",
+        "high_speed"
+      ],
+      "title_guess": "SSReader Print."
+    },
+    {
+      "relative_path": "hardware-pdfs/57yfbCBE22eH3A5eBe.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "57yfbCBE22eH3A5eBe.pdf",
+      "stem": "57yfbCBE22eH3A5eBe",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 728127,
+      "modified_at": "2026-05-03T01:29:04.095031+00:00",
+      "sha256": "1d3d243bfa09d0cac877536df3cf4bcc2c99e7540da8a8ea230c94914420f253",
+      "pdf": {
+        "page_count": 14,
+        "encrypted": true,
+        "metadata": {
+          "author": "Admin",
+          "creator": "WPS 文字"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "electronics_basics"
+      ],
+      "title_guess": "57yfbCBE22eH3A5eBe"
+    },
+    {
+      "relative_path": "hardware-pdfs/5c32bd2cd44da527be90f0a0a024d7a57a5f169c/电源开关设计秘笈30例.pdf",
+      "source_folder": "hardware-pdfs/5c32bd2cd44da527be90f0a0a024d7a57a5f169c",
+      "file_name": "电源开关设计秘笈30例.pdf",
+      "stem": "电源开关设计秘笈30例",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1424053,
+      "modified_at": "2016-07-15T06:25:15.519907+00:00",
+      "sha256": "bdbcfd603a026d75f3e28c09337eb5a02f765c97fdf9d4c4b62a9845b8192a74",
+      "pdf": {
+        "page_count": 42,
+        "encrypted": false,
+        "metadata": {
+          "title": "电源开关设计秘笈30例",
+          "author": "Robert Kollman Roger Chan Alan Hastings Rich Nowakowski",
+          "creator": "Microsoft® Office Word 2007",
+          "producer": "Microsoft® Office Word 2007"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "automotive",
+        "electronics_basics"
+      ],
+      "title_guess": "电源开关设计秘笈30例"
+    },
+    {
+      "relative_path": "hardware-pdfs/5Jn5xreEmk4N48b3dH/▽閉絳呇淝▼轎煤眻畦啎豢.png",
+      "source_folder": "hardware-pdfs/5Jn5xreEmk4N48b3dH",
+      "file_name": "▽閉絳呇淝▼轎煤眻畦啎豢.png",
+      "stem": "▽閉絳呇淝▼轎煤眻畦啎豢",
+      "extension": ".png",
+      "file_type": "image",
+      "size_bytes": 1402712,
+      "modified_at": "2021-08-04T01:19:20.662395+00:00",
+      "sha256": "2ea2ac173a3b224ff698d85b6726f2d45cff8c91dd872412d1689717b5e00f1a",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "▽閉絳呇淝▼轎煤眻畦啎豢"
+    },
+    {
+      "relative_path": "hardware-pdfs/5Jn5xreEmk4N48b3dH/湮釦囀窒橈躇13920趼PCB褫秶婖俶扢數寞毓ㄛ昦俋換ㄐ.pdf",
+      "source_folder": "hardware-pdfs/5Jn5xreEmk4N48b3dH",
+      "file_name": "湮釦囀窒橈躇13920趼PCB褫秶婖俶扢數寞毓ㄛ昦俋換ㄐ.pdf",
+      "stem": "湮釦囀窒橈躇13920趼PCB褫秶婖俶扢數寞毓ㄛ昦俋換ㄐ",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 692007,
+      "modified_at": "2021-08-06T07:56:33.196466+00:00",
+      "sha256": "39cc7f00ff4572e1fbb391c1f56960953183bef029b57c839f3ef02f4814b021",
+      "pdf": {
+        "page_count": 13,
+        "encrypted": false,
+        "metadata": {
+          "author": "Sky123.Org",
+          "creator": "WPS 文字"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "electronics_basics"
+      ],
+      "title_guess": "湮釦囀窒橈躇13920趼PCB褫秶婖俶扢數寞毓ㄛ昦俋換ㄐ"
+    },
+    {
+      "relative_path": "hardware-pdfs/5Jn5xreEmk4N48b3dH/轎煤PCB layout斛掘朸.txt",
+      "source_folder": "hardware-pdfs/5Jn5xreEmk4N48b3dH",
+      "file_name": "轎煤PCB layout斛掘朸.txt",
+      "stem": "轎煤PCB layout斛掘朸",
+      "extension": ".txt",
+      "file_type": "text",
+      "size_bytes": 1629,
+      "modified_at": "2021-07-20T07:48:00.654637+00:00",
+      "sha256": "55987d1546e378955e5081becbac6cc7d6ad5e87bb51154d3093b5359527648e",
+      "pdf": null,
+      "topics": [
+        "pcb_layout"
+      ],
+      "title_guess": "轎煤PCB layout斛掘朸"
+    },
+    {
+      "relative_path": "hardware-pdfs/5Jn5xreEmk4N48b3dH/轎煤PCB layout斛掘朸.url",
+      "source_folder": "hardware-pdfs/5Jn5xreEmk4N48b3dH",
+      "file_name": "轎煤PCB layout斛掘朸.url",
+      "stem": "轎煤PCB layout斛掘朸",
+      "extension": ".url",
+      "file_type": "web",
+      "size_bytes": 126,
+      "modified_at": "2021-08-04T05:40:08.884491+00:00",
+      "sha256": "fe5c437a9c958bbdf4537c35a4f2f0457061d002c10fd18851fdd57f2a5cfca0",
+      "pdf": null,
+      "topics": [
+        "pcb_layout"
+      ],
+      "title_guess": "轎煤PCB layout斛掘朸"
+    },
+    {
+      "relative_path": "hardware-pdfs/654dd0d4f4b09ddbb282c30b934b6e9bf4154e56.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "654dd0d4f4b09ddbb282c30b934b6e9bf4154e56.pdf",
+      "stem": "654dd0d4f4b09ddbb282c30b934b6e9bf4154e56",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 2417578,
+      "modified_at": "2026-05-09T12:11:01.571785+00:00",
+      "sha256": "7c2cb01204a5d405d9f32625cd3590542220289cf359d6544355e580efa04eee",
+      "pdf": {
+        "page_count": 106,
+        "encrypted": false,
+        "metadata": {
+          "title": "C:\\Program Files\\Founder\\Apabi Reader 1.8\\ceb\\lb52b0cf0b-5736-4c82-94cf-6916c577f78e27467.ceb",
+          "author": "xyz",
+          "creator": "PScript5.dll Version 5.2.2",
+          "producer": "Acrobat Distiller 9.3.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "high_speed"
+      ],
+      "title_guess": "C:\\Program Files\\Founder\\Apabi Reader 1.8\\ceb\\lb52b0cf0b-5736-4c82-94cf-6916c577f78e27467.ceb"
+    },
+    {
+      "relative_path": "hardware-pdfs/6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+      "stem": "6d9bca9427b4f05ccda3607f1e7879ce84724e18",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 5385762,
+      "modified_at": "2026-05-04T23:32:38.586074+00:00",
+      "sha256": "12ed0378a5b1c6b32037c35ad66ee461351ed2dc296784f901ce6b4be5eb4b79",
+      "pdf": {
+        "page_count": 99,
+        "encrypted": false,
+        "metadata": {
+          "title": "电源设计提示",
+          "author": "Texas Instruments, Incorporated [ZHCC344,*]",
+          "subject": "Master Selection Guide",
+          "creator": "Microsoft® Office Word 2007",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "电源设计提示"
+    },
+    {
+      "relative_path": "hardware-pdfs/6itRQhCGPhpw4XPeGt.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "6itRQhCGPhpw4XPeGt.pdf",
+      "stem": "6itRQhCGPhpw4XPeGt",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 471877,
+      "modified_at": "2026-04-18T02:02:50.402523+00:00",
+      "sha256": "1413d43068f49fe9363e166ba707c0306213f141a5a844496862030f1f96cc75",
+      "pdf": {
+        "page_count": 30,
+        "encrypted": false,
+        "metadata": {
+          "author": "牟联树",
+          "creator": "Acrobat PDFMaker 6.0 for Word",
+          "producer": "Acrobat Distiller 6.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "high_speed"
+      ],
+      "title_guess": "6itRQhCGPhpw4XPeGt"
+    },
+    {
+      "relative_path": "hardware-pdfs/745a1fa69523208510e4e8727a30a9007ad4acf7.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "745a1fa69523208510e4e8727a30a9007ad4acf7.pdf",
+      "stem": "745a1fa69523208510e4e8727a30a9007ad4acf7",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 7513189,
+      "modified_at": "2026-05-09T12:13:12.850756+00:00",
+      "sha256": "5649d56d71e89d51d2c35db9e9d9ee9e8d677825756651937eb1cdb86b48b789",
+      "pdf": {
+        "page_count": 262,
+        "encrypted": false,
+        "metadata": {
+          "title": "SSReader Print.",
+          "creator": "PScript5.dll Version 5.2.2",
+          "producer": "Acrobat Distiller 7.0.5 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "high_speed"
+      ],
+      "title_guess": "SSReader Print."
+    },
+    {
+      "relative_path": "hardware-pdfs/769f33320b04fa6021bc27eefdc4d8a5c0d764a6.ppt",
+      "source_folder": "hardware-pdfs",
+      "file_name": "769f33320b04fa6021bc27eefdc4d8a5c0d764a6.ppt",
+      "stem": "769f33320b04fa6021bc27eefdc4d8a5c0d764a6",
+      "extension": ".ppt",
+      "file_type": "presentation",
+      "size_bytes": 658944,
+      "modified_at": "2026-05-08T13:55:06.133326+00:00",
+      "sha256": "40a2be557beeee9763bf3c0b356e2c732a445402142abce4d7c11a1768d78565",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "769f33320b04fa6021bc27eefdc4d8a5c0d764a6"
+    },
+    {
+      "relative_path": "hardware-pdfs/7d0a777a9173d8112f42148e36df5d33896b76f3.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "7d0a777a9173d8112f42148e36df5d33896b76f3.pdf",
+      "stem": "7d0a777a9173d8112f42148e36df5d33896b76f3",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1687915,
+      "modified_at": "2026-05-09T12:12:26.079660+00:00",
+      "sha256": "1d405b33aab8746aa1e35ef7a941ad8fc2d776209f44d7101f915704d961d0c9",
+      "pdf": {
+        "page_count": 41,
+        "encrypted": false,
+        "metadata": {
+          "title": "output design",
+          "author": "hifidiy.net",
+          "subject": "output design",
+          "creator": "hifidiy.net"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "high_speed"
+      ],
+      "title_guess": "output design"
+    },
+    {
+      "relative_path": "hardware-pdfs/7eeb74e2d5a9639057c58dd5547920125c95db1a.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "7eeb74e2d5a9639057c58dd5547920125c95db1a.pdf",
+      "stem": "7eeb74e2d5a9639057c58dd5547920125c95db1a",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 9876713,
+      "modified_at": "2026-05-09T12:11:33.272856+00:00",
+      "sha256": "3c49865f8761d7e4c6993a870aa70bcf1c57b031808308481e1d8b79153ac6c7",
+      "pdf": {
+        "page_count": 474,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe Acrobat 6.0",
+          "producer": "Acrobat Distiller 6.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "7eeb74e2d5a9639057c58dd5547920125c95db1a"
+    },
+    {
+      "relative_path": "hardware-pdfs/7jxJ3TemD6jhED4KTs.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "7jxJ3TemD6jhED4KTs.pdf",
+      "stem": "7jxJ3TemD6jhED4KTs",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 144257231,
+      "modified_at": "2026-04-17T14:55:15.447902+00:00",
+      "sha256": "b772c738f2e9ba995e106956a25034ebe2886344d4649cb6cee47999fbc20de5",
+      "pdf": {
+        "page_count": 208,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe Acrobat 6.0",
+          "producer": "Adobe Acrobat 6.0 Image Conversion Plug-in"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "high_speed"
+      ],
+      "title_guess": "7jxJ3TemD6jhED4KTs"
+    },
+    {
+      "relative_path": "hardware-pdfs/87411b3150d028d41789fe8f79682ada38d441eb.pptx",
+      "source_folder": "hardware-pdfs",
+      "file_name": "87411b3150d028d41789fe8f79682ada38d441eb.pptx",
+      "stem": "87411b3150d028d41789fe8f79682ada38d441eb",
+      "extension": ".pptx",
+      "file_type": "presentation",
+      "size_bytes": 5194281,
+      "modified_at": "2026-05-09T12:27:32.921732+00:00",
+      "sha256": "b735112a50639da71b8d6f9ef8e9af8cf8b2dc359b84b86ccfe9c903d6018fcf",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "87411b3150d028d41789fe8f79682ada38d441eb"
+    },
+    {
+      "relative_path": "hardware-pdfs/8a9a6b357124e2a6c9905f3d884e05528539170f.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "8a9a6b357124e2a6c9905f3d884e05528539170f.pdf",
+      "stem": "8a9a6b357124e2a6c9905f3d884e05528539170f",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 8203411,
+      "modified_at": "2026-05-09T12:11:16.645543+00:00",
+      "sha256": "82590af56cb7a3b7ac1b6c5aaba07797b97e6204dbe49220657b7c77d9a4d011",
+      "pdf": {
+        "page_count": 296,
+        "encrypted": false,
+        "metadata": {
+          "title": "SSReader Print.",
+          "author": "liu",
+          "creator": "PScript5.dll Version 5.2",
+          "producer": "AFPL Ghostscript 7.04"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "high_speed"
+      ],
+      "title_guess": "SSReader Print."
+    },
+    {
+      "relative_path": "hardware-pdfs/8e802a0549a379aec7faa2f5cac67c0e99a9ba32.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "8e802a0549a379aec7faa2f5cac67c0e99a9ba32.pdf",
+      "stem": "8e802a0549a379aec7faa2f5cac67c0e99a9ba32",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 573145,
+      "modified_at": "2026-05-09T12:31:08.375777+00:00",
+      "sha256": "e3405b0f26c95b9008e6ea6d6f276c94a07ff4104eb7e79397e67fe3ca256a0c",
+      "pdf": {
+        "page_count": 2,
+        "encrypted": false,
+        "metadata": {
+          "title": "DN496 - 面向大电流便携式电子产品的完整电池充电器解决方案",
+          "author": "Linear Technology Corporation",
+          "creator": "Adobe InDesign CS5 (7.0)",
+          "producer": "Adobe PDF Library 9.9"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "transistor_mosfet",
+        "digital_protocols",
+        "high_speed",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "DN496 - 面向大电流便携式电子产品的完整电池充电器解决方案"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC开关节点布局注意事项.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "EMC开关节点布局注意事项.pdf",
+      "stem": "EMC开关节点布局注意事项",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 688754,
+      "modified_at": "2022-05-27T03:22:44.679917+00:00",
+      "sha256": "a051c837042c697a2be84b39b3fa0c1e39c4f843ed6af889da42e08f0a18bdcf",
+      "pdf": {
+        "page_count": 6,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "emi_emc",
+        "transistor_mosfet",
+        "automotive",
+        "electronics_basics"
+      ],
+      "title_guess": "EMC开关节点布局注意事项"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/EMC测试计划及关键因素.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "EMC测试计划及关键因素.pdf",
+      "stem": "EMC测试计划及关键因素",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 864088,
+      "modified_at": "2022-06-01T03:21:01.987705+00:00",
+      "sha256": "cc3320c5515453cd3531e647b4cd4137b47ee2fff18e3ea7fb4837128a535bf0",
+      "pdf": {
+        "page_count": 6,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "automotive",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "EMC测试计划及关键因素"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPQ3367助力优化背光显示屏设计 .pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "MPQ3367助力优化背光显示屏设计 .pdf",
+      "stem": "MPQ3367助力优化背光显示屏设计 ",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 672875,
+      "modified_at": "2022-05-26T08:18:16.917534+00:00",
+      "sha256": "2b2b0bb3dfca11fbb23b42abd48024c8aa977623b83b4fc3c2bc5bff18148a3e",
+      "pdf": {
+        "page_count": 5,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "op_amp_analog",
+        "automotive",
+        "electronics_basics"
+      ],
+      "title_guess": "MPQ3367助力优化背光显示屏设计 "
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS 功能安全汽车开发流程MPSAFETM 简介.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "MPS 功能安全汽车开发流程MPSAFETM 简介.pdf",
+      "stem": "MPS 功能安全汽车开发流程MPSAFETM 简介",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 700059,
+      "modified_at": "2022-12-14T03:15:39.949062+00:00",
+      "sha256": "070ee30d244a847ca3b39c67bfef9f053ea39ffc3edc820afe96833c7a288eef",
+      "pdf": {
+        "page_count": 7,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "transistor_mosfet",
+        "automotive",
+        "high_speed",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "MPS 功能安全汽车开发流程MPSAFETM 简介"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/MPS智能驾驶解决方案.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "MPS智能驾驶解决方案.pdf",
+      "stem": "MPS智能驾驶解决方案",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 606377,
+      "modified_at": "2022-05-26T10:05:21.339394+00:00",
+      "sha256": "949e63e9d009931ab47c2c5529257199b646964066d2154ff27f5c8f40754206",
+      "pdf": {
+        "page_count": 5,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "transistor_mosfet",
+        "automotive",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "MPS智能驾驶解决方案"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/从冷启动到负载突降：汽车瞬态入门.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "从冷启动到负载突降：汽车瞬态入门.pdf",
+      "stem": "从冷启动到负载突降：汽车瞬态入门",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 867596,
+      "modified_at": "2022-05-26T08:14:00.086565+00:00",
+      "sha256": "4825aa86bd0fbd02ba7008d284da07b39487bdd4d2d1e79f98d1d13bc83c9d72",
+      "pdf": {
+        "page_count": 9,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "digital_protocols",
+        "automotive",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "从冷启动到负载突降：汽车瞬态入门"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（上）.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "如何控制使用长输出线时的传导 EMI（上）.pdf",
+      "stem": "如何控制使用长输出线时的传导 EMI（上）",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 519458,
+      "modified_at": "2022-05-26T09:23:33.787082+00:00",
+      "sha256": "11376d48e719fa04794d6afc5f6e9cd9e4e2800bc86465e5532992a19ec09ae6",
+      "pdf": {
+        "page_count": 5,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "op_amp_analog",
+        "digital_protocols",
+        "automotive",
+        "high_speed",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "如何控制使用长输出线时的传导 EMI（上）"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（下）.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "如何控制使用长输出线时的传导 EMI（下）.pdf",
+      "stem": "如何控制使用长输出线时的传导 EMI（下）",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 762890,
+      "modified_at": "2022-05-26T09:06:20.732351+00:00",
+      "sha256": "cc18077bd4b88ea2d6e519a898fec4509837736c4693bf03364f9bee667e0f3c",
+      "pdf": {
+        "page_count": 5,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "emi_emc",
+        "automotive",
+        "high_speed",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "如何控制使用长输出线时的传导 EMI（下）"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/如何控制使用长输出线时的传导 EMI（中）.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "如何控制使用长输出线时的传导 EMI（中）.pdf",
+      "stem": "如何控制使用长输出线时的传导 EMI（中）",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 410799,
+      "modified_at": "2022-05-26T09:21:35.072641+00:00",
+      "sha256": "4d3d53d6bcc5ad849bd3ff0004b232c1117a31e488416c87fca7ec9cc19b503d",
+      "pdf": {
+        "page_count": 3,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "automotive",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "如何控制使用长输出线时的传导 EMI（中）"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/毫米波雷达的电源设计.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "毫米波雷达的电源设计.pdf",
+      "stem": "毫米波雷达的电源设计",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 518765,
+      "modified_at": "2022-12-14T03:04:47.830557+00:00",
+      "sha256": "aa60860243156a252048916bdbc61a6f1a2ad0898b8b48089e6befe229e2774d",
+      "pdf": {
+        "page_count": 5,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "automotive",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "毫米波雷达的电源设计"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车 SoC电源架构设计.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "汽车 SoC电源架构设计.pdf",
+      "stem": "汽车 SoC电源架构设计",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 932983,
+      "modified_at": "2022-12-14T07:25:46.445890+00:00",
+      "sha256": "afe0d7c9331d0dcd982347deb36c5446434d9e66a5311bf1db657a157f0cdcf3",
+      "pdf": {
+        "page_count": 7,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "op_amp_analog",
+        "digital_protocols",
+        "automotive",
+        "electronics_basics",
+        "embedded_systems"
+      ],
+      "title_guess": "汽车 SoC电源架构设计"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车LED驱动器设计：确保符合EMC标准的优良惯例.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "汽车LED驱动器设计：确保符合EMC标准的优良惯例.pdf",
+      "stem": "汽车LED驱动器设计：确保符合EMC标准的优良惯例",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 540774,
+      "modified_at": "2022-06-01T03:44:29.890288+00:00",
+      "sha256": "d1eff32f600612877c1db83e4abf9902dd40a7efbfea1d37cfb0b6cf944faeb3",
+      "pdf": {
+        "page_count": 6,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "emi_emc",
+        "automotive",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "汽车LED驱动器设计：确保符合EMC标准的优良惯例"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（上）.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "汽车电子中的电磁干扰生成、传播与抑制（上）.pdf",
+      "stem": "汽车电子中的电磁干扰生成、传播与抑制（上）",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 518293,
+      "modified_at": "2022-05-26T10:01:49.670955+00:00",
+      "sha256": "3ea2fd44583cb0cce50a657eb598a4ce84173c7a57e3f3bcfe099ecb141a3085",
+      "pdf": {
+        "page_count": 5,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "emi_emc",
+        "transistor_mosfet",
+        "automotive",
+        "electronics_basics"
+      ],
+      "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（上）"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子中的电磁干扰生成、传播与抑制（下）.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "汽车电子中的电磁干扰生成、传播与抑制（下）.pdf",
+      "stem": "汽车电子中的电磁干扰生成、传播与抑制（下）",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 483992,
+      "modified_at": "2022-05-26T09:59:59.227072+00:00",
+      "sha256": "f25b5ac92ff1cf2efba14f85367ae393c1d8604338e45c510989e3ef72dc8abc",
+      "pdf": {
+        "page_count": 4,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "emi_emc",
+        "automotive",
+        "electronics_basics"
+      ],
+      "title_guess": "汽车电子中的电磁干扰生成、传播与抑制（下）"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/汽车电子产品的可靠性测试始终围绕任务配置文件进行.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "汽车电子产品的可靠性测试始终围绕任务配置文件进行.pdf",
+      "stem": "汽车电子产品的可靠性测试始终围绕任务配置文件进行",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 796359,
+      "modified_at": "2022-05-27T02:29:48.682481+00:00",
+      "sha256": "a9b36c1a81546507f2ab59ce058af0a5cac4ec2f08318a824a7d728e0b230646",
+      "pdf": {
+        "page_count": 8,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "op_amp_analog",
+        "automotive",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "汽车电子产品的可靠性测试始终围绕任务配置文件进行"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/简单低成本的汽车冷启动预升压器.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "简单低成本的汽车冷启动预升压器.pdf",
+      "stem": "简单低成本的汽车冷启动预升压器",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 729517,
+      "modified_at": "2022-06-01T03:39:39.973874+00:00",
+      "sha256": "088d1558ca4186dbfcae80c149fc36ab4cf8e9013b0c31522cb0ff55eac9f6f4",
+      "pdf": {
+        "page_count": 6,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "automotive",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "简单低成本的汽车冷启动预升压器"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（上）.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "车载信息娱乐系统中的电源设计（上）.pdf",
+      "stem": "车载信息娱乐系统中的电源设计（上）",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 845196,
+      "modified_at": "2022-05-26T07:24:44.283147+00:00",
+      "sha256": "5e9d3de7aa518253f431e43b153508168eb7d613c3537e0bbda5d604f25c82df",
+      "pdf": {
+        "page_count": 10,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "transistor_mosfet",
+        "digital_protocols",
+        "automotive",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "车载信息娱乐系统中的电源设计（上）"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/车载信息娱乐系统中的电源设计（下）.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "车载信息娱乐系统中的电源设计（下）.pdf",
+      "stem": "车载信息娱乐系统中的电源设计（下）",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 829316,
+      "modified_at": "2022-05-26T07:18:59.455221+00:00",
+      "sha256": "f66235f371cee137e90bcb8ed6213f199782e0edd22f9fa6f4ccfd10388ce2f5",
+      "pdf": {
+        "page_count": 9,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "emi_emc",
+        "digital_protocols",
+        "automotive",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "车载信息娱乐系统中的电源设计（下）"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案.pdf",
+      "stem": "采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 587902,
+      "modified_at": "2022-05-27T02:19:37.244236+00:00",
+      "sha256": "cca67289e77491b85de3fa6b88dc25e807c3bc5e52fcebd5759f0eaab95ed2db",
+      "pdf": {
+        "page_count": 6,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "op_amp_analog",
+        "automotive",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "采用温度降额来延长汽车 LED 的预期寿命：一种简单且经济高效的解决方案"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（上篇）.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "防反保护电路的设计（上篇）.pdf",
+      "stem": "防反保护电路的设计（上篇）",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 564569,
+      "modified_at": "2022-12-14T06:55:34.378937+00:00",
+      "sha256": "35455887583e6f337ad07b534bb727d4e83a6605ac40f8370e795990c0b0ac7d",
+      "pdf": {
+        "page_count": 5,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "op_amp_analog",
+        "automotive",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "防反保护电路的设计（上篇）"
+    },
+    {
+      "relative_path": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲/防反保护电路的设计（下篇）.pdf",
+      "source_folder": "hardware-pdfs/8wc3dWc7waJpH3kDFh/汽车电子电源设计及EMI精讲",
+      "file_name": "防反保护电路的设计（下篇）.pdf",
+      "stem": "防反保护电路的设计（下篇）",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 803952,
+      "modified_at": "2022-12-14T07:00:19.614345+00:00",
+      "sha256": "a046e898e7242de7963f342008099f010f03561e58e02a18eff022bd9dd207de",
+      "pdf": {
+        "page_count": 7,
+        "encrypted": false,
+        "metadata": {
+          "author": "Yige Wang",
+          "creator": "Microsoft® Word 2016",
+          "producer": "Microsoft® Word 2016"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "digital_protocols",
+        "automotive",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "防反保护电路的设计（下篇）"
+    },
+    {
+      "relative_path": "hardware-pdfs/939e5910917ce94f490a9c86aa9c51a303015a1a.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "939e5910917ce94f490a9c86aa9c51a303015a1a.pdf",
+      "stem": "939e5910917ce94f490a9c86aa9c51a303015a1a",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1137558,
+      "modified_at": "2026-05-09T12:28:27.035723+00:00",
+      "sha256": "e958d45dd9e95b9610a250292c0253444075515e539c6c4ed0ffa3c0317c67a0",
+      "pdf": {
+        "page_count": 19,
+        "encrypted": true,
+        "metadata": {
+          "title": "信号完整性与电源完整性的仿真分析与设计",
+          "author": "Agilent EEsof EDA",
+          "subject": "IC-CAP Seminar Papers - China - 2006",
+          "creator": "PScript5.dll Version 5.2.2",
+          "producer": "Acrobat Distiller 7.0.5 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "emi_emc",
+        "transistor_mosfet",
+        "digital_protocols",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "信号完整性与电源完整性的仿真分析与设计"
+    },
+    {
+      "relative_path": "hardware-pdfs/9699d694130468cfa5da967705696bb7b60424fd.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "9699d694130468cfa5da967705696bb7b60424fd.pdf",
+      "stem": "9699d694130468cfa5da967705696bb7b60424fd",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 505823,
+      "modified_at": "2026-05-09T12:31:45.517891+00:00",
+      "sha256": "ea07ceed4513482d042dfecc60941269e4094e710ce26e134023b657c67fac95",
+      "pdf": {
+        "page_count": 2,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe InDesign CC 2014 (Macintosh)",
+          "producer": "Adobe PDF Library 11.0"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "automotive",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "9699d694130468cfa5da967705696bb7b60424fd"
+    },
+    {
+      "relative_path": "hardware-pdfs/99687f733fe71ada10c74c0c0983eba374dc542b.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "99687f733fe71ada10c74c0c0983eba374dc542b.pdf",
+      "stem": "99687f733fe71ada10c74c0c0983eba374dc542b",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1045309,
+      "modified_at": "2026-04-12T12:08:50.100884+00:00",
+      "sha256": "0d44b7e83cf91bd8af5f1f04fe72d17598901ce8a8177bb984014f28f9adfc43",
+      "pdf": {
+        "page_count": 26,
+        "encrypted": false,
+        "metadata": {
+          "title": "大学电子技术类教材特点是强调基础理论，侧重于电路的设计、计算，纯理论性内容占据主导地位，所以教材中的计算公式、证明比较多，它适合于培养学生电路设计的能力",
+          "author": "曹广胜",
+          "creator": "Acrobat PDFMaker 17 Word 版",
+          "producer": "Adobe PDF Library 15.0"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "op_amp_analog",
+        "electronics_basics"
+      ],
+      "title_guess": "大学电子技术类教材特点是强调基础理论，侧重于电路的设计、计算，纯理论性内容占据主导地位，所以教材中的计算公式、证明比较多，它适合于培养学生电路设计的能力"
+    },
+    {
+      "relative_path": "hardware-pdfs/a02214de8a9b5e3eef2a6b84688223c63b0bf01f.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "a02214de8a9b5e3eef2a6b84688223c63b0bf01f.pdf",
+      "stem": "a02214de8a9b5e3eef2a6b84688223c63b0bf01f",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 14310329,
+      "modified_at": "2026-05-09T12:13:35.172742+00:00",
+      "sha256": "570cee37f0c8fa4004cd9cb373b33b8f39e0e6a164ba5ac4a238354106e59283",
+      "pdf": {
+        "page_count": 57,
+        "encrypted": false,
+        "metadata": {
+          "title": "变压器与电感器设计手册 第4版",
+          "author": "（美）麦克莱曼编著",
+          "subject": "（美）麦克莱曼编著.变压器与电感器设计手册 第4版.北京：中国电力出版社,2013.10.",
+          "creator": "Adobe Acrobat Pro 11.0.10",
+          "producer": "Adobe Acrobat Pro 11.0.10"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "变压器与电感器设计手册 第4版"
+    },
+    {
+      "relative_path": "hardware-pdfs/a0e74ad85b55b935dbb68e1c23e578818998187f.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "a0e74ad85b55b935dbb68e1c23e578818998187f.pdf",
+      "stem": "a0e74ad85b55b935dbb68e1c23e578818998187f",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 7218235,
+      "modified_at": "2026-05-09T12:09:48.257514+00:00",
+      "sha256": "1fe717e9311d6411fa5f851652384ae00a90f51081e8cf107704e3258dde0bc0",
+      "pdf": {
+        "page_count": 488,
+        "encrypted": false,
+        "metadata": {
+          "title": "Transformer Engineering: Design and Practice",
+          "author": "S.V.Kulkarni and S.A.Khaparde",
+          "subject": "Front Matter",
+          "creator": "Adobe PageMaker 6.52",
+          "producer": "Acrobat Distiller 7.0.5 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "high_speed"
+      ],
+      "title_guess": "Transformer Engineering: Design and Practice"
+    },
+    {
+      "relative_path": "hardware-pdfs/a1c6c312ddaafa0dd0e047629d5bb57c51738923.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "a1c6c312ddaafa0dd0e047629d5bb57c51738923.pdf",
+      "stem": "a1c6c312ddaafa0dd0e047629d5bb57c51738923",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 10884,
+      "modified_at": "2026-05-08T13:54:33.556685+00:00",
+      "sha256": "2aaece79fa5ceaad5e82d5e43d8ba19c29b8f6abfb421e1a5d329f4e10e5e7ad",
+      "pdf": {
+        "page_count": 1,
+        "encrypted": false,
+        "metadata": {
+          "title": "03-Buck变换器的CCM稳态关系.doc",
+          "author": "Administrator",
+          "creator": "03-Buck变换器的CCM稳态关系 - Microsoft Word",
+          "producer": "Acrobat PDFWriter 5.0 for Windows NT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "03-Buck变换器的CCM稳态关系.doc"
+    },
+    {
+      "relative_path": "hardware-pdfs/aac006055db617235670ea7e76cf084a11336976.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "aac006055db617235670ea7e76cf084a11336976.pdf",
+      "stem": "aac006055db617235670ea7e76cf084a11336976",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 3696722,
+      "modified_at": "2026-05-06T12:44:12.732867+00:00",
+      "sha256": "cb1b978054d16738923fe4383ca44438255d124a985ab56043c169cc8d926e80",
+      "pdf": {
+        "page_count": 38,
+        "encrypted": false,
+        "metadata": {
+          "title": "开关电源基础知识",
+          "author": "A",
+          "creator": "Microsoft® Word 2010",
+          "producer": "Microsoft® Word 2010"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "electronics_basics"
+      ],
+      "title_guess": "开关电源基础知识"
+    },
+    {
+      "relative_path": "hardware-pdfs/ab08b24973b984b5b7b54c319ff223e46dae9357.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "ab08b24973b984b5b7b54c319ff223e46dae9357.pdf",
+      "stem": "ab08b24973b984b5b7b54c319ff223e46dae9357",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 433210,
+      "modified_at": "2026-05-09T12:15:42.848692+00:00",
+      "sha256": "dc39e7674a3012755ad984058a0b4d2337b9fbb0cd065b91f9c90a25f53e8af8",
+      "pdf": {
+        "page_count": 12,
+        "encrypted": false,
+        "metadata": {},
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "op_amp_analog",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "ab08b24973b984b5b7b54c319ff223e46dae9357"
+    },
+    {
+      "relative_path": "hardware-pdfs/AG7Dp4S3sbZWp4ZcQK.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "AG7Dp4S3sbZWp4ZcQK.pdf",
+      "stem": "AG7Dp4S3sbZWp4ZcQK",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 131522035,
+      "modified_at": "2026-04-12T12:16:17.482468+00:00",
+      "sha256": "b1c0281e63599565ffe3ca0e4624d1939d238579c375510cef1672bceca25526",
+      "pdf": {
+        "page_count": 624,
+        "encrypted": false,
+        "metadata": {
+          "title": "电子元器件从入门到精通：全2册",
+          "author": "韩雪涛 & 吴瑛 & 韩广兴",
+          "creator": "calibre 3.31.0 [https://calibre-ebook.com]",
+          "producer": "calibre 3.31.0 [https://calibre-ebook.com]"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "electronics_basics"
+      ],
+      "title_guess": "电子元器件从入门到精通：全2册"
+    },
+    {
+      "relative_path": "hardware-pdfs/b6ed0aad25e1901dc361cc5b4a109bf24c31e2b5.doc",
+      "source_folder": "hardware-pdfs",
+      "file_name": "b6ed0aad25e1901dc361cc5b4a109bf24c31e2b5.doc",
+      "stem": "b6ed0aad25e1901dc361cc5b4a109bf24c31e2b5",
+      "extension": ".doc",
+      "file_type": "word",
+      "size_bytes": 111616,
+      "modified_at": "2026-05-09T12:11:58.596133+00:00",
+      "sha256": "aa4687d85b25fed609ed001044c09ef5e29c02bbdd0bf6c55e805d274fc5896d",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "b6ed0aad25e1901dc361cc5b4a109bf24c31e2b5"
+    },
+    {
+      "relative_path": "hardware-pdfs/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+      "stem": "b75f8384ddab76deef8e6d4ebbf075fd7184b6b6",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1655512,
+      "modified_at": "2026-05-06T12:43:58.831611+00:00",
+      "sha256": "4c2833177eadbcd034105ea5deec48cc9aa01ef77d893dc05b89906298ac6b23",
+      "pdf": {
+        "page_count": 127,
+        "encrypted": false,
+        "metadata": {
+          "title": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "author": "Administrator",
+          "creator": "PScript5.dll Version 5.2.2",
+          "producer": "Acrobat Distiller 8.1.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "transistor_mosfet",
+        "high_speed",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>"
+    },
+    {
+      "relative_path": "hardware-pdfs/b78a3fb3cf3814e71a1882e6bcf62b27786e40d0.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "b78a3fb3cf3814e71a1882e6bcf62b27786e40d0.pdf",
+      "stem": "b78a3fb3cf3814e71a1882e6bcf62b27786e40d0",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 382065,
+      "modified_at": "2026-05-06T12:46:40.989215+00:00",
+      "sha256": "304534b042942ddd1fda82a636b38811753e7e95eb39a4af6e62bd986bc099b0",
+      "pdf": {
+        "page_count": 4,
+        "encrypted": false,
+        "metadata": {
+          "title": "Bandgap要求工作在1",
+          "author": "Eleven@Yeah",
+          "creator": "Acrobat PDFMaker 6.0 for Word",
+          "producer": "Acrobat Distiller 6.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "electronics_basics"
+      ],
+      "title_guess": "Bandgap要求工作在1"
+    },
+    {
+      "relative_path": "hardware-pdfs/bdb427e65d80adf5d9bca830b023675034665f0f.doc",
+      "source_folder": "hardware-pdfs",
+      "file_name": "bdb427e65d80adf5d9bca830b023675034665f0f.doc",
+      "stem": "bdb427e65d80adf5d9bca830b023675034665f0f",
+      "extension": ".doc",
+      "file_type": "word",
+      "size_bytes": 27136,
+      "modified_at": "2026-05-09T12:27:48.684636+00:00",
+      "sha256": "ad6cf6141edafd717cffcfe1c6324462f58b89b7a8b0a9c99aa979df2e66fb02",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "bdb427e65d80adf5d9bca830b023675034665f0f"
+    },
+    {
+      "relative_path": "hardware-pdfs/be1d83bd4a5d22c8470dcd9cfeb688c12eec0a85.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "be1d83bd4a5d22c8470dcd9cfeb688c12eec0a85.pdf",
+      "stem": "be1d83bd4a5d22c8470dcd9cfeb688c12eec0a85",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 35548,
+      "modified_at": "2026-05-09T12:12:54.348523+00:00",
+      "sha256": "d9de8ebbd95522a821dcf48eefdd3bfd8c44257a445eb8874f3f66b263f3a04f",
+      "pdf": {
+        "page_count": 4,
+        "encrypted": false,
+        "metadata": {
+          "title": "untitled",
+          "producer": "Acrobat Distiller 6.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "untitled"
+    },
+    {
+      "relative_path": "hardware-pdfs/c2e56aefec2d6210fdc2398913d89c5b7b7def6d.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "c2e56aefec2d6210fdc2398913d89c5b7b7def6d.pdf",
+      "stem": "c2e56aefec2d6210fdc2398913d89c5b7b7def6d",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 5934238,
+      "modified_at": "2026-05-09T12:13:03.523199+00:00",
+      "sha256": "829114c95014e43a1294448458163a7d7e7c5a7b6ba090080e4ec01fb91a3ac8",
+      "pdf": {
+        "page_count": 288,
+        "encrypted": false,
+        "metadata": {
+          "producer": "PDF Editor 2.0 - Foxit Software"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "c2e56aefec2d6210fdc2398913d89c5b7b7def6d"
+    },
+    {
+      "relative_path": "hardware-pdfs/d5901b6e76374baa13d3db89be2ff1ccf760c4e6.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "d5901b6e76374baa13d3db89be2ff1ccf760c4e6.pdf",
+      "stem": "d5901b6e76374baa13d3db89be2ff1ccf760c4e6",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1165113,
+      "modified_at": "2026-05-06T12:45:19.467781+00:00",
+      "sha256": "4943eec56990b992069db935ce92236882b5dbd483546f1d11abfd7bfef50dc1",
+      "pdf": {
+        "page_count": null,
+        "encrypted": true,
+        "metadata": {},
+        "parse_error": "DependencyError: cryptography>=3.1 is required for AES algorithm"
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "d5901b6e76374baa13d3db89be2ff1ccf760c4e6"
+    },
+    {
+      "relative_path": "hardware-pdfs/d78b7a223305527c6bb1a8e2c51738e71ed7fb70.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "d78b7a223305527c6bb1a8e2c51738e71ed7fb70.pdf",
+      "stem": "d78b7a223305527c6bb1a8e2c51738e71ed7fb70",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 7874130,
+      "modified_at": "2026-05-06T12:47:28.512760+00:00",
+      "sha256": "4aafa0099f0617a57c17f67409134119de52e0379f1aed32ac83bb16378a4753",
+      "pdf": {
+        "page_count": 215,
+        "encrypted": false,
+        "metadata": {
+          "title": "E:\\Program Files\\Founder\\Apabi Reader\\ceb\\lb896b0d5e-c809-4b4a-9ecb-eb704605bad547046.ceb",
+          "author": "new",
+          "creator": "PScript5.dll Version 5.2",
+          "producer": "Acrobat Distiller 7.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "high_speed"
+      ],
+      "title_guess": "E:\\Program Files\\Founder\\Apabi Reader\\ceb\\lb896b0d5e-c809-4b4a-9ecb-eb704605bad547046.ceb"
+    },
+    {
+      "relative_path": "hardware-pdfs/DAXeFkHGrEMnpYkQmi.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "DAXeFkHGrEMnpYkQmi.pdf",
+      "stem": "DAXeFkHGrEMnpYkQmi",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 5060537,
+      "modified_at": "2026-05-03T01:31:02.331657+00:00",
+      "sha256": "f1a2dbcde5a93b287ccf7ee06368b6296342b4685f7746b6e092173b248db3e7",
+      "pdf": {
+        "page_count": 97,
+        "encrypted": false,
+        "metadata": {
+          "title": "<4D6963726F736F667420576F7264202D20CEDEB8D0CEDECBA2D6B1C1F7B5E7BBFAD6AEB5E7B5F7C9E8BCC6C8ABB9A5C2D4>",
+          "author": "user",
+          "creator": "Acrobat PDFMaker 7.0 for Word",
+          "producer": "Acrobat Distiller 7.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "electronics_basics"
+      ],
+      "title_guess": "<4D6963726F736F667420576F7264202D20CEDEB8D0CEDECBA2D6B1C1F7B5E7BBFAD6AEB5E7B5F7C9E8BCC6C8ABB9A5C2D4>"
+    },
+    {
+      "relative_path": "hardware-pdfs/DC-DC升压和降压电路电感参数选择详解.docx",
+      "source_folder": "hardware-pdfs",
+      "file_name": "DC-DC升压和降压电路电感参数选择详解.docx",
+      "stem": "DC-DC升压和降压电路电感参数选择详解",
+      "extension": ".docx",
+      "file_type": "word",
+      "size_bytes": 80997,
+      "modified_at": "2026-05-09T12:08:17.695366+00:00",
+      "sha256": "8a5c6a72018b966400d91cbedeacd7974b528f9bd31dfb100651cc442738a41f",
+      "pdf": null,
+      "topics": [
+        "power_supply",
+        "electronics_basics"
+      ],
+      "title_guess": "DC-DC升压和降压电路电感参数选择详解"
+    },
+    {
+      "relative_path": "hardware-pdfs/Design_and_application_of_switching_regulator_power_supply.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "Design_and_application_of_switching_regulator_power_supply.pdf",
+      "stem": "Design_and_application_of_switching_regulator_power_supply",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 44235566,
+      "modified_at": "2026-05-06T12:43:16.861928+00:00",
+      "sha256": "3ea65a518590d237ba452355856ad78d78ddfd3bc906ef22c2c0f3b601e2c0d8",
+      "pdf": {
+        "page_count": null,
+        "encrypted": true,
+        "metadata": {},
+        "parse_error": "DependencyError: cryptography>=3.1 is required for AES algorithm"
+      },
+      "topics": [
+        "power_supply",
+        "high_speed"
+      ],
+      "title_guess": "Design_and_application_of_switching_regulator_power_supply"
+    },
+    {
+      "relative_path": "hardware-pdfs/DKjmQikfBtjfeEjDzK.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "DKjmQikfBtjfeEjDzK.pdf",
+      "stem": "DKjmQikfBtjfeEjDzK",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 509577,
+      "modified_at": "2026-04-12T12:20:09.638562+00:00",
+      "sha256": "27c86d4e117d7e5415a92c759258554fb4b55ab86f77d4311224c0f951bf0eab",
+      "pdf": {
+        "page_count": 3,
+        "encrypted": false,
+        "metadata": {
+          "author": "狼的骄傲",
+          "creator": "WPS 文字"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "high_speed",
+        "electronics_basics",
+        "embedded_systems"
+      ],
+      "title_guess": "DKjmQikfBtjfeEjDzK"
+    },
+    {
+      "relative_path": "hardware-pdfs/DRsHdxC6RAsRNfT7ma/实例解读模拟电子技术.pdf",
+      "source_folder": "hardware-pdfs/DRsHdxC6RAsRNfT7ma",
+      "file_name": "实例解读模拟电子技术.pdf",
+      "stem": "实例解读模拟电子技术",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 11694415,
+      "modified_at": "2020-06-17T02:48:43.001792+00:00",
+      "sha256": "69d3b71d0d8e92f29516285f3558e020752b37f4604b62e8258be68e541ffcd2",
+      "pdf": {
+        "page_count": 55,
+        "encrypted": false,
+        "metadata": {
+          "title": "实例解读模拟电子技术完全学习与应用",
+          "author": "杨欣，胡文锦，张延强编著",
+          "subject": "杨欣，胡文锦，张延强编著.实例解读模拟电子技术完全学习与应用.北京：电子工业出版社,2013.01.",
+          "creator": "Adobe Acrobat Pro 11.0.10",
+          "producer": "Adobe Acrobat Pro 11.0.10"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "op_amp_analog",
+        "electronics_basics"
+      ],
+      "title_guess": "实例解读模拟电子技术完全学习与应用"
+    },
+    {
+      "relative_path": "hardware-pdfs/DYacjaYaXwE5mbnDrx.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "DYacjaYaXwE5mbnDrx.pdf",
+      "stem": "DYacjaYaXwE5mbnDrx",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 93395007,
+      "modified_at": "2026-04-13T01:36:33.438091+00:00",
+      "sha256": "d243f46eccfa0c86a44d6f2027e1541488abc836963f600771af29b9076df403",
+      "pdf": {
+        "page_count": 359,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Pdg2Pic",
+          "producer": "FreePic2Pdf_Lib - v3.06"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "electronics_basics"
+      ],
+      "title_guess": "DYacjaYaXwE5mbnDrx"
+    },
+    {
+      "relative_path": "hardware-pdfs/eb1565fa5a0c4286648a020225f40649289bfc0b.doc",
+      "source_folder": "hardware-pdfs",
+      "file_name": "eb1565fa5a0c4286648a020225f40649289bfc0b.doc",
+      "stem": "eb1565fa5a0c4286648a020225f40649289bfc0b",
+      "extension": ".doc",
+      "file_type": "word",
+      "size_bytes": 180224,
+      "modified_at": "2026-05-09T12:12:35.295067+00:00",
+      "sha256": "79d57341bcd94f5e1b89d553ffa1b71741a1e686487651b5040f8488f9eaeb5b",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "eb1565fa5a0c4286648a020225f40649289bfc0b"
+    },
+    {
+      "relative_path": "hardware-pdfs/ec51463434d0b6abdb51c89a594f10e685e12423.doc",
+      "source_folder": "hardware-pdfs",
+      "file_name": "ec51463434d0b6abdb51c89a594f10e685e12423.doc",
+      "stem": "ec51463434d0b6abdb51c89a594f10e685e12423",
+      "extension": ".doc",
+      "file_type": "word",
+      "size_bytes": 29184,
+      "modified_at": "2026-05-09T12:12:08.308541+00:00",
+      "sha256": "2c070ccb62885a3473aeec66748b6a7e03e257cfd5ea87c0813496e48b98c1bf",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "ec51463434d0b6abdb51c89a594f10e685e12423"
+    },
+    {
+      "relative_path": "hardware-pdfs/electronics.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "electronics.pdf",
+      "stem": "electronics",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 65653265,
+      "modified_at": "2026-05-06T14:07:40.845879+00:00",
+      "sha256": "df3a01389e917d9d78865823b3683a1235b9e0cdc15ce9d6f165c24a84cf9783",
+      "pdf": {
+        "page_count": 930,
+        "encrypted": false,
+        "metadata": {
+          "title": "电子学（第二版 吴利民）",
+          "author": "le>无法找到请求的资源</title></head>",
+          "producer": "FreePic2Pdf - 1.05"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "electronics_basics"
+      ],
+      "title_guess": "电子学（第二版 吴利民）"
+    },
+    {
+      "relative_path": "hardware-pdfs/f2497377849416c9e0475932c40a9aa89d111baa.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "f2497377849416c9e0475932c40a9aa89d111baa.pdf",
+      "stem": "f2497377849416c9e0475932c40a9aa89d111baa",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 3973563,
+      "modified_at": "2026-05-06T12:41:48.691899+00:00",
+      "sha256": "07f61eb81427659da79a46b78c3b8ac2e41d74fe39885877096f84d24cbc52c7",
+      "pdf": {
+        "page_count": 121,
+        "encrypted": false,
+        "metadata": {
+          "title": "电源管理指南 2013 (Rev. G)",
+          "author": "Texas Instruments, Incorporated [ZHCT014,G ]",
+          "subject": "Marketing Selection Guide",
+          "creator": "Adobe InDesign CS6 (Windows)",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "transistor_mosfet",
+        "automotive",
+        "high_speed",
+        "protection_reliability"
+      ],
+      "title_guess": "电源管理指南 2013 (Rev. G)"
+    },
+    {
+      "relative_path": "hardware-pdfs/F82QCwYNMKEDeyfDZf.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "F82QCwYNMKEDeyfDZf.pdf",
+      "stem": "F82QCwYNMKEDeyfDZf",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 18450095,
+      "modified_at": "2026-05-01T00:43:08.608563+00:00",
+      "sha256": "5835d0671bd59b0da8c0f75f28e2baa6982d5c779a760534f1e531c53c5411a7",
+      "pdf": {
+        "page_count": 391,
+        "encrypted": false,
+        "metadata": {
+          "title": "Table of Contents",
+          "author": "abigail.hunte",
+          "subject": "Protel 2004 Education Series",
+          "creator": "Acrobat PDFMaker 5.0 for Word",
+          "producer": "Acrobat Distiller 5.0.5 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "high_speed",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "Table of Contents"
+    },
+    {
+      "relative_path": "hardware-pdfs/ffc0150ec4c5c0223eb92c36027200884c68a331.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "ffc0150ec4c5c0223eb92c36027200884c68a331.pdf",
+      "stem": "ffc0150ec4c5c0223eb92c36027200884c68a331",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1859746,
+      "modified_at": "2026-05-06T12:48:18.080611+00:00",
+      "sha256": "93f7f2e8a2eb31605c8b2e02dd060bcbe19b3d9fca216ff76aa549bce1602063",
+      "pdf": {
+        "page_count": 67,
+        "encrypted": false,
+        "metadata": {
+          "title": "Microsoft PowerPoint - LLC.ppt",
+          "author": "cguo",
+          "creator": "PScript5.dll Version 5.2.2",
+          "producer": "Acrobat Distiller 6.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "transistor_mosfet",
+        "high_speed"
+      ],
+      "title_guess": "Microsoft PowerPoint - LLC.ppt"
+    },
+    {
+      "relative_path": "hardware-pdfs/fFSb2ZB4wmJhsxMnss.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "fFSb2ZB4wmJhsxMnss.pdf",
+      "stem": "fFSb2ZB4wmJhsxMnss",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 705144,
+      "modified_at": "2026-04-13T01:37:29.881976+00:00",
+      "sha256": "748528bb59f7ebe9b8a07f5612b1cdf4a614a798108cd7fd5030679150035d3a",
+      "pdf": {
+        "page_count": 23,
+        "encrypted": false,
+        "metadata": {
+          "title": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "author": "runtop",
+          "creator": "PScript5.dll Version 5.2",
+          "producer": "Acrobat Distiller 6.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "transistor_mosfet",
+        "high_speed",
+        "test_measurement"
+      ],
+      "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc"
+    },
+    {
+      "relative_path": "hardware-pdfs/FJC4NwxmnRWfidFCMn.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "FJC4NwxmnRWfidFCMn.pdf",
+      "stem": "FJC4NwxmnRWfidFCMn",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 21636284,
+      "modified_at": "2026-04-17T14:51:20.284811+00:00",
+      "sha256": "dfe485f5cb9d91b9c2817d556ed6cf6d9f1f976c9351741d8547f66184f21b09",
+      "pdf": {
+        "page_count": 490,
+        "encrypted": false,
+        "metadata": {
+          "title": "555集成电路应用800例",
+          "author": "陈永甫主编",
+          "producer": "FreePic2Pdf - 1.07"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "electronics_basics"
+      ],
+      "title_guess": "555集成电路应用800例"
+    },
+    {
+      "relative_path": "hardware-pdfs/FnXFbTQmQnh5XHj4Qh.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "FnXFbTQmQnh5XHj4Qh.pdf",
+      "stem": "FnXFbTQmQnh5XHj4Qh",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 45740611,
+      "modified_at": "2026-05-02T02:04:59.123639+00:00",
+      "sha256": "53a6b0831f2464cc33d545dc29816b2e5ce1c4bfb4f6d6a33124c087001dcbae",
+      "pdf": {
+        "page_count": 521,
+        "encrypted": false,
+        "metadata": {
+          "producer": "FreePic2Pdf - 1.20"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "FnXFbTQmQnh5XHj4Qh"
+    },
+    {
+      "relative_path": "hardware-pdfs/fNZHZPB7fFwsBmH4pr.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "fNZHZPB7fFwsBmH4pr.pdf",
+      "stem": "fNZHZPB7fFwsBmH4pr",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 73503897,
+      "modified_at": "2026-04-26T14:10:44.397311+00:00",
+      "sha256": "8ad04c4a8d7fd13c7775ba6bc802bc13ced3796e70d558cfd22b403a05da05e1",
+      "pdf": {
+        "page_count": 18,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36",
+          "producer": "Skia/PDF m88"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "electronics_basics"
+      ],
+      "title_guess": "fNZHZPB7fFwsBmH4pr"
+    },
+    {
+      "relative_path": "hardware-pdfs/FtwBS7XbyPwDawkfEk.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "FtwBS7XbyPwDawkfEk.pdf",
+      "stem": "FtwBS7XbyPwDawkfEk",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 29879701,
+      "modified_at": "2026-04-18T02:02:18.411131+00:00",
+      "sha256": "f0e634047b1da2f15e806a4568f543eb2e06a0cbedfdf30c4c04ba699ac083ca",
+      "pdf": {
+        "page_count": 342,
+        "encrypted": false,
+        "metadata": {
+          "title": "SSReader Print.",
+          "author": "Administrator",
+          "creator": "超星阅览器Superstar Reader 3.7 - [高频电路原理与分析（第二版）]",
+          "producer": "Acrobat PDFWriter 4.0ÓÃÓÚ Windows NT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "electronics_basics"
+      ],
+      "title_guess": "SSReader Print."
+    },
+    {
+      "relative_path": "hardware-pdfs/Fx2J8a4TrkEKZHajza.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "Fx2J8a4TrkEKZHajza.pdf",
+      "stem": "Fx2J8a4TrkEKZHajza",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 141756315,
+      "modified_at": "2026-04-26T14:16:59.776947+00:00",
+      "sha256": "3d4750218258179b34574e8a77aa2f83855f30ef89b3e47a1186deeb262457a7",
+      "pdf": {
+        "page_count": 649,
+        "encrypted": false,
+        "metadata": {
+          "producer": "A-PDF Watermark 4.1.10"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "Fx2J8a4TrkEKZHajza"
+    },
+    {
+      "relative_path": "hardware-pdfs/hdpeynKew8zmJTnEJj/运算放大器应用技术手册.pdf",
+      "source_folder": "hardware-pdfs/hdpeynKew8zmJTnEJj",
+      "file_name": "运算放大器应用技术手册.pdf",
+      "stem": "运算放大器应用技术手册",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 62763373,
+      "modified_at": "2020-09-06T11:30:05.437261+00:00",
+      "sha256": "1e9ddbea3c91d9e03332d3ca79b68d75a9708c664e7ab17c5c64ed2e08ad7fcd",
+      "pdf": {
+        "page_count": 701,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe Acrobat 7.0",
+          "producer": "Adobe Acrobat 7.0 Image Conversion Plug-in"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "op_amp_analog",
+        "high_speed"
+      ],
+      "title_guess": "运算放大器应用技术手册"
+    },
+    {
+      "relative_path": "hardware-pdfs/highSpeeddigitalDesign.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "highSpeeddigitalDesign.pdf",
+      "stem": "highSpeeddigitalDesign",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 13226902,
+      "modified_at": "2026-05-06T14:07:22.442287+00:00",
+      "sha256": "c797196a128b728ed489d98980a09f47b63bcfcbceccec3fa2db99bbfbf3572a",
+      "pdf": {
+        "page_count": 374,
+        "encrypted": false,
+        "metadata": {},
+        "parse_error": null
+      },
+      "topics": [
+        "high_speed"
+      ],
+      "title_guess": "highSpeeddigitalDesign"
+    },
+    {
+      "relative_path": "hardware-pdfs/iWGTFfzZJGrNCQZPBy.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "iWGTFfzZJGrNCQZPBy.pdf",
+      "stem": "iWGTFfzZJGrNCQZPBy",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 115933734,
+      "modified_at": "2026-05-01T00:40:04.404796+00:00",
+      "sha256": "cf782104c743db74c279e7f214ea285b6884d0f6466626e78a734e36a45ce0c0",
+      "pdf": {
+        "page_count": 575,
+        "encrypted": false,
+        "metadata": {
+          "producer": "DSBaby"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "iWGTFfzZJGrNCQZPBy"
+    },
+    {
+      "relative_path": "hardware-pdfs/John-catsoulis.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "John-catsoulis.pdf",
+      "stem": "John-catsoulis",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 17669164,
+      "modified_at": "2026-05-06T14:07:05.938788+00:00",
+      "sha256": "fcc3f4f7f9d7f2bb1d35dce2d2d6a4b50b5a5f9f07c075f5881af94d9b252bed",
+      "pdf": {
+        "page_count": 329,
+        "encrypted": false,
+        "metadata": {
+          "title": "嵌入式硬件设计",
+          "producer": "FreePic2Pdf - 1.07"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "embedded_systems"
+      ],
+      "title_guess": "嵌入式硬件设计"
+    },
+    {
+      "relative_path": "hardware-pdfs/jPNBe2yaHGrZWx667k.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "jPNBe2yaHGrZWx667k.pdf",
+      "stem": "jPNBe2yaHGrZWx667k",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 78166939,
+      "modified_at": "2026-04-12T12:23:46.115165+00:00",
+      "sha256": "7fa418b1cac5d1f31686df9f6deeb391651b721cd08299205b3d300f01f2f568",
+      "pdf": {
+        "page_count": 324,
+        "encrypted": false,
+        "metadata": {
+          "creator": "PDFPatcher 1.1.0.4632",
+          "producer": "iTextSharp™ 5.5.14-SNAPSHOT ©2000-2019 iText Group NV"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "jPNBe2yaHGrZWx667k"
+    },
+    {
+      "relative_path": "hardware-pdfs/M6hedajTnhwrcEy8Kt.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "M6hedajTnhwrcEy8Kt.pdf",
+      "stem": "M6hedajTnhwrcEy8Kt",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 330756,
+      "modified_at": "2026-04-30T07:33:36.950493+00:00",
+      "sha256": "495d6d1f89162986fb59ecf2e7edefd28510885114cc8e7fd7c4536f17c69fad",
+      "pdf": {
+        "page_count": 13,
+        "encrypted": false,
+        "metadata": {
+          "author": "eda365xian3",
+          "creator": "WPS 文字"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "emi_emc",
+        "op_amp_analog",
+        "high_speed",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "M6hedajTnhwrcEy8Kt"
+    },
+    {
+      "relative_path": "hardware-pdfs/MR3QMpXX38FHGFfYJ8.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "MR3QMpXX38FHGFfYJ8.pdf",
+      "stem": "MR3QMpXX38FHGFfYJ8",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 9950377,
+      "modified_at": "2026-05-01T00:42:40.540859+00:00",
+      "sha256": "90fa47259125c054d46b5563f64aedc5856e52c9f1d647da88e0038e20ebc602",
+      "pdf": {
+        "page_count": 451,
+        "encrypted": false,
+        "metadata": {
+          "title": "ABC Amber PDF Merger",
+          "author": "Yernar Shambayev (ProcessText Group)",
+          "subject": "ABC Amber PDF Merger",
+          "creator": "Yernar Shambayev (ProcessText Group)",
+          "producer": "Yernar Shambayev (ProcessText Group)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "high_speed"
+      ],
+      "title_guess": "ABC Amber PDF Merger"
+    },
+    {
+      "relative_path": "hardware-pdfs/ms8DzAmF88mdfHzsps.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "ms8DzAmF88mdfHzsps.pdf",
+      "stem": "ms8DzAmF88mdfHzsps",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 20757745,
+      "modified_at": "2026-05-03T01:29:56.715524+00:00",
+      "sha256": "bce6e63421702958f3ad466af16993b229c687527747728604445ac74936b9db",
+      "pdf": {
+        "page_count": 411,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe Acrobat 6.0",
+          "producer": "Acrobat Distiller 6.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "high_speed"
+      ],
+      "title_guess": "ms8DzAmF88mdfHzsps"
+    },
+    {
+      "relative_path": "hardware-pdfs/New_switch_power_optimization_design_and_examples_of_detailed_explanation.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "New_switch_power_optimization_design_and_examples_of_detailed_explanation.pdf",
+      "stem": "New_switch_power_optimization_design_and_examples_of_detailed_explanation",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 201423188,
+      "modified_at": "2026-05-06T12:32:42.689819+00:00",
+      "sha256": "bd7630a1a28be37dd3829c9db818abe37a0de51e60c235ce9d4c290fbb114dc6",
+      "pdf": {
+        "page_count": 1715,
+        "encrypted": false,
+        "metadata": {},
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "high_speed"
+      ],
+      "title_guess": "New_switch_power_optimization_design_and_examples_of_detailed_explanation"
+    },
+    {
+      "relative_path": "hardware-pdfs/NY7fkTDpD7Y6N2ikEQ.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "NY7fkTDpD7Y6N2ikEQ.pdf",
+      "stem": "NY7fkTDpD7Y6N2ikEQ",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 9815205,
+      "modified_at": "2026-04-18T01:58:44.015512+00:00",
+      "sha256": "83fa962dc6cfb80f3577dde6069779167469cedec1edc729d927899871f49575",
+      "pdf": {
+        "page_count": 1135,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Acrobat PDFMaker 7.0 for Word",
+          "producer": "Adobe Acrobat Pro 9.1.2"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "electronics_basics"
+      ],
+      "title_guess": "NY7fkTDpD7Y6N2ikEQ"
+    },
+    {
+      "relative_path": "hardware-pdfs/nzbEzsWmpnBZZrFTbG.docx",
+      "source_folder": "hardware-pdfs",
+      "file_name": "nzbEzsWmpnBZZrFTbG.docx",
+      "stem": "nzbEzsWmpnBZZrFTbG",
+      "extension": ".docx",
+      "file_type": "word",
+      "size_bytes": 15513,
+      "modified_at": "2026-05-01T00:32:48.524931+00:00",
+      "sha256": "dbb914b36885d5e29d67901c10ca10000d91c6d85a6942d1858b418cafaa8ce8",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "nzbEzsWmpnBZZrFTbG"
+    },
+    {
+      "relative_path": "hardware-pdfs/PmMdWW7c4ErFH5jfDR.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "PmMdWW7c4ErFH5jfDR.pdf",
+      "stem": "PmMdWW7c4ErFH5jfDR",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 5484313,
+      "modified_at": "2026-04-12T12:21:19.114320+00:00",
+      "sha256": "2a8f3f928b2f4bee0b66d4d97f4d420ae82ab567dd2a9a354fad5de893d10538",
+      "pdf": {
+        "page_count": 27,
+        "encrypted": false,
+        "metadata": {
+          "title": "RF PCB Simulation Cookbook",
+          "author": "Texas Instruments, Incorporated [SWRA638,*]",
+          "subject": "Application Reports",
+          "creator": "TopLeaf 9.0.006",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "transistor_mosfet",
+        "digital_protocols",
+        "high_speed"
+      ],
+      "title_guess": "RF PCB Simulation Cookbook"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/077359adbd6d7aa369e031390b113e8c51df023f.rar",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "077359adbd6d7aa369e031390b113e8c51df023f.rar",
+      "stem": "077359adbd6d7aa369e031390b113e8c51df023f",
+      "extension": ".rar",
+      "file_type": "archive",
+      "size_bytes": 3487956,
+      "modified_at": "2026-05-04T23:36:15.897846+00:00",
+      "sha256": "609287c7ea4f9047792a5c365fdfb500eb9f5e28265f1fb5c03d779c34672e0d",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "077359adbd6d7aa369e031390b113e8c51df023f"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/2683b93a48860030f59527875071dad4b571a4ea.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "2683b93a48860030f59527875071dad4b571a4ea.pdf",
+      "stem": "2683b93a48860030f59527875071dad4b571a4ea",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 4412335,
+      "modified_at": "2026-05-04T23:34:06.554256+00:00",
+      "sha256": "8c08c90cabf5a1d13729184e4ea2d195023123a4d6ec83ed532ffadcea9609cf",
+      "pdf": {
+        "page_count": 9,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe InDesign CC 2015 (Macintosh)",
+          "producer": "Adobe PDF Library 15.0"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "transistor_mosfet",
+        "high_speed",
+        "protection_reliability"
+      ],
+      "title_guess": "2683b93a48860030f59527875071dad4b571a4ea"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/30c55de35d8ae751406b969d6480dd2d4da4bd87.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "30c55de35d8ae751406b969d6480dd2d4da4bd87.pdf",
+      "stem": "30c55de35d8ae751406b969d6480dd2d4da4bd87",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1944457,
+      "modified_at": "2026-05-04T23:37:33.156489+00:00",
+      "sha256": "f16d315fbaef6f20fb8aa1bd1a70dbefe0a17c9ae4a881a0d7ca4a8cc3438dc1",
+      "pdf": {
+        "page_count": 49,
+        "encrypted": false,
+        "metadata": {
+          "title": "电源开关设计秘笈30例",
+          "author": "Robert Kollman Roger Chan Alan Hastings Rich Nowakowski www.ti.com.cn 2011-3-8",
+          "creator": "Microsoft® Office Word 2007",
+          "producer": "Microsoft® Office Word 2007"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "electronics_basics"
+      ],
+      "title_guess": "电源开关设计秘笈30例"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4.pdf",
+      "stem": "3e2c80e7bc5c086b7f47e1cbb8781ec177ba14a4",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 563185,
+      "modified_at": "2026-05-04T23:33:30.328258+00:00",
+      "sha256": "c7111ad373df6b07ee2a83575b3db05bbd374c27a06c46b96366326b5fe92fdf",
+      "pdf": {
+        "page_count": 14,
+        "encrypted": false,
+        "metadata": {
+          "title": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗",
+          "author": "IBM",
+          "creator": "Acrobat PDFMaker 7.0 for Word",
+          "producer": "Acrobat Distiller 7.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "transistor_mosfet",
+        "protection_reliability",
+        "electronics_basics"
+      ],
+      "title_guess": "开关电源原理（希望能帮到同行的你更加深入的了解开关电源，温故而知新吗"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/5131f1161da878c8f8d1e06a769f546e4356e4d4.zip",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "5131f1161da878c8f8d1e06a769f546e4356e4d4.zip",
+      "stem": "5131f1161da878c8f8d1e06a769f546e4356e4d4",
+      "extension": ".zip",
+      "file_type": "archive",
+      "size_bytes": 2030902,
+      "modified_at": "2026-05-04T23:37:15.845584+00:00",
+      "sha256": "82159526823f5e946b281afea24b14deeab10a33de9faff2706cad5590727e47",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "5131f1161da878c8f8d1e06a769f546e4356e4d4"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/588ec1d46f1abc724ded05475edfb20b8045e457.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "588ec1d46f1abc724ded05475edfb20b8045e457.pdf",
+      "stem": "588ec1d46f1abc724ded05475edfb20b8045e457",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1647350,
+      "modified_at": "2026-05-04T23:36:55.638384+00:00",
+      "sha256": "de85d90a295bd6e2b0bfbcc2ff9cc59b8dd9fd3177a9d3c596b478c4df06e1ce",
+      "pdf": {
+        "page_count": 27,
+        "encrypted": false,
+        "metadata": {
+          "title": "开关电源基础知识",
+          "author": "A",
+          "creator": "Microsoft® Word 2010",
+          "producer": "Microsoft® Word 2010"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "electronics_basics"
+      ],
+      "title_guess": "开关电源基础知识"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "6d9bca9427b4f05ccda3607f1e7879ce84724e18.pdf",
+      "stem": "6d9bca9427b4f05ccda3607f1e7879ce84724e18",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 5385762,
+      "modified_at": "2026-05-04T23:33:54.361053+00:00",
+      "sha256": "12ed0378a5b1c6b32037c35ad66ee461351ed2dc296784f901ce6b4be5eb4b79",
+      "pdf": {
+        "page_count": 99,
+        "encrypted": false,
+        "metadata": {
+          "title": "电源设计提示",
+          "author": "Texas Instruments, Incorporated [ZHCC344,*]",
+          "subject": "Master Selection Guide",
+          "creator": "Microsoft® Office Word 2007",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "电源设计提示"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/6ec975510a0d4a6e3e87b9bc816aa0e16a44892a.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "6ec975510a0d4a6e3e87b9bc816aa0e16a44892a.pdf",
+      "stem": "6ec975510a0d4a6e3e87b9bc816aa0e16a44892a",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 237774,
+      "modified_at": "2026-05-04T23:38:45.551202+00:00",
+      "sha256": "12d8f962c5ad3666fd1ece3ea7f03670dbd71632099e83bcd99cea21a2696997",
+      "pdf": {
+        "page_count": 4,
+        "encrypted": false,
+        "metadata": {
+          "title": "摘要：详细介绍了一个带有中间抽头高频大功率变压器设计过程和计算方法，以及要注意问题",
+          "author": "BUS10",
+          "creator": "Microsoft® Word 2010",
+          "producer": "Microsoft® Word 2010"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "emi_emc",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "摘要：详细介绍了一个带有中间抽头高频大功率变压器设计过程和计算方法，以及要注意问题"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/6ffca3c9530817ad0daea3e15af70a80b0f739c7.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "6ffca3c9530817ad0daea3e15af70a80b0f739c7.pdf",
+      "stem": "6ffca3c9530817ad0daea3e15af70a80b0f739c7",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1424053,
+      "modified_at": "2026-05-04T23:37:21.826032+00:00",
+      "sha256": "bdbcfd603a026d75f3e28c09337eb5a02f765c97fdf9d4c4b62a9845b8192a74",
+      "pdf": {
+        "page_count": 42,
+        "encrypted": false,
+        "metadata": {
+          "title": "电源开关设计秘笈30例",
+          "author": "Robert Kollman Roger Chan Alan Hastings Rich Nowakowski",
+          "creator": "Microsoft® Office Word 2007",
+          "producer": "Microsoft® Office Word 2007"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "automotive",
+        "electronics_basics"
+      ],
+      "title_guess": "电源开关设计秘笈30例"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/8a37aabf1c7f1b7ed276a2b545a11d3b13738a46.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "8a37aabf1c7f1b7ed276a2b545a11d3b13738a46.pdf",
+      "stem": "8a37aabf1c7f1b7ed276a2b545a11d3b13738a46",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1431863,
+      "modified_at": "2026-05-04T23:39:37.829335+00:00",
+      "sha256": "44beaaccd6fc63b2749f7d16cd53c71cbaee27bec21d1cdcddba4082cbdb9ca1",
+      "pdf": {
+        "page_count": 11,
+        "encrypted": false,
+        "metadata": {
+          "title": "Microsoft Word - 2222.doc",
+          "author": "user",
+          "creator": "Acrobat PDFMaker 6.0 Word 版",
+          "producer": "Acrobat Distiller 6.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "Microsoft Word - 2222.doc"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/8f1cc3540ace707ffd2d324688f0d4f17ce442b4.rar",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "8f1cc3540ace707ffd2d324688f0d4f17ce442b4.rar",
+      "stem": "8f1cc3540ace707ffd2d324688f0d4f17ce442b4",
+      "extension": ".rar",
+      "file_type": "archive",
+      "size_bytes": 4000000,
+      "modified_at": "2026-05-04T23:36:05.531311+00:00",
+      "sha256": "6d7640f27e1dd2d7732e93f31f31bd1a9271f56c8105654daa120c88cfcc0dae",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "8f1cc3540ace707ffd2d324688f0d4f17ce442b4"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/919f66299f98a112c0bc31a543c4f377febfe5ff.rar",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "919f66299f98a112c0bc31a543c4f377febfe5ff.rar",
+      "stem": "919f66299f98a112c0bc31a543c4f377febfe5ff",
+      "extension": ".rar",
+      "file_type": "archive",
+      "size_bytes": 4000000,
+      "modified_at": "2026-05-04T23:36:09.959616+00:00",
+      "sha256": "02353c2011c378af274caeff57485b27955c7055ec9cb8e9f08a60da54817172",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "919f66299f98a112c0bc31a543c4f377febfe5ff"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/9fde19133c2d9a15efb39fb3a13bf9f32e52503e.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "9fde19133c2d9a15efb39fb3a13bf9f32e52503e.pdf",
+      "stem": "9fde19133c2d9a15efb39fb3a13bf9f32e52503e",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1050251,
+      "modified_at": "2026-05-04T23:38:05.235205+00:00",
+      "sha256": "bd85c80587e9b5a02af3bb9327f7f77e67cfdcba9f15ac61ced868d3f68ca929",
+      "pdf": {
+        "page_count": 47,
+        "encrypted": false,
+        "metadata": {
+          "producer": "PDFlib 7.0.3 (C++/Win32)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "9fde19133c2d9a15efb39fb3a13bf9f32e52503e"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/a02214de8a9b5e3eef2a6b84688223c63b0bf01f.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "a02214de8a9b5e3eef2a6b84688223c63b0bf01f.pdf",
+      "stem": "a02214de8a9b5e3eef2a6b84688223c63b0bf01f",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 14310329,
+      "modified_at": "2026-05-04T23:39:10.826847+00:00",
+      "sha256": "570cee37f0c8fa4004cd9cb373b33b8f39e0e6a164ba5ac4a238354106e59283",
+      "pdf": {
+        "page_count": 57,
+        "encrypted": false,
+        "metadata": {
+          "title": "变压器与电感器设计手册 第4版",
+          "author": "（美）麦克莱曼编著",
+          "subject": "（美）麦克莱曼编著.变压器与电感器设计手册 第4版.北京：中国电力出版社,2013.10.",
+          "creator": "Adobe Acrobat Pro 11.0.10",
+          "producer": "Adobe Acrobat Pro 11.0.10"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "变压器与电感器设计手册 第4版"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/a0c3301aff2a9c5693c8eef8aab1cea6e5edec9b.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "a0c3301aff2a9c5693c8eef8aab1cea6e5edec9b.pdf",
+      "stem": "a0c3301aff2a9c5693c8eef8aab1cea6e5edec9b",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 13099728,
+      "modified_at": "2026-05-04T23:39:21.739841+00:00",
+      "sha256": "8c007b8be6c3d937dbb706c6f9e074021e288e6a24780afcfd271a1becf0ba83",
+      "pdf": {
+        "page_count": 234,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe Acrobat 9.0",
+          "producer": "Adobe Acrobat 9.0 Image Conversion Plug-in"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "high_speed"
+      ],
+      "title_guess": "a0c3301aff2a9c5693c8eef8aab1cea6e5edec9b"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/a38c9f70562757d9d922c4b4eec9184e33e802df.rar",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "a38c9f70562757d9d922c4b4eec9184e33e802df.rar",
+      "stem": "a38c9f70562757d9d922c4b4eec9184e33e802df",
+      "extension": ".rar",
+      "file_type": "archive",
+      "size_bytes": 4000000,
+      "modified_at": "2026-05-04T23:36:01.320988+00:00",
+      "sha256": "71e62f97c911ac143a9097a8de39b9192986e593fda2ba05671777d3cc85c415",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "a38c9f70562757d9d922c4b4eec9184e33e802df"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/a480f6fafbf37e645c84ace9155fc1c7d643d62e.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "a480f6fafbf37e645c84ace9155fc1c7d643d62e.pdf",
+      "stem": "a480f6fafbf37e645c84ace9155fc1c7d643d62e",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 2143730,
+      "modified_at": "2026-05-04T23:37:38.024567+00:00",
+      "sha256": "79b05baf9c88ab087c7c23a5f4fa3a6d6b204dca8de44a2576b8a78cc174545d",
+      "pdf": {
+        "page_count": 64,
+        "encrypted": false,
+        "metadata": {
+          "title": "电源开关设计秘笈30例",
+          "author": "Robert Kollman Roger Chan Alan Hastings Rich Nowakowski www.ti.com.cn 2011-3-14",
+          "creator": "Microsoft® Office Word 2007",
+          "producer": "Microsoft® Office Word 2007"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "automotive",
+        "electronics_basics"
+      ],
+      "title_guess": "电源开关设计秘笈30例"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/aac006055db617235670ea7e76cf084a11336976.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "aac006055db617235670ea7e76cf084a11336976.pdf",
+      "stem": "aac006055db617235670ea7e76cf084a11336976",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 3696722,
+      "modified_at": "2026-05-04T23:33:21.447963+00:00",
+      "sha256": "cb1b978054d16738923fe4383ca44438255d124a985ab56043c169cc8d926e80",
+      "pdf": {
+        "page_count": 38,
+        "encrypted": false,
+        "metadata": {
+          "title": "开关电源基础知识",
+          "author": "A",
+          "creator": "Microsoft® Word 2010",
+          "producer": "Microsoft® Word 2010"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "electronics_basics"
+      ],
+      "title_guess": "开关电源基础知识"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "b75f8384ddab76deef8e6d4ebbf075fd7184b6b6.pdf",
+      "stem": "b75f8384ddab76deef8e6d4ebbf075fd7184b6b6",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1655512,
+      "modified_at": "2026-05-04T23:35:49.223950+00:00",
+      "sha256": "4c2833177eadbcd034105ea5deec48cc9aa01ef77d893dc05b89906298ac6b23",
+      "pdf": {
+        "page_count": 127,
+        "encrypted": false,
+        "metadata": {
+          "title": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>",
+          "author": "Administrator",
+          "creator": "PScript5.dll Version 5.2.2",
+          "producer": "Acrobat Distiller 8.1.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "emi_emc",
+        "transistor_mosfet",
+        "high_speed",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "<BFAAB9D8B5E7D4B4C9E8BCC6B5C4D2BBB0E3BFBCC2C72E706466>"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/deef66c0dfdc068a9dcfd41e1bfa94eeb3ae37d6.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "deef66c0dfdc068a9dcfd41e1bfa94eeb3ae37d6.pdf",
+      "stem": "deef66c0dfdc068a9dcfd41e1bfa94eeb3ae37d6",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 3841463,
+      "modified_at": "2026-05-04T23:36:50.558599+00:00",
+      "sha256": "c6d93d054413280ae42217d12e8ab1e679c631fc70642d10499158b1836f72e8",
+      "pdf": {
+        "page_count": 51,
+        "encrypted": false,
+        "metadata": {
+          "title": "开关电源基础知识",
+          "author": "A",
+          "creator": "Microsoft® Word 2010",
+          "producer": "Microsoft® Word 2010"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "electronics_basics"
+      ],
+      "title_guess": "开关电源基础知识"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/Design_and_application_of_switching_regulator_power_supply.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "Design_and_application_of_switching_regulator_power_supply.pdf",
+      "stem": "Design_and_application_of_switching_regulator_power_supply",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 44235566,
+      "modified_at": "2026-05-04T23:40:00.517676+00:00",
+      "sha256": "3ea65a518590d237ba452355856ad78d78ddfd3bc906ef22c2c0f3b601e2c0d8",
+      "pdf": {
+        "page_count": null,
+        "encrypted": true,
+        "metadata": {},
+        "parse_error": "DependencyError: cryptography>=3.1 is required for AES algorithm"
+      },
+      "topics": [
+        "power_supply",
+        "high_speed"
+      ],
+      "title_guess": "Design_and_application_of_switching_regulator_power_supply"
+    },
+    {
+      "relative_path": "hardware-pdfs/TI/e889cf344626b5dc015335a54c1817ea03627369.pdf",
+      "source_folder": "hardware-pdfs/TI",
+      "file_name": "e889cf344626b5dc015335a54c1817ea03627369.pdf",
+      "stem": "e889cf344626b5dc015335a54c1817ea03627369",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 171746,
+      "modified_at": "2026-05-04T23:38:38.317118+00:00",
+      "sha256": "d43ad849ae85f11d820f5f74b8926a84f7ae24ff152e0b79387941cc813c8859",
+      "pdf": {
+        "page_count": 9,
+        "encrypted": false,
+        "metadata": {
+          "title": "Feedback Loop Design of an LLC Resonant Power Converter (Rev. A)",
+          "author": "Texas Instruments, Incorporated [SLUA582,A]",
+          "subject": "Application Reports",
+          "creator": "TopLeaf 7.5.001",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "transistor_mosfet",
+        "digital_protocols",
+        "high_speed",
+        "test_measurement",
+        "embedded_systems"
+      ],
+      "title_guess": "Feedback Loop Design of an LLC Resonant Power Converter (Rev. A)"
+    },
+    {
+      "relative_path": "hardware-pdfs/tjZJczemHHpH7mtYtJ.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "tjZJczemHHpH7mtYtJ.pdf",
+      "stem": "tjZJczemHHpH7mtYtJ",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 1077030,
+      "modified_at": "2026-05-02T02:02:23.680951+00:00",
+      "sha256": "cd3c1a1a1e43b0615f6e3825019c302c9f420fadce565cbf2cff8d5fd09454da",
+      "pdf": {
+        "page_count": 79,
+        "encrypted": false,
+        "metadata": {
+          "title": "第一篇 PCB布线",
+          "author": "lupeng",
+          "creator": "Microsoft® Office Word 2007",
+          "producer": "Microsoft® Office Word 2007"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "emi_emc",
+        "high_speed",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "第一篇 PCB布线"
+    },
+    {
+      "relative_path": "hardware-pdfs/tN6JHD3xnkGdBn6RAB.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "tN6JHD3xnkGdBn6RAB.pdf",
+      "stem": "tN6JHD3xnkGdBn6RAB",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 10668197,
+      "modified_at": "2026-04-26T14:08:08.791306+00:00",
+      "sha256": "b10ed8fc4d909385d4525d5efdfe46922ab5217c25b95ea9def7c4be14313bcd",
+      "pdf": {
+        "page_count": 771,
+        "encrypted": false,
+        "metadata": {
+          "title": "SSReader Print.",
+          "author": "TERRY",
+          "creator": "PScript5.dll Version 5.2",
+          "producer": "Acrobat Distiller 6.0.1 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "high_speed"
+      ],
+      "title_guess": "SSReader Print."
+    },
+    {
+      "relative_path": "hardware-pdfs/tnmXWKrcxA854eZ6w2.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "tnmXWKrcxA854eZ6w2.pdf",
+      "stem": "tnmXWKrcxA854eZ6w2",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 12937771,
+      "modified_at": "2026-04-26T14:13:56.949690+00:00",
+      "sha256": "adce0140939bb34197aa8037932f862bc9c1f17a58ab530b49fe5f9dda27d4a9",
+      "pdf": {
+        "page_count": 13,
+        "encrypted": false,
+        "metadata": {
+          "author": "TDK Corporation",
+          "creator": "Adobe Acrobat 8.0 Combine Files",
+          "producer": "Acrobat Distiller 6.0.0 for Macintosh"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "tnmXWKrcxA854eZ6w2"
+    },
+    {
+      "relative_path": "hardware-pdfs/Transistor_circuit_design-1.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "Transistor_circuit_design-1.pdf",
+      "stem": "Transistor_circuit_design-1",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 44133393,
+      "modified_at": "2026-05-06T14:06:48.855551+00:00",
+      "sha256": "a087c81feffee449502e86defb931f0edcf3bd783047c2624262de9bd6f0fd1f",
+      "pdf": {
+        "page_count": 286,
+        "encrypted": false,
+        "metadata": {
+          "title": "晶体管电路设计（上）放大电路技术的实验解析",
+          "author": "日",
+          "subject": "ISBN 7-03-013308-0",
+          "producer": "FreePic2Pdf - 1.20"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "晶体管电路设计（上）放大电路技术的实验解析"
+    },
+    {
+      "relative_path": "hardware-pdfs/Transistorcircuitdesign_Part2.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "Transistorcircuitdesign_Part2.pdf",
+      "stem": "Transistorcircuitdesign_Part2",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 52357405,
+      "modified_at": "2026-05-06T14:06:14.789612+00:00",
+      "sha256": "06cae5a5f78f7e50428d443c269e092d64a61bf5599137e5b3f6f12679c8d288",
+      "pdf": {
+        "page_count": 323,
+        "encrypted": false,
+        "metadata": {
+          "title": "晶体管电路设计（下）FET/功率MOS/开关电路的实验解析",
+          "author": "日",
+          "subject": "ISBN 7-03-013278-5",
+          "producer": "FreePic2Pdf - 1.20"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "晶体管电路设计（下）FET/功率MOS/开关电路的实验解析"
+    },
+    {
+      "relative_path": "hardware-pdfs/wfKcRHxEFSQSFjtdss/CAN、I2S、I2C、SPI、SSP各类总线精讲.pdf",
+      "source_folder": "hardware-pdfs/wfKcRHxEFSQSFjtdss",
+      "file_name": "CAN、I2S、I2C、SPI、SSP各类总线精讲.pdf",
+      "stem": "CAN、I2S、I2C、SPI、SSP各类总线精讲",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 2943484,
+      "modified_at": "2020-11-15T09:03:51.926593+00:00",
+      "sha256": "11a1328a842a817e5fb3fc28efcb97de628e204f58e25d198676bd0217d0987f",
+      "pdf": {
+        "page_count": 7,
+        "encrypted": false,
+        "metadata": {
+          "title": "bingdian001.com",
+          "author": "bingdian001.com",
+          "subject": "bingdian001.com",
+          "creator": "bingdian001.com",
+          "producer": "PDFlib Lite 7.0.5p3 (Win32)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "digital_protocols"
+      ],
+      "title_guess": "bingdian001.com"
+    },
+    {
+      "relative_path": "hardware-pdfs/WMEw6pjJDD8mxTj33s.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "WMEw6pjJDD8mxTj33s.pdf",
+      "stem": "WMEw6pjJDD8mxTj33s",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 3466943,
+      "modified_at": "2026-04-30T07:32:59.038593+00:00",
+      "sha256": "40871044e39435e4814587f63d31d77a954a580e40058ad4adb5b38f91575c18",
+      "pdf": {
+        "page_count": 20,
+        "encrypted": false,
+        "metadata": {
+          "title": "容航科技 EMC设计及选项手册",
+          "author": "Administrator",
+          "creator": "PScript5.dll Version 5.2.2",
+          "producer": "Acrobat Distiller 11.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "transistor_mosfet",
+        "high_speed"
+      ],
+      "title_guess": "容航科技 EMC设计及选项手册"
+    },
+    {
+      "relative_path": "hardware-pdfs/WPBFNf8PRMtW3tbiCz.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "WPBFNf8PRMtW3tbiCz.pdf",
+      "stem": "WPBFNf8PRMtW3tbiCz",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 4692828,
+      "modified_at": "2026-04-30T07:34:14.576888+00:00",
+      "sha256": "5a972a3acc1abf9c85b9879808a6d93c90322dfb0f0b2df69454edaf279c0af7",
+      "pdf": {
+        "page_count": 118,
+        "encrypted": false,
+        "metadata": {
+          "title": "第一章",
+          "author": "zengzy",
+          "creator": "Acrobat PDFMaker 6.0 for Word",
+          "producer": "Acrobat Distiller 6.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "emi_emc",
+        "op_amp_analog",
+        "digital_protocols",
+        "high_speed",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "WPBFNf8PRMtW3tbiCz"
+    },
+    {
+      "relative_path": "hardware-pdfs/xDXsPpirZtZPQTPxCJ.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "xDXsPpirZtZPQTPxCJ.pdf",
+      "stem": "xDXsPpirZtZPQTPxCJ",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 109272841,
+      "modified_at": "2026-04-13T01:45:21.852945+00:00",
+      "sha256": "163101f287f3f9ed10e821bb741263104353015dd7c455b33c4667b861f25a5d",
+      "pdf": {
+        "page_count": 696,
+        "encrypted": false,
+        "metadata": {
+          "producer": "FreePic2Pdf - 2.01"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "xDXsPpirZtZPQTPxCJ"
+    },
+    {
+      "relative_path": "hardware-pdfs/XrFWkpA44CWBfBRen7/Readme_download.txt",
+      "source_folder": "hardware-pdfs/XrFWkpA44CWBfBRen7",
+      "file_name": "Readme_download.txt",
+      "stem": "Readme_download",
+      "extension": ".txt",
+      "file_type": "text",
+      "size_bytes": 1003,
+      "modified_at": "2017-11-16T08:01:05+00:00",
+      "sha256": "ea658f4f600187a08cbb21b0d6ed8e0eda84f39da4cbba98f1d46a48f41b8a07",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "Readme_download"
+    },
+    {
+      "relative_path": "hardware-pdfs/XrFWkpA44CWBfBRen7/使用说明更多帮助.html",
+      "source_folder": "hardware-pdfs/XrFWkpA44CWBfBRen7",
+      "file_name": "使用说明更多帮助.html",
+      "stem": "使用说明更多帮助",
+      "extension": ".html",
+      "file_type": "web",
+      "size_bytes": 241,
+      "modified_at": "2017-11-17T01:13:29+00:00",
+      "sha256": "eafb48fd7191125223ac267d95bbe5a5636f87e6befd774c3a8dde14abd4cbb5",
+      "pdf": null,
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "使用说明更多帮助"
+    },
+    {
+      "relative_path": "hardware-pdfs/XrFWkpA44CWBfBRen7/怢俜茞璃馱最呇15爛layout冪桄訧蹋.pdf",
+      "source_folder": "hardware-pdfs/XrFWkpA44CWBfBRen7",
+      "file_name": "怢俜茞璃馱最呇15爛layout冪桄訧蹋.pdf",
+      "stem": "怢俜茞璃馱最呇15爛layout冪桄訧蹋",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 705144,
+      "modified_at": "2022-04-11T03:12:09.876194+00:00",
+      "sha256": "748528bb59f7ebe9b8a07f5612b1cdf4a614a798108cd7fd5030679150035d3a",
+      "pdf": {
+        "page_count": 23,
+        "encrypted": false,
+        "metadata": {
+          "title": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc",
+          "author": "runtop",
+          "creator": "PScript5.dll Version 5.2",
+          "producer": "Acrobat Distiller 6.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "pcb_layout",
+        "transistor_mosfet",
+        "high_speed",
+        "test_measurement"
+      ],
+      "title_guess": "Microsoft Word - LIN-PCB LAYOUT-REPORT -0612.doc"
+    },
+    {
+      "relative_path": "hardware-pdfs/xyBtTQXyaN34YkKMNY/集成运放应用电路设计360例.pdf",
+      "source_folder": "hardware-pdfs/xyBtTQXyaN34YkKMNY",
+      "file_name": "集成运放应用电路设计360例.pdf",
+      "stem": "集成运放应用电路设计360例",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 7076283,
+      "modified_at": "2020-09-06T11:32:18.449418+00:00",
+      "sha256": "7ac75164d33b830d62f7119e1223140575dd026920afde4039a2ce76722e63e5",
+      "pdf": {
+        "page_count": 379,
+        "encrypted": false,
+        "metadata": {
+          "title": "集成运放应用电路设计360例",
+          "producer": "FreePic2Pdf - 1.20"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "op_amp_analog",
+        "protection_reliability",
+        "test_measurement",
+        "electronics_basics"
+      ],
+      "title_guess": "集成运放应用电路设计360例"
+    },
+    {
+      "relative_path": "hardware-pdfs/yicyEN2Gm7PaMhibZr.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "yicyEN2Gm7PaMhibZr.pdf",
+      "stem": "yicyEN2Gm7PaMhibZr",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 5385762,
+      "modified_at": "2026-05-02T02:02:58.053586+00:00",
+      "sha256": "12ed0378a5b1c6b32037c35ad66ee461351ed2dc296784f901ce6b4be5eb4b79",
+      "pdf": {
+        "page_count": 99,
+        "encrypted": false,
+        "metadata": {
+          "title": "电源设计提示",
+          "author": "Texas Instruments, Incorporated [ZHCC344,*]",
+          "subject": "Master Selection Guide",
+          "creator": "Microsoft® Office Word 2007",
+          "producer": "iText 2.1.7 by 1T3XT"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "emi_emc",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "电源设计提示"
+    },
+    {
+      "relative_path": "hardware-pdfs/yXfCd5cTDeP7fyYHQK.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "yXfCd5cTDeP7fyYHQK.pdf",
+      "stem": "yXfCd5cTDeP7fyYHQK",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 4422211,
+      "modified_at": "2026-04-13T01:36:48.328278+00:00",
+      "sha256": "03c82788a3104dea83e41b6dee0fc7f6672349c3c6d0b2992a84153b8d852673",
+      "pdf": {
+        "page_count": 73,
+        "encrypted": false,
+        "metadata": {
+          "title": "技术文档编写格式管理办法",
+          "author": "ylp",
+          "creator": "Microsoft® Word for Office 365",
+          "producer": "Microsoft® Word for Office 365"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "pcb_layout",
+        "emi_emc"
+      ],
+      "title_guess": "技术文档编写格式管理办法"
+    },
+    {
+      "relative_path": "hardware-pdfs/ZJ8p7Y75ktK3pPXEpD.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "ZJ8p7Y75ktK3pPXEpD.pdf",
+      "stem": "ZJ8p7Y75ktK3pPXEpD",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 18025408,
+      "modified_at": "2026-04-26T14:04:54.195303+00:00",
+      "sha256": "15df2f5a384f935164b27d56f7dea5b5ae5911fb5531bd2aa1be5676a162f38b",
+      "pdf": {
+        "page_count": 609,
+        "encrypted": false,
+        "metadata": {
+          "creator": "AdultPDFSPMG-CHS-LordFox",
+          "producer": "http://www.adultpdf.com"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "uncategorized"
+      ],
+      "title_guess": "ZJ8p7Y75ktK3pPXEpD"
+    },
+    {
+      "relative_path": "hardware-pdfs/双向可控硅实用电路500例.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "双向可控硅实用电路500例.pdf",
+      "stem": "双向可控硅实用电路500例",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 7501795,
+      "modified_at": "2026-05-09T12:21:22.324386+00:00",
+      "sha256": "0cb3daf10107f7bb3b997543d860dfebbbd79775681e77419cdab45a4e460d89",
+      "pdf": {
+        "page_count": 256,
+        "encrypted": false,
+        "metadata": {},
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "electronics_basics"
+      ],
+      "title_guess": "双向可控硅实用电路500例"
+    },
+    {
+      "relative_path": "hardware-pdfs/双向可控硅工作原理.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "双向可控硅工作原理.pdf",
+      "stem": "双向可控硅工作原理",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 318226,
+      "modified_at": "2026-05-09T12:21:37.770512+00:00",
+      "sha256": "e986a69ab9be348fd9a8962102df0d9dfcfc72b46b9b3c6aa1d6bf5df922589a",
+      "pdf": {
+        "page_count": 4,
+        "encrypted": false,
+        "metadata": {
+          "title": "Microsoft Word - 文档 1",
+          "author": "Administrator",
+          "creator": "PScript5.dll Version 5.2",
+          "producer": "Acrobat Distiller 8.3.0 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "transistor_mosfet",
+        "high_speed",
+        "electronics_basics"
+      ],
+      "title_guess": "Microsoft Word - 文档 1"
+    },
+    {
+      "relative_path": "hardware-pdfs/开关电源工程调试技术.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "开关电源工程调试技术.pdf",
+      "stem": "开关电源工程调试技术",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 18159733,
+      "modified_at": "2026-05-08T13:53:24.237470+00:00",
+      "sha256": "1d59b8863a862ecf6f36f1f77c8f3212e9d42d3c0e62077a8bb9a338d2462199",
+      "pdf": {
+        "page_count": 258,
+        "encrypted": false,
+        "metadata": {
+          "creator": "Adobe Acrobat 7.0",
+          "producer": "Adobe Acrobat 7.0 Image Conversion Plug-in"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "high_speed"
+      ],
+      "title_guess": "开关电源工程调试技术"
+    },
+    {
+      "relative_path": "hardware-pdfs/开关电源电路图讲解.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "开关电源电路图讲解.pdf",
+      "stem": "开关电源电路图讲解",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 518799,
+      "modified_at": "2026-05-06T12:48:43.849953+00:00",
+      "sha256": "18dc21a7882a6ce2b3045bee83d601ec8f2241ab9911cc308039621465eb3d03",
+      "pdf": {
+        "page_count": 10,
+        "encrypted": false,
+        "metadata": {
+          "author": "dingxi",
+          "creator": "Acrobat PDFMaker 9.1 Word 版",
+          "producer": "Acrobat Distiller 9.4.2 (Windows)"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "power_supply",
+        "electronics_basics"
+      ],
+      "title_guess": "开关电源电路图讲解"
+    },
+    {
+      "relative_path": "hardware-pdfs/现代电源设计大全.pdf",
+      "source_folder": "hardware-pdfs",
+      "file_name": "现代电源设计大全.pdf",
+      "stem": "现代电源设计大全",
+      "extension": ".pdf",
+      "file_type": "pdf",
+      "size_bytes": 7511544,
+      "modified_at": "2026-05-08T13:52:31.423472+00:00",
+      "sha256": "348ac357ad8e9723435f57a0d977626de1e46d57611483dea02f66910849da2b",
+      "pdf": {
+        "page_count": 282,
+        "encrypted": false,
+        "metadata": {
+          "producer": "http://www.adultpdf.com"
+        },
+        "parse_error": null
+      },
+      "topics": [
+        "high_speed"
+      ],
+      "title_guess": "现代电源设计大全"
+    }
+  ]
+}

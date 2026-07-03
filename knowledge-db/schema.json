@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hardware Knowledge Card Schema",
+  "description": "硬體知識卡資料結構定義",
+  "type": "object",
+  "required": ["id", "title", "category", "description"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "知識卡唯一識別碼"
+    },
+    "title": {
+      "type": "string",
+      "description": "主題標題"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["power-management", "signal-processing", "communication", "transistor", "protection", "high-speed", "emi-emc", "analog", "digital", "mixed-signal"],
+      "description": "主題類別"
+    },
+    "description": {
+      "type": "string",
+      "description": "主題簡介"
+    },
+    "principles": {
+      "type": "string",
+      "description": "工作原理說明"
+    },
+    "circuits": {
+      "type": "array",
+      "description": "典型電路圖",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {"type": "string"},
+          "image": {"type": "string"},
+          "svg": {"type": "string"},
+          "description": {"type": "string"}
+        }
+      }
+    },
+    "keyFormulas": {
+      "type": "array",
+      "description": "關鍵公式",
+      "items": {
+        "type": "string"
+      }
+    },
+    "designNotes": {
+      "type": "array",
+      "description": "設計注意事項",
+      "items": {
+        "type": "string"
+      }
+    },
+    "commonMistakes": {
+      "type": "array",
+      "description": "常見錯誤",
+      "items": {
+        "type": "string"
+      }
+    },
+    "examples": {
+      "type": "array",
+      "description": "範例應用",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {"type": "string"},
+          "application": {"type": "string"},
+          "circuit": {"type": "string"}
+        }
+      }
+    },
+    "relatedTopics": {
+      "type": "array",
+      "description": "相關主題",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sourcePdf": {
+      "type": "string",
+      "description": "來源 PDF 檔名"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

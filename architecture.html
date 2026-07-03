@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>產品架構圖 - VoltSketch</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    body { background: #f6f8fc; margin: 0; }
+    .arch { display: grid; grid-template-columns: 1fr 280px; height: calc(100vh - 60px); }
+    .cv { overflow: auto; background: #fff; }
+    .cv svg { display: block; }
+    .side { border-left: 1px solid #e2e8f0; background: #fbfcfe; padding: 12px; overflow-y: auto; font-size: 13px; }
+    .side h3 { margin: 0 0 8px; font-size: 14px; color: #0f172a; }
+    .side label { display: block; color: #475569; margin: 8px 0 2px; font-weight: 600; font-size: 12px; }
+    .side input, .side select { width: 100%; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 6px; box-sizing: border-box; font-size: 13px; }
+    .tools { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 12px; background: #fff; border-bottom: 1px solid #e2e8f0; align-items: center; }
+    .tools .small-button.on { background: #1d2943; color: #fff; }
+    .blk { cursor: move; }
+    .blk rect { fill: #eef2ff; stroke: #1d2943; stroke-width: 2; rx: 8; }
+    .blk.sel rect { stroke: #1f4fd1; stroke-width: 3; }
+    .blk text { font-family: system-ui, sans-serif; pointer-events: none; }
+    .port { fill: #fff; stroke: #1f4fd1; stroke-width: 1.5; cursor: crosshair; }
+    .port:hover, .port.armed { fill: #1f4fd1; }
+    .wire { stroke: #0e9f6e; stroke-width: 2; fill: none; }
+    .wire-label { font-size: 10px; fill: #047857; font-family: ui-monospace, monospace; }
+    #msg { font-size: 12px; color: #94a3b8; }
+  </style>
+</head>
+<body class="editor-lock">
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>VoltSketch 硬體實驗室</h1><p>產品架構圖</p></div></div>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">線路圖</a>
+        <a href="ic-library.html" class="nav-link">IC 元件庫</a>
+        <a href="knowledge.html" class="nav-link">硬體知識庫</a>
+        <a href="pcb.html" class="nav-link">PCB Layout</a>
+          <a href="pcb-viewer.html" class="nav-link">PCB 檢視器</a>
+        <a href="interview.html" class="nav-link">面試考題</a>
+        <a href="contact.html" class="nav-link">聯絡資訊</a>
+        </nav>
+    </header>
+    <div class="tools">
+      <button class="small-button" id="addBlk">＋ 方塊</button>
+      <button class="small-button" id="wireMode">連線模式</button>
+      <button class="small-button" id="delSel">刪除選取</button>
+      <span style="flex:1"></span>
+      <select id="exFmt" style="padding:5px 8px;border:1px solid #e2e8f0;border-radius:5px;font-size:13px">
+        <option value="json">VoltSketch JSON（可再匯入）</option>
+        <option value="bom">BOM CSV</option>
+        <option value="dsn">Specctra DSN（placement + net，文字格式）</option>
+      </select>
+      <button class="small-button" id="exGo">匯出</button>
+      <button class="small-button" id="imGo">匯入 JSON</button>
+      <input type="file" id="imFile" accept=".json" style="display:none" />
+      <span id="msg"></span>
+    </div>
+    <div class="arch">
+      <div class="cv"><svg id="cv" width="1600" height="1000" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div class="side" id="side">
+        <h3>屬性</h3>
+        <p style="color:#94a3b8">選一個方塊來編輯；「連線模式」下點兩個接點建 net。</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./auth-config.js"></script>
+  <script src="./auth.js"></script>
+  <script src="./ic-data.js"></script>
+  <script src="./vs-model.js"></script>
+  <script src="./export-gate.js"></script>
+  <script>
+    // ===== 架構圖編輯器：方塊 + port 連線 = 產品層級拓樸（非腳位級線路圖）=====
+    const GRID = 20;
+    const snap = v => Math.round(v / GRID) * GRID;
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    let state = { blocks: [], nets: [], seq: 1, netSeq: 1 };
+    let selId = null, wireMode = false, armedPort = null, drag = null;
+
+    // ---- 存/讀（localStorage 自動存）----
+    const LS = 'vs-architecture-v1';
+    function save() { localStorage.setItem(LS, JSON.stringify(state)); }
+    function load() { try { const s = JSON.parse(localStorage.getItem(LS)); if (s && s.blocks) state = s; } catch (e) { } }
+
+    // ---- port：每方塊 4 個（T/R/B/L 中點）----
+    function ports(b) {
+      return [
+        { id: 'T', x: b.x + b.w / 2, y: b.y },
+        { id: 'R', x: b.x + b.w, y: b.y + b.h / 2 },
+        { id: 'B', x: b.x + b.w / 2, y: b.y + b.h },
+        { id: 'L', x: b.x, y: b.y + b.h / 2 }
+      ];
+    }
+    const portPos = (bId, pId) => { const b = state.blocks.find(x => x.id === bId); if (!b) return null; return ports(b).find(p => p.id === pId); };
+
+    // ---- render ----
+    function render() {
+      const svg = document.getElementById('cv');
+      let g = `<defs><pattern id="gp" width="${GRID}" height="${GRID}" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.8" fill="#e2e8f0"/></pattern></defs>
+               <rect width="100%" height="100%" fill="url(#gp)"/>`;
+      // wires（L 形正交走線）
+      for (const n of state.nets) {
+        const a = portPos(n.from.block, n.from.port), b = portPos(n.to.block, n.to.port);
+        if (!a || !b) continue;
+        const midX = (a.x + b.x) / 2;
+        g += `<polyline class="wire" data-net="${n.id}" points="${a.x},${a.y} ${midX},${a.y} ${midX},${b.y} ${b.x},${b.y}"/>`;
+        g += `<text class="wire-label" x="${midX + 4}" y="${(a.y + b.y) / 2 - 4}">${esc(n.name)}</text>`;
+      }
+      // blocks
+      for (const b of state.blocks) {
+        g += `<g class="blk${b.id === selId ? ' sel' : ''}" data-id="${b.id}" transform="translate(${b.x},${b.y})">
+          <rect width="${b.w}" height="${b.h}"/>
+          <text x="${b.w / 2}" y="${b.h / 2 - 4}" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">${esc(b.name)}</text>
+          <text x="${b.w / 2}" y="${b.h / 2 + 14}" text-anchor="middle" font-size="11" fill="#64748b">${esc(b.part || '')}${b.qty > 1 ? ' ×' + b.qty : ''}</text>
+        </g>`;
+        for (const p of ports(b)) {
+          const armed = armedPort && armedPort.block === b.id && armedPort.port === p.id;
+          g += `<circle class="port${armed ? ' armed' : ''}" data-block="${b.id}" data-port="${p.id}" cx="${p.x}" cy="${p.y}" r="5"/>`;
+        }
+      }
+      svg.innerHTML = g;
+      bindSvg(); renderSide(); save();
+    }
+
+    function renderSide() {
+      const el = document.getElementById('side');
+      const b = state.blocks.find(x => x.id === selId);
+      if (!b) { el.innerHTML = `<h3>屬性</h3><p style="color:#94a3b8">選一個方塊來編輯；「連線模式」下點兩個接點建 net。</p>
+        <h3 style="margin-top:16px">統計</h3><p>方塊 ${state.blocks.length}・net ${state.nets.length}</p>`; return; }
+      const opts = (window.IC_DATA || []).map(ic => `<option value="${esc(ic.part)}"></option>`).join('');
+      el.innerHTML = `<h3>方塊：${esc(b.name)}</h3>
+        <label>名稱</label><input id="pName" value="${esc(b.name)}"/>
+        <label>料號（可綁 IC 元件庫）</label><input id="pPart" list="parts" value="${esc(b.part || '')}"/><datalist id="parts">${opts}</datalist>
+        <label>數量</label><input id="pQty" type="number" min="1" value="${b.qty || 1}"/>
+        <label>寬 × 高</label>
+        <div style="display:flex;gap:6px"><input id="pW" type="number" step="${GRID}" value="${b.w}"/><input id="pH" type="number" step="${GRID}" value="${b.h}"/></div>
+        <p style="margin-top:12px"><button class="small-button" id="pDel">刪除此方塊</button></p>
+        <h3 style="margin-top:16px">連到此方塊的 net</h3>
+        <ul style="padding-left:16px;color:#334155">${state.nets.filter(n => n.from.block === b.id || n.to.block === b.id).map(n => `<li>${esc(n.name)}</li>`).join('') || '<li style="color:#94a3b8">無</li>'}</ul>`;
+      const upd = () => {
+        b.name = document.getElementById('pName').value || b.name;
+        b.part = document.getElementById('pPart').value.trim();
+        b.qty = Math.max(1, parseInt(document.getElementById('pQty').value) || 1);
+        b.w = snap(Math.max(80, parseInt(document.getElementById('pW').value) || b.w));
+        b.h = snap(Math.max(60, parseInt(document.getElementById('pH').value) || b.h));
+        render();
+      };
+      ['pName', 'pPart', 'pQty', 'pW', 'pH'].forEach(id => document.getElementById(id).addEventListener('change', upd));
+      document.getElementById('pDel').addEventListener('click', () => { removeBlock(b.id); });
+    }
+
+    function removeBlock(id) {
+      state.blocks = state.blocks.filter(x => x.id !== id);
+      state.nets = state.nets.filter(n => n.from.block !== id && n.to.block !== id);
+      if (selId === id) selId = null;
+      render();
+    }
+
+    // ---- 事件 ----
+    function bindSvg() {
+      const svg = document.getElementById('cv');
+      svg.querySelectorAll('.blk').forEach(el => {
+        el.addEventListener('mousedown', e => {
+          const id = el.dataset.id;
+          selId = id;
+          const b = state.blocks.find(x => x.id === id);
+          const pt = svgPoint(e);
+          drag = { id, dx: pt.x - b.x, dy: pt.y - b.y, moved: false };
+          render();
+        });
+      });
+      svg.querySelectorAll('.port').forEach(el => {
+        el.addEventListener('click', e => {
+          if (!wireMode) return;
+          e.stopPropagation();
+          const cur = { block: el.dataset.block, port: el.dataset.port };
+          if (!armedPort) { armedPort = cur; render(); return; }
+          if (armedPort.block === cur.block && armedPort.port === cur.port) { armedPort = null; render(); return; }
+          const name = prompt('net 名稱：', 'NET' + state.netSeq) || ('NET' + state.netSeq);
+          state.nets.push({ id: 'n' + state.netSeq++, name, from: armedPort, to: cur });
+          armedPort = null; render();
+        });
+      });
+    }
+    function svgPoint(e) {
+      const svg = document.getElementById('cv');
+      const r = svg.getBoundingClientRect();
+      return { x: e.clientX - r.left + svg.parentElement.scrollLeft, y: e.clientY - r.top + svg.parentElement.scrollTop };
+    }
+    document.addEventListener('mousemove', e => {
+      if (!drag) return;
+      const b = state.blocks.find(x => x.id === drag.id); if (!b) return;
+      const pt = svgPoint(e);
+      b.x = snap(pt.x - drag.dx); b.y = snap(pt.y - drag.dy); drag.moved = true;
+      render();
+    });
+    document.addEventListener('mouseup', () => { drag = null; });
+
+    document.getElementById('addBlk').addEventListener('click', () => {
+      const id = 'b' + state.seq;
+      state.blocks.push({ id, x: snap(120 + (state.seq % 5) * 40), y: snap(120 + (state.seq % 5) * 30), w: 160, h: 80, name: '方塊 ' + state.seq, part: '', qty: 1 });
+      state.seq++; selId = id; render();
+    });
+    document.getElementById('wireMode').addEventListener('click', e => {
+      wireMode = !wireMode; armedPort = null;
+      e.target.classList.toggle('on', wireMode); render();
+    });
+    document.getElementById('delSel').addEventListener('click', () => { if (selId) removeBlock(selId); });
+
+    // ---- 匯出（過額度閘門；demo 模式放行）----
+    async function gate(t) {
+      if (window.ExportGate) { try { return await window.ExportGate.consume(t); } catch (e) { return { allowed: false, reason: e.message }; } }
+      return { allowed: true, remaining: -1 };
+    }
+    function dl(name, text, mime) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([text], { type: mime || 'text/plain;charset=utf-8' }));
+      a.download = name; document.body.appendChild(a); a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 100);
+    }
+    // VoltSketchDesign v1（components + nets；schematic/board 留空）
+    function toDesign() {
+      const d = VSModel.newDesign();
+      d.sources.push({ type: 'architecture-editor', savedAt: new Date().toISOString() });
+      d.components = state.blocks.map(b => ({ ref: b.id, name: b.name, partNumber: b.part || '', qty: b.qty || 1, x: b.x, y: b.y, w: b.w, h: b.h }));
+      d.nets = state.nets.map(n => ({ name: n.name, pins: [n.from.block + '-' + n.from.port, n.to.block + '-' + n.to.port] }));
+      d.preserved.vendorProperties.archState = state;   // 100% 還原用
+      return d;
+    }
+    function toBOM() {
+      const icMap = {}; (window.IC_DATA || []).forEach(ic => icMap[ic.part.toLowerCase()] = ic);
+      const agg = {};
+      for (const b of state.blocks) {
+        const key = (b.part || b.name);
+        (agg[key] = agg[key] || { part: b.part || '', name: b.name, qty: 0, refs: [] });
+        agg[key].qty += (b.qty || 1); agg[key].refs.push(b.id);
+      }
+      let out = 'Item,PartNumber,BlockName,Qty,RefIds,Description\n'; let i = 1;
+      for (const k of Object.keys(agg)) {
+        const a = agg[k], ic = icMap[(a.part || '').toLowerCase()];
+        out += `${i++},"${a.part}","${a.name}",${a.qty},"${a.refs.join(' ')}","${(ic ? ic.desc : '').replace(/"/g, '""')}"\n`;
+      }
+      return out;
+    }
+    // Specctra DSN（文字格式、公開規格）：placement + network，供佈局/檢視工具讀拓樸
+    function toDSN() {
+      const mil = v => Math.round(v * 10);  // 畫布 px → 假想單位
+      let comps = state.blocks.map(b =>
+        `    (component "BLOCK-${b.name.replace(/["\s]/g, '_')}"\n      (place ${b.id} ${mil(b.x)} ${-mil(b.y)} front 0))`).join('\n');
+      let nets = state.nets.map(n =>
+        `    (net "${n.name}"\n      (pins ${n.from.block}-${n.from.port} ${n.to.block}-${n.to.port}))`).join('\n');
+      return `(pcb "voltsketch_architecture"
+  (parser (string_quote ")(space_in_quoted_tokens on))
+  (resolution mil 10)
+  (placement
+${comps}
+  )
+  (network
+${nets}
+  )
+)
+`;
+    }
+    document.getElementById('exGo').addEventListener('click', async () => {
+      const fmt = document.getElementById('exFmt').value, msg = document.getElementById('msg');
+      const g = await gate('arch-' + fmt);
+      if (!g.allowed) { msg.style.color = '#b91c1c'; msg.textContent = g.reason === 'not_authenticated' ? '請先登入' : g.reason === 'quota_exceeded' ? '已達本月上限' : g.reason; return; }
+      if (fmt === 'json') dl('architecture.vs.json', JSON.stringify(toDesign(), null, 2), 'application/json');
+      else if (fmt === 'bom') dl('architecture-bom.csv', toBOM(), 'text/csv');
+      else if (fmt === 'dsn') dl('architecture.dsn', toDSN());
+      msg.style.color = '#15803d'; msg.textContent = g.remaining >= 0 ? ('已匯出，本月剩 ' + g.remaining + ' 次') : '已匯出';
+    });
+    document.getElementById('imGo').addEventListener('click', () => document.getElementById('imFile').click());
+    document.getElementById('imFile').addEventListener('change', e => {
+      const f = e.target.files[0]; if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => {
+        try {
+          const d = JSON.parse(rd.result);
+          if (d.preserved && d.preserved.vendorProperties && d.preserved.vendorProperties.archState) {
+            state = d.preserved.vendorProperties.archState;    // 完整還原
+          } else if (d.components) {                            // 由通用欄位重建
+            state = { blocks: d.components.map((c, i) => ({ id: c.ref || 'b' + (i + 1), x: c.x || 100 + i * 40, y: c.y || 100, w: c.w || 160, h: c.h || 80, name: c.name || c.partNumber || ('方塊 ' + (i + 1)), part: c.partNumber || '', qty: c.qty || 1 })), nets: [], seq: d.components.length + 1, netSeq: 1 };
+            (d.nets || []).forEach((n, i) => {
+              const [a, b] = (n.pins || []);
+              if (a && b) state.nets.push({ id: 'n' + (i + 1), name: n.name, from: { block: a.split('-')[0], port: a.split('-')[1] || 'R' }, to: { block: b.split('-')[0], port: b.split('-')[1] || 'L' } });
+            });
+            state.netSeq = state.nets.length + 1;
+          } else throw new Error('非 VoltSketch JSON');
+          selId = null; render();
+          document.getElementById('msg').textContent = '已匯入';
+        } catch (err) { document.getElementById('msg').style.color = '#b91c1c'; document.getElementById('msg').textContent = '匯入失敗：' + err.message; }
+      };
+      rd.readAsText(f); e.target.value = '';
+    });
+
+    load(); render();
+  </script>
+  <script src="./i18n.js?v=2026-07-03c"></script>
+</body>
+</html>

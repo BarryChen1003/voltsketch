@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VoltSketch Circuit Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="editor-lock">
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">VS</div>
+          <div>
+            <h1 data-i18n="appTitle">VoltSketch 硬體實驗室</h1>
+            <p data-i18n="appSubtitle">繪製、分析並保存你的直流線路圖</p>
+          </div>
+        </div>
+
+        <nav class="main-nav">
+          <a href="index.html" class="nav-link active">線路圖</a>
+          <a href="ic-library.html" class="nav-link">IC 元件庫</a>
+          <a href="knowledge.html" class="nav-link">硬體知識庫</a>
+          <a href="pcb.html" class="nav-link">PCB Layout</a>
+          <a href="pcb-viewer.html" class="nav-link">PCB 檢視器</a>
+          <a href="interview.html" class="nav-link">面試考題</a>
+          <a href="contact.html" class="nav-link">聯絡資訊</a>
+        </nav>
+
+        <div class="top-actions" role="toolbar" aria-label="Project actions">
+          <button class="icon-button" type="button" id="newProject" title="New">
+            <span aria-hidden="true">+</span>
+          </button>
+          <button class="icon-button" type="button" id="loadDemo" title="Demo">
+            <span aria-hidden="true" data-i18n="demoShort">範例</span>
+          </button>
+          <button class="icon-button" type="button" id="undoBtn" title="Undo">
+            <span aria-hidden="true">↶</span>
+          </button>
+          <button class="icon-button" type="button" id="redoBtn" title="Redo">
+            <span aria-hidden="true">↷</span>
+          </button>
+          <button class="icon-button" type="button" id="saveLocal" title="Save">
+            <span aria-hidden="true" data-i18n="saveShort">儲存</span>
+          </button>
+          <button class="icon-button" type="button" id="exportJson" title="Export JSON">
+            <span aria-hidden="true">JSON</span>
+          </button>
+          <label class="icon-button file-button" title="Import JSON">
+            <span aria-hidden="true" data-i18n="importShort">匯入</span>
+            <input id="importJson" type="file" accept="application/json" />
+          </label>
+          <button class="icon-button" type="button" id="exportPng" title="Export PNG">
+            <span aria-hidden="true">PNG</span>
+          </button>
+          <button class="icon-button" type="button" id="exportBom" title="產生 BOM 料表">
+            <span aria-hidden="true">BOM</span>
+          </button>
+          <button class="icon-button" type="button" id="exportPdf" title="整張線路圖匯出 PDF">
+            <span aria-hidden="true">PDF</span>
+          </button>
+          <a class="icon-button" id="loginLink" href="login.html" title="登入帳號"><span>登入</span></a>
+          <button class="icon-button" type="button" id="cloudSync" title="同步到雲端" hidden><span>☁同步</span></button>
+          <button class="icon-button" type="button" id="logoutBtn" title="登出" hidden><span>登出</span></button>
+          <span id="authEmail" style="font-size:11px;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+          <div class="segmented" aria-label="Language">
+          </div>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="tool-panel" aria-label="Component library">
+          <section class="panel-section">
+            <h2 data-i18n="drawTools">繪圖工具</h2>
+            <div class="tool-grid">
+              <button class="tool-button active" type="button" data-tool="select">
+                <span class="tool-icon">↖</span>
+                <span data-i18n="select">選取</span>
+              </button>
+              <button class="tool-button" type="button" data-tool="wire">
+                <span class="tool-icon">─</span>
+                <span data-i18n="wire">導線</span>
+              </button>
+              <button class="tool-button" type="button" data-tool="text">
+                <span class="tool-icon">T</span>
+                <span>文字</span>
+              </button>
+            </div>
+            <div class="tool-grid" style="margin-top:8px">
+              <button class="small-button" type="button" id="rotateSelected" title="旋轉 (R)">⟳ 旋轉</button>
+              <button class="small-button" type="button" id="flipHSelected" title="水平翻轉 (H)">⇋ 水平翻</button>
+              <button class="small-button" type="button" id="flipVSelected" title="垂直翻轉 (V)">⇅ 垂直翻</button>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2 data-i18n="parts">元件庫</h2>
+            <button class="primary-button" type="button" id="openIcBuilder" style="width:100%;margin-bottom:8px">+ 自訂 IC（多腳）</button>
+            <input id="partSearch" class="library-search" type="search" placeholder="搜尋元件（電阻/MOS/閘...）" style="margin-bottom:8px" />
+            <div class="component-list">
+              <button class="component-button" type="button" data-tool="resistor">
+                <span class="schematic-mini resistor-mini"></span>
+                <span data-i18n="resistor">電阻</span>
+              </button>
+              <button class="component-button" type="button" data-tool="source">
+                <span class="schematic-mini source-mini"></span>
+                <span data-i18n="source">直流電源</span>
+              </button>
+              <button class="component-button" type="button" data-tool="ground">
+                <span class="schematic-mini ground-mini"></span>
+                <span data-i18n="ground">接地</span>
+              </button>
+              <button class="component-button" type="button" data-tool="switch">
+                <span class="schematic-mini switch-mini"></span>
+                <span data-i18n="switch">開關</span>
+              </button>
+              <button class="component-button" type="button" data-tool="lamp">
+                <span class="schematic-mini lamp-mini"></span>
+                <span data-i18n="lamp">燈泡/負載</span>
+              </button>
+              <button class="component-button" type="button" data-tool="led">
+                <span class="schematic-mini led-mini"></span>
+                <span data-i18n="led">LED</span>
+              </button>
+              <button class="component-button" type="button" data-tool="diode">
+                <span class="schematic-mini diode-mini"></span>
+                <span data-i18n="diode">二極體</span>
+              </button>
+              <button class="component-button" type="button" data-tool="capacitor">
+                <span class="schematic-mini capacitor-mini"></span>
+                <span data-i18n="capacitor">電容</span>
+              </button>
+              <button class="component-button" type="button" data-tool="inductor">
+                <span class="schematic-mini inductor-mini"></span>
+                <span data-i18n="inductor">電感</span>
+              </button>
+              <button class="component-button" type="button" data-tool="ammeter">
+                <span class="schematic-mini meter-mini">A</span>
+                <span data-i18n="ammeter">電流表</span>
+              </button>
+              <button class="component-button" type="button" data-tool="voltmeter">
+                <span class="schematic-mini meter-mini">V</span>
+                <span data-i18n="voltmeter">電壓表</span>
+              </button>
+              <button class="component-button" type="button" data-tool="nmos">
+                <span class="schematic-mini chip-mini">NM</span>
+                <span data-i18n="nmos">N-MOS</span>
+              </button>
+              <button class="component-button" type="button" data-tool="pmos">
+                <span class="schematic-mini chip-mini">PM</span>
+                <span data-i18n="pmos">P-MOS</span>
+              </button>
+              <button class="component-button" type="button" data-tool="dualnmos">
+                <span class="schematic-mini chip-mini">2N</span>
+                <span data-i18n="dualnmos">雙 N-MOS</span>
+              </button>
+              <button class="component-button" type="button" data-tool="dualpmos">
+                <span class="schematic-mini chip-mini">2P</span>
+                <span data-i18n="dualpmos">雙 P-MOS</span>
+              </button>
+              <button class="component-button" type="button" data-tool="npn">
+                <span class="schematic-mini chip-mini">NPN</span>
+                <span data-i18n="npn">NPN BJT</span>
+              </button>
+              <button class="component-button" type="button" data-tool="pnp">
+                <span class="schematic-mini chip-mini">PNP</span>
+                <span data-i18n="pnp">PNP BJT</span>
+              </button>
+              <button class="component-button" type="button" data-tool="opamp">
+                <span class="schematic-mini opamp-mini"></span>
+                <span data-i18n="opamp">OP 放大器</span>
+              </button>
+              <button class="component-button" type="button" data-tool="comparator">
+                <span class="schematic-mini opamp-mini">⎍</span>
+                <span data-i18n="comparator">比較器</span>
+              </button>
+              <button class="component-button" type="button" data-tool="dcdc">
+                <span class="schematic-mini dcdc-mini">DC</span>
+                <span data-i18n="dcdc">DC-DC</span>
+              </button>
+              <button class="component-button" type="button" data-tool="and">
+                <span class="schematic-mini chip-mini">&amp;</span>
+                <span data-i18n="gateAnd">AND 閘</span>
+              </button>
+              <button class="component-button" type="button" data-tool="or">
+                <span class="schematic-mini chip-mini">≥1</span>
+                <span data-i18n="gateOr">OR 閘</span>
+              </button>
+              <button class="component-button" type="button" data-tool="nand">
+                <span class="schematic-mini chip-mini">&amp;○</span>
+                <span data-i18n="gateNand">NAND 閘</span>
+              </button>
+              <button class="component-button" type="button" data-tool="nor">
+                <span class="schematic-mini chip-mini">≥1○</span>
+                <span data-i18n="gateNor">NOR 閘</span>
+              </button>
+              <button class="component-button" type="button" data-tool="xor">
+                <span class="schematic-mini chip-mini">=1</span>
+                <span data-i18n="gateXor">XOR 閘</span>
+              </button>
+              <button class="component-button" type="button" data-tool="xnor">
+                <span class="schematic-mini chip-mini">=1○</span>
+                <span data-i18n="gateXnor">XNOR 閘</span>
+              </button>
+              <button class="component-button" type="button" data-tool="not">
+                <span class="schematic-mini chip-mini">1○</span>
+                <span data-i18n="gateNot">NOT 反相</span>
+              </button>
+              <button class="component-button" type="button" data-tool="buffer">
+                <span class="schematic-mini chip-mini">1</span>
+                <span data-i18n="gateBuffer">緩衝器</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="panel-section circuit-library-section">
+            <h2 data-i18n="circuitLibrary">電路範本庫</h2>
+            <input id="templateSearch" class="library-search" type="search" data-i18n-placeholder="templateSearch" />
+            <div id="templateCatalog" class="template-catalog"></div>
+          </section>
+
+          <section class="panel-section compact-help">
+            <h2 data-i18n="quickKeys">快捷操作</h2>
+            <p data-i18n="quickKeysBody">R 旋轉，Delete 刪除，拖曳元件移動；導線工具以兩次點擊完成連線。</p>
+          </section>
+        </aside>
+
+        <section class="canvas-panel" aria-label="Schematic editor">
+          <div class="canvas-toolbar">
+            <div class="status-pill" id="modeStatus" data-i18n="statusSelect">選取或拖曳元件</div>
+            <div class="canvas-actions">
+              <button class="small-button" type="button" id="zoomOut" title="縮小">－</button>
+              <button class="small-button" type="button" id="zoomIn" title="放大">＋</button>
+              <button class="small-button" type="button" id="fitAll" title="全覽（縮到所有線路塞進畫布）">全覽</button>
+              <button class="small-button active" type="button" id="toggleLabels" data-i18n="labelsOn">標籤開</button>
+              <button class="small-button active" type="button" id="toggleReadings" data-i18n="readingsOn">讀值開</button>
+              <button class="small-button" type="button" id="fitView" data-i18n="fit">重置視圖</button>
+            </div>
+          </div>
+
+          <div class="schematic-wrap" style="position:relative">
+            <div id="activeStyleBar" style="position:absolute;top:8px;left:8px;z-index:5;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.95);border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);font-size:12px;color:#475569">
+              <span style="font-weight:600">樣式</span>
+              <label style="display:flex;align-items:center;gap:4px">顏色<input type="color" id="activeColor" value="#1f4fd1" style="width:28px;height:22px;padding:0;border:none;background:none;cursor:pointer" disabled/></label>
+              <label style="display:flex;align-items:center;gap:4px">大小<input type="number" id="activeSize" value="1" min="0.3" max="4" step="0.1" style="width:46px" disabled/></label>
+              <span style="color:#94a3b8">選元件/線即時改</span>
+            </div>
+            <svg id="schematic" viewBox="0 0 1000 700" role="img" aria-label="Circuit canvas">
+              <defs>
+                <pattern id="gridPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#d7dde8" stroke-width="1" />
+                </pattern>
+                <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#1d2b4f" flood-opacity="0.12" />
+                </filter>
+              </defs>
+              <rect width="1000" height="700" fill="#f8fafc" />
+              <rect width="1000" height="700" fill="url(#gridPattern)" />
+              <g id="wireLayer"></g>
+              <g id="componentLayer"></g>
+              <g id="terminalLayer"></g>
+              <g id="overlayLayer"></g>
+              <g id="selectionLayer"></g>
+            </svg>
+          </div>
+        </section>
+
+        <aside class="inspector-panel" aria-label="Inspector and simulation">
+          <section class="panel-section simulation-card">
+            <div class="section-head">
+              <h2 data-i18n="simulation">直流模擬</h2>
+              <span class="sim-badge" id="simBadge" data-i18n="idle">待機</span>
+            </div>
+            <div class="sim-actions">
+              <button class="primary-button" type="button" id="runSim" data-i18n="run">執行模擬</button>
+              <button class="small-button" type="button" id="stopSim" data-i18n="clear">清除讀值</button>
+            </div>
+            <div class="sim-actions">
+              <button class="primary-button" type="button" id="simFalstad" title="匯出為 Falstad netlist 並在嵌入模擬器執行">▶ Falstad 模擬</button>
+              <button class="primary-button" type="button" id="simFft" title="環路電流 / FFT：看 Cin 電流、電感電流與頻譜">📈 環路電流/FFT</button>
+              <button class="primary-button" type="button" id="runDrc" title="檢查接線規則：浮接腳/無接地/開漏無上拉/電源無去耦">🔍 DRC 接線檢查</button>
+            </div>
+            <div id="drcReport" class="review-report"></div>
+            <div class="summary-grid" id="summaryGrid"></div>
+            <p class="note" id="simMessage" data-i18n="simHint">加入電源、電阻與接地後即可分析節點電壓與支路電流。</p>
+          </section>
+
+          <section class="panel-section review-card">
+            <div class="section-head">
+              <h2 data-i18n="circuitReview">線路檢查</h2>
+              <span class="sim-badge" id="reviewBadge" data-i18n="idle">待機</span>
+            </div>
+            <div class="review-upload-grid">
+              <label class="drop-field">
+                <span data-i18n="schematicFiles">線路圖/工程檔</span>
+                <input id="schematicUpload" type="file" multiple accept="image/*,.pdf,.txt,.csv,.json,.net,.asc,.cir,.sch,.kicad_sch,.dsn" />
+              </label>
+              <label class="drop-field">
+                <span data-i18n="datasheetFiles">IC Datasheet</span>
+                <input id="datasheetUpload" type="file" multiple accept="image/*,.pdf,.txt,.csv,.json,.md" />
+              </label>
+            </div>
+            <div class="pdf-parse-section">
+              <button class="primary-button" type="button" id="parsePdfBtn">📄 解析 Datasheet 並建立 IC</button>
+              <div id="pdfParseResult" class="pdf-parse-result" hidden>
+                <div class="parse-status" id="parseStatus"></div>
+                <div id="parsedICInfo"></div>
+                <button class="small-button" type="button" id="saveParsedIC" hidden>儲存為 IC</button>
+              </div>
+            </div>
+            <label class="review-notes">
+              <span data-i18n="connectionNotes">接線/net label 備註</span>
+              <textarea id="reviewNotes" rows="5" data-i18n-placeholder="connectionNotesPlaceholder"></textarea>
+            </label>
+            <div class="sim-actions review-actions">
+              <button class="primary-button" type="button" id="runReview" data-i18n="runReview">執行檢查</button>
+              <button class="small-button" type="button" id="clearReview" data-i18n="clearReview">清除檢查</button>
+            </div>
+            <div id="reviewFiles" class="review-files"></div>
+            <div id="reviewReport" class="review-report"></div>
+          </section>
+
+          <section class="panel-section" id="inspectorSection">
+            <h2 data-i18n="inspector">屬性</h2>
+            <div id="inspectorEmpty" class="empty-state" data-i18n="nothingSelected">尚未選取元件</div>
+            <form id="inspectorForm" class="inspector-form" hidden>
+              <label>
+                <span data-i18n="name">名稱</span>
+                <input id="fieldLabel" type="text" maxlength="24" />
+              </label>
+              <label id="valueField">
+                <span id="valueLabel">Value</span>
+                <input id="fieldValue" type="number" step="0.1" />
+              </label>
+              <label id="switchField" class="switch-row" hidden>
+                <span data-i18n="closed">閉合</span>
+                <input id="fieldClosed" type="checkbox" />
+              </label>
+              <div id="paramFields" class="param-fields"></div>
+              <div id="presetBar" style="display:flex;gap:6px;align-items:center;margin-top:8px">
+                <select id="presetPick" style="flex:1;font-size:12px;padding:3px"><option value="">套用預設規格...</option></select>
+                <button class="small-button" type="button" id="savePreset" title="把目前規格存成預設，下次免重打">💾 存預設</button>
+                <button class="small-button" type="button" id="delPreset" title="刪除選取的預設">🗑</button>
+              </div>
+              <div class="inspector-actions">
+                <button class="danger-button" type="button" id="deleteSelected" data-i18n="delete">刪除</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel-section">
+            <h2 data-i18n="readings">元件讀值</h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-i18n="component">元件</th>
+                    <th>V</th>
+                    <th>I</th>
+                    <th>P</th>
+                  </tr>
+                </thead>
+                <tbody id="resultsBody">
+                  <tr>
+                    <td colspan="4" data-i18n="noReadings">尚無讀值</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel-section ic-detail-section" id="icDetailSection" hidden>
+            <div class="section-head">
+              <h2 data-i18n="icDetail">IC 詳細資訊</h2>
+              <button class="small-button" type="button" id="closeIcDetail">✕</button>
+            </div>
+            <div id="icDetailContent" class="ic-detail-content"></div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <template id="toastTemplate">
+      <div class="toast"></div>
+    </template>
+    <div id="toastHost" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- IC Library Modal -->
+    <div id="icModal" class="modal" hidden>
+      <div class="modal-content ic-modal">
+        <div class="modal-header">
+          <h2 id="icModalTitle" data-i18n="addNewIc">新增 IC</h2>
+          <button class="icon-button" type="button" id="closeIcModal">✕</button>
+        </div>
+        <div class="modal-body">
+          <form id="icForm" class="ic-form">
+            <div class="form-row">
+              <label>
+                <span data-i18n="icName">IC 名稱</span>
+                <input id="icName" type="text" required placeholder="ESP32-S3" />
+              </label>
+              <label>
+                <span data-i18n="icManufacturer">製造商</span>
+                <input id="icManufacturer" type="text" placeholder="Espressif" />
+              </label>
+            </div>
+            <div class="form-row">
+              <label>
+                <span data-i18n="icCategory">類別</span>
+                <select id="icCategory">
+                  <option value="mcu">MCU</option>
+                  <option value="power">電源管理</option>
+                  <option value="memory">記憶體</option>
+                  <option value="interface">介面</option>
+                  <option value="analog">類比</option>
+                  <option value="digital">數位</option>
+                  <option value="mixed">混合訊號</option>
+                </select>
+              </label>
+              <label>
+                <span data-i18n="icPackage">封裝</span>
+                <input id="icPackage" type="text" required placeholder="QFN-48" />
+              </label>
+            </div>
+            <label>
+              <span data-i18n="icDescription">描述</span>
+              <textarea id="icDescription" rows="2" placeholder="Wi-Fi + Bluetooth 5 LE MCU"></textarea>
+            </label>
+            <label>
+              <span data-i18n="icDatasheetUrl">Datasheet 連結</span>
+              <input id="icDatasheetUrl" type="url" placeholder="https://..." />
+            </label>
+            
+            <div class="pins-section">
+              <div class="section-head">
+                <span data-i18n="icPins">Pin 定義</span>
+                <button class="small-button" type="button" id="addPinBtn">+ 新增 Pin</button>
+              </div>
+              <div id="pinsList" class="pins-list"></div>
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-button" type="submit" data-i18n="saveIc">儲存 IC</button>
+              <button class="small-button" type="button" id="cancelIcEdit" data-i18n="cancel">取消</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 自訂 IC 建立 Modal -->
+    <div id="icBuilderModal" class="modal" hidden>
+      <div class="modal-content" style="width:min(560px,94vw)">
+        <div class="modal-header">
+          <h2>建立自訂 IC（方框 + 多腳）</h2>
+          <button class="icon-button" type="button" id="closeIcBuilder">✕</button>
+        </div>
+        <div class="modal-body">
+          <label style="display:block;margin-bottom:8px">
+            <span>IC 名稱</span>
+            <input id="icbName" type="text" placeholder="ESP32-S3" style="width:100%" />
+          </label>
+          <label style="display:block;margin-bottom:6px">
+            <span>Pin 表（每行：<code>編號,名稱,側別(L/R/T/B),類型</code>；側別/類型可省略；# 註解）</span>
+            <textarea id="icbPins" rows="10" placeholder="1,VCC,L,power&#10;2,GND,L,power&#10;3,GPIO0,L,io&#10;4,TXD,R,io&#10;5,RXD,R,io&#10;6,EN,R,io" style="width:100%;font-family:monospace;font-size:12px"></textarea>
+          </label>
+          <p class="note">側別未填時自動 DIP 分配（前半左、後半右）。</p>
+          <div class="sim-actions">
+            <button class="primary-button" type="button" id="icbCreate">建立並放置</button>
+            <label class="small-button file-button" title="從 datasheet PDF 預填">
+              從 PDF 預填
+              <input id="icbPdf" type="file" accept="application/pdf" hidden />
+            </label>
+            <button class="small-button" type="button" id="icbCancel">取消</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOM Modal -->
+    <div id="bomModal" class="modal" hidden>
+      <div class="modal-content" style="width:min(820px,95vw);max-height:88vh;display:flex;flex-direction:column">
+        <div class="modal-header">
+          <h2>BOM 料表</h2>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="small-button" type="button" id="bomCsv">下載 CSV</button>
+            <button class="small-button" type="button" id="bomPdf">列印 / PDF</button>
+            <button class="icon-button" type="button" id="closeBom">✕</button>
+          </div>
+        </div>
+        <div class="modal-body" style="overflow:auto;flex:1">
+          <div id="bomTableHost"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Falstad 模擬 Modal -->
+    <div id="simModal" class="modal" hidden>
+      <div class="modal-content sim-modal" style="width:min(1100px,95vw);height:88vh;display:flex;flex-direction:column">
+        <div class="modal-header">
+          <h2>Falstad 電路模擬</h2>
+          <div style="display:flex;gap:8px;align-items:center">
+            <a id="simOpenNew" class="small-button" href="#" target="_blank" rel="noopener">新分頁開啟</a>
+            <button class="small-button" type="button" id="simCopyNetlist">複製 netlist</button>
+            <button class="icon-button" type="button" id="closeSimModal">✕</button>
+          </div>
+        </div>
+        <div id="simWarn" class="note" style="margin:0 16px;color:#b45309" hidden></div>
+        <div id="simGuide" class="note" style="margin:6px 16px;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;padding:6px 8px;font-size:12px" hidden></div>
+        <div class="modal-body" style="flex:1;padding:8px 16px 16px">
+          <iframe id="simFrame" title="Falstad CircuitJS" style="width:100%;height:100%;border:1px solid #cbd5e1;border-radius:8px" referrerpolicy="no-referrer"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="./pdf-parser.js"></script>
+    <script src="./ic-manager.js"></script>
+    <script src="./schematic-rules.js"></script>
+    <script src="./ocr-parser.js"></script>
+    <script src="./ai-checker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./auth-config.js"></script>
+    <script src="./auth.js?v=79f-interview"></script>
+    <script src="./schematic-symbols.js?v=30"></script>
+    <script src="./circuit-engine.js?v=33"></script>
+    <script src="./ic-data.js?v=4"></script>
+    <script src="./app.js?v=41"></script>
+    <script src="./instruments.js"></script>
+    <script src="./sim-bench.js"></script>
+    <script src="./sheets.js"></script>
+    <script src="./i18n.js?v=2026-07-03c"></script>
+</body>
+</html>

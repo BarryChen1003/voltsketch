@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IC 符號預覽</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <style>
+    html, body { height: auto; min-height: 100%; overflow-y: auto; }
+    body { background: #f6f8fc; margin: 0; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 24px 80px; }
+    .ic-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .ic-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; }
+    .ic-head h2 { margin: 0; color: #0f172a; }
+    .ic-head .mfr { color: #64748b; font-size: 13px; }
+    .ic-body { display: grid; grid-template-columns: minmax(360px, 1fr) 1fr; gap: 20px; align-items: start; }
+    @media (max-width: 820px) { .ic-body { grid-template-columns: 1fr; } }
+    .symbol-box { border: 1px solid #eef2f7; border-radius: 8px; padding: 8px; background: #fff; overflow: auto; text-align: center; }
+    .symbol-box svg { max-width: 100%; height: auto; }
+    .spec-box { border: 1px solid #eef2f7; border-radius: 8px; overflow: hidden; }
+    .spec-box h3 { margin: 0; padding: 8px 12px; background: #1d2943; color: #fff; font-size: 14px; }
+    .spec-row { display: grid; grid-template-columns: 130px 1fr; border-top: 1px solid #f1f5f9; font-size: 13px; }
+    .spec-row .k { background: #f8fafc; color: #475569; padding: 6px 10px; font-weight: 600; }
+    .spec-row .v { padding: 6px 10px; color: #0f172a; }
+    .sec { margin-top: 14px; }
+    .sec h4 { margin: 0 0 6px; color: #b45309; font-size: 14px; }
+    .sec ul { margin: 0; padding-left: 18px; color: #334155; font-size: 13px; line-height: 1.6; }
+    .pill { display: inline-block; background: #eef2ff; color: #3730a3; border-radius: 999px; padding: 2px 10px; font-size: 12px; margin: 2px 4px 2px 0; }
+    .pkg { color: #64748b; font-size: 13px; margin: 4px 0 0; }
+    .pintab { margin-top: 18px; }
+    .pintab h4 { margin: 0 0 8px; color: #1d2943; font-size: 14px; }
+    .pintab table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .pintab th { background: #1d2943; color: #fff; text-align: left; padding: 6px 10px; font-weight: 600; }
+    .pintab th:first-child { text-align: center; width: 40px; }
+    .pintab td { border-bottom: 1px solid #eef2f7; padding: 6px 10px; vertical-align: top; }
+    .pintab tbody tr:nth-child(even) { background: #f8fafc; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 style="color:#0f172a">IC 元件庫 — 符號預覽（驗外觀）</h1>
+    <p style="color:#64748b">引擎 ic-symbol.js + 資料 ic-data.js。仿 datasheet Pin Configuration：腳號在框內、腳名在框外、上下腳名垂直、Thermal Pad 補 GND 腳。</p>
+    <div id="list"></div>
+  </div>
+
+  <script src="./ic-symbol.js"></script>
+  <script src="./ic-data.js"></script>
+  <script>
+    const esc = s => String(s == null ? '' : s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    // {…} → 上劃線（active-low）
+    const nameHTML = name => String(name).split(/(\{[^}]*\})/).filter(s => s !== '').map(p =>
+      /^\{.*\}$/.test(p) ? `<span style="text-decoration:overline">${esc(p.slice(1, -1))}</span>` : esc(p)).join('');
+    const typeColor = t => /Power|Supply/.test(t) ? '#b91c1c' : /Ground|GND|EP/.test(t) ? '#334155' :
+      /Analog/.test(t) ? '#0369a1' : /Out/.test(t) ? '#15803d' : '#6d28d9';
+
+    function pinTable(ic) {
+      const pins = (ic.pins || []).slice();
+      pins.sort((a, b) => (a.num || 0) - (b.num || 0));
+      const rows = pins.map(p => `<tr>
+        <td style="text-align:center;font-weight:600">${esc(p.num)}</td>
+        <td style="font-family:ui-monospace,monospace">${nameHTML(p.name)}</td>
+        <td style="color:${typeColor(p.type || '')};white-space:nowrap">${esc(p.type || '')}</td>
+        <td style="color:#334155">${esc(p.desc || '')}</td></tr>`).join('');
+      return `<div class="pintab"><h4>接腳定義（Pin Functions）</h4>
+        <table><thead><tr><th>腳</th><th>名稱</th><th>類型</th><th>功能</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+
+    function introBlock(ic) {
+      const row = (label, val) => val ? `<div style="display:grid;grid-template-columns:64px 1fr;gap:8px;margin:3px 0"><div style="color:#64748b;font-weight:600">${label}</div><div style="color:#0f172a">${esc(val)}</div></div>` : '';
+      if (!ic.whatIs && !ic.func && !ic.usedIn) return `<p style="color:#475569;font-size:13px;margin:8px 0 14px">${esc(ic.desc || '')}</p>`;
+      return `<div style="background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;padding:12px 14px;margin:10px 0 16px;font-size:13px">
+        ${row('是什麼', ic.whatIs)}${row('功用', ic.func)}${row('用在哪', ic.usedIn)}</div>`;
+    }
+    function secondSourceBlock(ic) {
+      const drop = (ic.dropIn || []).map(d => `<li><b style="color:#15803d">${esc(d.part)}</b> — ${esc(d.note || '')}</li>`).join('');
+      const crit = (ic.secondSource || []).map(s => `<li>${esc(s)}</li>`).join('');
+      let h = '';
+      h += `<div class="sec"><h4 style="color:#15803d">可直接替換（pin-to-pin 相容）</h4>${drop ? `<ul>${drop}</ul>` : '<p style="color:#64748b;font-size:13px;margin:4px 0">尚無</p>'}</div>`;
+      if (crit) h += `<div class="sec"><h4>替換必須符合的條件</h4><ul>${crit}</ul></div>`;
+      return h;
+    }
+    function renderCard(ic) {
+      const sym = ICSymbol.render(ic);
+      const specs = (ic.specs || []).map(s => `<div class="spec-row"><div class="k">${esc(s.k)}</div><div class="v">${esc(s.v)}</div></div>`).join('');
+      return `<div class="ic-card">
+        <div class="ic-head">
+          <div><h2>${esc(ic.part)}</h2><div class="pkg">${esc(ic.subcategory || '')} · ${esc(ic.package || '')}</div></div>
+          <div style="text-align:right">
+            <div class="mfr">${esc(ic.mfr || '')}</div>
+            <a class="primary-button" style="display:inline-block;padding:6px 14px;margin-top:6px;font-size:13px" href="index.html?addIC=${encodeURIComponent('data:' + ic.part)}">＋ 放到線路圖</a>
+          </div>
+        </div>
+        ${introBlock(ic)}
+        <div class="ic-body">
+          <div class="symbol-box">${sym.svg}</div>
+          <div>
+            <div class="spec-box"><h3>重點規格</h3>${specs}</div>
+            ${secondSourceBlock(ic)}
+          </div>
+        </div>
+        ${pinTable(ic)}
+      </div>`;
+    }
+    document.getElementById('list').innerHTML = (window.IC_DATA || []).map(renderCard).join('');
+  </script>
+</body>
+</html>

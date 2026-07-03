@@ -1,0 +1,170 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "IC Symbol Schema",
+  "description": "IC Symbol 資料結構定義",
+  "type": "object",
+  "required": ["id", "name", "category", "package", "pins"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "IC 唯一識別碼"
+    },
+    "name": {
+      "type": "string",
+      "description": "IC 名稱"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["mcu", "power", "memory", "interface", "analog", "digital", "mixed"],
+      "description": "IC 類別"
+    },
+    "manufacturer": {
+      "type": "string",
+      "description": "製造商"
+    },
+    "package": {
+      "type": "string",
+      "description": "封裝類型（QFP-48, QFN-32, SOIC-8, TSSOP-14, BGA-100, SOT-23, etc.）"
+    },
+    "description": {
+      "type": "string",
+      "description": "IC 功能描述"
+    },
+    "datasheetUrl": {
+      "type": "string",
+      "description": "Datasheet 連結"
+    },
+    "pins": {
+      "type": "array",
+      "description": "Pin 定義",
+      "items": {
+        "type": "object",
+        "required": ["number", "name", "type"],
+        "properties": {
+          "number": {
+            "type": "integer",
+            "description": "Pin 編號"
+          },
+          "name": {
+            "type": "string",
+            "description": "Pin 名稱"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["power", "ground", "gpio", "input", "output", "bidirectional", "analog", "communication", "reset", "boot", "enable"],
+            "description": "Pin 類型"
+          },
+          "direction": {
+            "type": "string",
+            "enum": ["input", "output", "bidirectional"],
+            "description": "Pin 方向"
+          },
+          "voltage": {
+            "type": "string",
+            "description": "電壓域（3.3V, 5V, 1.8V, etc.）"
+          },
+          "protocol": {
+            "type": "string",
+            "description": "通訊協定（UART, SPI, I2C, USB, CAN, etc.）"
+          },
+          "group": {
+            "type": "string",
+            "description": "Pin 分組（PA0, PB1, etc.）"
+          },
+          "description": {
+            "type": "string",
+            "description": "Pin 功能描述"
+          }
+        }
+      }
+    },
+    "powerPins": {
+      "type": "array",
+      "description": "電源腳列表",
+      "items": {
+        "type": "string"
+      }
+    },
+    "groundPins": {
+      "type": "array",
+      "description": "接地腳列表",
+      "items": {
+        "type": "string"
+      }
+    },
+    "communicationInterfaces": {
+      "type": "array",
+      "description": "通訊介面",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["uart", "spi", "i2c", "usb", "can", "ethernet", "spi_slave"]
+          },
+          "pins": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "electricalCharacteristics": {
+      "type": "object",
+      "description": "電氣特性",
+      "properties": {
+        "supplyVoltage": {
+          "type": "object",
+          "properties": {
+            "min": { "type": "number" },
+            "typ": { "type": "number" },
+            "max": { "type": "number" },
+            "unit": { "type": "string" }
+          }
+        },
+        "operatingTemperature": {
+          "type": "object",
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" },
+            "unit": { "type": "string" }
+          }
+        },
+        "esdRating": {
+          "type": "string",
+          "description": "ESD 耐壓等級"
+        }
+      }
+    },
+    "typicalApplication": {
+      "type": "object",
+      "description": "典型應用電路",
+      "properties": {
+        "description": { "type": "string" },
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string" },
+              "value": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "建立時間"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "更新時間"
+    }
+  }
+}

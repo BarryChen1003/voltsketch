@@ -1,0 +1,64 @@
+{
+  "id": "basic-clearance",
+  "name": "基本間距規則",
+  "category": "clearance",
+  "description": "PCB 基本間距規則，適用於一般設計",
+  "rules": [
+    {
+      "id": "trace-to-trace",
+      "name": "Trace 間距",
+      "type": "min",
+      "value": 0.15,
+      "unit": "mm",
+      "description": "訊號線之間的最小間距",
+      "severity": "error"
+    },
+    {
+      "id": "trace-to-pad",
+      "name": "Trace 到 Pad 間距",
+      "type": "min",
+      "value": 0.15,
+      "unit": "mm",
+      "description": "訊號線到焊盤之間的最小間距",
+      "severity": "error"
+    },
+    {
+      "id": "pad-to-pad",
+      "name": "Pad 間距",
+      "type": "min",
+      "value": 0.15,
+      "unit": "mm",
+      "description": "焊盤之間的最小間距",
+      "severity": "error"
+    },
+    {
+      "id": "trace-to-edge",
+      "name": "Trace 到板邊間距",
+      "type": "min",
+      "value": 0.3,
+      "unit": "mm",
+      "description": "訊號線到 PCB 邊緣的最小間距",
+      "severity": "warning"
+    },
+    {
+      "id": "via-to-via",
+      "name": "Via 間距",
+      "type": "min",
+      "value": 0.25,
+      "unit": "mm",
+      "description": "通孔之間的最小間距",
+      "severity": "error"
+    },
+    {
+      "id": "via-to-pad",
+      "name": "Via 到 Pad 間距",
+      "type": "min",
+      "value": 0.25,
+      "unit": "mm",
+      "description": "通孔到焊盤之間的最小間距",
+      "severity": "error"
+    }
+  ],
+  "createdAt": "2026-06-02T10:00:00Z",
+  "updatedAt": "2026-06-02T10:00:00Z"
+}

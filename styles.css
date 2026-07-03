@@ -1,0 +1,778 @@
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --line: #e2e8f0;
+  --text: #1e293b;
+  --ink: #1e293b;
+  --heading: #1e293b;
+  --text-secondary: #64748b;
+  --muted: #64748b;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-bg: #eff6ff;
+  --accent-soft: #eff6ff;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --warn: #f59e0b;
+  --hover: #f1f5f9;
+  --panel-soft: #f8fafc;
+  --mono: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;      /* 內容多時換行，不擠爆 */
+  row-gap: 4px;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  background: var(--primary);
+  color: white;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.brand h1 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.brand p {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Navigation */
+.main-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+.main-nav .nav-link { padding: 6px 10px; font-size: 13px; white-space: nowrap; }
+
+.nav-link {
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.nav-link:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.nav-link.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* Top Actions */
+.top-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.icon-button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.icon-button:hover {
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--primary);
+}
+
+.file-button {
+  width: auto;
+  padding: 0 10px;
+}
+
+.file-button input[type="file"] {
+  display: none;
+}
+
+/* Language Switcher */
+.segmented {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.lang-option {
+  padding: 4px 10px;
+  border: none;
+  background: var(--surface);
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.lang-option.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* Workspace */
+.workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Panels */
+.tool-panel {
+  width: 220px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.inspector-panel {
+  width: 300px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.canvas-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-section {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-section h2 {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+/* Tool Grid */
+.tool-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.tool-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.tool-button:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.tool-button.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.tool-icon {
+  font-size: 18px;
+}
+
+/* Component List */
+.component-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.component-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text);
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.component-button:hover {
+  background: var(--bg);
+}
+
+/* Schematic Mini Icons */
+.schematic-mini {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg);
+}
+
+.resistor-mini { background: linear-gradient(90deg, #e2e8f0 30%, transparent 30%, transparent 70%, #e2e8f0 70%); }
+.source-mini { border-color: var(--primary); }
+.ground-mini { border-color: #64748b; }
+.switch-mini { border-color: var(--warning); }
+.lamp-mini { border-color: var(--warning); background: #fef3c7; }
+.led-mini { border-color: var(--danger); background: #fecaca; }
+.diode-mini { border-color: var(--text-secondary); }
+.capacitor-mini { border-color: var(--primary); }
+.inductor-mini { border-color: #8b5cf6; }
+.meter-mini { border-color: var(--success); }
+.chip-mini { border-color: var(--primary); background: #dbeafe; }
+.opamp-mini { border-color: var(--primary); }
+.dcdc-mini { border-color: var(--warning); }
+
+/* Template Search */
+.library-search {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.template-catalog {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Quick Help */
+.compact-help p {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Canvas Toolbar */
+.canvas-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.status-pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--bg);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.canvas-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.small-button {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.small-button:hover {
+  background: var(--bg);
+}
+
+.small-button.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Schematic Canvas */
+.schematic-wrap {
+  flex: 1;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+#schematic {
+  width: 100%;
+  height: 100%;
+}
+
+/* Simulation Card */
+.simulation-card,
+.review-card {
+  border-bottom: 2px solid var(--border);
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.section-head h2 {
+  margin-bottom: 0;
+}
+
+.sim-badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--bg);
+  color: var(--text-secondary);
+}
+
+.sim-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.primary-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--primary);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.primary-button:hover {
+  background: var(--primary-hover);
+}
+
+.danger-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--danger);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Summary Grid */
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.summary-card {
+  padding: 10px;
+  border-radius: 6px;
+  background: var(--bg);
+  text-align: center;
+}
+
+.summary-card .value {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.summary-card .label {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+/* Review Upload */
+.review-upload-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.drop-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: border-color 0.15s;
+}
+
+.drop-field:hover {
+  border-color: var(--primary);
+}
+
+.drop-field input[type="file"] {
+  display: none;
+}
+
+/* PDF Parse */
+.pdf-parse-section {
+  margin-bottom: 12px;
+}
+
+.pdf-parse-result {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 12px;
+}
+
+/* Review Notes */
+.review-notes {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.review-notes span {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.review-notes textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.review-files {
+  margin-bottom: 8px;
+}
+
+.review-report {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Inspector */
+.inspector-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inspector-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inspector-form label span {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.inspector-form input,
+.inspector-form select {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.switch-row {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px !important;
+}
+
+.inspector-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.empty-state {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* Readings Table */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+th, td {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+th {
+  background: var(--bg);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* IC Detail */
+.ic-detail-section {
+  border-top: 2px solid var(--border);
+}
+
+.ic-detail-content {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-content {
+  background: var(--surface);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+  font-size: 16px;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+/* IC Form */
+.ic-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.ic-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ic-form label span {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.ic-form input,
+.ic-form select,
+.ic-form textarea {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.pins-section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+
+.pins-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.pin-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 80px;
+  gap: 8px;
+  align-items: center;
+}
+
+.pin-row input {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+/* Toast */
+#toastHost {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2000;
+}
+
+.toast {
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: #1e293b;
+  color: white;
+  font-size: 13px;
+  margin-top: 8px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.note {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+
+/* ===== 捲動統一 =====
+   內容頁（知識庫/面試/IC 庫/條款…）整頁可捲動；
+   全高編輯器頁（線路圖/PCB 檢視器/架構圖）body 加 class="editor-lock" 維持固定高度。 */
+body:not(.editor-lock) { height: auto; min-height: 100vh; overflow-y: auto; }
+body:not(.editor-lock) .app-shell { height: auto; min-height: 100vh; }
