@@ -12,7 +12,7 @@ const PLANS: Record<string, { amount: number; desc: string }> = {
   vip_1m:  { amount: 300,  desc: "VoltSketch VIP 1 個月" },
   vip_3m:  { amount: 750,  desc: "VoltSketch VIP 3 個月" },   // 250/月
   vip_6m:  { amount: 1500, desc: "VoltSketch VIP 6 個月" },   // 250/月
-  vip_12m: { amount: 3300, desc: "VoltSketch VIP 12 個月(含面試題庫+PCB)" },
+  vip_12m: { amount: 3000, desc: "VoltSketch VIP 12 個月(含面試題庫+PCB)" },  // 250/月＝最划算檔
 };
 
 const cors = {

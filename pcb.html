@@ -469,14 +469,6 @@
       })();
     </script>
     <div class="pcb-page">
-      <div id="viewerEntryCard" style="margin:12px 16px 0;background:linear-gradient(90deg,#1d2943,#1f4fd1);color:#fff;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <span style="font-size:26px">🔍</span>
-        <div style="flex:1;min-width:240px">
-          <b>PCB 板面檢視器</b> — 讀取 Allegro 匯出的板面資料：分層開關、顏色自調、搜尋 refdes / net / 測試點 TP / 螺絲孔、找料位置、產換料 SKILL、co-lay 疊圖比對。
-          <div style="font-size:12px;opacity:.85;margin-top:2px">.brd 是 Cadence 專有二進位 → 先在 Allegro 跑一鍵匯出腳本（檢視器內可下載），得 vsboard.json 再匯入。</div>
-        </div>
-        <a href="pcb-viewer.html" class="primary-button" style="background:#fff;color:#1d2943;padding:9px 20px;text-decoration:none;border-radius:8px;font-weight:700">開啟檢視器 →</a>
-      </div>
       <header class="topbar">
         <div class="brand">
           <div class="brand-mark" aria-hidden="true">VS</div>
@@ -491,7 +483,6 @@
           <a href="ic-library.html" class="nav-link">IC 元件庫</a>
           <a href="knowledge.html" class="nav-link">硬體知識庫</a>
           <a href="pcb.html" class="nav-link active">PCB Layout</a>
-          <a href="pcb-viewer.html" class="nav-link">PCB 檢視器</a>
           <a href="interview.html" class="nav-link">面試考題</a>
           <a href="contact.html" class="nav-link">聯絡資訊</a>
         </nav>
@@ -512,6 +503,35 @@
           </div>
         </div>
       </header>
+
+      <!-- PCB 雙分頁：Layout 編輯（本頁工具）｜板面檢視（pcb-viewer 內嵌，共用邀請碼旗標） -->
+      <div id="pcbTabs" style="display:flex;gap:8px;margin:12px 16px 0;align-items:center">
+        <button id="tabLayout" type="button" class="primary-button" style="padding:8px 22px;font-size:14px">🛠 Layout 編輯</button>
+        <button id="tabViewer" type="button" class="icon-button" style="padding:8px 22px;font-size:14px">🔍 板面檢視（Allegro 匯入）</button>
+        <span style="font-size:12px;color:var(--muted)">.brd → 先在 Allegro 跑匯出腳本（檢視分頁內可下載）得 vsboard.json 再匯入</span>
+      </div>
+      <div id="pcbViewerPane" style="display:none;flex:1;padding:12px 16px">
+        <iframe id="pcbViewerFrame" title="PCB 檢視器" style="width:100%;height:100%;min-height:72vh;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe>
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          var main = document.querySelector('.pcb-main'), pane = document.getElementById('pcbViewerPane'),
+              frame = document.getElementById('pcbViewerFrame'),
+              tl = document.getElementById('tabLayout'), tv = document.getElementById('tabViewer');
+          function pick(which) {
+            var viewer = which === 'viewer';
+            if (viewer && !frame.src) frame.src = 'pcb-viewer.html?embed=1';
+            main.style.display = viewer ? 'none' : '';
+            pane.style.display = viewer ? 'flex' : 'none';
+            tl.className = viewer ? 'icon-button' : 'primary-button';
+            tv.className = viewer ? 'primary-button' : 'icon-button';
+            try { localStorage.setItem('vs-pcb-tab', which); } catch (e) {}
+          }
+          tl.addEventListener('click', function () { pick('layout'); });
+          tv.addEventListener('click', function () { pick('viewer'); });
+          if (localStorage.getItem('vs-pcb-tab') === 'viewer') pick('viewer');
+        });
+      </script>
 
       <main class="pcb-main">
         <aside class="pcb-sidebar">

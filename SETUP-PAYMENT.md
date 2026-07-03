@@ -7,7 +7,7 @@
 | `vip_1m`  | NT$300  | 1 個月  | 知識庫付費主題（每月上新）+ 匯出 30 次/月 |
 | `vip_3m`  | NT$750  | 3 個月  | 同上（250/月） |
 | `vip_6m`  | NT$1500 | 6 個月  | 同上（250/月） |
-| `vip_12m` | NT$3300 | 12 個月 | 同上 + **面試題庫**（interview_paid）+ **PCB 權限**（pcb_access，unlock_all） |
+| `vip_12m` | NT$3000 | 12 個月 | 同上（250/月）+ **面試題庫**（interview_paid）+ **PCB 權限**（pcb_access，unlock_all） |
 
 免費版：匯出 3 次/月、知識庫付費主題鎖定、面試題僅 2 題試閱。方案有 `plan_expires_at`，過期自動回落 free(3 次)。
 改價格：`create-order/index.ts` 的 `PLANS` + `ecpay-webhook/index.ts` 的 `PLAN_RULES` **兩處同步**（後端唯一真相，前端只送方案代號）。

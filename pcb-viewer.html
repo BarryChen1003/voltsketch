@@ -27,6 +27,12 @@
   </style>
 </head>
 <body class="editor-lock">
+  <script>
+    // 邀請碼守門（與 pcb.html 同一旗標）；?embed=1 = pcb.html 分頁內嵌，隱藏自身 topbar
+    if (localStorage.getItem('pcb-invite-ok') !== '1') location.replace('pcb.html');
+    if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('vs-embed');
+  </script>
+  <style>.vs-embed .topbar { display: none !important; }</style>
   <div class="app-shell">
     <header class="topbar">
       <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>VoltSketch 硬體實驗室</h1><p>PCB 檢視器（vs-board-extract）</p></div></div>
