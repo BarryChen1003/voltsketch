@@ -57,9 +57,10 @@
     </div>
 
     <script src="./interview-bank.js"></script>
+    <script src="./interview-bank-i18n.js?v=2026-07-04a"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./auth-config.js?v=2026-07-04a"></script>
-    <script src="./auth.js?v=79f-interview"></script>
+    <script src="./auth.js?v=2026-07-04b"></script>
     <script src="./plan.js?v=2026-07-03"></script>
     <script>
       (async function () {
@@ -73,21 +74,27 @@
             '<p style="color:var(--muted);font-size:13px">' + esc(sub) + '</p>' +
             (btnText ? '<a class="primary-button" style="display:inline-block;padding:8px 18px;margin-top:8px" href="' + btnHref + '">' + esc(btnText) + '</a>' : '');
         }
+        // 語言選取：zh 預設；en/ja/ko 依 I18N.lang（DB 欄位缺譯時回退 zh）
+        const LANG = (window.I18N && ['en', 'ja', 'ko'].indexOf(I18N.lang) >= 0) ? I18N.lang : 'zh';
         function renderQuestions(rows) {
           // question/answer 為後端(admin RLS 寫)富文字 → 直接渲染 HTML；分類字串仍逸出
           statusEl.style.display = 'none';
           let html = '<h3 style="margin:0 0 12px;color:var(--heading)">完整題庫（' + rows.length + ' 題）</h3>';
           let lastCat = null;
           rows.forEach(r => {
-            if (r.category !== lastCat) {
-              html += '<h4 style="margin:20px 0 8px;color:#b45309;border-bottom:1px solid var(--line);padding-bottom:4px">' + esc(r.category) + '</h4>';
-              lastCat = r.category;
+            const cat = (LANG !== 'zh' && r['category_' + LANG]) || r.category;
+            const question = (LANG !== 'zh' && r['question_' + LANG]) || r.question;
+            const answer = (LANG !== 'zh' && r['answer_' + LANG]) || r.answer;
+            if (cat !== lastCat) {
+              html += '<h4 style="margin:20px 0 8px;color:#b45309;border-bottom:1px solid var(--line);padding-bottom:4px">' + esc(cat) + '</h4>';
+              lastCat = cat;
             }
             html += '<details style="margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:8px">' +
-              '<summary style="cursor:pointer;font-weight:600">' + r.question + '</summary>' +
-              '<div style="color:var(--muted);margin-top:8px;line-height:1.6">' + r.answer + '</div></details>';
+              '<summary style="cursor:pointer;font-weight:600">' + question + '</summary>' +
+              '<div style="color:var(--muted);margin-top:8px;line-height:1.6">' + answer + '</div></details>';
           });
           listEl.innerHTML = html;
+          document.addEventListener('vs-lang-change', () => location.reload());
         }
 
         // demo 模式（未填金鑰）：預設鎖定，與正式一致（面試題=12 個月方案解鎖）。
@@ -100,16 +107,25 @@
             return;
           }
           const bank = window.INTERVIEW_BANK || [];
-          const lang = (window.I18N && I18N.lang === 'en') ? 'en' : 'zh';
+          // 併入 ja/ko 內容層（interview-bank-i18n.js）；{{SVG}} = 沿用 zh 版電路圖
+          const M = window.INTERVIEW_BANK_I18N || {};
+          bank.forEach(q => { const m = M[q.id]; if (m) Object.assign(q, m); });
+          const lang = (window.I18N && ['en', 'ja', 'ko'].indexOf(I18N.lang) >= 0) ? I18N.lang : 'zh';
+          const CATKEY = { zh: 'catZh', en: 'catEn', ja: 'catJa', ko: 'catKo' };
           statusEl.innerHTML = '<span style="color:#b45309">開發模式（未連資料庫）：完整題庫 ' + bank.length + ' 題（正式版由後端 RLS 控管）。</span>';
           let html = '', lastCat = '';
           bank.forEach(q => {
-            const cat = lang === 'en' ? q.catEn : q.catZh;
+            const cat = q[CATKEY[lang]] || q.catZh;
             if (cat !== lastCat) { html += '<h3 style="color:var(--heading);margin:18px 0 8px;border-bottom:2px solid #1f4fd1;padding-bottom:4px">' + cat + '</h3>'; lastCat = cat; }
-            const d = q[lang];
+            const d = q[lang] || q.zh;
+            let ans = d.answer;
+            if (ans.indexOf('{{SVG}}') >= 0) {
+              const svg = (q.zh.answer.match(/<div class="exam-diagram-box">[\s\S]*?<\/svg><\/div>/) || [''])[0];
+              ans = ans.split('{{SVG}}').join(svg);
+            }
             html += '<details style="margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:8px">' +
               '<summary style="cursor:pointer;font-weight:600;line-height:1.6">' + d.text + '</summary>' +
-              '<div style="color:var(--muted);margin-top:8px;line-height:1.7">' + d.answer + '</div></details>';
+              '<div style="color:var(--muted);margin-top:8px;line-height:1.7">' + ans + '</div></details>';
           });
           listEl.innerHTML = html;
           document.addEventListener('vs-lang-change', () => location.reload());

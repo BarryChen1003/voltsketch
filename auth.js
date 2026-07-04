@@ -53,10 +53,14 @@ window.Auth = (function () {
     async getInterviewQuestions() {
       if (!ready) return null;
       const u = await this.user(); if (!u) return null;
-      const { data, error } = await client.from('interview_questions')
+      // 先嘗試含 ja/ko 欄位（interview-i18n.sql 執行後存在）；失敗回退舊欄位集
+      let r = await client.from('interview_questions')
+        .select('category, category_en, category_ja, category_ko, question, answer, question_en, answer_en, question_ja, answer_ja, question_ko, answer_ko')
+        .order('id', { ascending: true });
+      if (r.error) r = await client.from('interview_questions')
         .select('category, question, answer, question_en, answer_en').order('id', { ascending: true });
-      if (error) return null;
-      return data || [];
+      if (r.error) return null;
+      return r.data || [];
     },
     // 呼叫 Edge Function（帶登入 JWT；後端再驗 pcb_access）。失敗回 null 讓前端降級。
     async callFn(name, body) {
