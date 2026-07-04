@@ -4,6 +4,6 @@
 // 3) 只能放 anon(公開)金鑰；service_role 金鑰「絕對不可」放前端
 // 未填時 App 自動以「本機 demo 模式」運作（不連雲、只用 localStorage）。
 window.AUTH_CONFIG = {
-  url: 'YOUR_SUPABASE_URL',
-  anonKey: 'YOUR_SUPABASE_ANON_KEY'
+  url: 'https://dmkxjawjrmltmrmkebbs.supabase.co',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRta3hqYXdqcm1sdG1ybWtlYmJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTQ2ODEsImV4cCI6MjA5ODY5MDY4MX0.KSXRiToPtFSWfLli_yYCSizFZpM22JVIft9zAaMMRXA'
 };
