@@ -38,10 +38,6 @@
         <input id="password" type="password" placeholder="密碼（至少 6 碼）" autocomplete="current-password" />
         <button class="primary-button" id="submitBtn" style="width:100%;margin-top:6px">登入</button>
 
-        <div style="text-align:center;margin:12px 0;color:var(--muted);font-size:12px">或</div>
-        <button class="small-button" id="googleBtn" style="width:100%;padding:9px">使用 Google 登入</button>
-
-        <p class="muted" style="margin-top:14px">手機註冊：可在 Supabase 開啟 Phone Auth 後於此擴充；目前先支援 email + Google。</p>
         <div id="msg" class="auth-msg"></div>
       </div>
     </div>
@@ -84,10 +80,7 @@
         } catch (e) { msg(e.message || '失敗'); }
       });
 
-      $('googleBtn').addEventListener('click', async () => {
-        if (!Auth.enabled()) { msg('請先設定 Supabase'); return; }
-        try { await Auth.oauth('google'); } catch (e) { msg(e.message); }
-      });
+      // Google / 手機登入已移除（2026-07-04 站主指示）：僅 email。要恢復見 git 歷史 + SETUP-AUTH.md。
     </script>
     <script src="./i18n.js?v=2026-07-03c"></script>
 </body>
