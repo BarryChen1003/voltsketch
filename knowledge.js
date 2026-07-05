@@ -1390,7 +1390,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-03-launch1';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-04-paid1';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -4309,7 +4309,7 @@ const knowledgeApp = {
         <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background:#fff; border:1px solid #e2e8f0; border-radius:12px;">
           <p style="font-size: 44px; margin-bottom: 12px;">🔒</p>
           <h3 style="color:#0f172a; margin:0 0 8px;">「${this.currentProduct}」為付費主題</h3>
-          <p style="color:#64748b; font-size:14px; margin:0 0 18px;">電子紙、車用電子（電動車）、AI 伺服器、手機、筆電等熱門主題內容需 VIP 解鎖。</p>
+          <p style="color:#64748b; font-size:14px; margin:0 0 18px;">電子紙、車用電子（電動車）、AI 伺服器、手機、筆電、智慧手錶等熱門主題內容需 VIP 解鎖。</p>
           <a class="primary-button" style="padding:10px 22px; text-decoration:none;" href="upgrade.html">升級 VIP 解鎖</a>
         </div>`;
       return;
