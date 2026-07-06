@@ -505,31 +505,42 @@
       </header>
 
       <!-- PCB 雙分頁：Layout 編輯（本頁工具）｜板面檢視（pcb-viewer 內嵌，共用邀請碼旗標） -->
-      <div id="pcbTabs" style="display:flex;gap:8px;margin:12px 16px 0;align-items:center">
+      <div id="pcbTabs" style="display:flex;gap:8px;margin:12px 16px 0;align-items:center;flex-wrap:wrap">
         <button id="tabLayout" type="button" class="primary-button" style="padding:8px 22px;font-size:14px">🛠 Layout 編輯</button>
         <button id="tabViewer" type="button" class="icon-button" style="padding:8px 22px;font-size:14px">🔍 板面檢視（Allegro 匯入）</button>
-        <span style="font-size:12px;color:var(--muted)">.brd → 先在 Allegro 跑匯出腳本（檢視分頁內可下載）得 vsboard.json 再匯入</span>
+        <button id="tabRefs" type="button" class="icon-button" style="padding:8px 22px;font-size:14px">📐 開源公版</button>
       </div>
       <div id="pcbViewerPane" style="display:none;flex:1;padding:12px 16px">
         <iframe id="pcbViewerFrame" title="PCB 檢視器" style="width:100%;height:100%;min-height:72vh;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe>
       </div>
+      <div id="pcbRefsPane" style="display:none;flex:1;padding:12px 16px;overflow-y:auto">
+        <div style="background:var(--accent-soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:var(--ink);line-height:1.7">
+          <b>開源硬體公版庫</b>——「載入到 Layout」把公版的板框、層數、主要元件方塊帶進編輯器當起手板，可直接改；「疊加比較」把公版方塊以虛線疊在你目前的設計上對照。
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">⚠️ 方塊為概略樓層平面（教學用），非原廠精確座標；完整原理圖/PCB 源檔在各「原始碼」連結。授權多為 OSHW/CC-BY-SA。</div>
+        </div>
+        <div id="refBoardList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px"></div>
+      </div>
       <script>
         document.addEventListener('DOMContentLoaded', function () {
-          var main = document.querySelector('.pcb-main'), pane = document.getElementById('pcbViewerPane'),
-              frame = document.getElementById('pcbViewerFrame'),
-              tl = document.getElementById('tabLayout'), tv = document.getElementById('tabViewer');
+          var main = document.querySelector('.pcb-main'),
+              vpane = document.getElementById('pcbViewerPane'), frame = document.getElementById('pcbViewerFrame'),
+              rpane = document.getElementById('pcbRefsPane'),
+              tl = document.getElementById('tabLayout'), tv = document.getElementById('tabViewer'), tr = document.getElementById('tabRefs');
           function pick(which) {
-            var viewer = which === 'viewer';
-            if (viewer && !frame.src) frame.src = 'pcb-viewer.html?embed=1';
-            main.style.display = viewer ? 'none' : '';
-            pane.style.display = viewer ? 'flex' : 'none';
-            tl.className = viewer ? 'icon-button' : 'primary-button';
-            tv.className = viewer ? 'primary-button' : 'icon-button';
+            if (which === 'viewer' && !frame.src) frame.src = 'pcb-viewer.html?embed=1';
+            main.style.display = which === 'layout' ? '' : 'none';
+            vpane.style.display = which === 'viewer' ? 'flex' : 'none';
+            rpane.style.display = which === 'refs' ? 'flex' : 'none';
+            tl.className = which === 'layout' ? 'primary-button' : 'icon-button';
+            tv.className = which === 'viewer' ? 'primary-button' : 'icon-button';
+            tr.className = which === 'refs' ? 'primary-button' : 'icon-button';
             try { localStorage.setItem('vs-pcb-tab', which); } catch (e) {}
           }
           tl.addEventListener('click', function () { pick('layout'); });
           tv.addEventListener('click', function () { pick('viewer'); });
-          if (localStorage.getItem('vs-pcb-tab') === 'viewer') pick('viewer');
+          tr.addEventListener('click', function () { pick('refs'); });
+          var saved = localStorage.getItem('vs-pcb-tab');
+          if (saved === 'viewer' || saved === 'refs') pick(saved);
         });
       </script>
 
@@ -752,7 +763,8 @@
     <script src="./auth.js?v=2026-07-04b"></script>
     <script src="./pcb-tutorial.js?v=5"></script>
     <script src="./pcb-practice.js?v=5"></script>
-    <script src="./pcb.js?v=6"></script>
+    <script src="./pcb-refboards.js?v=2026-07-04a"></script>
+    <script src="./pcb.js?v=7"></script>
     <script>
       // Initialize tutorial and practice after page load
       document.addEventListener('DOMContentLoaded', () => {

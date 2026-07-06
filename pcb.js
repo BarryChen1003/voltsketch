@@ -18,7 +18,9 @@ const pcbApp = {
     selected: null,
     isDragging: false,
     isPanning: false,
-    lastMouse: { x: 0, y: 0 }
+    lastMouse: { x: 0, y: 0 },
+    refBoard: null,      // 疊加比較用的公版方塊（ghost 繪製）
+    refOverlayId: null   // 目前疊加中的公版 id
   },
   gridSize: 1, // 1mm
 
@@ -31,6 +33,7 @@ const pcbApp = {
     this.bindEvents();
     this.renderLayerList();
     this.populateEmiSelects();
+    this.renderRefBoards();
     this.render();
   },
 
@@ -166,6 +169,25 @@ const pcbApp = {
 
   drawComponents(scale) {
     const { ctx, state } = this;
+
+    // 公版疊加比較：ghost（虛線、半透明橙）繪於底層
+    if (state.refBoard && state.refBoard.length) {
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      ctx.setLineDash([4, 3]);
+      state.refBoard.forEach(b => {
+        const x = this.canvas.width / 2 + b.x * scale;
+        const y = this.canvas.height / 2 + b.y * scale;
+        ctx.strokeStyle = '#e67e22';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x - 20, y - 15, 40, 30);
+        ctx.fillStyle = '#e67e22';
+        ctx.font = '9px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(b.label, x, y + 3);
+      });
+      ctx.restore();
+    }
 
     state.components.forEach(comp => {
       const x = this.canvas.width / 2 + comp.x * scale;
@@ -428,6 +450,61 @@ const pcbApp = {
     this.render();
   },
 
+  // ---- 開源公版：載入起手板 / 疊加比較 ----
+  renderRefBoards() {
+    const host = document.querySelector('#refBoardList');
+    if (!host) return;
+    const boards = window.PCB_REFBOARDS || [];
+    host.innerHTML = boards.map(b => `
+      <div class="ref-card" style="border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--panel-soft)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
+          <b style="color:var(--ink);font-size:14px">${b.name}</b>
+          <span style="font-size:11px;color:var(--accent-strong)">${b.soc} · ${b.layers} 層 · ${b.w}×${b.h}mm</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin:6px 0;line-height:1.6">${b.note}</div>
+        <ul style="margin:6px 0;padding-left:16px;font-size:12px;color:var(--muted);line-height:1.6">
+          ${b.circuits.map(c => `<li>${c}</li>`).join('')}
+        </ul>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <button class="primary-button ref-load" data-refid="${b.id}" style="padding:6px 12px;font-size:12px">📥 載入到 Layout（編輯）</button>
+          <button class="icon-button ref-overlay" data-refid="${b.id}" style="padding:6px 12px;font-size:12px">🔍 疊加比較</button>
+          <a href="${b.github}" target="_blank" rel="noopener" style="padding:6px 12px;font-size:12px;color:var(--accent-strong);text-decoration:none;align-self:center">原始碼 ↗</a>
+        </div>
+      </div>`).join('');
+  },
+
+  loadRefBoard(id) {
+    const b = (window.PCB_REFBOARDS || []).find(x => x.id === id);
+    if (!b) return;
+    this.state.boardWidth = b.w;
+    this.state.boardHeight = b.h;
+    this.state.layers = Math.max(1, Math.min(40, b.layers));
+    this.state.layerStack = this.buildLayerStack(this.state.layers);
+    this.state.visibleLayers = this.state.layerStack.map(l => l.id);
+    this.state.components = b.blocks.map((blk, i) => ({ id: `ref-${id}-${i}`, type: 'ic', x: blk.x, y: blk.y, label: blk.label }));
+    this.state.traces = []; this.state.vias = []; this.state.refBoard = null; this.state.refOverlayId = null;
+    // 同步板框輸入框
+    const wI = document.querySelector('#boardWidth'), hI = document.querySelector('#boardHeight'), lI = document.querySelector('#boardLayers');
+    if (wI) wI.value = b.w; if (hI) hI.value = b.h; if (lI) lI.value = b.layers;
+    this.renderLayerList();
+    this.populateEmiSelects();
+    this.render();
+    // 切到 Layout 分頁（觸發 pcb.html 的分頁 handler）
+    const t = document.querySelector('#tabLayout'); if (t) t.click();
+  },
+
+  toggleRefOverlay(id) {
+    if (this.state.refOverlayId === id) { this.state.refBoard = null; this.state.refOverlayId = null; }
+    else {
+      const b = (window.PCB_REFBOARDS || []).find(x => x.id === id);
+      if (!b) return;
+      this.state.refBoard = b.blocks.slice();
+      this.state.refOverlayId = id;
+      const t = document.querySelector('#tabLayout'); if (t) t.click();
+    }
+    this.render();
+  },
+
   // ---- EMI 環路檢查（心中有環）----
   populateEmiSelects() {
     const opts = '<option value="">--</option>' +
@@ -596,6 +673,14 @@ const pcbApp = {
 
     // 熱估算
     document.querySelector('#runThermal')?.addEventListener('click', () => this.runThermal());
+
+    // 開源公版：載入 / 疊加（事件委派）
+    document.querySelector('#refBoardList')?.addEventListener('click', (e) => {
+      const load = e.target.closest('.ref-load');
+      const ov = e.target.closest('.ref-overlay');
+      if (load) this.loadRefBoard(load.dataset.refid);
+      else if (ov) this.toggleRefOverlay(ov.dataset.refid);
+    });
 
     // Board settings
     document.querySelector('#applyBoardSettings')?.addEventListener('click', () => {
