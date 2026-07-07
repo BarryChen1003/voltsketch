@@ -207,6 +207,208 @@
         designNotes: ['센서 FIFO로 배치 깨움, SoC 깨움 횟수 감소', 'BLE 연결/광고 간격 연장(지연과 절충)', '센서 허브 코프로세서로 상시 작업, 메인 SoC는 딥 슬립', '폴링 대신 이벤트 구동(인터럽트)', '양산 전 전류 프로브로 각 상태 프로파일, 누설 탐색', '미사용 주변장치 클럭/전원 게이팅'],
         commonMistakes: ['인터럽트/FIFO 없는 폴링 → SoC가 계속 깨어 소비', 'BLE 간격 너무 짧음 → 대기 전류 높고 수명 나쁨', '서브시스템 대기만·미차단 → 누설 누적', '전류 프로파일 없음 → 소비처 모른 채 맹목 최적화']
       }
+    },
+    // ===== 手機 Mobile =====
+    'mobile-pmic': {
+      en: {
+        principles: 'A phone PMIC is a huge integrated power IC: a dozen-plus bucks (CPU clusters/GPU/DDR, with DVS dynamic voltage scaling) plus multiple LDOs (analog/sensor), load switches, battery charging, a fuel gauge and monitoring. The SoC commands the PMIC over SPMI (MIPI power interface) or I2C to change each rail live (DVFS: raise voltage when clocking up, drop it when idle to save power). Big current cores use a multiphase buck. The power-up sequence of dozens of rails is managed by the PMIC internal state machine. Flagships often use a main plus a secondary PMIC to share the load.',
+        keyFormulas: ['DVS: core voltage tracks DVFS live (key to power saving)', 'Rail count reaches dozens (one per functional domain)', 'High-current cores use a multiphase buck', 'Power-up order governed by the PMIC state machine'],
+        designNotes: ['Place the PMIC near the SoC; route high-current rails short and wide', 'Decouple DVS rails to handle fast voltage transitions', 'Guard signal integrity of the SPMI/I2C control bus', 'Decouple each rail strictly per the SoC power-delivery spec', 'Thermal: the PMIC is a heat source, plan for dissipation', 'Battery path (charge/supply) carries big current; use Kelvin sensing'],
+        commonMistakes: ['Thin/long high-current rails: droop, SoC undervolts and hangs', 'Insufficient DVS-rail decoupling: transient errors during voltage change', 'PMIC power-up order not per spec: SoC will not boot', 'Ignoring PMIC thermals: overheats and throttles under high load']
+      },
+      ja: {
+        principles: 'スマホ PMIC は巨大な統合電源 IC：十数個の buck（CPU クラスタ/GPU/DDR、DVS 動的電圧付き）＋複数 LDO（アナログ/センサ）、ロードスイッチ、電池充電、燃料計、監視を統合。SoC が SPMI（MIPI 電源 IF）や I2C で各レール電圧を即時変更（DVFS：クロックアップで昇圧、アイドルで降圧し省電）。大電流コアはマルチフェーズ buck。数十レールの投入順序は PMIC 内部ステートマシンが管理。旗艦は主＋副 PMIC で負荷分担。',
+        keyFormulas: ['DVS：コア電圧が DVFS に即時追従（省電の鍵）', 'レール数は数十（機能ドメイン毎に独立）', '大電流コアはマルチフェーズ buck', '投入順序は PMIC ステートマシンが管理'],
+        designNotes: ['PMIC を SoC 近くに、大電流レールは短く太く', 'DVS レールは高速電圧遷移に耐えるデカップリング', 'SPMI/I2C 制御バスの信号品質を確保', '各レールは SoC の電源供給仕様通りにデカップリング', '熱：PMIC は発熱源、放熱を計画', '電池経路（充電/給電）は大電流、Kelvin 測定'],
+        commonMistakes: ['大電流レールが細長い → ドループ、SoC 低電圧でハング', 'DVS レールのデカップリング不足 → 電圧変更時の過渡エラー', 'PMIC 投入順序が仕様外 → SoC が起動しない', 'PMIC 放熱無視 → 高負荷で過熱・スロットリング']
+      },
+      ko: {
+        principles: '폰 PMIC는 거대한 통합 전원 IC: 십수 개 buck(CPU 클러스터/GPU/DDR, DVS 동적 전압)+다중 LDO(아날로그/센서), 로드 스위치, 배터리 충전, 연료 게이지, 모니터링 통합. SoC가 SPMI(MIPI 전원 IF)나 I2C로 각 레일 전압을 실시간 변경(DVFS: 클럭 상승 시 승압, 유휴 시 강압해 절전). 대전류 코어는 멀티페이즈 buck. 수십 레일의 인가 순서는 PMIC 내부 상태 머신이 관리. 플래그십은 주+부 PMIC로 부하 분담.',
+        keyFormulas: ['DVS: 코어 전압이 DVFS에 실시간 추종(절전 핵심)', '레일 수는 수십(기능 도메인마다 독립)', '대전류 코어는 멀티페이즈 buck', '인가 순서는 PMIC 상태 머신이 관리'],
+        designNotes: ['PMIC를 SoC 근처에, 대전류 레일은 짧고 굵게', 'DVS 레일은 빠른 전압 전환에 견디는 디커플링', 'SPMI/I2C 제어 버스 신호 무결성 확보', '각 레일은 SoC 전원 공급 사양대로 디커플링', '발열: PMIC는 발열원, 방열 계획', '배터리 경로(충전/급전)는 대전류, Kelvin 측정'],
+        commonMistakes: ['대전류 레일이 가늘고 김 → 드룹, SoC 저전압으로 행', 'DVS 레일 디커플링 부족 → 전압 변경 시 과도 오류', 'PMIC 인가 순서가 사양 밖 → SoC 부팅 안 됨', 'PMIC 방열 무시 → 고부하에서 과열·스로틀링']
+      }
+    },
+    'usb-pd-fastcharge': {
+      en: {
+        principles: 'USB-PD signals over the CC line with BMC coding: sink (phone) and source (charger) negotiate a power contract (5V/9V/15V/20V... or a PPS range). Traditional charging: the charger outputs a fixed voltage and the in-phone charger IC steps down to the battery, turning the drop into heat. PPS (programmable power): the phone commands the charger to trim voltage in 20mV steps so the output ~= battery voltage + line loss, and the phone direct-charges through a charge pump (2:1 divide, >97% efficient), slashing heat and charging faster. It needs CC logic, e-marker cables (>3A/5A) and VBUS overvoltage protection.',
+        keyFormulas: ['PD power = negotiated voltage x current (up to 48V x 5A = 240W)', 'PPS step: 20mV (voltage) / 50mA (current)', 'Direct-charge pump 2:1: Vbat ~= Vbus/2, >97% efficient', 'Line-loss compensation: Vbus = Vbat x 2 + I x R_line'],
+        designNotes: ['Connect the CC pins to the PD controller; add VBUS overvoltage protection (guards against a bad negotiation dumping high voltage into 5V parts)', '>3A needs an e-marker cable; the design must check cable capability', 'The direct-charge charge pump runs cool but needs a fat high-current path (traces/connector)', 'Kelvin-sense at the battery to compensate line loss, so PPS trims accurately', 'Provide a discharge path for the big VBUS cap (bleed after unplug)', 'Full over-voltage/current/temperature protection (fast charge carries a lot of energy)'],
+        commonMistakes: ['No VBUS overvoltage protection: a bad negotiation dumps 20V into 5V parts', 'Forcing high current on an unrated cable: heat, voltage sag, slow charge', 'Thin direct-charge path: high-current droop, lower efficiency', 'PPS without line-loss compensation: wrong voltage, slow charging']
+      },
+      ja: {
+        principles: 'USB-PD は CC 線を BMC 符号で通信：Sink（スマホ）と Source（充電器）が給電契約（5V/9V/15V/20V… や PPS 範囲）を交渉。従来充電：充電器が固定電圧を出し端末内充電 IC が電池へ降圧、差分が熱に。PPS（可変電源）：スマホが 20mV 刻みで電圧を調整させ、出力 ≈ 電池電圧＋線損とし、端末はチャージポンプで直充（2:1 分圧、効率 >97%）、発熱大幅減で充電も速い。CC ロジック、e-marker ケーブル（>3A/5A）、VBUS 過電圧保護が必要。',
+        keyFormulas: ['PD 電力 = 交渉電圧 × 電流（最大 48V×5A=240W）', 'PPS 刻み：20mV（電圧）/ 50mA（電流）', '直充ポンプ 2:1：Vbat ≈ Vbus/2、効率 >97%', '線損補償：Vbus = Vbat×2 + I×R_line'],
+        designNotes: ['CC ピンを PD コントローラへ、VBUS 過電圧保護を追加（交渉異常時の高電圧流入を防止）', '>3A は e-marker ケーブル必須、設計でケーブル能力を検証', '直充チャージポンプは低発熱だが大電流経路（配線/コネクタ）が必要', '電池端で Kelvin 測定し線損補償、PPS が正確に調整', 'VBUS 大容量の放電経路（抜線後の放電）を用意', '過電圧/過電流/過温保護を完備（急速充電はエネルギー大）'],
+        commonMistakes: ['VBUS 過電圧保護なし → 交渉異常で 20V が 5V 部品に流入', '非対応ケーブルで大電流強行 → 発熱・電圧低下・充電遅い', '直充経路が細い → 大電流ドループ・効率低下', 'PPS で線損補償なし → 電圧不正確・充電遅い']
+      },
+      ko: {
+        principles: 'USB-PD는 CC 선을 BMC 코딩으로 통신: Sink(폰)와 Source(충전기)가 급전 계약(5V/9V/15V/20V… 또는 PPS 범위)을 협상. 전통 충전: 충전기가 고정 전압을 내고 폰 내부 충전 IC가 배터리로 강압, 전압차가 열로. PPS(프로그래머블 전원): 폰이 20mV 단위로 전압을 조정시켜 출력 ≈ 배터리 전압+선손으로 하고, 폰은 차지 펌프로 직충(2:1 분압, 효율 >97%), 발열 대폭 감소로 충전도 빠름. CC 로직, e-marker 케이블(>3A/5A), VBUS 과전압 보호 필요.',
+        keyFormulas: ['PD 전력 = 협상 전압 × 전류(최대 48V×5A=240W)', 'PPS 단위: 20mV(전압) / 50mA(전류)', '직충 펌프 2:1: Vbat ≈ Vbus/2, 효율 >97%', '선손 보상: Vbus = Vbat×2 + I×R_line'],
+        designNotes: ['CC 핀을 PD 컨트롤러에, VBUS 과전압 보호 추가(협상 이상 시 고전압 유입 방지)', '>3A는 e-marker 케이블 필수, 설계에서 케이블 능력 검증', '직충 차지 펌프는 저발열이나 대전류 경로(배선/커넥터) 필요', '배터리 단에서 Kelvin 측정해 선손 보상, PPS가 정확히 조정', 'VBUS 대용량 방전 경로(분리 후 방전) 마련', '과전압/과전류/과온 보호 완비(고속 충전은 에너지 큼)'],
+        commonMistakes: ['VBUS 과전압 보호 없음 → 협상 이상 시 20V가 5V 부품에 유입', '비지원 케이블로 대전류 강행 → 발열·전압 강하·충전 느림', '직충 경로가 가늚 → 대전류 드룹·효율 저하', 'PPS에서 선손 보상 없음 → 전압 부정확·충전 느림']
+      }
+    },
+    'fuel-gauge': {
+      en: {
+        principles: 'A fuel gauge estimates SOC (remaining %) and SOH (health). Methods: (1) coulomb counting - integrate current in/out through a sense resistor, accurate but drifts and needs a reference to recalibrate; (2) voltage (OCV) - open-circuit voltage maps to SOC, but load pulls voltage down via internal resistance and must be compensated; (3) fusion (e.g. TI Impedance Track / MAX ModelGauge) - combines current integration, a voltage model, a battery impedance model and temperature to correct dynamically. Aging shrinks capacity, so the gauge learns and updates full-charge capacity. It recalibrates the coulomb baseline at defined full/empty points.',
+        keyFormulas: ['Coulomb counting: dSOC = integral(I dt) / capacity', 'OCV-SOC: look up SOC from open-circuit voltage (needs a rest, no load)', 'Load compensation: V_terminal = OCV - I x R_internal', 'SOH = present full-charge capacity / factory capacity'],
+        designNotes: ['Kelvin (4-wire) sense the current resistor to reject trace drop', 'Size the sense resistor to trade resolution against power/heat', 'Connect a temperature sensor to the gauge (capacity/impedance vary with temp)', 'Use battery-vendor model parameters (or characterize the cell)', 'Keep coulomb counting alive even when off (low-power always counting)', 'Full/empty calibration points let the algorithm reset the baseline'],
+        commonMistakes: ['Pure voltage method without internal-R compensation: SOC jumps under heavy load', 'Pure coulomb counting without recalibration: error accumulates and drifts', 'Sense resistor without Kelvin: trace drop corrupts the small signal', 'No temperature/aging: inaccurate when cold or with an old battery']
+      },
+      ja: {
+        principles: '燃料計は SOC（残量%）と SOH（健康度）を推定。方式：①クーロン計数——センス抵抗で出入電荷を積分、正確だがドリフトし基準で再校正が必要②電圧（OCV）——開放電圧が SOC に対応するが負荷で内部抵抗により電圧低下、補償が必要③融合（TI Impedance Track / MAX ModelGauge 等）——電流積分＋電圧モデル＋電池インピーダンスモデル＋温度で動的補正。劣化で容量減、計は満充電容量を学習更新。満/空の特定点でクーロン基準を再校正。',
+        keyFormulas: ['クーロン計数：ΔSOC = ∫I dt / 容量', 'OCV-SOC：開放電圧から SOC を参照（無負荷で静置要）', '負荷補償：V_terminal = OCV − I×R_internal', 'SOH = 現満充電容量 / 出荷容量'],
+        designNotes: ['電流センス抵抗を Kelvin（4 線）測定し配線降下を排除', 'センス抵抗値で分解能と発熱を両立', '温度センサを計に接続（容量/インピーダンスが温度依存）', '電池メーカのモデルパラメータを使う（または特性化）', '電源オフ時もクーロン計数を維持（低電力で常時計数）', '満/空校正点でアルゴリズムが基準をリセット'],
+        commonMistakes: ['電圧法のみで内部抵抗補償なし → 高負荷で SOC が乱れる', 'クーロン計数のみで無校正 → 誤差蓄積・ドリフト', 'センス抵抗が Kelvin でない → 配線降下が微小信号を汚染', '温度/劣化を持たない → 低温や古い電池で不正確']
+      },
+      ko: {
+        principles: '연료 게이지는 SOC(잔량%)와 SOH(건강도)를 추정. 방법: ①쿨롱 카운팅 - 센스 저항으로 입출 전하를 적분, 정확하나 드리프트해 기준으로 재교정 필요 ②전압(OCV) - 개방 전압이 SOC에 대응하나 부하로 내부 저항에 의해 전압 강하, 보상 필요 ③융합(TI Impedance Track / MAX ModelGauge 등) - 전류 적분+전압 모델+배터리 임피던스 모델+온도로 동적 보정. 노화로 용량 감소, 게이지는 만충전 용량을 학습 갱신. 만/공 특정점에서 쿨롱 기준 재교정.',
+        keyFormulas: ['쿨롱 카운팅: ΔSOC = ∫I dt / 용량', 'OCV-SOC: 개방 전압에서 SOC 조회(무부하 정치 필요)', '부하 보상: V_terminal = OCV − I×R_internal', 'SOH = 현재 만충전 용량 / 출하 용량'],
+        designNotes: ['전류 센스 저항을 Kelvin(4선) 측정해 배선 강하 제거', '센스 저항값으로 해상도와 발열 절충', '온도 센서를 게이지에 연결(용량/임피던스가 온도 의존)', '배터리 제조사 모델 파라미터 사용(또는 특성화)', '전원 꺼짐에도 쿨롱 카운팅 유지(저전력 상시 카운팅)', '만/공 교정점에서 알고리즘이 기준 리셋'],
+        commonMistakes: ['전압법만 쓰고 내부 저항 보상 없음 → 고부하에서 SOC 요동', '쿨롱 카운팅만 하고 무교정 → 오차 누적·드리프트', '센스 저항이 Kelvin 아님 → 배선 강하가 미소 신호 오염', '온도/노화 미반영 → 저온이나 오래된 배터리에서 부정확']
+      }
+    },
+    'haptics-driver': {
+      en: {
+        principles: 'ERM (eccentric rotating mass): an offset rotor makes vibration, cheap but slow to start/stop (inertia) and coarse. LRA (linear resonant actuator): a mass on a spring resonates and must be driven at its resonant frequency (~150-235Hz) for efficiency, giving a fine, crisp feel. A dedicated haptic driver IC generates the waveform, auto-tracks the LRA resonance (via back-EMF sensing) and actively brakes (a reverse pulse) to stop residual vibration fast, producing a clean tap. High-end designs use wideband LRAs plus waveform libraries for rich textures.',
+        keyFormulas: ['LRA must be driven at its resonant frequency f0 (~150-235Hz)', 'Off f0 -> efficiency plummets, feel degrades', 'ERM start/stop is slow (inertia); LRA can actively brake to stop fast', 'Back-EMF sensing -> auto-tracks the resonant frequency'],
+        designNotes: ['Use a dedicated haptic driver (auto resonance-track + brake), not a raw GPIO', 'Tune LRA drive frequency to its f0 (different actuators differ)', 'Active braking stops vibration fast for a crisp tap', 'Provide enough drive current (actuator inrush is not small)', 'Mechanically fix the actuator so vibration reaches the case', 'ERM back-EMF needs a flyback diode / driver protection'],
+        commonMistakes: ['LRA not tuned to f0: weak, power-hungry, poor feel', 'No braking: residual vibration smears the feel', 'Driving the motor from GPIO: no brake, no tracking, poor feel and IO stress', 'ERM without freewheeling protection: back-EMF damages the driver']
+      },
+      ja: {
+        principles: 'ERM（偏心回転質量）：偏心ロータで振動、安価だが起停が遅く（慣性）粗い。LRA（線形共振アクチュエータ）：ばね上の質量が共振、共振周波数（~150-235Hz）で駆動しないと効率悪、繊細で歯切れ良い。専用ハプティックドライバ IC が波形生成、逆起電力検出で LRA 共振を自動追従、能動ブレーキ（逆パルス）で残振動を速く止め、クリアなタップを生成。高級品は広帯域 LRA＋波形ライブラリで豊かな触感。',
+        keyFormulas: ['LRA は共振周波数 f0（~150-235Hz）で駆動必須', 'f0 から外れ → 効率激減・触感劣化', 'ERM は起停が遅い（慣性）、LRA は能動ブレーキで速停', '逆起電力検出 → 共振周波数を自動追従'],
+        designNotes: ['専用ハプティックドライバ（自動共振追従＋ブレーキ）を使う、GPIO 直駆動でなく', 'LRA 駆動周波数をその f0 に合わせる（アクチュエータ毎に異なる）', '能動ブレーキで振動を速く止めクリアなタップ', '駆動電流を十分に（アクチュエータの突入は小さくない）', 'アクチュエータを機構固定し振動を筐体へ伝える', 'ERM の逆起電力に還流ダイオード/ドライバ保護'],
+        commonMistakes: ['LRA が f0 に合わず → 弱い・消費大・触感最悪', 'ブレーキなし → 残振動で触感がぼける', 'GPIO でモータ直駆動 → ブレーキ/追従なし、触感悪・IO 負担', 'ERM の還流保護なし → 逆起電力がドライバ破損']
+      },
+      ko: {
+        principles: 'ERM(편심 회전 질량): 편심 로터로 진동, 저렴하나 기동/정지 느리고(관성) 거침. LRA(선형 공진 액추에이터): 스프링 위 질량이 공진, 공진 주파수(~150-235Hz)로 구동해야 효율, 섬세하고 또렷한 느낌. 전용 햅틱 드라이버 IC가 파형 생성, 역기전력 감지로 LRA 공진을 자동 추적, 능동 브레이크(역펄스)로 잔진동을 빠르게 멈춰 깔끔한 탭 생성. 고급형은 광대역 LRA+파형 라이브러리로 풍부한 촉감.',
+        keyFormulas: ['LRA는 공진 주파수 f0(~150-235Hz)로 구동 필수', 'f0 벗어남 → 효율 급감·촉감 저하', 'ERM은 기동/정지 느림(관성), LRA는 능동 브레이크로 빠른 정지', '역기전력 감지 → 공진 주파수 자동 추적'],
+        designNotes: ['전용 햅틱 드라이버(자동 공진 추적+브레이크) 사용, GPIO 직접 구동 아님', 'LRA 구동 주파수를 그 f0에 맞춤(액추에이터마다 다름)', '능동 브레이크로 진동을 빠르게 멈춰 깔끔한 탭', '구동 전류를 충분히(액추에이터 돌입이 작지 않음)', '액추에이터를 기구 고정해 진동을 케이스로 전달', 'ERM 역기전력에 플라이휠 다이오드/드라이버 보호'],
+        commonMistakes: ['LRA가 f0에 안 맞음 → 약하고 소비 크고 촉감 나쁨', '브레이크 없음 → 잔진동으로 촉감 흐림', 'GPIO로 모터 직접 구동 → 브레이크/추적 없음, 촉감 나쁘고 IO 부담', 'ERM 플라이휠 보호 없음 → 역기전력이 드라이버 손상']
+      }
+    },
+    'rf-frontend': {
+      en: {
+        principles: 'The RF front-end (RFFE) sits between the transceiver and the antenna. Transmit chain: the PA amplifies a small signal to enough power (trading linearity vs efficiency, using envelope tracking to save power). Receive chain: the LNA amplifies the weak signal first and sets the overall noise figure (NF). Switches (SPnT) pick bands/TX-RX/antennas. Filters (SAW/BAW/duplexers) separate bands and isolate TX from RX. An antenna tuner (variable caps) compensates hand/detuning of the antenna impedance to keep it matched. Control runs over the MIPI RFFE bus. 5G mmWave adds beamforming arrays.',
+        keyFormulas: ['Receive NF is dominated by the first LNA (Friis equation)', 'PA efficiency vs linearity trade-off (improved by envelope tracking / DPD)', 'Antenna mismatch -> reflection (VSWR up) -> lower efficiency, limited TX', 'The matching network pulls antenna impedance back to 50 ohm'],
+        designNotes: ['Put the LNA closest to the antenna (amplify first to preserve NF)', 'Power the PA with envelope tracking / APT to save power and cut heat', 'Route RF at 50 ohm controlled impedance, short, with few vias', 'Antenna tuning compensates hand detuning (triggered by proximity sensing)', 'MIPI RFFE control bus timing aligned to TDD TX/RX windows', 'Shield cans and grounding isolate stages against cross-talk'],
+        commonMistakes: ['High loss before the LNA (long trace/bad switch): degraded NF, poor reception', 'Fixed PA supply without ET: low efficiency, heat, power drain', 'Uncontrolled RF impedance: reflection loss, lower TX efficiency', 'No antenna tuning: mismatch when held, dropped signal']
+      },
+      ja: {
+        principles: 'RF フロントエンド（RFFE）はトランシーバとアンテナの間。送信鎖：PA が小信号を十分な電力に増幅（線形性 vs 効率を両立、包絡線追跡で省電）。受信鎖：LNA が最前段で微弱信号を増幅し全体の雑音指数（NF）を決める。スイッチ（SPnT）がバンド/送受/アンテナ切替。フィルタ（SAW/BAW/デュプレクサ）がバンド分離・送受絶縁。アンテナチューナ（可変容量）が手持ち/離調によるアンテナインピーダンスを補償し整合維持。制御は MIPI RFFE バス。5G ミリ波はビームフォーミングアレイ追加。',
+        keyFormulas: ['受信 NF は初段 LNA が支配（Friis の式）', 'PA 効率 vs 線形性の両立（包絡線追跡/DPD で改善）', 'アンテナ不整合 → 反射（VSWR↑）→ 効率低下・送信制限', '整合回路がアンテナインピーダンスを 50Ω へ引き戻す'],
+        designNotes: ['LNA をアンテナ最近傍に（先に増幅し NF を保つ）', 'PA 給電は包絡線追跡/APT で省電・低発熱', 'RF は 50Ω 制御インピーダンス、短く、ビア少なく', 'アンテナ整合が手持ち離調を補償（近接センシングでトリガ）', 'MIPI RFFE 制御バスのタイミングを TDD 送受窓に整合', 'シールドケースと接地で各段を絶縁しクロストーク防止'],
+        commonMistakes: ['LNA 前の損失大（長配線/悪スイッチ）→ NF 悪化・受信悪', 'PA 固定給電で ET なし → 効率低・発熱・消費', 'RF インピーダンス制御失敗 → 反射損・送信効率低下', 'アンテナ整合なし → 手持ちで不整合・切断']
+      },
+      ko: {
+        principles: 'RF 프런트엔드(RFFE)는 트랜시버와 안테나 사이. 송신 체인: PA가 작은 신호를 충분한 전력으로 증폭(선형성 vs 효율 절충, 포락선 추적으로 절전). 수신 체인: LNA가 최전단에서 미약 신호를 증폭해 전체 잡음 지수(NF)를 결정. 스위치(SPnT)가 대역/송수신/안테나 전환. 필터(SAW/BAW/듀플렉서)가 대역 분리·송수신 격리. 안테나 튜너(가변 커패시터)가 손 파지/이조에 의한 안테나 임피던스를 보상해 정합 유지. 제어는 MIPI RFFE 버스. 5G 밀리미터파는 빔포밍 어레이 추가.',
+        keyFormulas: ['수신 NF는 첫 단 LNA가 지배(Friis 공식)', 'PA 효율 vs 선형성 절충(포락선 추적/DPD로 개선)', '안테나 부정합 → 반사(VSWR↑) → 효율 저하·송신 제한', '정합 회로가 안테나 임피던스를 50Ω으로 되돌림'],
+        designNotes: ['LNA를 안테나 최근접에(먼저 증폭해 NF 보존)', 'PA 급전은 포락선 추적/APT로 절전·저발열', 'RF는 50Ω 제어 임피던스, 짧게, 비아 적게', '안테나 정합이 손 파지 이조 보상(근접 센싱으로 트리거)', 'MIPI RFFE 제어 버스 타이밍을 TDD 송수신 창에 정합', '차폐 캔과 접지로 각 단 격리해 누화 방지'],
+        commonMistakes: ['LNA 전 손실 큼(긴 배선/나쁜 스위치) → NF 악화·수신 나쁨', 'PA 고정 급전에 ET 없음 → 효율 낮음·발열·소비', 'RF 임피던스 제어 실패 → 반사 손실·송신 효율 저하', '안테나 정합 없음 → 파지 시 부정합·신호 끊김']
+      }
+    },
+    // ===== 車用電子 Automotive =====
+    'auto-load-dump': {
+      en: {
+        principles: 'Load dump: while charging, the battery is disconnected (e.g. a bad contact); the alternator loses its load and dumps stored magnetic energy onto the bus, so a 12V system spikes to 30-40V+ for hundreds of ms. Modern alternators clamp it centrally (clamped load dump ~35V) but external protection is still needed. ISO 7637-2 defines pulses: 1 (inductive-disconnect negative), 2a/2b, 3a/3b (fast transient bursts), 4 (cold-crank sag to ~6V), 5 (load dump). The design uses TVS + choke / a front pre-regulator (boost or clamp) to turn the messy input into a stable rail before feeding downstream. 48V systems have their own rules.',
+        keyFormulas: ['Load-dump peak: unclamped ~87V, clamped ~35V (12V system)', 'Cold crank: voltage sags to ~6V (pulse 4) - downstream must run low or the front boosts', 'TVS clamp voltage < downstream rating, > normal max operating voltage', 'Energy = 1/2 L I^2 (alternator inductance sets load-dump energy)'],
+        designNotes: ['Front stage: a TVS absorbs load dump plus a pre-boost/buck regulates', 'Use a boost pre-regulator to hold downstream supply through cold crank (else it resets)', 'Pick an automotive load-dump TVS (big energy, right clamp voltage)', 'Put reverse-battery protection ahead of the front stage (see reverse-battery-auto)', 'Choose automotive AEC-Q parts (temperature/reliability), not commercial grade', 'ISO 7637 pulses must be tested and validated, not just calculated'],
+        commonMistakes: ['Using commercial parts against automotive transients: load dump blows them', 'TVS clamp voltage set too high: downstream still overvolts and fails', 'Ignoring cold-crank sag: the system resets during engine start', 'Only handling load dump, forgetting fast transient bursts (3a/3b): fails EMC']
+      },
+      ja: {
+        principles: 'ロードダンプ：充電中に電池が切断（接触不良等）、オルタネータが負荷を失い蓄積磁気エネルギーをバスに放出、12V 系が数百 ms 間 30~40V+ に急騰。現代オルタネータは中央クランプ（clamped load dump ~35V）だが外部保護は依然必要。ISO 7637-2 のパルス：1（誘導切断負）、2a/2b、3a/3b（高速過渡バースト）、4（コールドクランク ~6V 低下）、5（load dump）。設計は TVS＋チョーク/前段プリレギュレータ（昇圧やクランプ）で乱れた入力を安定レールに整えてから下流へ。48V 系は別規定。',
+        keyFormulas: ['ロードダンプ尖頭：非クランプ ~87V、クランプ型 ~35V（12V 系）', 'コールドクランク：~6V 低下（パルス 4）→下流は低電圧動作か前段昇圧', 'TVS クランプ電圧 < 下流耐圧、> 通常最大動作電圧', 'エネルギー = ½ L I²（オルタネータインダクタンスが決める）'],
+        designNotes: ['前段：TVS がロードダンプ吸収＋プリ昇圧/降圧で安定化', 'コールドクランクは昇圧プリレギュレータで下流給電維持（さもないと再起動）', '車載ロードダンプ専用 TVS を選ぶ（大エネルギー・適切なクランプ電圧）', '逆接続保護を前段の前に直列（reverse-battery-auto 参照）', '部品は車載 AEC-Q（温度/信頼性）、商用グレードでなく', 'ISO 7637 パルスは計算だけでなくテスト検証'],
+        commonMistakes: ['商用部品で車載過渡を扱う → ロードダンプで破損', 'TVS クランプ電圧が高すぎ → 下流が依然過電圧で損傷', 'コールドクランク低下無視 → エンジン始動時にシステム再起動', 'ロードダンプのみで高速過渡バースト（3a/3b）を忘れる → EMC 不合格']
+      },
+      ko: {
+        principles: '로드 덤프: 충전 중 배터리가 분리(접촉 불량 등), 발전기가 부하를 잃고 저장 자기 에너지를 버스에 방출, 12V 계가 수백 ms 동안 30~40V+로 급등. 현대 발전기는 중앙 클램프(clamped load dump ~35V)하나 외부 보호는 여전히 필요. ISO 7637-2 펄스: 1(유도 차단 음), 2a/2b, 3a/3b(고속 과도 버스트), 4(콜드 크랭크 ~6V 강하), 5(load dump). 설계는 TVS+초크/전단 프리레귤레이터(승압이나 클램프)로 지저분한 입력을 안정 레일로 정리 후 하류로. 48V 계는 별도 규정.',
+        keyFormulas: ['로드 덤프 피크: 비클램프 ~87V, 클램프형 ~35V(12V 계)', '콜드 크랭크: ~6V 강하(펄스 4) → 하류는 저전압 동작이나 전단 승압', 'TVS 클램프 전압 < 하류 정격, > 정상 최대 동작 전압', '에너지 = ½ L I²(발전기 인덕턴스가 결정)'],
+        designNotes: ['전단: TVS가 로드 덤프 흡수+프리 승압/강압으로 안정화', '콜드 크랭크는 승압 프리레귤레이터로 하류 급전 유지(아니면 재시작)', '차량용 로드 덤프 전용 TVS 선택(큰 에너지·적절한 클램프 전압)', '역접속 보호를 전단 앞에 직렬(reverse-battery-auto 참조)', '부품은 차량용 AEC-Q(온도/신뢰성), 상용 등급 아님', 'ISO 7637 펄스는 계산만이 아니라 테스트 검증'],
+        commonMistakes: ['상용 부품으로 차량 과도 처리 → 로드 덤프로 파손', 'TVS 클램프 전압 너무 높음 → 하류가 여전히 과전압 손상', '콜드 크랭크 강하 무시 → 엔진 시동 시 시스템 재시작', '로드 덤프만 처리하고 고속 과도 버스트(3a/3b) 잊음 → EMC 탈락']
+      }
+    },
+    'reverse-battery-auto': {
+      en: {
+        principles: 'Three generations of reverse protection: (1) series diode - simplest, but Vf x I is all heat, unviable at high current; (2) high-side P-MOS - grounding the gate auto-disconnects on reverse, conducting normally with only R_DS(on) loss, better than a diode; (3) ideal-diode controller + N-MOS - the controller senses direction and drives a low-R_DS(on) N-MOS, conducting forward and disconnecting fast on reverse, lowest loss. To block reverse battery it must also survive load dump, often integrated with the front stage. Back-to-back FETs (sources facing) block both directions (reverse connection plus reverse current feedback).',
+        keyFormulas: ['Diode loss P = Vf x I (unviable at high current)', 'Ideal-diode loss P = I^2 x R_DS(on) (much lower)', 'FET rating >= load-dump peak + reverse-battery voltage', 'Back-to-back FETs block both directions (reverse + feedback)'],
+        designNotes: ['At high current use an ideal-diode controller + low-R_DS(on) N-MOS', 'FET V_DS rating covers load dump (~40V) with margin', 'Design together with load-dump / reverse transient protection', 'Guard the gate-drive path against transient false triggering', 'For bidirectional blocking (no feedback) use back-to-back FETs', 'Automotive AEC-Q101 qualification (discrete parts)'],
+        commonMistakes: ['Using a diode for high-current reverse protection: heat, poor efficiency', 'FET rating not covering load dump: reverse + dump double-kills it', 'Ideal-diode controller slow to transients: brief reverse feedback', 'Forgetting bidirectional-block need: reverse current feeds back into battery/system']
+      },
+      ja: {
+        principles: '逆接続保護三世代：①直列ダイオード——最簡だが Vf×I が全て熱、大電流不可②ハイサイド P-MOS——ゲート接地で逆接続時に自動遮断、通常は R_DS(on) 損失のみ、ダイオードより良い③理想ダイオードコントローラ＋N-MOS——方向検出し低 R_DS(on) N-MOS を駆動、正接導通・逆接続で高速遮断、損失最低。逆電池を阻止しつつロードダンプにも耐える必要、前段と統合が多い。背中合わせ FET（ソース対向）は双方向阻止（逆接続＋逆流帰還）。',
+        keyFormulas: ['ダイオード損失 P = Vf × I（大電流不可）', '理想ダイオード損失 P = I² × R_DS(on)（大幅に低い）', 'FET 耐圧 ≥ ロードダンプ尖頭 + 逆電池電圧', '背中合わせ FET は双方向阻止（逆接続＋帰還）'],
+        designNotes: ['大電流は理想ダイオードコントローラ＋低 R_DS(on) N-MOS', 'FET V_DS 耐圧がロードダンプ（~40V）を余裕込みで網羅', 'ロードダンプ/逆接続過渡保護と一体設計', 'ゲート駆動経路を過渡誤トリガから保護', '双方向阻止（帰還防止）は背中合わせ FET', '車載 AEC-Q101 認証（分立部品）'],
+        commonMistakes: ['大電流逆接続保護にダイオード → 発熱・効率悪', 'FET 耐圧がロードダンプ不足 → 逆接続+ダンプで二重破壊', '理想ダイオードコントローラが過渡に遅い → 短時間逆流帰還', '双方向阻止の要求忘れ → 逆電流が電池/システムに帰還']
+      },
+      ko: {
+        principles: '역접속 보호 3세대: ①직렬 다이오드 - 가장 단순하나 Vf×I가 전부 열, 대전류 불가 ②하이사이드 P-MOS - 게이트 접지로 역접속 시 자동 차단, 정상 시 R_DS(on) 손실만, 다이오드보다 나음 ③이상 다이오드 컨트롤러+N-MOS - 방향 감지해 저 R_DS(on) N-MOS 구동, 순접 도통·역접속 시 고속 차단, 손실 최저. 역배터리를 차단하며 로드 덤프도 견뎌야 함, 전단과 통합 많음. 백투백 FET(소스 대향)는 양방향 차단(역접속+역류 환류).',
+        keyFormulas: ['다이오드 손실 P = Vf × I(대전류 불가)', '이상 다이오드 손실 P = I² × R_DS(on)(훨씬 낮음)', 'FET 정격 ≥ 로드 덤프 피크 + 역배터리 전압', '백투백 FET는 양방향 차단(역접속+환류)'],
+        designNotes: ['대전류는 이상 다이오드 컨트롤러+저 R_DS(on) N-MOS', 'FET V_DS 정격이 로드 덤프(~40V)를 여유 포함 커버', '로드 덤프/역접속 과도 보호와 일체 설계', '게이트 구동 경로를 과도 오트리거로부터 보호', '양방향 차단(환류 방지)은 백투백 FET', '차량용 AEC-Q101 인증(분리 부품)'],
+        commonMistakes: ['대전류 역접속 보호에 다이오드 → 발열·효율 나쁨', 'FET 정격이 로드 덤프 부족 → 역접속+덤프로 이중 파손', '이상 다이오드 컨트롤러가 과도에 느림 → 짧은 역류 환류', '양방향 차단 필요 망각 → 역전류가 배터리/시스템으로 환류']
+      }
+    },
+    'can-fd-automotive': {
+      en: {
+        principles: 'CAN: differential two-wire (CANH/CANL), dominant (0)/recessive (1), multi-master with non-destructive arbitration (lower ID wins). CAN-FD raises the data-phase bit rate (up to ~5-8Mbps) and payload (64 bytes) while the arbitration phase stays CAN-compatible. The physical layer uses a CAN transceiver, with 120-ohm termination at both bus ends to damp reflections. LIN: single-wire, master-slave, low speed (<=20kbps), cheap, for windows/seats etc. Automotive demands: bus short/open fault tolerance, wide common-mode range, transient protection (TVS/common-mode choke), and standby wake (partial networking to save power).',
+        keyFormulas: ['CAN termination: 120 ohm at each end (parallel 60 ohm matches line impedance)', 'CAN-FD data phase up to ~5-8Mbps (arbitration still <=1Mbps)', 'LIN <=20kbps single-wire master-slave', 'Differential transmission -> high common-mode immunity (needed in a noisy car)'],
+        designNotes: ['120 ohm termination at both bus ends (not at every node)', 'Add a common-mode choke + TVS at the transceiver (EMC + transient protection)', 'Route CANH/CANL as a differential pair, length-matched, controlled impedance', 'Keep stubs short for CAN-FD high speed to reduce reflections', 'Choose automotive transceivers that support standby wake (power saving)', 'LIN master needs a pull-up + diode; slaves do not'],
+        commonMistakes: ['Wrong termination (at every node or missing): reflections, comm errors', 'CANH/CANL not matched/controlled: CAN-FD high speed fails', 'No common-mode choke/TVS: fails EMC, transients kill the transceiver', 'Stub too long: CAN-FD data-phase bit errors']
+      },
+      ja: {
+        principles: 'CAN：差動 2 線（CANH/CANL）、ドミナント(0)/レセッシブ(1)、マルチマスタで非破壊アービトレーション（ID 小が優先）。CAN-FD はデータ段のビットレートを上げ（最大 ~5-8Mbps）ペイロード拡大（64 バイト）、アービトレーション段は CAN 互換。物理層は CAN トランシーバ、バス両端に 120Ω 終端で反射抑制。LIN：単線、マスタスレーブ、低速（≤20kbps）、安価、窓/シート等。車載要求：バス短絡/断線耐性、広コモンモード範囲、過渡保護（TVS/コモンモードチョーク）、待機ウェイク（省電）。',
+        keyFormulas: ['CAN 終端：両端各 120Ω（並列 60Ω が線路インピーダンス整合）', 'CAN-FD データ段最大 ~5-8Mbps（アービトレーション段は ≤1Mbps）', 'LIN ≤20kbps 単線マスタスレーブ', '差動伝送 → 高コモンモード耐性（車載雑音環境に必要）'],
+        designNotes: ['バス両端各 120Ω 終端（各ノードでなく）', 'トランシーバにコモンモードチョーク＋TVS（EMC＋過渡保護）', 'CANH/CANL を差動対で等長・制御インピーダンス配線', 'CAN-FD 高速時はスタブを短く反射低減', '待機ウェイク対応の車載トランシーバを選ぶ（省電）', 'LIN マスタ端は上拉抵抗＋ダイオード、スレーブは不要'],
+        commonMistakes: ['終端が誤り（各ノードや欠落）→ 反射・通信エラー', 'CANH/CANL が非等長/非制御 → CAN-FD 高速失敗', 'コモンモードチョーク/TVS なし → EMC 不合格・過渡でトランシーバ破損', 'スタブが長すぎ → CAN-FD データ段のビットエラー']
+      },
+      ko: {
+        principles: 'CAN: 차동 2선(CANH/CANL), 도미넌트(0)/리세시브(1), 멀티마스터 비파괴 중재(ID 작은 쪽 우선). CAN-FD는 데이터 단 비트레이트를 올리고(최대 ~5-8Mbps) 페이로드 확대(64바이트), 중재 단은 CAN 호환. 물리층은 CAN 트랜시버, 버스 양단에 120Ω 종단으로 반사 억제. LIN: 단선, 마스터-슬레이브, 저속(≤20kbps), 저렴, 창문/시트 등. 차량 요구: 버스 단락/단선 내성, 넓은 공통 모드 범위, 과도 보호(TVS/공통 모드 초크), 대기 웨이크(절전).',
+        keyFormulas: ['CAN 종단: 양단 각 120Ω(병렬 60Ω이 선로 임피던스 정합)', 'CAN-FD 데이터 단 최대 ~5-8Mbps(중재 단은 ≤1Mbps)', 'LIN ≤20kbps 단선 마스터-슬레이브', '차동 전송 → 높은 공통 모드 내성(차량 잡음 환경에 필요)'],
+        designNotes: ['버스 양단 각 120Ω 종단(각 노드가 아님)', '트랜시버에 공통 모드 초크+TVS(EMC+과도 보호)', 'CANH/CANL을 차동쌍으로 등장·제어 임피던스 배선', 'CAN-FD 고속 시 스터브를 짧게 해 반사 감소', '대기 웨이크 지원 차량용 트랜시버 선택(절전)', 'LIN 마스터 단은 풀업 저항+다이오드, 슬레이브는 불필요'],
+        commonMistakes: ['종단 오류(각 노드나 누락) → 반사·통신 오류', 'CANH/CANL 비등장/비제어 → CAN-FD 고속 실패', '공통 모드 초크/TVS 없음 → EMC 탈락·과도로 트랜시버 파손', '스터브 너무 김 → CAN-FD 데이터 단 비트 오류']
+      }
+    },
+    'auto-power-arch': {
+      en: {
+        principles: 'A typical automotive chain: battery -> reverse protection -> EMI filter -> pre-regulator -> POL step-down -> loads. The pre-regulator turns a 6-40V messy input into a stable mid rail (5V/3.3V): during cold-crank sag it boosts (or buck-boost) to hold up, during load dump it clamps and bucks down. Integrated automotive pre-regulators (e.g. LM5xxx-Q1) often combine boost+buck or a wide-input buck-boost. Downstream POLs each step down to core/IO/analog rails. The whole chain needs low quiescent current (some circuits stay on when parked, or it drains the battery).',
+        keyFormulas: ['Pre-regulator input range must cover 6V (cold crank) to 40V (load dump)', 'Cold crank -> boost/buck-boost holds the mid rail', 'Load dump -> clamp + buck steps down', 'Standby quiescent current must be tiny (fears draining the battery, microamps)'],
+        designNotes: ['Front stage: wide-input buck-boost or cascaded boost+buck', 'Must ride through cold crank (system cannot reset at engine start)', 'Keep POLs near loads with adequate decoupling', 'Keep always-on (KL30) path quiescent current very low', 'EMI filter at the very front (automotive conducted EMC is strict)', 'Whole chain automotive AEC-Q + functional safety (if safety-related)'],
+        commonMistakes: ['Insufficient pre-regulator input range: fails at cold crank or load dump', 'High standby quiescent current: a few days parked drains the battery', 'POLs far from loads: droop, poor transient', 'Insufficient EMI filtering: conducted emission over limit, fails certification']
+      },
+      ja: {
+        principles: '車載電源鎖の典型：電池 → 逆接続保護 → EMI フィルタ → プリレギュレータ → POL 降圧 → 負荷。プリレギュレータは 6~40V の乱れた入力を安定中間レール（5V/3.3V）に：コールドクランク低下時は昇圧（や昇降圧）で維持、ロードダンプ高電圧時はクランプ＋降圧。統合型車載プリレギュレータ（LM5xxx-Q1 等）は昇圧+降圧や広入力昇降圧を含む。下流 POL が各々コア/IO/アナログレールへ降圧。全鎖に低静止電流が必要（駐車時も一部給電、電池消耗を怖れる）。',
+        keyFormulas: ['プリレギュレータ入力範囲は 6V（コールドクランク）~40V（ロードダンプ）を網羅', 'コールドクランク → 昇圧/昇降圧で中間レール維持', 'ロードダンプ → クランプ + 降圧', '待機静止電流は極小（電池消耗を怖れ µA 級）'],
+        designNotes: ['前段は広入力昇降圧か昇圧+降圧の縦続', 'コールドクランクを乗り切る（エンジン始動時に再起動不可）', 'POL は負荷近くにデカップリング十分', '常時給電（KL30）経路の静止電流を極低に', 'EMI フィルタを最前に（車載伝導 EMC は厳格）', '全鎖に車載 AEC-Q + 機能安全（安全関連なら）'],
+        commonMistakes: ['プリレギュレータ入力範囲不足 → コールドクランクやロードダンプで停止', '待機静止電流大 → 数日駐車で電池を吸い尽くす', 'POL が負荷から遠い → ドループ・過渡悪', 'EMI フィルタ不足 → 伝導発射超過・認証失敗']
+      },
+      ko: {
+        principles: '차량 전원 체인의 전형: 배터리 → 역접속 보호 → EMI 필터 → 프리레귤레이터 → POL 강압 → 부하. 프리레귤레이터는 6~40V의 지저분한 입력을 안정 중간 레일(5V/3.3V)로: 콜드 크랭크 강하 시 승압(이나 승강압)으로 유지, 로드 덤프 고전압 시 클램프+강압. 통합형 차량용 프리레귤레이터(LM5xxx-Q1 등)는 승압+강압이나 광입력 승강압 포함. 하류 POL이 각각 코어/IO/아날로그 레일로 강압. 전 체인에 낮은 정지 전류 필요(주차 시도 일부 급전, 배터리 소모 우려).',
+        keyFormulas: ['프리레귤레이터 입력 범위는 6V(콜드 크랭크)~40V(로드 덤프) 커버', '콜드 크랭크 → 승압/승강압으로 중간 레일 유지', '로드 덤프 → 클램프 + 강압', '대기 정지 전류는 극소(배터리 소모 우려 µA급)'],
+        designNotes: ['전단은 광입력 승강압이나 승압+강압 캐스케이드', '콜드 크랭크를 견딤(엔진 시동 시 재시작 불가)', 'POL은 부하 근처에 디커플링 충분히', '상시 급전(KL30) 경로 정지 전류를 극저로', 'EMI 필터를 최전단에(차량 전도 EMC는 엄격)', '전 체인에 차량용 AEC-Q + 기능 안전(안전 관련이면)'],
+        commonMistakes: ['프리레귤레이터 입력 범위 부족 → 콜드 크랭크나 로드 덤프에서 정지', '대기 정지 전류 큼 → 며칠 주차로 배터리 소진', 'POL이 부하에서 멂 → 드룹·과도 나쁨', 'EMI 필터 부족 → 전도 방사 초과·인증 실패']
+      }
+    },
+    'aec-q100': {
+      en: {
+        principles: 'AEC-Q100 is a stress-test qualification for automotive ICs: temperature grades (Grade 0 -40 to 150C, Grade 1 -40 to 125C...) and a battery of reliability tests (temp cycling, HTOL high-temp operating life, humidity, ESD, latch-up...). Q101 is discretes, Q200 is passives. Passing only means the part is qualified. If a system is safety-related (braking, steering, battery management) it follows ISO 26262 functional safety: an ASIL level (A-D, D strictest) set by hazard/risk, requiring safety mechanisms (diagnostic coverage, fault detection, safe state), redundancy and reliability math (FIT/FMEDA). Automakers also demand PPAP / zero-defect quality.',
+        keyFormulas: ['AEC-Q100 Grade 0: -40 to 150C; Grade 1: -40 to 125C', 'ASIL levels A<B<C<D (D strictest, e.g. braking/steering)', 'FIT = failures per 10^9 hours (reliability metric)', 'Diagnostic coverage DC%: fraction of faults the safety mechanism detects'],
+        designNotes: ['Choose AEC-Q100 ICs, Q200 passives, Q101 discretes', 'Match temperature grade to the real environment (engine bay needs Grade 0/1)', 'Set ASIL per ISO 26262 for safety functions and design safety mechanisms', 'Add diagnostics/redundancy on critical signals (e.g. dual-channel measurement compare)', 'Do FMEDA to compute failure rate and verify diagnostic coverage', 'Suppliers must provide automotive docs (PPAP, reliability reports)'],
+        commonMistakes: ['Commercial/industrial parts in a car: early failure at high temp or over life', 'Temperature grade too low (Grade 2 in the engine bay): overheating failure', 'Safety system without functional safety: qualification/liability problems', 'Ignoring diagnostic coverage: latent faults accumulate undetected']
+      },
+      ja: {
+        principles: 'AEC-Q100 は車載 IC のストレス試験認証：温度グレード（Grade 0 -40~150℃、Grade 1 -40~125℃…）と一連の信頼性試験（温度サイクル、HTOL 高温動作寿命、湿度、ESD、ラッチアップ…）。Q101=分立、Q200=受動部品。合格は「部品が適格」なだけ。安全関連（ブレーキ、操舵、電池管理）なら ISO 26262 機能安全：危険/リスクで ASIL（A~D、D 最厳）を定め、安全機構（診断カバレッジ、故障検出、安全状態）、冗長、信頼性計算（FIT/FMEDA）を要求。自動車メーカは PPAP/ゼロ欠陥品質も要求。',
+        keyFormulas: ['AEC-Q100 Grade 0：-40~150℃、Grade 1：-40~125℃', 'ASIL レベル A<B<C<D（D 最厳、ブレーキ/操舵等）', 'FIT = 10⁹ 時間あたり故障数（信頼性指標）', '診断カバレッジ DC%：安全機構が検出できる故障の割合'],
+        designNotes: ['IC は AEC-Q100、受動は Q200、分立は Q101 を選ぶ', '温度グレードを実環境に合わせる（エンジンルームは Grade 0/1）', '安全機能は ISO 26262 で ASIL を定め安全機構を設計', '重要信号に診断/冗長（二重チャネル測定比較等）', 'FMEDA で故障率を計算し診断カバレッジを検証', 'サプライヤは車載文書（PPAP、信頼性報告）提供必須'],
+        commonMistakes: ['商用/工業部品を車載 → 高温や寿命で早期故障', '温度グレード不足（エンジンルームに Grade 2）→ 過熱故障', '安全システムに機能安全なし → 認証/責任問題', '診断カバレッジ無視 → 潜在故障が検出されず蓄積']
+      },
+      ko: {
+        principles: 'AEC-Q100은 차량용 IC의 스트레스 시험 인증: 온도 등급(Grade 0 -40~150℃, Grade 1 -40~125℃…)과 일련의 신뢰성 시험(온도 사이클, HTOL 고온 동작 수명, 습도, ESD, 래치업…). Q101=분리 부품, Q200=수동 부품. 합격은 "부품이 적격"일 뿐. 안전 관련(제동, 조향, 배터리 관리)이면 ISO 26262 기능 안전: 위험/리스크로 ASIL(A~D, D 최엄)을 정하고 안전 메커니즘(진단 커버리지, 고장 검출, 안전 상태), 중복, 신뢰성 계산(FIT/FMEDA) 요구. 완성차 업체는 PPAP/무결점 품질도 요구.',
+        keyFormulas: ['AEC-Q100 Grade 0: -40~150℃, Grade 1: -40~125℃', 'ASIL 등급 A<B<C<D(D 최엄, 제동/조향 등)', 'FIT = 10⁹ 시간당 고장 수(신뢰성 지표)', '진단 커버리지 DC%: 안전 메커니즘이 검출 가능한 고장 비율'],
+        designNotes: ['IC는 AEC-Q100, 수동은 Q200, 분리 부품은 Q101 선택', '온도 등급을 실제 환경에 맞춤(엔진룸은 Grade 0/1)', '안전 기능은 ISO 26262로 ASIL 정하고 안전 메커니즘 설계', '중요 신호에 진단/중복(이중 채널 측정 비교 등)', 'FMEDA로 고장률 계산하고 진단 커버리지 검증', '공급사는 차량용 문서(PPAP, 신뢰성 보고) 제공 필수'],
+        commonMistakes: ['상용/산업 부품을 차량에 → 고온이나 수명에서 조기 고장', '온도 등급 부족(엔진룸에 Grade 2) → 과열 고장', '안전 시스템에 기능 안전 없음 → 인증/책임 문제', '진단 커버리지 무시 → 잠재 고장이 검출 안 되고 누적']
+      }
     }
   };
   var M = window.KNOWLEDGE_I18N = window.KNOWLEDGE_I18N || {};

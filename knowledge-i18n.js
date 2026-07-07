@@ -439,6 +439,42 @@ Object.assign(window.KNOWLEDGE_I18N, {
   ko: { title: '노트북 전원 시퀀싱과 전원 도메인', description: '노트북의 수십 레일은 엄격한 순서로 인가(S0/S3/S5 도메인). EC와 PCH가 사이드밴드 신호로 단계별 핸드셰이크, 순서 오류 시 부팅 실패나 손상.' } }
 });
 
+// ===== 影片衍生卡（knowledge-video.js）title+description en/ja/ko =====
+Object.assign(window.KNOWLEDGE_I18N, {
+ 'em-fields-return-path': {
+  en: { title: 'Field View: Signal Travels in the Dielectric, Return in the Reference Plane', description: 'Signal energy actually propagates in the dielectric, not inside the copper; copper only bounds and contains the field. Grasping this is the root of EMI control.' },
+  ja: { title: '電磁場の視点：信号は誘電体を、リターンは参照面を通る', description: '信号エネルギーは実は誘電体を伝播し銅内ではない。銅は場を囲む境界にすぎない。これを理解することが EMI 制御の根本。' },
+  ko: { title: '전자기장 관점: 신호는 유전체를, 리턴은 기준면을 지난다', description: '신호 에너지는 실제로 유전체를 전파하며 구리 내부가 아님. 구리는 장을 가두는 경계일 뿐. 이를 이해하는 것이 EMI 제어의 근본.' } },
+ 'minima-schematic-review-conventions': {
+  en: { title: 'High-Speed Schematic Review Conventions: from Readability to EMI Clues', description: 'CM4/CM5 carrier reviews show that good schematic annotation, direction conventions and diff-pair notes are the prerequisite for a layout that can hold EMC.' },
+  ja: { title: '高速基板の回路図レビュー慣例：可読性から EMI の前兆まで', description: 'CM4/CM5 キャリアのレビューが示すのは、良い注釈・方向慣例・差動対表記が、EMC を守れる配置の前提だということ。' },
+  ko: { title: '고속 기판 회로도 리뷰 관례: 가독성부터 EMI 단서까지', description: 'CM4/CM5 캐리어 리뷰가 보여주듯, 좋은 주석·방향 관례·차동쌍 표기가 EMC를 지키는 배치의 전제.' } },
+ 'minima-connector-shielding-faraday-cage': {
+  en: { title: 'Connector Shielding & the Faraday Cage: Avoid Pigtails Killing Your Filter', description: 'If a connector shield is grounded by a thin pigtail, it becomes a high-impedance path at high frequency, defeating the filter and radiating common-mode current.' },
+  ja: { title: 'コネクタシールドとファラデーケージ：ピグテールがフィルタを台無しにするのを防ぐ', description: 'コネクタシールドを細いピグテールで接地すると高周波で高インピーダンス経路となり、フィルタを無効化しコモンモード放射を生む。' },
+  ko: { title: '커넥터 차폐와 패러데이 케이지: 피그테일이 필터를 망치는 것 방지', description: '커넥터 차폐를 가는 피그테일로 접지하면 고주파에서 고임피던스 경로가 되어 필터를 무력화하고 공통 모드 방사를 낳음.' } },
+ 'minima-stackup-via-stitching-review': {
+  en: { title: '6-Layer Stackup Review in Practice: Return-Plane Pairing, Via Stitching, Cavity Resonance', description: 'A CM4 6-layer review shows how to check signal/return pairing, dielectric-thickness symmetry, and how stitching vias affect resonance and common-mode radiation.' },
+  ja: { title: '6層スタックアップ審査の実践：リターン面のペアリング、ビアステッチ、空洞共振', description: 'CM4 の 6 層審査で、信号/リターンのペアリング、誘電体厚の対称性、ステッチビアが共振とコモンモード放射に与える影響を確認。' },
+  ko: { title: '6층 적층 리뷰 실전: 리턴 면 페어링, 비아 스티칭, 공동 공진', description: 'CM4 6층 리뷰로 신호/리턴 페어링, 유전체 두께 대칭, 스티칭 비아가 공진과 공통 모드 방사에 미치는 영향을 확인.' } },
+ 'minima-connector-placement-cavity-resonance': {
+  en: { title: 'One-Sided Connector Placement & Module-Stack Cavity Resonance', description: 'Putting all external connectors on one side lowers antenna risk; the cavity between a stacked module and carrier can resonate and needs EMI absorber.' },
+  ja: { title: 'コネクタ片側集中とモジュール積層の空洞共振', description: '外部コネクタを片側に集中させるとアンテナリスクが下がる。積層モジュールとキャリア間の空洞は共振し得るため EMI 吸収材が必要。' },
+  ko: { title: '커넥터 한쪽 집중 배치와 모듈 적층 공동 공진', description: '외부 커넥터를 한쪽에 집중하면 안테나 위험이 낮아짐. 적층 모듈과 캐리어 사이 공동은 공진할 수 있어 EMI 흡수재 필요.' } },
+ 'imx8-som-stackup-power-plane-pitfall': {
+  en: { title: 'iMX8 SOM Stackup Pitfall: The Hidden Cost of Using a Power Plane as Return', description: 'An iMX8 SOM review finds a power plane sandwiched between signal layers with no true return plane below, forcing energy across two dielectrics - a high-risk choice.' },
+  ja: { title: 'iMX8 SOM スタックアップの罠：電源面をリターンに使う隠れコスト', description: 'iMX8 SOM 審査で、電源面が信号層に挟まれ真のリターン面が無く、エネルギーが 2 段の誘電体を跨ぐ高リスク構成を発見。' },
+  ko: { title: 'iMX8 SOM 적층 함정: 전원면을 리턴으로 쓰는 숨은 비용', description: 'iMX8 SOM 리뷰에서 전원면이 신호층 사이에 끼고 진짜 리턴면이 없어 에너지가 두 유전체를 건너는 고위험 구성 발견.' } },
+ 'imx8-antenna-patterns-and-crossing-splits': {
+  en: { title: 'iMX8 Layout Review: Copper-Island Antennas & Traces Crossing Splits', description: 'The iMX8 SOM layout reveals isolated copper pours tied by a single stitching via forming antenna patterns, and signals crossing return-plane splits causing cavity radiation.' },
+  ja: { title: 'iMX8 配置レビュー：孤立銅ポリゴンのアンテナ図形とスプリット跨ぎ配線', description: 'iMX8 SOM 配置で、単一ステッチビアで繋がる孤立銅ポリゴンがアンテナ図形を成し、信号がリターン面のスプリットを跨いで空洞放射を起こす例。' },
+  ko: { title: 'iMX8 배치 리뷰: 고립 구리 폴리곤 안테나 패턴과 스플릿 횡단 배선', description: 'iMX8 SOM 배치에서 단일 스티칭 비아로 연결된 고립 구리 폴리곤이 안테나 패턴을 이루고, 신호가 리턴면 스플릿을 건너 공동 방사를 일으키는 사례.' } },
+ 'beginner-pcb-mistakes-schematic-hygiene': {
+  en: { title: 'Beginner-to-Pro Divide: Schematic Hygiene & 6-Layer Stackup Misjudgment', description: 'An STM32F4 board review sums up beginner blind spots: undocumented schematics, inconsistent naming, and choosing a stackup on cost alone while ignoring signal/return pairing.' },
+  ja: { title: '初心者とプロの分岐点：回路図の衛生習慣と 6 層スタックアップの誤判', description: 'STM32F4 基板レビューが初心者の盲点を総括：文書化不足の回路図、命名の不統一、信号/リターンのペアリングを無視しコストだけで選ぶ層構成。' },
+  ko: { title: '초보와 프로의 분기점: 회로도 위생과 6층 적층 오판', description: 'STM32F4 보드 리뷰가 초보 맹점을 정리: 문서화 안 된 회로도, 일관성 없는 명명, 신호/리턴 페어링 무시하고 비용만으로 고르는 적층.' } }
+});
+
 // ---- 掛接：把 i18n 塞回 knowledgeApp.items（含 localStorage 舊快取卡；免 bump BUILTIN_VERSION）----
 (function () {
   function apply() {
