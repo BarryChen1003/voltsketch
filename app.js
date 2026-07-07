@@ -18,6 +18,14 @@ const app = {
       diode: '二極體',
       capacitor: '電容',
       inductor: '電感',
+      tvs: 'TVS/ESD 二極體',
+      bead: '磁珠',
+      cmchoke: '共模扼流圈',
+      varistor: '壓敏電阻',
+      gdt: '氣體放電管',
+      fuse: '保險絲',
+      xtal: '晶體振盪器',
+      shield: '屏蔽罩',
       ammeter: '電流表',
       voltmeter: '電壓表',
       nmos: 'N-MOS',
@@ -94,6 +102,14 @@ const app = {
       diode: 'Diode',
       capacitor: 'Capacitor',
       inductor: 'Inductor',
+      tvs: 'TVS/ESD Diode',
+      bead: 'Ferrite Bead',
+      cmchoke: 'Common-Mode Choke',
+      varistor: 'Varistor (MOV)',
+      gdt: 'Gas Discharge Tube',
+      fuse: 'Fuse',
+      xtal: 'Crystal',
+      shield: 'Shield Can',
       ammeter: 'Ammeter',
       voltmeter: 'Voltmeter',
       nmos: 'N-MOS',
@@ -170,6 +186,14 @@ const app = {
       diode: 'ダイオード',
       capacitor: 'コンデンサ',
       inductor: 'インダクタ',
+      tvs: 'TVS/ESDダイオード',
+      bead: 'フェライトビーズ',
+      cmchoke: 'コモンモードチョーク',
+      varistor: 'バリスタ',
+      gdt: 'ガス放電管',
+      fuse: 'ヒューズ',
+      xtal: '水晶振動子',
+      shield: 'シールドケース',
       ammeter: '電流計',
       voltmeter: '電圧計',
       nmos: 'N-MOS',
@@ -246,6 +270,14 @@ const app = {
       diode: '다이오드',
       capacitor: '커패시터',
       inductor: '인덕터',
+      tvs: 'TVS/ESD 다이오드',
+      bead: '페라이트 비드',
+      cmchoke: '공통 모드 초크',
+      varistor: '바리스터',
+      gdt: '가스 방전관',
+      fuse: '퓨즈',
+      xtal: '수정 진동자',
+      shield: '실드 캔',
       ammeter: '전류계',
       voltmeter: '전압계',
       nmos: 'N-MOS',
@@ -855,7 +887,7 @@ const app = {
       return;
     }
     // 元件放置工具（select 由 mousedown/up 處理，這裡略過）
-    const componentTypes = ['resistor','source','ground','switch','lamp','led','diode','capacitor','inductor','ammeter','voltmeter','nmos','pmos','dualnmos','dualpmos','npn','pnp','opamp','comparator','dcdc','and','or','nand','nor','xor','xnor','not','buffer'];
+    const componentTypes = ['resistor','source','ground','switch','lamp','led','diode','capacitor','inductor','tvs','bead','cmchoke','varistor','gdt','fuse','xtal','shield','ammeter','voltmeter','nmos','pmos','dualnmos','dualpmos','npn','pnp','opamp','comparator','dcdc','and','or','nand','nor','xor','xnor','not','buffer'];
     if (componentTypes.includes(this.state.tool)) {
       const hit = this.hitTest(pt.x, pt.y);
       if (hit) { this.setSelection([hit.id]); return; }
@@ -1400,6 +1432,7 @@ const app = {
       diode:'D', capacitor:'C', inductor:'L', ammeter:'A', voltmeter:'V',
       nmos:'M1', pmos:'M2', dualnmos:'M3', dualpmos:'M4', npn:'Q1', pnp:'Q2',
       opamp:'U1', comparator:'U1', dcdc:'DC1', ic:'U',
+      tvs:'D', bead:'FB', cmchoke:'L', varistor:'RV', gdt:'GDT', fuse:'F', xtal:'Y', shield:'SH',
       and:'U', or:'U', nand:'U', nor:'U', xor:'U', xnor:'U', not:'U', buffer:'U' };
     return (labels[type] || 'X') + this.state.componentIdCounter;
   },
@@ -1430,6 +1463,14 @@ const app = {
     lamp:      [{k:'pwr',l:'功率',u:'W'},{k:'vrating',l:'額定電壓',u:'V'}],
     ammeter:   [{k:'rshunt',l:'分流電阻',u:'mΩ'},{k:'imax',l:'量程',u:'A'}],
     voltmeter: [{k:'rin',l:'輸入阻抗',u:'MΩ'},{k:'vmax',l:'量程',u:'V'}],
+    tvs:      [{k:'dir',l:'方向',opt:['雙向','單向']},{k:'vrwm',l:'工作電壓 Vrwm',u:'V'},{k:'vbr',l:'崩潰 Vbr',u:'V'},{k:'vc',l:'箝位 Vc',u:'V'},{k:'ipp',l:'峰值電流 Ipp',u:'A'},{k:'cj',l:'結電容',u:'pF'}],
+    bead:     [{k:'z100',l:'阻抗@100MHz',u:'Ω'},{k:'irate',l:'額定電流',u:'A'},{k:'rdc',l:'DCR',u:'mΩ'}],
+    cmchoke:  [{k:'zcm',l:'共模阻抗',u:'Ω'},{k:'freq',l:'標稱頻率',u:'MHz'},{k:'irate',l:'額定電流',u:'A'},{k:'rdc',l:'DCR',u:'mΩ'}],
+    varistor: [{k:'vac',l:'額定 AC',u:'V'},{k:'vdc',l:'額定 DC',u:'V'},{k:'vclamp',l:'箝位電壓',u:'V'},{k:'energy',l:'能量',u:'J'}],
+    gdt:      [{k:'vspark',l:'直流放電電壓',u:'V'},{k:'isurge',l:'突波電流 8/20µs',u:'kA'},{k:'cap',l:'電容',u:'pF'}],
+    fuse:     [{k:'irate',l:'額定電流',u:'A'},{k:'vrate',l:'額定電壓',u:'V'},{k:'speed',l:'熔斷特性',opt:['快熔 F','慢熔 T']}],
+    xtal:     [{k:'freq',l:'頻率',u:'MHz'},{k:'cl',l:'負載電容 CL',u:'pF'},{k:'esr',l:'ESR',u:'Ω'},{k:'ppm',l:'頻率容差',u:'ppm'}],
+    shield:   [{k:'note',l:'備註（罩內分區用）',u:''}],
     and:[{k:'vcc',l:'供電',u:'V'},{k:'vih',l:'Vih',u:'V'},{k:'vil',l:'Vil',u:'V'},{k:'tpd',l:'延遲',u:'ns'}],
     ic:        [{k:'vcc',l:'供電',u:'V'},{k:'part',l:'料號',u:''}]
   },
@@ -2166,6 +2207,90 @@ const app = {
           inner = window.Sym ? Sym.inductor(0, 0, { color: sc || undefined })
             : `<path d="M -15 0 Q -15 -12 -5 -12 Q 5 -12 5 0 Q 5 -12 15 -12" fill="none" stroke="${sc||'#7c3aed'}" stroke-width="2"/>`;
           break;
+        case 'tvs': {
+          // 雙向 TVS/ESD：兩個齊納三角相對 + 中央雙桿帶 Z 勾
+          const tc = sc || '#059669';
+          inner = `<line x1="-14" y1="0" x2="-11" y2="0" stroke="${tc}" stroke-width="2"/>`
+            + `<polygon points="-11,-8 -11,8 -2,0" fill="#d1fae5" stroke="${tc}" stroke-width="${sw}"/>`
+            + `<polygon points="11,-8 11,8 2,0" fill="#d1fae5" stroke="${tc}" stroke-width="${sw}"/>`
+            + `<line x1="-2" y1="-8" x2="-2" y2="8" stroke="${tc}" stroke-width="2"/>`
+            + `<line x1="2" y1="-8" x2="2" y2="8" stroke="${tc}" stroke-width="2"/>`
+            + `<line x1="-2" y1="-8" x2="-6" y2="-11" stroke="${tc}" stroke-width="1.5"/>`
+            + `<line x1="2" y1="8" x2="6" y2="11" stroke="${tc}" stroke-width="1.5"/>`
+            + `<line x1="11" y1="0" x2="14" y2="0" stroke="${tc}" stroke-width="2"/>`;
+          break;
+        }
+        case 'bead': {
+          // 磁珠：斜線填充方塊（EMI 抑制，區別於電阻/電感）
+          const bc = sc || '#7c2d12';
+          inner = `<line x1="-20" y1="0" x2="-11" y2="0" stroke="${bc}" stroke-width="2"/>`
+            + `<rect x="-11" y="-7" width="22" height="14" fill="#fef3c7" stroke="${bc}" stroke-width="${sw}" rx="2"/>`
+            + `<line x1="-7" y1="6" x2="0" y2="-6" stroke="${bc}" stroke-width="1.5"/>`
+            + `<line x1="0" y1="6" x2="7" y2="-6" stroke="${bc}" stroke-width="1.5"/>`
+            + `<line x1="11" y1="0" x2="20" y2="0" stroke="${bc}" stroke-width="2"/>`;
+          break;
+        }
+        case 'cmchoke': {
+          // 共模扼流圈：上下兩繞組 + 中央磁芯雙線 + 同名端點
+          const kc = sc || '#7c3aed';
+          inner = `<path d="M -15 -14 Q -15 -26 -7.5 -26 Q 0 -26 0 -14 Q 0 -26 7.5 -26 Q 15 -26 15 -14" fill="none" stroke="${kc}" stroke-width="2"/>`
+            + `<path d="M -15 14 Q -15 26 -7.5 26 Q 0 26 0 14 Q 0 26 7.5 26 Q 15 26 15 14" fill="none" stroke="${kc}" stroke-width="2"/>`
+            + `<line x1="-16" y1="-4" x2="16" y2="-4" stroke="${kc}" stroke-width="1.6"/>`
+            + `<line x1="-16" y1="4" x2="16" y2="4" stroke="${kc}" stroke-width="1.6"/>`
+            + `<circle cx="-18" cy="-20" r="2" fill="${kc}"/><circle cx="-18" cy="20" r="2" fill="${kc}"/>`
+            + `<line x1="-30" y1="-14" x2="-15" y2="-14" stroke="${kc}" stroke-width="2"/><line x1="15" y1="-14" x2="30" y2="-14" stroke="${kc}" stroke-width="2"/>`
+            + `<line x1="-30" y1="14" x2="-15" y2="14" stroke="${kc}" stroke-width="2"/><line x1="15" y1="14" x2="30" y2="14" stroke="${kc}" stroke-width="2"/>`;
+          break;
+        }
+        case 'varistor': {
+          // 壓敏電阻 MOV：方塊 + 斜貫箭頭 + U 標記
+          const vc2 = sc || '#b45309';
+          inner = `<line x1="-20" y1="0" x2="-12" y2="0" stroke="${vc2}" stroke-width="2"/>`
+            + `<rect x="-12" y="-7" width="24" height="14" fill="#ffedd5" stroke="${vc2}" stroke-width="${sw}" rx="1"/>`
+            + `<line x1="12" y1="0" x2="20" y2="0" stroke="${vc2}" stroke-width="2"/>`
+            + `<line x1="-14" y1="12" x2="14" y2="-12" stroke="${vc2}" stroke-width="1.8"/>`
+            + `<polygon points="14,-12 7,-10 11,-5" fill="${vc2}"/>`
+            + `<text x="15" y="15" font-size="8" fill="${vc2}">U</text>`;
+          break;
+        }
+        case 'gdt': {
+          // 氣體放電管：圓殼 + 兩電極間隙 + 氣體點
+          const gc = sc || '#0e7490';
+          inner = `<circle r="12" fill="#ecfeff" stroke="${gc}" stroke-width="${sw}"/>`
+            + `<line x1="-16" y1="0" x2="-3" y2="0" stroke="${gc}" stroke-width="2"/>`
+            + `<line x1="3" y1="0" x2="16" y2="0" stroke="${gc}" stroke-width="2"/>`
+            + `<line x1="-3" y1="-6" x2="-3" y2="6" stroke="${gc}" stroke-width="2"/>`
+            + `<line x1="3" y1="-6" x2="3" y2="6" stroke="${gc}" stroke-width="2"/>`
+            + `<circle cx="0" cy="-7" r="1.6" fill="${gc}"/>`;
+          break;
+        }
+        case 'fuse': {
+          // 保險絲：圓角膠囊 + 貫穿線（IEC 風格）
+          const fc = sc || '#475569';
+          inner = `<line x1="-20" y1="0" x2="-13" y2="0" stroke="${fc}" stroke-width="2"/>`
+            + `<rect x="-13" y="-6" width="26" height="12" fill="#f8fafc" stroke="${fc}" stroke-width="${sw}" rx="5"/>`
+            + `<line x1="-13" y1="0" x2="13" y2="0" stroke="${fc}" stroke-width="1.6"/>`
+            + `<line x1="13" y1="0" x2="20" y2="0" stroke="${fc}" stroke-width="2"/>`;
+          break;
+        }
+        case 'xtal': {
+          // 晶體振盪器：兩電極板夾晶體方塊
+          const xc = sc || '#334155';
+          inner = `<line x1="-16" y1="0" x2="-7" y2="0" stroke="${xc}" stroke-width="2"/>`
+            + `<line x1="-7" y1="-9" x2="-7" y2="9" stroke="${xc}" stroke-width="2"/>`
+            + `<rect x="-4" y="-11" width="8" height="22" fill="#e2e8f0" stroke="${xc}" stroke-width="${sw}"/>`
+            + `<line x1="7" y1="-9" x2="7" y2="9" stroke="${xc}" stroke-width="2"/>`
+            + `<line x1="7" y1="0" x2="16" y2="0" stroke="${xc}" stroke-width="2"/>`;
+          break;
+        }
+        case 'shield': {
+          // 金屬屏蔽罩：虛線罩框 + 接地耳（視覺分區，罩住雜訊敏感/吵鬧區塊；不參與模擬）
+          const hc = sc || '#64748b';
+          inner = `<rect x="-42" y="-30" width="84" height="60" rx="4" fill="rgba(148,163,184,0.08)" stroke="${hc}" stroke-width="1.6" stroke-dasharray="6 4"/>`
+            + `<text x="0" y="-18" text-anchor="middle" font-size="9" fill="${hc}">SHIELD</text>`
+            + `<line x1="0" y1="30" x2="0" y2="34" stroke="${hc}" stroke-width="2"/>`;
+          break;
+        }
         case 'ammeter':
         case 'voltmeter':
           inner = `<circle r="14" fill="#dcfce7" stroke="${sc||'#16a34a'}" stroke-width="${sw}"/><text y="5" text-anchor="middle" font-size="11" font-weight="bold" fill="#16a34a">${c.type==='ammeter'?'A':'V'}</text>`;
