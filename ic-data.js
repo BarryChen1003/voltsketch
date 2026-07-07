@@ -3413,5 +3413,663 @@ window.IC_DATA = [
     ],
     secondSource: ['封裝 + pinout 相容（QFN-26、pin-to-pin）', '功能相同（Class-D 智慧喇叭放大）', '數位音訊介面相容（I2S/TDM）', 'I2C 控制/位址相容', '輸出功率/效率同等或更佳', 'I/V 感測相容', '電源軌相容（PVDD/VBAT/IOVDD）', '工作溫度涵蓋'],
     dropIn: [{ part: 'TAS2120', note: '同系列智慧喇叭放大；確認封裝/腳位與功能差異' }]
+  },
+  {
+    "part": "KSZ9031RNX",
+    "mfr": "Microchip Technology",
+    "category": "interface",
+    "subcategory": "Ethernet PHY",
+    "package": "48-QFN 7×7mm",
+    "whatIs": "Gigabit 乙太網實體層收發器（PHY）：把 MAC 的數位資料轉成雙絞線上的類比訊號（10/100/1000BASE-T），內建 Auto-MDIX、支援 RGMII 介面接 MAC。",
+    "func": "整合類比收發前端（DSP、ADC/DAC、線路均衡）與數位 MAC 介面（RGMII），提供 10/100/1000BASE-T 全雙工/半雙工、Auto-Negotiation、Auto-MDIX、多組 LED 狀態輸出，並以 SMI(MDC/MDIO) 供 MAC 端讀寫暫存器做狀態監控與參數調校（如 RGMII 時序延遲）。上電/重置時以電阻上拉/下拉在特定腳位鎖存設定（PHY 位址、模式），簡化系統設計免用額外 EEPROM。",
+    "usedIn": "工業/嵌入式 Gigabit 乙太網路埠、SoC 板外接 PHY（RGMII 介面的 i.MX6/8、STM32MP1 等）、開源公版 OpenRex（i.MX6 SOM）即採用本顆做板載 GbE。",
+    "desc": "48-QFN 封裝的 Gigabit 乙太網 PHY，RGMII 介面對 MAC，支援 10/100/1000BASE-T、Auto-MDIX、可程式 LED，PHY 位址與工作模式由上電 strap 腳決定。",
+    "datasheet": "Microchip DS00002117",
+    "pins": [
+      {
+        "num": "1",
+        "name": "AVDDH",
+        "side": "L",
+        "type": "power",
+        "desc": "類比電源，3.3V 或 2.5V（2.5V 僅商規溫度）"
+      },
+      {
+        "num": "2",
+        "name": "TXRXP_A",
+        "side": "L",
+        "type": "io",
+        "desc": "MDI 通道 0 差動對正端；1000BASE-T 對應 BI_DA+/BI_DB+，10/100 模式為 TX+/RX+（依 MDI/MDI-X）"
+      },
+      {
+        "num": "3",
+        "name": "TXRXM_A",
+        "side": "L",
+        "type": "io",
+        "desc": "MDI 通道 0 差動對負端；1000BASE-T 對應 BI_DA-/BI_DB-，10/100 模式為 TX-/RX-（依 MDI/MDI-X）"
+      },
+      {
+        "num": "4",
+        "name": "AVDDL",
+        "side": "L",
+        "type": "power",
+        "desc": "類比電源 1.2V"
+      },
+      {
+        "num": "5",
+        "name": "TXRXP_B",
+        "side": "L",
+        "type": "io",
+        "desc": "MDI 通道 1 差動對正端；1000BASE-T 對應 BI_DB+/BI_DA+，10/100 模式為 RX+/TX+（依 MDI/MDI-X）"
+      },
+      {
+        "num": "6",
+        "name": "TXRXM_B",
+        "side": "L",
+        "type": "io",
+        "desc": "MDI 通道 1 差動對負端；1000BASE-T 對應 BI_DB-/BI_DA-，10/100 模式為 RX-/TX-（依 MDI/MDI-X）"
+      },
+      {
+        "num": "7",
+        "name": "TXRXP_C",
+        "side": "L",
+        "type": "io",
+        "desc": "MDI 通道 2 差動對正端；僅 1000BASE-T 使用（對應 BI_DC+/BI_DD+），10/100 模式不使用"
+      },
+      {
+        "num": "8",
+        "name": "TXRXM_C",
+        "side": "L",
+        "type": "io",
+        "desc": "MDI 通道 2 差動對負端；僅 1000BASE-T 使用（對應 BI_DC-/BI_DD-），10/100 模式不使用"
+      },
+      {
+        "num": "9",
+        "name": "AVDDL",
+        "side": "L",
+        "type": "power",
+        "desc": "類比電源 1.2V"
+      },
+      {
+        "num": "10",
+        "name": "TXRXP_D",
+        "side": "L",
+        "type": "io",
+        "desc": "MDI 通道 3 差動對正端；僅 1000BASE-T 使用（對應 BI_DD+/BI_DC+），10/100 模式不使用"
+      },
+      {
+        "num": "11",
+        "name": "TXRXM_D",
+        "side": "L",
+        "type": "io",
+        "desc": "MDI 通道 3 差動對負端；僅 1000BASE-T 使用（對應 BI_DD-/BI_DC-），10/100 模式不使用"
+      },
+      {
+        "num": "12",
+        "name": "AVDDH",
+        "side": "L",
+        "type": "power",
+        "desc": "類比電源，3.3V 或 2.5V（2.5V 僅商規溫度）"
+      },
+      {
+        "num": "13",
+        "name": "NC",
+        "side": "B",
+        "type": "no connect",
+        "desc": "未接合腳位；可接數位地以相容 KSZ9021RN 腳位配置"
+      },
+      {
+        "num": "14",
+        "name": "DVDDL",
+        "side": "B",
+        "type": "power",
+        "desc": "數位電源 1.2V"
+      },
+      {
+        "num": "15",
+        "name": "LED2/PHYAD1",
+        "side": "B",
+        "type": "io",
+        "desc": "可程式 LED2 輸出（依 LED_MODE 設定顯示 link/速度/活動）；上電 strap：鎖存為 PHYAD[1]，上拉=1／下拉=0"
+      },
+      {
+        "num": "16",
+        "name": "DVDDH",
+        "side": "B",
+        "type": "power",
+        "desc": "數位 I/O 電源，3.3V/2.5V/1.8V"
+      },
+      {
+        "num": "17",
+        "name": "LED1/PHYAD0/PME_N1",
+        "side": "B",
+        "type": "io",
+        "desc": "可程式 LED1 輸出，或 PME_N 喚醒事件輸出（需外接 1.0~4.7kΩ 上拉至 DVDDH）；上電 strap：鎖存為 PHYAD[0]，上拉=1／下拉=0"
+      },
+      {
+        "num": "18",
+        "name": "DVDDL",
+        "side": "B",
+        "type": "power",
+        "desc": "數位電源 1.2V"
+      },
+      {
+        "num": "19",
+        "name": "TXD0",
+        "side": "B",
+        "type": "input",
+        "desc": "RGMII 模式：傳送資料位元 0（TD0）輸入"
+      },
+      {
+        "num": "20",
+        "name": "TXD1",
+        "side": "B",
+        "type": "input",
+        "desc": "RGMII 模式：傳送資料位元 1（TD1）輸入"
+      },
+      {
+        "num": "21",
+        "name": "TXD2",
+        "side": "B",
+        "type": "input",
+        "desc": "RGMII 模式：傳送資料位元 2（TD2）輸入"
+      },
+      {
+        "num": "22",
+        "name": "TXD3",
+        "side": "B",
+        "type": "input",
+        "desc": "RGMII 模式：傳送資料位元 3（TD3）輸入"
+      },
+      {
+        "num": "23",
+        "name": "DVDDL",
+        "side": "B",
+        "type": "power",
+        "desc": "數位電源 1.2V"
+      },
+      {
+        "num": "24",
+        "name": "GTX_CLK",
+        "side": "B",
+        "type": "clock",
+        "desc": "RGMII 模式：傳送參考時脈（TXC）輸入"
+      },
+      {
+        "num": "25",
+        "name": "TX_EN",
+        "side": "R",
+        "type": "input",
+        "desc": "RGMII 模式：傳送控制（TX_CTL）輸入"
+      },
+      {
+        "num": "26",
+        "name": "DVDDL",
+        "side": "R",
+        "type": "power",
+        "desc": "數位電源 1.2V"
+      },
+      {
+        "num": "27",
+        "name": "RXD3/MODE3",
+        "side": "R",
+        "type": "io",
+        "desc": "RGMII 模式：接收資料位元 3（RD3）輸出；上電 strap：鎖存為 MODE[3]，上拉=1／下拉=0"
+      },
+      {
+        "num": "28",
+        "name": "RXD2/MODE2",
+        "side": "R",
+        "type": "io",
+        "desc": "RGMII 模式：接收資料位元 2（RD2）輸出；上電 strap：鎖存為 MODE[2]，上拉=1／下拉=0"
+      },
+      {
+        "num": "29",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "數位地"
+      },
+      {
+        "num": "30",
+        "name": "DVDDL",
+        "side": "R",
+        "type": "power",
+        "desc": "數位電源 1.2V"
+      },
+      {
+        "num": "31",
+        "name": "RXD1/MODE1",
+        "side": "R",
+        "type": "io",
+        "desc": "RGMII 模式：接收資料位元 1（RD1）輸出；上電 strap：鎖存為 MODE[1]，上拉=1／下拉=0"
+      },
+      {
+        "num": "32",
+        "name": "RXD0/MODE0",
+        "side": "R",
+        "type": "io",
+        "desc": "RGMII 模式：接收資料位元 0（RD0）輸出；上電 strap：鎖存為 MODE[0]，上拉=1／下拉=0"
+      },
+      {
+        "num": "33",
+        "name": "RX_DV/CLK125_EN",
+        "side": "R",
+        "type": "io",
+        "desc": "RGMII 模式：接收控制（RX_CTL）輸出；上電 strap：鎖存為 CLK125_NDO 輸出致能，上拉=1 致能 125MHz 輸出／下拉=0 停用"
+      },
+      {
+        "num": "34",
+        "name": "DVDDH",
+        "side": "R",
+        "type": "power",
+        "desc": "數位 I/O 電源，3.3V/2.5V/1.8V"
+      },
+      {
+        "num": "35",
+        "name": "RX_CLK/PHYAD2",
+        "side": "R",
+        "type": "io",
+        "desc": "RGMII 模式：接收參考時脈（RXC）輸出；上電 strap：鎖存為 PHYAD[2]，上拉=1／下拉=0"
+      },
+      {
+        "num": "36",
+        "name": "MDC",
+        "side": "R",
+        "type": "input",
+        "desc": "管理介面（SMI）時脈輸入，內建上拉；供 MDIO（腳37）同步參考"
+      },
+      {
+        "num": "37",
+        "name": "MDIO",
+        "side": "T",
+        "type": "io",
+        "desc": "管理介面（SMI）資料輸入/輸出，內建上拉，需與 MDC 同步；建議外接 1.0~4.7kΩ 上拉至 DVDDH"
+      },
+      {
+        "num": "38",
+        "name": "INT_N/PME_N2",
+        "side": "T",
+        "type": "output",
+        "desc": "可程式中斷輸出（暫存器 1Bh/1Fh 設定觸發條件與極性），或 PME_N 喚醒事件輸出（選項2）；需外接 1.0~4.7kΩ 上拉至 DVDDH"
+      },
+      {
+        "num": "39",
+        "name": "DVDDL",
+        "side": "T",
+        "type": "power",
+        "desc": "數位電源 1.2V"
+      },
+      {
+        "num": "40",
+        "name": "DVDDH",
+        "side": "T",
+        "type": "power",
+        "desc": "數位 I/O 電源，3.3V/2.5V/1.8V"
+      },
+      {
+        "num": "41",
+        "name": "CLK125_NDO/LED_MODE",
+        "side": "T",
+        "type": "io",
+        "desc": "125MHz 參考時脈輸出，供 MAC 使用；上電 strap：鎖存為 LED_MODE，上拉=1 單 LED 模式／下拉=0 雙 LED 三色模式"
+      },
+      {
+        "num": "42",
+        "name": "RESET_N",
+        "side": "T",
+        "type": "input",
+        "desc": "晶片重置（低態動作），內建上拉；所有 strap 腳在 RESET_N 上升緣（解除重置）時鎖存"
+      },
+      {
+        "num": "43",
+        "name": "LDO_O",
+        "side": "T",
+        "type": "output",
+        "desc": "內建 1.2V LDO 控制器輸出，驅動外部 P 通道 MOSFET 產生核心 1.2V；若系統自供 1.2V 且不用此腳，可懸空；不可外部驅動"
+      },
+      {
+        "num": "44",
+        "name": "AVDDL_PLL",
+        "side": "T",
+        "type": "power",
+        "desc": "PLL 用類比電源 1.2V"
+      },
+      {
+        "num": "45",
+        "name": "XO",
+        "side": "T",
+        "type": "output",
+        "desc": "25MHz 石英振盪回授輸出；若使用外部振盪器/時脈源則此腳不接"
+      },
+      {
+        "num": "46",
+        "name": "XI",
+        "side": "T",
+        "type": "input",
+        "desc": "石英/振盪器/外部時脈輸入，25MHz ±50ppm"
+      },
+      {
+        "num": "47",
+        "name": "NC",
+        "side": "T",
+        "type": "no connect",
+        "desc": "未接合腳位；可接 AVDDH 電源以相容 KSZ9021RN 腳位配置"
+      },
+      {
+        "num": "48",
+        "name": "ISET",
+        "side": "T",
+        "type": "io",
+        "desc": "傳送輸出電平設定；接 12.1kΩ 1% 電阻到地"
+      }
+    ],
+    "thermalPad": "PADDLE GROUND（晶片底部外露焊墊），須接地（P_GND to ground）",
+    "specs": [
+      {
+        "k": "介面",
+        "v": "RGMII（對 MAC）"
+      },
+      {
+        "k": "速度",
+        "v": "10/100/1000BASE-T，Auto-Negotiation、Auto-MDIX"
+      },
+      {
+        "k": "封裝",
+        "v": "48-QFN 7×7mm"
+      },
+      {
+        "k": "類比電源 AVDDH",
+        "v": "3.3V 或 2.5V（2.5V 僅商規溫度）"
+      },
+      {
+        "k": "類比電源 AVDDL",
+        "v": "1.2V"
+      },
+      {
+        "k": "數位 I/O 電源 DVDDH",
+        "v": "3.3V / 2.5V / 1.8V 可選"
+      },
+      {
+        "k": "數位核心電源 DVDDL",
+        "v": "1.2V"
+      },
+      {
+        "k": "管理介面",
+        "v": "SMI（MDC/MDIO）"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "LAN8710A",
+    "mfr": "Microchip Technology",
+    "category": "interface",
+    "subcategory": "Ethernet PHY",
+    "package": "32-QFN/SQFN",
+    "whatIs": "10/100 乙太網實體層收發器（PHY）：把 MAC 的數位資料轉成雙絞線上的類比訊號（10BASE-T/100BASE-TX），支援 MII 或 RMII 介面接 MAC，內建 HP Auto-MDIX。",
+    "func": "整合類比收發前端（DSP、時脈回復、均衡、4B/5B 編解碼、MLT-3/NRZI 轉換）與數位 MAC 介面（MII 或 RMII，由 RMIISEL strap 選擇），提供 Auto-Negotiation、HP Auto-MDIX、可程式 LED、中斷輸出，並以 SMI(MDC/MDIO) 供 MAC 端讀寫暫存器。上電/重置時以電阻上拉/下拉在特定腳位鎖存設定（PHY 位址、工作模式、MII/RMII 選擇、內建穩壓器開關）。",
+    "usedIn": "小型嵌入式 10/100 乙太網路埠、MCU/SoC 板外接 PHY（RMII 介面常見於 STM32、ESP32 等），開源公版 Olimex ESP32-POE2 即採用本顆做 RMII 供電乙太網路埠。",
+    "desc": "32-QFN 封裝的 10/100 乙太網 PHY，MII/RMII 介面對 MAC（由 strap 選擇），支援 Auto-Negotiation、HP Auto-MDIX、可程式 LED，PHY 位址與模式由上電 strap 腳決定。",
+    "datasheet": "Microchip DS00002164",
+    "pins": [
+      {
+        "num": "1",
+        "name": "VDD2A",
+        "side": "L",
+        "type": "power",
+        "desc": "+3.3V 通道2類比埠電源，亦供內建穩壓器使用"
+      },
+      {
+        "num": "2",
+        "name": "LED2/nINTSEL",
+        "side": "L",
+        "type": "io",
+        "desc": "LED2：速度指示（100Mbps 時致能）；上電 strap：nINTSEL 決定腳18功能，浮接/上拉至 VDD2A=nINT（預設）／下拉至 VSS=TXER/TXD4"
+      },
+      {
+        "num": "3",
+        "name": "LED1/REGOFF",
+        "side": "L",
+        "type": "io",
+        "desc": "LED1：link/活動指示；上電 strap：REGOFF 決定內建 1.2V 穩壓器，上拉至 VDD2A=停用穩壓器（需外部供 1.2V 給 VDDCR）／浮接或下拉=啟用穩壓器（預設）"
+      },
+      {
+        "num": "4",
+        "name": "XTAL2",
+        "side": "L",
+        "type": "clock",
+        "desc": "外部石英振盪輸出；若用單端時脈振盪器輸入 CLKIN，此腳需懸空"
+      },
+      {
+        "num": "5",
+        "name": "XTAL1/CLKIN",
+        "side": "L",
+        "type": "clock",
+        "desc": "外部石英輸入，或單端時脈振盪器輸入"
+      },
+      {
+        "num": "6",
+        "name": "VDDCR",
+        "side": "L",
+        "type": "power",
+        "desc": "+1.2V 數位核心電源；由內建穩壓器供應，除非 REGOFF strap 設為停用；需並接 1uF 與 470pF 去耦電容到地"
+      },
+      {
+        "num": "7",
+        "name": "RXCLK/PHYAD1",
+        "side": "L",
+        "type": "io",
+        "desc": "MII 模式：接收時脈輸出（100BASE-TX 25MHz／10BASE-T 2.5MHz）；上電 strap：鎖存為 PHYAD[1]，內建下拉"
+      },
+      {
+        "num": "8",
+        "name": "RXD3/PHYAD2",
+        "side": "L",
+        "type": "io",
+        "desc": "MII 模式：接收資料位元 3輸出（RMII 模式不使用）；上電 strap：鎖存為 PHYAD[2]，內建下拉"
+      },
+      {
+        "num": "9",
+        "name": "RXD2/RMIISEL",
+        "side": "B",
+        "type": "io",
+        "desc": "MII 模式：接收資料位元 2輸出（RMII 模式不使用）；上電 strap：RMIISEL 選擇 MII/RMII 模式，下拉至 VSS=MII 模式／上拉至 VDDIO=RMII 模式，內建下拉"
+      },
+      {
+        "num": "10",
+        "name": "RXD1/MODE1",
+        "side": "B",
+        "type": "io",
+        "desc": "接收資料位元 1輸出（MII 4 bit／RMII 2 bit 皆用）；上電 strap：與 MODE0、MODE2 共同鎖存預設 PHY 工作模式，內建上拉"
+      },
+      {
+        "num": "11",
+        "name": "RXD0/MODE0",
+        "side": "B",
+        "type": "io",
+        "desc": "接收資料位元 0輸出（MII 4 bit／RMII 2 bit 皆用）；上電 strap：與 MODE1、MODE2 共同鎖存預設 PHY 工作模式，內建上拉"
+      },
+      {
+        "num": "12",
+        "name": "VDDIO",
+        "side": "B",
+        "type": "power",
+        "desc": "+1.6V ~ +3.6V 可變 I/O 電源"
+      },
+      {
+        "num": "13",
+        "name": "RXER/RXD4/PHYAD0",
+        "side": "B",
+        "type": "io",
+        "desc": "接收錯誤指示（RMII 模式可選）；Symbol Interface 模式下為 RXD4；上電 strap：鎖存為 PHYAD[0]，內建下拉"
+      },
+      {
+        "num": "14",
+        "name": "CRS",
+        "side": "B",
+        "type": "output",
+        "desc": "MII 模式：載波偵測輸出，內建下拉"
+      },
+      {
+        "num": "15",
+        "name": "COL/CRS_DV/MODE2",
+        "side": "B",
+        "type": "io",
+        "desc": "MII 模式：碰撞偵測輸出（COL）；RMII 模式：載波偵測/接收資料有效（CRS_DV）；上電 strap：鎖存為 MODE[2]，內建上拉"
+      },
+      {
+        "num": "16",
+        "name": "MDIO",
+        "side": "B",
+        "type": "io",
+        "desc": "管理介面（SMI）資料輸入/輸出"
+      },
+      {
+        "num": "17",
+        "name": "MDC",
+        "side": "R",
+        "type": "input",
+        "desc": "管理介面（SMI）時脈輸入"
+      },
+      {
+        "num": "18",
+        "name": "nINT/TXER/TXD4",
+        "side": "R",
+        "type": "output",
+        "desc": "中斷輸出（低態動作，需外部上拉至 VDDIO），或 MII 模式下依 nINTSEL strap 切換為 TXER/TXD4（Symbol Interface 模式）"
+      },
+      {
+        "num": "19",
+        "name": "nRST",
+        "side": "R",
+        "type": "input",
+        "desc": "系統重置，低態動作，內建上拉"
+      },
+      {
+        "num": "20",
+        "name": "TXCLK",
+        "side": "R",
+        "type": "clock",
+        "desc": "MII 模式：傳送時脈輸出，供 MAC 鎖存傳送資料用（100BASE-TX 25MHz／10BASE-T 2.5MHz）；RMII 模式不使用"
+      },
+      {
+        "num": "21",
+        "name": "TXEN",
+        "side": "R",
+        "type": "input",
+        "desc": "傳送致能，指示 TXD 匯流排上有效資料；內建下拉；RMII 模式僅 TXD[1:0] 有效"
+      },
+      {
+        "num": "22",
+        "name": "TXD0",
+        "side": "R",
+        "type": "input",
+        "desc": "MAC 傳送資料位元 0，MII/RMII 皆用"
+      },
+      {
+        "num": "23",
+        "name": "TXD1",
+        "side": "R",
+        "type": "input",
+        "desc": "MAC 傳送資料位元 1，MII/RMII 皆用"
+      },
+      {
+        "num": "24",
+        "name": "TXD2",
+        "side": "R",
+        "type": "input",
+        "desc": "MII 模式：MAC 傳送資料位元 2；RMII 模式須接地"
+      },
+      {
+        "num": "25",
+        "name": "TXD3",
+        "side": "T",
+        "type": "input",
+        "desc": "MII 模式：MAC 傳送資料位元 3；RMII 模式須接地"
+      },
+      {
+        "num": "26",
+        "name": "RXDV",
+        "side": "T",
+        "type": "output",
+        "desc": "接收資料有效，指示 RXD 上有可用的解碼資料"
+      },
+      {
+        "num": "27",
+        "name": "VDD1A",
+        "side": "T",
+        "type": "power",
+        "desc": "+3.3V 通道1類比埠電源"
+      },
+      {
+        "num": "28",
+        "name": "TXN",
+        "side": "T",
+        "type": "analog",
+        "desc": "乙太網傳送/接收通道1負端（差動）"
+      },
+      {
+        "num": "29",
+        "name": "TXP",
+        "side": "T",
+        "type": "analog",
+        "desc": "乙太網傳送/接收通道1正端（差動）"
+      },
+      {
+        "num": "30",
+        "name": "RXN",
+        "side": "T",
+        "type": "analog",
+        "desc": "乙太網傳送/接收通道2負端（差動）"
+      },
+      {
+        "num": "31",
+        "name": "RXP",
+        "side": "T",
+        "type": "analog",
+        "desc": "乙太網傳送/接收通道2正端（差動）"
+      },
+      {
+        "num": "32",
+        "name": "RBIAS",
+        "side": "T",
+        "type": "analog",
+        "desc": "外部 1% 偏壓電阻輸入；接 12.1kΩ 1% 電阻到地，標稱電壓 1.2V"
+      }
+    ],
+    "thermalPad": "Exposed pad（VSS，晶片底部），須以過孔陣列接地平面",
+    "specs": [
+      {
+        "k": "介面",
+        "v": "MII 或 RMII（由 RMIISEL strap 選擇）"
+      },
+      {
+        "k": "速度",
+        "v": "10BASE-T / 100BASE-TX，Auto-Negotiation、HP Auto-MDIX"
+      },
+      {
+        "k": "封裝",
+        "v": "32-QFN/SQFN"
+      },
+      {
+        "k": "I/O 電源 VDDIO",
+        "v": "+1.6V ~ +3.6V 可變"
+      },
+      {
+        "k": "數位核心電源 VDDCR",
+        "v": "+1.2V（內建穩壓器供應，或 REGOFF strap 切外部供電）"
+      },
+      {
+        "k": "類比埠電源 VDD1A/VDD2A",
+        "v": "+3.3V"
+      },
+      {
+        "k": "管理介面",
+        "v": "SMI（MDC/MDIO）"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];
