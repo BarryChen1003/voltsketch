@@ -15,18 +15,20 @@ const AIChecker = {
       suggestions: []
     };
 
-    // Run rule validation
-    const issues = SchematicRules.validate(components);
-    report.issues = issues;
-
-    // Analyze complexity
-    this.analyzeComplexity(components, report);
-
-    // Analyze topology
-    this.analyzeTopology(components, wires, report);
-
-    // Check best practices
-    this.checkBestPractices(components, report);
+    // net 感知檢查引擎（schematic-check.js）優先；未載入才退回舊存在性規則
+    if (window.SchematicCheck && window.CircuitEngine) {
+      const r = SchematicCheck.run(components, wires);
+      report.issues = r.errors.map(e => ({ rule: 'net', message: e.msg, comps: e.comps, level: 'error' }))
+        .concat(r.warns.map(e => ({ rule: 'net', message: e.msg, comps: e.comps, level: 'warn' })));
+      report.suggestions = r.infos.map(e => ({ text: e.msg, comps: e.comps }));
+      this.analyzeComplexity(components, report);
+    } else {
+      const issues = SchematicRules.validate(components);
+      report.issues = issues;
+      this.analyzeComplexity(components, report);
+      this.analyzeTopology(components, wires, report);
+      this.checkBestPractices(components, report);
+    }
 
     // Store user notes
     if (notes) {
@@ -82,17 +84,28 @@ const AIChecker = {
     html += `<p style="font-size:11px;color:#64748b;">分析時間: ${new Date(report.timestamp).toLocaleString('zh-TW')}</p>`;
     html += `<p>元件數: ${report.componentCount} | 導線數: ${report.wireCount}</p>`;
 
-    if (report.issues.length > 0) {
-      html += `<h3 style="color:#dc2626;margin-top:8px;">⚠️ 問題 (${report.issues.length})</h3>`;
-      report.issues.forEach(issue => {
-        html += `<p style="color:#dc2626;font-size:12px;">• ${issue.message}</p>`;
-      });
+    // 報告項可點擊 → 高亮相關元件（window.__chkSel 由 schematic-check.js 提供）
+    const item = (color, msg, comps) => {
+      const ids = JSON.stringify(comps || []).replace(/"/g, '&quot;');
+      const click = (comps && comps.length) ? ` onclick="window.__chkSel && __chkSel(JSON.parse(this.dataset.comps))" data-comps="${ids}" style="cursor:pointer;color:${color};font-size:12px;" title="點擊在圖上高亮"` : ` style="color:${color};font-size:12px;"`;
+      return `<p${click}>• ${msg}</p>`;
+    };
+    const errs = report.issues.filter(i => i.level !== 'warn');
+    const warns = report.issues.filter(i => i.level === 'warn');
+    if (errs.length > 0) {
+      html += `<h3 style="color:#dc2626;margin-top:8px;">🛑 錯誤 (${errs.length})</h3>`;
+      errs.forEach(i => { html += item('#dc2626', i.message, i.comps); });
     }
-
+    if (warns.length > 0) {
+      html += `<h3 style="color:#d97706;margin-top:8px;">⚠️ 警告 (${warns.length})</h3>`;
+      warns.forEach(i => { html += item('#d97706', i.message, i.comps); });
+    }
     if (report.suggestions.length > 0) {
-      html += `<h3 style="color:#f59e0b;margin-top:8px;">💡 建議 (${report.suggestions.length})</h3>`;
+      html += `<h3 style="color:#0369a1;margin-top:8px;">💡 建議 (${report.suggestions.length})</h3>`;
       report.suggestions.forEach(s => {
-        html += `<p style="color:#f59e0b;font-size:12px;">• ${s}</p>`;
+        const msg = typeof s === 'string' ? s : s.text;
+        const comps = typeof s === 'string' ? [] : s.comps;
+        html += item('#0369a1', msg, comps);
       });
     }
 
