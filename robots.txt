@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://barrychen1003.github.io/voltsketch/sitemap.xml
