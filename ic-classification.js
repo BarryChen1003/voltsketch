@@ -113,6 +113,8 @@ window.IC_CLASSIFICATION = {
   "dlp800xe"
  ],
  "interface": [
+  "KSZ9031RNX",
+  "LAN8710A",
   "dp83td530-q1",
   "onet2804tlp",
   "onet8551t",
@@ -189,7 +191,12 @@ window.IC_CLASSIFICATION = {
   "mcf8329hs",
   "mct8376z-q1"
  ],
+ "memory": [
+  "W25Q128JV"
+ ],
  "power": [
+  "AXP209",
+  "RT6150",
   "lm851772-q1",
   "lmg1020-q1",
   "lmg2104r044",

@@ -22,6 +22,7 @@ window.IC_CATEGORIES = [
   { id: 'isolation', label: 'Isolation 隔離' },
   { id: 'logic', label: 'Logic & voltage translation 邏輯/電平轉換' },
   { id: 'mcu', label: 'MCUs & processors 微控制器/處理器' },
+  { id: 'memory', label: 'Memory 記憶體 (Flash/EEPROM/DRAM)' },
   { id: 'motor', label: 'Motor drivers 馬達驅動' },
   { id: 'power', label: 'Power management 電源管理' },
   { id: 'rf', label: 'RF & microwave 射頻/微波 (含 mmWave 雷達)' },
@@ -4067,6 +4068,625 @@ window.IC_DATA = [
       {
         "k": "管理介面",
         "v": "SMI（MDC/MDIO）"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "W25Q128JV",
+    "mfr": "Winbond",
+    "category": "memory",
+    "subcategory": "序列 Flash 記憶體（SPI / Dual SPI / Quad SPI NOR Flash）",
+    "package": "SOIC-8 208-mil（Package Code S）",
+    "whatIs": "序列 NOR Flash 記憶體：以 SPI、Dual SPI 或 Quad SPI 介面提供 128M-bit（16MB）非揮發性儲存空間，供 MCU/SoC 存放開機碼、韌體或資料，斷電後內容不遺失。",
+    "func": "內部為 NOR Flash 記憶體陣列，經 {CS}、CLK、DI/DO（Quad 模式下為 IO0~IO3）與主控端溝通；支援標準/雙/四線 SPI 讀寫指令、256B 分頁寫入、扇區／區塊／全片抹除。以 Status Register 的 Block Protect 位元搭配 {WP} 腳提供硬體寫入保護；Status Register-2 的 QE bit 致能 Quad SPI 後，{WP} 腳轉為 IO2、{HOLD}/{RESET} 腳轉為 IO3。",
+    "usedIn": "Raspberry Pi Pico、多款 ESP32 開發板等開源公版設計常用的 SPI flash（存放開機映像／韌體），也廣泛用於路由器、工控板、攝影機等需外接大容量非揮發儲存的嵌入式系統。",
+    "desc": "128M-bit（16MB）3V 系列 SPI NOR Flash，支援標準/雙/四線 SPI，SOIC-8 208-mil 封裝，工業／工業 Plus 等級。",
+    "datasheet": "Winbond W25Q128JV, Revision F（2018-03-27）",
+    "pins": [
+      {
+        "num": "1",
+        "name": "{CS}",
+        "side": "L",
+        "type": "Input",
+        "desc": "SPI 晶片選擇輸入（active-low）；選中晶片並啟動 SPI 通訊，未選中時 DO/IO 腳呈高阻抗"
+      },
+      {
+        "num": "2",
+        "name": "DO (IO1)",
+        "side": "L",
+        "type": "I/O",
+        "desc": "標準/雙 SPI 模式下為資料輸出（DO）；Quad SPI 模式下為資料輸出入 1（IO1）"
+      },
+      {
+        "num": "3",
+        "name": "{WP} (IO2)",
+        "side": "L",
+        "type": "I/O",
+        "desc": "標準/雙 SPI 模式下為寫入保護輸入（active-low）；Quad SPI 模式下為資料輸出入 2（IO2）"
+      },
+      {
+        "num": "4",
+        "name": "GND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "電源地"
+      },
+      {
+        "num": "8",
+        "name": "VCC",
+        "side": "R",
+        "type": "Power",
+        "desc": "電源供應（3V 系列，確切電壓範圍見 datasheet）"
+      },
+      {
+        "num": "7",
+        "name": "{HOLD}/{RESET} (IO3)",
+        "side": "R",
+        "type": "I/O",
+        "desc": "標準/雙 SPI 模式下為保持或重置輸入（active-low）；Quad SPI 模式下為資料輸出入 3（IO3），此時 HOLD/RESET 功能不可用"
+      },
+      {
+        "num": "6",
+        "name": "CLK",
+        "side": "R",
+        "type": "Input",
+        "desc": "SPI 序列時脈輸入"
+      },
+      {
+        "num": "5",
+        "name": "DI (IO0)",
+        "side": "R",
+        "type": "I/O",
+        "desc": "標準/雙 SPI 模式下為資料輸入（DI）；Quad SPI 模式下為資料輸出入 0（IO0）"
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "容量",
+        "v": "128M-bit（16MB）"
+      },
+      {
+        "k": "介面",
+        "v": "標準 SPI／Dual SPI／Quad SPI"
+      },
+      {
+        "k": "供電電壓",
+        "v": "見 datasheet（封面標示為 3V 系列，本次擷取頁未含完整電壓範圍表）"
+      },
+      {
+        "k": "封裝",
+        "v": "SOIC-8 208-mil（Package Code S）；原廠另有 WSON、SOIC-16、TFBGA、WLCSP 等封裝選項"
+      },
+      {
+        "k": "等級",
+        "v": "Industrial ／ Industrial Plus Grade"
+      },
+      {
+        "k": "Quad Enable",
+        "v": "由 Status Register-2 的 QE bit 控制；QE=1 時 {WP} 轉為 IO2、{HOLD}/{RESET} 轉為 IO3"
+      },
+      {
+        "k": "文件版本",
+        "v": "Revision F，發布日期 2018-03-27"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "RT6150",
+    "mfr": "Richtek",
+    "category": "power",
+    "subcategory": "DC/DC 轉換器（電流模式 Buck-Boost）",
+    "package": "WDFN-10L 3×3mm（RT6150A）／WDFN-10L 2.5×2.5mm（RT6150B）",
+    "whatIs": "電流模式 Buck-Boost 降升壓 DC/DC 轉換器：輸入電壓高於、低於或等於輸出電壓時皆能維持穩壓輸出，適合單顆鋰電池或多顆鹼性/鎳氫電池供電的可攜式產品。",
+    "func": "內建兩顆 N-MOSFET 與兩顆 P-MOSFET 開關，固定 1MHz 切換頻率；依 VIN 與 VOUT 關係自動於 Buck、Boost、Buck-Boost 模式間平順切換。PS 腳拉低進入省電模式（PSM，靜態電流約 60µA），拉高則為固定頻率切換模式；EN 腳控制開關機，關機時 VOUT 與 VIN 斷開；FB 腳可外接電阻分壓調整輸出電壓（1.8V~5.5V），固定輸出版本 FB 須接回 VOUT。",
+    "usedIn": "Raspberry Pi Pico 官方板上採用的 buck-boost 電源轉換器，將 USB 5V 或電池輸入轉為板上穩定供電；也用於單顆鋰電池可攜式裝置、手持儀器等需寬輸入範圍穩壓的場合。",
+    "desc": "1MHz 電流模式 Buck-Boost 轉換器，輸入電壓 1.8~5.5V，WDFN-10L 封裝（3×3mm 或 2.5×2.5mm，依型號而異）。",
+    "datasheet": "Richtek DS6150A/B-05（2015-07）",
+    "pins": [
+      {
+        "num": "1",
+        "name": "VOUT",
+        "side": "L",
+        "type": "Power",
+        "desc": "Buck-Boost 轉換器輸出；VOUT 與 GND 間須接輸出電容"
+      },
+      {
+        "num": "2",
+        "name": "LX2",
+        "side": "L",
+        "type": "Power",
+        "desc": "第二開關節點，接電感"
+      },
+      {
+        "num": "3",
+        "name": "GND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "功率地"
+      },
+      {
+        "num": "4",
+        "name": "LX1",
+        "side": "L",
+        "type": "Power",
+        "desc": "第一開關節點，接電感"
+      },
+      {
+        "num": "5",
+        "name": "VIN",
+        "side": "L",
+        "type": "Power",
+        "desc": "電源輸入；VIN 與 GND 間建議接去耦電容（原文標示容值 10，單位判讀為 µF，詳見 datasheet）"
+      },
+      {
+        "num": "10",
+        "name": "FB",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "回授輸入；可調版本外接電阻分壓設定輸出電壓（1.8V~5.5V），固定輸出版本須接回 VOUT"
+      },
+      {
+        "num": "9",
+        "name": "GND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "功率地"
+      },
+      {
+        "num": "8",
+        "name": "VINA",
+        "side": "R",
+        "type": "Power",
+        "desc": "控制電路供電輸入"
+      },
+      {
+        "num": "7",
+        "name": "PS",
+        "side": "R",
+        "type": "Input",
+        "desc": "PSM 模式控制輸入；拉低進入省電模式（PSM），拉高為固定切換頻率模式"
+      },
+      {
+        "num": "6",
+        "name": "EN",
+        "side": "R",
+        "type": "Input",
+        "desc": "Buck-Boost 轉換器致能控制輸入"
+      },
+      {
+        "num": "11",
+        "name": "GND (Exposed Pad)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露焊墊，屬功率地，須焊接至大面積 PCB 銅箔並接地以達最大散熱",
+        "ep": true
+      }
+    ],
+    "thermalPad": "Exposed Pad（datasheet 標示腳號 11）為功率地，須焊接至大面積 PCB 並接地以利散熱",
+    "specs": [
+      {
+        "k": "拓樸",
+        "v": "Buck-Boost（同步整流，效率最高約 90%）"
+      },
+      {
+        "k": "輸入電壓範圍",
+        "v": "1.8V ~ 5.5V"
+      },
+      {
+        "k": "輸出電壓",
+        "v": "固定 3.3V（RT6150B-33）或可調 1.8V~5.5V（FB 外接分壓電阻）"
+      },
+      {
+        "k": "切換頻率",
+        "v": "固定 1MHz"
+      },
+      {
+        "k": "最大連續輸出電流",
+        "v": "見 datasheet（規格標示可達約 800mA，實際依 VIN/VOUT 條件而定）"
+      },
+      {
+        "k": "PSM 靜態電流",
+        "v": "約 60µA"
+      },
+      {
+        "k": "關機電流",
+        "v": "< 1µA"
+      },
+      {
+        "k": "封裝",
+        "v": "WDFN-10L 3×3mm（RT6150A）／WDFN-10L 2.5×2.5mm（RT6150B）"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "AXP209",
+    "mfr": "X-Powers",
+    "category": "power",
+    "subcategory": "電源管理 IC（PMIC，鋰電池充電 + 多路 DCDC/LDO）",
+    "package": "QFN-48 6×6mm",
+    "whatIs": "單顆鋰電池電源系統管理 IC（PMIC）：整合 USB/AC 相容 PWM 充電器、2 路 Buck DC-DC、5 路 LDO、多通道 12-bit ADC 與 4 個可組態 GPIO，透過 TWSI（類 I2C）介面供應用處理器控制與監控整個電源系統。",
+    "func": "以 Intelligent Power Select（IPS）電路在外部 AC 電源、鋰電池與系統負載間安全分配電力，無電池時仍可由外部電源獨立運作；內建 OVP/UVP、OTP（過溫）、OCP（過流）等保護電路；透過多通道 12-bit ADC 量測電池電壓/電流、外部輸入電壓/電流與晶片溫度，並內建庫侖計供燃料計（Fuel Gauge）估算剩餘電量；主控端經 TWSI 讀寫暫存器致能/停用各電源軌、設定輸出電壓並讀取量測資料。",
+    "usedIn": "Olimex A20-OLinuXino-Lime、Cubieboard 等以全志（Allwinner）A10/A20 系列 SoC 為核心的開源公版單板電腦，作為配套 PMIC 供應核心、記憶體、周邊等多路電源並管理鋰電池充放電。",
+    "desc": "整合鋰電池充電、2 路 Buck、5 路 LDO、多通道 12-bit ADC 與 4 個 GPIO 的單電芯電源管理 IC，48-pin QFN 封裝（6×6mm），TWSI 控制介面。",
+    "datasheet": "X-Powers AXP209 Datasheet（© 2010 X-Powers Limited）",
+    "pins": [
+      {
+        "num": "1",
+        "name": "SDA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "TWSI（序列介面）資料腳，通常外接 2.2kΩ 電阻上拉至 3.3V I/O 電源"
+      },
+      {
+        "num": "2",
+        "name": "SCK",
+        "side": "L",
+        "type": "Input",
+        "desc": "TWSI（序列介面）時脈腳，通常外接 2.2kΩ 電阻上拉至 3.3V I/O 電源"
+      },
+      {
+        "num": "3",
+        "name": "GPIO3",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸出入腳 3，功能由暫存器 REG9EH[7] 設定"
+      },
+      {
+        "num": "4",
+        "name": "{OE}",
+        "side": "L",
+        "type": "Input",
+        "desc": "電源輸出開關控制（active-low）；接 GND 為開啟（on），接 IPSOUT 為關閉（off）"
+      },
+      {
+        "num": "5",
+        "name": "GPIO2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸出入腳 2，功能由暫存器 REG92H[2:0] 設定"
+      },
+      {
+        "num": "6",
+        "name": "{VBUSEN}",
+        "side": "L",
+        "type": "Input",
+        "desc": "VBUS 是否納入 IPSOUT 的選擇腳（active-low 命名）；接 GND 時 IPSOUT 選用 VBUS，接高電位時 IPSOUT 不選用 VBUS"
+      },
+      {
+        "num": "7",
+        "name": "VIN2",
+        "side": "L",
+        "type": "Power",
+        "desc": "DCDC2 輸入電源"
+      },
+      {
+        "num": "8",
+        "name": "LX2",
+        "side": "L",
+        "type": "Power",
+        "desc": "DCDC2 電感接腳（開關節點）"
+      },
+      {
+        "num": "9",
+        "name": "PGND2",
+        "side": "L",
+        "type": "Ground",
+        "desc": "DCDC2 的 NMOS 功率地"
+      },
+      {
+        "num": "10",
+        "name": "DCDC2",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "DCDC2 回授（feedback）輸入腳"
+      },
+      {
+        "num": "11",
+        "name": "LDO4",
+        "side": "L",
+        "type": "Power",
+        "desc": "LDO4 輸出腳"
+      },
+      {
+        "num": "12",
+        "name": "LDO2",
+        "side": "L",
+        "type": "Power",
+        "desc": "LDO2 輸出腳"
+      },
+      {
+        "num": "13",
+        "name": "LDO24IN",
+        "side": "B",
+        "type": "Power",
+        "desc": "LDO2 與 LDO4 的共用輸入電源"
+      },
+      {
+        "num": "14",
+        "name": "VIN3",
+        "side": "B",
+        "type": "Power",
+        "desc": "DCDC3 輸入電源"
+      },
+      {
+        "num": "15",
+        "name": "LX3",
+        "side": "B",
+        "type": "Power",
+        "desc": "DCDC3 電感接腳（開關節點）"
+      },
+      {
+        "num": "16",
+        "name": "PGND3",
+        "side": "B",
+        "type": "Ground",
+        "desc": "DCDC3 的 NMOS 功率地"
+      },
+      {
+        "num": "17",
+        "name": "DCDC3",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "DCDC3 回授（feedback）輸入腳"
+      },
+      {
+        "num": "18",
+        "name": "GPIO1",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸出入腳 1，功能由暫存器 REG93H[2:0] 設定；可作 ADC 輸入"
+      },
+      {
+        "num": "19",
+        "name": "GPIO0",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸出入腳 0，功能由暫存器 REG90H[2:0] 設定；可作低噪聲 LDO／開關或 ADC 輸入"
+      },
+      {
+        "num": "20",
+        "name": "EXTEN",
+        "side": "B",
+        "type": "Output",
+        "desc": "外部電源致能輸出（External Power Enable）"
+      },
+      {
+        "num": "21",
+        "name": "APS",
+        "side": "B",
+        "type": "Power",
+        "desc": "內部電源輸入（Internal Power Input）；PWRON 腳內部 100kΩ 上拉至此腳"
+      },
+      {
+        "num": "22",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比地"
+      },
+      {
+        "num": "23",
+        "name": "BIAS",
+        "side": "B",
+        "type": "Passive",
+        "desc": "偏置電阻腳：外接 200kΩ 1% 精度電阻（接法詳見 datasheet）；註：datasheet 腳位表此列腳號印為 34，依表格排序（介於 22 與 24 之間）判定為第 23 腳"
+      },
+      {
+        "num": "24",
+        "name": "VREF",
+        "side": "B",
+        "type": "Analog Out",
+        "desc": "內部參考電壓輸出"
+      },
+      {
+        "num": "25",
+        "name": "PWROK",
+        "side": "R",
+        "type": "Output",
+        "desc": "Power Good 指示輸出：開機過程輸出低電位，所有輸出電壓達穩壓值後拉高；過載或欠壓時立即拉低，可作系統重置訊號"
+      },
+      {
+        "num": "26",
+        "name": "VINT",
+        "side": "R",
+        "type": "Power",
+        "desc": "內部邏輯電源輸出，2.5V"
+      },
+      {
+        "num": "27",
+        "name": "LDO1SET",
+        "side": "R",
+        "type": "Input",
+        "desc": "設定 LDO1 預設輸出電壓"
+      },
+      {
+        "num": "28",
+        "name": "LDO1",
+        "side": "R",
+        "type": "Power",
+        "desc": "LDO1 輸出，供 Host RTC 區塊；關機時唯一不被切斷的電源軌"
+      },
+      {
+        "num": "29",
+        "name": "DC3SET",
+        "side": "R",
+        "type": "Input",
+        "desc": "設定 DCDC3 預設輸出電壓"
+      },
+      {
+        "num": "30",
+        "name": "BACKUP",
+        "side": "R",
+        "type": "Power",
+        "desc": "備份電池（backup battery）接腳"
+      },
+      {
+        "num": "31",
+        "name": "VBUS",
+        "side": "R",
+        "type": "Power",
+        "desc": "USB VBUS 電源輸入"
+      },
+      {
+        "num": "32",
+        "name": "ACIN",
+        "side": "R",
+        "type": "Power",
+        "desc": "AC 變壓器（adapter）電源輸入（與腳 33 並聯）"
+      },
+      {
+        "num": "33",
+        "name": "ACIN",
+        "side": "R",
+        "type": "Power",
+        "desc": "AC 變壓器（adapter）電源輸入（與腳 32 並聯）"
+      },
+      {
+        "num": "34",
+        "name": "IPSOUT",
+        "side": "R",
+        "type": "Power",
+        "desc": "IPS 電源路徑輸出，供應主系統負載（與腳 35 並聯；腳位表原文標示 Main Battery）"
+      },
+      {
+        "num": "35",
+        "name": "IPSOUT",
+        "side": "R",
+        "type": "Power",
+        "desc": "IPS 電源路徑輸出，供應主系統負載（與腳 34 並聯；腳位表原文標示 Main Battery）"
+      },
+      {
+        "num": "36",
+        "name": "CHGLED",
+        "side": "R",
+        "type": "Output",
+        "desc": "充電狀態指示輸出（驅動 LED）；亦可設定為過溫／過壓警示或 GPO，詳見 REG32H"
+      },
+      {
+        "num": "37",
+        "name": "TS",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "電池溫度感測器輸入，或作外部 ADC 輸入"
+      },
+      {
+        "num": "38",
+        "name": "BAT",
+        "side": "T",
+        "type": "Power",
+        "desc": "鋰電池接腳，系統電源來源（與腳 39 並聯）"
+      },
+      {
+        "num": "39",
+        "name": "BAT",
+        "side": "T",
+        "type": "Power",
+        "desc": "鋰電池接腳，系統電源來源（與腳 38 並聯）"
+      },
+      {
+        "num": "40",
+        "name": "LDO3IN",
+        "side": "T",
+        "type": "Power",
+        "desc": "LDO3 輸入電源"
+      },
+      {
+        "num": "41",
+        "name": "LDO3",
+        "side": "T",
+        "type": "Power",
+        "desc": "LDO3 輸出腳"
+      },
+      {
+        "num": "42",
+        "name": "BATSENSE",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "電池電流感測端 1（Current sense port1）"
+      },
+      {
+        "num": "43",
+        "name": "CHSENSE",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "電池電流感測端 2（Current sense port2）"
+      },
+      {
+        "num": "44",
+        "name": "VIN1",
+        "side": "T",
+        "type": "Power",
+        "desc": "DCDC1 輸入電源（照 datasheet 腳位表原文；功能總覽標示為 2 路 Buck，詳見 datasheet）"
+      },
+      {
+        "num": "45",
+        "name": "LX1",
+        "side": "T",
+        "type": "Power",
+        "desc": "DCDC1 電感接腳（開關節點）"
+      },
+      {
+        "num": "46",
+        "name": "PGND1",
+        "side": "T",
+        "type": "Ground",
+        "desc": "DCDC1 的 NMOS 功率地"
+      },
+      {
+        "num": "47",
+        "name": "PWRON",
+        "side": "T",
+        "type": "Input",
+        "desc": "開／關機按鍵（PEK）輸入，內部 100kΩ 上拉至 APS；可自動辨識長按與短按並對應動作"
+      },
+      {
+        "num": "48",
+        "name": "IRQ/WAKEUP",
+        "side": "T",
+        "type": "I/O",
+        "desc": "中斷（IRQ）輸出或喚醒（wakeup）輸入"
+      },
+      {
+        "num": "49",
+        "name": "EP",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露焊墊（Exposed Pad），須連接系統地",
+        "ep": true
+      }
+    ],
+    "thermalPad": "Exposed Pad（datasheet 腳位表標示為第 49 腳）須連接系統地",
+    "specs": [
+      {
+        "k": "電源軌",
+        "v": "2 路 Buck DC-DC + 5 路 LDO（各路電壓/電流上限見 datasheet 完整表）"
+      },
+      {
+        "k": "ADC",
+        "v": "多通道 12-bit ADC，量測電池電壓/電流、ACIN、VBUS、晶片溫度、GPIO 等"
+      },
+      {
+        "k": "控制介面",
+        "v": "TWSI（Two Wire Serial Interface，類 I2C）"
+      },
+      {
+        "k": "GPIO",
+        "v": "4 個可組態 GPIO"
+      },
+      {
+        "k": "保護",
+        "v": "OVP/UVP、OTP（過溫）、OCP（過流）"
+      },
+      {
+        "k": "封裝",
+        "v": "48-pin QFN，6mm × 6mm（含接地 Exposed Pad）"
       }
     ],
     "secondSource": [],

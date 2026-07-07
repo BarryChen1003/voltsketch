@@ -111,6 +111,8 @@
   "dlp800xe"
  ],
  "interface": [
+  "KSZ9031RNX",
+  "LAN8710A",
   "dp83td530-q1",
   "onet2804tlp",
   "onet8551t",
@@ -175,6 +177,9 @@
   "mspm33c321a",
   "tms320f28p551sg"
  ],
+ "memory": [
+  "W25Q128JV"
+ ],
  "motor": [
   "drv3263-q1",
   "drv7167",
@@ -188,6 +193,8 @@
   "mct8376z-q1"
  ],
  "power": [
+  "AXP209",
+  "RT6150",
   "lm851772-q1",
   "lmg1020-q1",
   "lmg2104r044",
