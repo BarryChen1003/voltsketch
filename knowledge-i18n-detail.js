@@ -409,6 +409,208 @@
         designNotes: ['IC는 AEC-Q100, 수동은 Q200, 분리 부품은 Q101 선택', '온도 등급을 실제 환경에 맞춤(엔진룸은 Grade 0/1)', '안전 기능은 ISO 26262로 ASIL 정하고 안전 메커니즘 설계', '중요 신호에 진단/중복(이중 채널 측정 비교 등)', 'FMEDA로 고장률 계산하고 진단 커버리지 검증', '공급사는 차량용 문서(PPAP, 신뢰성 보고) 제공 필수'],
         commonMistakes: ['상용/산업 부품을 차량에 → 고온이나 수명에서 조기 고장', '온도 등급 부족(엔진룸에 Grade 2) → 과열 고장', '안전 시스템에 기능 안전 없음 → 인증/책임 문제', '진단 커버리지 무시 → 잠재 고장이 검출 안 되고 누적']
       }
+    },
+    // ===== AI 伺服器 AI Server =====
+    'vrm-multiphase': {
+      en: {
+        principles: 'Core supply (VRM/VRD): the SoC needs 0.7-1.1V at hundreds of amps with huge load transients (current jumps when compute load hits). Multiphase buck: N power stages (a MOSFET pair + inductor each) in parallel, PWM phases interleaved (360/N degrees). Benefits: (1) current sharing (each phase carries total/N); (2) input/output ripple cancels by interleaving; (3) heat spreads. The controller (multiphase PWM + DrMOS smart power stages) does current balancing (per-phase feedback), DVID (dynamic voltage per CPU command), a load line (AVP: an effective resistance to tolerate transients), and PMBus telemetry. GPU/AI-accelerator cores are the same but with more phases.',
+        keyFormulas: ['Per-phase current = total current / phase count N', 'Interleave phase = 360 / N (ripple cancellation)', 'Load line AVP: Vout = Vset - I x R_LL (transient tolerance)', 'Transient decoupling: low ESR/ESL cap array supplies instant current'],
+        designNotes: ['Set phase count by total current (per-stage current limit)', 'Lay out each phase inductor/power stage symmetrically for current balance', 'DrMOS smart stage integrates driver + high/low FETs + temperature report', 'Output decoupling cap array (MLCC near the core + bulk cap)', 'PMBus to the BMC for telemetry and power management', 'Set the load line right so transient droop stays in spec', 'GPU/accelerators need more phases and tighter layout (power density)'],
+        commonMistakes: ['Too few phases: per-phase overcurrent, overheating, lower efficiency', 'Asymmetric phase layout: unbalanced current, one phase burns first', 'Insufficient output decoupling: transient droop out of spec, core hangs', 'Wrong load-line setting: transient undervolt or steady-state overvolt']
+      },
+      ja: {
+        principles: 'コア電源（VRM/VRD）：SoC は 0.7-1.1V で数百 A、負荷過渡が極大（演算負荷で電流急変）。マルチフェーズ buck：N 個の電力段（MOSFET 対＋インダクタ各）を並列、PWM 位相を交錯（360/N 度）。利点：①電流分担（各相 総電流/N）②交錯で入出力リプル相殺③発熱分散。コントローラ（マルチフェーズ PWM＋DrMOS スマート電力段）が電流均衡（各相帰還）、DVID（CPU 命令で動的電圧）、負荷線（AVP：過渡許容の等価抵抗）、PMBus 遥測。GPU/AI アクセラレータも同様だが相数増。',
+        keyFormulas: ['各相電流 = 総電流 / 相数 N', '交錯位相 = 360 / N（リプル相殺）', '負荷線 AVP：Vout = Vset - I×R_LL（過渡許容）', '過渡デカップリング：低 ESR/ESL コンデンサ列が瞬時電流供給'],
+        designNotes: ['相数は総電流で決める（各段の電流上限）', '各相のインダクタ/電力段を対称配置し電流均衡', 'DrMOS スマート段はドライバ＋上下 FET＋温度報告を統合', '出力デカップリングコンデンサ列（コア近傍 MLCC＋バルク）', 'PMBus を BMC へ遥測と電源管理', '負荷線を正しく設定し過渡ドループを規格内に', 'GPU/アクセラレータは相数増・配置厳格（電力密度）'],
+        commonMistakes: ['相数不足 → 各相過電流・過熱・効率低下', '各相配置が非対称 → 電流不均衡・ある相が先に焼損', '出力デカップリング不足 → 過渡ドループ規格外・コアハング', '負荷線設定誤り → 過渡低電圧や定常過電圧']
+      },
+      ko: {
+        principles: '코어 전원(VRM/VRD): SoC는 0.7-1.1V에 수백 A, 부하 과도가 극대(연산 부하 시 전류 급변). 멀티페이즈 buck: N개 전력단(MOSFET 쌍+인덕터 각) 병렬, PWM 위상 교차(360/N도). 이점: ①전류 분담(각 상 총전류/N) ②교차로 입출력 리플 상쇄 ③발열 분산. 컨트롤러(멀티페이즈 PWM+DrMOS 스마트 전력단)가 전류 균형(각 상 피드백), DVID(CPU 명령으로 동적 전압), 로드 라인(AVP: 과도 허용 등가 저항), PMBus 텔레메트리. GPU/AI 가속기도 동일하나 상 수 증가.',
+        keyFormulas: ['각 상 전류 = 총전류 / 상 수 N', '교차 위상 = 360 / N(리플 상쇄)', '로드 라인 AVP: Vout = Vset - I×R_LL(과도 허용)', '과도 디커플링: 낮은 ESR/ESL 커패시터 어레이가 순간 전류 공급'],
+        designNotes: ['상 수는 총전류로 결정(각 단 전류 상한)', '각 상 인덕터/전력단을 대칭 배치해 전류 균형', 'DrMOS 스마트 단은 드라이버+상하 FET+온도 보고 통합', '출력 디커플링 커패시터 어레이(코어 근처 MLCC+벌크)', 'PMBus를 BMC로 텔레메트리와 전원 관리', '로드 라인을 올바로 설정해 과도 드룹을 규격 내로', 'GPU/가속기는 상 수 증가·배치 엄격(전력 밀도)'],
+        commonMistakes: ['상 수 부족 → 각 상 과전류·과열·효율 저하', '각 상 배치 비대칭 → 전류 불균형·한 상이 먼저 소손', '출력 디커플링 부족 → 과도 드룹 규격 밖·코어 행', '로드 라인 설정 오류 → 과도 저전압이나 정상 과전압']
+      }
+    },
+    'server-48v-power': {
+      en: {
+        principles: 'At the same power, 4x voltage means 1/4 current means 1/16 I2R loss, so high-power racks moved to a 48V distribution bus (from data-center OCP standards) and step down to the core. Two approaches: (1) two-stage: 48V->12V (a high-efficiency intermediate bus converter IBC, often a fixed ratio like 4:1 LLC) then 12V->core multiphase VRM; (2) single-stage direct: 48V straight to ~0.8V with a dedicated converter (hybrid / switched-cap + buck), saving a stage of loss and putting power closer to the GPU. Vertical power delivery (VPD: power stages under/behind the GPU) further shortens the PDN path to lower impedance.',
+        keyFormulas: ['Same power: voltage x4 -> current /4 -> I2R loss /16', 'IBC common fixed ratio 4:1 (48V->12V)', 'Single-stage 48V->core saves a conversion stage of loss', 'VPD vertical delivery: PDN impedance drops sharply (short path)'],
+        designNotes: ['48V bus distribution cuts I2R loss (a must for dense racks)', 'Intermediate bus converter (IBC) uses LLC/fixed-ratio for efficiency', 'Single-stage direct puts power closer to the GPU, one less loss stage', 'Vertical delivery places power stages right under the core, shortening the PDN', '48V insulation/safety considerations (higher than 12V)', 'Thermal: high power density needs liquid cooling'],
+        commonMistakes: ['High power still on a 12V bus: big I2R loss, copper heating', 'Low IBC efficiency: two-stage losses stack up', 'Long core-supply path: high PDN impedance, poor transient', 'Ignoring 48V insulation/safety: certification problems']
+      },
+      ja: {
+        principles: '同電力で電圧×4→電流÷4→I2R 損失÷16、ゆえに高電力ラックは 48V 配電バス（データセンタ OCP 標準由来）に移行しコアへ降圧。二方式：①二段：48V→12V（高効率中間バスコンバータ IBC、4:1 LLC 等固定比が多い）→12V→コアのマルチフェーズ VRM②単段直降：48V を専用コンバータ（ハイブリッド/スイッチトキャパ+buck）で ~0.8V へ直接、一段の損失削減で給電が GPU に近い。垂直給電（VPD：電力段を GPU 直下/背面）で PDN 経路を更に短縮し低インピーダンス化。',
+        keyFormulas: ['同電力：電圧×4 → 電流÷4 → I2R 損失÷16', 'IBC 固定比 4:1 が一般（48V→12V）', '単段 48V→コアは一段の変換損失削減', 'VPD 垂直給電：PDN インピーダンス大幅低下（経路短）'],
+        designNotes: ['48V バス配電で I2R 損失削減（高密度ラック必須）', '中間バスコンバータ（IBC）は LLC/固定比で高効率', '単段直降は給電が GPU に近く一段少ない損失', '垂直給電は電力段をコア直下に置き PDN 短縮', '48V 絶縁/安全考慮（12V より高圧）', '熱：高電力密度は液冷が必要'],
+        commonMistakes: ['高電力で 12V バスのまま → I2R 損失大・銅損発熱', 'IBC 効率不足 → 二段損失が積算', 'コア給電経路が長い → PDN インピーダンス高・過渡悪', '48V 絶縁/安全無視 → 認証問題']
+      },
+      ko: {
+        principles: '같은 전력에서 전압×4→전류÷4→I2R 손실÷16, 그래서 고전력 랙은 48V 배전 버스(데이터센터 OCP 표준 유래)로 전환하고 코어로 강압. 두 방식: ①2단: 48V→12V(고효율 중간 버스 컨버터 IBC, 4:1 LLC 등 고정 비 많음)→12V→코어 멀티페이즈 VRM ②단단 직강: 48V를 전용 컨버터(하이브리드/스위치드 캡+buck)로 ~0.8V로 직접, 한 단 손실 감소로 급전이 GPU에 가까움. 수직 급전(VPD: 전력단을 GPU 바로 아래/뒷면)으로 PDN 경로를 더 단축해 저임피던스화.',
+        keyFormulas: ['같은 전력: 전압×4 → 전류÷4 → I2R 손실÷16', 'IBC 고정 비 4:1 일반(48V→12V)', '단단 48V→코어는 한 단 변환 손실 감소', 'VPD 수직 급전: PDN 임피던스 대폭 저하(경로 짧음)'],
+        designNotes: ['48V 버스 배전으로 I2R 손실 감소(고밀도 랙 필수)', '중간 버스 컨버터(IBC)는 LLC/고정 비로 고효율', '단단 직강은 급전이 GPU에 가깝고 한 단 적은 손실', '수직 급전은 전력단을 코어 바로 아래에 두어 PDN 단축', '48V 절연/안전 고려(12V보다 고전압)', '발열: 고전력 밀도는 액랭 필요'],
+        commonMistakes: ['고전력에 12V 버스 그대로 → I2R 손실 큼·구리 손실 발열', 'IBC 효율 부족 → 2단 손실 누적', '코어 급전 경로가 긺 → PDN 임피던스 높고 과도 나쁨', '48V 절연/안전 무시 → 인증 문제']
+      }
+    },
+    'pmbus-telemetry': {
+      en: {
+        principles: 'PMBus (Power Management Bus) runs on SMBus/I2C with a standard command set for a host (BMC/CPLD) to manage power ICs: telemetry (READ_VOUT/IOUT/TEMPERATURE/POUT), settings (VOUT_COMMAND to trim voltage, alarm thresholds), control (OPERATION to switch rails, margin testing) and status (a STATUS register reporting OV/OC/OT/fault). In a server every important rail (VRM, IBC, hot-swap, PSU) is on PMBus; the BMC polls to build a full power and health map, doing power capping, fault warning and remote management. AVSBus is a faster variant for dynamic voltage. Watch bus addressing, multi-device capacitance and pull-ups.',
+        keyFormulas: ['PMBus runs on I2C/SMBus (<=400kHz/1MHz)', 'READ_* commands return telemetry (linear/direct format)', 'VOUT_COMMAND does dynamic voltage', 'STATUS register: OV/OC/OT/PGOOD/fault bits'],
+        designNotes: ['Plan each PMBus device address to avoid conflict (address pins/resistor coding)', 'Keep total bus capacitance <= I2C limit; choose pull-ups right (see I2C)', 'Balance BMC poll rate against bus load', 'ALERT# line (open-drain) lets devices report faults actively (no waiting on polling)', 'Set STATUS/alarm thresholds on critical rails so faults warn early', 'AVSBus for cores that need fast dynamic voltage'],
+        commonMistakes: ['PMBus address conflict: telemetry reads the wrong device', 'Bus capacitance over limit / wrong pull-up: unstable comms', 'Only polling, no ALERT#: slow fault response', 'Wrong telemetry format (linear/direct) decode: all values wrong']
+      },
+      ja: {
+        principles: 'PMBus（Power Management Bus）は SMBus/I2C 上で標準コマンド集を使い、ホスト（BMC/CPLD）が電源 IC を管理：遥測（READ_VOUT/IOUT/TEMPERATURE/POUT）、設定（VOUT_COMMAND で電圧調整、閾値）、制御（OPERATION でレール開閉、マージンテスト）、状態（STATUS レジスタが OV/OC/OT/fault 報告）。サーバは各重要レール（VRM、IBC、hot-swap、PSU）が PMBus 接続、BMC がポーリングし全機の電力/健康図を構築、電力封頂、故障予警、遠隔管理。AVSBus は高速動的電圧の変種。バスアドレス、多装置容量、上拉に注意。',
+        keyFormulas: ['PMBus は I2C/SMBus 上（≤400kHz/1MHz）', 'READ_* コマンドが遥測値を返す（linear/direct 形式）', 'VOUT_COMMAND で動的電圧', 'STATUS レジスタ：OV/OC/OT/PGOOD/fault ビット'],
+        designNotes: ['各 PMBus 装置アドレスを衝突しないよう計画（アドレスピン/抵抗符号）', 'バス総容量を I2C 上限以内に、上拉を正しく（I2C 参照）', 'BMC ポーリング頻度を即時性とバス負荷で両立', 'ALERT# 線（オープンドレイン）で装置が能動的に故障報告（ポーリング待ち不要）', '重要レールの STATUS/閾値を設定し故障を予警', '高速動的電圧が要るコアは AVSBus'],
+        commonMistakes: ['PMBus アドレス衝突 → 別装置の遥測を読む', 'バス容量超過/上拉誤り → 通信不安定', 'ポーリングのみで ALERT# なし → 故障反応が遅い', '遥測形式（linear/direct）復号誤り → 数値全て誤り']
+      },
+      ko: {
+        principles: 'PMBus(Power Management Bus)는 SMBus/I2C 위에서 표준 명령 집합으로 호스트(BMC/CPLD)가 전원 IC를 관리: 텔레메트리(READ_VOUT/IOUT/TEMPERATURE/POUT), 설정(VOUT_COMMAND로 전압 조정, 임계값), 제어(OPERATION으로 레일 개폐, 마진 테스트), 상태(STATUS 레지스터가 OV/OC/OT/fault 보고). 서버는 각 중요 레일(VRM, IBC, hot-swap, PSU)이 PMBus 연결, BMC가 폴링해 전기의 전력/건강 맵을 구축, 전력 상한, 고장 예경, 원격 관리. AVSBus는 고속 동적 전압 변종. 버스 주소, 다장치 커패시턴스, 풀업 주의.',
+        keyFormulas: ['PMBus는 I2C/SMBus 위(≤400kHz/1MHz)', 'READ_* 명령이 텔레메트리 값 반환(linear/direct 형식)', 'VOUT_COMMAND로 동적 전압', 'STATUS 레지스터: OV/OC/OT/PGOOD/fault 비트'],
+        designNotes: ['각 PMBus 장치 주소를 충돌하지 않게 계획(주소 핀/저항 코딩)', '버스 총 커패시턴스를 I2C 상한 이내로, 풀업을 올바로(I2C 참조)', 'BMC 폴링 빈도를 즉시성과 버스 부하로 절충', 'ALERT# 선(오픈 드레인)으로 장치가 능동적 고장 보고(폴링 대기 불필요)', '중요 레일의 STATUS/임계값 설정해 고장 예경', '고속 동적 전압이 필요한 코어는 AVSBus'],
+        commonMistakes: ['PMBus 주소 충돌 → 다른 장치의 텔레메트리를 읽음', '버스 커패시턴스 초과/풀업 오류 → 통신 불안정', '폴링만 하고 ALERT# 없음 → 고장 반응 느림', '텔레메트리 형식(linear/direct) 디코딩 오류 → 값 전부 틀림']
+      }
+    },
+    'retimer-redriver': {
+      en: {
+        principles: 'High-speed SerDes signals lose amplitude over PCB/connectors/cables (dielectric loss proportional to frequency), closing the eye. Two fixes: (1) redriver (analog) - equalizes channel loss (CTLE) and re-drives, without regenerating clock; low latency, low cost, but does not remove accumulated jitter and extends distance only so far; (2) retimer (digital) - contains a CDR (clock-data recovery) that fully recovers data and regenerates a clean clock and signal (re-times), letting up/downstream channels equalize independently, removing jitter and reaching further, but with higher latency/cost and PCIe needs protocol awareness. AI servers use retimers widely for GPU-to-GPU, GPU-to-switch and long backplanes. Placement (channel midpoint) and count follow the channel budget.',
+        keyFormulas: ['Channel loss proportional to frequency (Gen5 32GT/s, Gen6 64GT/s stricter)', 'Redriver: analog equalization, no clock regen (low latency)', 'Retimer: CDR regenerates clock, removes jitter (reaches further)', 'Placement per channel insertion-loss budget'],
+        designNotes: ['Do the channel-loss budget first to decide redriver vs retimer and count', 'Place the retimer at the channel loss midpoint (half up/down)', 'PCIe retimers must be protocol-aware (LTSSM, equalization handshake)', 'Keep the retimer/redriver supply clean and well decoupled', 'Align the reference-clock architecture (common vs separate ref clock)', 'Route diff pairs with strict controlled impedance, length match, few vias'],
+        commonMistakes: ['Loss over budget without a retimer: link training fails or downshifts', 'Redriver forcing a long channel: jitter accumulates, bit errors', 'Retimer in the wrong spot: unequal up/down loss, undercompensated', 'Bad diff-pair routing: no retimer count can recover it']
+      },
+      ja: {
+        principles: '高速 SerDes 信号は PCB/コネクタ/ケーブルで振幅減衰（誘電損失 ∝ 周波数）、アイが閉じる。二つの修復：①リドライバ（アナログ）——等化器（CTLE）で通道損失を補償し再駆動、クロック再生せず、低遅延・低コストだが蓄積ジッタを消せず延伸距離に限り②リタイマ（デジタル）——CDR（クロックデータ回復）でデータを完全回復しクリーンなクロックと信号を再生（再計時）、上下流通道を独立等化・ジッタ除去・更に延伸、但し遅延/コスト高・PCIe はプロトコル認識要。AI サーバは GPU 間・GPU-スイッチ・長バックプレーンで広くリタイマ使用。配置（通道中点）と数は通道予算で決める。',
+        keyFormulas: ['通道損失 ∝ 周波数（Gen5 32GT/s、Gen6 64GT/s 更厳）', 'リドライバ：アナログ等化、クロック再生なし（低遅延）', 'リタイマ：CDR がクロック再生・ジッタ除去（更に延伸）', '配置は通道挿入損失予算で算出'],
+        designNotes: ['先に通道損失予算を行いリドライバかリタイマかと数を決める', 'リタイマを通道損失の中点に配置（上下流各半）', 'PCIe リタイマはプロトコル認識要（LTSSM、等化握手）', 'リタイマ/リドライバ自身の電源を清浄・十分デカップリング', '参照クロック構成を揃える（common/separate ref clock）', '差動対を厳密制御インピーダンス・等長・ビア少で配線'],
+        commonMistakes: ['損失予算超過でリタイマ未追加 → リンク訓練失敗/降速', 'リドライバで長通道を無理押し → ジッタ蓄積・誤り', 'リタイマ配置誤り → 上下流損失不均・補償不足', '差動対配線が悪い → リタイマ何個でも救えない']
+      },
+      ko: {
+        principles: '고속 SerDes 신호는 PCB/커넥터/케이블에서 진폭 감쇠(유전 손실 ∝ 주파수), 아이가 닫힘. 두 가지 수복: ①리드라이버(아날로그) - 등화기(CTLE)로 채널 손실을 보상하고 재구동, 클럭 재생 안 함; 저지연·저비용이나 누적 지터를 못 없애고 연장 거리에 한계 ②리타이머(디지털) - CDR(클럭 데이터 복원)로 데이터를 완전 복원하고 깨끗한 클럭과 신호를 재생(재계시), 상하류 채널을 독립 등화·지터 제거·더 멀리, 단 지연/비용 높고 PCIe는 프로토콜 인식 필요. AI 서버는 GPU 간·GPU-스위치·긴 백플레인에 리타이머 널리 사용. 배치(채널 중점)와 수는 채널 예산으로 결정.',
+        keyFormulas: ['채널 손실 ∝ 주파수(Gen5 32GT/s, Gen6 64GT/s 더 엄격)', '리드라이버: 아날로그 등화, 클럭 재생 없음(저지연)', '리타이머: CDR이 클럭 재생·지터 제거(더 멀리)', '배치는 채널 삽입 손실 예산으로 산출'],
+        designNotes: ['먼저 채널 손실 예산으로 리드라이버냐 리타이머냐와 수를 결정', '리타이머를 채널 손실 중점에 배치(상하류 각 절반)', 'PCIe 리타이머는 프로토콜 인식 필요(LTSSM, 등화 핸드셰이크)', '리타이머/리드라이버 자체 전원을 깨끗이·충분히 디커플링', '기준 클럭 구성을 일치(common/separate ref clock)', '차동쌍을 엄격 제어 임피던스·등장·비아 적게 배선'],
+        commonMistakes: ['손실 예산 초과인데 리타이머 미추가 → 링크 훈련 실패/감속', '리드라이버로 긴 채널 강행 → 지터 누적·오류', '리타이머 배치 오류 → 상하류 손실 불균·보상 부족', '차동쌍 배선 나쁨 → 리타이머 몇 개라도 못 살림']
+      }
+    },
+    'hbm-power-decoupling': {
+      en: {
+        principles: 'HBM sits beside the GPU on a silicon interposer, connected by thousands of microbumps (a very wide bus at low per-pin rate). Thousands of I/Os switching at once make huge SSN (simultaneous switching noise) and transient current, at frequencies where PCB-level decoupling caps are too slow (parasitic inductance). So decoupling is layered: high-frequency caps on the package/interposer (silicon caps / deep-trench caps) for the highest-frequency transient, package-substrate caps for mid frequency, PCB MLCC for low frequency and bulk. The supply rails (VDDQ etc.) need a low-impedance PDN; the impedance-vs-frequency of each cap layer must join with no gaps (or an impedance peak at that band causes droop). Heat is also a problem (stacked memory dissipates poorly, needs a shared GPU cooling scheme).',
+        keyFormulas: ['Thousands of I/Os switching at once -> huge SSN/transient current', 'Cap frequency bands: silicon cap (highest) -> substrate -> PCB MLCC -> bulk', 'PDN target impedance = allowed droop / transient current', 'Cap layer impedances must join with no gaps (avoid an impedance peak)'],
+        designNotes: ['Layer decoupling: interposer/package silicon caps for highest freq, PCB for low freq', 'Keep PDN impedance low across frequency with no peak (cap layers join)', 'Route VDDQ etc. on low-impedance planes', 'Manage HBM heat with the GPU (2.5D dissipates poorly)', 'This is done at package/interposer level; the PCB engineer handles the supply entry', 'Control SSN with a wide low-rate bus + close decoupling'],
+        commonMistakes: ['Relying only on PCB caps: high-frequency parasitic inductance is too slow, transient droop', 'A PDN impedance peak at some band: insufficient supply there, bit errors', 'High-impedance VDDQ plane: undervolts under big transients', 'Ignoring HBM cooling: memory overheats, downclocks or errors']
+      },
+      ja: {
+        principles: 'HBM はシリコンインターポーザで GPU 隣に配置、数千のマイクロバンプ（極広バス・低単ピンレート）で接続。数千 I/O 同時遷移で SSN（同時スイッチング雑音）と過渡電流が巨大、PCB 級デカップリングコンデンサの寄生インダクタンスが間に合わない周波数。ゆえにデカップリングを階層化：パッケージ/インターポーザ上の高周波コンデンサ（シリコンコンデンサ/深溝コンデンサ）が最高周波過渡、基板コンデンサが中周波、PCB MLCC が低周波とバルク。供給レール（VDDQ 等）は低インピーダンス PDN が必要、各層コンデンサの impedance vs frequency が隙間なく接続（さもないと該帯域のインピーダンス尖峰→ドループ）。熱も問題（積層メモリは放熱悪、GPU と共通散熱要）。',
+        keyFormulas: ['数千 I/O 同時遷移 → SSN/過渡電流巨大', 'コンデンサ帯域：シリコン(最高周波)→基板→PCB MLCC→バルク', 'PDN 目標インピーダンス = 許容ドループ / 過渡電流', '各層コンデンサ impedance を隙間なく接続（インピーダンス尖峰回避）'],
+        designNotes: ['デカップリング階層化：インターポーザ/パッケージシリコンが最高周波、PCB が低周波', 'PDN インピーダンスを全周波で低く尖峰なし（各層接続）', 'VDDQ 等の供給レールを低インピーダンス面に', 'HBM 熱を GPU と一緒に管理（2.5D 放熱悪）', 'この層はパッケージ/インターポーザ設計、PCB 技術者は供給入口を担当', 'SSN 制御は広低速バス＋近接デカップリング'],
+        commonMistakes: ['PCB コンデンサのみ頼る → 高周波寄生インダクタンス遅く過渡ドループ', 'PDN インピーダンスがある帯域で尖峰 → 該帯域供給不足・誤り', 'VDDQ 面が高インピーダンス → 大過渡で低電圧', 'HBM 散熱無視 → メモリ過熱・降速/エラー']
+      },
+      ko: {
+        principles: 'HBM은 실리콘 인터포저로 GPU 옆에 배치, 수천 개 마이크로범프(매우 넓은 버스·낮은 핀당 속도)로 연결. 수천 I/O 동시 전환으로 SSN(동시 스위칭 잡음)과 과도 전류가 막대, PCB급 디커플링 커패시터의 기생 인덕턴스가 못 따라가는 주파수. 그래서 디커플링을 계층화: 패키지/인터포저 위의 고주파 커패시터(실리콘 커패시터/딥 트렌치 커패시터)가 최고 주파 과도, 기판 커패시터가 중주파, PCB MLCC가 저주파와 벌크. 공급 레일(VDDQ 등)은 저임피던스 PDN 필요, 각 층 커패시터의 임피던스-주파수가 틈 없이 연결(아니면 해당 대역 임피던스 피크→드룹). 발열도 문제(적층 메모리 방열 나쁨, GPU와 공동 방열 필요).',
+        keyFormulas: ['수천 I/O 동시 전환 → SSN/과도 전류 막대', '커패시터 대역: 실리콘(최고 주파)→기판→PCB MLCC→벌크', 'PDN 목표 임피던스 = 허용 드룹 / 과도 전류', '각 층 커패시터 임피던스를 틈 없이 연결(임피던스 피크 회피)'],
+        designNotes: ['디커플링 계층화: 인터포저/패키지 실리콘이 최고 주파, PCB가 저주파', 'PDN 임피던스를 전 주파에서 낮게 피크 없이(각 층 연결)', 'VDDQ 등 공급 레일을 저임피던스 평면에', 'HBM 발열을 GPU와 함께 관리(2.5D 방열 나쁨)', '이 층은 패키지/인터포저 설계, PCB 엔지니어는 공급 입구 담당', 'SSN 제어는 넓은 저속 버스+근접 디커플링'],
+        commonMistakes: ['PCB 커패시터에만 의존 → 고주파 기생 인덕턴스가 느려 과도 드룹', 'PDN 임피던스가 어떤 대역에서 피크 → 해당 대역 공급 부족·오류', 'VDDQ 평면이 고임피던스 → 큰 과도에서 저전압', 'HBM 방열 무시 → 메모리 과열·감속/오류']
+      }
+    },
+    // ===== 筆電 Laptop =====
+    'laptop-battery-charger': {
+      en: {
+        principles: 'Laptop batteries are multi-cell (2-4S, Vbat 7-17V dynamic) with varied inputs (USB-C PD 5-20V, 20V adapter). The input can be above or below the battery, so the charger must be buck-boost (four-switch). NVDC (Narrow VDC): the charger output feeds the system rail (VSYS), with the battery on that node through a FET - at light load the charger supplies the system and charges; at heavy load beyond the input capability the battery supplements current (battery boost/turbo), and VSYS is clamped near the battery in a narrow range so downstream DC-DCs are easy to design. The charger IC handles input-current limiting (not exceeding the adapter/PD capability), the charge curve (CC/CV), battery authentication and negotiation with the EC/PD.',
+        keyFormulas: ['Input can be > or < Vbat -> must be buck-boost (four-switch)', 'NVDC: VSYS clamped in a narrow range near Vbat', 'Input current limit <= negotiated adapter/PD capability', 'Heavy load over input -> battery supplements current (turbo boost)'],
+        designNotes: ['Use a buck-boost charger (covers input above/below the battery)', 'NVDC architecture lets the charger also supply the system, narrow VSYS range', 'Set the input current limit right (do not exceed the PD negotiation, or it collapses/trips)', 'Coordinate with the EC + PD controller (negotiate input, pick source)', 'Kelvin-sense the battery path; work with the fuel gauge', 'ORing selection across multiple inputs (PD port + adapter)'],
+        commonMistakes: ['A pure buck charger: cannot charge when input is below the battery', 'Input current limit over the adapter capability: overload trips / power loss', 'VSYS range not clamped: downstream DC-DC hard to design', 'No battery boost at heavy load: system drops at peak load']
+      },
+      ja: {
+        principles: 'ノート電池は多セル（2-4S、Vbat 7-17V 動的）、入力多様（USB-C PD 5-20V、20V アダプタ）。入力は電池より上にも下にもなり得るため充電器は Buck-Boost（四スイッチ）必須。NVDC（Narrow VDC）：充電器出力がシステムレール（VSYS）に接続、電池が FET 経由でその節点に——軽負荷時は充電器がシステム給電＋充電、重負荷で入力能力超過時は電池が電流補充（battery boost/turbo）、VSYS を電池近くの狭範囲に鉗め下流 DC-DC を設計しやすく。充電器 IC が入力電流制限（アダプタ/PD 能力超えず）、充電曲線（CC/CV）、電池認証、EC/PD との交渉を担う。',
+        keyFormulas: ['入力が Vbat より上も下も → Buck-Boost 必須（四スイッチ）', 'NVDC：VSYS を Vbat 近くの狭範囲に鉗める', '入力電流制限 ≤ 交渉アダプタ/PD 能力', '重負荷で入力超過 → 電池が電流補充（turbo boost）'],
+        designNotes: ['Buck-Boost 充電器を使う（入力が電池より上/下を網羅）', 'NVDC 構成で充電器がシステム給電も兼ね VSYS 狭範囲', '入力電流制限を正しく（PD 交渉値を超えず、さもないと崩壊/保護作動）', 'EC＋PD コントローラと協調（入力交渉、源選択）', '電池経路を Kelvin 測定、燃料計と協調', '複数入力（PD 端子＋アダプタ）の ORing 選択'],
+        commonMistakes: ['純 Buck 充電器 → 入力が電池より下で充電不可', '入力電流制限がアダプタ能力超過 → 過負荷保護作動/電力喪失', 'VSYS 範囲を鉗めない → 下流 DC-DC 設計困難', '重負荷で battery boost なし → ピーク負荷でシステム低下']
+      },
+      ko: {
+        principles: '노트북 배터리는 다중 셀(2-4S, Vbat 7-17V 동적), 입력 다양(USB-C PD 5-20V, 20V 어댑터). 입력이 배터리보다 위나 아래일 수 있어 충전기는 벅-부스트(4스위치) 필수. NVDC(Narrow VDC): 충전기 출력이 시스템 레일(VSYS)에 연결, 배터리가 FET 경유로 그 노드에 - 경부하 시 충전기가 시스템 급전+충전, 중부하로 입력 능력 초과 시 배터리가 전류 보충(battery boost/turbo), VSYS를 배터리 근처 좁은 범위에 고정해 하류 DC-DC를 설계하기 쉽게. 충전기 IC가 입력 전류 제한(어댑터/PD 능력 안 넘음), 충전 곡선(CC/CV), 배터리 인증, EC/PD와의 협상 담당.',
+        keyFormulas: ['입력이 Vbat보다 위도 아래도 → 벅-부스트 필수(4스위치)', 'NVDC: VSYS를 Vbat 근처 좁은 범위에 고정', '입력 전류 제한 ≤ 협상 어댑터/PD 능력', '중부하로 입력 초과 → 배터리가 전류 보충(turbo boost)'],
+        designNotes: ['벅-부스트 충전기 사용(입력이 배터리보다 위/아래 커버)', 'NVDC 구조로 충전기가 시스템 급전도 겸하고 VSYS 좁은 범위', '입력 전류 제한을 올바로(PD 협상값 안 넘게, 아니면 붕괴/보호 작동)', 'EC+PD 컨트롤러와 협조(입력 협상, 소스 선택)', '배터리 경로를 Kelvin 측정, 연료 게이지와 협조', '다중 입력(PD 포트+어댑터) ORing 선택'],
+        commonMistakes: ['순 벅 충전기 → 입력이 배터리보다 아래일 때 충전 불가', '입력 전류 제한이 어댑터 능력 초과 → 과부하 보호 작동/전력 상실', 'VSYS 범위 미고정 → 하류 DC-DC 설계 곤란', '중부하에서 battery boost 없음 → 피크 부하에서 시스템 강하']
+      }
+    },
+    'usbc-pd-laptop': {
+      en: {
+        principles: 'A USB-C port is multiplexed: (1) PD power - dual-role (DRP, source or sink), the CC line negotiates direction/voltage/current (the laptop sinks to charge itself, or sources to a peripheral); (2) data - USB 3.x/USB4; (3) video - DisplayPort Alt Mode reconfigures some high-speed pairs into DP; (4) Thunderbolt/USB4 is more complex. Key parts: a PD controller (runs CC negotiation, source/sink role), SBU/CC logic, a high-speed signal mux/retimer (routes lanes to USB or DP per negotiation), the VBUS power path (buck-boost charger or source FET), and VCONN to power e-marker cables. Reversible plug means detecting orientation via CC and switching the mux.',
+        keyFormulas: ['CC line negotiates: role (DRP/source/sink), voltage, current, Alt Mode', 'DP Alt Mode: high-speed lanes reconfigured to DisplayPort', 'VCONN powers e-marker / active cables', 'Reversible plug -> CC detects orientation -> mux switches lanes'],
+        designNotes: ['A PD controller manages CC negotiation and role switching', 'The high-speed mux/retimer routes lanes to USB/DP per negotiation', 'Orientation detection -> switch the mux accordingly', 'VBUS overvoltage protection (guards against a bad negotiation) + buck-boost charge path', 'VCONN powers cable e-markers; SBU carries DP AUX', 'Controlled-impedance high-speed diff pairs (USB4/TBT channels are strict)'],
+        commonMistakes: ['Mux not switched per orientation/negotiation: one plug orientation fails', 'No VBUS overvoltage protection: a bad negotiation dumps high voltage', 'No e-marker/VCONN: active cables / high current not recognized', 'Poor high-speed channels: USB4/DP high-resolution fails']
+      },
+      ja: {
+        principles: 'USB-C 端子は多重化：①PD 給電——デュアルロール（DRP、Source か Sink）、CC 線が方向/電圧/電流を交渉（ノートは受電して自己充電、または周辺機器へ給電）②データ——USB 3.x/USB4③映像——DisplayPort Alt Mode が一部高速対を DP に再構成④Thunderbolt/USB4 は更に複雑。主要部品：PD コントローラ（CC 交渉、Source/Sink 役割）、SBU/CC ロジック、高速信号 Mux/リタイマ（交渉に応じレーンを USB か DP へ）、VBUS 電源経路（Buck-Boost 充電器や給電 FET）、VCONN が e-marker ケーブル給電。可逆挿しは CC で方向検出し Mux 切替。',
+        keyFormulas: ['CC 線が交渉：役割（DRP/Source/Sink）、電圧、電流、Alt Mode', 'DP Alt Mode：高速レーンを DisplayPort に再構成', 'VCONN が e-marker/アクティブケーブル給電', '可逆挿し → CC が方向検出 → Mux がレーン切替'],
+        designNotes: ['PD コントローラが CC 交渉と役割切替を管理', '高速 Mux/リタイマが交渉に応じレーンを USB/DP へ', '方向検出 → Mux を対応切替', 'VBUS 過電圧保護（交渉異常防止）＋Buck-Boost 充電経路', 'VCONN がケーブル e-marker 給電、SBU が DP AUX', '制御インピーダンス高速差動対（USB4/TBT 通道は厳格）'],
+        commonMistakes: ['Mux が方向/交渉で切替らず → 挿す向きの一方が不通', 'VBUS 過電圧保護なし → 交渉異常で高電圧流入', 'e-marker/VCONN なし → アクティブケーブル/大電流認識せず', '高速通道が悪い → USB4/DP 高解像失敗']
+      },
+      ko: {
+        principles: 'USB-C 포트는 다중화: ①PD 급전 - 듀얼 롤(DRP, Source나 Sink), CC 선이 방향/전압/전류 협상(노트북은 수전해 자체 충전, 또는 주변기기로 급전) ②데이터 - USB 3.x/USB4 ③영상 - DisplayPort Alt Mode가 일부 고속쌍을 DP로 재구성 ④Thunderbolt/USB4는 더 복잡. 주요 부품: PD 컨트롤러(CC 협상, Source/Sink 역할), SBU/CC 로직, 고속 신호 Mux/리타이머(협상에 따라 레인을 USB나 DP로), VBUS 전원 경로(벅-부스트 충전기나 급전 FET), VCONN이 e-marker 케이블 급전. 가역 삽입은 CC로 방향 감지해 Mux 전환.',
+        keyFormulas: ['CC 선이 협상: 역할(DRP/Source/Sink), 전압, 전류, Alt Mode', 'DP Alt Mode: 고속 레인을 DisplayPort로 재구성', 'VCONN이 e-marker/액티브 케이블 급전', '가역 삽입 → CC가 방향 감지 → Mux가 레인 전환'],
+        designNotes: ['PD 컨트롤러가 CC 협상과 역할 전환 관리', '고속 Mux/리타이머가 협상에 따라 레인을 USB/DP로', '방향 감지 → Mux를 대응 전환', 'VBUS 과전압 보호(협상 이상 방지)+벅-부스트 충전 경로', 'VCONN이 케이블 e-marker 급전, SBU가 DP AUX', '제어 임피던스 고속 차동쌍(USB4/TBT 채널은 엄격)'],
+        commonMistakes: ['Mux가 방향/협상으로 전환 안 됨 → 삽입 방향 한쪽이 불통', 'VBUS 과전압 보호 없음 → 협상 이상 시 고전압 유입', 'e-marker/VCONN 없음 → 액티브 케이블/대전류 인식 안 됨', '고속 채널 나쁨 → USB4/DP 고해상도 실패']
+      }
+    },
+    'ec-controller': {
+      en: {
+        principles: 'The EC (Embedded Controller) is an always-on small MCU that does what the main SoC cannot or does while asleep: (1) power sequencing - control rail power-up order, PWROK/PLTRST# handshake (see pch-sideband); (2) battery - coordinate charging/gauge/PD to manage charge/discharge, pick source; (3) thermals - read temperature, control fan speed (PWM), throttle/shut down to protect if needed; (4) input - keyboard matrix scan, touchpad, power button; (5) system state - the S0/S3/S5 power state machine, wake (LID/RTC/USB), and talking to BIOS (host interface). EC firmware is a key laptop customization. It stays low-power and always on (awake even in standby), so it must be frugal itself.',
+        keyFormulas: ['EC always on (awake even in S5 off) -> must be low-power itself', 'Fan PWM follows a temperature curve (thermal management)', 'Power state machine: S0(on)/S3(sleep)/S5(off)', 'PWROK/PLTRST# handshake controls power-up sequencing'],
+        designNotes: ['Power the EC from the always-on domain (has power in standby)', 'Handshake power sequencing per platform spec (sideband signals)', 'Thermal: sensible temp-sensor placement, tuned fan PWM curve', 'Debounce and ESD-protect the keyboard matrix/power button', 'Align EC firmware with the BIOS/PD interface', 'Keep EC itself low-power (always-on draw hurts standby life)'],
+        commonMistakes: ['EC powered from the wrong domain (dead in sleep): wake fails', 'Wrong power-sequencing handshake: fails to boot or intermittent', 'Untuned fan curve: overheating throttle or loud noise', 'EC firmware out of sync with PD/BIOS: charge/wake anomalies']
+      },
+      ja: {
+        principles: 'EC（Embedded Controller）は常駐小 MCU、主 SoC が不便または睡眠中に要る事を担う：①電源シーケンス——各レール投入順序、PWROK/PLTRST# 握手（pch-sideband 参照）②電池——充電器/燃料計/PD と協調し充放電管理、源選択③熱管理——温度読取、ファン速度制御（PWM）、必要時降頻/停止保護④入力——キーボードマトリクス走査、タッチパッド、電源ボタン⑤システム状態——S0/S3/S5 電源ステートマシン、ウェイク（LID/RTC/USB）、BIOS 通信（host interface）。EC ファームはノート客製の要。低電力常駐（待機中も起床）、自身も省電要。',
+        keyFormulas: ['EC 常駐（S5 停止中も起床）→ 自身低電力', 'ファン PWM は温度曲線に従う（熱管理）', '電源ステートマシン：S0(オン)/S3(睡眠)/S5(停止)', 'PWROK/PLTRST# 握手が投入順序を制御'],
+        designNotes: ['EC を常駐域から給電（待機中も電源あり）', '電源シーケンス握手はプラットフォーム仕様通り（サイドバンド信号）', '熱：温度センサ配置を合理的に、ファン PWM 曲線を調整', 'キーボードマトリクス/電源ボタンを去抖・ESD 保護', 'EC ファームを BIOS/PD インターフェースと整合', 'EC 自身を低電力に（常駐消費が待機寿命に影響）'],
+        commonMistakes: ['EC が誤った域から給電（睡眠で断電）→ ウェイク失敗', '電源シーケンス握手誤り → 起動失敗や間欠', 'ファン曲線未調整 → 過熱降頻や騒音', 'EC ファームが PD/BIOS と非同期 → 充電/ウェイク異常']
+      },
+      ko: {
+        principles: 'EC(Embedded Controller)는 상주 소형 MCU, 메인 SoC가 불편하거나 잠든 동안 필요한 일을 담당: ①전원 시퀀스 - 각 레일 인가 순서, PWROK/PLTRST# 핸드셰이크(pch-sideband 참조) ②배터리 - 충전기/연료계/PD와 협조해 충방전 관리, 소스 선택 ③발열 관리 - 온도 읽기, 팬 속도 제어(PWM), 필요 시 감속/정지 보호 ④입력 - 키보드 매트릭스 스캔, 터치패드, 전원 버튼 ⑤시스템 상태 - S0/S3/S5 전원 상태 머신, 웨이크(LID/RTC/USB), BIOS 통신(host interface). EC 펌웨어는 노트북 커스텀의 핵심. 저전력 상주(대기 중에도 깨어 있음), 자신도 절전 필요.',
+        keyFormulas: ['EC 상주(S5 정지 중에도 깨어 있음) → 자신 저전력', '팬 PWM은 온도 곡선을 따름(발열 관리)', '전원 상태 머신: S0(온)/S3(슬립)/S5(정지)', 'PWROK/PLTRST# 핸드셰이크가 인가 순서 제어'],
+        designNotes: ['EC를 상주 도메인에서 급전(대기 중에도 전원 있음)', '전원 시퀀스 핸드셰이크는 플랫폼 사양대로(사이드밴드 신호)', '발열: 온도 센서 배치 합리적으로, 팬 PWM 곡선 조정', '키보드 매트릭스/전원 버튼을 디바운스·ESD 보호', 'EC 펌웨어를 BIOS/PD 인터페이스와 정합', 'EC 자체를 저전력으로(상주 소비가 대기 수명에 영향)'],
+        commonMistakes: ['EC가 잘못된 도메인에서 급전(슬립에서 단전) → 웨이크 실패', '전원 시퀀스 핸드셰이크 오류 → 부팅 실패나 간헐', '팬 곡선 미조정 → 과열 감속이나 소음', 'EC 펌웨어가 PD/BIOS와 비동기 → 충전/웨이크 이상']
+      }
+    },
+    'laptop-backlight': {
+      en: {
+        principles: 'LCD laptop panels run eDP to a panel TCON and need VLCD (panel logic/source-driver supply, often 3.3V). The backlight is an LED string (many in series needing high voltage) driven by a boost constant-current driver: boost the battery to enough to push the whole string, constant current for uniform brightness, and dim by PWM (switch LED duty to set perceived brightness, at a high enough frequency to avoid flicker / audible noise) or analog (adjust current, no flicker at low brightness but some color shift). OLED laptop panels self-emit per pixel, needing ELVDD/ELVSS (same AMOLED principle but large size and current). Panel power-up sequencing (VLCD vs backlight order) follows spec to avoid boot flicker.',
+        keyFormulas: ['LED series string -> boost to N x Vf, constant current', 'PWM dimming: duty sets perceived brightness (high freq avoids flicker/noise)', 'Analog dimming: adjust current (no flicker at low but possible color shift)', 'OLED panels need ELVDD/ELVSS (large current)'],
+        designNotes: ['Backlight boost constant-current driver, LED string voltage sized (enough boost ratio)', 'PWM dimming frequency above audible range (inductor/cap whine) and visible flicker', 'Mixed dimming (PWM+analog) at low brightness for no-flicker plus color accuracy', 'Panel VLCD vs backlight power-up sequence per spec (avoid boot flicker)', 'OLED panel ELVDD/ELVSS well decoupled (large current transient)', 'Auto-brightness (ambient sensing) saves power and protects eyes'],
+        commonMistakes: ['PWM dimming frequency too low: visible flicker (eye strain) or inductor whine', 'Insufficient boost ratio: cannot push the whole LED string, dim backlight', 'Wrong panel/backlight sequence: white flash or ghosting at boot', 'Insufficient large OLED ELVDD decoupling: flicker on brightness change']
+      },
+      ja: {
+        principles: 'LCD ノートパネルは eDP でパネル TCON へ、VLCD（パネル論理/ソース駆動電源、常 3.3V）が必要。バックライトは LED 直列（多数直列で高電圧要）を昇圧定電流駆動：電池を全列を推せる電圧に昇圧、定電流で輝度均一、調光は PWM（LED デューティで知覚輝度、点滅/可聴雑音を避ける高周波）かアナログ（電流調整、低輝度で無点滅だが色偏あり）。OLED ノートパネルは画素自発光で ELVDD/ELVSS 要（AMOLED 原理同だが大サイズ大電流）。パネル投入順序（VLCD とバックライト先後）は仕様通りで起動ちらつき回避。',
+        keyFormulas: ['LED 直列 → N×Vf に昇圧、定電流駆動', 'PWM 調光：デューティで知覚輝度（高周波で点滅/雑音回避）', 'アナログ調光：電流調整（低輝度で無点滅だが色偏可能）', 'OLED パネルは ELVDD/ELVSS 要（大電流）'],
+        designNotes: ['バックライト昇圧定電流駆動、LED 列電圧を正しく（昇圧比十分）', 'PWM 調光周波数を可聴域（インダクタ/コンデンサ鳴き）と可視点滅の外に', '低輝度は混合調光（PWM+アナログ）で無点滅と色精度両立', 'パネル VLCD とバックライト投入順序を仕様通り（起動ちらつき回避）', 'OLED 大パネル ELVDD/ELVSS を十分デカップリング（大電流過渡）', '自動輝度（環境光）で省電・目に優しい'],
+        commonMistakes: ['PWM 調光周波数が低すぎ → 可視点滅（目疲労）やインダクタ鳴き', '昇圧比不足 → LED 列全体を推せず・バックライト暗', 'パネル/バックライト順序誤り → 起動時に白点滅や残像', 'OLED 大パネル ELVDD デカップリング不足 → 輝度変化でちらつき']
+      },
+      ko: {
+        principles: 'LCD 노트북 패널은 eDP로 패널 TCON에, VLCD(패널 논리/소스 구동 전원, 보통 3.3V) 필요. 백라이트는 LED 직렬(다수 직렬로 고전압 필요)을 승압 정전류 구동: 배터리를 전체 스트링을 밀 수 있는 전압으로 승압, 정전류로 휘도 균일, 조광은 PWM(LED 듀티로 지각 휘도, 깜빡임/가청 잡음 피하는 고주파)이나 아날로그(전류 조정, 저휘도에서 무깜빡임이나 색 편이 있음). OLED 노트북 패널은 픽셀 자발광으로 ELVDD/ELVSS 필요(AMOLED 원리 동일하나 대형 대전류). 패널 인가 순서(VLCD와 백라이트 선후)는 사양대로 부팅 깜빡임 회피.',
+        keyFormulas: ['LED 직렬 → N×Vf로 승압, 정전류 구동', 'PWM 조광: 듀티로 지각 휘도(고주파로 깜빡임/잡음 회피)', '아날로그 조광: 전류 조정(저휘도서 무깜빡임이나 색 편이 가능)', 'OLED 패널은 ELVDD/ELVSS 필요(대전류)'],
+        designNotes: ['백라이트 승압 정전류 구동, LED 스트링 전압 올바로(승압비 충분)', 'PWM 조광 주파수를 가청역(인덕터/커패시터 울림)과 가시 깜빡임 밖으로', '저휘도는 혼합 조광(PWM+아날로그)으로 무깜빡임과 색 정확도 양립', '패널 VLCD와 백라이트 인가 순서를 사양대로(부팅 깜빡임 회피)', 'OLED 대형 패널 ELVDD/ELVSS 충분히 디커플링(대전류 과도)', '자동 휘도(주변광)로 절전·눈 보호'],
+        commonMistakes: ['PWM 조광 주파수 너무 낮음 → 가시 깜빡임(눈 피로)이나 인덕터 울림', '승압비 부족 → LED 스트링 전체를 못 밀어 백라이트 어두움', '패널/백라이트 순서 오류 → 부팅 시 흰 깜빡임이나 잔상', 'OLED 대형 패널 ELVDD 디커플링 부족 → 휘도 변화 시 깜빡임']
+      }
+    },
+    'laptop-power-seq': {
+      en: {
+        principles: 'A laptop splits power into domains: S5 (soft-off, only always-on circuits + EC awake), S3 (sleep, memory retained), S0 (fully on). Boot starts from the power button; the EC/PCH build rails in order and handshake over sideband (see pch-sideband): always-on rail -> EC starts -> sequentially open CPU/DDR/IO rails, each PWROK confirming stable before the next, and only when all are ready is PLTRST# released to let the platform run. Off/sleep reverses the order. Sequencing is managed by the EC + PCH + a power-monitor/sequencer IC (or CPLD). DDR has its own power-up/down order requirements (VDD/VDDQ/VTT/VREF order). Wrong order can latch up an IC or fail to boot.',
+        keyFormulas: ['Power domains: S5(off/EC awake) -> S3(sleep/memory retained) -> S0(fully on)', 'Each rail PWROK stable -> then open the next', 'All rails ready -> release PLTRST# -> platform runs', 'DDR has a dedicated VDD/VDDQ/VTT/VREF power-up order'],
+        designNotes: ['Power-up order per chipset/CPU/DDR spec (timing diagram)', 'EC + a power-sequencer IC (or CPLD) manages the multi-rail order', 'Chain each rail PGOOD; enable the next only when the previous is good', 'Strict DDR power order (VTT/VREF relative to VDDQ)', 'Cross-check the sideband (PWROK/PLTRST#) handshake', 'Reserve test points on critical rails to debug the power-up flow'],
+        commonMistakes: ['Wrong power-up order: fails to boot or latches up an IC', 'DDR power order not per spec: memory training fails', 'PGOOD chain not linked: a rail opens downstream before it is stable', 'No test points: a boot failure gives no way to debug which rail is stuck']
+      },
+      ja: {
+        principles: 'ノートは電源を域に分ける：S5（ソフトオフ、常駐回路＋EC 起床のみ）、S3（睡眠、メモリ保持）、S0（全オン）。起動は電源ボタンから、EC/PCH が各レールを順に建てサイドバンドで握手（pch-sideband 参照）：常駐レール → EC 起動 → 順に CPU/DDR/各 IO レール開通、各 PWROK 安定確認後に次、全就緒で PLTRST# 解除しプラットフォーム動作。停止/睡眠は逆順。順序は EC＋PCH＋電源監視/排序 IC（や CPLD）が管理。DDR は独自の投入/遮断順序要求（VDD/VDDQ/VTT/VREF 順）。順序誤りは IC ラッチアップや起動失敗。',
+        keyFormulas: ['電源域：S5(停止/EC 起床) → S3(睡眠/メモリ保持) → S0(全オン)', '各レール PWROK 安定 → 次を開通', '全レール就緒 → PLTRST# 解除 → プラットフォーム動作', 'DDR は専用 VDD/VDDQ/VTT/VREF 投入順序'],
+        designNotes: ['投入順序はチップセット/CPU/DDR 仕様通り（タイミング図）', 'EC＋電源排序 IC（や CPLD）が多レール順序を管理', '各レール PGOOD を鎖状に、前が良で次を致能', 'DDR 電源順序を厳格（VTT/VREF が VDDQ に対し）', 'サイドバンド（PWROK/PLTRST#）握手を照合', '重要レールにテストポイントを予約し投入流程を debug'],
+        commonMistakes: ['投入順序誤り → 起動失敗や IC ラッチアップ', 'DDR 電源順序が仕様外 → メモリ訓練失敗', 'PGOOD 鎖が繋がらず → あるレールが未安定で下流開通', 'テストポイントなし → 起動失敗でどのレールで止まったか debug 不能']
+      },
+      ko: {
+        principles: '노트북은 전원을 도메인으로 나눔: S5(소프트 오프, 상주 회로+EC 깨어남만), S3(슬립, 메모리 유지), S0(완전 온). 부팅은 전원 버튼에서, EC/PCH가 각 레일을 순서대로 세우고 사이드밴드로 핸드셰이크(pch-sideband 참조): 상주 레일 → EC 기동 → 순차로 CPU/DDR/각 IO 레일 개통, 각 PWROK 안정 확인 후 다음, 전부 준비되면 PLTRST# 해제해 플랫폼 동작. 정지/슬립은 역순. 순서는 EC+PCH+전원 감시/시퀀서 IC(나 CPLD)가 관리. DDR은 독자 인가/차단 순서 요구(VDD/VDDQ/VTT/VREF 순). 순서 오류는 IC 래치업이나 부팅 실패.',
+        keyFormulas: ['전원 도메인: S5(정지/EC 깨어남) → S3(슬립/메모리 유지) → S0(완전 온)', '각 레일 PWROK 안정 → 다음 개통', '전 레일 준비 → PLTRST# 해제 → 플랫폼 동작', 'DDR은 전용 VDD/VDDQ/VTT/VREF 인가 순서'],
+        designNotes: ['인가 순서는 칩셋/CPU/DDR 사양대로(타이밍도)', 'EC+전원 시퀀서 IC(나 CPLD)가 다중 레일 순서 관리', '각 레일 PGOOD를 체인으로, 앞이 양호해야 다음 인에이블', 'DDR 전원 순서를 엄격히(VTT/VREF가 VDDQ 대비)', '사이드밴드(PWROK/PLTRST#) 핸드셰이크 대조', '중요 레일에 테스트 포인트 예약해 인가 흐름 디버그'],
+        commonMistakes: ['인가 순서 오류 → 부팅 실패나 IC 래치업', 'DDR 전원 순서가 사양 밖 → 메모리 훈련 실패', 'PGOOD 체인 미연결 → 어떤 레일이 미안정인데 하류 개통', '테스트 포인트 없음 → 부팅 실패 시 어느 레일에서 막혔는지 디버그 불가']
+      }
     }
   };
   var M = window.KNOWLEDGE_I18N = window.KNOWLEDGE_I18N || {};
