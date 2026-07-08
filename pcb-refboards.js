@@ -12,7 +12,7 @@ window.PCB_REFBOARDS = [
     "id": "rp2040-pico30",
     "name": "Olimex RP2040-PICO30",
     "soc": "RP2040 (Cortex-M0+)",
-    "layers": 2,
+    "layers": 4,
     "w": 52,
     "h": 21,
     "level": "入門",

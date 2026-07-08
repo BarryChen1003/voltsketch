@@ -603,6 +603,18 @@
           </section>
 
           <section class="panel-section">
+            <h2>KiCad 匯入 / 匯出</h2>
+            <div style="display:grid;gap:6px;font-size:12px">
+              <label class="small-button" style="text-align:center;cursor:pointer">
+                📂 匯入 .kicad_pcb<input type="file" id="kicadFile" accept=".kicad_pcb" style="display:none">
+              </label>
+              <button class="small-button" id="exportKicadBtn">💾 匯出 .kicad_pcb</button>
+              <div id="kicadIoMsg" style="color:var(--muted);line-height:1.5"></div>
+              <div style="color:var(--muted);line-height:1.5">匯入檔會保留整棵原始資料樹；匯出時未編輯的幾何 100% 原樣回寫（零落差）。.brd 為 Cadence 專有二進位：匯入走「板面檢視」分頁的 SKILL 抽取，匯出走 SKILL 重建腳本。</div>
+            </div>
+          </section>
+
+          <section class="panel-section">
             <h2>板框設定</h2>
             <div style="display: grid; gap: 8px;">
               <label style="display: grid; gap: 4px; font-size: 13px;">
@@ -780,7 +792,8 @@
     <script src="./pcb-tutorial.js?v=5"></script>
     <script src="./pcb-practice.js?v=5"></script>
     <script src="./pcb-refboards.js?v=2026-07-08a"></script>
-    <script src="./pcb.js?v=8"></script>
+    <script src="./kicad-io.js?v=1"></script>
+    <script src="./pcb.js?v=9"></script>
     <script>
       // Initialize tutorial and practice after page load
       document.addEventListener('DOMContentLoaded', () => {

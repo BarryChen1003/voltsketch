@@ -20,7 +20,10 @@ const pcbApp = {
     isPanning: false,
     lastMouse: { x: 0, y: 0 },
     refBoard: null,      // 疊加比較用的公版方塊（ghost 繪製）
-    refOverlayId: null   // 目前疊加中的公版 id
+    refOverlayId: null,  // 目前疊加中的公版 id
+    zones: [],           // KiCad 鋪銅外框（渲染用）
+    edgeSegs: [],        // 非矩形板框線段（KiCad Edge.Cuts）
+    kicad: null          // { tree, off } — KiCad 匯入樹（零落差匯出用）
   },
   gridSize: 1, // 1mm
 
@@ -99,6 +102,9 @@ const pcbApp = {
     // Draw grid
     this.drawGrid(scale);
 
+    // Draw zones（鋪銅外框，墊底）
+    this.drawZones(scale);
+
     // Draw components
     this.drawComponents(scale);
 
@@ -133,6 +139,18 @@ const pcbApp = {
     ctx.lineWidth = 2;
     ctx.strokeRect(x, y, w, h);
 
+    // 非矩形板框（KiCad Edge.Cuts）：精確線段疊繪
+    if (state.edgeSegs && state.edgeSegs.length && state.visibleLayers.includes('Edge.Cuts')) {
+      ctx.strokeStyle = '#bdc3c7';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      state.edgeSegs.forEach(s => {
+        ctx.moveTo(this.canvas.width / 2 + s.x1 * scale, this.canvas.height / 2 + s.y1 * scale);
+        ctx.lineTo(this.canvas.width / 2 + s.x2 * scale, this.canvas.height / 2 + s.y2 * scale);
+      });
+      ctx.stroke();
+    }
+
     // Draw board dimensions
     ctx.fillStyle = '#ecf0f1';
     ctx.font = '12px monospace';
@@ -143,6 +161,72 @@ const pcbApp = {
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(`${boardHeight}mm`, 0, 0);
     ctx.restore();
+  },
+
+  drawZones(scale) {
+    const { ctx, state } = this;
+    if (!state.zones || !state.zones.length) return;
+    const layerOf = id => (state.layerStack || []).find(l => l.id === id);
+    state.zones.forEach(z => {
+      if (!state.visibleLayers.includes(z.layer)) return;
+      const ldef = layerOf(z.layer);
+      ctx.save();
+      ctx.globalAlpha = 0.16;
+      ctx.fillStyle = ldef ? ldef.color : '#16a085';
+      ctx.beginPath();
+      z.pts.forEach((p, i) => {
+        const sx = this.canvas.width / 2 + p[0] * scale, sy = this.canvas.height / 2 + p[1] * scale;
+        i ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy);
+      });
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 0.5;
+      ctx.strokeStyle = ldef ? ldef.color : '#16a085';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+    });
+  },
+
+  // KiCad footprint 旋轉：abs = at + R(θ)·rel（y 向下座標系，θ 度、視覺逆時針）
+  padAbs(comp, pad) {
+    const th = (comp.rot || 0) * Math.PI / 180;
+    const c = Math.cos(th), s = Math.sin(th);
+    return { x: comp.x + pad.x * c + pad.y * s, y: comp.y - pad.x * s + pad.y * c };
+  },
+
+  drawPads(comp, scale) {
+    const { ctx, state } = this;
+    const layerOf = id => (state.layerStack || []).find(l => l.id === id);
+    const fCol = (layerOf('F.Cu') || {}).color || '#e74c3c';
+    const bCol = (layerOf('B.Cu') || {}).color || '#3498db';
+    const fVis = state.visibleLayers.includes('F.Cu'), bVis = state.visibleLayers.includes('B.Cu');
+    comp.pads.forEach(pad => {
+      if (pad.side === 'F' && !fVis) return;
+      if (pad.side === 'B' && !bVis) return;
+      if (pad.side === '*' && !fVis && !bVis) return;
+      const p = this.padAbs(comp, pad);
+      const sx = this.canvas.width / 2 + p.x * scale, sy = this.canvas.height / 2 + p.y * scale;
+      const w = Math.max(1, pad.w * scale), h = Math.max(1, pad.h * scale);
+      ctx.save();
+      ctx.translate(sx, sy);
+      ctx.rotate(-(pad.rot || 0) * Math.PI / 180);
+      ctx.fillStyle = pad.side === 'B' ? bCol : (pad.side === '*' ? '#c8a165' : fCol);
+      if (pad.shape === 'circle' || pad.shape === 'oval') {
+        ctx.beginPath();
+        ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-w / 2, -h / 2, w, h);
+      }
+      if (pad.drill > 0) {
+        ctx.beginPath();
+        ctx.arc(0, 0, Math.max(0.5, pad.drill / 2 * scale), 0, Math.PI * 2);
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fill();
+      }
+      ctx.restore();
+    });
   },
 
   drawGrid(scale) {
@@ -218,6 +302,26 @@ const pcbApp = {
       if (!this.compVisible(comp)) return;
       const r = this.compRect(comp, scale);
       const sel = state.selected === comp;
+
+      if (comp.pads && comp.pads.length) {
+        // KiCad 精確元件：畫 pad 幾何 + 旋轉外形框，不畫實心方塊
+        ctx.save();
+        ctx.translate(r.x + r.w / 2, r.y + r.h / 2);
+        ctx.rotate(-(comp.rot || 0) * Math.PI / 180);
+        ctx.strokeStyle = sel ? '#f39c12' : (comp.side === 'bottom' ? '#5dade2' : 'rgba(236,240,241,0.55)');
+        ctx.lineWidth = sel ? 2 : 1;
+        ctx.strokeRect(-r.w / 2, -r.h / 2, r.w, r.h);
+        ctx.restore();
+        this.drawPads(comp, scale);
+        const label = comp.ref || comp.label || '';
+        if (label && (sel || r.w >= 18)) {
+          ctx.fillStyle = sel ? '#f39c12' : '#bdc3c7';
+          ctx.font = '9px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(label, r.x + r.w / 2, r.y - 3);
+        }
+        return;
+      }
 
       ctx.fillStyle = this.compFill(comp);
       ctx.fillRect(r.x, r.y, r.w, r.h);
@@ -520,6 +624,63 @@ const pcbApp = {
       </div>`).join('');
   },
 
+  // ---- KiCad 匯入/匯出（kicad-io.js）----
+  importKicad(text, fileName) {
+    let parsed;
+    try { parsed = window.KicadIO.importText(text); }
+    catch (err) { alert('KiCad 解析失敗：' + err.message); return false; }
+    const m = parsed.model;
+    const off = { x: m.bbox.x + m.bbox.w / 2, y: m.bbox.y + m.bbox.h / 2 }; // 置中偏移（匯出時還原）
+    const s = this.state;
+    s.boardWidth = Math.round(m.bbox.w * 100) / 100;
+    s.boardHeight = Math.round(m.bbox.h * 100) / 100;
+    s.layers = Math.max(2, m.cuLayers.length);
+    s.layerStack = this.buildLayerStack(s.layers);
+    s.visibleLayers = s.layerStack.map(l => l.id);
+    s.components = m.comps.map((c, i) => ({
+      id: `kicad-${i}`, type: 'ic',
+      x: c.kx - off.x, y: c.ky - off.y, rot: c.rot,
+      w: c.bw, h: c.bh,
+      side: c.layer === 'B.Cu' ? 'bottom' : 'top',
+      kind: 'ic', ref: c.ref, part: c.value || c.lib, label: c.ref,
+      pads: c.pads, kicadNode: c.node
+    }));
+    s.traces = m.traces.map((t, i) => ({
+      id: `kicad-t-${i}`, x1: t.x1 - off.x, y1: t.y1 - off.y, x2: t.x2 - off.x, y2: t.y2 - off.y,
+      width: t.width, layer: t.layer, net: t.net
+    }));
+    s.vias = m.vias.map(v => ({ x: v.x - off.x, y: v.y - off.y, od: v.od, id: v.id, net: v.net }));
+    s.zones = m.zones.map(z => ({ layer: z.layer, net: z.net, pts: z.pts.map(p => [p[0] - off.x, p[1] - off.y]) }));
+    s.edgeSegs = m.edgeSegs.map(e => ({ x1: e.x1 - off.x, y1: e.y1 - off.y, x2: e.x2 - off.x, y2: e.y2 - off.y }));
+    s.kicad = { tree: parsed.tree, off, fileName: fileName || 'board.kicad_pcb' };
+    s.refBoard = null; s.refOverlayId = null; s.selected = null;
+    const wI = document.querySelector('#boardWidth'), hI = document.querySelector('#boardHeight'), lI = document.querySelector('#boardLayers');
+    if (wI) wI.value = s.boardWidth; if (hI) hI.value = s.boardHeight; if (lI) lI.value = s.layers;
+    this.renderLayerList();
+    this.renderPartsList();
+    this.populateEmiSelects();
+    this.render();
+    return true;
+  },
+
+  exportKicad() {
+    const s = this.state;
+    const text = s.kicad
+      ? window.KicadIO.exportText(s.kicad, s)          // 零落差：整樹回寫
+      : window.KicadIO.buildNew(s);                    // 從零：基本檔（元件無 pad，見文件）
+    const name = s.kicad ? s.kicad.fileName.replace(/\.kicad_pcb$/i, '') + '-voltsketch.kicad_pcb' : 'voltsketch.kicad_pcb';
+    const blob = new Blob([text], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    const el = document.getElementById('kicadIoMsg');
+    if (el) el.textContent = s.kicad
+      ? `已匯出 ${name}（原樹回寫：未編輯的幾何 100% 原樣）`
+      : `已匯出 ${name}（從零建檔：元件為外形示意無 pad，走線/via/板框精確）`;
+  },
+
   // 公版元件來源：schema v2 用 components（含尺寸/正反面），舊資料退回 blocks
   refBoardParts(b) {
     if (b.components && b.components.length) {
@@ -544,6 +705,7 @@ const pcbApp = {
     this.state.traces = (b.traces || []).map((t, i) => ({ id: `ref-t-${i}`, ...t }));
     this.state.vias = (b.vias || []).map(v => ({ ...v }));
     this.state.refBoard = null; this.state.refOverlayId = null; this.state.selected = null;
+    this.state.zones = []; this.state.edgeSegs = []; this.state.kicad = null;
     // 同步板框輸入框
     const wI = document.querySelector('#boardWidth'), hI = document.querySelector('#boardHeight'), lI = document.querySelector('#boardLayers');
     if (wI) wI.value = b.w; if (hI) hI.value = b.h; if (lI) lI.value = b.layers;
@@ -774,6 +936,21 @@ const pcbApp = {
       this.renderPartsList();
       this.render();
     });
+
+    // KiCad 匯入/匯出
+    document.querySelector('#kicadFile')?.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => {
+        const ok = this.importKicad(String(rd.result), f.name);
+        const el = document.getElementById('kicadIoMsg');
+        if (el && ok) el.textContent = `已匯入 ${f.name}：${this.state.components.length} 料 / ${this.state.traces.length} 段走線 / ${this.state.vias.length} via / ${this.state.layers} 層`;
+      };
+      rd.readAsText(f);
+      e.target.value = '';
+    });
+    document.querySelector('#exportKicadBtn')?.addEventListener('click', () => this.exportKicad());
 
     // Board settings
     document.querySelector('#applyBoardSettings')?.addEventListener('click', () => {
