@@ -324,11 +324,15 @@ const pcbApp = {
         return;
       }
 
+      ctx.save();
+      ctx.translate(r.x + r.w / 2, r.y + r.h / 2);
+      ctx.rotate(-(comp.rot || 0) * Math.PI / 180);
       ctx.fillStyle = this.compFill(comp);
-      ctx.fillRect(r.x, r.y, r.w, r.h);
+      ctx.fillRect(-r.w / 2, -r.h / 2, r.w, r.h);
       ctx.strokeStyle = sel ? '#f39c12' : (comp.side === 'bottom' ? '#5dade2' : '#ecf0f1');
       ctx.lineWidth = sel ? 2 : 1;
-      ctx.strokeRect(r.x, r.y, r.w, r.h);
+      ctx.strokeRect(-r.w / 2, -r.h / 2, r.w, r.h);
+      ctx.restore();
 
       // 標籤：夠大才畫（避免小 R/C 糊成一片）；選取中一律畫
       const label = comp.label || comp.ref || '';
@@ -657,6 +661,7 @@ const pcbApp = {
     s.edgeSegs = m.edgeSegs.map(e => ({ x1: e.x1 - off.x, y1: e.y1 - off.y, x2: e.x2 - off.x, y2: e.y2 - off.y }));
     s.kicad = { tree: parsed.tree, off, fileName: fileName || 'board.kicad_pcb' };
     s.refBoard = null; s.refOverlayId = null; s.selected = null;
+    this.syncSelPanel();
     const wI = document.querySelector('#boardWidth'), hI = document.querySelector('#boardHeight'), lI = document.querySelector('#boardLayers');
     if (wI) wI.value = s.boardWidth; if (hI) hI.value = s.boardHeight; if (lI) lI.value = s.layers;
     this.renderLayerList();
@@ -720,6 +725,7 @@ const pcbApp = {
     this.state.traces = (b.traces || []).map((t, i) => ({ id: `ref-t-${i}`, ...t }));
     this.state.vias = (b.vias || []).map(v => ({ ...v }));
     this.state.refBoard = null; this.state.refOverlayId = null; this.state.selected = null;
+    this.syncSelPanel();
     this.state.zones = []; this.state.edgeSegs = []; this.state.kicad = null;
     this.state.zoneFills = []; this.state.kicadArcs = [];
     // 同步板框輸入框
@@ -916,6 +922,66 @@ const pcbApp = {
     };
   },
 
+  screenToBoard(e) {
+    const pos = this.getMousePos(e);
+    const scale = 10 * this.state.zoom;
+    return {
+      x: (pos.x - this.state.panX - this.canvas.width / 2) / scale,
+      y: (pos.y - this.state.panY - this.canvas.height / 2) / scale
+    };
+  },
+
+  gridStep() {
+    const el = document.getElementById('gridSnap');
+    const v = el ? parseFloat(el.value) : 0.05;
+    return isNaN(v) || v <= 0 ? 0 : v;
+  },
+
+  snap(v, g) {
+    return g > 0 ? Math.round(Math.round(v / g) * g * 1e6) / 1e6 : Math.round(v * 1e6) / 1e6;
+  },
+
+  // 命中測試：點（板座標 mm）落在哪個元件的旋轉外形框內（後畫者優先）
+  compHit(bx, by) {
+    const cs = this.state.components;
+    for (let i = cs.length - 1; i >= 0; i--) {
+      const c = cs[i];
+      if (!this.compVisible(c)) continue;
+      const th = (c.rot || 0) * Math.PI / 180, co = Math.cos(th), si = Math.sin(th);
+      const dx = bx - c.x, dy = by - c.y;
+      const rx = dx * co - dy * si, ry = dx * si + dy * co; // padAbs 旋轉的反變換
+      if (Math.abs(rx) <= (c.w || 4) / 2 && Math.abs(ry) <= (c.h || 3) / 2) return c;
+    }
+    return null;
+  },
+
+  // 旋轉選取元件：comp.rot 與每 pad.rot（總角度）必須同步加
+  rotateSelected(delta) {
+    const c = this.state.selected;
+    if (!c) return;
+    const norm = a => ((a % 360) + 360) % 360;
+    c.rot = norm((c.rot || 0) + delta);
+    (c.pads || []).forEach(p => { p.rot = norm((p.rot || 0) + delta); });
+    this.syncSelPanel();
+    this.render();
+  },
+
+  syncSelPanel() {
+    const c = this.state.selected;
+    const fields = document.getElementById('selFields'), info = document.getElementById('selInfo');
+    if (!fields) return;
+    fields.style.display = c ? 'grid' : 'none';
+    if (info) info.style.display = c ? 'none' : '';
+    if (!c) return;
+    const ref = document.getElementById('selRef');
+    if (ref) ref.textContent = `${c.ref || c.label || c.id}${c.part ? '｜' + c.part : ''}`;
+    const set = (id, v) => {
+      const el = document.getElementById(id);
+      if (el && document.activeElement !== el) el.value = Math.round(v * 1000) / 1000;
+    };
+    set('selX', c.x); set('selY', c.y); set('selRot', c.rot || 0);
+  },
+
   bindEvents() {
     // Tool buttons
     document.querySelectorAll('.pcb-tool-btn').forEach(btn => {
@@ -950,6 +1016,7 @@ const pcbApp = {
       if (!row) return;
       this.state.selected = this.state.components[+row.dataset.idx] || null;
       this.renderPartsList();
+      this.syncSelPanel();
       this.render();
     });
 
@@ -985,10 +1052,28 @@ const pcbApp = {
     this.canvas?.addEventListener('mousedown', (e) => {
       const pos = this.getMousePos(e);
       this.state.lastMouse = pos;
-      
+
       if (this.state.tool === 'select') {
-        this.state.isPanning = true;
-        this.canvas.style.cursor = 'grabbing';
+        const b = this.screenToBoard(e);
+        const hit = this.compHit(b.x, b.y);
+        if (hit) {
+          this.state.selected = hit;
+          this.state.dragComp = hit;
+          this.state.dragOff = { x: hit.x - b.x, y: hit.y - b.y };
+          this.canvas.style.cursor = 'move';
+          this.renderPartsList();
+          this.syncSelPanel();
+          this.render();
+        } else {
+          if (this.state.selected) {
+            this.state.selected = null;
+            this.renderPartsList();
+            this.syncSelPanel();
+            this.render();
+          }
+          this.state.isPanning = true;
+          this.canvas.style.cursor = 'grabbing';
+        }
       } else if (this.state.tool === 'trace') {
         // Start trace
         this.state.traceStart = pos;
@@ -996,7 +1081,15 @@ const pcbApp = {
     });
 
     this.canvas?.addEventListener('mousemove', (e) => {
-      if (this.state.isPanning) {
+      if (this.state.dragComp) {
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        const c = this.state.dragComp;
+        c.x = this.snap(b.x + this.state.dragOff.x, g);
+        c.y = this.snap(b.y + this.state.dragOff.y, g);
+        this.syncSelPanel();
+        this.render();
+      } else if (this.state.isPanning) {
         const pos = this.getMousePos(e);
         this.state.panX += pos.x - this.state.lastMouse.x;
         this.state.panY += pos.y - this.state.lastMouse.y;
@@ -1006,11 +1099,51 @@ const pcbApp = {
     });
 
     this.canvas?.addEventListener('mouseup', (e) => {
+      if (this.state.dragComp) {
+        this.state.dragComp = null;
+        this.canvas.style.cursor = 'crosshair';
+        this.renderPartsList();
+      }
       if (this.state.isPanning) {
         this.state.isPanning = false;
         this.canvas.style.cursor = 'crosshair';
       }
     });
+
+    // 鍵盤：R=旋轉 90°、Esc=取消選取（輸入框聚焦時不攔截）
+    document.addEventListener('keydown', (e) => {
+      if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '')) return;
+      if ((e.key === 'r' || e.key === 'R') && this.state.selected) {
+        e.preventDefault();
+        this.rotateSelected(90);
+      } else if (e.key === 'Escape' && this.state.selected) {
+        this.state.selected = null;
+        this.renderPartsList();
+        this.syncSelPanel();
+        this.render();
+      }
+    });
+
+    // 選取元件屬性面板：座標/角度直接輸入
+    ['selX', 'selY', 'selRot'].forEach(id => {
+      document.getElementById(id)?.addEventListener('change', () => {
+        const c = this.state.selected;
+        if (!c) return;
+        const v = parseFloat(document.getElementById(id).value);
+        if (isNaN(v)) { this.syncSelPanel(); return; }
+        if (id === 'selX') c.x = v;
+        else if (id === 'selY') c.y = v;
+        else {
+          const norm = a => ((a % 360) + 360) % 360;
+          const delta = v - (c.rot || 0);
+          c.rot = norm(v);
+          (c.pads || []).forEach(p => { p.rot = norm((p.rot || 0) + delta); });
+        }
+        this.syncSelPanel();
+        this.render();
+      });
+    });
+    document.getElementById('selRotBtn')?.addEventListener('click', () => this.rotateSelected(90));
 
     this.canvas?.addEventListener('click', (e) => {
       if (this.state.tool === 'pad') {

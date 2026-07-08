@@ -666,6 +666,19 @@
           </section>
 
           <section class="panel-section">
+            <h2>選取元件</h2>
+            <div id="selInfo" style="font-size:12px;color:var(--muted)">select 工具點擊元件選取；拖曳移動（格點吸附）、R 鍵旋轉 90°、Esc 取消。</div>
+            <div id="selFields" style="display:none;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+              <div id="selRef" style="grid-column:1/-1;font-family:monospace;color:var(--accent-strong)"></div>
+              <label style="display:grid;gap:2px">X (mm)<input type="number" id="selX" step="0.05" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">Y (mm)<input type="number" id="selY" step="0.05" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">角度 (°)<input type="number" id="selRot" step="90" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">格點 (mm)<input type="number" id="gridSnap" value="0.05" step="0.05" min="0" style="padding:3px"></label>
+              <button class="small-button" id="selRotBtn" style="grid-column:1/-1">旋轉 90°（R）</button>
+            </div>
+          </section>
+
+          <section class="panel-section">
             <div class="section-head">
               <h2>DRC 檢查</h2>
               <button class="small-button" id="runDrc">執行檢查</button>
@@ -793,10 +806,10 @@
     <script src="./pcb-tutorial.js?v=5"></script>
     <script src="./pcb-practice.js?v=5"></script>
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
-    <script src="./kicad-io.js?v=3"></script>
+    <script src="./kicad-io.js?v=4"></script>
     <script src="./gerber-export.js?v=1"></script>
     <script src="./pcb-drc.js?v=1"></script>
-    <script src="./pcb.js?v=11"></script>
+    <script src="./pcb.js?v=12"></script>
     <script>
       // Initialize tutorial and practice after page load
       document.addEventListener('DOMContentLoaded', () => {

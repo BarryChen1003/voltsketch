@@ -131,7 +131,8 @@ window.KicadIO = (function () {
           x: px, y: py, rot: prot, w: pw, h: ph, drill, slot,
           rr: rrN ? num(rrN[1]) : 0,
           side, net: pnetN ? val(pnetN[2] || '') : '',
-          cu: pLayers.some(l => l.endsWith('.Cu')) // paste/mask-only pad（鋼網開窗）無銅
+          cu: pLayers.some(l => l.endsWith('.Cu')), // paste/mask-only pad（鋼網開窗）無銅
+          node: pd // 旋轉編輯回寫用（pad at 角度是總角度，隨 footprint 旋轉必須同步改）
         });
         const ex = Math.abs(px) + pw / 2, ey = Math.abs(py) + ph / 2;
         if (first) { minx = -ex; maxx = ex; miny = -ey; maxy = ey; first = false; }
@@ -288,7 +289,21 @@ window.KicadIO = (function () {
       if (!at) continue;
       at[1] = fmt(comp.x + off.x);
       at[2] = fmt(comp.y + off.y);
-      // 旋轉保留原值（編輯器 stage-1 不改旋轉）
+      // 旋轉回寫：footprint at 角度 + 每 pad at 角度（KiCad pad 角度是總角度）
+      // 只在值有變時動節點，未編輯的保持原字節形式（零落差原則）
+      const rot = comp.rot || 0;
+      if ((num(at[3]) || 0) !== rot) {
+        if (rot !== 0) at[3] = fmt(rot); else at.length = 3;
+      }
+      for (const p of comp.pads || []) {
+        if (!p.node) continue;
+        const pat = find(p.node, 'at');
+        if (!pat) continue;
+        const pr = p.rot || 0;
+        if ((num(pat[3]) || 0) !== pr) {
+          if (pr !== 0) pat[3] = fmt(pr); else pat.length = 3;
+        }
+      }
     }
     // 2) 新增走線/via 附加到樹尾
     for (const t of appState.traces) {
