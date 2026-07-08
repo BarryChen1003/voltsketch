@@ -5677,5 +5677,957 @@ window.IC_DATA = [
       "外部 MOSFET 閘極驅動能力(GATE_VBUS/GATE_VSYS)同等或更佳"
     ],
     "dropIn": []
+  },
+  {
+    "part": "TPS7H5001-SP",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "太空級返馳/推挽 PWM 控制器 (Rad-Hard, QMLV)",
+    "package": "24-TSSOP(PW)；另有 22-pin CFP 陶瓷扁平封裝版本(腳位編號與 TSSOP 不同，見 datasheet Table 6-1)",
+    "whatIs": "TI 太空級(QMLV)返馳/推挽式(flyback/push-pull)脈寬調變(PWM)控制器，採峰值電流模式(peak current-mode)控制並具斜率補償，輸入電壓 4V~14V，可由 RT 電阻設定開關頻率並支援 SYNC 外部時脈同步；TPS7H5001-SP/5002-SP/5003-SP/5004-SP 為同系列不同輸出型態變體，共用同一份 datasheet(SLVSF07F)。",
+    "func": "內部誤差放大器(VSENSE 反相輸入、COMP 輸出)搭配峰值電流模式 PWM 比較器(CS_ILIM 電流感測，相對 COMP/2 電壓含 150mV 偏移，RSC 設定斜率補償)；HICC 腳設定逐周期限流延遲與打嗝式短路保護時間(接 AVSS 可停用打嗝模式)；FAULT 腳提供獨立故障保護輸入(接 AVSS 停用)；SS 腳外接電容設定軟啟動時間，亦可用於電源軌追蹤(tracking)/時序排序(sequencing)；REFCAP 為 1.2V 內部參考(需 470nF 電容)；VLDO 為內部穩壓器輸出(需至少 1µF 電容)；EN 腳可用電阻分壓程式化輸入 UVLO；DCL 設定最大工作週期限制，各變體行為不同(見 DCL 腳說明)。",
+    "usedIn": "衛星/太空酬載板上隔離或非隔離之返馳(flyback)、順向(forward)、推挽(push-pull)型 DC-DC 電源轉換器，供指揮與資料處理、通訊、光學/雷達成像、導航與科學探測酬載等太空應用之二次電源使用。",
+    "desc": "24-TSSOP(PW)封裝，太空級(QMLV)峰值電流模式返馳/推挽 PWM 控制器。雙主開關輸出(OUTA/OUTB) + 雙同步整流驅動(SRA/SRB)，DCL=AVSS 時 OUTA/OUTB 以推挽方式切換。TSSOP NC 腳位：12, 13；CFP(22-pin)封裝腳位編號與 TSSOP 不同(緊密編號、無對應 TSSOP 之 NC 腳)，詳見 datasheet Table 6-1。與同系列 TPS7H5001-SP/5002-SP/5003-SP/5004-SP 差異僅在輸出型態與 PS/SP/LEB 腳位是否存在，不互為 pin-to-pin 相容，選型須依電路拓樸(是否需雙輸出、是否需同步整流)確認。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps7h5001-sp.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "RT",
+        "type": "io",
+        "desc": "振盪頻率設定腳。使用內部振盪模式時，RT 腳須接一顆電阻至 AVSS 以設定開關頻率；RT 懸空時，SYNC 腳須輸入 200kHz~4MHz 外部時脈，且外部時脈頻率須為目標開關頻率的 2 倍。 （CFP 22-pin 封裝同為腳位 1，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "2",
+        "name": "PS",
+        "type": "io",
+        "desc": "Primary off 到 SR on 死區時間(dead-time)設定腳，透過外接電阻至 AVSS 程式化。 （CFP 22-pin 封裝同為腳位 2，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "3",
+        "name": "SP",
+        "type": "io",
+        "desc": "SR off 到 Primary on 死區時間(dead-time)設定腳，透過外接電阻至 AVSS 程式化。 （CFP 22-pin 封裝同為腳位 3，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "4",
+        "name": "LEB",
+        "type": "io",
+        "desc": "前緣消隱(leading edge blank)時間設定腳，透過外接電阻至 AVSS 程式化。 （CFP 22-pin 封裝同為腳位 4，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "5",
+        "name": "HICC",
+        "type": "io",
+        "desc": "逐周期電流限制之延遲時間與打嗝(hiccup)時間設定腳；延遲時間與打嗝時間由 HICC 到 AVSS 的外接電容決定。此腳接 AVSS 可停用打嗝模式。 （CFP 22-pin 封裝同為腳位 5，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "6",
+        "name": "SYNC",
+        "type": "io",
+        "desc": "同步時脈腳。當 RT 懸空時，SYNC 作為 200kHz~4MHz 外部時脈輸入，外部時脈訊號會被反相，系統時脈以外部時脈的 1/2 頻率運作；當 RT 接電阻至 AVSS 時，SYNC 輸出與元件切換同相之 200kHz~4MHz 時脈，頻率為元件開關頻率的 2 倍。 （CFP 22-pin 封裝同為腳位 6，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "7",
+        "name": "DCL",
+        "type": "io",
+        "desc": "工作週期限制(duty cycle limit)設定腳。TPS7H5001-SP：接 AVSS 得 50% 工作週期限制、懸空得 75%、接 VLDO 得 100%。 （CFP 22-pin 封裝同為腳位 7，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "8",
+        "name": "EN",
+        "type": "input",
+        "desc": "致能輸入。將 EN 接至 VLDO 或外部電壓源(大於 0.6V)可致能元件；另可用兩顆電阻程式化輸入欠壓鎖定(UVLO)。 （CFP 22-pin 封裝同為腳位 8，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "9",
+        "name": "VIN",
+        "type": "power",
+        "desc": "元件輸入電源，輸入電壓範圍 4V ~ 14V。 （CFP 22-pin 封裝同為腳位 9，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "10",
+        "name": "OUTA",
+        "type": "output",
+        "desc": "主開關輸出 A(Primary switching output A)。 （CFP 22-pin 封裝同為腳位 10，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "11",
+        "name": "OUTB",
+        "type": "output",
+        "desc": "主開關輸出 B(Primary switching output B)，僅當 DCL = AVSS 時動作。 （CFP 22-pin 封裝同為腳位 11，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "12",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝在此系列變體無對應 NC 腳位(N/A)，CFP 總腳數 22。",
+        "side": "L"
+      },
+      {
+        "num": "24",
+        "name": "COMP",
+        "type": "io",
+        "desc": "誤差放大器輸出端，於此腳連接頻率補償網路。 （CFP 22-pin 封裝腳位為 22；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "23",
+        "name": "VSENSE",
+        "type": "input",
+        "desc": "誤差放大器反相輸入端。 （CFP 22-pin 封裝腳位為 21；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "22",
+        "name": "SS",
+        "type": "io",
+        "desc": "軟啟動腳。外接電容至此腳可設定內部參考電壓的上升時間；此腳電壓會覆蓋內部參考電壓，可用於電源軌追蹤(tracking)與時序排序(sequencing)。 （CFP 22-pin 封裝腳位為 20；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "21",
+        "name": "RSC",
+        "type": "io",
+        "desc": "由 RSC 到 AVSS 的電阻設定所需的斜率補償(slope compensation)。 （CFP 22-pin 封裝腳位為 19；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "20",
+        "name": "REFCAP",
+        "type": "output",
+        "desc": "1.2V 內部參考電壓，須外接 470nF 電容至 AVSS。 （CFP 22-pin 封裝腳位為 18；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "19",
+        "name": "FAULT",
+        "type": "input",
+        "desc": "故障保護腳。當 FAULT 腳電壓超過上升門檻時，輸出停止切換；外部電壓降至下降門檻以下後，元件會延遲一段設定時間後重新啟動。此腳接 AVSS 可停用 FAULT 功能。 （CFP 22-pin 封裝腳位為 17；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "18",
+        "name": "CS_ILIM",
+        "type": "io",
+        "desc": "PWM 控制與逐周期過電流保護用電流感測輸入。CS_ILIM 輸入電壓超過 1.05V 會觸發 PWM 控制器過電流保護；CS_ILIM 上感測到的波形相對於 PWM 比較器輸入端的 COMP/2 電壓含 150mV 偏移。 （CFP 22-pin 封裝腳位為 16；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "17",
+        "name": "VLDO",
+        "type": "power",
+        "desc": "內部穩壓器輸出，須外接至少 1µF 電容至 AVSS。 （CFP 22-pin 封裝腳位為 15；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "16",
+        "name": "AVSS",
+        "type": "ground",
+        "desc": "元件接地。陶瓷封裝(CFP)版本的散熱片、蓋板與封環(seal ring)於內部連接至此接地。 （CFP 22-pin 封裝腳位為 14；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "15",
+        "name": "SRA",
+        "type": "output",
+        "desc": "同步整流輸出 A(Synchronous rectifier output A)。 （CFP 22-pin 封裝腳位為 13；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "14",
+        "name": "SRB",
+        "type": "output",
+        "desc": "同步整流輸出 B(Synchronous rectifier output B)，僅當 DCL = AVSS 時動作。 （CFP 22-pin 封裝腳位為 12；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "13",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝在此系列變體無對應 NC 腳位(N/A)，CFP 總腳數 22。",
+        "side": "R"
+      }
+    ],
+    "specs": [
+      {
+        "k": "輸出型態",
+        "v": "雙主開關輸出(OUTA/OUTB) + 雙同步整流驅動(SRA/SRB)，DCL=AVSS 時 OUTA/OUTB 以推挽方式切換"
+      },
+      {
+        "k": "輸入電壓",
+        "v": "4V ~ 14V (VIN)"
+      },
+      {
+        "k": "控制方式",
+        "v": "峰值電流模式(peak current-mode)，RSC 外接電阻設定斜率補償"
+      },
+      {
+        "k": "開關頻率設定",
+        "v": "RT 電阻設定；RT 懸空時可由 SYNC 輸入 200kHz~4MHz 外部時脈(為開關頻率 2 倍)"
+      },
+      {
+        "k": "工作週期限制(DCL)",
+        "v": "接 AVSS 得 50% 工作週期限制、懸空得 75%、接 VLDO 得 100%。"
+      },
+      {
+        "k": "過電流保護",
+        "v": "CS_ILIM > 1.05V 觸發逐周期過流保護，感測波形相對 COMP/2 含 150mV 偏移"
+      },
+      {
+        "k": "短路保護",
+        "v": "HICC 腳電容設定延遲/打嗝時間，接 AVSS 停用打嗝模式"
+      },
+      {
+        "k": "故障保護",
+        "v": "FAULT 腳獨立故障輸入，超過上升門檻停止切換，接 AVSS 停用"
+      },
+      {
+        "k": "內部參考",
+        "v": "REFCAP 1.2V，需 470nF 電容"
+      },
+      {
+        "k": "內部穩壓器",
+        "v": "VLDO 輸出，需至少 1µF 電容"
+      },
+      {
+        "k": "軟啟動/追蹤",
+        "v": "SS 外接電容設定軟啟動時間，可用於 tracking/sequencing"
+      },
+      {
+        "k": "封裝",
+        "v": "24-TSSOP(PW)；另有 22-pin CFP 陶瓷扁平封裝版本(腳位編號與 TSSOP 不同，見 datasheet Table 6-1)"
+      },
+      {
+        "k": "抗輻射等級(TID/SEL/SEB/SEGR)",
+        "v": "見 datasheet"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "TPS7H5002-SP",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "太空級返馳/推挽 PWM 控制器 (Rad-Hard, QMLV)",
+    "package": "24-TSSOP(PW)；另有 22-pin CFP 陶瓷扁平封裝版本(腳位編號與 TSSOP 不同，見 datasheet Table 6-1)",
+    "whatIs": "TI 太空級(QMLV)返馳/推挽式(flyback/push-pull)脈寬調變(PWM)控制器，採峰值電流模式(peak current-mode)控制並具斜率補償，輸入電壓 4V~14V，可由 RT 電阻設定開關頻率並支援 SYNC 外部時脈同步；TPS7H5001-SP/5002-SP/5003-SP/5004-SP 為同系列不同輸出型態變體，共用同一份 datasheet(SLVSF07F)。",
+    "func": "內部誤差放大器(VSENSE 反相輸入、COMP 輸出)搭配峰值電流模式 PWM 比較器(CS_ILIM 電流感測，相對 COMP/2 電壓含 150mV 偏移，RSC 設定斜率補償)；HICC 腳設定逐周期限流延遲與打嗝式短路保護時間(接 AVSS 可停用打嗝模式)；FAULT 腳提供獨立故障保護輸入(接 AVSS 停用)；SS 腳外接電容設定軟啟動時間，亦可用於電源軌追蹤(tracking)/時序排序(sequencing)；REFCAP 為 1.2V 內部參考(需 470nF 電容)；VLDO 為內部穩壓器輸出(需至少 1µF 電容)；EN 腳可用電阻分壓程式化輸入 UVLO；DCL 設定最大工作週期限制，各變體行為不同(見 DCL 腳說明)。",
+    "usedIn": "衛星/太空酬載板上隔離或非隔離之返馳(flyback)、順向(forward)、推挽(push-pull)型 DC-DC 電源轉換器，供指揮與資料處理、通訊、光學/雷達成像、導航與科學探測酬載等太空應用之二次電源使用。",
+    "desc": "24-TSSOP(PW)封裝，太空級(QMLV)峰值電流模式返馳/推挽 PWM 控制器。單主開關輸出(OUTA) + 單同步整流驅動(SRA)，適合單端(返馳/順向)拓樸搭配同步整流。TSSOP NC 腳位：11, 12, 13, 14；CFP(22-pin)封裝腳位編號與 TSSOP 不同(緊密編號、無對應 TSSOP 之 NC 腳)，詳見 datasheet Table 6-1。與同系列 TPS7H5001-SP/5002-SP/5003-SP/5004-SP 差異僅在輸出型態與 PS/SP/LEB 腳位是否存在，不互為 pin-to-pin 相容，選型須依電路拓樸(是否需雙輸出、是否需同步整流)確認。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps7h5001-sp.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "RT",
+        "type": "io",
+        "desc": "振盪頻率設定腳。使用內部振盪模式時，RT 腳須接一顆電阻至 AVSS 以設定開關頻率；RT 懸空時，SYNC 腳須輸入 200kHz~4MHz 外部時脈，且外部時脈頻率須為目標開關頻率的 2 倍。 （CFP 22-pin 封裝同為腳位 1，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "2",
+        "name": "PS",
+        "type": "io",
+        "desc": "Primary off 到 SR on 死區時間(dead-time)設定腳，透過外接電阻至 AVSS 程式化。 （CFP 22-pin 封裝同為腳位 2，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "3",
+        "name": "SP",
+        "type": "io",
+        "desc": "SR off 到 Primary on 死區時間(dead-time)設定腳，透過外接電阻至 AVSS 程式化。 （CFP 22-pin 封裝同為腳位 3，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "4",
+        "name": "LEB",
+        "type": "io",
+        "desc": "前緣消隱(leading edge blank)時間設定腳，透過外接電阻至 AVSS 程式化。 （CFP 22-pin 封裝同為腳位 4，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "5",
+        "name": "HICC",
+        "type": "io",
+        "desc": "逐周期電流限制之延遲時間與打嗝(hiccup)時間設定腳；延遲時間與打嗝時間由 HICC 到 AVSS 的外接電容決定。此腳接 AVSS 可停用打嗝模式。 （CFP 22-pin 封裝同為腳位 5，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "6",
+        "name": "SYNC",
+        "type": "io",
+        "desc": "同步時脈腳。當 RT 懸空時，SYNC 作為 200kHz~4MHz 外部時脈輸入，外部時脈訊號會被反相，系統時脈以外部時脈的 1/2 頻率運作；當 RT 接電阻至 AVSS 時，SYNC 輸出與元件切換同相之 200kHz~4MHz 時脈，頻率為元件開關頻率的 2 倍。 （CFP 22-pin 封裝同為腳位 6，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "7",
+        "name": "DCL",
+        "type": "io",
+        "desc": "工作週期限制(duty cycle limit)設定腳。TPS7H5002-SP：可懸空或接 VLDO，分別設定最大工作週期為 75% 或 100%。 （CFP 22-pin 封裝同為腳位 7，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "8",
+        "name": "EN",
+        "type": "input",
+        "desc": "致能輸入。將 EN 接至 VLDO 或外部電壓源(大於 0.6V)可致能元件；另可用兩顆電阻程式化輸入欠壓鎖定(UVLO)。 （CFP 22-pin 封裝同為腳位 8，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "9",
+        "name": "VIN",
+        "type": "power",
+        "desc": "元件輸入電源，輸入電壓範圍 4V ~ 14V。 （CFP 22-pin 封裝同為腳位 9，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "10",
+        "name": "OUTA",
+        "type": "output",
+        "desc": "主開關輸出 A(Primary switching output A)。 （CFP 22-pin 封裝同為腳位 10，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "11",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "L"
+      },
+      {
+        "num": "12",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "L"
+      },
+      {
+        "num": "24",
+        "name": "COMP",
+        "type": "io",
+        "desc": "誤差放大器輸出端，於此腳連接頻率補償網路。 （CFP 22-pin 封裝腳位為 22；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "23",
+        "name": "VSENSE",
+        "type": "input",
+        "desc": "誤差放大器反相輸入端。 （CFP 22-pin 封裝腳位為 21；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "22",
+        "name": "SS",
+        "type": "io",
+        "desc": "軟啟動腳。外接電容至此腳可設定內部參考電壓的上升時間；此腳電壓會覆蓋內部參考電壓，可用於電源軌追蹤(tracking)與時序排序(sequencing)。 （CFP 22-pin 封裝腳位為 20；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "21",
+        "name": "RSC",
+        "type": "io",
+        "desc": "由 RSC 到 AVSS 的電阻設定所需的斜率補償(slope compensation)。 （CFP 22-pin 封裝腳位為 19；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "20",
+        "name": "REFCAP",
+        "type": "output",
+        "desc": "1.2V 內部參考電壓，須外接 470nF 電容至 AVSS。 （CFP 22-pin 封裝腳位為 18；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "19",
+        "name": "FAULT",
+        "type": "input",
+        "desc": "故障保護腳。當 FAULT 腳電壓超過上升門檻時，輸出停止切換；外部電壓降至下降門檻以下後，元件會延遲一段設定時間後重新啟動。此腳接 AVSS 可停用 FAULT 功能。 （CFP 22-pin 封裝腳位為 17；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "18",
+        "name": "CS_ILIM",
+        "type": "io",
+        "desc": "PWM 控制與逐周期過電流保護用電流感測輸入。CS_ILIM 輸入電壓超過 1.05V 會觸發 PWM 控制器過電流保護；CS_ILIM 上感測到的波形相對於 PWM 比較器輸入端的 COMP/2 電壓含 150mV 偏移。 （CFP 22-pin 封裝腳位為 16；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "17",
+        "name": "VLDO",
+        "type": "power",
+        "desc": "內部穩壓器輸出，須外接至少 1µF 電容至 AVSS。 （CFP 22-pin 封裝腳位為 15；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "16",
+        "name": "AVSS",
+        "type": "ground",
+        "desc": "元件接地。陶瓷封裝(CFP)版本的散熱片、蓋板與封環(seal ring)於內部連接至此接地。 （CFP 22-pin 封裝腳位為 14；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "15",
+        "name": "SRA",
+        "type": "output",
+        "desc": "同步整流輸出 A(Synchronous rectifier output A)。 （CFP 22-pin 封裝腳位為 13；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "14",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "R"
+      },
+      {
+        "num": "13",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "R"
+      }
+    ],
+    "specs": [
+      {
+        "k": "輸出型態",
+        "v": "單主開關輸出(OUTA) + 單同步整流驅動(SRA)，適合單端(返馳/順向)拓樸搭配同步整流"
+      },
+      {
+        "k": "輸入電壓",
+        "v": "4V ~ 14V (VIN)"
+      },
+      {
+        "k": "控制方式",
+        "v": "峰值電流模式(peak current-mode)，RSC 外接電阻設定斜率補償"
+      },
+      {
+        "k": "開關頻率設定",
+        "v": "RT 電阻設定；RT 懸空時可由 SYNC 輸入 200kHz~4MHz 外部時脈(為開關頻率 2 倍)"
+      },
+      {
+        "k": "工作週期限制(DCL)",
+        "v": "可懸空或接 VLDO，分別設定最大工作週期為 75% 或 100%。"
+      },
+      {
+        "k": "過電流保護",
+        "v": "CS_ILIM > 1.05V 觸發逐周期過流保護，感測波形相對 COMP/2 含 150mV 偏移"
+      },
+      {
+        "k": "短路保護",
+        "v": "HICC 腳電容設定延遲/打嗝時間，接 AVSS 停用打嗝模式"
+      },
+      {
+        "k": "故障保護",
+        "v": "FAULT 腳獨立故障輸入，超過上升門檻停止切換，接 AVSS 停用"
+      },
+      {
+        "k": "內部參考",
+        "v": "REFCAP 1.2V，需 470nF 電容"
+      },
+      {
+        "k": "內部穩壓器",
+        "v": "VLDO 輸出，需至少 1µF 電容"
+      },
+      {
+        "k": "軟啟動/追蹤",
+        "v": "SS 外接電容設定軟啟動時間，可用於 tracking/sequencing"
+      },
+      {
+        "k": "封裝",
+        "v": "24-TSSOP(PW)；另有 22-pin CFP 陶瓷扁平封裝版本(腳位編號與 TSSOP 不同，見 datasheet Table 6-1)"
+      },
+      {
+        "k": "抗輻射等級(TID/SEL/SEB/SEGR)",
+        "v": "見 datasheet"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "TPS7H5003-SP",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "太空級返馳/推挽 PWM 控制器 (Rad-Hard, QMLV)",
+    "package": "24-TSSOP(PW)；另有 22-pin CFP 陶瓷扁平封裝版本(腳位編號與 TSSOP 不同，見 datasheet Table 6-1)",
+    "whatIs": "TI 太空級(QMLV)返馳/推挽式(flyback/push-pull)脈寬調變(PWM)控制器，採峰值電流模式(peak current-mode)控制並具斜率補償，輸入電壓 4V~14V，可由 RT 電阻設定開關頻率並支援 SYNC 外部時脈同步；TPS7H5001-SP/5002-SP/5003-SP/5004-SP 為同系列不同輸出型態變體，共用同一份 datasheet(SLVSF07F)。",
+    "func": "內部誤差放大器(VSENSE 反相輸入、COMP 輸出)搭配峰值電流模式 PWM 比較器(CS_ILIM 電流感測，相對 COMP/2 電壓含 150mV 偏移，RSC 設定斜率補償)；HICC 腳設定逐周期限流延遲與打嗝式短路保護時間(接 AVSS 可停用打嗝模式)；FAULT 腳提供獨立故障保護輸入(接 AVSS 停用)；SS 腳外接電容設定軟啟動時間，亦可用於電源軌追蹤(tracking)/時序排序(sequencing)；REFCAP 為 1.2V 內部參考(需 470nF 電容)；VLDO 為內部穩壓器輸出(需至少 1µF 電容)；EN 腳可用電阻分壓程式化輸入 UVLO；DCL 設定最大工作週期限制，各變體行為不同(見 DCL 腳說明)。",
+    "usedIn": "衛星/太空酬載板上隔離或非隔離之返馳(flyback)、順向(forward)、推挽(push-pull)型 DC-DC 電源轉換器，供指揮與資料處理、通訊、光學/雷達成像、導航與科學探測酬載等太空應用之二次電源使用。",
+    "desc": "24-TSSOP(PW)封裝，太空級(QMLV)峰值電流模式返馳/推挽 PWM 控制器。單主開關輸出(OUTA)，無同步整流驅動、無 PS/SP 死區設定、無 LEB，為系列中功能最精簡版本。TSSOP NC 腳位：2, 3, 4, 11, 12, 13, 14；CFP(22-pin)封裝腳位編號與 TSSOP 不同(緊密編號、無對應 TSSOP 之 NC 腳)，詳見 datasheet Table 6-1。與同系列 TPS7H5001-SP/5002-SP/5003-SP/5004-SP 差異僅在輸出型態與 PS/SP/LEB 腳位是否存在，不互為 pin-to-pin 相容，選型須依電路拓樸(是否需雙輸出、是否需同步整流)確認。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps7h5001-sp.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "RT",
+        "type": "io",
+        "desc": "振盪頻率設定腳。使用內部振盪模式時，RT 腳須接一顆電阻至 AVSS 以設定開關頻率；RT 懸空時，SYNC 腳須輸入 200kHz~4MHz 外部時脈，且外部時脈頻率須為目標開關頻率的 2 倍。 （CFP 22-pin 封裝同為腳位 1，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "2",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 4, 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "L"
+      },
+      {
+        "num": "3",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 4, 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "L"
+      },
+      {
+        "num": "4",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 4, 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "L"
+      },
+      {
+        "num": "5",
+        "name": "HICC",
+        "type": "io",
+        "desc": "逐周期電流限制之延遲時間與打嗝(hiccup)時間設定腳；延遲時間與打嗝時間由 HICC 到 AVSS 的外接電容決定。此腳接 AVSS 可停用打嗝模式。 （CFP 22-pin 封裝同為腳位 5，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "6",
+        "name": "SYNC",
+        "type": "io",
+        "desc": "同步時脈腳。當 RT 懸空時，SYNC 作為 200kHz~4MHz 外部時脈輸入，外部時脈訊號會被反相，系統時脈以外部時脈的 1/2 頻率運作；當 RT 接電阻至 AVSS 時，SYNC 輸出與元件切換同相之 200kHz~4MHz 時脈，頻率為元件開關頻率的 2 倍。 （CFP 22-pin 封裝同為腳位 6，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "7",
+        "name": "DCL",
+        "type": "io",
+        "desc": "工作週期限制(duty cycle limit)設定腳。TPS7H5003-SP：可懸空或接 VLDO，分別設定最大工作週期為 75% 或 100%。 （CFP 22-pin 封裝同為腳位 7，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "8",
+        "name": "EN",
+        "type": "input",
+        "desc": "致能輸入。將 EN 接至 VLDO 或外部電壓源(大於 0.6V)可致能元件；另可用兩顆電阻程式化輸入欠壓鎖定(UVLO)。 （CFP 22-pin 封裝同為腳位 8，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "9",
+        "name": "VIN",
+        "type": "power",
+        "desc": "元件輸入電源，輸入電壓範圍 4V ~ 14V。 （CFP 22-pin 封裝同為腳位 9，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "10",
+        "name": "OUTA",
+        "type": "output",
+        "desc": "主開關輸出 A(Primary switching output A)。 （CFP 22-pin 封裝同為腳位 10，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "11",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 4, 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "L"
+      },
+      {
+        "num": "12",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 4, 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "L"
+      },
+      {
+        "num": "24",
+        "name": "COMP",
+        "type": "io",
+        "desc": "誤差放大器輸出端，於此腳連接頻率補償網路。 （CFP 22-pin 封裝腳位為 22；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "23",
+        "name": "VSENSE",
+        "type": "input",
+        "desc": "誤差放大器反相輸入端。 （CFP 22-pin 封裝腳位為 21；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "22",
+        "name": "SS",
+        "type": "io",
+        "desc": "軟啟動腳。外接電容至此腳可設定內部參考電壓的上升時間；此腳電壓會覆蓋內部參考電壓，可用於電源軌追蹤(tracking)與時序排序(sequencing)。 （CFP 22-pin 封裝腳位為 20；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "21",
+        "name": "RSC",
+        "type": "io",
+        "desc": "由 RSC 到 AVSS 的電阻設定所需的斜率補償(slope compensation)。 （CFP 22-pin 封裝腳位為 19；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "20",
+        "name": "REFCAP",
+        "type": "output",
+        "desc": "1.2V 內部參考電壓，須外接 470nF 電容至 AVSS。 （CFP 22-pin 封裝腳位為 18；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "19",
+        "name": "FAULT",
+        "type": "input",
+        "desc": "故障保護腳。當 FAULT 腳電壓超過上升門檻時，輸出停止切換；外部電壓降至下降門檻以下後，元件會延遲一段設定時間後重新啟動。此腳接 AVSS 可停用 FAULT 功能。 （CFP 22-pin 封裝腳位為 17；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "18",
+        "name": "CS_ILIM",
+        "type": "io",
+        "desc": "PWM 控制與逐周期過電流保護用電流感測輸入。CS_ILIM 輸入電壓超過 1.05V 會觸發 PWM 控制器過電流保護；CS_ILIM 上感測到的波形相對於 PWM 比較器輸入端的 COMP/2 電壓含 150mV 偏移。 （CFP 22-pin 封裝腳位為 16；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "17",
+        "name": "VLDO",
+        "type": "power",
+        "desc": "內部穩壓器輸出，須外接至少 1µF 電容至 AVSS。 （CFP 22-pin 封裝腳位為 15；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "16",
+        "name": "AVSS",
+        "type": "ground",
+        "desc": "元件接地。陶瓷封裝(CFP)版本的散熱片、蓋板與封環(seal ring)於內部連接至此接地。 （CFP 22-pin 封裝腳位為 14；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "15",
+        "name": "SRA",
+        "type": "output",
+        "desc": "同步整流輸出 A(Synchronous rectifier output A)。 （CFP 22-pin 封裝腳位為 13；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "14",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 4, 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "R"
+      },
+      {
+        "num": "13",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 4, 11, 12（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "R"
+      }
+    ],
+    "specs": [
+      {
+        "k": "輸出型態",
+        "v": "單主開關輸出(OUTA)，無同步整流驅動、無 PS/SP 死區設定、無 LEB，為系列中功能最精簡版本"
+      },
+      {
+        "k": "輸入電壓",
+        "v": "4V ~ 14V (VIN)"
+      },
+      {
+        "k": "控制方式",
+        "v": "峰值電流模式(peak current-mode)，RSC 外接電阻設定斜率補償"
+      },
+      {
+        "k": "開關頻率設定",
+        "v": "RT 電阻設定；RT 懸空時可由 SYNC 輸入 200kHz~4MHz 外部時脈(為開關頻率 2 倍)"
+      },
+      {
+        "k": "工作週期限制(DCL)",
+        "v": "可懸空或接 VLDO，分別設定最大工作週期為 75% 或 100%。"
+      },
+      {
+        "k": "過電流保護",
+        "v": "CS_ILIM > 1.05V 觸發逐周期過流保護，感測波形相對 COMP/2 含 150mV 偏移"
+      },
+      {
+        "k": "短路保護",
+        "v": "HICC 腳電容設定延遲/打嗝時間，接 AVSS 停用打嗝模式"
+      },
+      {
+        "k": "故障保護",
+        "v": "FAULT 腳獨立故障輸入，超過上升門檻停止切換，接 AVSS 停用"
+      },
+      {
+        "k": "內部參考",
+        "v": "REFCAP 1.2V，需 470nF 電容"
+      },
+      {
+        "k": "內部穩壓器",
+        "v": "VLDO 輸出，需至少 1µF 電容"
+      },
+      {
+        "k": "軟啟動/追蹤",
+        "v": "SS 外接電容設定軟啟動時間，可用於 tracking/sequencing"
+      },
+      {
+        "k": "封裝",
+        "v": "24-TSSOP(PW)；另有 22-pin CFP 陶瓷扁平封裝版本(腳位編號與 TSSOP 不同，見 datasheet Table 6-1)"
+      },
+      {
+        "k": "抗輻射等級(TID/SEL/SEB/SEGR)",
+        "v": "見 datasheet"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "TPS7H5004-SP",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "太空級返馳/推挽 PWM 控制器 (Rad-Hard, QMLV)",
+    "package": "24-TSSOP(PW)；另有 22-pin CFP 陶瓷扁平封裝版本(腳位編號與 TSSOP 不同，見 datasheet Table 6-1)",
+    "whatIs": "TI 太空級(QMLV)返馳/推挽式(flyback/push-pull)脈寬調變(PWM)控制器，採峰值電流模式(peak current-mode)控制並具斜率補償，輸入電壓 4V~14V，可由 RT 電阻設定開關頻率並支援 SYNC 外部時脈同步；TPS7H5001-SP/5002-SP/5003-SP/5004-SP 為同系列不同輸出型態變體，共用同一份 datasheet(SLVSF07F)。",
+    "func": "內部誤差放大器(VSENSE 反相輸入、COMP 輸出)搭配峰值電流模式 PWM 比較器(CS_ILIM 電流感測，相對 COMP/2 電壓含 150mV 偏移，RSC 設定斜率補償)；HICC 腳設定逐周期限流延遲與打嗝式短路保護時間(接 AVSS 可停用打嗝模式)；FAULT 腳提供獨立故障保護輸入(接 AVSS 停用)；SS 腳外接電容設定軟啟動時間，亦可用於電源軌追蹤(tracking)/時序排序(sequencing)；REFCAP 為 1.2V 內部參考(需 470nF 電容)；VLDO 為內部穩壓器輸出(需至少 1µF 電容)；EN 腳可用電阻分壓程式化輸入 UVLO；DCL 設定最大工作週期限制，各變體行為不同(見 DCL 腳說明)。",
+    "usedIn": "衛星/太空酬載板上隔離或非隔離之返馳(flyback)、順向(forward)、推挽(push-pull)型 DC-DC 電源轉換器，供指揮與資料處理、通訊、光學/雷達成像、導航與科學探測酬載等太空應用之二次電源使用。",
+    "desc": "24-TSSOP(PW)封裝，太空級(QMLV)峰值電流模式返馳/推挽 PWM 控制器。雙主開關輸出(OUTA/OUTB)，無同步整流驅動，DCL 須接 AVSS 固定為 50% 工作週期限制。TSSOP NC 腳位：2, 3, 12, 13, 14, 15；CFP(22-pin)封裝腳位編號與 TSSOP 不同(緊密編號、無對應 TSSOP 之 NC 腳)，詳見 datasheet Table 6-1。與同系列 TPS7H5001-SP/5002-SP/5003-SP/5004-SP 差異僅在輸出型態與 PS/SP/LEB 腳位是否存在，不互為 pin-to-pin 相容，選型須依電路拓樸(是否需雙輸出、是否需同步整流)確認。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps7h5001-sp.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "RT",
+        "type": "io",
+        "desc": "振盪頻率設定腳。使用內部振盪模式時，RT 腳須接一顆電阻至 AVSS 以設定開關頻率；RT 懸空時，SYNC 腳須輸入 200kHz~4MHz 外部時脈，且外部時脈頻率須為目標開關頻率的 2 倍。 （CFP 22-pin 封裝同為腳位 1，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "2",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 12, 13（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "L"
+      },
+      {
+        "num": "3",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 12, 13（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "L"
+      },
+      {
+        "num": "4",
+        "name": "LEB",
+        "type": "io",
+        "desc": "前緣消隱(leading edge blank)時間設定腳，透過外接電阻至 AVSS 程式化。 （CFP 22-pin 封裝同為腳位 4，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "5",
+        "name": "HICC",
+        "type": "io",
+        "desc": "逐周期電流限制之延遲時間與打嗝(hiccup)時間設定腳；延遲時間與打嗝時間由 HICC 到 AVSS 的外接電容決定。此腳接 AVSS 可停用打嗝模式。 （CFP 22-pin 封裝同為腳位 5，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "6",
+        "name": "SYNC",
+        "type": "io",
+        "desc": "同步時脈腳。當 RT 懸空時，SYNC 作為 200kHz~4MHz 外部時脈輸入，外部時脈訊號會被反相，系統時脈以外部時脈的 1/2 頻率運作；當 RT 接電阻至 AVSS 時，SYNC 輸出與元件切換同相之 200kHz~4MHz 時脈，頻率為元件開關頻率的 2 倍。 （CFP 22-pin 封裝同為腳位 6，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "7",
+        "name": "DCL",
+        "type": "io",
+        "desc": "工作週期限制(duty cycle limit)設定腳。TPS7H5004-SP：此腳須接 AVSS 以獲得 50% 最大工作週期限制。 （CFP 22-pin 封裝同為腳位 7，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "8",
+        "name": "EN",
+        "type": "input",
+        "desc": "致能輸入。將 EN 接至 VLDO 或外部電壓源(大於 0.6V)可致能元件；另可用兩顆電阻程式化輸入欠壓鎖定(UVLO)。 （CFP 22-pin 封裝同為腳位 8，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "9",
+        "name": "VIN",
+        "type": "power",
+        "desc": "元件輸入電源，輸入電壓範圍 4V ~ 14V。 （CFP 22-pin 封裝同為腳位 9，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "10",
+        "name": "OUTA",
+        "type": "output",
+        "desc": "主開關輸出 A(Primary switching output A)。 （CFP 22-pin 封裝同為腳位 10，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "11",
+        "name": "OUTB",
+        "type": "output",
+        "desc": "主開關輸出 B(Primary switching output B)，僅當 DCL = AVSS 時動作。 （CFP 22-pin 封裝同為腳位 11，四顆變體皆同。）",
+        "side": "L"
+      },
+      {
+        "num": "12",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 12, 13（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "L"
+      },
+      {
+        "num": "24",
+        "name": "COMP",
+        "type": "io",
+        "desc": "誤差放大器輸出端，於此腳連接頻率補償網路。 （CFP 22-pin 封裝腳位為 22；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "23",
+        "name": "VSENSE",
+        "type": "input",
+        "desc": "誤差放大器反相輸入端。 （CFP 22-pin 封裝腳位為 21；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "22",
+        "name": "SS",
+        "type": "io",
+        "desc": "軟啟動腳。外接電容至此腳可設定內部參考電壓的上升時間；此腳電壓會覆蓋內部參考電壓，可用於電源軌追蹤(tracking)與時序排序(sequencing)。 （CFP 22-pin 封裝腳位為 20；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "21",
+        "name": "RSC",
+        "type": "io",
+        "desc": "由 RSC 到 AVSS 的電阻設定所需的斜率補償(slope compensation)。 （CFP 22-pin 封裝腳位為 19；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "20",
+        "name": "REFCAP",
+        "type": "output",
+        "desc": "1.2V 內部參考電壓，須外接 470nF 電容至 AVSS。 （CFP 22-pin 封裝腳位為 18；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "19",
+        "name": "FAULT",
+        "type": "input",
+        "desc": "故障保護腳。當 FAULT 腳電壓超過上升門檻時，輸出停止切換；外部電壓降至下降門檻以下後，元件會延遲一段設定時間後重新啟動。此腳接 AVSS 可停用 FAULT 功能。 （CFP 22-pin 封裝腳位為 17；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "18",
+        "name": "CS_ILIM",
+        "type": "io",
+        "desc": "PWM 控制與逐周期過電流保護用電流感測輸入。CS_ILIM 輸入電壓超過 1.05V 會觸發 PWM 控制器過電流保護；CS_ILIM 上感測到的波形相對於 PWM 比較器輸入端的 COMP/2 電壓含 150mV 偏移。 （CFP 22-pin 封裝腳位為 16；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "17",
+        "name": "VLDO",
+        "type": "power",
+        "desc": "內部穩壓器輸出，須外接至少 1µF 電容至 AVSS。 （CFP 22-pin 封裝腳位為 15；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "16",
+        "name": "AVSS",
+        "type": "ground",
+        "desc": "元件接地。陶瓷封裝(CFP)版本的散熱片、蓋板與封環(seal ring)於內部連接至此接地。 （CFP 22-pin 封裝腳位為 14；CFP 封裝總腳數 22，與 TSSOP 24 腳編號不同，見 datasheet Table 6-1。）",
+        "side": "R"
+      },
+      {
+        "num": "15",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 12, 13（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "R"
+      },
+      {
+        "num": "14",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 12, 13（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "R"
+      },
+      {
+        "num": "13",
+        "name": "NC",
+        "type": "nc",
+        "desc": "未連接(No connect)。若需避免懸浮金屬，可選擇接至 AVSS。 CFP(22-pin)封裝對應之未連接腳位集合為 2, 3, 12, 13（非逐一對應，見 datasheet Table 6-1）。",
+        "side": "R"
+      }
+    ],
+    "specs": [
+      {
+        "k": "輸出型態",
+        "v": "雙主開關輸出(OUTA/OUTB)，無同步整流驅動，DCL 須接 AVSS 固定為 50% 工作週期限制"
+      },
+      {
+        "k": "輸入電壓",
+        "v": "4V ~ 14V (VIN)"
+      },
+      {
+        "k": "控制方式",
+        "v": "峰值電流模式(peak current-mode)，RSC 外接電阻設定斜率補償"
+      },
+      {
+        "k": "開關頻率設定",
+        "v": "RT 電阻設定；RT 懸空時可由 SYNC 輸入 200kHz~4MHz 外部時脈(為開關頻率 2 倍)"
+      },
+      {
+        "k": "工作週期限制(DCL)",
+        "v": "此腳須接 AVSS 以獲得 50% 最大工作週期限制。"
+      },
+      {
+        "k": "過電流保護",
+        "v": "CS_ILIM > 1.05V 觸發逐周期過流保護，感測波形相對 COMP/2 含 150mV 偏移"
+      },
+      {
+        "k": "短路保護",
+        "v": "HICC 腳電容設定延遲/打嗝時間，接 AVSS 停用打嗝模式"
+      },
+      {
+        "k": "故障保護",
+        "v": "FAULT 腳獨立故障輸入，超過上升門檻停止切換，接 AVSS 停用"
+      },
+      {
+        "k": "內部參考",
+        "v": "REFCAP 1.2V，需 470nF 電容"
+      },
+      {
+        "k": "內部穩壓器",
+        "v": "VLDO 輸出，需至少 1µF 電容"
+      },
+      {
+        "k": "軟啟動/追蹤",
+        "v": "SS 外接電容設定軟啟動時間，可用於 tracking/sequencing"
+      },
+      {
+        "k": "封裝",
+        "v": "24-TSSOP(PW)；另有 22-pin CFP 陶瓷扁平封裝版本(腳位編號與 TSSOP 不同，見 datasheet Table 6-1)"
+      },
+      {
+        "k": "抗輻射等級(TID/SEL/SEB/SEGR)",
+        "v": "見 datasheet"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];
