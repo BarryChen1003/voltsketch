@@ -651,6 +651,8 @@ const pcbApp = {
     }));
     s.vias = m.vias.map(v => ({ x: v.x - off.x, y: v.y - off.y, od: v.od, id: v.id, net: v.net }));
     s.zones = m.zones.map(z => ({ layer: z.layer, net: z.net, pts: z.pts.map(p => [p[0] - off.x, p[1] - off.y]) }));
+    s.zoneFills = m.zoneFills.map(z => ({ layer: z.layer, net: z.net, pts: z.pts.map(p => [p[0] - off.x, p[1] - off.y]) }));
+    s.kicadArcs = m.arcsRaw.map(a => ({ ...a, x1: a.x1 - off.x, y1: a.y1 - off.y, xm: a.xm - off.x, ym: a.ym - off.y, x2: a.x2 - off.x, y2: a.y2 - off.y }));
     s.edgeSegs = m.edgeSegs.map(e => ({ x1: e.x1 - off.x, y1: e.y1 - off.y, x2: e.x2 - off.x, y2: e.y2 - off.y }));
     s.kicad = { tree: parsed.tree, off, fileName: fileName || 'board.kicad_pcb' };
     s.refBoard = null; s.refOverlayId = null; s.selected = null;
@@ -681,6 +683,18 @@ const pcbApp = {
       : `已匯出 ${name}（從零建檔：元件為外形示意無 pad，走線/via/板框精確）`;
   },
 
+  exportGerber() {
+    const s = this.state;
+    const base = s.kicad ? s.kicad.fileName : 'voltsketch';
+    const r = window.GerberExport.downloadZip(s, this.padAbs.bind(this), base);
+    const el = document.getElementById('kicadIoMsg');
+    if (el) {
+      const names = r.files.map(f => f.name.replace(/^.*?-/, '')).join('、');
+      el.innerHTML = `已匯出 Gerber ZIP（${r.files.length} 檔：${names}；鑽孔 PTH ${r.drillCounts.pth}${r.drillCounts.npth ? '＋NPTH ' + r.drillCounts.npth : ''}${r.drillCounts.slots ? '＋開槽 ' + r.drillCounts.slots : ''}）` +
+        (r.warnings.length ? '<br>⚠ ' + r.warnings.join('<br>⚠ ') : '');
+    }
+  },
+
   // 公版元件來源：schema v2 用 components（含尺寸/正反面），舊資料退回 blocks
   refBoardParts(b) {
     if (b.components && b.components.length) {
@@ -706,6 +720,7 @@ const pcbApp = {
     this.state.vias = (b.vias || []).map(v => ({ ...v }));
     this.state.refBoard = null; this.state.refOverlayId = null; this.state.selected = null;
     this.state.zones = []; this.state.edgeSegs = []; this.state.kicad = null;
+    this.state.zoneFills = []; this.state.kicadArcs = [];
     // 同步板框輸入框
     const wI = document.querySelector('#boardWidth'), hI = document.querySelector('#boardHeight'), lI = document.querySelector('#boardLayers');
     if (wI) wI.value = b.w; if (hI) hI.value = b.h; if (lI) lI.value = b.layers;
@@ -951,6 +966,7 @@ const pcbApp = {
       e.target.value = '';
     });
     document.querySelector('#exportKicadBtn')?.addEventListener('click', () => this.exportKicad());
+    document.querySelector('#exportGerberBtn')?.addEventListener('click', () => this.exportGerber());
 
     // Board settings
     document.querySelector('#applyBoardSettings')?.addEventListener('click', () => {

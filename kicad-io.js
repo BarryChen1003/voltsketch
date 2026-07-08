@@ -114,13 +114,22 @@ window.KicadIO = (function () {
         const size = find(pd, 'size') || [];
         const pw = num(size[1]) || 0.5, ph = num(size[2]) || pw;
         const drillN = find(pd, 'drill');
-        const drill = drillN ? (num(drillN[1]) || 0) : 0;
+        let drill = 0, slot = null; // slot = 橢圓鑽（開槽）{w,h}
+        if (drillN) {
+          if (val(drillN[1]) === 'oval') {
+            const dw = num(drillN[2]) || 0, dh = num(drillN[3]) || dw;
+            drill = Math.min(dw, dh);
+            slot = { w: dw, h: dh };
+          } else drill = num(drillN[1]) || 0;
+        }
         const pLayers = (find(pd, 'layers') || []).slice(1).map(val);
         const side = pLayers.some(l => l === '*.Cu') ? '*' : (pLayers.some(l => l === 'B.Cu') ? 'B' : 'F');
         const pnetN = find(pd, 'net');
+        const rrN = find(pd, 'roundrect_rratio');
         pads.push({
           num: val(pd[1]), type: val(pd[2]), shape: val(pd[3]),
-          x: px, y: py, rot: prot, w: pw, h: ph, drill,
+          x: px, y: py, rot: prot, w: pw, h: ph, drill, slot,
+          rr: rrN ? num(rrN[1]) : 0,
           side, net: pnetN ? val(pnetN[2] || '') : ''
         });
         const ex = Math.abs(px) + pw / 2, ey = Math.abs(py) + ph / 2;
@@ -155,14 +164,16 @@ window.KicadIO = (function () {
         net: netName(num((find(sg, 'net') || [])[1]) || 0)
       };
     });
-    // 弧線走線：三點求圓，折 16 段近似渲染（原節點保留，匯出不失真）
+    // 弧線走線：三點求圓，折 16 段近似渲染（原節點保留；Gerber 匯出用 arcsRaw 出真圓弧 G02/G03）
     const arcSegs = [];
+    const arcsRaw = [];
     for (const arc of findAll(tree, 'arc')) {
       const s = find(arc, 'start'), m = find(arc, 'mid'), e = find(arc, 'end');
       if (!s || !m || !e) continue;
       const w = num((find(arc, 'width') || [])[1]) || 0.2;
       const layer = val((find(arc, 'layer') || [])[1] || 'F.Cu');
       const net = netName(num((find(arc, 'net') || [])[1]) || 0);
+      arcsRaw.push({ x1: num(s[1]), y1: num(s[2]), xm: num(m[1]), ym: num(m[2]), x2: num(e[1]), y2: num(e[2]), width: w, layer, net });
       const pts = arcPoints(num(s[1]), num(s[2]), num(m[1]), num(m[2]), num(e[1]), num(e[2]), 16);
       for (let k = 0; k + 1 < pts.length; k++) {
         arcSegs.push({ x1: pts[k][0], y1: pts[k][1], x2: pts[k + 1][0], y2: pts[k + 1][1], width: w, layer, net, fromArc: true });
@@ -180,14 +191,20 @@ window.KicadIO = (function () {
       };
     });
 
-    // 鋪銅（zone）：只取外框多邊形供渲染
+    // 鋪銅（zone）：外框多邊形供渲染；filled_polygon（KiCad 已算好的灌銅結果，含避讓）供 Gerber
     const zones = [];
+    const zoneFills = [];
     for (const z of findAll(tree, 'zone')) {
       const layer = val((find(z, 'layer') || [])[1] || (find(z, 'layers') || [])[1] || 'F.Cu');
       const net = val((find(z, 'net_name') || [])[1] || '');
       const poly = find(z, 'polygon');
       const pts = poly ? findAll(find(poly, 'pts') || [], 'xy').map(p => [num(p[1]), num(p[2])]) : [];
       if (pts.length >= 3) zones.push({ layer, net, pts });
+      for (const fp2 of findAll(z, 'filled_polygon')) {
+        const fLayer = val((find(fp2, 'layer') || [])[1] || layer);
+        const fpts = findAll(find(fp2, 'pts') || [], 'xy').map(p => [num(p[1]), num(p[2])]);
+        if (fpts.length >= 3) zoneFills.push({ layer: fLayer, net, pts: fpts });
+      }
     }
 
     // 板框（Edge.Cuts）
@@ -231,7 +248,7 @@ window.KicadIO = (function () {
     return {
       tree,
       model: {
-        cuLayers, nets, comps, traces: traces.concat(arcSegs), vias, zones, edgeSegs,
+        cuLayers, nets, comps, traces: traces.concat(arcSegs), arcsRaw, vias, zones, zoneFills, edgeSegs,
         bbox: { x: bx[0], y: by[0], w: bx[1] - bx[0], h: by[1] - by[0] }
       }
     };

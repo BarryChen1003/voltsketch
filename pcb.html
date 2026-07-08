@@ -609,6 +609,7 @@
                 📂 匯入 .kicad_pcb<input type="file" id="kicadFile" accept=".kicad_pcb" style="display:none">
               </label>
               <button class="small-button" id="exportKicadBtn">💾 匯出 .kicad_pcb</button>
+              <button class="small-button" id="exportGerberBtn">🏭 匯出 Gerber＋鑽孔（打版 ZIP）</button>
               <div id="kicadIoMsg" style="color:var(--muted);line-height:1.5"></div>
               <div style="color:var(--muted);line-height:1.5">匯入檔會保留整棵原始資料樹；匯出時未編輯的幾何 100% 原樣回寫（零落差）。.brd 為 Cadence 專有二進位：匯入走「板面檢視」分頁的 SKILL 抽取，匯出走 SKILL 重建腳本。</div>
             </div>
@@ -792,8 +793,9 @@
     <script src="./pcb-tutorial.js?v=5"></script>
     <script src="./pcb-practice.js?v=5"></script>
     <script src="./pcb-refboards.js?v=2026-07-08a"></script>
-    <script src="./kicad-io.js?v=1"></script>
-    <script src="./pcb.js?v=9"></script>
+    <script src="./kicad-io.js?v=2"></script>
+    <script src="./gerber-export.js?v=1"></script>
+    <script src="./pcb.js?v=10"></script>
     <script>
       // Initialize tutorial and practice after page load
       document.addEventListener('DOMContentLoaded', () => {
