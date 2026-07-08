@@ -515,18 +515,18 @@
       </header>
 
       <!-- PCB 雙分頁：Layout 編輯（本頁工具）｜板面檢視（pcb-viewer 內嵌，共用邀請碼旗標） -->
-      <div id="pcbTabs" style="display:flex;gap:8px;margin:12px 16px 0;align-items:center;flex-wrap:wrap">
-        <button id="tabLayout" type="button" class="primary-button" style="padding:8px 22px;font-size:14px">🛠 Layout 編輯</button>
-        <button id="tabViewer" type="button" class="icon-button" style="padding:8px 22px;font-size:14px">🔍 板面檢視（Allegro 匯入）</button>
-        <button id="tabRefs" type="button" class="icon-button" style="padding:8px 22px;font-size:14px">📐 開源公版</button>
+      <div id="pcbTabs" style="display:flex;gap:8px;margin:12px 16px 0;align-items:center;overflow-x:auto;white-space:nowrap">
+        <button id="tabLayout" type="button" class="primary-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0">🛠 Layout 編輯</button>
+        <button id="tabViewer" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" title="板面檢視（Allegro 匯入）">🔍 板面檢視</button>
+        <button id="tabRefs" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0">📐 開源公版</button>
       </div>
       <div id="pcbViewerPane" style="display:none;flex:1;padding:12px 16px">
         <iframe id="pcbViewerFrame" title="PCB 檢視器" style="width:100%;height:100%;min-height:72vh;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe>
       </div>
       <div id="pcbRefsPane" style="display:none;flex:1;padding:12px 16px;overflow-y:auto">
         <div style="background:var(--accent-soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:var(--ink);line-height:1.7">
-          <b>開源硬體公版庫</b>——「載入到 Layout」把公版的板框、層數、主要元件方塊帶進編輯器當起手板，可直接改；「疊加比較」把公版方塊以虛線疊在你目前的設計上對照。
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">⚠️ 方塊為概略樓層平面（教學用），非原廠精確座標；完整原理圖/PCB 源檔在各「原始碼」連結。授權多為 OSHW/CC-BY-SA。</div>
+          <b>開源硬體公版庫</b>——「載入到 Layout」把公版的板框、層數、主要料件（含實際尺寸與正反面）、代表性走線與 via 帶進編輯器當起手板，可直接改；「疊加比較」把公版料件以虛線疊在你目前的設計上對照。載入後用右側「圖層管理」逐層開關檢視、「板上料件」看清單並點選定位。
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">⚠️ 為「教學重建版」佈局——依公板文件近似重建主要 BOM 與代表性走線，非原廠精確座標/完整 netlist；完整原理圖/PCB 源檔在各「原始碼」連結。授權多為 OSHW/CC-BY-SA。</div>
         </div>
         <div id="refBoardList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px"></div>
       </div>
@@ -644,6 +644,12 @@
           <section class="panel-section">
             <h2>圖層管理</h2>
             <div class="layer-list" id="layerList"></div>
+          </section>
+
+          <section class="panel-section">
+            <h2>板上料件</h2>
+            <div id="partsSummary"></div>
+            <div id="partsList" style="max-height:240px;overflow-y:auto;margin-top:6px"></div>
           </section>
 
           <section class="panel-section">
@@ -773,8 +779,8 @@
     <script src="./auth.js?v=2026-07-04b"></script>
     <script src="./pcb-tutorial.js?v=5"></script>
     <script src="./pcb-practice.js?v=5"></script>
-    <script src="./pcb-refboards.js?v=2026-07-04a"></script>
-    <script src="./pcb.js?v=7"></script>
+    <script src="./pcb-refboards.js?v=2026-07-08a"></script>
+    <script src="./pcb.js?v=8"></script>
     <script>
       // Initialize tutorial and practice after page load
       document.addEventListener('DOMContentLoaded', () => {

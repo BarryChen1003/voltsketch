@@ -32,6 +32,7 @@ const pcbApp = {
     this.resizeCanvas();
     this.bindEvents();
     this.renderLayerList();
+    this.renderPartsList();
     this.populateEmiSelects();
     this.renderRefBoards();
     this.render();
@@ -54,14 +55,17 @@ const pcbApp = {
   renderLayerList() {
     const el = document.getElementById('layerList');
     if (!el) return;
+    const cnt = {};
+    this.state.traces.forEach(t => { const k = t.layer || 'F.Cu'; cnt[k] = (cnt[k] || 0) + 1; });
     el.innerHTML = (this.state.layerStack || []).map(l => {
       const vis = this.state.visibleLayers.includes(l.id);
+      const n = cnt[l.id] ? `<span style="font-size:10px;color:var(--muted);margin-left:4px">${cnt[l.id]}條</span>` : '';
       const typeSel = l.kind === 'copper'
         ? `<select class="layer-type" data-layer="${l.id}" style="margin-left:auto;font-size:11px;padding:1px 4px;" onclick="event.stopPropagation()">` +
         ['Signal', 'GND', 'PWR', 'Mixed'].map(t => `<option ${l.type === t ? 'selected' : ''}>${t}</option>`).join('') + `</select>`
         : '';
       return `<div class="layer-item" data-layer="${l.id}"><div class="layer-color" style="background:${l.color}"></div>` +
-        `<span class="layer-name">${l.name}</span>${typeSel}<span class="layer-visibility" style="opacity:${vis ? 1 : 0.3};margin-left:8px">👁</span></div>`;
+        `<span class="layer-name">${l.name}</span>${n}${typeSel}<span class="layer-visibility" style="opacity:${vis ? 1 : 0.3};margin-left:8px">👁</span></div>`;
     }).join('');
   },
 
@@ -100,6 +104,9 @@ const pcbApp = {
 
     // Draw traces
     this.drawTraces(scale);
+
+    // Draw vias
+    this.drawVias(scale);
 
     // Draw EMI 環路疊圖
     this.drawEmiLoops(scale);
@@ -167,6 +174,25 @@ const pcbApp = {
     }
   },
 
+  // kind → 填色（top 面）；bottom 面統一偏藍且僅在 B.Cu 可見時畫
+  compFill(comp) {
+    if (comp.side === 'bottom') return '#1f3a5f';
+    return { ic: '#34495e', passive: '#3f5561', conn: '#6e5b1e', mech: '#4a4a55' }[comp.kind] || '#34495e';
+  },
+
+  compVisible(comp) {
+    const v = this.state.visibleLayers;
+    return comp.side === 'bottom' ? v.includes('B.Cu') : (v.includes('F.Cu') || v.includes('F.SilkS'));
+  },
+
+  // 元件實際尺寸（mm）；舊資料/手放元件退回 4×3mm
+  compRect(comp, scale) {
+    const w = (comp.w || 4) * scale, h = (comp.h || 3) * scale;
+    const x = this.canvas.width / 2 + comp.x * scale - w / 2;
+    const y = this.canvas.height / 2 + comp.y * scale - h / 2;
+    return { x, y, w, h };
+  },
+
   drawComponents(scale) {
     const { ctx, state } = this;
 
@@ -176,55 +202,75 @@ const pcbApp = {
       ctx.globalAlpha = 0.5;
       ctx.setLineDash([4, 3]);
       state.refBoard.forEach(b => {
-        const x = this.canvas.width / 2 + b.x * scale;
-        const y = this.canvas.height / 2 + b.y * scale;
+        const r = this.compRect(b, scale);
         ctx.strokeStyle = '#e67e22';
         ctx.lineWidth = 1;
-        ctx.strokeRect(x - 20, y - 15, 40, 30);
+        ctx.strokeRect(r.x, r.y, r.w, r.h);
         ctx.fillStyle = '#e67e22';
         ctx.font = '9px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText(b.label, x, y + 3);
+        ctx.fillText(b.label || b.ref || '', r.x + r.w / 2, r.y + r.h / 2 + 3);
       });
       ctx.restore();
     }
 
     state.components.forEach(comp => {
-      const x = this.canvas.width / 2 + comp.x * scale;
-      const y = this.canvas.height / 2 + comp.y * scale;
+      if (!this.compVisible(comp)) return;
+      const r = this.compRect(comp, scale);
+      const sel = state.selected === comp;
 
-      // Component body
-      ctx.fillStyle = '#34495e';
-      ctx.fillRect(x - 20, y - 15, 40, 30);
-      ctx.strokeStyle = '#ecf0f1';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x - 20, y - 15, 40, 30);
+      ctx.fillStyle = this.compFill(comp);
+      ctx.fillRect(r.x, r.y, r.w, r.h);
+      ctx.strokeStyle = sel ? '#f39c12' : (comp.side === 'bottom' ? '#5dade2' : '#ecf0f1');
+      ctx.lineWidth = sel ? 2 : 1;
+      ctx.strokeRect(r.x, r.y, r.w, r.h);
 
-      // Component label
-      ctx.fillStyle = '#ecf0f1';
-      ctx.font = '10px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText(comp.label, x, y + 3);
+      // 標籤：夠大才畫（避免小 R/C 糊成一片）；選取中一律畫
+      const label = comp.label || comp.ref || '';
+      if (label && (sel || r.w >= 26)) {
+        ctx.fillStyle = sel ? '#f39c12' : '#ecf0f1';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, r.x + r.w / 2, r.y + r.h / 2 + 3);
+      } else if (label && r.w >= 10) {
+        ctx.fillStyle = '#bdc3c7';
+        ctx.font = '7px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(comp.ref || label, r.x + r.w / 2, r.y - 2);
+      }
     });
   },
 
   drawTraces(scale) {
     const { ctx, state } = this;
-
-    ctx.strokeStyle = '#e74c3c';
-    ctx.lineWidth = 3;
-
+    const layerOf = id => (state.layerStack || []).find(l => l.id === id);
+    ctx.save();
+    ctx.lineCap = 'round';
     state.traces.forEach(trace => {
+      const lid = trace.layer || 'F.Cu';
+      if (!state.visibleLayers.includes(lid)) return;
+      const ldef = layerOf(lid);
+      ctx.strokeStyle = ldef ? ldef.color : '#e74c3c';
+      ctx.lineWidth = Math.max(1, (trace.width || 0.3) * scale);
+      ctx.globalAlpha = lid === 'F.Cu' ? 1 : 0.85;
       ctx.beginPath();
-      ctx.moveTo(
-        this.canvas.width / 2 + trace.x1 * scale,
-        this.canvas.height / 2 + trace.y1 * scale
-      );
-      ctx.lineTo(
-        this.canvas.width / 2 + trace.x2 * scale,
-        this.canvas.height / 2 + trace.y2 * scale
-      );
+      ctx.moveTo(this.canvas.width / 2 + trace.x1 * scale, this.canvas.height / 2 + trace.y1 * scale);
+      ctx.lineTo(this.canvas.width / 2 + trace.x2 * scale, this.canvas.height / 2 + trace.y2 * scale);
       ctx.stroke();
+    });
+    ctx.restore();
+  },
+
+  drawVias(scale) {
+    const { ctx, state } = this;
+    const anyCu = state.visibleLayers.some(id => (state.layerStack || []).find(l => l.id === id && l.kind === 'copper'));
+    if (!anyCu) return;
+    state.vias.forEach(v => {
+      const x = this.canvas.width / 2 + v.x * scale;
+      const y = this.canvas.height / 2 + v.y * scale;
+      const ro = Math.max(2, (v.od || 0.6) / 2 * scale), ri = Math.max(1, (v.id || 0.3) / 2 * scale);
+      ctx.beginPath(); ctx.arc(x, y, ro, 0, Math.PI * 2); ctx.fillStyle = '#b8c2cc'; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, ri, 0, Math.PI * 2); ctx.fillStyle = '#1a1a2e'; ctx.fill();
     });
   },
 
@@ -447,6 +493,7 @@ const pcbApp = {
     };
     this.state.components.push(comp);
     this.populateEmiSelects();
+    this.renderPartsList();
     this.render();
   },
 
@@ -473,6 +520,18 @@ const pcbApp = {
       </div>`).join('');
   },
 
+  // 公版元件來源：schema v2 用 components（含尺寸/正反面），舊資料退回 blocks
+  refBoardParts(b) {
+    if (b.components && b.components.length) {
+      return b.components.map((c, i) => ({
+        id: `ref-${b.id}-${i}`, type: 'ic', x: c.x, y: c.y, w: c.w, h: c.h,
+        side: c.side || 'top', kind: c.kind || 'ic', ref: c.ref, part: c.part,
+        label: c.ref || c.part || ''
+      }));
+    }
+    return (b.blocks || []).map((blk, i) => ({ id: `ref-${b.id}-${i}`, type: 'ic', x: blk.x, y: blk.y, label: blk.label }));
+  },
+
   loadRefBoard(id) {
     const b = (window.PCB_REFBOARDS || []).find(x => x.id === id);
     if (!b) return;
@@ -481,12 +540,15 @@ const pcbApp = {
     this.state.layers = Math.max(1, Math.min(40, b.layers));
     this.state.layerStack = this.buildLayerStack(this.state.layers);
     this.state.visibleLayers = this.state.layerStack.map(l => l.id);
-    this.state.components = b.blocks.map((blk, i) => ({ id: `ref-${id}-${i}`, type: 'ic', x: blk.x, y: blk.y, label: blk.label }));
-    this.state.traces = []; this.state.vias = []; this.state.refBoard = null; this.state.refOverlayId = null;
+    this.state.components = this.refBoardParts(b);
+    this.state.traces = (b.traces || []).map((t, i) => ({ id: `ref-t-${i}`, ...t }));
+    this.state.vias = (b.vias || []).map(v => ({ ...v }));
+    this.state.refBoard = null; this.state.refOverlayId = null; this.state.selected = null;
     // 同步板框輸入框
     const wI = document.querySelector('#boardWidth'), hI = document.querySelector('#boardHeight'), lI = document.querySelector('#boardLayers');
     if (wI) wI.value = b.w; if (hI) hI.value = b.h; if (lI) lI.value = b.layers;
     this.renderLayerList();
+    this.renderPartsList();
     this.populateEmiSelects();
     this.render();
     // 切到 Layout 分頁（觸發 pcb.html 的分頁 handler）
@@ -498,11 +560,32 @@ const pcbApp = {
     else {
       const b = (window.PCB_REFBOARDS || []).find(x => x.id === id);
       if (!b) return;
-      this.state.refBoard = b.blocks.slice();
+      this.state.refBoard = this.refBoardParts(b);
       this.state.refOverlayId = id;
       const t = document.querySelector('#tabLayout'); if (t) t.click();
     }
     this.render();
+  },
+
+  // ---- 板上料件清單（頂/底面統計 + 逐件列表，點擊選取）----
+  renderPartsList() {
+    const sum = document.getElementById('partsSummary');
+    const list = document.getElementById('partsList');
+    if (!sum || !list) return;
+    const comps = this.state.components;
+    const top = comps.filter(c => c.side !== 'bottom').length;
+    const bot = comps.length - top;
+    const perLayer = {};
+    this.state.traces.forEach(t => { const l = t.layer || 'F.Cu'; perLayer[l] = (perLayer[l] || 0) + 1; });
+    const layerTxt = Object.keys(perLayer).map(l => `${l} ${perLayer[l]}條`).join('、') || '無';
+    sum.innerHTML = `<div style="font-size:12px;color:var(--muted);line-height:1.7">` +
+      `${this.state.layers} 層板 · 料件 ${comps.length}（頂 ${top}／底 ${bot}）· via ${this.state.vias.length}<br>走線：${layerTxt}</div>`;
+    list.innerHTML = comps.map((c, i) =>
+      `<div class="part-row" data-idx="${i}" style="display:flex;gap:6px;align-items:center;padding:3px 6px;border-radius:5px;cursor:pointer;font-size:12px;${this.state.selected === c ? 'background:var(--accent-soft);' : ''}">` +
+      `<b style="font-family:ui-monospace,monospace;min-width:38px">${c.ref || c.label || '-'}</b>` +
+      `<span style="color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.part || c.label || ''}</span>` +
+      `<span style="font-size:10px;padding:0 5px;border-radius:999px;background:${c.side === 'bottom' ? '#1f3a5f' : '#2d4a3e'};color:#cbd5e1">${c.side === 'bottom' ? '底' : '頂'}</span></div>`
+    ).join('') || '<div style="font-size:12px;color:var(--muted);padding:4px 6px">尚無料件（載入公版或放置元件）</div>';
   },
 
   // ---- EMI 環路檢查（心中有環）----
@@ -643,6 +726,7 @@ const pcbApp = {
       width: 0.3
     };
     this.state.traces.push(trace);
+    this.renderPartsList();
     this.render();
   },
 
@@ -680,6 +764,15 @@ const pcbApp = {
       const ov = e.target.closest('.ref-overlay');
       if (load) this.loadRefBoard(load.dataset.refid);
       else if (ov) this.toggleRefOverlay(ov.dataset.refid);
+    });
+
+    // 板上料件清單：點列選取元件
+    document.querySelector('#partsList')?.addEventListener('click', (e) => {
+      const row = e.target.closest('.part-row');
+      if (!row) return;
+      this.state.selected = this.state.components[+row.dataset.idx] || null;
+      this.renderPartsList();
+      this.render();
     });
 
     // Board settings
