@@ -130,7 +130,8 @@ window.KicadIO = (function () {
           num: val(pd[1]), type: val(pd[2]), shape: val(pd[3]),
           x: px, y: py, rot: prot, w: pw, h: ph, drill, slot,
           rr: rrN ? num(rrN[1]) : 0,
-          side, net: pnetN ? val(pnetN[2] || '') : ''
+          side, net: pnetN ? val(pnetN[2] || '') : '',
+          cu: pLayers.some(l => l.endsWith('.Cu')) // paste/mask-only pad（鋼網開窗）無銅
         });
         const ex = Math.abs(px) + pw / 2, ey = Math.abs(py) + ph / 2;
         if (first) { minx = -ex; maxx = ex; miny = -ey; maxy = ey; first = false; }

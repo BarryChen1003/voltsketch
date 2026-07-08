@@ -202,6 +202,7 @@ const pcbApp = {
     const bCol = (layerOf('B.Cu') || {}).color || '#3498db';
     const fVis = state.visibleLayers.includes('F.Cu'), bVis = state.visibleLayers.includes('B.Cu');
     comp.pads.forEach(pad => {
+      if (pad.cu === false) return; // paste/mask-only 開窗非銅
       if (pad.side === 'F' && !fVis) return;
       if (pad.side === 'B' && !bVis) return;
       if (pad.side === '*' && !fVis && !bVis) return;
@@ -433,19 +434,7 @@ const pcbApp = {
       });
     }
 
-    // Check trace clearance
-    this.state.traces.forEach((trace, i) => {
-      this.state.traces.forEach((other, j) => {
-        if (i >= j) return;
-        const dist = this.calculateTraceDistance(trace, other);
-        if (dist < rules.clearance.traceToTrace) {
-          results.push({
-            type: 'error',
-            message: `走線間距不足：${dist.toFixed(2)}mm < ${rules.clearance.traceToTrace}mm`
-          });
-        }
-      });
-    });
+    // 走線間距改由 pad 級 DRC 檢查（線寬/net/層感知，見 pcb-drc.js）
 
     // Check trace width
     this.state.traces.forEach(trace => {
@@ -475,30 +464,38 @@ const pcbApp = {
       });
     }
 
-    // 電源網路線寬不足（net 名含 VCC/VIN/VDD/PWR/GND/PGND/SW/V+ → 視為電源/大電流）
+    // 電源網路線寬不足（net 名含 VCC/VIN/VDD/PWR/GND/PGND/SW/V+ → 視為電源/大電流）：按 net 聚合
+    const powerThin = {};
     this.state.traces.forEach(t => {
       if (t.net && /vcc|vin|vdd|pwr|pgnd|gnd|^sw$|v\+|bat/i.test(t.net)) {
         const w = t.width || 0.3;
-        if (w < rules.width.minPowerTrace)
-          results.push({ type: 'warning', message: `電源/大電流線 ${t.net} 線寬 ${w}mm < ${rules.width.minPowerTrace}mm` });
+        if (w < rules.width.minPowerTrace) {
+          const e = powerThin[t.net] || (powerThin[t.net] = { n: 0, min: w });
+          e.n++; e.min = Math.min(e.min, w);
+        }
       }
     });
+    Object.entries(powerThin).forEach(([net, e]) =>
+      results.push({ type: 'warning', message: `電源/大電流線 ${net}：${e.n} 段線寬 < ${rules.width.minPowerTrace}mm（最細 ${e.min}mm）` }));
 
-    // 走線/元件 距板邊太近（板框 ±W/2, ±H/2）
-    const halfW = this.state.boardWidth / 2, halfH = this.state.boardHeight / 2;
-    const edgeGap = (x, y) => Math.min(halfW - Math.abs(x), halfH - Math.abs(y));
-    this.state.traces.forEach((t, i) => {
-      [[t.x1, t.y1], [t.x2, t.y2]].forEach(([x, y]) => {
-        const g = edgeGap(x, y);
+    // 走線距板邊太近：有真實板框幾何（KiCad 匯入）時由 pad 級 DRC 用 edgeSegs 算，這裡只做矩形近似
+    if (!(this.state.edgeSegs || []).length) {
+      const halfW = this.state.boardWidth / 2, halfH = this.state.boardHeight / 2;
+      const edgeGap = (x, y) => Math.min(halfW - Math.abs(x), halfH - Math.abs(y));
+      this.state.traces.forEach((t, i) => {
+        const g = Math.min(edgeGap(t.x1, t.y1), edgeGap(t.x2, t.y2));
         if (g < rules.clearance.traceToEdge)
           results.push({ type: g < 0 ? 'error' : 'warning', message: `走線#${i + 1} 距板邊 ${g.toFixed(2)}mm < ${rules.clearance.traceToEdge}mm` });
       });
-    });
+    }
 
-    // 元件間距過近 / 重疊
+    // 元件間距過近 / 重疊（中心距近似——只適用手放教學方塊；
+    // KiCad 匯入元件有真幾何交給 pad 級 DRC，絲印/logo footprint 無銅不檢）
     const comps = this.state.components;
+    const hasGeom = c => (c.pads || []).length > 0 || !!c.kicadNode;
     for (let i = 0; i < comps.length; i++)
       for (let j = i + 1; j < comps.length; j++) {
+        if (hasGeom(comps[i]) && hasGeom(comps[j])) continue;
         const d = Math.hypot(comps[i].x - comps[j].x, comps[i].y - comps[j].y);
         if (d < rules.compSpacing)
           results.push({ type: d < rules.compSpacing / 2 ? 'error' : 'warning', message: `元件 ${comps[i].label}/${comps[j].label} 間距 ${d.toFixed(2)}mm < ${rules.compSpacing}mm` });
@@ -518,6 +515,10 @@ const pcbApp = {
     const cu = (this.state.layerStack || []).filter(l => l.kind === 'copper');
     if (cu.length >= 4 && !cu.some(l => l.type === 'GND'))
       results.push({ type: 'info', message: '多層板建議至少一層完整 GND 平面（降低迴路電感/EMI）' });
+
+    // pad 級 DRC：真 pad 幾何算間距/環寬/鑽孔餘裕（pcb-drc.js）
+    if (window.PadDrc) results.push(...window.PadDrc.run(this.state, this.padAbs.bind(this), rules));
+    else results.push({ type: 'info', message: 'pad 級 DRC 模組未載入（pcb-drc.js）' });
 
     // Display results
     const container = document.querySelector('#drcResults');
@@ -547,7 +548,7 @@ const pcbApp = {
     const v = (id, d) => { const el = document.getElementById(id); const n = el ? parseFloat(el.value) : NaN; return isNaN(n) ? d : n; };
     const cl = v('ruleClearance', 0.15);
     return {
-      clearance: { traceToTrace: cl, traceToPad: cl, padToPad: cl, traceToEdge: v('ruleEdge', 0.3), viaToVia: 0.25 },
+      clearance: { traceToTrace: cl, traceToPad: cl, padToPad: cl, traceToEdge: v('ruleEdge', 0.3), viaToVia: cl, holeToHole: 0.25 },
       width: { minTrace: v('ruleMinTrace', 0.1), maxTrace: 20, minPowerTrace: v('ruleMinPower', 0.3) },
       via: { minDrill: 0.2, minRing: 0.15 },
       compSpacing: v('ruleCompSpace', 2),
@@ -1110,3 +1111,4 @@ const pcbApp = {
 
 // Initialize
 pcbApp.init();
+window.pcbApp = pcbApp;
