@@ -4691,5 +4691,991 @@ window.IC_DATA = [
     ],
     "secondSource": [],
     "dropIn": []
+  },
+  {
+    "part": "UCC21711-Q1",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "隔離閘極驅動器 (單通道，SiC/IGBT，含隔離類比感測)",
+    "package": "SOIC-16 (DW) 10.3mm × 7.5mm",
+    "whatIs": "隔離單通道閘極驅動器：將控制器側的低壓 PWM 邏輯訊號跨越電氣隔離傳送到高壓側，驅動 SiC MOSFET 或 IGBT 的閘極，並將過電流、短路等故障狀態回報給控制器。",
+    "func": "以 SiO2 電容隔離技術分隔輸入與輸出側，支援 1.5kVRMS 工作電壓、5.7kVRMS(單通道)加強隔離耐壓、12.8kVPK 突波免疫，隔離壽命 >40 年，CMTI ≥150V/ns。輸出級提供 ±10A source/sink 驅動能力，OUTH/OUTL 分離輸出可外接電阻分別調整開關速度。內建 OC(過電流)偵測輸入，支援 SenseFET、DESAT 或分流電阻等多種感測方式；偵測到故障時透過 {FLT}(開集，低態動作)回報，並以 400mA 電流做軟關斷(soft turn-off)保護功率元件。另整合 4A 主動米勒箝位(CLMPI)防止 dv/dt 誤導通，以及隔離類比對 PWM 訊號轉換器(AIN→APWM)，可用於溫度(NTC/PTC/熱二極體)或高壓 DC-Link/相電壓的隔離量測，免加額外隔離放大器。RST/EN 腳同時做輸出致能/關斷與 DESAT 故障重置。VDD-COM 側 UVLO 保護在 RDY 腳輸出電源良好旗標。",
+    "usedIn": "電動車牽引逆變器(traction inverter)、車載充電機(OBC)與充電樁、HEV/EV 用 DC/DC 轉換器等 SiC/IGBT 高壓開關驅動應用。",
+    "desc": "SOIC-16(DW)封裝，車規(AEC-Q100)5.7kVRMS 單通道加強隔離閘極驅動器，±10A source/sink，OC 過電流偵測(pin2)+隔離類比 PWM 感測輸出(APWM)+4A 主動米勒箝位。與同系列 UCC21751-Q1 腳位位置相同，但 pin2 為 DESAT(非 OC)、觸發基準隨 VDD 浮動，功能不同，兩者不可直接互換。",
+    "datasheet": "TI SLUSFY4",
+    "pins": [
+      {
+        "num": "1",
+        "name": "AIN",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "隔離類比感測輸入，建議並聯一顆小電容至 COM 以提升雜訊免疫力；未使用時接 COM。"
+      },
+      {
+        "num": "2",
+        "name": "OC",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "過電流偵測輸入，支援 SenseFET、DESAT 或分流電阻等較低閾值感測方式；未使用時接 COM。"
+      },
+      {
+        "num": "3",
+        "name": "COM",
+        "side": "L",
+        "type": "Ground",
+        "desc": "輸出側共同地參考；IGBT 接射極(emitter)、SiC MOSFET 接源極(source)。"
+      },
+      {
+        "num": "4",
+        "name": "OUTH",
+        "side": "L",
+        "type": "Output",
+        "desc": "閘極驅動輸出，上拉(source)電流路徑。"
+      },
+      {
+        "num": "5",
+        "name": "VDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "閘極驅動正電源軌；旁路 >10µF 電容至 COM 以支援額定 source 峰值電流，電容須靠近腳位放置。"
+      },
+      {
+        "num": "6",
+        "name": "OUTL",
+        "side": "L",
+        "type": "Output",
+        "desc": "閘極驅動輸出，下拉(sink)電流路徑。"
+      },
+      {
+        "num": "7",
+        "name": "CLMPI",
+        "side": "L",
+        "type": "Input",
+        "desc": "內部主動米勒箝位(Active Miller Clamp)輸入，直接接至功率電晶體閘極；未使用時懸空或接 VEE。"
+      },
+      {
+        "num": "8",
+        "name": "VEE",
+        "side": "L",
+        "type": "Power",
+        "desc": "閘極驅動負電源軌；旁路 >10µF 電容至 COM 以支援額定 sink 峰值電流，電容須靠近腳位放置。"
+      },
+      {
+        "num": "16",
+        "name": "APWM",
+        "side": "R",
+        "type": "Output",
+        "desc": "隔離類比感測 PWM 輸出；未使用時可懸空。"
+      },
+      {
+        "num": "15",
+        "name": "VCC",
+        "side": "R",
+        "type": "Power",
+        "desc": "輸入側電源供應，3V~5.5V；旁路 >1µF 電容至 GND，電容須靠近腳位放置。"
+      },
+      {
+        "num": "14",
+        "name": "RST/EN",
+        "side": "R",
+        "type": "Input",
+        "desc": "雙功能腳：1) 輸出側致能/關斷，拉低使功率開關以一般關斷方式關閉；2) 拉低超過 1000ns 可重置 {FLT} 上的 DESAT 故障狀態，重置訊號於 RST/EN 上升緣觸發；若為自動重置版本，此腳僅作 EN 用。"
+      },
+      {
+        "num": "13",
+        "name": "{FLT}",
+        "side": "R",
+        "type": "Output",
+        "desc": "低態動作故障警報輸出，過電流或短路時拉低；開集(open drain)配置，可與其他故障訊號並接。"
+      },
+      {
+        "num": "12",
+        "name": "RDY",
+        "side": "R",
+        "type": "Output",
+        "desc": "VCC-GND 與 VDD-COM 電源良好指示；開集(open drain)輸出，可與其他 RDY 訊號並接。"
+      },
+      {
+        "num": "11",
+        "name": "IN-",
+        "side": "R",
+        "type": "Input",
+        "desc": "反相閘極驅動控制輸入；未使用時接 GND。"
+      },
+      {
+        "num": "10",
+        "name": "IN+",
+        "side": "R",
+        "type": "Input",
+        "desc": "非反相閘極驅動控制輸入；未使用時接 VCC。"
+      },
+      {
+        "num": "9",
+        "name": "GND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "輸入側電源供應與邏輯地參考。"
+      }
+    ],
+    "thermalPad": "見 datasheet（dump 未記載外露散熱墊/EP 資訊）",
+    "specs": [
+      {
+        "k": "隔離耐壓",
+        "v": "5.7kVRMS(單通道加強隔離)，12.8kVPK 突波，工作電壓 1.5kVRMS"
+      },
+      {
+        "k": "適用開關元件",
+        "v": "SiC MOSFET / IGBT，最高 2121Vpk"
+      },
+      {
+        "k": "輸出驅動電壓(VDD-VEE)",
+        "v": "最大 33V(建議操作範圍 VDD-COM 13~33V)"
+      },
+      {
+        "k": "驅動電流",
+        "v": "±10A(source/sink)，分離 OUTH/OUTL 輸出"
+      },
+      {
+        "k": "CMTI",
+        "v": "≥150V/ns(min)"
+      },
+      {
+        "k": "過電流保護響應",
+        "v": "270ns(OC，典型)"
+      },
+      {
+        "k": "主動米勒箝位",
+        "v": "4A(CLMPI)"
+      },
+      {
+        "k": "軟關斷電流",
+        "v": "400mA"
+      },
+      {
+        "k": "VCC 供電",
+        "v": "3.0~5.5V"
+      },
+      {
+        "k": "RST/EN 重置最短脈寬",
+        "v": "1000ns(建議操作條件，min)"
+      },
+      {
+        "k": "傳播延遲/part skew",
+        "v": "130ns(max) / 30ns(max)"
+      },
+      {
+        "k": "工作接面溫度",
+        "v": "-40°C~150°C(環境溫度 -40°C~125°C)"
+      },
+      {
+        "k": "封裝",
+        "v": "SOIC-16(DW)，爬電/電氣間隙 >8mm"
+      },
+      {
+        "k": "認證",
+        "v": "AEC-Q100 溫度等級1；UL1577 元件認證(規劃中)"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 完全相容(SOIC-16 DW，pin-to-pin)",
+      "隔離耐壓與工作電壓等級涵蓋(≥5.7kVRMS 加強隔離)",
+      "驅動電流 ±10A 同等或更佳，CMTI ≥150V/ns",
+      "過電流/DESAT 保護腳(pin2)名稱與觸發基準需一致，OC 與 DESAT 不可混用",
+      "VDD-COM、VCC 供電範圍涵蓋",
+      "傳播延遲、part skew 同等或更佳",
+      "車規認證(AEC-Q100)、封裝爬電/間隙規格相同"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "UCC21751-Q1",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "隔離閘極驅動器 (單通道，SiC/IGBT，含隔離類比感測)",
+    "package": "SOIC-16 (DW) 10.3mm × 7.5mm",
+    "whatIs": "隔離單通道閘極驅動器：將控制器側的低壓 PWM 邏輯訊號跨越電氣隔離傳送到高壓側，驅動 SiC MOSFET 或 IGBT 的閘極，並以 DESAT(去飽和)偵測回報短路/過電流故障。",
+    "func": "以 SiO2 電容隔離技術分隔輸入與輸出側，支援 1.5kVRMS 工作電壓、5.7kVRMS(單通道)加強隔離耐壓、12.8kVPK 突波免疫，隔離壽命 >40 年，CMTI ≥150V/ns。輸出級提供 ±10A source/sink 驅動能力，OUTH/OUTL 分離輸出可外接電阻分別調整開關速度。內建 DESAT(去飽和電流保護)偵測輸入，偵測基準隨 VDD 浮動(COM-0.3V~VDD+0.3V)，可支援最高 2121V DC 工作電壓的 SiC/IGBT 短路保護；偵測到故障時透過 {FLT}(開集，低態動作)回報，並以 400mA 電流做軟關斷保護功率元件。另整合 4A 主動米勒箝位(CLMPI)防止 dv/dt 誤導通，以及隔離類比對 PWM 訊號轉換器(AIN→APWM)，可用於溫度或高壓 DC-Link/相電壓的隔離量測。RST/EN 腳同時做輸出致能/關斷與 DESAT 故障重置，依 datasheet 建議操作條件，重置最短脈寬為 800ns。VDD-COM 側 UVLO 保護在 RDY 腳輸出電源良好旗標。",
+    "usedIn": "電動車牽引逆變器(traction inverter)、車載充電機(OBC)與充電樁、HEV/EV 用 DC/DC 轉換器等 SiC/IGBT 高壓開關驅動應用。",
+    "desc": "SOIC-16(DW)封裝，車規(AEC-Q100)5.7kVRMS 單通道加強隔離閘極驅動器，±10A source/sink，DESAT 去飽和保護(pin2，基準隨 VDD 浮動)+隔離類比 PWM 感測輸出(APWM)+4A 主動米勒箝位。與同系列 UCC21711-Q1 腳位位置相同，但 pin2 為 OC(非 DESAT)、觸發基準固定為 COM 參考 -0.3~6V，功能不同，兩者不可直接互換。",
+    "datasheet": "TI SLUSFY3",
+    "pins": [
+      {
+        "num": "1",
+        "name": "AIN",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "隔離類比感測輸入，建議並聯一顆小電容至 COM 以提升雜訊免疫力；未使用時接 COM。"
+      },
+      {
+        "num": "2",
+        "name": "DESAT",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "去飽和(desaturation)電流保護輸入，偵測基準隨 VDD 浮動(COM-0.3V~VDD+0.3V)；未使用時接 COM。"
+      },
+      {
+        "num": "3",
+        "name": "COM",
+        "side": "L",
+        "type": "Ground",
+        "desc": "輸出側共同地參考；IGBT 接射極(emitter)、SiC MOSFET 接源極(source)。"
+      },
+      {
+        "num": "4",
+        "name": "OUTH",
+        "side": "L",
+        "type": "Output",
+        "desc": "閘極驅動輸出，上拉(source)電流路徑。"
+      },
+      {
+        "num": "5",
+        "name": "VDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "閘極驅動正電源軌；旁路 >10µF 電容至 COM 以支援額定 source 峰值電流，電容須靠近腳位放置。"
+      },
+      {
+        "num": "6",
+        "name": "OUTL",
+        "side": "L",
+        "type": "Output",
+        "desc": "閘極驅動輸出，下拉(sink)電流路徑。"
+      },
+      {
+        "num": "7",
+        "name": "CLMPI",
+        "side": "L",
+        "type": "Input",
+        "desc": "內部主動米勒箝位(Active Miller Clamp)輸入，直接接至功率電晶體閘極；未使用時懸空或接 VEE。"
+      },
+      {
+        "num": "8",
+        "name": "VEE",
+        "side": "L",
+        "type": "Power",
+        "desc": "閘極驅動負電源軌；旁路 >10µF 電容至 COM 以支援額定 sink 峰值電流，電容須靠近腳位放置。"
+      },
+      {
+        "num": "16",
+        "name": "APWM",
+        "side": "R",
+        "type": "Output",
+        "desc": "隔離類比感測 PWM 輸出；未使用時可懸空。"
+      },
+      {
+        "num": "15",
+        "name": "VCC",
+        "side": "R",
+        "type": "Power",
+        "desc": "輸入側電源供應，3V~5.5V；旁路 >1µF 電容至 GND，電容須靠近腳位放置。"
+      },
+      {
+        "num": "14",
+        "name": "RST/EN",
+        "side": "R",
+        "type": "Input",
+        "desc": "雙功能腳：1) 輸出側致能/關斷，拉低使功率開關以一般關斷方式關閉；2) 拉低超過 1000ns 可重置 {FLT} 上的 DESAT 故障狀態，重置訊號於 RST/EN 上升緣觸發；若為自動重置版本，此腳僅作 EN 用。"
+      },
+      {
+        "num": "13",
+        "name": "{FLT}",
+        "side": "R",
+        "type": "Output",
+        "desc": "低態動作故障警報輸出，過電流或短路時拉低；開集(open drain)配置，可與其他故障訊號並接。"
+      },
+      {
+        "num": "12",
+        "name": "RDY",
+        "side": "R",
+        "type": "Output",
+        "desc": "VCC-GND 與 VDD-COM 電源良好指示；開集(open drain)輸出，可與其他 RDY 訊號並接。"
+      },
+      {
+        "num": "11",
+        "name": "IN-",
+        "side": "R",
+        "type": "Input",
+        "desc": "反相閘極驅動控制輸入；未使用時接 GND。"
+      },
+      {
+        "num": "10",
+        "name": "IN+",
+        "side": "R",
+        "type": "Input",
+        "desc": "非反相閘極驅動控制輸入；未使用時接 VCC。"
+      },
+      {
+        "num": "9",
+        "name": "GND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "輸入側電源供應與邏輯地參考。"
+      }
+    ],
+    "thermalPad": "見 datasheet（dump 未記載外露散熱墊/EP 資訊）",
+    "specs": [
+      {
+        "k": "隔離耐壓",
+        "v": "5.7kVRMS(單通道加強隔離)，12.8kVPK 突波，工作電壓 1.5kVRMS"
+      },
+      {
+        "k": "適用開關元件",
+        "v": "SiC MOSFET / IGBT，最高 2121V DC 工作電壓"
+      },
+      {
+        "k": "輸出驅動電壓(VDD-VEE)",
+        "v": "最大 33V(建議操作範圍 VDD-COM 13~33V)"
+      },
+      {
+        "k": "驅動電流",
+        "v": "±10A(source/sink)，分離 OUTH/OUTL 輸出"
+      },
+      {
+        "k": "CMTI",
+        "v": "≥150V/ns(min)"
+      },
+      {
+        "k": "DESAT 保護響應",
+        "v": "200ns(典型)"
+      },
+      {
+        "k": "主動米勒箝位",
+        "v": "4A(CLMPI)"
+      },
+      {
+        "k": "軟關斷電流",
+        "v": "400mA"
+      },
+      {
+        "k": "VCC 供電",
+        "v": "3.0~5.5V"
+      },
+      {
+        "k": "RST/EN 重置最短脈寬",
+        "v": "800ns(建議操作條件，min)"
+      },
+      {
+        "k": "傳播延遲/part skew",
+        "v": "130ns(max) / 30ns(max)"
+      },
+      {
+        "k": "工作接面溫度",
+        "v": "-40°C~150°C(環境溫度 -40°C~125°C)"
+      },
+      {
+        "k": "封裝",
+        "v": "SOIC-16(DW)，爬電/電氣間隙 >8mm"
+      },
+      {
+        "k": "認證",
+        "v": "AEC-Q100 溫度等級1；UL1577 元件認證(規劃中)"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 完全相容(SOIC-16 DW，pin-to-pin)",
+      "隔離耐壓與工作電壓等級涵蓋(≥5.7kVRMS 加強隔離)",
+      "驅動電流 ±10A 同等或更佳，CMTI ≥150V/ns",
+      "DESAT/過電流保護腳(pin2)名稱與觸發基準需一致，DESAT 與 OC 不可混用",
+      "VDD-COM、VCC 供電範圍涵蓋",
+      "傳播延遲、part skew 同等或更佳",
+      "車規認證(AEC-Q100)、封裝爬電/間隙規格相同"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "TPS7H4010-SEP",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "太空級同步降壓轉換器 (Rad-Hard)",
+    "package": "30-WQFN (RNP) 6.00mm × 4.00mm × 0.8mm",
+    "whatIs": "抗輻射太空級同步降壓(step-down)直流轉換器：把 3.5V~32V 輸入電源轉換成可調輸出電壓，最高輸出電流 6A，供衛星/太空酬載板上電源使用。",
+    "func": "採用峰值電流模式控制(peak current-mode control)的同步降壓轉換器，內建高側/低側功率 MOSFET(RDS(on) 分別 53mΩ/31mΩ 典型值)，開關頻率 350kHz~2.2MHz 可調(RT 腳一顆電阻設定，懸空時預設 500kHz)，並可同步至外部時脈(SYNC/MODE)。內部補償簡化外部零件數；SS/TRK 可設定軟啟動時間或做電源軌追蹤(tracking)；FB 腳接電阻分壓回授設定輸出電壓；PGOOD 開集輸出電源良好旗標；EN 為精準致能輸入，可用電阻分壓程式化系統 UVLO 關斷點；具逐周期電流限制與打嗝模式(hiccup mode)短路保護、過熱關機保護。BIAS 腳可選接 VOUT 或外部 3.3V/5V 軌以提升效率。抗輻射規格：SEL/SEB/SEGR 免疫至 LET=43MeV-cm²/mg，SET/SEFI 特性化至同 LET，TID 每批晶圓保證 20krad(Si)、特性化至 30krad(Si)；太空增強型塑封(Space Enhanced Plastic)採金線與 NiPdAu 接腳處理、低逸氣模封材料、單一生產/組裝/測試廠。",
+    "usedIn": "衛星負載點電源(FPGA、微控制器、資料轉換器、ASIC)、通訊酬載、指揮與資料處理、光學/雷達成像酬載、雷射通訊酬載、導航與科學探測酬載等太空應用。",
+    "desc": "30-pin WQFN(RNP)封裝，抗輻射(20krad(Si))太空級 3.5~32V 輸入、6A 同步降壓轉換器，峰值電流模式控制，開關頻率 350kHz~2.2MHz 可調並可外部同步，內建軟啟動/追蹤、精準致能 UVLO 程式化、逐周期限流與打嗝式短路保護。SW(1-5)、PVIN(20-22)、PGND(23-26)、NC(12-15,27-30)為多腳合併。",
+    "datasheet": "TI SNVSBL0A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "SW",
+        "side": "L",
+        "type": "Power",
+        "desc": "穩壓器切換輸出，內部接高側 FET 源極與低側 FET 汲極；連接至功率電感與 bootstrap 電容。"
+      },
+      {
+        "num": "2",
+        "name": "SW",
+        "side": "L",
+        "type": "Power",
+        "desc": "穩壓器切換輸出，內部接高側 FET 源極與低側 FET 汲極；連接至功率電感與 bootstrap 電容。"
+      },
+      {
+        "num": "3",
+        "name": "SW",
+        "side": "L",
+        "type": "Power",
+        "desc": "穩壓器切換輸出，內部接高側 FET 源極與低側 FET 汲極；連接至功率電感與 bootstrap 電容。"
+      },
+      {
+        "num": "4",
+        "name": "SW",
+        "side": "L",
+        "type": "Power",
+        "desc": "穩壓器切換輸出，內部接高側 FET 源極與低側 FET 汲極；連接至功率電感與 bootstrap 電容。"
+      },
+      {
+        "num": "5",
+        "name": "SW",
+        "side": "L",
+        "type": "Power",
+        "desc": "穩壓器切換輸出，內部接高側 FET 源極與低側 FET 汲極；連接至功率電感與 bootstrap 電容。"
+      },
+      {
+        "num": "6",
+        "name": "CBOOT",
+        "side": "L",
+        "type": "Power",
+        "desc": "高側 FET 驅動器之 bootstrap 電容連接腳；此腳到 SW 腳間須接一顆高品質 470nF 電容。"
+      },
+      {
+        "num": "7",
+        "name": "VCC",
+        "side": "L",
+        "type": "Power",
+        "desc": "內部偏壓穩壓器輸出，供內部控制電路與驅動器使用；此腳到 GND 接一顆高品質 2.2µF 電容，TI 不建議外部電路對此腳加載。"
+      },
+      {
+        "num": "8",
+        "name": "BIAS",
+        "side": "L",
+        "type": "Power",
+        "desc": "選用的 BIAS LDO 供電輸入；當 3.3V≤VOUT≤18V 建議接至 VOUT，或接外部 3.3V/5V 軌以提升效率；BIAS 電壓不可高於 VIN；未使用時接地。"
+      },
+      {
+        "num": "9",
+        "name": "RT",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "開關頻率設定腳；接一顆電阻至地設定開關頻率，懸空時預設頻率為 500kHz；不可短接至地。"
+      },
+      {
+        "num": "10",
+        "name": "SS/TRK",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "軟啟動控制腳；懸空為內部固定軟啟動斜率，外接電容至地可延長軟啟動時間(2µA 電流對電容充電)；亦可外接斜坡訊號做追蹤(tracking)；不可短接至地。"
+      },
+      {
+        "num": "11",
+        "name": "FB",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "輸出電壓回授輸入；接電阻分壓器設定輸出電壓；運作中不可將此腳短接至地。"
+      },
+      {
+        "num": "12",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "無內部連接；建議接地網並鋪銅以提升散熱與板級可靠度。"
+      },
+      {
+        "num": "13",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "無內部連接；建議接地網並鋪銅以提升散熱與板級可靠度。"
+      },
+      {
+        "num": "14",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "無內部連接；建議接地網並鋪銅以提升散熱與板級可靠度。"
+      },
+      {
+        "num": "15",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "無內部連接；建議接地網並鋪銅以提升散熱與板級可靠度。"
+      },
+      {
+        "num": "16",
+        "name": "PGOOD",
+        "side": "B",
+        "type": "Output",
+        "desc": "開集(open drain)電源良好旗標輸出；接電流限制電阻至合適電源；High=VOUT在調節範圍內、Low=VOUT調節故障；當 EN=low 且 VIN>2V 時 PGOOD=Low。"
+      },
+      {
+        "num": "17",
+        "name": "SYNC/MODE",
+        "side": "R",
+        "type": "Input",
+        "desc": "同步輸入與模式設定腳；不可懸空，未使用時接地。接地=自動模式(輕載效率較佳)；接高邏輯位準=強制 PWM(定頻，跨負載範圍)；接外部時脈=強制 PWM 並同步至外部時脈上升緣。"
+      },
+      {
+        "num": "18",
+        "name": "EN",
+        "side": "R",
+        "type": "Input",
+        "desc": "穩壓器致能輸入；不可懸空。High=開啟、Low=關閉；可接至 PVIN。精準致能輸入可用外部電阻分壓器程式化輸入電壓 UVLO。"
+      },
+      {
+        "num": "19",
+        "name": "AGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "類比地；內部電路的接地參考，所有電氣參數皆以此腳為基準；須連接至 PCB 系統地。"
+      },
+      {
+        "num": "20",
+        "name": "PVIN",
+        "side": "R",
+        "type": "Power",
+        "desc": "內部偏壓 LDO 與高側 FET 之供電輸入；連接輸入電源與輸入旁路電容 CIN；CIN 須緊鄰此腳與 PGND 腳並以短而寬的走線連接。"
+      },
+      {
+        "num": "21",
+        "name": "PVIN",
+        "side": "R",
+        "type": "Power",
+        "desc": "內部偏壓 LDO 與高側 FET 之供電輸入；連接輸入電源與輸入旁路電容 CIN；CIN 須緊鄰此腳與 PGND 腳並以短而寬的走線連接。"
+      },
+      {
+        "num": "22",
+        "name": "PVIN",
+        "side": "R",
+        "type": "Power",
+        "desc": "內部偏壓 LDO 與高側 FET 之供電輸入；連接輸入電源與輸入旁路電容 CIN；CIN 須緊鄰此腳與 PGND 腳並以短而寬的走線連接。"
+      },
+      {
+        "num": "23",
+        "name": "PGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "功率地，內部連接至低側 FET 源極；須連接至系統地、DAP/EP、AGND，以及 CIN、COUT 的接地端；到 CIN 的路徑須盡量短。"
+      },
+      {
+        "num": "24",
+        "name": "PGND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "功率地，內部連接至低側 FET 源極；須連接至系統地、DAP/EP、AGND，以及 CIN、COUT 的接地端；到 CIN 的路徑須盡量短。"
+      },
+      {
+        "num": "25",
+        "name": "PGND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "功率地，內部連接至低側 FET 源極；須連接至系統地、DAP/EP、AGND，以及 CIN、COUT 的接地端；到 CIN 的路徑須盡量短。"
+      },
+      {
+        "num": "26",
+        "name": "PGND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "功率地，內部連接至低側 FET 源極；須連接至系統地、DAP/EP、AGND，以及 CIN、COUT 的接地端；到 CIN 的路徑須盡量短。"
+      },
+      {
+        "num": "27",
+        "name": "NC",
+        "side": "T",
+        "type": "NC",
+        "desc": "無內部連接；建議接地網並鋪銅以提升散熱與板級可靠度。"
+      },
+      {
+        "num": "28",
+        "name": "NC",
+        "side": "T",
+        "type": "NC",
+        "desc": "無內部連接；建議接地網並鋪銅以提升散熱與板級可靠度。"
+      },
+      {
+        "num": "29",
+        "name": "NC",
+        "side": "T",
+        "type": "NC",
+        "desc": "無內部連接；建議接地網並鋪銅以提升散熱與板級可靠度。"
+      },
+      {
+        "num": "30",
+        "name": "NC",
+        "side": "T",
+        "type": "NC",
+        "desc": "無內部連接；建議接地網並鋪銅以提升散熱與板級可靠度。"
+      },
+      {
+        "num": "31",
+        "name": "DAP",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露焊墊(EP/DAP)，低阻抗連接至 AGND；須連接至 PCB 系統地，為主要散熱路徑，須焊接到接地銅箔，建議加散熱過孔以利散熱到其他層。",
+        "ep": true
+      }
+    ],
+    "thermalPad": "DAP(Die Attach Pad)低阻抗連接至 AGND，是主要散熱路徑；須焊接至 PCB 接地銅箔並搭配散熱過孔(thermal vias)以提升散熱到其他層。",
+    "specs": [
+      {
+        "k": "輸入電壓",
+        "v": "3.5V ~ 32V"
+      },
+      {
+        "k": "最大輸出電流",
+        "v": "6A"
+      },
+      {
+        "k": "控制方式",
+        "v": "峰值電流模式(peak current-mode)，內部補償"
+      },
+      {
+        "k": "開關頻率",
+        "v": "350kHz ~ 2.2MHz 可調(RT 設定)，懸空預設 500kHz，可同步外部時脈"
+      },
+      {
+        "k": "高側 MOSFET RDS(on)",
+        "v": "53mΩ(典型)"
+      },
+      {
+        "k": "低側 MOSFET RDS(on)",
+        "v": "31mΩ(典型)"
+      },
+      {
+        "k": "最小導通/關斷時間",
+        "v": "tON-MIN 60ns(典型) / tOFF-MIN 70ns(典型)"
+      },
+      {
+        "k": "保護功能",
+        "v": "逐周期限流、打嗝模式短路保護、過熱關機、精準 EN 程式化 UVLO"
+      },
+      {
+        "k": "軟啟動",
+        "v": "內部固定斜率，或 SS/TRK 外接電容延長，2µA 充電電流"
+      },
+      {
+        "k": "抗輻射(SEL/SEB/SEGR)",
+        "v": "免疫至 LET=43MeV-cm²/mg"
+      },
+      {
+        "k": "抗輻射(TID)",
+        "v": "每批晶圓保證 20krad(Si)，特性化至 30krad(Si)"
+      },
+      {
+        "k": "封裝",
+        "v": "30-WQFN(RNP) 6×4×0.8mm，質量約 57.2mg(±10%)"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 相容(30-WQFN RNP 6×4mm，pin-to-pin)",
+      "輸入電壓範圍涵蓋(3.5~32V)、輸出電流能力 ≥6A",
+      "開關頻率可調範圍涵蓋(350kHz~2.2MHz)且支援外部同步",
+      "控制架構相容(峰值電流模式)，內部/外部補償方式須確認一致",
+      "太空抗輻射等級(SEL/SEB/SEGR、TID)同等或更佳；若替代非太空級零件須另行評估",
+      "保護功能(逐周期限流、打嗝短路、EN 程式化 UVLO)同等",
+      "封裝散熱路徑(DAP 接 AGND)相同"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "TPS25730A",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "USB Type-C / USB PD 控制器 (Sink-Only，含外部電源路徑閘極驅動)",
+    "package": "32-VQFN (RSM) 4.00mm × 4.00mm",
+    "whatIs": "USB Type-C 與 USB Power Delivery(PD)控制器：整合 PD 協議引擎與電源路徑保護，讓系統可用 USB-C PD 取代傳統圓形電源插座(barrel jack)，作為僅受電(sink-only)應用的獨立 PD 受電控制器。",
+    "func": "TPS25730A 是高整合度、獨立運作的 USB Type-C/PD 控制器，針對僅受電(sink only)應用最佳化，取代傳統 barrel jack 供電介面。內建 Type-C Rd 偵測與 sink 狀態機、USB PD 策略引擎(policy engine)與實體層(physical layer)，相容 PD3.2 規範。透過電阻分壓在 ADCIN1~ADCIN4 等腳位做 pin strapping 即可完整設定 PD 參數，免用外部 EEPROM、外部微控制器或韌體開發。整合電源路徑管理，含過電壓保護與逆電流保護(RCP，經 VSYS/GATE_VSYS 實作)；並提供 6 組可設定 GPIO 功能(SINK_EN、DBG_ACC、CAP_MIS、PLUG_EVENT、PLUG_FLIP、FAULT_IN)。內建 3.3V LDO(LDO_3V3)供死電池(dead battery)情境使用，可由 VIN_3V3 或 VBUS 供電，另有 1.5V 核心 LDO(LDO_1V5)。透過 I2C target(I2Ct_SCL/I2Ct_SDA)可讓外部 MCU 讀取狀態或覆寫設定。本條目為 32-VQFN(RSM) 的 TPS25730AS 版本，以 GATE_VBUS/GATE_VSYS 腳驅動外部 N 型 MOSFET 構成電源路徑(需外接 FET)；同系列另有 38-WQFN(REF) 的 TPS25730AD 版本，內建 PPHV/VBUS_IN/DRAIN 等整合式電源開關腳，免外接 FET，兩版本腳位數與腳位名稱皆不同，不可互換。",
+    "usedIn": "電動工具、行動電源(power bank)、零售自動化與支付設備、無線喇叭/耳機等消費性電子的 USB-C PD 受電埠，取代傳統 barrel jack 供電。",
+    "desc": "32-VQFN(RSM) 4×4mm 封裝，TPS25730A 的 sink-only USB-C PD 控制器變體(S 版)，以 GATE_VBUS/GATE_VSYS 驅動外部 N 型 MOSFET 構成電源路徑。同系列 38-WQFN(D 版，TPS25730AD)腳位數(38)與名稱皆不同(內建整合式 FET，含 PPHV/VBUS_IN/DRAIN 腳)，兩封裝 pinout 不相容，不可直接互換。",
+    "datasheet": "TI SLVSJG8",
+    "pins": [
+      {
+        "num": "1",
+        "name": "LDO_3V3",
+        "side": "L",
+        "type": "Output",
+        "desc": "由 VIN_3V3 或 VBUS LDO 切換而來的供電輸出；旁路電容 CLDO_3V3 至 GND。"
+      },
+      {
+        "num": "2",
+        "name": "ADCIN1",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定輸入；接電阻分壓器至 LDO_3V3。"
+      },
+      {
+        "num": "3",
+        "name": "ADCIN2",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定輸入；接電阻分壓器至 LDO_3V3。"
+      },
+      {
+        "num": "4",
+        "name": "LDO_1V5",
+        "side": "L",
+        "type": "Output",
+        "desc": "核心(CORE)LDO 輸出；旁路電容 CLDO_1V5 至 GND；此腳無法對外部電路提供電流。"
+      },
+      {
+        "num": "5",
+        "name": "ADCIN3",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定輸入；接電阻分壓器至 LDO_3V3。"
+      },
+      {
+        "num": "6",
+        "name": "CAP_MIS",
+        "side": "L",
+        "type": "Output",
+        "desc": "開集(open drain)輸出，能力不匹配(Capability Mismatch)指示；已協商 PD 合約發生能力不匹配時翻轉輸出，否則不翻轉。"
+      },
+      {
+        "num": "7",
+        "name": "ADCIN4",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定輸入；接電阻分壓器至 LDO_3V3。"
+      },
+      {
+        "num": "8",
+        "name": "I2Ct_SDA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "I2C target 序列資料，開集(open drain)雙向；經電阻接上拉電源，未使用時接地。"
+      },
+      {
+        "num": "9",
+        "name": "I2Ct_SCL",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2C target 序列時脈輸入；經電阻接上拉電源，未使用時接地。"
+      },
+      {
+        "num": "10",
+        "name": "DBG_ACC",
+        "side": "B",
+        "type": "Output",
+        "desc": "開集(open drain)輸出，Debug Accessory(Rp/Rp 或 Rd/Rd)偵測指示；1=偵測到 Debug Accessory，0=未偵測到。"
+      },
+      {
+        "num": "11",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "13",
+        "name": "PLUG_FLIP",
+        "side": "B",
+        "type": "Output",
+        "desc": "開集(open drain)輸出，纜線插頭方向指示；1=CC2 連接(反插)，0=CC1 連接(正插)。"
+      },
+      {
+        "num": "14",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "15",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "16",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "17",
+        "name": "FAULT_IN",
+        "side": "R",
+        "type": "Input",
+        "desc": "故障輸入，觸發 Type-C 錯誤復原並中斷連接埠；0=中斷連接，1=維持連接(無故障)；接周邊 MCU 或保護元件的故障訊號，並以上拉電阻接至 LDO3V3。"
+      },
+      {
+        "num": "18",
+        "name": "SINK_EN",
+        "side": "R",
+        "type": "Output",
+        "desc": "開集(open drain)輸出，受電路徑致能指示，用於控制外部負載開關；0=受電路徑致能，1=受電路徑關閉。"
+      },
+      {
+        "num": "19",
+        "name": "VSYS",
+        "side": "R",
+        "type": "Input",
+        "desc": "系統側高壓感測節點；用於對 GATE_VSYS 所控制的外部受電路徑實作逆電流保護(RCP)。"
+      },
+      {
+        "num": "20",
+        "name": "GATE_VSYS",
+        "side": "R",
+        "type": "Output",
+        "desc": "接至源極(source)接 VSYS 的 N 型 MOSFET 閘極。"
+      },
+      {
+        "num": "21",
+        "name": "GATE_VBUS",
+        "side": "R",
+        "type": "Output",
+        "desc": "接至源極(source)接 VBUS 的 N 型 MOSFET 閘極。"
+      },
+      {
+        "num": "22",
+        "name": "RESERVED",
+        "side": "R",
+        "type": "Input",
+        "desc": "保留腳；接地。"
+      },
+      {
+        "num": "23",
+        "name": "PD5VMAX",
+        "side": "R",
+        "type": "Input",
+        "desc": "設定輸入；接地或 LDO_3V3。"
+      },
+      {
+        "num": "24",
+        "name": "CC1",
+        "side": "R",
+        "type": "I/O",
+        "desc": "USB Type-C 的 CC I/O；接建議電容(CCCy)至 GND 濾除雜訊。"
+      },
+      {
+        "num": "25",
+        "name": "CC2",
+        "side": "T",
+        "type": "I/O",
+        "desc": "USB Type-C 的 CC I/O；接建議電容(CCCy)至 GND 濾除雜訊。"
+      },
+      {
+        "num": "26",
+        "name": "VBUS",
+        "side": "T",
+        "type": "I/O",
+        "desc": "5V~20V 輸入；旁路電容 CVBUS 至 GND。"
+      },
+      {
+        "num": "27",
+        "name": "VBUS",
+        "side": "T",
+        "type": "I/O",
+        "desc": "5V~20V 輸入；旁路電容 CVBUS 至 GND。"
+      },
+      {
+        "num": "28",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "29",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "30",
+        "name": "RESERVED",
+        "side": "T",
+        "type": "Input",
+        "desc": "保留腳；接地。"
+      },
+      {
+        "num": "31",
+        "name": "PLUG_EVENT",
+        "side": "T",
+        "type": "Output",
+        "desc": "開集(open drain)輸出，1=偵測到連接，0=未偵測到連接。"
+      },
+      {
+        "num": "32",
+        "name": "VIN_3V3",
+        "side": "T",
+        "type": "Input",
+        "desc": "核心電路與 I/O 供電；旁路電容 CVIN_3V3 至 GND；若裝置僅由 VBUS 供電則此腳接地。"
+      },
+      {
+        "num": "33",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱墊(Thermal Pad)，datasheet 標示接 GND；為主要散熱路徑，建議焊接至 PCB 接地銅箔並搭配散熱過孔。",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露散熱墊(Thermal Pad)標示接 GND；建議焊接至 PCB 接地銅箔並搭配散熱過孔以利散熱。",
+    "specs": [
+      {
+        "k": "PD 相容性",
+        "v": "USB PD3.2(sink-only 應用)"
+      },
+      {
+        "k": "整合功能",
+        "v": "Type-C Rd/sink 狀態機、PD policy engine、實體層、6 組可設定 GPIO、I2C target"
+      },
+      {
+        "k": "設定方式",
+        "v": "電阻分壓 pin strapping(ADCIN1~4)，免 EEPROM/外部 MCU/韌體"
+      },
+      {
+        "k": "電源路徑",
+        "v": "S 版(32-VQFN，本條目)以 GATE_VBUS/GATE_VSYS 驅動外部 N 型 MOSFET；D 版(38-WQFN)內建整合式電源開關(PPHV/VBUS_IN/DRAIN)"
+      },
+      {
+        "k": "保護功能",
+        "v": "整合過電壓保護、逆電流保護(RCP，經 VSYS/GATE_VSYS)"
+      },
+      {
+        "k": "內建 LDO",
+        "v": "3.3V(LDO_3V3，死電池支援) / 1.5V 核心(LDO_1V5)"
+      },
+      {
+        "k": "供電來源",
+        "v": "VIN_3V3 或 VBUS"
+      },
+      {
+        "k": "VBUS 輸入範圍",
+        "v": "5V~20V"
+      },
+      {
+        "k": "通訊介面",
+        "v": "I2C target(I2Ct_SCL/I2Ct_SDA)供外部 MCU 讀取/設定"
+      },
+      {
+        "k": "溫度範圍",
+        "v": "支援工業溫度範圍"
+      },
+      {
+        "k": "封裝",
+        "v": "32-VQFN(RSM) 4×4mm(S 版，本條目)；另有 38-WQFN(REF) 4×6mm(D 版)"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 完全相容(32-VQFN RSM 4×4mm，pin-to-pin)；D 版(38-WQFN)與 S 版腳位不相容不可混用",
+      "PD 規範版本涵蓋(PD3.2)，sink-only 功能相容",
+      "pin strapping 設定邏輯與電阻對照表須一致(ADCIN1~4、PD5VMAX 等)",
+      "GPIO 功能腳(SINK_EN、DBG_ACC、CAP_MIS、PLUG_EVENT、PLUG_FLIP、FAULT_IN)極性與開集特性相同",
+      "I2C 位址與暫存器映射相容(若系統有外部 MCU 存取)",
+      "VBUS 輸入範圍、內建 LDO 電壓與電流能力同等",
+      "外部 MOSFET 閘極驅動能力(GATE_VBUS/GATE_VSYS)同等或更佳"
+    ],
+    "dropIn": []
   }
 ];
