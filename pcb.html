@@ -601,6 +601,8 @@
               <label style="display:grid;gap:2px">層<select id="traceLayer" style="padding:3px"></select></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ratsnestToggle">顯示飛線（未連線）</label>
               <button class="small-button" id="autoRouteBtn" style="grid-column:1/-1">⚡ 自動佈線未連線（單層試驗）</button>
+              <button class="small-button" id="syncNetlistBtn" style="grid-column:1/-1" title="讀取線路圖頁自動存檔，建立元件與網路，飛線引導佈局">⇪ 從線路圖同步 netlist</button>
+              <button class="small-button" id="view3dBtn" style="grid-column:1/-1" title="教學級近似：元件方塊+pad+走線；Three.js 開啟時才載入">🧊 3D 檢視</button>
             </div>
             <p style="font-size:11px;color:var(--muted);margin:6px 0 0">走線：拖曳畫線（0/45/90 吸角，Shift=自由角度，Esc 取消）；起點碰 pad/走線自動接該網路。銅箔工具：逐點點擊畫鋪銅、雙擊收尾（避讓 0.3mm 於 Gerber 生效）。</p>
           </section>
@@ -838,11 +840,13 @@
     <script src="./pcb-tutorial.js?v=5"></script>
     <script src="./pcb-practice.js?v=5"></script>
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
+    <script src="./circuit-engine.js?v=34"></script>
     <script src="./kicad-io.js?v=6"></script>
-    <script src="./gerber-export.js?v=2"></script>
+    <script src="./gerber-export.js?v=3"></script>
     <script src="./pcb-drc.js?v=2"></script>
-    <script src="./pcb-rules.js?v=1"></script>
-    <script src="./pcb.js?v=14"></script>
+    <script src="./pcb-rules.js?v=2"></script>
+    <script src="./pcb-3d.js?v=1"></script>
+    <script src="./pcb.js?v=15"></script>
     <script>
       // Initialize tutorial and practice after page load
       document.addEventListener('DOMContentLoaded', () => {

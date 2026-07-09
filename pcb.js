@@ -1268,6 +1268,80 @@ const pcbApp = {
     if (window.NetRules) window.NetRules.save(this.state.netRules);
   },
 
+  // netlist 同步：讀線路圖（localStorage voltsketch-project）→ 建 PCB 元件+pad net，飛線引導佈線
+  syncFromSchematic() {
+    if (!window.CircuitEngine) { this.toast('circuit-engine 未載入', 'error'); return; }
+    let proj = null;
+    try { proj = JSON.parse(localStorage.getItem('voltsketch-project') || 'null'); } catch (e) {}
+    const sComps = (proj && proj.components || []).filter(c => c && c.type);
+    if (!sComps.length) { this.toast('線路圖無資料——先到「線路圖」頁畫圖（會自動存檔）', 'warn'); return; }
+    if (this.state.components.length || this.state.traces.length) {
+      if (!confirm('同步將清空目前板面（元件/走線/via/鋪銅），確定？')) return;
+    }
+    const eng = window.CircuitEngine;
+    const nets = eng.computeNets(sComps, proj.wires || []);
+    const byId = {}; sComps.forEach(c => { byId[c.id] = c; });
+    // net 命名：含 ground → GND；含 source/battery + 腳 → VCC；其餘 N$n
+    const rootName = new Map();
+    for (let i = 0; i < nets.pts.length; i++) {
+      const p = nets.pts[i];
+      if (p.kind !== 'pin') continue;
+      const r = nets.find(i);
+      const c = byId[p.key.split(':')[0]];
+      if (!c) continue;
+      if (/ground/i.test(c.type)) rootName.set(r, 'GND');
+      else if (/source|battery|vcc|vdd/i.test(c.type) && !rootName.has(r)) rootName.set(r, 'VCC');
+    }
+    let serial = 1;
+    const netNameOf = key => {
+      if (!nets.connectedPins.has(key)) return '';
+      const r = nets.pinNet.get(key);
+      if (!rootName.has(r)) rootName.set(r, 'N$' + serial++);
+      return rootName.get(r);
+    };
+    // 建 PCB 元件：pad 位置照線路圖 pin 幾何縮放（px→mm）
+    const SC = 0.08;
+    const newComps = [];
+    const grid = { cols: 8, dx: 16, dy: 14 };
+    sComps.forEach((c, i) => {
+      const pins = eng.getPins(c);
+      if (!pins.length) return;
+      const rel = pins.map(p => ({ x: (p.x - c.x) * SC, y: (p.y - c.y) * SC, name: String(p.name || ''), index: p.index }));
+      const ext = rel.reduce((m, p) => ({
+        minx: Math.min(m.minx, p.x), maxx: Math.max(m.maxx, p.x),
+        miny: Math.min(m.miny, p.y), maxy: Math.max(m.maxy, p.y)
+      }), { minx: 0, maxx: 0, miny: 0, maxy: 0 });
+      const col = i % grid.cols, row = Math.floor(i / grid.cols);
+      newComps.push({
+        id: `sync-${c.id}`, type: 'ic', kind: 'ic',
+        x: (col - (grid.cols - 1) / 2) * grid.dx,
+        y: (row - 1.5) * grid.dy,
+        rot: 0, side: 'top',
+        w: Math.max(3, ext.maxx - ext.minx + 2.4), h: Math.max(3, ext.maxy - ext.miny + 2.4),
+        ref: c.label || (c.type.toUpperCase().slice(0, 3) + (i + 1)), part: c.type, label: c.label || c.type,
+        pads: rel.map((p, k) => ({
+          num: String(k + 1), name: p.name, type: 'smd', shape: 'rect',
+          x: p.x, y: p.y, rot: 0, w: 1.2, h: 1.2, drill: 0, slot: null, rr: 0,
+          side: 'F', cu: true, net: netNameOf(c.id + ':' + p.index)
+        }))
+      });
+    });
+    const s = this.state;
+    s.components = newComps;
+    s.traces = []; s.vias = []; s.zones = []; s.zoneFills = []; s.userZones = [];
+    s.kicad = null; s.kicadArcs = []; s.edgeSegs = []; s.silkGr = [];
+    s.refBoard = null; s.refOverlayId = null; s.selected = null; s.ratsnest = null;
+    s.showRatsnest = true;
+    const tgl = document.getElementById('ratsnestToggle');
+    if (tgl) tgl.checked = true;
+    this.syncSelPanel();
+    this.renderPartsList();
+    this.populateEmiSelects();
+    this.render();
+    const netN = new Set([...rootName.values()]).size;
+    this.toast(`已同步線路圖：${newComps.length} 元件 / ${netN} 個 net。黃色飛線=待佈線，拖元件擺位後畫線或自動佈線`, 'info');
+  },
+
   // 自動佈線：把目前所有飛線逐條丟給 A*（單層試驗，無推擠、不插 via）
   autoRoute() {
     if (!window.Ratsnest || !window.AutoRoute) return;
@@ -1379,6 +1453,14 @@ const pcbApp = {
 
     // 自動佈線（試驗性：逐條飛線單層 A*）
     document.getElementById('autoRouteBtn')?.addEventListener('click', () => this.autoRoute());
+
+    // netlist 同步（線路圖 → PCB）
+    document.getElementById('syncNetlistBtn')?.addEventListener('click', () => this.syncFromSchematic());
+
+    // 3D 檢視
+    document.getElementById('view3dBtn')?.addEventListener('click', () => {
+      if (window.Pcb3D) window.Pcb3D.open(this.state, this.padAbs.bind(this));
+    });
 
     // 阻抗計算
     document.getElementById('impCalc')?.addEventListener('click', () => this.runImpedance());
