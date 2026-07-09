@@ -22,7 +22,12 @@ const entries = JSON.parse(fs.readFileSync(file, 'utf8'));
 if (!Array.isArray(entries) || !entries.length) { console.error('FAIL: entries.json 必須是非空陣列'); process.exit(1); }
 
 let src = fs.readFileSync(IC_DATA, 'utf8');
-const existing = new Set([...src.matchAll(/["']?part["']?\s*:\s*["']([^"']+)["']/g)].map(m => m[1].toUpperCase()));
+// 重複檢查用頂層 IC_DATA part（regex 會誤抓 dropIn 引用字串——TAS2120 曾因此假重複）
+const existing = (() => {
+  const g = { window: {} };
+  new Function('window', src)(g.window);
+  return new Set((g.window.IC_DATA || []).map(x => String(x.part).toUpperCase()));
+})();
 
 const errs = [];
 for (const e of entries) {

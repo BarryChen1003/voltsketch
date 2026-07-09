@@ -11411,5 +11411,2171 @@ window.IC_DATA = [
         "note": "同封裝同腳位（逐腳同名同號）；規格分級不同，確認動態範圍需求"
       }
     ]
+  },
+  {
+    "part": "TAS2120",
+    "mfr": "Texas Instruments",
+    "category": "audio",
+    "subcategory": "單聲道 Class-D 喇叭放大器（整合 Class-H boost）",
+    "package": "26-pin QFN (HR-QFN) 4×3.5mm，0.4mm pitch",
+    "whatIs": "8.2W 單聲道數位輸入 Class-D 音訊放大器，內建 14.75V Class-H boost（最大電流限制 5.1A），針對電池供電系統最佳化效率，最高可達 91% 效率（@1W, 8Ω 負載）。",
+    "func": "I2S/TDM 序列音訊介面（8 channels），HW pin 或 I2C 控制；MCLK-free 操作，自動時脈/取樣率偵測 16~192kHz；可程式電池電流限制（39mA 步階）、兩顆元件間 boost 共享、外部 Class-H boost 控制演算法；內建 Y-bridge 提升效率；高精度供電電壓監控與溫度感測；過熱與過電流保護。",
+    "usedIn": "具語音助理智慧喇叭、藍牙/無線喇叭、建築自動化系統、平板/穿戴裝置、筆電/桌上型電腦等電池供電音訊系統。",
+    "desc": "8.2W 單聲道 Class-D 放大器，整合 14.75V Class-H boost，114.4dB 動態範圍，I2S/TDM 8ch，HW/I2C 控制，26-QFN 0.4mm pitch 4×3.5mm。",
+    "datasheet": "TI SLASFC6A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "SEL5_CLH",
+        "side": "L",
+        "type": "I/O",
+        "desc": "HW Mode：Select5，Boost 1S/2S/外部 PVDD 模式選擇；I2C Mode：Class-H boost 控制（共享 boost 輸入或外部 boost PWM 產生），未用共享/外部 boost 功能時短接至 GND"
+      },
+      {
+        "num": "2",
+        "name": "SEL4_ADR",
+        "side": "L",
+        "type": "Input",
+        "desc": "HW Mode：Select4，Y-bridge 門檻設定；I2C Mode：I2C 位址腳"
+      },
+      {
+        "num": "3",
+        "name": "SEL3_SDA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "HW Mode：Select3，資料有效上升/下降緣選擇；I2C Mode：資料腳，須以電阻上拉至 IOVDD"
+      },
+      {
+        "num": "4",
+        "name": "SEL2_SCL",
+        "side": "L",
+        "type": "Input",
+        "desc": "HW Mode：Select2，I2S/TDM/左對齊選擇；I2C Mode：時脈腳，須以電阻上拉至 IOVDD"
+      },
+      {
+        "num": "5",
+        "name": "IOVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "1.8V 或 3.3V 數位 IO 供電，須以電容去耦至 GND"
+      },
+      {
+        "num": "6",
+        "name": "{IRQZ}",
+        "side": "L",
+        "type": "Output",
+        "desc": "開汲極、active-low 中斷腳；未用時保持浮接或短接至 GND"
+      },
+      {
+        "num": "7",
+        "name": "{SDZ}",
+        "side": "L",
+        "type": "Input",
+        "desc": "Active-low 硬體關機腳"
+      },
+      {
+        "num": "8",
+        "name": "FSYNC",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2S 字元時脈或 TDM 訊框同步訊號"
+      },
+      {
+        "num": "9",
+        "name": "SBCLK",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2S 或 TDM 序列位元時脈"
+      },
+      {
+        "num": "10",
+        "name": "SDIN",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2S 或 TDM 序列資料輸入"
+      },
+      {
+        "num": "11",
+        "name": "SDOUT",
+        "side": "B",
+        "type": "I/O",
+        "desc": "I2S 或 TDM 序列資料輸出（datasheet Type 欄列為 I/O）"
+      },
+      {
+        "num": "12",
+        "name": "BGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "Boost 接地，須以多個過孔強力連接至 PCB 接地平面"
+      },
+      {
+        "num": "13",
+        "name": "SW",
+        "side": "B",
+        "type": "Passive",
+        "desc": "內部 boost 轉換器切換節點（接外部電感）；未使用內部 boost 時保持浮接"
+      },
+      {
+        "num": "14",
+        "name": "VBAT_SNS",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "電池感測端，連接電池供電以進行遠端電池電壓感測；未用電池感測功能時短接至 GND"
+      },
+      {
+        "num": "15",
+        "name": "VBAT",
+        "side": "R",
+        "type": "Power",
+        "desc": "電池電源輸入，連接 2.5~5.5V 供電並以電容去耦"
+      },
+      {
+        "num": "16",
+        "name": "SEL1_I2C",
+        "side": "R",
+        "type": "Input",
+        "desc": "HW Mode：Select1，放大器增益等級選擇（含音量斜升啟停選項）；I2C Mode：短接至 GND 以選擇 I2C 模式"
+      },
+      {
+        "num": "17",
+        "name": "GREG",
+        "side": "R",
+        "type": "Power",
+        "desc": "高側閘極電荷幫浦穩壓輸出，不可外接負載"
+      },
+      {
+        "num": "18",
+        "name": "PVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "整合 boost 輸出與 Class-D 功率級供電，須以電容去耦至 GND"
+      },
+      {
+        "num": "19",
+        "name": "OUT_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "Class-D 負輸出"
+      },
+      {
+        "num": "20",
+        "name": "OUT_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "Class-D 正輸出"
+      },
+      {
+        "num": "21",
+        "name": "PGND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "Class-D 功率級接地，須以多個過孔強力連接至 PCB 接地平面"
+      },
+      {
+        "num": "22",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "連接至 PCB 接地平面，須以多個過孔強力連接"
+      },
+      {
+        "num": "23",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "連接至 PCB 接地平面，須以多個過孔強力連接"
+      },
+      {
+        "num": "24",
+        "name": "VDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "連接 1.8V 供電並以電容去耦至 GND"
+      },
+      {
+        "num": "25",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "連接至 PCB 接地平面，須以多個過孔強力連接"
+      },
+      {
+        "num": "26",
+        "name": "DREG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位核心穩壓器輸出，以電容旁路至 GND，不可外接負載"
+      }
+    ],
+    "thermalPad": "見 datasheet（4 Pin Configuration and Functions 之 Pin Functions 表僅列 26 個編號腳位，未見獨立 EP/Thermal Pad 列；5.4 Thermal Information 表雖標示封裝為 HR-QFN 26 PINS，但表中無對應腳號可佐證）",
+    "specs": [
+      {
+        "k": "輸出功率",
+        "v": "8.2W（rms）@1% THD+N（RL=4Ω+33µH, VBAT=4.4V）"
+      },
+      {
+        "k": "Class-H boost",
+        "v": "14.75V boost，最大電流限制 5.1A；33mV 步階可調"
+      },
+      {
+        "k": "效率",
+        "v": "最高 91%（@1W, 8Ω 負載）；整合 1.8V VDD Y-bridge"
+      },
+      {
+        "k": "待機功耗",
+        "v": "14.7mW（noise gate off）／5.3mW（noise gate on）"
+      },
+      {
+        "k": "音訊性能",
+        "v": "114.4dB 動態範圍；THD+N −90dB；閒置通道雜訊 4.2µV A-wt"
+      },
+      {
+        "k": "時脈",
+        "v": "MCLK-free 操作；自動時脈/取樣率偵測 16~192kHz"
+      },
+      {
+        "k": "音訊介面",
+        "v": "I2S/TDM，最多 8 channels"
+      },
+      {
+        "k": "控制介面",
+        "v": "HW pin 控制或 I2C"
+      },
+      {
+        "k": "電源",
+        "v": "VBAT 2.5~5.5V；VBAT_SNS 2.5~10.0V；VDD 1.65~1.95V；IOVDD 1.8V 或 3.3V"
+      },
+      {
+        "k": "封裝",
+        "v": "26-pin QFN，0.4mm pitch，4mm×3.5mm"
+      }
+    ],
+    "secondSource": [
+      "封裝相容（26-pin QFN 4×3.5mm、0.4mm pitch）",
+      "功能相同（8.2W 單聲道 Class-D + 14.75V Class-H boost）",
+      "音訊介面相容（I2S/TDM 8ch）",
+      "控制介面相容（HW pin 或 I2C）",
+      "電源軌相容（VBAT 2.5~5.5V、VDD 1.65~1.95V、IOVDD 1.8/3.3V）",
+      "動態範圍/THD+N 同級（114.4dB／−90dB）"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "TAS5830",
+    "mfr": "Texas Instruments",
+    "category": "audio",
+    "subcategory": "立體聲閉迴路 Class-D 喇叭放大器（整合音訊處理器＋Class-H 追蹤）",
+    "package": "32-TSSOP (DAD, PowerPAD) 11.00mm×6.20mm",
+    "whatIs": "65W 立體聲數位輸入高效率閉迴路 Class-D 放大器，整合音訊 DSP 處理器與最高 192kHz 音訊支援，具備 Class-H 音訊包絡追蹤演算法，透過 GPIO 輸出 PWM 訊號控制外部 DC-DC 轉換器以提升系統效率。",
+    "func": "支援多種輸出組態：BTL 模式 2×80W(4Ω,26V,10%THD+N)／2×65W(4Ω,26V,1%THD+N)／2×74W(6Ω,30V,10%)／2×63W(6Ω,30V,1%)；PBTL 單聲道 1×151W(3Ω,30V,10%)／1×131W(3Ω,30V,1%)。音訊 I/O：I2S/LJ/RJ/TDM(4~16ch)輸入，32/44.1/48/88.2/96/192kHz 取樣率，SDOUT 供監聽/子聲道/回音消除，支援 3-wire 數位音訊介面（免 MCLK）。DSP：3-Band 進階 DRC + 2EQ + AGL + 2EQ、15 個 BQ/聲道、電平表、Mixer/音量/動態EQ/輸出 crossbar、Rattle suppression、頻率限制器。保護：OCE、逐週期電流限制（4 段可選）、OTW/OTE、UVLO/OVLO、PVDD 電壓驟降偵測。控制：I2C（支援 Fast 與 Fast Plus 模式）或硬體腳位模式。",
+    "usedIn": "電池供電喇叭、藍牙無線喇叭、Soundbar 與 subwoofer、智慧喇叭等中大功率立體聲音訊系統。",
+    "desc": "65W 立體聲閉迴路 Class-D 放大器，Class-H 追蹤演算法，SNR≥110dB，I2S/LJ/RJ/TDM 192kHz，I2C(Fast+)/HW 模式控制，32-TSSOP(DAD) 11×6.2mm PowerPAD。",
+    "datasheet": "TI SLASFD8（Software Mode 腳位表 Table 4-1；Hardware Mode 為同顆晶片另一組腳位命名，本條目未採用）",
+    "pins": [
+      {
+        "num": "1",
+        "name": "AGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "2",
+        "name": "AVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "內部調節 5V 類比供電，不可用於驅動外部負載"
+      },
+      {
+        "num": "3",
+        "name": "GVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "閘極驅動內部穩壓輸出，不可用於驅動外部負載"
+      },
+      {
+        "num": "4",
+        "name": "{PDN}",
+        "side": "L",
+        "type": "Input",
+        "desc": "Active-low 電源關閉腳，拉低使放大器進入 Shutdown 並關閉所有內部穩壓器"
+      },
+      {
+        "num": "5",
+        "name": "SCL",
+        "side": "L",
+        "type": "Input",
+        "desc": "I2C 序列控制時脈輸入"
+      },
+      {
+        "num": "6",
+        "name": "SDA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "I2C 序列控制資料輸出入"
+      },
+      {
+        "num": "7",
+        "name": "SDIN",
+        "side": "L",
+        "type": "Input",
+        "desc": "序列音訊資料埠資料輸入線"
+      },
+      {
+        "num": "8",
+        "name": "BCLK",
+        "side": "L",
+        "type": "Input",
+        "desc": "序列音訊資料埠位元時脈"
+      },
+      {
+        "num": "9",
+        "name": "LRCLK",
+        "side": "L",
+        "type": "Input",
+        "desc": "序列音訊資料埠字元選擇時脈；I2S/LJ/RJ 對應左右聲道邊界，TDM 對應訊框同步邊界"
+      },
+      {
+        "num": "10",
+        "name": "GPIO2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸出入，功能可由暫存器（位址 0x60h、0x62h）程式設定；可設為開汲極或推挽輸出"
+      },
+      {
+        "num": "11",
+        "name": "GPIO1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸出入，功能可由暫存器（位址 0x60h、0x61h）程式設定；可設為開汲極或推挽輸出"
+      },
+      {
+        "num": "12",
+        "name": "GPIO0",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸出入，功能可由暫存器（位址 0x60h、0x63h）程式設定；可設為開汲極或推挽輸出"
+      },
+      {
+        "num": "13",
+        "name": "ADR",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "以下拉至 GND 的電阻值表決定元件 I2C 位址（見 6.4.7.3 節）"
+      },
+      {
+        "num": "14",
+        "name": "VR_DIG",
+        "side": "L",
+        "type": "Power",
+        "desc": "內部調節 1.5V 數位供電，不可用於驅動外部負載"
+      },
+      {
+        "num": "15",
+        "name": "DVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "3.3V 或 1.8V 數位電源"
+      },
+      {
+        "num": "16",
+        "name": "DGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "17",
+        "name": "PVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "PVDD 電源輸入"
+      },
+      {
+        "num": "18",
+        "name": "PVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "PVDD 電源輸入"
+      },
+      {
+        "num": "19",
+        "name": "OUT_A+",
+        "side": "R",
+        "type": "Output",
+        "desc": "A 聲道差動喇叭放大器輸出正端"
+      },
+      {
+        "num": "20",
+        "name": "BST_A+",
+        "side": "R",
+        "type": "Passive",
+        "desc": "OUT_A+ 高側閘極驅動 bootstrap 電容連接點"
+      },
+      {
+        "num": "21",
+        "name": "PGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "功率元件電路接地參考，須連接系統接地"
+      },
+      {
+        "num": "22",
+        "name": "PGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "功率元件電路接地參考，須連接系統接地"
+      },
+      {
+        "num": "23",
+        "name": "OUT_A-",
+        "side": "R",
+        "type": "Output",
+        "desc": "A 聲道差動喇叭放大器輸出負端"
+      },
+      {
+        "num": "24",
+        "name": "BST_A-",
+        "side": "R",
+        "type": "Passive",
+        "desc": "OUT_A- 高側閘極驅動 bootstrap 電容連接點"
+      },
+      {
+        "num": "25",
+        "name": "BST_B-",
+        "side": "R",
+        "type": "Passive",
+        "desc": "OUT_B- 高側閘極驅動 bootstrap 電容連接點"
+      },
+      {
+        "num": "26",
+        "name": "OUT_B-",
+        "side": "R",
+        "type": "Output",
+        "desc": "B 聲道差動喇叭放大器輸出負端"
+      },
+      {
+        "num": "27",
+        "name": "PGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "功率元件電路接地參考，須連接系統接地"
+      },
+      {
+        "num": "28",
+        "name": "PGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "功率元件電路接地參考，須連接系統接地"
+      },
+      {
+        "num": "29",
+        "name": "BST_B+",
+        "side": "R",
+        "type": "Passive",
+        "desc": "OUT_B+ 高側閘極驅動 bootstrap 電容連接點"
+      },
+      {
+        "num": "30",
+        "name": "OUT_B+",
+        "side": "R",
+        "type": "Output",
+        "desc": "B 聲道差動喇叭放大器輸出正端"
+      },
+      {
+        "num": "31",
+        "name": "PVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "PVDD 電源輸入"
+      },
+      {
+        "num": "32",
+        "name": "PVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "PVDD 電源輸入"
+      },
+      {
+        "num": "EP",
+        "name": "PowerPAD (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤，須接至已接地之散熱片以獲最佳系統散熱效果（表 4-1 末列：PowerPAD™／P／Ground, connect to grounded heat sink for best system performance）",
+        "ep": true
+      }
+    ],
+    "thermalPad": "PowerPAD™（表 4-1 末列：PowerPAD™／P／Ground, connect to grounded heat sink for best system performance），須接散熱片並接地",
+    "specs": [
+      {
+        "k": "輸出組態",
+        "v": "BTL 2×80W(4Ω,26V,10%THD+N)／2×65W(4Ω,26V,1%)／2×74W(6Ω,30V,10%)／2×63W(6Ω,30V,1%)；PBTL 1×151W(3Ω,30V,10%)／1×131W(3Ω,30V,1%)"
+      },
+      {
+        "k": "效率",
+        "v": ">90% power efficiency，70mΩ RDSon"
+      },
+      {
+        "k": "音訊性能",
+        "v": "THD+N ≤0.03%（@1W,1kHz,PVDD=12V）；SNR ≥110dB（A-weighted）；ICN ≤40µVrms"
+      },
+      {
+        "k": "音訊介面",
+        "v": "I2S/LJ/RJ，4~16 channel TDM；32/44.1/48/88.2/96/192kHz；3-wire 免 MCLK"
+      },
+      {
+        "k": "DSP",
+        "v": "3-Band DRC + 2EQ + AGL + 2EQ；15 BQ/channel；level meter；96/192kHz processing"
+      },
+      {
+        "k": "保護",
+        "v": "OCE；逐週期電流限制 4 段可選；OTW/OTE；UVLO/OVLO；PVDD 電壓驟降偵測"
+      },
+      {
+        "k": "控制介面",
+        "v": "I2C（Fast 與 Fast Plus 模式）或硬體腳位模式"
+      },
+      {
+        "k": "電源",
+        "v": "PVDD 4.5V~30V；DVDD 與 IO 1.8V 或 3.3V"
+      },
+      {
+        "k": "封裝",
+        "v": "32-TSSOP (DAD) 11.00mm×6.20mm，PowerPAD 散熱"
+      }
+    ],
+    "secondSource": [
+      "封裝相容（32-TSSOP DAD 11×6.2mm，PowerPAD 散熱）",
+      "功能相同（65W 立體聲閉迴路 Class-D + Class-H 追蹤）",
+      "音訊介面相容（I2S/LJ/RJ/TDM 4~16ch，192kHz）",
+      "控制介面相容（I2C Fast/Fast Plus 或 HW 模式）",
+      "電源軌相容（PVDD 4.5~30V、DVDD 1.8/3.3V）",
+      "SNR/THD+N 同級（≥110dB／≤0.03%）"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "LMK3H2108",
+    "mfr": "Texas Instruments",
+    "category": "clocks",
+    "subcategory": "PCIe BAW 通用時脈產生器（8 輸出，內建 BAW 免外部 XTAL）",
+    "package": "40-pin QFN (RKP0040A) 5.0mm×5.0mm",
+    "whatIs": "整合 BAW 諧振器的低抖動通用時脈產生器，免外部 XTAL/XO；最多 8 路差動輸出（或最多 16 路 LVCMOS），3 路時脈輸入皆可 bypass 至任一輸出組，支援 PCIe Gen1~Gen7。",
+    "func": "2 組 FOD（Fractional Output Divider）提供頻率彈性、低功耗與低抖動；輸出格式可選 1.2/1.8/2.5/3.3V LVCMOS、DC/AC 耦合 LVDS、可調擺幅 LP-HCSL（可衍生 LVPECL/CML 等格式）；可程式 SSC，下擴 −0.05%~−3%、中心擴 ±0.025%~±1.5%，或 4 組預設下擴值（−0.1/−0.25/−0.3/−0.5%）；GPI/GPIO 腳可設定為個別 OE、群組 OE、I2C 位址選擇、OTP 分頁選擇、PWRGD/PWRDN#、狀態輸出等功能；支援 OTP 一次性可程式非揮發記憶體並可出廠預燒錄；5ms 最大啟動時間；fail-safe 輸入腳於元件斷電時可拉高。",
+    "usedIn": "高效能運算伺服器主機板、NIC/SmartNIC、硬體加速卡等 PCIe Gen1~7 時脈產生，以及一般用途時脈產生與 XO/XTAL 替代。",
+    "desc": "8 輸出 PCIe Gen1~7 BAW 時脈產生器，免外部 XTAL，Gen5 CC+SSC 抖動 61fs max，3 輸入可 bypass 至任一輸出，40-QFN 5×5mm。",
+    "datasheet": "TI SNAS944A（LMK3H2104/LMK3H2108 family，本條目採用 LMK3H2108 專屬 Table 4-2；LMK3H2104 為 4 輸出、24-QFN 封裝，腳位不同，未採用）",
+    "pins": [
+      {
+        "num": "1",
+        "name": "IN0_P/GPI_0",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入或通用輸入，fail-safe 輸入腳，未用時保持浮接"
+      },
+      {
+        "num": "2",
+        "name": "IN0_N/GPI_1",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入或通用輸入，fail-safe 輸入腳，未用時保持浮接"
+      },
+      {
+        "num": "3",
+        "name": "VDDX",
+        "side": "L",
+        "type": "Power",
+        "desc": "1.8/2.5/3.3V 電源，見 Power Supply Pin Mapping"
+      },
+      {
+        "num": "4",
+        "name": "IN1_P/GPI_2",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入或通用輸入，fail-safe 輸入腳，未用時保持浮接"
+      },
+      {
+        "num": "5",
+        "name": "IN1_N/GPI_3",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入或通用輸入，fail-safe 輸入腳，未用時保持浮接"
+      },
+      {
+        "num": "6",
+        "name": "VDDR",
+        "side": "L",
+        "type": "Power",
+        "desc": "1.8/2.5/3.3V 電源，見 Power Supply Pin Mapping"
+      },
+      {
+        "num": "7",
+        "name": "IN2_P/GPI_4",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入或通用輸入，fail-safe 輸入腳，未用時保持浮接"
+      },
+      {
+        "num": "8",
+        "name": "IN2_N/GPI_5",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入或通用輸入，fail-safe 輸入腳，未用時保持浮接"
+      },
+      {
+        "num": "9",
+        "name": "SCL",
+        "side": "L",
+        "type": "Input",
+        "desc": "I2C 時脈"
+      },
+      {
+        "num": "10",
+        "name": "SDA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "I2C 資料"
+      },
+      {
+        "num": "11",
+        "name": "VDDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "1.8/2.5/3.3V 電源，見 Power Supply Pin Mapping"
+      },
+      {
+        "num": "12",
+        "name": "GPIO_0",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸出入，未用時保持浮接"
+      },
+      {
+        "num": "13",
+        "name": "GPIO_1",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸出入，未用時保持浮接"
+      },
+      {
+        "num": "14",
+        "name": "GPIO_2",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸出入，未用時保持浮接"
+      },
+      {
+        "num": "15",
+        "name": "GPIO_3",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸出入，未用時保持浮接"
+      },
+      {
+        "num": "16",
+        "name": "GPIO_4",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸出入，未用時保持浮接"
+      },
+      {
+        "num": "17",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接，保持浮接或接 GND"
+      },
+      {
+        "num": "18",
+        "name": "VDDO_0",
+        "side": "B",
+        "type": "Power",
+        "desc": "1.8/2.5/3.3V 電源，見 Power Supply Pin Mapping"
+      },
+      {
+        "num": "19",
+        "name": "OUT0_N",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動時脈輸出 0，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "20",
+        "name": "OUT0_P",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動時脈輸出 0，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "21",
+        "name": "VDDO_1_2",
+        "side": "R",
+        "type": "Power",
+        "desc": "1.8/2.5/3.3V 電源，見 Power Supply Pin Mapping"
+      },
+      {
+        "num": "22",
+        "name": "OUT1_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出 1，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "23",
+        "name": "OUT1_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出 1，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "24",
+        "name": "OUT2_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出 2，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "25",
+        "name": "OUT2_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出 2，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "26",
+        "name": "OUT3_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出 3，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "27",
+        "name": "OUT3_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出 3，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "28",
+        "name": "OUT4_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出 4，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "29",
+        "name": "OUT4_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出 4，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "30",
+        "name": "VDDO_3_4",
+        "side": "R",
+        "type": "Power",
+        "desc": "1.8/2.5/3.3V 電源，見 Power Supply Pin Mapping"
+      },
+      {
+        "num": "31",
+        "name": "OUT5_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出 5，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "32",
+        "name": "OUT5_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出 5，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "33",
+        "name": "VDDO_5",
+        "side": "T",
+        "type": "Power",
+        "desc": "1.8/2.5/3.3V 電源，見 Power Supply Pin Mapping"
+      },
+      {
+        "num": "34",
+        "name": "VDDO_6",
+        "side": "T",
+        "type": "Power",
+        "desc": "1.8/2.5/3.3V 電源，見 Power Supply Pin Mapping"
+      },
+      {
+        "num": "35",
+        "name": "OUT6_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出 6，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "36",
+        "name": "OUT6_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出 6，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "37",
+        "name": "OUT7_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出 7，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "38",
+        "name": "OUT7_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出 7，支援 LP-HCSL(85Ω/100Ω)、LVDS、1.2/1.8/2.5/3.3V LVCMOS，未用時保持浮接"
+      },
+      {
+        "num": "39",
+        "name": "VDDO_7",
+        "side": "T",
+        "type": "Power",
+        "desc": "1.8/2.5/3.3V 電源，見 Power Supply Pin Mapping"
+      },
+      {
+        "num": "40",
+        "name": "VDDA",
+        "side": "T",
+        "type": "Power",
+        "desc": "1.8/2.5/3.3V 電源，見 Power Supply Pin Mapping"
+      },
+      {
+        "num": "41",
+        "name": "DAP (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "散熱接地墊（Die Attach Pad），須接地（Table 4-2：DAP／41／G／Connect to ground）",
+        "ep": true
+      }
+    ],
+    "thermalPad": "DAP（Die Attach Pad，Table 4-2 pin 41：DAP／G／Connect to ground），須接地",
+    "specs": [
+      {
+        "k": "拓樸",
+        "v": "3 路輸入（可 bypass 至任一輸出）→ 最多 8 路差動輸出或 16 路 LVCMOS"
+      },
+      {
+        "k": "輸出頻率",
+        "v": "最高 400MHz"
+      },
+      {
+        "k": "輸出格式",
+        "v": "1.2/1.8/2.5/3.3V LVCMOS；DC/AC 耦合 LVDS；可調擺幅 LP-HCSL（可衍生 LVPECL/CML）"
+      },
+      {
+        "k": "PCIe 支援",
+        "v": "Gen 1 ~ Gen 7"
+      },
+      {
+        "k": "抖動（CC+SSC）",
+        "v": "PCIe Gen5 61fs max／Gen6 36.4fs max／Gen7 25.5fs max"
+      },
+      {
+        "k": "SSC",
+        "v": "可程式下擴 −0.05%~−3%、中心擴 ±0.025%~±1.5%，或預設 −0.1/−0.25/−0.3/−0.5% 下擴"
+      },
+      {
+        "k": "啟動時間",
+        "v": "5ms max"
+      },
+      {
+        "k": "供電",
+        "v": "各 VDD/VDDO 腳可獨立設為 1.8V／2.5V／3.3V"
+      },
+      {
+        "k": "溫度",
+        "v": "−40°C ~ 105°C"
+      },
+      {
+        "k": "封裝",
+        "v": "40-pin QFN (RKP0040A) 5.0mm×5.0mm（LMK3H2108；4 輸出版 LMK3H2104 為 24-QFN 4×4mm，非同一腳位）"
+      }
+    ],
+    "secondSource": [
+      "封裝相容（40-QFN RKP0040A 5×5mm）",
+      "功能相同（BAW 免外部 XTAL，3 輸入可 bypass 至 8 輸出）",
+      "PCIe Gen1~7 相容",
+      "輸出格式相容（LVCMOS/LVDS/LP-HCSL）",
+      "抖動同級或更佳（Gen5 CC+SSC ≤61fs）",
+      "供電相容（VDD/VDDO 各自 1.8/2.5/3.3V）"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "LMKDB1208",
+    "mfr": "Texas Instruments",
+    "category": "clocks",
+    "subcategory": "PCIe LP-HCSL 時脈多工器（2 輸入 8 輸出）",
+    "package": "48-pin VQFN (RSL) 6mm×6mm",
+    "whatIs": "極低附加抖動 LP-HCSL 時脈多工器：2 路差動輸入切換至 8 路 LP-HCSL 差動輸出，支援 PCIe Gen1~Gen7（CC 與 IR 架構皆可），DB2000QL 規範相容，用於雙時脈來源備援切換。",
+    "func": "逐路 {OE}# 致能（內建上拉電阻）；SBI（Side-Band Interface）可高速切換 4 組輸出致能腳（{OE3}/SBI_CLK、{OE4}/SBI_IN、{OE6}/{SHFT_LD}、{OE7}/SBI_OUT，由 SBI_EN 決定功能）；SMBus 介面（SADR0/SADR1 三階位址）供暫存器控制；{LOS} 開汲極輸出指示輸入時脈遺失；輸出阻抗 85Ω/100Ω 可由 ZOUT_SEL 選擇；彈性上電順序、自動輸出停用、fail-safe 輸入。",
+    "usedIn": "高效能運算、伺服器主機板、NIC/SmartNIC、硬體加速卡等 PCIe 時脈樹雙來源切換與扇出。",
+    "desc": "PCIe Gen1~7 LP-HCSL 2:8 時脈多工器，附加抖動 5fs（Gen5）/2.1fs（Gen7）max，SBI+SMBus 控制，1.8V/3.3V 供電，48-VQFN 6×6mm。",
+    "datasheet": "TI SNAS927A（LMKDB1202/1204/1208 family，本條目採用 LMKDB1208 專屬 Table 5-1；Device Comparison 表另列 LMKDB11xx buffer 家族僅為對照，非本腳位表來源）",
+    "pins": [
+      {
+        "num": "1",
+        "name": "ZOUT_SEL",
+        "side": "L",
+        "type": "Input",
+        "desc": "LP-HCSL 差動時脈輸出阻抗選擇（內建下拉）：低=85Ω，高=100Ω"
+      },
+      {
+        "num": "2",
+        "name": "VDD_DIG",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位電源供電"
+      },
+      {
+        "num": "3",
+        "name": "PWRGD/{PWRDN}",
+        "side": "L",
+        "type": "Input",
+        "desc": "Power Good/Power Down 多功能輸入（內建上拉）：首次低→高轉態＝Power Good 啟動元件；之後低/高轉態＝控制進入或退出省電模式（低=省電，高=正常）"
+      },
+      {
+        "num": "4",
+        "name": "CLKIN0_P",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入 0"
+      },
+      {
+        "num": "5",
+        "name": "CLKIN0_N",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入 0"
+      },
+      {
+        "num": "6",
+        "name": "VDD_IN0",
+        "side": "L",
+        "type": "Power",
+        "desc": "CLKIN0 電源供電"
+      },
+      {
+        "num": "7",
+        "name": "SADR0",
+        "side": "L",
+        "type": "Input",
+        "desc": "SMBus 位址三階輸入（內建上拉+下拉）"
+      },
+      {
+        "num": "8",
+        "name": "CLKIN1_P",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入 1"
+      },
+      {
+        "num": "9",
+        "name": "CLKIN1_N",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入 1"
+      },
+      {
+        "num": "10",
+        "name": "SMB_DATA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "SMBus 資料，需外部上拉電阻，未用可 NC"
+      },
+      {
+        "num": "11",
+        "name": "SMB_CLK",
+        "side": "L",
+        "type": "Input",
+        "desc": "SMBus 時脈，需外部上拉電阻，未用可 NC"
+      },
+      {
+        "num": "12",
+        "name": "VDD_IN1",
+        "side": "L",
+        "type": "Power",
+        "desc": "CLKIN1 電源供電"
+      },
+      {
+        "num": "13",
+        "name": "VDDO_BANK1",
+        "side": "B",
+        "type": "Power",
+        "desc": "輸出 Bank1（OUT4~OUT7）電源供電"
+      },
+      {
+        "num": "14",
+        "name": "CLK7_P",
+        "side": "B",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 7，未用可 NC"
+      },
+      {
+        "num": "15",
+        "name": "CLK7_N",
+        "side": "B",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 7，未用可 NC"
+      },
+      {
+        "num": "16",
+        "name": "{OE7}/SBI_OUT",
+        "side": "B",
+        "type": "I/O",
+        "desc": "CLK7 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用；SBI 模式時作 SBI 移位暫存器資料輸出（依 SBI_EN 選擇功能）"
+      },
+      {
+        "num": "17",
+        "name": "CLKIN_SEL",
+        "side": "B",
+        "type": "Input",
+        "desc": "3 階時脈輸入選擇（內建上拉+下拉）：低=CLKIN0 送至全部輸出；中=CLKIN0 送至 Bank0、CLKIN1 送至 Bank1；高=CLKIN1 送至全部輸出"
+      },
+      {
+        "num": "18",
+        "name": "{OE6}/{SHFT_LD}",
+        "side": "B",
+        "type": "Input",
+        "desc": "CLK6 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用；SBI 模式時作 SBI 移位暫存器載入輸入（依 SBI_EN 選擇功能）"
+      },
+      {
+        "num": "19",
+        "name": "CLK6_P",
+        "side": "B",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 6，未用可 NC"
+      },
+      {
+        "num": "20",
+        "name": "CLK6_N",
+        "side": "B",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 6，未用可 NC"
+      },
+      {
+        "num": "21",
+        "name": "VDDO_BANK1",
+        "side": "B",
+        "type": "Power",
+        "desc": "輸出 Bank1（OUT4~OUT7）電源供電"
+      },
+      {
+        "num": "22",
+        "name": "CLK5_P",
+        "side": "B",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 5，未用可 NC"
+      },
+      {
+        "num": "23",
+        "name": "CLK5_N",
+        "side": "B",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 5，未用可 NC"
+      },
+      {
+        "num": "24",
+        "name": "{OE5}",
+        "side": "B",
+        "type": "Input",
+        "desc": "CLK5 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "25",
+        "name": "{OE4}/SBI_IN",
+        "side": "R",
+        "type": "Input",
+        "desc": "CLK4 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用；SBI 模式時作 SBI 資料輸入（依 SBI_EN 選擇功能）"
+      },
+      {
+        "num": "26",
+        "name": "CLK4_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 4，未用可 NC"
+      },
+      {
+        "num": "27",
+        "name": "CLK4_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 4，未用可 NC"
+      },
+      {
+        "num": "28",
+        "name": "VDDO_BANK1",
+        "side": "R",
+        "type": "Power",
+        "desc": "輸出 Bank1（OUT4~OUT7）電源供電"
+      },
+      {
+        "num": "29",
+        "name": "{LOS}",
+        "side": "R",
+        "type": "Output",
+        "desc": "輸入時脈遺失指示（active-low，開汲極需外部上拉電阻）：低=輸入時脈無效，高=輸入時脈有效"
+      },
+      {
+        "num": "30",
+        "name": "VDDO_BANK0",
+        "side": "R",
+        "type": "Power",
+        "desc": "輸出 Bank0（OUT0~OUT3）電源供電"
+      },
+      {
+        "num": "31",
+        "name": "VDDA",
+        "side": "R",
+        "type": "Power",
+        "desc": "類比電源，建議額外電源濾波（見 10.3 節）"
+      },
+      {
+        "num": "32",
+        "name": "CLK3_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 3，未用可 NC"
+      },
+      {
+        "num": "33",
+        "name": "CLK3_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 3，未用可 NC"
+      },
+      {
+        "num": "34",
+        "name": "{OE3}/SBI_CLK",
+        "side": "R",
+        "type": "Input",
+        "desc": "CLK3 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用；SBI 模式時作 SBI 時脈輸入（依 SBI_EN 選擇功能）"
+      },
+      {
+        "num": "35",
+        "name": "{OE2}",
+        "side": "R",
+        "type": "Input",
+        "desc": "CLK2 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "36",
+        "name": "SADR1",
+        "side": "R",
+        "type": "Input",
+        "desc": "SMBus 位址三階輸入（內建上拉+下拉）"
+      },
+      {
+        "num": "37",
+        "name": "CLK2_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 2，未用可 NC"
+      },
+      {
+        "num": "38",
+        "name": "CLK2_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 2，未用可 NC"
+      },
+      {
+        "num": "39",
+        "name": "VDDO_BANK0",
+        "side": "T",
+        "type": "Power",
+        "desc": "輸出 Bank0（OUT0~OUT3）電源供電"
+      },
+      {
+        "num": "40",
+        "name": "CLK1_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 1，未用可 NC"
+      },
+      {
+        "num": "41",
+        "name": "CLK1_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 1，未用可 NC"
+      },
+      {
+        "num": "42",
+        "name": "SBI_EN",
+        "side": "T",
+        "type": "Input",
+        "desc": "SBI 介面致能（內建下拉），上電後不可改變狀態：上電時低=SBI 停用（腳 16/18/25/34 作 OE 功能），高=SBI 啟用（該四腳作 SBI 介面，SMBus 與其餘 OE 腳仍作用）"
+      },
+      {
+        "num": "43",
+        "name": "{OE1}",
+        "side": "T",
+        "type": "Input",
+        "desc": "CLK1 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "44",
+        "name": "{OE0}",
+        "side": "T",
+        "type": "Input",
+        "desc": "CLK0 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "45",
+        "name": "CLK0_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 0，未用可 NC"
+      },
+      {
+        "num": "46",
+        "name": "CLK0_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 0，未用可 NC"
+      },
+      {
+        "num": "47",
+        "name": "VDDO_BANK0",
+        "side": "T",
+        "type": "Power",
+        "desc": "輸出 Bank0（OUT0~OUT3）電源供電"
+      },
+      {
+        "num": "48",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "元件接地"
+      },
+      {
+        "num": "EP",
+        "name": "GND (Thermal Pad)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "散熱焊盤，元件接地（表列：Thermal Pad (GND)／Pad／G／Device Ground, Thermal pad.）",
+        "ep": true
+      }
+    ],
+    "thermalPad": "Thermal Pad (GND)（Table 5-1 末列：Thermal Pad (GND)／Pad／G／Device Ground, Thermal pad.），須接板上接地平面",
+    "specs": [
+      {
+        "k": "拓樸",
+        "v": "2 路差動輸入 → 8 路 LP-HCSL 差動輸出（依 Table 4-1 Device Comparison：LMKDB1208＝Mux，2 input，8 output，85Ω 或 100Ω 可選）"
+      },
+      {
+        "k": "PCIe 支援",
+        "v": "Gen 1 ~ Gen 7（CC/IR 架構、含/不含 SSC 輸入皆可）；DB2000QL 相容"
+      },
+      {
+        "k": "附加抖動",
+        "v": "31fs max（12kHz-20MHz RMS @156.25MHz）；PCIe Gen4 13fs／Gen5 5fs／Gen6 3fs／Gen7 2.1fs max"
+      },
+      {
+        "k": "控制",
+        "v": "逐路 {OE}# + SBI 高速切換 + SMBus（三階位址×2）"
+      },
+      {
+        "k": "輸出阻抗",
+        "v": "85Ω 或 100Ω（ZOUT_SEL 選擇）"
+      },
+      {
+        "k": "供電",
+        "v": "1.8V／3.3V ±10%"
+      },
+      {
+        "k": "溫度",
+        "v": "−40°C ~ 105°C"
+      },
+      {
+        "k": "封裝",
+        "v": "48-pin VQFN (RSL) 6mm×6mm"
+      }
+    ],
+    "secondSource": [
+      "封裝相容（48-VQFN RSL 6×6mm）",
+      "功能相同（PCIe 2:8 LP-HCSL 時脈多工）",
+      "附加抖動同級或更佳（Gen5 ≤5fs）",
+      "OE/SMBus/SBI 控制相容",
+      "供電相容（1.8V/3.3V）",
+      "溫度範圍涵蓋（−40~105°C）"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "LMX1205-EP",
+    "mfr": "Texas Instruments",
+    "category": "clocks",
+    "subcategory": "JESD204B/C 高頻低雜訊時脈 Buffer/倍頻/分頻器（4 輸出+SYSREF，高可靠等級）",
+    "package": "40-pin VQFN (RHA) 6mm×6mm",
+    "whatIs": "低雜訊高頻 JESD204B/C 時脈 buffer/倍頻/分頻器，輸出頻率 300MHz~12.8GHz，4 組高頻時脈輸出各配對 SYSREF 輸出，具 noiseless 輸入/輸出延遲調整，適合高精度資料轉換器時脈與測試量測、航太國防等高可靠應用。",
+    "func": "共用除頻 1(bypass)/2/3/4/5/6/7/8，共用可程式倍頻 x2/x3/x4/x5/x6/x7/x8；LOGICLKOUT 獨立除頻庫（前除 1/2/4，後除 1(bypass)~1023），並提供第二組邏輯時脈選項（可再加 1/2/4/8 除頻）；輸入延遲 noiseless 可調最高 60ps（解析度 1.1ps）、各輸出延遲可調最高 55ps（解析度 0.9ps）；SYSREF 支援 generator/repeater/repeater-retime 模式與窗口（windowing）功能，508 級延遲步階、每步 <2.5ps @12.8GHz；6 組可程式輸出功率位準；SPI 控制（SCK/SDI/{CS}/MUXOUT）；SYNC 功能可同步所有除頻器及多顆元件。",
+    "usedIn": "示波器、無線設備測試儀、寬頻數位化儀等測試量測；雷達、電子戰、尋標器前端、彈藥、相位陣列天線/波束成形等航太國防應用；資料轉換器時脈與時脈 buffer 分配。",
+    "desc": "300MHz~12.8GHz JESD204B/C 低雜訊時脈 buffer/倍頻/分頻器，4 輸出+SYSREF，噪聲底 −159dBc/Hz@6GHz，SPI 控制，2.5V，−55~85°C 高可靠等級，40-VQFN 6×6mm。",
+    "datasheet": "TI SNAS938",
+    "pins": [
+      {
+        "num": "1",
+        "name": "MUXOUT",
+        "side": "L",
+        "type": "Output",
+        "desc": "多工輸出腳，供序列資料回讀與倍頻器鎖定狀態輸出"
+      },
+      {
+        "num": "2",
+        "name": "SYSREFREQ_P",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動 SYSREF 請求輸入（JESD204B/C 支援），內建 50Ω 端接，支援 AC/DC 耦合，可直接接受 1V~2V 共模電壓"
+      },
+      {
+        "num": "3",
+        "name": "SYSREFREQ_N",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動 SYSREF 請求輸入（JESD204B/C 支援），內建 50Ω 端接，支援 AC/DC 耦合，可直接接受 1V~2V 共模電壓"
+      },
+      {
+        "num": "4",
+        "name": "VCC_CLKIN",
+        "side": "L",
+        "type": "Power",
+        "desc": "連接 2.5V 供電，建議在腳位旁並聯高頻電容（典型 0.1µF 或更小）與較大電容（典型 1µF、10µF）"
+      },
+      {
+        "num": "5",
+        "name": "GND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "6",
+        "name": "CLKIN_P",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入對，各腳內建 50Ω 端接；以適當電容 AC 耦合（典型 0.1µF 或更小）；若用單端訊號，於 CLKIN_N 腳輸入並以串聯 AC 耦合電容+50Ω 電阻端接未用的 CLKIN_P"
+      },
+      {
+        "num": "7",
+        "name": "CLKIN_N",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入對，各腳內建 50Ω 端接；以適當電容 AC 耦合（典型 0.1µF 或更小）"
+      },
+      {
+        "num": "8",
+        "name": "SCK",
+        "side": "L",
+        "type": "Input",
+        "desc": "SPI 時脈，高阻抗 CMOS 輸入，可接受最高 3.3V，需串聯 200Ω 電阻"
+      },
+      {
+        "num": "9",
+        "name": "SDI",
+        "side": "L",
+        "type": "Input",
+        "desc": "SPI 資料輸入，高阻抗 CMOS 輸入，可接受最高 3.3V，需串聯 200Ω 電阻"
+      },
+      {
+        "num": "10",
+        "name": "{CS}",
+        "side": "L",
+        "type": "Input",
+        "desc": "SPI 晶片選擇（active-low），高阻抗 CMOS 輸入，可接受最高 3.3V，需串聯 200Ω 電阻"
+      },
+      {
+        "num": "11",
+        "name": "SYSREFOUT0_N",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.5V~1.5V，預期 100Ω 差動負載"
+      },
+      {
+        "num": "12",
+        "name": "SYSREFOUT0_P",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.5V~1.5V，預期 100Ω 差動負載"
+      },
+      {
+        "num": "13",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "14",
+        "name": "CLKOUT0_N",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合，預期 100Ω 差動負載或各腳 50Ω 負載"
+      },
+      {
+        "num": "15",
+        "name": "CLKOUT0_P",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合，預期 100Ω 差動負載或各腳 50Ω 負載"
+      },
+      {
+        "num": "16",
+        "name": "VCC01",
+        "side": "B",
+        "type": "Power",
+        "desc": "CLKOUT0/CLKOUT1 相關類比電源"
+      },
+      {
+        "num": "17",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "18",
+        "name": "CLKOUT1_N",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "19",
+        "name": "CLKOUT1_P",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "20",
+        "name": "BIAS01",
+        "side": "B",
+        "type": "Passive",
+        "desc": "未使用倍頻器時可保持開路；使用倍頻器時，以 10nF 電容旁路至 GND 以獲最佳雜訊性能"
+      },
+      {
+        "num": "21",
+        "name": "SYSREFOUT1_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.5V~1.5V"
+      },
+      {
+        "num": "22",
+        "name": "SYSREFOUT1_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.5V~1.5V"
+      },
+      {
+        "num": "23",
+        "name": "LOGISYSREFOUT_N/LOGICLKOUT1_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動邏輯時脈輸出對，可選 CML 或 LVDS 格式；LVDS 格式共模電壓可程式，CML 格式需外部提拉電阻"
+      },
+      {
+        "num": "24",
+        "name": "LOGISYSREFOUT_P/LOGICLKOUT1_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動邏輯時脈輸出對，可選 CML 或 LVDS 格式；LVDS 格式共模電壓可程式，CML 格式需外部提拉電阻"
+      },
+      {
+        "num": "25",
+        "name": "VCC_LOGICLK",
+        "side": "R",
+        "type": "Power",
+        "desc": "邏輯時脈相關電源"
+      },
+      {
+        "num": "26",
+        "name": "GND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "27",
+        "name": "LOGICLKOUT0_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動邏輯時脈輸出對，可選 CML 或 LVDS 格式；LVDS 格式共模電壓可程式，CML 格式需外部提拉電阻"
+      },
+      {
+        "num": "28",
+        "name": "LOGICLKOUT0_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動邏輯時脈輸出對，可選 CML 或 LVDS 格式；LVDS 格式共模電壓可程式，CML 格式需外部提拉電阻"
+      },
+      {
+        "num": "29",
+        "name": "SYSREFOUT2_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.5V~1.5V"
+      },
+      {
+        "num": "30",
+        "name": "SYSREFOUT2_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.5V~1.5V"
+      },
+      {
+        "num": "31",
+        "name": "BIAS23",
+        "side": "T",
+        "type": "Passive",
+        "desc": "未使用倍頻器時可保持開路；使用倍頻器時，以 10µF 與 0.1µF 電容旁路至 GND 以獲最佳雜訊性能"
+      },
+      {
+        "num": "32",
+        "name": "CLKOUT2_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "33",
+        "name": "CLKOUT2_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "34",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "35",
+        "name": "VCC23",
+        "side": "T",
+        "type": "Power",
+        "desc": "CLKOUT2/CLKOUT3 相關類比電源"
+      },
+      {
+        "num": "36",
+        "name": "CLKOUT3_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "37",
+        "name": "CLKOUT3_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "38",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "39",
+        "name": "SYSREFOUT3_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.5V~1.5V"
+      },
+      {
+        "num": "40",
+        "name": "SYSREFOUT3_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.5V~1.5V"
+      },
+      {
+        "num": "EP",
+        "name": "DAP",
+        "side": "B",
+        "type": "Ground",
+        "desc": "散熱接地墊（Table 4-1：DAP／DAP／GND／Ground these pins.）",
+        "ep": true
+      }
+    ],
+    "thermalPad": "DAP（Table 4-1：DAP／DAP／GND／Ground these pins.），須接地",
+    "specs": [
+      {
+        "k": "輸出頻率",
+        "v": "300MHz ~ 12.8GHz"
+      },
+      {
+        "k": "雜訊性能",
+        "v": "噪聲底 −159dBc/Hz @6GHz 輸出；附加抖動 36fs（DC~fCLK）／10fs（100Hz~100MHz）"
+      },
+      {
+        "k": "除頻/倍頻",
+        "v": "共用除頻 1(bypass)/2~8；共用可程式倍頻 x2~x8；LOGICLK 獨立除頻庫"
+      },
+      {
+        "k": "延遲調整",
+        "v": "輸入延遲最高 60ps（1.1ps 解析度）；各輸出延遲最高 55ps（0.9ps 解析度），皆為 noiseless 調整"
+      },
+      {
+        "k": "SYSREF",
+        "v": "4 組高頻輸出各配對 SYSREF；508 級延遲步階 <2.5ps@12.8GHz；generator/repeater/repeater-retime 模式"
+      },
+      {
+        "k": "控制介面",
+        "v": "SPI（SCK/SDI/{CS}/MUXOUT）"
+      },
+      {
+        "k": "電源",
+        "v": "2.5V"
+      },
+      {
+        "k": "溫度/可靠性",
+        "v": "−55°C ~ 85°C；VID #V62/25648，Controlled Baseline、單一組裝/測試場地、單一晶圓廠、Extended Product Life Cycle、Product Traceability"
+      },
+      {
+        "k": "封裝",
+        "v": "40-pin VQFN (RHA) 6mm×6mm"
+      }
+    ],
+    "secondSource": [
+      "封裝相容（40-VQFN RHA 6×6mm）",
+      "功能相同（4 輸出+SYSREF JESD204B/C buffer/倍頻/分頻）",
+      "頻率範圍涵蓋（300MHz~12.8GHz）",
+      "雜訊性能同級（噪聲底 −159dBc/Hz@6GHz）",
+      "控制介面相容（SPI）",
+      "可靠性等級相容（Controlled Baseline 高可靠系列）"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "LMX1404-EP",
+    "mfr": "Texas Instruments",
+    "category": "clocks",
+    "subcategory": "JESD204B/C 高頻低雜訊時脈 Buffer/倍頻/分頻器（4 輸出+SYSREF，支援 pin mode，高可靠等級）",
+    "package": "64-pin HTQFP (PAP0064E) 10.00mm×10.00mm",
+    "whatIs": "低雜訊高頻 JESD204B/C 時脈 buffer/倍頻/分頻器，輸出頻率 300MHz~15GHz，支援免 SPI 的腳位模式（pin mode）組態，4 組高頻時脈輸出各配對 SYSREF 輸出，−55°C~125°C 高可靠等級，適合資料轉換器時脈與航太國防酬載。",
+    "func": "共用除頻 1(buffer)/2/3/4/5/6/7/8，共用可程式倍頻 x2/x3/x4；LOGICLKOUT 獨立除頻庫（前除 1/2/4，後除 1(bypass)~1023）；PWRSEL[2:0]/DIVSEL[2:0]/MUXSEL[1:0]/CLK0_EN~CLK3_EN/LOGIC_EN/SYSREF_EN 等腳位可在 pin mode 下免 SPI 直接組態輸出功率位準、除頻/倍頻值、操作模式與各通道啟閉；亦支援 SPI 控制（SCK/SDI/{CS}/MUXOUT）；8 組可程式輸出功率位準；SYSREF 支援 generator 與 repeater 模式，並具窗口（windowing）功能優化時序，508 級延遲步階、每步 <2.5ps @12.8GHz；SYNC 功能可同步所有除頻器及多顆元件；可藉停用 SYSREF 輸出以分配多聲道、低偏斜、超低雜訊本地振盪訊號至多個混頻器。",
+    "usedIn": "雷達影像酬載、通訊酬載、指揮與資料處理（command and data handling）、資料轉換器時脈、時脈分配/倍頻/分頻等航太國防與高精度量測應用。",
+    "desc": "300MHz~15GHz JESD204B/C 低雜訊時脈 buffer/倍頻/分頻器，支援免 SPI pin mode，4 輸出+SYSREF，噪聲底 −159dBc/Hz@6GHz，2.5V，−55~125°C，64-HTQFP 10×10mm。",
+    "datasheet": "TI SNAS882A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "MUXOUT",
+        "side": "L",
+        "type": "Output",
+        "desc": "多工輸出腳，供序列資料回讀（SDO）與倍頻器鎖定狀態輸出"
+      },
+      {
+        "num": "2",
+        "name": "CE",
+        "side": "L",
+        "type": "Input",
+        "desc": "晶片致能（Chip Enable）"
+      },
+      {
+        "num": "3",
+        "name": "SYSREFREQ_P",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動 SYSREF 請求輸入（JESD204B/C 支援），內建 50Ω AC 耦合至內部共模電壓或以電容耦合至 GND，支援 AC/DC 耦合，可直接接受 1.2V~2V 共模電壓"
+      },
+      {
+        "num": "4",
+        "name": "SYSREFREQ_N",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動 SYSREF 請求輸入（JESD204B/C 支援），內建 50Ω AC 耦合至內部共模電壓或以電容耦合至 GND，支援 AC/DC 耦合，可直接接受 1.2V~2V 共模電壓"
+      },
+      {
+        "num": "5",
+        "name": "VCC_CLKIN",
+        "side": "L",
+        "type": "Power",
+        "desc": "連接 2.5V 供電，建議在腳位旁並聯寬頻 RF 電容（典型 0.1µF 或更小）與較大電容（典型 1µF、10µF），較大電容可置於稍遠處"
+      },
+      {
+        "num": "6",
+        "name": "GND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "7",
+        "name": "CLKIN_P",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動參考輸入時脈，內建 50Ω 端接；以適當電容 AC 耦合（典型 0.1µF 或更小）；若用單端訊號，未用腳以 50Ω 電阻 AC 耦合至地"
+      },
+      {
+        "num": "8",
+        "name": "CLKIN_N",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動參考輸入時脈，內建 50Ω 端接；以適當電容 AC 耦合（典型 0.1µF 或更小）"
+      },
+      {
+        "num": "9",
+        "name": "GND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "10",
+        "name": "PWRSEL0",
+        "side": "L",
+        "type": "Input",
+        "desc": "Pin mode 下選擇輸出功率位準"
+      },
+      {
+        "num": "11",
+        "name": "PWRSEL1",
+        "side": "L",
+        "type": "Input",
+        "desc": "Pin mode 下選擇輸出功率位準"
+      },
+      {
+        "num": "12",
+        "name": "PWRSEL2",
+        "side": "L",
+        "type": "Input",
+        "desc": "Pin mode 下選擇輸出功率位準"
+      },
+      {
+        "num": "13",
+        "name": "NC",
+        "side": "L",
+        "type": "NC",
+        "desc": "未連接腳，須以 1kΩ 電阻接地"
+      },
+      {
+        "num": "14",
+        "name": "SCK",
+        "side": "L",
+        "type": "Input",
+        "desc": "SPI 時脈，高阻抗 CMOS 輸入，可接受最高 3.3V"
+      },
+      {
+        "num": "15",
+        "name": "SDI",
+        "side": "L",
+        "type": "Input",
+        "desc": "SPI 資料輸入，高阻抗 CMOS 輸入，可接受最高 3.3V"
+      },
+      {
+        "num": "16",
+        "name": "{CS}",
+        "side": "L",
+        "type": "Input",
+        "desc": "SPI 晶片選擇（active-low），高阻抗 CMOS 輸入，可接受最高 3.3V"
+      },
+      {
+        "num": "17",
+        "name": "CAL",
+        "side": "B",
+        "type": "Input",
+        "desc": "倍頻器模式下使用的校準腳"
+      },
+      {
+        "num": "18",
+        "name": "SYSREFOUT0_N",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.6V~2V"
+      },
+      {
+        "num": "19",
+        "name": "SYSREFOUT0_P",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.6V~2V"
+      },
+      {
+        "num": "20",
+        "name": "VCC01",
+        "side": "B",
+        "type": "Power",
+        "desc": "連接 2.5V 供電，建議在腳位旁並聯寬頻 RF 電容與較大電容"
+      },
+      {
+        "num": "21",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "22",
+        "name": "CLKOUT0_N",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "23",
+        "name": "CLKOUT0_P",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "24",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "25",
+        "name": "CLK0_EN",
+        "side": "B",
+        "type": "Input",
+        "desc": "個別輸出通道啟用/停用"
+      },
+      {
+        "num": "26",
+        "name": "CLK1_EN",
+        "side": "B",
+        "type": "Input",
+        "desc": "個別輸出通道啟用/停用"
+      },
+      {
+        "num": "27",
+        "name": "VCC01",
+        "side": "B",
+        "type": "Power",
+        "desc": "連接 2.5V 供電，建議在腳位旁並聯寬頻 RF 電容與較大電容"
+      },
+      {
+        "num": "28",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "29",
+        "name": "CLKOUT1_N",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "30",
+        "name": "CLKOUT1_P",
+        "side": "B",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "31",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "32",
+        "name": "VBIAS01",
+        "side": "B",
+        "type": "Passive",
+        "desc": "倍頻器模式下以 10nF 電容旁路至 GND 以獲最佳雜訊性能"
+      },
+      {
+        "num": "33",
+        "name": "SYSREFOUT1_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.6V~2V"
+      },
+      {
+        "num": "34",
+        "name": "SYSREFOUT1_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.6V~2V"
+      },
+      {
+        "num": "35",
+        "name": "DIVSEL2",
+        "side": "R",
+        "type": "Input",
+        "desc": "Pin mode 下選擇除頻器或倍頻器數值"
+      },
+      {
+        "num": "36",
+        "name": "DIVSEL1",
+        "side": "R",
+        "type": "Input",
+        "desc": "Pin mode 下選擇除頻器或倍頻器數值"
+      },
+      {
+        "num": "37",
+        "name": "DIVSEL0",
+        "side": "R",
+        "type": "Input",
+        "desc": "Pin mode 下選擇除頻器或倍頻器數值"
+      },
+      {
+        "num": "38",
+        "name": "LOGISYSREFOUT_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出對，可選 CML 或 LVDS 格式，共模電壓可程式"
+      },
+      {
+        "num": "39",
+        "name": "LOGISYSREFOUT_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出對，可選 CML 或 LVDS 格式，共模電壓可程式"
+      },
+      {
+        "num": "40",
+        "name": "VCC_LOGICLK",
+        "side": "R",
+        "type": "Power",
+        "desc": "連接 2.5V 供電，建議在腳位旁並聯寬頻 RF 電容與較大電容"
+      },
+      {
+        "num": "41",
+        "name": "GND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "42",
+        "name": "LOGICLKOUT_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出對，可選 CML 或 LVDS 格式，共模電壓可程式"
+      },
+      {
+        "num": "43",
+        "name": "LOGICLKOUT_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動時脈輸出對，可選 CML 或 LVDS 格式，共模電壓可程式"
+      },
+      {
+        "num": "44",
+        "name": "LOGIC_EN",
+        "side": "R",
+        "type": "Input",
+        "desc": "Pin mode 下啟用/停用邏輯時脈通道"
+      },
+      {
+        "num": "45",
+        "name": "MUXSEL1",
+        "side": "R",
+        "type": "Input",
+        "desc": "Pin mode 下選擇操作模式（buffer、divider 或 multiplier）"
+      },
+      {
+        "num": "46",
+        "name": "MUXSEL0",
+        "side": "R",
+        "type": "Input",
+        "desc": "Pin mode 下選擇操作模式（buffer、divider 或 multiplier）"
+      },
+      {
+        "num": "47",
+        "name": "SYSREFOUT2_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.6V~2V"
+      },
+      {
+        "num": "48",
+        "name": "SYSREFOUT2_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.6V~2V"
+      },
+      {
+        "num": "49",
+        "name": "VBIAS23",
+        "side": "T",
+        "type": "Passive",
+        "desc": "倍頻器模式下以 10µF 與 0.1µF 電容旁路至 GND 以獲最佳雜訊性能"
+      },
+      {
+        "num": "50",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "51",
+        "name": "CLKOUT2_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "52",
+        "name": "CLKOUT2_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "53",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "54",
+        "name": "VCC23",
+        "side": "T",
+        "type": "Power",
+        "desc": "連接 2.5V 供電，建議在腳位旁並聯寬頻 RF 電容與較大電容"
+      },
+      {
+        "num": "55",
+        "name": "CLK2_EN",
+        "side": "T",
+        "type": "Input",
+        "desc": "個別輸出通道啟用/停用"
+      },
+      {
+        "num": "56",
+        "name": "CLK3_EN",
+        "side": "T",
+        "type": "Input",
+        "desc": "個別輸出通道啟用/停用"
+      },
+      {
+        "num": "57",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "58",
+        "name": "CLKOUT3_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "59",
+        "name": "CLKOUT3_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動時脈輸出對，各腳為內建 50Ω 電阻之開集極輸出，輸出擺幅可程式，需 AC 耦合"
+      },
+      {
+        "num": "60",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "61",
+        "name": "VCC23",
+        "side": "T",
+        "type": "Power",
+        "desc": "連接 2.5V 供電，建議在腳位旁並聯寬頻 RF 電容與較大電容"
+      },
+      {
+        "num": "62",
+        "name": "SYSREFOUT3_N",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.6V~2V"
+      },
+      {
+        "num": "63",
+        "name": "SYSREFOUT3_P",
+        "side": "T",
+        "type": "Output",
+        "desc": "差動 SYSREF CML 輸出對（JESD204B/C 支援），支援 AC/DC 耦合，共模電壓可程式 0.6V~2V"
+      },
+      {
+        "num": "64",
+        "name": "SYSREF_EN",
+        "side": "T",
+        "type": "Input",
+        "desc": "Pin mode 下啟用/停用 SYSREF 區塊"
+      },
+      {
+        "num": "EP",
+        "name": "DAP",
+        "side": "B",
+        "type": "Ground",
+        "desc": "散熱接地墊（Table 4-1：DAP／DAP／GND／Ground the pad.）",
+        "ep": true
+      }
+    ],
+    "thermalPad": "DAP（Table 4-1：DAP／DAP／GND／Ground the pad.），須接地",
+    "specs": [
+      {
+        "k": "輸出頻率",
+        "v": "300MHz ~ 15GHz"
+      },
+      {
+        "k": "雜訊性能",
+        "v": "噪聲底 −159dBc/Hz @6GHz 輸出；附加抖動 36fs（100Hz~fCLK，@6GHz 輸出）／5fs（100Hz~100MHz）"
+      },
+      {
+        "k": "除頻/倍頻",
+        "v": "共用除頻 1(buffer)/2~8；共用可程式倍頻 x2/x3/x4；LOGICLK 獨立除頻庫"
+      },
+      {
+        "k": "組態模式",
+        "v": "Pin mode（免 SPI，以 PWRSEL/DIVSEL/MUXSEL/CLKx_EN 等腳位設定）或 SPI（SCK/SDI/{CS}/MUXOUT）"
+      },
+      {
+        "k": "SYSREF",
+        "v": "4 組高頻輸出各配對 SYSREF；508 級延遲步階 <2.5ps@12.8GHz；generator/repeater 模式"
+      },
+      {
+        "k": "輸出功率位準",
+        "v": "8 組可程式"
+      },
+      {
+        "k": "電源",
+        "v": "2.5V"
+      },
+      {
+        "k": "溫度/可靠性",
+        "v": "−55°C ~ 125°C；VID #V62/24627，Controlled Baseline、單一組裝/測試場地、單一晶圓廠、Extended Product Life Cycle、Product Traceability"
+      },
+      {
+        "k": "封裝",
+        "v": "64-pin HTQFP (PAP0064E) 10mm×10mm"
+      }
+    ],
+    "secondSource": [
+      "封裝相容（64-HTQFP PAP0064E 10×10mm）",
+      "功能相同（4 輸出+SYSREF JESD204B/C buffer/倍頻/分頻，支援 pin mode）",
+      "頻率範圍涵蓋（300MHz~15GHz）",
+      "雜訊性能同級（噪聲底 −159dBc/Hz@6GHz）",
+      "組態模式相容（Pin mode 或 SPI）",
+      "可靠性等級相容（Controlled Baseline 高可靠系列，−55~125°C）"
+    ],
+    "dropIn": []
   }
 ];
