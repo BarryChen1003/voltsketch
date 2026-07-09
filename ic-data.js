@@ -6629,5 +6629,1106 @@ window.IC_DATA = [
     ],
     "secondSource": [],
     "dropIn": []
+  },
+  {
+    "part": "TPS25751A",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "USB Type-C / USB PD 控制器(外接電源路徑 MOSFET 閘極驅動，32-QFN S 版)",
+    "package": "32-QFN(S 版，本條目)；封裝代碼與確切尺寸見 datasheet(TI SLVSJG7)；另有 38-QFN(D 版，TPS25751AD)",
+    "whatIs": "USB Type-C 與 USB Power Delivery(PD)控制器：整合 PD 協議引擎與電源路徑保護，並提供豐富的 GPIO 與雙 I2C(target/controller)介面，用於系統對 PD 埠狀態的監控與擴充。",
+    "func": "TPS25751A 是高整合度 USB Type-C/PD 控制器，透過電阻分壓在 ADCIN1/ADCIN2 等腳位做 pin strapping 設定 PD 參數。提供多組通用 GPIO(GPIO0~GPIO7、GPIO11，部分與 LD1/LD2 液體偵測、USB_P/USB_N BC1.2 共用)。具備雙 I2C 介面：I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ 為 I2C target，供外部 MCU 讀取/覆寫設定；I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ 為 I2C controller，可由本裝置作為主機存取其他 I2C 周邊。內建 3.3V LDO(LDO_3V3)與 1.5V 核心 LDO(LDO_1V5)。本條目為 32-QFN 的 TPS25751AS 版本，以 GATE_VBUS/GATE_VSYS 驅動外部 N 型 MOSFET 構成電源路徑(需外接 FET)，並以 VSYS/GATE_VSYS 實作逆電流保護(RCP)；同系列另有 38-QFN 的 TPS25751AD 版本，內建 PPHV/VBUS_IN/DRAIN 等整合式電源開關腳(免外接 FET)，兩版本腳位數(32 對 38)與腳位名稱皆不同，不可互換。確切 PD 規範版本、sink-only 或 dual-role 支援等功能細節見 datasheet(TI SLVSJG7)。",
+    "usedIn": "需要豐富 GPIO 與雙 I2C 擴充能力的 USB-C PD 受電應用，如筆電、顯示器等系統的 PD 埠控制器；實際應用範圍見 datasheet。",
+    "desc": "32-QFN 封裝，TPS25751A 的 S 版本，以 GATE_VBUS/GATE_VSYS 驅動外部 N 型 MOSFET 構成電源路徑。同系列 38-QFN(D 版，TPS25751AD)腳位數(38)與名稱皆不同(內建整合式 FET，含 PPHV/VBUS_IN/DRAIN 腳)，兩封裝 pinout 不相容，不可直接互換。與同封裝家族的 TPS25752A(32-QFN)腳位編號與名稱經逐一核對完全相同，惟兩者實際 PD 功能規格(如 EPR/PPS 支援版本)可能不同，選型仍須依 datasheet 功能表確認。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps25751a.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "LDO_3V3",
+        "side": "L",
+        "type": "Output",
+        "desc": "由 VIN_3V3 或 VBUS LDO 切換而來的供電輸出；旁路電容 CLDO_3V3 至 GND。"
+      },
+      {
+        "num": "2",
+        "name": "ADCIN1",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定輸入(pin strap)；接電阻分壓器至 LDO_3V3。"
+      },
+      {
+        "num": "3",
+        "name": "ADCIN2",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定輸入(pin strap)；接電阻分壓器至 LDO_3V3。"
+      },
+      {
+        "num": "4",
+        "name": "LDO_1V5",
+        "side": "L",
+        "type": "Output",
+        "desc": "核心(CORE)LDO 輸出；旁路電容 CLDO_1V5 至 GND；此腳無法對外部電路提供電流。"
+      },
+      {
+        "num": "5",
+        "name": "GPIO0/LD1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可設定為 Type-C 連接器液體偵測(liquid detection)功能。未使用時接地。"
+      },
+      {
+        "num": "6",
+        "name": "GPIO1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "7",
+        "name": "GPIO2/LD2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可設定為 Type-C 連接器液體偵測(liquid detection)功能。未使用時接地。"
+      },
+      {
+        "num": "8",
+        "name": "I2Ct_SDA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "I2C target 序列資料，開集(open-drain)雙向；經電阻接上拉電源，未使用時接地。"
+      },
+      {
+        "num": "9",
+        "name": "I2Ct_SCL",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2C target 序列時脈輸入；經電阻接上拉電源，未使用時接地。"
+      },
+      {
+        "num": "10",
+        "name": "I2Ct_IRQ",
+        "side": "B",
+        "type": "Output",
+        "desc": "I2C target 中斷輸出，開集、低態動作(active low)；經上拉電阻接外部電源；可重設為 GPIO10；未使用時接地。"
+      },
+      {
+        "num": "11",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "13",
+        "name": "GPIO11",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "14",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "15",
+        "name": "I2Cc_SDA",
+        "side": "B",
+        "type": "I/O",
+        "desc": "I2C controller 序列資料，開集雙向；經電阻接上拉電源。"
+      },
+      {
+        "num": "16",
+        "name": "I2Cc_SCL",
+        "side": "B",
+        "type": "Output",
+        "desc": "I2C controller 序列時脈，開集輸出；經電阻接上拉電源。"
+      },
+      {
+        "num": "17",
+        "name": "I2Cc_IRQ",
+        "side": "R",
+        "type": "Input",
+        "desc": "I2C controller 中斷輸入，低態動作；經上拉電阻接外部電源；未使用時不可接地；可重設為 GPIO12。"
+      },
+      {
+        "num": "18",
+        "name": "GPIO3",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "19",
+        "name": "VSYS",
+        "side": "R",
+        "type": "Input",
+        "desc": "系統側高壓感測節點；為系統中的高壓 sinking 節點；用於對 GATE_VSYS 所控制的外部受電路徑實作逆電流保護(RCP)。"
+      },
+      {
+        "num": "20",
+        "name": "GATE_VSYS",
+        "side": "R",
+        "type": "Output",
+        "desc": "接至源極(source)接 VSYS 的 N 型 MOSFET 閘極。"
+      },
+      {
+        "num": "21",
+        "name": "GATE_VBUS",
+        "side": "R",
+        "type": "Output",
+        "desc": "接至源極(source)接 VBUS 的 N 型 MOSFET 閘極。"
+      },
+      {
+        "num": "22",
+        "name": "GPIO4/USB_P",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可接至 D+ 供 BC1.2 偵測使用。未使用時接地。"
+      },
+      {
+        "num": "23",
+        "name": "GPIO5/USB_N",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可接至 D- 供 BC1.2 偵測使用。未使用時接地。"
+      },
+      {
+        "num": "24",
+        "name": "CC1",
+        "side": "R",
+        "type": "I/O",
+        "desc": "USB Type-C 的 CC I/O；接建議電容(CCC)至 GND 濾除雜訊。"
+      },
+      {
+        "num": "25",
+        "name": "CC2",
+        "side": "T",
+        "type": "I/O",
+        "desc": "USB Type-C 的 CC I/O；接建議電容(CCC)至 GND 濾除雜訊。"
+      },
+      {
+        "num": "26",
+        "name": "VBUS",
+        "side": "T",
+        "type": "I/O",
+        "desc": "5V~20V 輸入；旁路電容 CVBUS 至 GND。"
+      },
+      {
+        "num": "27",
+        "name": "VBUS",
+        "side": "T",
+        "type": "I/O",
+        "desc": "5V~20V 輸入；旁路電容 CVBUS 至 GND。"
+      },
+      {
+        "num": "28",
+        "name": "PP5V",
+        "side": "T",
+        "type": "Input",
+        "desc": "5V 系統供電至 VBUS，並作為 CCy 腳位的 VCONN 供電來源。"
+      },
+      {
+        "num": "29",
+        "name": "PP5V",
+        "side": "T",
+        "type": "Input",
+        "desc": "5V 系統供電至 VBUS，並作為 CCy 腳位的 VCONN 供電來源。"
+      },
+      {
+        "num": "30",
+        "name": "GPIO7",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "31",
+        "name": "GPIO6",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "32",
+        "name": "VIN_3V3",
+        "side": "T",
+        "type": "Input",
+        "desc": "核心電路與 I/O 供電；旁路電容 CVIN_3V3 至 GND；若裝置僅由 VBUS 供電則此腳接地。"
+      },
+      {
+        "num": "33",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱墊(Thermal Pad)，Figure 5-2(S 封裝)標示接 GND；建議焊接至 PCB 接地銅箔並搭配散熱過孔以利散熱。",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露散熱墊(Thermal Pad)，Figure 5-2(S 封裝，32-QFN)標示接 GND；建議焊接至 PCB 接地銅箔並搭配散熱過孔以利散熱。",
+    "specs": [
+      {
+        "k": "封裝版本",
+        "v": "S 版(32-QFN，本條目)以 GATE_VBUS/GATE_VSYS 驅動外部 N 型 MOSFET；D 版(38-QFN)內建整合式電源開關(PPHV/VBUS_IN/DRAIN)"
+      },
+      {
+        "k": "設定方式",
+        "v": "電阻分壓 pin strapping(ADCIN1/ADCIN2)"
+      },
+      {
+        "k": "GPIO 數量",
+        "v": "12 組(GPIO0~GPIO7、GPIO11，部分與 LD1/LD2、USB_P/USB_N 共用)"
+      },
+      {
+        "k": "通訊介面",
+        "v": "I2C target(I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ) + I2C controller(I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ)"
+      },
+      {
+        "k": "內建 LDO",
+        "v": "3.3V(LDO_3V3) / 1.5V 核心(LDO_1V5)"
+      },
+      {
+        "k": "VBUS 輸入範圍(絕對最大)",
+        "v": "-0.3V~28V"
+      },
+      {
+        "k": "CC1/CC2 輸入範圍(絕對最大)",
+        "v": "-0.5V~26V"
+      },
+      {
+        "k": "工作接面溫度",
+        "v": "-40°C~175°C"
+      },
+      {
+        "k": "封裝",
+        "v": "S 版 32-QFN(本條目)；D 版 38-QFN；確切封裝代碼與尺寸見 datasheet"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 須為 32-QFN S 版且逐腳相同(pin-to-pin)；D 版(38-QFN)不可混用",
+      "pin strapping 設定邏輯與電阻對照表須一致(ADCIN1/ADCIN2)",
+      "GPIO 功能與極性(GPIO0~GPIO7、GPIO11)須相容，含 LD1/LD2、BC1.2 USB_P/USB_N 共用功能",
+      "I2C target 與 I2C controller 之位址、暫存器映射須相容",
+      "外部 MOSFET 閘極驅動能力(GATE_VBUS/GATE_VSYS)同等或更佳",
+      "PD 規範版本與 EPR/PPS 等功能支援需另行核對 datasheet"
+    ],
+    "dropIn": [
+      {
+        "part": "TPS25752A",
+        "note": "32-QFN 腳位編號與名稱逐腳核對完全相同(pin-to-pin)；惟 PD 功能規格版本可能不同，system-level 相容性須另行確認 datasheet。"
+      }
+    ]
+  },
+  {
+    "part": "TPS25752A",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "USB Type-C / USB PD 控制器(外接電源路徑 MOSFET 閘極驅動，32-QFN RSM)",
+    "package": "32-QFN(RSM) 4.00mm × 4.00mm",
+    "whatIs": "USB Type-C 與 USB PD 控制器：整合 PD 協議引擎與電源路徑保護，並提供豐富 GPIO 與雙 I2C(target/controller)介面。",
+    "func": "TPS25752A 為 32-QFN(RSM)單封裝版本的 USB Type-C/PD 控制器，pin strapping(ADCIN1/ADCIN2)、GPIO(GPIO0~GPIO7、GPIO11)、雙 I2C 介面與電源路徑架構(GATE_VBUS/GATE_VSYS 驅動外部 N 型 MOSFET)與同封裝家族的 TPS25751A(S 版)逐腳核對相同。VSYS(腳19)datasheet 僅標示為系統側高壓感測節點，未如 TPS25751A 詳述逆電流保護(RCP)機制的說明文字，功能細節以 datasheet 為準。確切支援的 PD 規範版本、電流/功率能力等見 datasheet(TI SLVSJH0)。",
+    "usedIn": "USB-C PD 受電應用，需要外接 N 型 MOSFET 構成電源路徑並具備豐富 GPIO/I2C 擴充能力的系統，如筆電、顯示器、行動電源等；實際應用範圍見 datasheet。",
+    "desc": "32-QFN(RSM)封裝。經逐腳核對，pin 編號與名稱與同封裝家族的 TPS25751A(S 版)完全相同；惟兩者實際 PD 功能規格(EPR/PPS 支援版本等)可能不同，選型仍須依各自 datasheet 功能表確認。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps25752a.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "LDO_3V3",
+        "side": "L",
+        "type": "Output",
+        "desc": "由 VIN_3V3 或 VBUS LDO 切換而來的供電輸出；旁路電容 CLDO_3V3 至 GND。"
+      },
+      {
+        "num": "2",
+        "name": "ADCIN1",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定輸入(pin strap)；接電阻分壓器至 LDO_3V3。"
+      },
+      {
+        "num": "3",
+        "name": "ADCIN2",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定輸入(pin strap)；接電阻分壓器至 LDO_3V3。"
+      },
+      {
+        "num": "4",
+        "name": "LDO_1V5",
+        "side": "L",
+        "type": "Output",
+        "desc": "核心(CORE)LDO 輸出；旁路電容 CLDO_1V5 至 GND；此腳無法對外部電路提供電流。"
+      },
+      {
+        "num": "5",
+        "name": "GPIO0/LD1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可設定為 Type-C 連接器液體偵測(liquid detection)功能。未使用時接地。"
+      },
+      {
+        "num": "6",
+        "name": "GPIO1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "7",
+        "name": "GPIO2/LD2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可設定為 Type-C 連接器液體偵測(liquid detection)功能。未使用時接地。"
+      },
+      {
+        "num": "8",
+        "name": "I2Ct_SDA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "I2C target 序列資料，開集(open-drain)雙向；經電阻接上拉電源，未使用時接地。"
+      },
+      {
+        "num": "9",
+        "name": "I2Ct_SCL",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2C target 序列時脈輸入；經電阻接上拉電源，未使用時接地。"
+      },
+      {
+        "num": "10",
+        "name": "I2Ct_IRQ",
+        "side": "B",
+        "type": "Output",
+        "desc": "I2C target 中斷輸出，開集、低態動作(active low)；經上拉電阻接外部電源；可重設為 GPIO10；未使用時接地。"
+      },
+      {
+        "num": "11",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "13",
+        "name": "GPIO11",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "14",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "15",
+        "name": "I2Cc_SDA",
+        "side": "B",
+        "type": "I/O",
+        "desc": "I2C controller 序列資料，開集雙向；經電阻接上拉電源。"
+      },
+      {
+        "num": "16",
+        "name": "I2Cc_SCL",
+        "side": "B",
+        "type": "Output",
+        "desc": "I2C controller 序列時脈，開集輸出；經電阻接上拉電源。"
+      },
+      {
+        "num": "17",
+        "name": "I2Cc_IRQ",
+        "side": "R",
+        "type": "Input",
+        "desc": "I2C controller 中斷輸入，低態動作；經上拉電阻接外部電源；未使用時不可接地；可重設為 GPIO12。"
+      },
+      {
+        "num": "18",
+        "name": "GPIO3",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "19",
+        "name": "VSYS",
+        "side": "R",
+        "type": "Input",
+        "desc": "系統側高壓感測節點。"
+      },
+      {
+        "num": "20",
+        "name": "GATE_VSYS",
+        "side": "R",
+        "type": "Output",
+        "desc": "接至源極(source)接 VSYS 的 N 型 MOSFET 閘極。"
+      },
+      {
+        "num": "21",
+        "name": "GATE_VBUS",
+        "side": "R",
+        "type": "Output",
+        "desc": "接至源極(source)接 VBUS 的 N 型 MOSFET 閘極。"
+      },
+      {
+        "num": "22",
+        "name": "GPIO4/USB_P",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可接至 D+ 供 BC1.2 偵測使用。未使用時接地。"
+      },
+      {
+        "num": "23",
+        "name": "GPIO5/USB_N",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可接至 D- 供 BC1.2 偵測使用。未使用時接地。"
+      },
+      {
+        "num": "24",
+        "name": "CC1",
+        "side": "R",
+        "type": "I/O",
+        "desc": "USB Type-C 的 CC I/O；接建議電容(CCC)至 GND 濾除雜訊。"
+      },
+      {
+        "num": "25",
+        "name": "CC2",
+        "side": "T",
+        "type": "I/O",
+        "desc": "USB Type-C 的 CC I/O；接建議電容(CCC)至 GND 濾除雜訊。"
+      },
+      {
+        "num": "26",
+        "name": "VBUS",
+        "side": "T",
+        "type": "I/O",
+        "desc": "5V~20V 輸入；旁路電容 CVBUS 至 GND。"
+      },
+      {
+        "num": "27",
+        "name": "VBUS",
+        "side": "T",
+        "type": "I/O",
+        "desc": "5V~20V 輸入；旁路電容 CVBUS 至 GND。"
+      },
+      {
+        "num": "28",
+        "name": "PP5V",
+        "side": "T",
+        "type": "Input",
+        "desc": "5V 系統供電至 VBUS，並作為 CCy 腳位的 VCONN 供電來源。"
+      },
+      {
+        "num": "29",
+        "name": "PP5V",
+        "side": "T",
+        "type": "Input",
+        "desc": "5V 系統供電至 VBUS，並作為 CCy 腳位的 VCONN 供電來源。"
+      },
+      {
+        "num": "30",
+        "name": "GPIO7",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "31",
+        "name": "GPIO6",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "32",
+        "name": "VIN_3V3",
+        "side": "T",
+        "type": "Input",
+        "desc": "核心電路與 I/O 供電；旁路電容 CVIN_3V3 至 GND；若裝置僅由 VBUS 供電則此腳接地。"
+      },
+      {
+        "num": "33",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱墊(Thermal Pad)，比照同封裝家族(RSM)之 TPS25730A/TPS25751AS 慣例標示接 GND；本次擷取頁面(Table 4-1、Thermal Information)未含 Pin Configuration 圖，正式接地方式請以 datasheet Figure 為準。",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露散熱墊(Thermal Pad)，比照同封裝家族(RSM)之 TPS25730A/TPS25751AS 慣例標示接 GND；本次擷取頁面未含 Pin Configuration 圖，正式設計請以 datasheet Figure 為準。",
+    "specs": [
+      {
+        "k": "封裝",
+        "v": "32-QFN(RSM) 4.00mm × 4.00mm"
+      },
+      {
+        "k": "設定方式",
+        "v": "電阻分壓 pin strapping(ADCIN1/ADCIN2)"
+      },
+      {
+        "k": "GPIO 數量",
+        "v": "12 組(GPIO0~GPIO7、GPIO11，部分與 LD1/LD2、USB_P/USB_N 共用)"
+      },
+      {
+        "k": "通訊介面",
+        "v": "I2C target(I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ) + I2C controller(I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ)"
+      },
+      {
+        "k": "內建 LDO",
+        "v": "3.3V(LDO_3V3) / 1.5V 核心(LDO_1V5)"
+      },
+      {
+        "k": "VIN_3V3 建議輸入範圍",
+        "v": "3.0V~3.6V"
+      },
+      {
+        "k": "PP5V 建議輸入範圍",
+        "v": "4.9V~5.5V"
+      },
+      {
+        "k": "VBUS 建議輸入範圍",
+        "v": "4V~22V(需短接所有 VBUS 腳)"
+      },
+      {
+        "k": "VBUS 輸出電流",
+        "v": "最大 3A(自 PP5V)"
+      },
+      {
+        "k": "工作接面溫度(建議)",
+        "v": "-40°C~125°C"
+      },
+      {
+        "k": "熱阻(32-QFN RSM)",
+        "v": "RθJA 30.5°C/W；RθJC(top) 24.5°C/W；RθJB 9.8°C/W(見 datasheet 5.5節)"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 完全相容(32-QFN RSM，pin-to-pin)",
+      "pin strapping 設定邏輯與電阻對照表須一致(ADCIN1/ADCIN2)",
+      "GPIO 功能與極性須相容，含 LD1/LD2、BC1.2 USB_P/USB_N 共用功能",
+      "I2C target 與 I2C controller 之位址、暫存器映射須相容",
+      "VBUS/PP5V 電流能力(3A/315mA CC)與外部 MOSFET 閘極驅動能力同等或更佳",
+      "PD 規範版本與功能支援需另行核對 datasheet"
+    ],
+    "dropIn": [
+      {
+        "part": "TPS25751A",
+        "note": "32-QFN 腳位編號與名稱逐腳核對完全相同(pin-to-pin，S 版)；惟 PD 功能規格版本可能不同，system-level 相容性須另行確認 datasheet。"
+      }
+    ]
+  },
+  {
+    "part": "TPS26750A",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "USB Type-C / USB PD 控制器(外部負載開關電源路徑控制，32-QFN)",
+    "package": "32-QFN，封裝代碼與確切尺寸見 datasheet(TI SLVSJE4)",
+    "whatIs": "USB Type-C 與 USB PD 控制器：整合 PD 協議引擎與電源路徑保護，以 POWER_PATH_EN 訊號控制外部負載開關(load switch)構成電源路徑，並提供豐富 GPIO 與雙 I2C(target/controller)介面。",
+    "func": "TPS26750A 為 32-QFN 封裝的 USB Type-C/PD 控制器，pin strapping(ADCIN1/ADCIN2)、GPIO(GPIO0~GPIO7、GPIO11)與雙 I2C 介面架構與同家族 TPS2575x 系列相近，惟電源路徑控制方式不同：本顆以單一 POWER_PATH_EN 輸出驅動外部負載開關(非邏輯電壓準位輸出)，取代 TPS2575x 系列的 GATE_VBUS/GATE_VSYS 雙 MOSFET 閘極驅動架構；對應腳位(19/20/21)分別為 GND/POWER_PATH_EN/NC，與 TPS25751A(S)/TPS25752A 同位置的 VSYS/GATE_VSYS/GATE_VBUS 不同，其餘腳位(1~18、22~32)名稱相同。確切 PD 規範版本與功能支援見 datasheet(TI SLVSJE4)。",
+    "usedIn": "以外部負載開關(load switch)構成電源路徑的 USB-C PD 受電應用，適合需簡化電源路徑設計(無需雙 MOSFET 閘極驅動)的系統；實際應用範圍見 datasheet。",
+    "desc": "32-QFN 封裝。腳位 1~18、22~32 之名稱與同封裝家族的 TPS25751A(S 版)/TPS25752A 相同，惟腳位 19/20/21 為 GND/POWER_PATH_EN/NC(TPS2575x 系列對應為 VSYS/GATE_VSYS/GATE_VBUS)，屬不同電源路徑架構(單一 load-switch 致能 vs. 雙 MOSFET 閘極驅動)，故整體 pinout 不完全相容，不可直接互換，選型須依電源路徑架構確認。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps26750a.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "LDO_3V3",
+        "side": "L",
+        "type": "Output",
+        "desc": "由 VIN_3V3 或 VBUS LDO 切換而來的供電輸出；旁路電容 CLDO_3V3 至 GND。"
+      },
+      {
+        "num": "2",
+        "name": "ADCIN1",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定輸入(pin strap)；接電阻分壓器至 LDO_3V3。"
+      },
+      {
+        "num": "3",
+        "name": "ADCIN2",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定輸入(pin strap)；接電阻分壓器至 LDO_3V3。"
+      },
+      {
+        "num": "4",
+        "name": "LDO_1V5",
+        "side": "L",
+        "type": "Output",
+        "desc": "核心(CORE)LDO 輸出；旁路電容 CLDO_1V5 至 GND；此腳無法對外部電路提供電流。"
+      },
+      {
+        "num": "5",
+        "name": "GPIO0/LD1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可設定為 Type-C 連接器液體偵測(liquid detection)功能。未使用時接地。"
+      },
+      {
+        "num": "6",
+        "name": "GPIO1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "7",
+        "name": "GPIO2/LD2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可設定為 Type-C 連接器液體偵測(liquid detection)功能。未使用時接地。"
+      },
+      {
+        "num": "8",
+        "name": "I2Ct_SDA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "I2C target 序列資料，開集(open-drain)雙向；經電阻接上拉電源，未使用時接地。"
+      },
+      {
+        "num": "9",
+        "name": "I2Ct_SCL",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2C target 序列時脈輸入；經電阻接上拉電源，未使用時接地。"
+      },
+      {
+        "num": "10",
+        "name": "I2Ct_IRQ",
+        "side": "B",
+        "type": "Output",
+        "desc": "I2C target 中斷輸出，開集、低態動作(active low)；經上拉電阻接外部電源；可重設為 GPIO10；未使用時接地。"
+      },
+      {
+        "num": "11",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "13",
+        "name": "GPIO11",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "14",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。"
+      },
+      {
+        "num": "15",
+        "name": "I2Cc_SDA",
+        "side": "B",
+        "type": "I/O",
+        "desc": "I2C controller 序列資料，開集雙向；經電阻接上拉電源。"
+      },
+      {
+        "num": "16",
+        "name": "I2Cc_SCL",
+        "side": "B",
+        "type": "Output",
+        "desc": "I2C controller 序列時脈，開集輸出；經電阻接上拉電源。"
+      },
+      {
+        "num": "17",
+        "name": "I2Cc_IRQ",
+        "side": "R",
+        "type": "Input",
+        "desc": "I2C controller 中斷輸入，低態動作；經上拉電阻接外部電源；可重設為 GPIO12。"
+      },
+      {
+        "num": "18",
+        "name": "GPIO3",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "19",
+        "name": "GND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地，連接至接地平面。(對應同封裝家族 TPS2575x 系列之 VSYS 腳，本顆架構不同不可互換)"
+      },
+      {
+        "num": "20",
+        "name": "POWER_PATH_EN",
+        "side": "R",
+        "type": "Output",
+        "desc": "外部負載開關(load switch)之電源路徑致能訊號；未使用時懸空(floating)；本輸出非邏輯電壓準位輸出。(對應同封裝家族 TPS2575x 系列之 GATE_VSYS 腳，架構不同)"
+      },
+      {
+        "num": "21",
+        "name": "NC",
+        "side": "R",
+        "type": "NC",
+        "desc": "未連接(No Connect)，Figure 4-1 標示為 NC；建議懸空。(對應同封裝家族 TPS2575x 系列之 GATE_VBUS 腳，架構不同)"
+      },
+      {
+        "num": "22",
+        "name": "GPIO4/USB_P",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可接至 D+ 供 BC1.2 偵測使用。未使用時接地。"
+      },
+      {
+        "num": "23",
+        "name": "GPIO5/USB_N",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用數位 I/O；可接至 D- 供 BC1.2 偵測使用。未使用時接地。"
+      },
+      {
+        "num": "24",
+        "name": "CC1",
+        "side": "R",
+        "type": "I/O",
+        "desc": "USB Type-C 的 CC I/O；接建議電容(CCCy)至 GND 濾除雜訊。"
+      },
+      {
+        "num": "25",
+        "name": "CC2",
+        "side": "T",
+        "type": "I/O",
+        "desc": "USB Type-C 的 CC I/O；接建議電容(CCCy)至 GND 濾除雜訊。"
+      },
+      {
+        "num": "26",
+        "name": "VBUS",
+        "side": "T",
+        "type": "I/O",
+        "desc": "5V~20V 輸入；旁路電容 CVBUS 至 GND。"
+      },
+      {
+        "num": "27",
+        "name": "VBUS",
+        "side": "T",
+        "type": "I/O",
+        "desc": "5V~20V 輸入；旁路電容 CVBUS 至 GND。"
+      },
+      {
+        "num": "28",
+        "name": "PP5V",
+        "side": "T",
+        "type": "Input",
+        "desc": "5V 系統供電至 VBUS，並作為 CCy 腳位的 VCONN 供電來源。"
+      },
+      {
+        "num": "29",
+        "name": "PP5V",
+        "side": "T",
+        "type": "Input",
+        "desc": "5V 系統供電至 VBUS，並作為 CCy 腳位的 VCONN 供電來源。"
+      },
+      {
+        "num": "30",
+        "name": "GPIO7",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "31",
+        "name": "GPIO6",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用數位 I/O。未使用時接地。"
+      },
+      {
+        "num": "32",
+        "name": "VIN_3V3",
+        "side": "T",
+        "type": "Input",
+        "desc": "核心電路與 I/O 供電；旁路電容 CVIN_3V3 至 GND；若裝置僅由 VBUS 供電則此腳接地。"
+      },
+      {
+        "num": "33",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱墊(Thermal Pad)，Figure 4-1 標示接 GND；建議焊接至 PCB 接地銅箔並搭配散熱過孔以利散熱。",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露散熱墊(Thermal Pad)，Figure 4-1 標示接 GND；建議焊接至 PCB 接地銅箔並搭配散熱過孔以利散熱。",
+    "specs": [
+      {
+        "k": "封裝",
+        "v": "32-QFN，封裝代碼與確切尺寸見 datasheet(TI SLVSJE4)"
+      },
+      {
+        "k": "設定方式",
+        "v": "電阻分壓 pin strapping(ADCIN1/ADCIN2)"
+      },
+      {
+        "k": "電源路徑控制",
+        "v": "單一 POWER_PATH_EN 輸出驅動外部負載開關(非邏輯電壓準位)，與 TPS2575x 系列 GATE_VBUS/GATE_VSYS 雙 MOSFET 架構不同"
+      },
+      {
+        "k": "GPIO 數量",
+        "v": "12 組(GPIO0~GPIO7、GPIO11，部分與 LD1/LD2、USB_P/USB_N 共用)"
+      },
+      {
+        "k": "通訊介面",
+        "v": "I2C target(I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ) + I2C controller(I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ)"
+      },
+      {
+        "k": "內建 LDO",
+        "v": "3.3V(LDO_3V3) / 1.5V 核心(LDO_1V5)"
+      },
+      {
+        "k": "VBUS 輸入範圍(絕對最大)",
+        "v": "-0.3V~28V"
+      },
+      {
+        "k": "CC1/CC2 輸入範圍(絕對最大)",
+        "v": "-0.5V~26V"
+      },
+      {
+        "k": "POWER_PATH_EN 輸出範圍(絕對最大)",
+        "v": "-0.5V~12V(VVSYS=GND)"
+      },
+      {
+        "k": "工作接面溫度",
+        "v": "-40°C~175°C"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 須逐腳相同(pin-to-pin，含 GND/POWER_PATH_EN/NC 於腳19/20/21)",
+      "pin strapping 設定邏輯與電阻對照表須一致(ADCIN1/ADCIN2)",
+      "GPIO 功能與極性須相容，含 LD1/LD2、BC1.2 USB_P/USB_N 共用功能",
+      "POWER_PATH_EN 驅動特性(非邏輯準位輸出)須相容於所接外部負載開關",
+      "I2C target 與 I2C controller 之位址、暫存器映射須相容",
+      "PD 規範版本與功能支援需另行核對 datasheet"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "TPS544B28",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "同步降壓 DC/DC 轉換器(D-CAP+，PMBus 數位介面，19-WQFN-HR Hot-Rod)",
+    "package": "19-WQFN-HR(VAN) 3.00mm × 3.00mm，0.4mm pitch(另有 RBH 封裝 3mm×3.5mm/0.5mm pitch 版本)",
+    "whatIs": "同步降壓(buck)DC/DC 轉換器：整合高側/低側功率 MOSFET，支援 PMBus 數位通訊介面與電阻分壓(pin-strap)類比設定，適用於中大電流點負載(POL)電源應用。",
+    "func": "TPS544B28 為 D-CAP+ 控制架構的同步降壓轉換器，輸出開關電流能力最高 20A(峰值 31A)。MS1/MS2 兩腳以電阻分壓至 AGND 進行類比 pin-strap 設定：MS1 設定切換頻率、谷值電流限制門檻與軟啟動時間；MS2 設定輸出電壓、VOUT_SCALE_LOOP 與內部/外部回授模式。VOS/FB、GOS 構成差動遠端電壓感測(remote sense)迴路，外部回授模式下由 VOUT 到 GOS 的電阻分壓器在 FB 腳分接以設定輸出電壓。PG 為開集電源良好(power-good)狀態輸出。ADR 腳以電阻分壓至 AGND 設定 PMBus 裝置位址與故障復原(打嗝或鎖存關閉)模式，並透過 SDA/SCL 提供 PMBus 通訊。BST 為高側 MOSFET 閘極驅動之自舉(bootstrap)供電腳，接自舉電容至 SW 節點。內部 3V LDO(VCC)供電內部電路與閘極驅動器，亦可外接 3.1V~4.5V 偏壓源以節省損耗。詳細保護功能(過電流、過熱等)、效率與切換架構細節見 datasheet(TI SLVSHP8A)。",
+    "usedIn": "伺服器、網通設備、工業電源等需要中大電流(最高 20A)點負載(POL)降壓轉換，並支援 PMBus 監控/設定的應用；實際應用範圍見 datasheet。",
+    "desc": "19-WQFN-HR(VAN)封裝，3mm×3mm、0.4mm pitch 的hot-rod 特殊腳位排列(非標準四邊均勻分布 QFN)。本條目腳位編號依 datasheet Table 5-1 Pin Functions 表逐腳核對，準確可靠。side(L/B/R/T 象限)因 Figure 5-1 圖形文字擷取順序打亂，僅能依腳位分組規律(單腳與連號群組交錯出現)盡力還原、屬概略估計，各腳 desc 已個別標註；正式佈局請以 datasheet Figure 5-1 為準。另有 RBH 封裝(3mm×3.5mm、0.5mm pitch)版本，腳位名稱與編號依 Figure 5-3/5-4 相同，但實際排列以各自封裝圖為準，兩封裝不可混用。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps544b28.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "PG",
+        "side": "L",
+        "type": "Output",
+        "desc": "開集(open-drain)電源良好(Power Good)狀態訊號；接上拉電阻至電壓源。FB 電壓超出設定範圍時，延遲後 PG 拉低"
+      },
+      {
+        "num": "2",
+        "name": "MS2",
+        "side": "L",
+        "type": "Input",
+        "desc": "多功能選擇腳；接電阻至 AGND 以設定輸出電壓、VOUT_SCALE_LOOP，以及內部/外部回授模式"
+      },
+      {
+        "num": "3",
+        "name": "MS1",
+        "side": "L",
+        "type": "Input",
+        "desc": "多功能選擇腳；接電阻至 AGND 以設定切換頻率、谷值電流限制門檻與軟啟動時間"
+      },
+      {
+        "num": "4",
+        "name": "VIN",
+        "side": "L",
+        "type": "Power",
+        "desc": "功率級 MOSFET 與內部 LDO 之電源輸入腳(其一，另一為腳12)；輸入去耦電容須從 VIN 接至 PGND，並盡量靠近 IC"
+      },
+      {
+        "num": "5",
+        "name": "PGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "功率級接地回路(其一，另一為腳11)；內部接至低側 MOSFET 源極。腳位下方應布多量過孔以降低寄生阻抗與熱阻"
+      },
+      {
+        "num": "6",
+        "name": "VCC",
+        "side": "B",
+        "type": "Power",
+        "desc": "內部 3V LDO 輸出；可外接 3.1V~4.5V 偏壓源以節省內部 LDO 損耗，供內部電路與閘極驅動器使用。旁路 1µF(≥6.3V 額定)陶瓷電容至 PGND，並盡量靠近 VCC/PGND 腳"
+      },
+      {
+        "num": "7",
+        "name": "SW",
+        "side": "B",
+        "type": "Output",
+        "desc": "電源轉換器切換輸出端(其一，共 3 腳：7/8/9)；接至輸出電感"
+      },
+      {
+        "num": "8",
+        "name": "SW",
+        "side": "B",
+        "type": "Output",
+        "desc": "電源轉換器切換輸出端(其一，共 3 腳：7/8/9)；接至輸出電感"
+      },
+      {
+        "num": "9",
+        "name": "SW",
+        "side": "B",
+        "type": "Output",
+        "desc": "電源轉換器切換輸出端(其一，共 3 腳：7/8/9)；接至輸出電感"
+      },
+      {
+        "num": "10",
+        "name": "BST",
+        "side": "R",
+        "type": "I/O",
+        "desc": "內部高側 MOSFET 閘極驅動器(boost)供電腳；接自舉電容至 SW 節點"
+      },
+      {
+        "num": "11",
+        "name": "PGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "功率級接地回路(其一，另一為腳5)；內部接至低側 MOSFET 源極。腳位下方應布多量過孔以降低寄生阻抗與熱阻"
+      },
+      {
+        "num": "12",
+        "name": "VIN",
+        "side": "R",
+        "type": "Power",
+        "desc": "功率級 MOSFET 與內部 LDO 之電源輸入腳(其一，另一為腳4)；輸入去耦電容須從 VIN 接至 PGND，並盡量靠近 IC"
+      },
+      {
+        "num": "13",
+        "name": "ADR",
+        "side": "R",
+        "type": "Input",
+        "desc": "PMBus 位址選擇腳；接電阻至 AGND 以設定 PMBus 裝置位址與故障復原模式(打嗝或鎖存關閉)"
+      },
+      {
+        "num": "14",
+        "name": "SDA",
+        "side": "R",
+        "type": "Input",
+        "desc": "PMBus 雙向序列資料腳(datasheet TYPE 欄標示為 I)"
+      },
+      {
+        "num": "15",
+        "name": "SCL",
+        "side": "T",
+        "type": "Input",
+        "desc": "PMBus 序列時脈腳"
+      },
+      {
+        "num": "16",
+        "name": "EN",
+        "side": "T",
+        "type": "Input",
+        "desc": "致能腳，控制 DC/DC 切換轉換器開關；啟動前 EN 懸空則轉換器關閉。建議最大施加電壓 5.5V；TI 不建議將 EN 直接接至 VIN"
+      },
+      {
+        "num": "17",
+        "name": "VOS/FB",
+        "side": "T",
+        "type": "Input",
+        "desc": "輸出電壓回授輸入，差動遠端感測電路正輸入端，接至負載側的 Vout 感測點。設定外部回授時，由 VOUT 到 GOS 的電阻分壓器在 FB 腳分接以設定輸出電壓"
+      },
+      {
+        "num": "18",
+        "name": "GOS",
+        "side": "T",
+        "type": "Input",
+        "desc": "差動遠端感測電路負輸入端；接至負載附近的接地感測點"
+      },
+      {
+        "num": "19",
+        "name": "AGND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "類比接地回路，為內部控制電路的接地基準"
+      }
+    ],
+    "specs": [
+      {
+        "k": "控制架構",
+        "v": "D-CAP+ 同步降壓(buck)，見 datasheet"
+      },
+      {
+        "k": "輸出電流能力",
+        "v": "連續 20A，峰值電感電流 31A(SW)"
+      },
+      {
+        "k": "輸入電壓範圍(建議)",
+        "v": "內部 LDO 供電：4V~16V；外接偏壓(3.1V≤VVCC≤4.5V)：2.7V~16V"
+      },
+      {
+        "k": "輸出電壓範圍",
+        "v": "0.4V~5.5V"
+      },
+      {
+        "k": "設定方式",
+        "v": "電阻分壓 pin-strap(MS1：頻率/電流限制/軟啟動；MS2：輸出電壓/VOUT_SCALE_LOOP/回授模式；ADR：PMBus 位址/故障復原模式)"
+      },
+      {
+        "k": "通訊介面",
+        "v": "PMBus(SDA/SCL)"
+      },
+      {
+        "k": "回授方式",
+        "v": "差動遠端感測(VOS/FB + GOS)，可設定內部或外部回授"
+      },
+      {
+        "k": "封裝",
+        "v": "19-WQFN-HR(VAN)3mm×3mm/0.4mm pitch(本條目)；另有 RBH 3mm×3.5mm/0.5mm pitch"
+      },
+      {
+        "k": "工作接面溫度",
+        "v": "-40°C~150°C"
+      },
+      {
+        "k": "ESD",
+        "v": "HBM ±2000V、CDM ±500V(見 datasheet 6.2節)"
+      }
+    ],
+    "secondSource": [
+      "封裝須為 19-WQFN-HR(VAN)3mm×3mm/0.4mm pitch，pin-to-pin 相容；RBH 版本(3mm×3.5mm/0.5mm pitch)封裝外型不同，需另行確認腳位排列",
+      "輸出電流能力(20A 連續/31A 峰值)與輸入電壓範圍(4V~16V 或 2.7V~16V 外接偏壓)須涵蓋",
+      "控制架構(D-CAP+)與回授模式(內部/外部、VOUT_SCALE_LOOP)須相容",
+      "PMBus 位址設定與故障復原模式(打嗝/鎖存)邏輯須一致",
+      "MS1/MS2/ADR 電阻分壓對照表須確認一致"
+    ],
+    "dropIn": []
   }
 ];
