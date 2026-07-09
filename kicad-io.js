@@ -152,7 +152,9 @@ window.KicadIO = (function () {
       }
       comps.push({
         node: fp, lib: val(fp[1] || ''), ref, value, layer, kx, ky, rot, pads,
-        bw: Math.max(0.6, maxx - minx), bh: Math.max(0.6, maxy - miny)
+        bw: Math.max(0.6, maxx - minx), bh: Math.max(0.6, maxy - miny),
+        // fp_text 節點+原始角度（footprint 旋轉編輯時回寫絲印字方向用）
+        texts: findAll(fp, 'fp_text').map(t => { const a = find(t, 'at') || []; return { node: t, rot0: num(a[3]) || 0 }; })
       });
     }
 
@@ -302,6 +304,16 @@ window.KicadIO = (function () {
         const pr = p.rot || 0;
         if ((num(pat[3]) || 0) !== pr) {
           if (pr !== 0) pat[3] = fmt(pr); else pat.length = 3;
+        }
+      }
+      // fp_text 角度回寫：目標 = 原始角度 + (目前 rot − 匯入時 rot)，冪等
+      const tDelta = (((rot - (comp.kicadRot0 || 0)) % 360) + 360) % 360;
+      for (const t of comp.kicadTexts || []) {
+        const tat = find(t.node, 'at');
+        if (!tat) continue;
+        const target = (((t.rot0 + tDelta) % 360) + 360) % 360;
+        if ((num(tat[3]) || 0) !== target) {
+          if (target !== 0) tat[3] = fmt(target); else tat.length = 3;
         }
       }
     }

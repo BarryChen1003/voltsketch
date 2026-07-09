@@ -575,10 +575,6 @@
                 <span class="pcb-tool-icon">□</span>
                 <span>Pad</span>
               </button>
-              <button class="pcb-tool-btn" data-tool="via">
-                <span class="pcb-tool-icon">◎</span>
-                <span>過孔</span>
-              </button>
               <button class="pcb-tool-btn" data-tool="plane">
                 <span class="pcb-tool-icon">▧</span>
                 <span>銅箔</span>
@@ -600,6 +596,21 @@
                 <span>Net Label</span>
               </button>
             </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-top:8px">
+              <label style="display:grid;gap:2px">線寬 (mm)<input type="number" id="traceWidth" value="0.3" step="0.05" min="0.05" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">層<select id="traceLayer" style="padding:3px"></select></label>
+              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ratsnestToggle">顯示飛線（未連線）</label>
+            </div>
+            <p style="font-size:11px;color:var(--muted);margin:6px 0 0">走線：拖曳畫線（0/45/90 吸角，Shift=自由角度，Esc 取消）；起點碰 pad/走線自動接上該網路。</p>
+          </section>
+
+          <section class="panel-section">
+            <div class="section-head">
+              <h2>Layout 規則</h2>
+              <button class="small-button" id="nrAdd">＋規則</button>
+            </div>
+            <p style="font-size:11px;color:var(--muted);margin:0 0 6px">net 名含關鍵字（或 /regex/）｜線寬下限｜線長上限｜差分對長度差（mm，0=不查）。畫線超標即時警示，DRC 全面稽核。</p>
+            <div id="netRulesList"></div>
           </section>
 
           <section class="panel-section">
@@ -806,10 +817,11 @@
     <script src="./pcb-tutorial.js?v=5"></script>
     <script src="./pcb-practice.js?v=5"></script>
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
-    <script src="./kicad-io.js?v=4"></script>
+    <script src="./kicad-io.js?v=5"></script>
     <script src="./gerber-export.js?v=1"></script>
     <script src="./pcb-drc.js?v=1"></script>
-    <script src="./pcb.js?v=12"></script>
+    <script src="./pcb-rules.js?v=1"></script>
+    <script src="./pcb.js?v=13"></script>
     <script>
       // Initialize tutorial and practice after page load
       document.addEventListener('DOMContentLoaded', () => {

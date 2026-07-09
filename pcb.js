@@ -23,7 +23,13 @@ const pcbApp = {
     refOverlayId: null,  // 目前疊加中的公版 id
     zones: [],           // KiCad 鋪銅外框（渲染用）
     edgeSegs: [],        // 非矩形板框線段（KiCad Edge.Cuts）
-    kicad: null          // { tree, off } — KiCad 匯入樹（零落差匯出用）
+    kicad: null,         // { tree, off } — KiCad 匯入樹（零落差匯出用）
+    traceWidth: 0.3,     // 畫線線寬（#traceWidth）
+    traceLayer: 'F.Cu',  // 畫線層（#traceLayer）
+    traceDraw: null,     // 進行中走線 {x1,y1,x2,y2,net}
+    showRatsnest: false, // 顯示飛線
+    ratsnest: null,      // 飛線快取（null=待重算）
+    netRules: []         // Layout 規則（NetRules）
   },
   gridSize: 1, // 1mm
 
@@ -38,6 +44,8 @@ const pcbApp = {
     this.renderPartsList();
     this.populateEmiSelects();
     this.renderRefBoards();
+    this.state.netRules = window.NetRules ? window.NetRules.load() : [];
+    this.renderNetRules();
     this.render();
   },
 
@@ -70,6 +78,7 @@ const pcbApp = {
       return `<div class="layer-item" data-layer="${l.id}"><div class="layer-color" style="background:${l.color}"></div>` +
         `<span class="layer-name">${l.name}</span>${n}${typeSel}<span class="layer-visibility" style="opacity:${vis ? 1 : 0.3};margin-left:8px">👁</span></div>`;
     }).join('');
+    this.populateTraceLayerSel();
   },
 
   resizeCanvas() {
@@ -113,6 +122,10 @@ const pcbApp = {
 
     // Draw vias
     this.drawVias(scale);
+
+    // 飛線與畫線預覽
+    this.drawRatsnest(scale);
+    this.drawTracePreview(scale);
 
     // Draw EMI 環路疊圖
     this.drawEmiLoops(scale);
@@ -524,6 +537,15 @@ const pcbApp = {
     if (window.PadDrc) results.push(...window.PadDrc.run(this.state, this.padAbs.bind(this), rules));
     else results.push({ type: 'info', message: 'pad 級 DRC 模組未載入（pcb-drc.js）' });
 
+    // Layout 規則稽核（net 線寬下限/線長上限/差分對長度差）
+    if (window.NetRules) results.push(...window.NetRules.audit(this.state.netRules || [], this.state));
+
+    // 未連線統計（飛線）
+    if (window.Ratsnest) {
+      const rl = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
+      if (rl.length) results.push({ type: 'warning', message: `未連線（飛線）：${rl.length} 條——側欄勾「顯示飛線」定位；有同名鋪銅的 net 視為平面連接不計` });
+    }
+
     // Display results
     const container = document.querySelector('#drcResults');
     const errorCount = results.filter(r => r.type === 'error').length;
@@ -648,7 +670,8 @@ const pcbApp = {
       w: c.bw, h: c.bh,
       side: c.layer === 'B.Cu' ? 'bottom' : 'top',
       kind: 'ic', ref: c.ref, part: c.value || c.lib, label: c.ref,
-      pads: c.pads, kicadNode: c.node
+      pads: c.pads, kicadNode: c.node,
+      kicadTexts: c.texts, kicadRot0: c.rot
     }));
     s.traces = m.traces.map((t, i) => ({
       id: `kicad-t-${i}`, x1: t.x1 - off.x, y1: t.y1 - off.y, x2: t.x2 - off.x, y2: t.y2 - off.y,
@@ -660,7 +683,7 @@ const pcbApp = {
     s.kicadArcs = m.arcsRaw.map(a => ({ ...a, x1: a.x1 - off.x, y1: a.y1 - off.y, xm: a.xm - off.x, ym: a.ym - off.y, x2: a.x2 - off.x, y2: a.y2 - off.y }));
     s.edgeSegs = m.edgeSegs.map(e => ({ x1: e.x1 - off.x, y1: e.y1 - off.y, x2: e.x2 - off.x, y2: e.y2 - off.y }));
     s.kicad = { tree: parsed.tree, off, fileName: fileName || 'board.kicad_pcb' };
-    s.refBoard = null; s.refOverlayId = null; s.selected = null;
+    s.refBoard = null; s.refOverlayId = null; s.selected = null; s.ratsnest = null;
     this.syncSelPanel();
     const wI = document.querySelector('#boardWidth'), hI = document.querySelector('#boardHeight'), lI = document.querySelector('#boardLayers');
     if (wI) wI.value = s.boardWidth; if (hI) hI.value = s.boardHeight; if (lI) lI.value = s.layers;
@@ -725,6 +748,7 @@ const pcbApp = {
     this.state.traces = (b.traces || []).map((t, i) => ({ id: `ref-t-${i}`, ...t }));
     this.state.vias = (b.vias || []).map(v => ({ ...v }));
     this.state.refBoard = null; this.state.refOverlayId = null; this.state.selected = null;
+    this.state.ratsnest = null;
     this.syncSelPanel();
     this.state.zones = []; this.state.edgeSegs = []; this.state.kicad = null;
     this.state.zoneFills = []; this.state.kicadArcs = [];
@@ -962,6 +986,7 @@ const pcbApp = {
     const norm = a => ((a % 360) + 360) % 360;
     c.rot = norm((c.rot || 0) + delta);
     (c.pads || []).forEach(p => { p.rot = norm((p.rot || 0) + delta); });
+    this.state.ratsnest = null;
     this.syncSelPanel();
     this.render();
   },
@@ -982,6 +1007,135 @@ const pcbApp = {
     set('selX', c.x); set('selY', c.y); set('selRot', c.rot || 0);
   },
 
+  toast(msg, kind) {
+    const host = document.getElementById('toastHost');
+    if (!host) return;
+    const el = document.createElement('div');
+    el.textContent = msg;
+    el.style.cssText = 'margin-top:8px;padding:9px 14px;border-radius:8px;font-size:13px;color:#fff;box-shadow:0 4px 12px rgba(0,0,0,.25);background:' +
+      (kind === 'error' ? '#c0392b' : kind === 'warn' ? '#d35400' : '#2c3e50');
+    host.appendChild(el);
+    setTimeout(() => el.remove(), 4500);
+  },
+
+  // 畫線附著點：pad 中心（半徑+0.1mm 內）/ via / 走線端點（0.5mm 內）→ {x,y,net}
+  snapTarget(bx, by) {
+    let best = null;
+    const consider = (x, y, net, d) => { if (!best || d < best.d) best = { x, y, net: net || '', d }; };
+    for (const c of this.state.components) {
+      for (const p of (c.pads || [])) {
+        if (p.cu === false) continue;
+        const a = this.padAbs(c, p);
+        const d = Math.hypot(bx - a.x, by - a.y);
+        if (d <= Math.max(p.w || 0.5, p.h || 0.5) / 2 + 0.1) consider(a.x, a.y, p.net, d);
+      }
+    }
+    for (const v of this.state.vias) {
+      const d = Math.hypot(bx - v.x, by - v.y);
+      if (d <= (v.od || 0.6) / 2 + 0.1) consider(v.x, v.y, v.net, d);
+    }
+    for (const t of this.state.traces) {
+      for (const [x, y] of [[t.x1, t.y1], [t.x2, t.y2]]) {
+        const d = Math.hypot(bx - x, by - y);
+        if (d <= 0.5) consider(x, y, t.net, d);
+      }
+    }
+    return best;
+  },
+
+  // 走線落子後即時規則檢查（超標 toast 警示）
+  checkTraceRules(tr) {
+    if (!window.NetRules || !tr.net) return;
+    const r = window.NetRules.match(this.state.netRules, tr.net);
+    if (!r) return;
+    if (r.minW > 0 && (tr.width || 0.3) < r.minW - 1e-9)
+      this.toast(`超出標準：${tr.net} 線寬 ${tr.width}mm < 規則下限 ${r.minW}mm（規則「${r.pattern}」）`, 'error');
+    if (r.maxLen > 0) {
+      const L = window.NetRules.netLength(this.state.traces, tr.net);
+      if (L > r.maxLen + 1e-9)
+        this.toast(`超出標準：${tr.net} 總線長 ${L.toFixed(2)}mm > 規則上限 ${r.maxLen}mm（規則「${r.pattern}」）`, 'error');
+    }
+  },
+
+  drawTracePreview(scale) {
+    const td = this.state.traceDraw;
+    if (!td) return;
+    const { ctx } = this;
+    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const len = Math.hypot(td.x2 - td.x1, td.y2 - td.y1);
+    let over = false, label = `${len.toFixed(2)}mm`;
+    if (window.NetRules && td.net) {
+      const r = window.NetRules.match(this.state.netRules, td.net);
+      if (r && r.maxLen > 0) {
+        const total = window.NetRules.netLength(this.state.traces, td.net) + len;
+        label += ` │ ${td.net} 累計 ${total.toFixed(1)}/${r.maxLen}mm`;
+        if (total > r.maxLen) { over = true; label += ' 超長!'; }
+      }
+      if (r && r.minW > 0 && (this.state.traceWidth || 0.3) < r.minW) { over = true; label += ` │ 線寬<${r.minW}mm!`; }
+    }
+    ctx.save();
+    ctx.strokeStyle = over ? '#e74c3c' : '#2ecc71';
+    ctx.lineWidth = Math.max(1, (this.state.traceWidth || 0.3) * scale);
+    ctx.globalAlpha = 0.75;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath(); ctx.moveTo(X(td.x1), Y(td.y1)); ctx.lineTo(X(td.x2), Y(td.y2)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+    ctx.font = 'bold 11px monospace';
+    ctx.fillStyle = over ? '#e74c3c' : '#ecf0f1';
+    ctx.fillText(label, X((td.x1 + td.x2) / 2) + 8, Y((td.y1 + td.y2) / 2) - 6);
+    ctx.restore();
+  },
+
+  drawRatsnest(scale) {
+    if (!this.state.showRatsnest || !window.Ratsnest) return;
+    if (!this.state.ratsnest) this.state.ratsnest = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
+    const { ctx } = this;
+    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    ctx.save();
+    ctx.strokeStyle = '#f1c40f';
+    ctx.globalAlpha = 0.6;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    for (const l of this.state.ratsnest) {
+      ctx.beginPath(); ctx.moveTo(X(l.x1), Y(l.y1)); ctx.lineTo(X(l.x2), Y(l.y2)); ctx.stroke();
+    }
+    ctx.restore();
+  },
+
+  renderNetRules() {
+    const host = document.getElementById('netRulesList');
+    if (!host) return;
+    const rules = this.state.netRules || [];
+    host.innerHTML = rules.map((r, i) =>
+      `<div class="nr-row" data-i="${i}" style="display:grid;grid-template-columns:1fr 50px 50px 50px 20px;gap:4px;margin-bottom:4px;font-size:12px">
+        <input class="nr-pat" value="${(r.pattern || '').replace(/"/g, '&quot;')}" placeholder="net 含…或 /regex/" style="padding:3px">
+        <input class="nr-minw" type="number" step="0.05" min="0" value="${r.minW || 0}" title="線寬下限 mm（0=不查）" style="padding:3px">
+        <input class="nr-maxl" type="number" step="1" min="0" value="${r.maxLen || 0}" title="線長上限 mm（0=不限）" style="padding:3px">
+        <input class="nr-pair" type="number" step="0.1" min="0" value="${r.pairTol || 0}" title="差分對長度差上限 mm（0=不查）" style="padding:3px">
+        <button class="nr-del" title="刪除規則" style="padding:0;cursor:pointer">✕</button>
+      </div>`).join('') || '<p style="color:var(--muted);font-size:12px;margin:0">尚無規則，按「＋規則」新增</p>';
+  },
+
+  readNetRules() {
+    const rows = [...document.querySelectorAll('#netRulesList .nr-row')];
+    this.state.netRules = rows.map(r => ({
+      pattern: r.querySelector('.nr-pat').value.trim(),
+      minW: parseFloat(r.querySelector('.nr-minw').value) || 0,
+      maxLen: parseFloat(r.querySelector('.nr-maxl').value) || 0,
+      pairTol: parseFloat(r.querySelector('.nr-pair').value) || 0
+    })).filter(r => r.pattern);
+    if (window.NetRules) window.NetRules.save(this.state.netRules);
+  },
+
+  populateTraceLayerSel() {
+    const sel = document.getElementById('traceLayer');
+    if (!sel) return;
+    const cu = (this.state.layerStack || []).filter(l => l.kind === 'copper');
+    if (!cu.find(l => l.id === this.state.traceLayer)) this.state.traceLayer = 'F.Cu';
+    sel.innerHTML = cu.map(l => `<option value="${l.id}" ${l.id === this.state.traceLayer ? 'selected' : ''}>${l.id}</option>`).join('');
+  },
+
   bindEvents() {
     // Tool buttons
     document.querySelectorAll('.pcb-tool-btn').forEach(btn => {
@@ -995,6 +1149,32 @@ const pcbApp = {
 
     // DRC
     document.querySelector('#runDrc')?.addEventListener('click', () => this.runDrc());
+
+    // Layout 規則表
+    document.getElementById('netRulesList')?.addEventListener('change', () => this.readNetRules());
+    document.getElementById('netRulesList')?.addEventListener('click', (e) => {
+      const del = e.target.closest('.nr-del');
+      if (!del) return;
+      this.state.netRules.splice(+del.closest('.nr-row').dataset.i, 1);
+      if (window.NetRules) window.NetRules.save(this.state.netRules);
+      this.renderNetRules();
+    });
+    document.getElementById('nrAdd')?.addEventListener('click', () => {
+      this.state.netRules.push({ pattern: '', minW: 0, maxLen: 0, pairTol: 0 });
+      this.renderNetRules();
+    });
+
+    // 畫線參數與飛線
+    document.getElementById('traceWidth')?.addEventListener('change', (e) => {
+      const v = parseFloat(e.target.value);
+      if (!isNaN(v) && v > 0) this.state.traceWidth = v;
+    });
+    document.getElementById('traceLayer')?.addEventListener('change', (e) => { this.state.traceLayer = e.target.value; });
+    document.getElementById('ratsnestToggle')?.addEventListener('change', (e) => {
+      this.state.showRatsnest = e.target.checked;
+      this.state.ratsnest = null;
+      this.render();
+    });
 
     // EMI 環路檢查
     document.querySelector('#runEmi')?.addEventListener('click', () => this.runEmiCheck());
@@ -1075,12 +1255,45 @@ const pcbApp = {
           this.canvas.style.cursor = 'grabbing';
         }
       } else if (this.state.tool === 'trace') {
-        // Start trace
-        this.state.traceStart = pos;
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        const hit = this.snapTarget(b.x, b.y);
+        const sx = hit ? hit.x : this.snap(b.x, g), sy = hit ? hit.y : this.snap(b.y, g);
+        this.state.traceDraw = { x1: sx, y1: sy, x2: sx, y2: sy, net: hit ? hit.net : '' };
+        this.render();
+      } else if (this.state.tool === 'via') {
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        const hit = this.snapTarget(b.x, b.y);
+        this.state.vias.push({
+          x: hit ? hit.x : this.snap(b.x, g), y: hit ? hit.y : this.snap(b.y, g),
+          od: 0.6, id: 0.3, net: hit ? hit.net : '', user: true
+        });
+        this.state.ratsnest = null;
+        this.renderPartsList();
+        this.render();
       }
     });
 
     this.canvas?.addEventListener('mousemove', (e) => {
+      if (this.state.traceDraw) {
+        const td = this.state.traceDraw;
+        const b = this.screenToBoard(e);
+        let ex = b.x, ey = b.y;
+        if (!e.shiftKey) { // 0/45/90 吸角（Shift=自由角度）
+          const dx = ex - td.x1, dy = ey - td.y1;
+          const len = Math.hypot(dx, dy);
+          if (len > 0) {
+            const a = Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) * (Math.PI / 4);
+            ex = td.x1 + len * Math.cos(a);
+            ey = td.y1 + len * Math.sin(a);
+          }
+        }
+        const g = this.gridStep();
+        td.x2 = this.snap(ex, g); td.y2 = this.snap(ey, g);
+        this.render();
+        return;
+      }
       if (this.state.dragComp) {
         const b = this.screenToBoard(e);
         const g = this.gridStep();
@@ -1099,8 +1312,31 @@ const pcbApp = {
     });
 
     this.canvas?.addEventListener('mouseup', (e) => {
+      if (this.state.traceDraw) {
+        const td = this.state.traceDraw;
+        this.state.traceDraw = null;
+        if (Math.hypot(td.x2 - td.x1, td.y2 - td.y1) >= 0.05) {
+          const endHit = this.snapTarget(td.x2, td.y2);
+          if (endHit) { td.x2 = endHit.x; td.y2 = endHit.y; }
+          const net = td.net || (endHit ? endHit.net : '');
+          if (td.net && endHit && endHit.net && endHit.net !== td.net)
+            this.toast(`警告：兩端網路不同（${td.net} ↔ ${endHit.net}），可能短路`, 'error');
+          const tr = {
+            id: `trace-${Date.now()}-${this.state.traces.length}`,
+            x1: td.x1, y1: td.y1, x2: td.x2, y2: td.y2,
+            width: this.state.traceWidth || 0.3, layer: this.state.traceLayer || 'F.Cu', net
+          };
+          this.state.traces.push(tr);
+          this.state.ratsnest = null;
+          this.checkTraceRules(tr);
+          this.renderPartsList();
+        }
+        this.render();
+        return;
+      }
       if (this.state.dragComp) {
         this.state.dragComp = null;
+        this.state.ratsnest = null;
         this.canvas.style.cursor = 'crosshair';
         this.renderPartsList();
       }
@@ -1116,11 +1352,16 @@ const pcbApp = {
       if ((e.key === 'r' || e.key === 'R') && this.state.selected) {
         e.preventDefault();
         this.rotateSelected(90);
-      } else if (e.key === 'Escape' && this.state.selected) {
-        this.state.selected = null;
-        this.renderPartsList();
-        this.syncSelPanel();
-        this.render();
+      } else if (e.key === 'Escape') {
+        if (this.state.traceDraw) {
+          this.state.traceDraw = null;
+          this.render();
+        } else if (this.state.selected) {
+          this.state.selected = null;
+          this.renderPartsList();
+          this.syncSelPanel();
+          this.render();
+        }
       }
     });
 
@@ -1139,6 +1380,7 @@ const pcbApp = {
           c.rot = norm(v);
           (c.pads || []).forEach(p => { p.rot = norm((p.rot || 0) + delta); });
         }
+        this.state.ratsnest = null;
         this.syncSelPanel();
         this.render();
       });
