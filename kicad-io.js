@@ -464,18 +464,33 @@ window.KicadIO = (function () {
       tree.push(['gr_line', ['start', fmt(x1 + ox), fmt(y1 + oy)], ['end', fmt(x2 + ox), fmt(y2 + oy)],
         ['stroke', ['width', '0.1'], ['type', 'default']], ['layer', { q: true, v: 'Edge.Cuts' }]]);
     }
-    // 元件：fab 外框示意（誠實：無 pad 腳位，位置/尺寸正確）
+    // 元件：有 pads（footprint-gen 產生或匯入映射）→ 出真 pad；無 pads → fab 外框示意（誠實標註）
     for (const c of appState.components) {
       const w = c.w || 4, h = c.h || 3;
-      tree.push(['footprint', { q: true, v: 'VoltSketch:' + (c.part || c.type || 'block') },
+      const fp = ['footprint', { q: true, v: 'VoltSketch:' + (c.part || c.type || 'block') },
         ['layer', { q: true, v: c.side === 'bottom' ? 'B.Cu' : 'F.Cu' }],
-        ['at', fmt(c.x + ox), fmt(c.y + oy)],
+        c.rot ? ['at', fmt(c.x + ox), fmt(c.y + oy), fmt(c.rot)] : ['at', fmt(c.x + ox), fmt(c.y + oy)],
         ['property', { q: true, v: 'Reference' }, { q: true, v: c.ref || c.label || '' },
           ['at', '0', fmt(-h / 2 - 1), '0'], ['layer', { q: true, v: 'F.SilkS' }],
           ['effects', ['font', ['size', '1', '1'], ['thickness', '0.15']]]],
         ['fp_rect', ['start', fmt(-w / 2), fmt(-h / 2)], ['end', fmt(w / 2), fmt(h / 2)],
           ['stroke', ['width', '0.1'], ['type', 'default']], ['layer', { q: true, v: 'F.Fab' }]]
-      ]);
+      ];
+      for (const p of (c.pads || [])) {
+        const at = p.rot ? ['at', fmt(p.x), fmt(p.y), fmt(p.rot)] : ['at', fmt(p.x), fmt(p.y)];
+        if (p.type === 'thru_hole' || p.side === '*') {
+          fp.push(['pad', { q: true, v: String(p.num) }, 'thru_hole', p.shape === 'circle' ? 'circle' : 'oval',
+            at, ['size', fmt(p.w), fmt(p.h)], ['drill', fmt(p.drill || 0.8)],
+            ['layers', { q: true, v: '*.Cu' }, { q: true, v: '*.Mask' }]]);
+        } else {
+          const shape = p.shape === 'circle' ? 'circle' : (p.shape === 'rect' ? 'rect' : 'roundrect');
+          const pad = ['pad', { q: true, v: String(p.num) }, 'smd', shape, at, ['size', fmt(p.w), fmt(p.h)]];
+          if (shape === 'roundrect') pad.push(['roundrect_rratio', fmt(p.rr || 0.25)]);
+          pad.push(['layers', { q: true, v: 'F.Cu' }, { q: true, v: 'F.Paste' }, { q: true, v: 'F.Mask' }]);
+          fp.push(pad);
+        }
+      }
+      tree.push(fp);
     }
     for (const t of appState.traces) {
       tree.push(['segment', ['start', fmt(t.x1 + ox), fmt(t.y1 + oy)], ['end', fmt(t.x2 + ox), fmt(t.y2 + oy)],

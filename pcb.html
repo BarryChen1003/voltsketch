@@ -637,6 +637,16 @@
           </section>
 
           <section class="panel-section">
+            <h2>IC 元件庫放料</h2>
+            <div style="display:grid;gap:6px;font-size:12px">
+              <input id="icPartPick" list="icPartsList" placeholder="輸入料號（如 TAC5111-Q1）…" style="padding:6px 8px;border:1px solid var(--line);border-radius:6px">
+              <datalist id="icPartsList"></datalist>
+              <button class="small-button" id="placeIcBtn">📦 放到板上（真 pad footprint）</button>
+              <div id="icPlaceMsg" style="color:var(--muted);line-height:1.5"></div>
+            </div>
+          </section>
+
+          <section class="panel-section">
             <h2>KiCad 匯入 / 匯出</h2>
             <div style="display:grid;gap:6px;font-size:12px">
               <label class="small-button" style="text-align:center;cursor:pointer">
@@ -841,12 +851,14 @@
     <script src="./pcb-practice.js?v=5"></script>
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
     <script src="./circuit-engine.js?v=34"></script>
-    <script src="./kicad-io.js?v=6"></script>
+    <script src="./ic-data.js?v=12"></script>
+    <script src="./footprint-gen.js?v=1"></script>
+    <script src="./kicad-io.js?v=7"></script>
     <script src="./gerber-export.js?v=3"></script>
     <script src="./pcb-drc.js?v=2"></script>
     <script src="./pcb-rules.js?v=2"></script>
     <script src="./pcb-3d.js?v=1"></script>
-    <script src="./pcb.js?v=15"></script>
+    <script src="./pcb.js?v=16"></script>
     <script>
       // Initialize tutorial and practice after page load
       document.addEventListener('DOMContentLoaded', () => {

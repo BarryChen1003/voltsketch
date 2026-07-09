@@ -46,6 +46,7 @@ const pcbApp = {
     this.renderPartsList();
     this.populateEmiSelects();
     this.renderRefBoards();
+    this.populateIcPicker();
     this.state.netRules = window.NetRules ? window.NetRules.load() : [];
     this.renderNetRules();
     this.render();
@@ -739,6 +740,38 @@ const pcbApp = {
       el.innerHTML = `已匯出 Gerber ZIP（${r.files.length} 檔：${names}；鑽孔 PTH ${r.drillCounts.pth}${r.drillCounts.npth ? '＋NPTH ' + r.drillCounts.npth : ''}${r.drillCounts.slots ? '＋開槽 ' + r.drillCounts.slots : ''}）` +
         (r.warnings.length ? '<br>⚠ ' + r.warnings.join('<br>⚠ ') : '');
     }
+  },
+
+  // ---- IC 庫放料：footprint-gen 產真 pad（取代方框示意）----
+  populateIcPicker() {
+    const dl = document.getElementById('icPartsList');
+    if (!dl || !window.IC_DATA) return;
+    dl.innerHTML = window.IC_DATA.map(ic => `<option value="${ic.part}">`).join('');
+  },
+
+  placeIcFootprint(partName) {
+    const msg = document.getElementById('icPlaceMsg');
+    const say = t => { if (msg) msg.textContent = t; };
+    const ic = (window.IC_DATA || []).find(x => x.part === partName);
+    if (!ic) { say('找不到料號：' + partName); return; }
+    const n = this.state.components.length;
+    const ref = 'U' + (this.state.components.filter(c => /^U\d+$/.test(c.ref || '')).length + 1);
+    const base = { id: `lib-${Date.now()}`, type: 'ic', ref, part: ic.part, label: ref, side: 'top', kind: 'ic', rot: 0, x: (n % 5) * 8 - 16, y: Math.floor(n / 5) * 8 - 8 };
+    const r = window.FootprintGen ? window.FootprintGen.fromIC(ic) : { ok: false, reason: 'footprint-gen 未載入' };
+    let comp;
+    if (r.ok) {
+      comp = Object.assign(base, { w: r.body.w, h: r.body.h, pads: r.pads });
+      say(`已放 ${ref}＝${ic.part}（${r.meta.family} ${r.pads.length} pads，pitch ${r.meta.pitch}mm）` +
+        (r.meta.warnings.length ? '；⚠ ' + r.meta.warnings.join('；') : '') + '。' + r.meta.source);
+    } else {
+      comp = Object.assign(base, { w: 6, h: 4 });
+      say(`已放 ${ref}＝${ic.part}（⚠ 方框示意無 pad：${r.reason}——此料不會出現在銅層/Gerber）`);
+    }
+    this.state.components.push(comp);
+    this.state.selected = comp;
+    this.renderPartsList();
+    this.populateEmiSelects();
+    this.render();
   },
 
   // 公版元件來源：schema v2 用 components（含尺寸/正反面），舊資料退回 blocks
@@ -1506,6 +1539,15 @@ const pcbApp = {
     });
     document.querySelector('#exportKicadBtn')?.addEventListener('click', () => this.exportKicad());
     document.querySelector('#exportGerberBtn')?.addEventListener('click', () => this.exportGerber());
+
+    // IC 庫放料
+    document.querySelector('#placeIcBtn')?.addEventListener('click', () => {
+      const v = document.getElementById('icPartPick')?.value?.trim();
+      if (v) this.placeIcFootprint(v);
+    });
+    document.querySelector('#icPartPick')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); const v = e.target.value.trim(); if (v) this.placeIcFootprint(v); }
+    });
 
     // Board settings
     document.querySelector('#applyBoardSettings')?.addEventListener('click', () => {
