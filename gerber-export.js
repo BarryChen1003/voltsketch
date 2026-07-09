@@ -118,6 +118,8 @@ window.GerberExport = (function () {
         body.push('G37*');
         api.stats.region++;
       },
+      lpc() { body.push('%LPC*%'); },   // 清除極性（鋪銅避讓）
+      lpd() { body.push('%LPD*%'); },   // 恢復暗極性
       text() {
         const apDefs = [...apertures.entries()].map(([def, d]) => '%AD' + d + def + '*%');
         return head.concat(apDefs, ['G01*'], body, ['M02*']).join('\n') + '\n';
@@ -270,6 +272,42 @@ window.GerberExport = (function () {
       const gf = GerberFile('Copper,L' + (idx + 1) + ',' + posTag);
       // 鋪銅（墊底）
       (state.zoneFills || []).forEach(z => { if (z.layer === layer.id) gf.region(z.pts); });
+      // 使用者鋪銅：暗區域 + LPC 清除極性避讓（標準 Gerber 技法；後續暗物件會蓋回）
+      const uz = (state.userZones || []).filter(z => z.layer === layer.id);
+      if (uz.length) {
+        uz.forEach(z => gf.region(z.pts));
+        gf.lpc();
+        for (const z of uz) {
+          const cl = z.clearance || 0.3;
+          (state.components || []).forEach(cp => (cp.pads || []).forEach(pad => {
+            if (pad.cu === false) return;
+            if (z.net && (pad.net || '') === z.net) return;
+            const hit = pad.side === '*' || (pad.side === 'F' && idx === 0) || (pad.side === 'B' && idx === cuStack.length - 1);
+            if (!hit) return;
+            const p = padAbsFn(cp, pad);
+            const radius = pad.shape === 'circle' ? pad.w / 2 + cl
+              : pad.shape === 'oval' ? Math.min(pad.w, pad.h) / 2 + cl
+              : pad.shape === 'roundrect' ? (pad.rr || 0.25) * Math.min(pad.w, pad.h) + cl : cl;
+            gf.region(padOutline(p.x, p.y, pad.w + 2 * cl, pad.h + 2 * cl, ((pad.rot || 0) % 360 + 360) % 360, radius));
+          }));
+          (state.traces || []).forEach(t => {
+            if (t.fromArc) return;
+            if ((t.layer || 'F.Cu') !== layer.id) return;
+            if (z.net && (t.net || '') === z.net) return;
+            gf.line(t.x1, t.y1, t.x2, t.y2, (t.width || 0.3) + 2 * cl);
+          });
+          (state.kicadArcs || []).forEach(a => {
+            if (a.layer !== layer.id) return;
+            if (z.net && (a.net || '') === z.net) return;
+            gf.arc3(a.x1, a.y1, a.xm, a.ym, a.x2, a.y2, (a.width || 0.3) + 2 * cl);
+          });
+          (state.vias || []).forEach(v => {
+            if (z.net && (v.net || '') === z.net) return;
+            gf.flash(v.x, v.y, 'C,' + AP((v.od || 0.6) + 2 * cl));
+          });
+        }
+        gf.lpd();
+      }
       // 走線（跳過弧線折線，改出真圓弧）
       (state.traces || []).forEach(t => {
         if (t.fromArc) return;
@@ -394,6 +432,8 @@ window.GerberExport = (function () {
     if (zonesNoFill) warnings.push('板上有 ' + state.zones.length + ' 個鋪銅 zone 但檔內無 filled_polygon（KiCad 內按 B 灌銅後再存檔），銅層 Gerber 不含鋪銅');
     const noPadComps = (state.components || []).filter(c => !c.pads || !c.pads.length);
     if (noPadComps.length) warnings.push(noPadComps.length + ' 個元件無 pad 幾何（手放/公版示意），不會出現在銅層：' + noPadComps.slice(0, 8).map(c => c.ref || c.label).join(',') + (noPadComps.length > 8 ? '…' : ''));
+    if ((state.userZones || []).length)
+      warnings.push('使用者鋪銅以 LPC 清除極性避讓（避讓 ' + ((state.userZones[0] || {}).clearance || 0.3) + 'mm）；同網 pad 為實心連接（無 thermal relief）；鋪銅互疊未檢查；KiCad 匯出暫不含使用者鋪銅');
     if (silkCount > 0) warnings.push('絲印文字以內建向量字體重繪（非 KiCad 原生字形，字寬/字距近似）；隱藏文字未輸出');
     else warnings.push('絲印層為空（板上無絲印圖形，或匯入來源未含絲印）');
 

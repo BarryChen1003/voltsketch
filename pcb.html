@@ -600,8 +600,9 @@
               <label style="display:grid;gap:2px">線寬 (mm)<input type="number" id="traceWidth" value="0.3" step="0.05" min="0.05" style="padding:3px"></label>
               <label style="display:grid;gap:2px">層<select id="traceLayer" style="padding:3px"></select></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ratsnestToggle">顯示飛線（未連線）</label>
+              <button class="small-button" id="autoRouteBtn" style="grid-column:1/-1">⚡ 自動佈線未連線（單層試驗）</button>
             </div>
-            <p style="font-size:11px;color:var(--muted);margin:6px 0 0">走線：拖曳畫線（0/45/90 吸角，Shift=自由角度，Esc 取消）；起點碰 pad/走線自動接上該網路。</p>
+            <p style="font-size:11px;color:var(--muted);margin:6px 0 0">走線：拖曳畫線（0/45/90 吸角，Shift=自由角度，Esc 取消）；起點碰 pad/走線自動接該網路。銅箔工具：逐點點擊畫鋪銅、雙擊收尾（避讓 0.3mm 於 Gerber 生效）。</p>
           </section>
 
           <section class="panel-section">
@@ -611,6 +612,26 @@
             </div>
             <p style="font-size:11px;color:var(--muted);margin:0 0 6px">net 名含關鍵字（或 /regex/）｜線寬下限｜線長上限｜差分對長度差（mm，0=不查）。畫線超標即時警示，DRC 全面稽核。</p>
             <div id="netRulesList"></div>
+          </section>
+
+          <section class="panel-section">
+            <h2>阻抗計算（IPC-2141 近似）</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+              <label style="grid-column:1/-1;display:grid;gap:2px">結構<select id="impKind" style="padding:3px">
+                <option value="microstrip">微帶線（外層）</option>
+                <option value="stripline">帶狀線（內層）</option>
+                <option value="diff-microstrip">差分微帶線</option>
+                <option value="diff-stripline">差分帶狀線</option>
+              </select></label>
+              <label style="display:grid;gap:2px">線寬 w<input type="number" id="impW" value="0.35" step="0.05" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">介電厚 h<input type="number" id="impH" value="0.2" step="0.05" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">銅厚 t<input type="number" id="impT" value="0.035" step="0.005" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">εr<input type="number" id="impEr" value="4.5" step="0.1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px">間距 s（差分）<input type="number" id="impS" value="0.2" step="0.05" style="padding:3px"></label>
+              <button class="small-button" id="impCalc" style="align-self:end">計算</button>
+            </div>
+            <div id="impOut" style="font-size:13px;font-weight:600;color:var(--accent-strong);margin-top:6px"></div>
+            <p style="font-size:11px;color:var(--muted);margin:4px 0 0">單位 mm。近似式誤差 ±10% 等級；量產阻抗控制以板廠疊構與場型解算為準。</p>
           </section>
 
           <section class="panel-section">

@@ -29,7 +29,9 @@ const pcbApp = {
     traceDraw: null,     // 進行中走線 {x1,y1,x2,y2,net}
     showRatsnest: false, // 顯示飛線
     ratsnest: null,      // 飛線快取（null=待重算）
-    netRules: []         // Layout 規則（NetRules）
+    netRules: [],        // Layout 規則（NetRules）
+    userZones: [],       // 使用者畫的鋪銅 {layer,net,pts,clearance}
+    zoneDraw: null       // 進行中 zone {pts, net, cursor:[x,y]}
   },
   gridSize: 1, // 1mm
 
@@ -114,6 +116,9 @@ const pcbApp = {
 
     // Draw zones（鋪銅外框，墊底）
     this.drawZones(scale);
+
+    // 使用者鋪銅（顯示端避讓打洞）
+    this.drawUserZones(scale);
 
     // Draw components
     this.drawComponents(scale);
@@ -1153,6 +1158,75 @@ const pcbApp = {
     ctx.restore();
   },
 
+  drawUserZones(scale) {
+    const { state, ctx } = this;
+    const zs = (state.userZones || []).filter(z => state.visibleLayers.includes(z.layer));
+    const zd = state.zoneDraw;
+    if (!zs.length && !zd) return;
+    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const layerOf = id => (state.layerStack || []).find(l => l.id === id);
+    for (const z of zs) {
+      const col = (layerOf(z.layer) || {}).color || '#16a085';
+      const off = document.createElement('canvas');
+      off.width = this.canvas.width; off.height = this.canvas.height;
+      const o = off.getContext('2d');
+      o.fillStyle = col;
+      o.globalAlpha = 0.4;
+      o.beginPath();
+      z.pts.forEach((p, i) => i ? o.lineTo(X(p[0]), Y(p[1])) : o.moveTo(X(p[0]), Y(p[1])));
+      o.closePath(); o.fill();
+      // 避讓打洞（destination-out）：異網 pad / 走線 / via
+      o.globalAlpha = 1;
+      o.globalCompositeOperation = 'destination-out';
+      const c = z.clearance || 0.3;
+      for (const comp of state.components) for (const p of (comp.pads || [])) {
+        if (p.cu === false) continue;
+        if (z.net && (p.net || '') === z.net) continue;
+        const sideOk = p.side === '*' || (z.layer === 'F.Cu' && p.side === 'F') || (z.layer === 'B.Cu' && p.side === 'B');
+        if (!sideOk) continue;
+        const a = this.padAbs(comp, p);
+        o.save();
+        o.translate(X(a.x), Y(a.y));
+        o.rotate(-(p.rot || 0) * Math.PI / 180);
+        o.fillRect(-((p.w || 0.5) / 2 + c) * scale, -((p.h || 0.5) / 2 + c) * scale,
+                   ((p.w || 0.5) + 2 * c) * scale, ((p.h || 0.5) + 2 * c) * scale);
+        o.restore();
+      }
+      o.lineCap = 'round';
+      for (const t of state.traces) {
+        if ((t.layer || 'F.Cu') !== z.layer) continue;
+        if (z.net && (t.net || '') === z.net) continue;
+        o.lineWidth = ((t.width || 0.3) + 2 * c) * scale;
+        o.beginPath(); o.moveTo(X(t.x1), Y(t.y1)); o.lineTo(X(t.x2), Y(t.y2)); o.stroke();
+      }
+      for (const v of state.vias) {
+        if (z.net && (v.net || '') === z.net) continue;
+        o.beginPath(); o.arc(X(v.x), Y(v.y), ((v.od || 0.6) / 2 + c) * scale, 0, Math.PI * 2); o.fill();
+      }
+      ctx.drawImage(off, 0, 0);
+      // 外框
+      ctx.strokeStyle = col;
+      ctx.globalAlpha = 0.9;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      z.pts.forEach((p, i) => i ? ctx.lineTo(X(p[0]), Y(p[1])) : ctx.moveTo(X(p[0]), Y(p[1])));
+      ctx.closePath(); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+    // 進行中預覽（虛線）
+    if (zd && zd.pts.length) {
+      ctx.save();
+      ctx.strokeStyle = '#2ecc71';
+      ctx.setLineDash([5, 4]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      zd.pts.forEach((p, i) => i ? ctx.lineTo(X(p[0]), Y(p[1])) : ctx.moveTo(X(p[0]), Y(p[1])));
+      if (zd.cursor) ctx.lineTo(X(zd.cursor[0]), Y(zd.cursor[1]));
+      ctx.stroke();
+      ctx.restore();
+    }
+  },
+
   drawRatsnest(scale) {
     if (!this.state.showRatsnest || !window.Ratsnest) return;
     if (!this.state.ratsnest) this.state.ratsnest = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
@@ -1192,6 +1266,67 @@ const pcbApp = {
       pairTol: parseFloat(r.querySelector('.nr-pair').value) || 0
     })).filter(r => r.pattern);
     if (window.NetRules) window.NetRules.save(this.state.netRules);
+  },
+
+  // 自動佈線：把目前所有飛線逐條丟給 A*（單層試驗，無推擠、不插 via）
+  autoRoute() {
+    if (!window.Ratsnest || !window.AutoRoute) return;
+    const lines = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
+    if (!lines.length) { this.toast('沒有未連線可佈', 'info'); return; }
+    const cap = 30;
+    const todo = lines.slice(0, cap);
+    let okN = 0, failN = 0;
+    const t0 = performance.now();
+    for (const line of todo) {
+      const r = window.AutoRoute.route(this.state, this.padAbs.bind(this), line, {
+        layer: this.state.traceLayer || 'F.Cu',
+        width: this.state.traceWidth || 0.25,
+        clearance: 0.15,
+        grid: 0.25
+      });
+      if (!r.ok) { failN++; continue; }
+      for (const sg of r.segs) {
+        this.state.traces.push({
+          id: `trace-${Date.now()}-${this.state.traces.length}`,
+          x1: sg.x1, y1: sg.y1, x2: sg.x2, y2: sg.y2,
+          width: this.state.traceWidth || 0.25, layer: this.state.traceLayer || 'F.Cu', net: line.net
+        });
+      }
+      okN++;
+    }
+    const ms = Math.round(performance.now() - t0);
+    this.state.ratsnest = null;
+    this.renderPartsList();
+    this.render();
+    this.toast(`自動佈線：成功 ${okN} 條、失敗 ${failN} 條${lines.length > cap ? `（僅取前 ${cap}）` : ''}，${ms}ms。試驗性：單層、無推擠，失敗請手動佈`, failN ? 'warn' : 'info');
+  },
+
+  // 阻抗計算（IPC-2141 近似式；±10% 等級，正式設計用場型解算器）
+  calcImpedance(kind, w, h, t, er, s) {
+    if (!(w > 0 && h > 0 && t > 0 && er > 1)) return null;
+    const ms = 87 / Math.sqrt(er + 1.41) * Math.log(5.98 * h / (0.8 * w + t));
+    const sl = 60 / Math.sqrt(er) * Math.log(1.9 * (2 * h + t) / (0.8 * w + t));
+    if (kind === 'microstrip') return { z0: ms };
+    if (kind === 'stripline') return { z0: sl };
+    if (kind === 'diff-microstrip') {
+      if (!(s > 0)) return null;
+      return { z0: ms, zdiff: 2 * ms * (1 - 0.48 * Math.exp(-0.96 * s / h)) };
+    }
+    if (kind === 'diff-stripline') {
+      if (!(s > 0)) return null;
+      return { z0: sl, zdiff: 2 * sl * (1 - 0.347 * Math.exp(-2.9 * s / h)) };
+    }
+    return null;
+  },
+
+  runImpedance() {
+    const v = id => parseFloat(document.getElementById(id)?.value);
+    const kind = document.getElementById('impKind')?.value;
+    const r = this.calcImpedance(kind, v('impW'), v('impH'), v('impT'), v('impEr'), v('impS'));
+    const out = document.getElementById('impOut');
+    if (!out) return;
+    if (!r) { out.textContent = '參數不合法（w/h/t>0、εr>1、差分需 s>0）'; return; }
+    out.textContent = `Z0 ≈ ${r.z0.toFixed(1)} Ω` + (r.zdiff ? `；Zdiff ≈ ${r.zdiff.toFixed(1)} Ω` : '');
   },
 
   populateTraceLayerSel() {
@@ -1241,6 +1376,14 @@ const pcbApp = {
       this.state.ratsnest = null;
       this.render();
     });
+
+    // 自動佈線（試驗性：逐條飛線單層 A*）
+    document.getElementById('autoRouteBtn')?.addEventListener('click', () => this.autoRoute());
+
+    // 阻抗計算
+    document.getElementById('impCalc')?.addEventListener('click', () => this.runImpedance());
+    ['impKind', 'impW', 'impH', 'impT', 'impEr', 'impS'].forEach(id =>
+      document.getElementById(id)?.addEventListener('change', () => this.runImpedance()));
 
     // EMI 環路檢查
     document.querySelector('#runEmi')?.addEventListener('click', () => this.runEmiCheck());
@@ -1338,10 +1481,48 @@ const pcbApp = {
         this.state.ratsnest = null;
         this.renderPartsList();
         this.render();
+      } else if (this.state.tool === 'plane') {
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        const px = this.snap(b.x, g), py = this.snap(b.y, g);
+        if (!this.state.zoneDraw) {
+          const hit = this.snapTarget(b.x, b.y);
+          this.state.zoneDraw = { pts: [[px, py]], net: hit ? hit.net : '', cursor: [px, py] };
+          this.toast(this.state.zoneDraw.net
+            ? `鋪銅開始（net=${this.state.zoneDraw.net}）：逐點點擊，雙擊收尾，Esc 取消`
+            : '鋪銅開始（無網路——起點點在 pad 上可自動綁 net）：逐點點擊，雙擊收尾', 'info');
+        } else {
+          this.state.zoneDraw.pts.push([px, py]);
+        }
+        this.render();
       }
     });
 
+    // 雙擊：收尾鋪銅多邊形
+    this.canvas?.addEventListener('dblclick', () => {
+      const zd = this.state.zoneDraw;
+      if (!zd) return;
+      this.state.zoneDraw = null;
+      // 雙擊會多推一個重複點，去尾
+      if (zd.pts.length >= 2) {
+        const [ax, ay] = zd.pts[zd.pts.length - 1], [bx2, by2] = zd.pts[zd.pts.length - 2];
+        if (Math.hypot(ax - bx2, ay - by2) < 1e-9) zd.pts.pop();
+      }
+      if (zd.pts.length < 3) { this.toast('鋪銅至少 3 個頂點，已取消', 'warn'); this.render(); return; }
+      this.state.userZones.push({ layer: this.state.traceLayer || 'F.Cu', net: zd.net || '', pts: zd.pts, clearance: 0.3, user: true });
+      this.state.ratsnest = null;
+      this.toast(`鋪銅完成：${zd.net || '無網路'} / ${this.state.traceLayer}（避讓 0.3mm，匯出 Gerber 生效）`, 'info');
+      this.render();
+    });
+
     this.canvas?.addEventListener('mousemove', (e) => {
+      if (this.state.zoneDraw) {
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        this.state.zoneDraw.cursor = [this.snap(b.x, g), this.snap(b.y, g)];
+        this.render();
+        return;
+      }
       if (this.state.traceDraw) {
         const td = this.state.traceDraw;
         const b = this.screenToBoard(e);
@@ -1419,7 +1600,10 @@ const pcbApp = {
         e.preventDefault();
         this.rotateSelected(90);
       } else if (e.key === 'Escape') {
-        if (this.state.traceDraw) {
+        if (this.state.zoneDraw) {
+          this.state.zoneDraw = null;
+          this.render();
+        } else if (this.state.traceDraw) {
           this.state.traceDraw = null;
           this.render();
         } else if (this.state.selected) {

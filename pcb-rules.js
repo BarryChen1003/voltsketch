@@ -115,7 +115,7 @@
       });
       // 鋪銅 → 虛擬 hub 節點（座標取外框第一點，僅在孤立時可能成為飛線端點）
       const zonesByNet = {};
-      (state.zoneFills || []).forEach(z => {
+      (state.zoneFills || []).concat(state.userZones || []).forEach(z => {
         if (!z.net || !(z.pts || []).length) return;
         (zonesByNet[z.net] = zonesByNet[z.net] || []).push(z);
       });
@@ -203,6 +203,101 @@
     }
   };
 
+  // ---------- 單網 A* 佈線（試驗性：單層、格點 0.25mm、8 向、無推擠無 via 插入） ----------
+  const AutoRoute = {
+    route(state, padAbs, line, opt) {
+      opt = Object.assign({ grid: 0.25, clearance: 0.15, width: 0.25, layer: 'F.Cu', maxCells: 500000 }, opt || {});
+      const W = state.boardWidth || 100, H = state.boardHeight || 80;
+      const g = opt.grid, ox = -W / 2, oy = -H / 2;
+      const nx = Math.floor(W / g) + 1, ny = Math.floor(H / g) + 1;
+      if (nx * ny > opt.maxCells) return { ok: false, reason: '網格過大（板太大或格太細）' };
+      const blocked = new Uint8Array(nx * ny);
+      const idx = (ix, iy) => iy * nx + ix;
+      const inb = (ix, iy) => ix >= 0 && iy >= 0 && ix < nx && iy < ny;
+      const mark = (x, y, r) => {
+        const x0 = Math.max(0, Math.floor((x - r - ox) / g)), x1 = Math.min(nx - 1, Math.ceil((x + r - ox) / g));
+        const y0 = Math.max(0, Math.floor((y - r - oy) / g)), y1 = Math.min(ny - 1, Math.ceil((y + r - oy) / g));
+        for (let iy = y0; iy <= y1; iy++) for (let ix = x0; ix <= x1; ix++)
+          if (Math.hypot(ox + ix * g - x, oy + iy * g - y) <= r) blocked[idx(ix, iy)] = 1;
+      };
+      const markSeg = (x1, y1, x2, y2, r) => {
+        const L = Math.hypot(x2 - x1, y2 - y1), n = Math.max(1, Math.ceil(L / (g / 2)));
+        for (let i = 0; i <= n; i++) mark(x1 + (x2 - x1) * i / n, y1 + (y2 - y1) * i / n, r);
+      };
+      const margin = opt.clearance + opt.width / 2;
+      const net = line.net || '';
+      (state.components || []).forEach(c => (c.pads || []).forEach(p => {
+        if (p.cu === false) return;
+        if (net && (p.net || '') === net) return;
+        const sideOk = p.side === '*' || (opt.layer === 'F.Cu' && p.side === 'F') || (opt.layer === 'B.Cu' && p.side === 'B');
+        if (!sideOk) return;
+        const a = padAbs(c, p);
+        mark(a.x, a.y, Math.hypot(p.w || 0.5, p.h || 0.5) / 2 + margin);
+      }));
+      (state.traces || []).forEach(t => {
+        if ((t.layer || 'F.Cu') !== opt.layer) return;
+        if (net && (t.net || '') === net) return;
+        markSeg(t.x1, t.y1, t.x2, t.y2, (t.width || 0.3) / 2 + margin);
+      });
+      (state.vias || []).forEach(v => {
+        if (net && (v.net || '') === net) return;
+        mark(v.x, v.y, (v.od || 0.6) / 2 + margin);
+      });
+      const toCell = (x, y) => [Math.round((x - ox) / g), Math.round((y - oy) / g)];
+      const [sx, sy] = toCell(line.x1, line.y1), [ex, ey] = toCell(line.x2, line.y2);
+      if (!inb(sx, sy) || !inb(ex, ey)) return { ok: false, reason: '端點在板框外' };
+      if (blocked[idx(sx, sy)] || blocked[idx(ex, ey)]) return { ok: false, reason: '端點被異網障礙包住' };
+      // A*（binary heap）
+      const gc = new Float32Array(nx * ny).fill(Infinity);
+      const par = new Int32Array(nx * ny).fill(-1);
+      const heap = [];
+      const push = (f, i) => { heap.push([f, i]); let k = heap.length - 1; while (k > 0) { const p = (k - 1) >> 1; if (heap[p][0] <= heap[k][0]) break; [heap[p], heap[k]] = [heap[k], heap[p]]; k = p; } };
+      const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let k = 0; for (;;) { const l = 2 * k + 1, r = l + 1; let m = k; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (r < heap.length && heap[r][0] < heap[m][0]) m = r; if (m === k) break; [heap[m], heap[k]] = [heap[k], heap[m]]; k = m; } } return top; };
+      const h = (ix, iy) => { const dx = Math.abs(ix - ex), dy = Math.abs(iy - ey); return (dx + dy) + (1.41421356 - 2) * Math.min(dx, dy); };
+      const s0 = idx(sx, sy);
+      gc[s0] = 0; push(h(sx, sy), s0);
+      const DIR = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, 1.41421356], [1, -1, 1.41421356], [-1, 1, 1.41421356], [-1, -1, 1.41421356]];
+      const goal = idx(ex, ey);
+      let found = false, guard = 0;
+      while (heap.length) {
+        if (++guard > nx * ny * 12) break;
+        const [f, cur] = pop();
+        if (f > gc[cur] + h(cur % nx, Math.floor(cur / nx)) + 1e-6) continue; // 淘汰 stale 項（lazy deletion）
+        if (cur === goal) { found = true; break; }
+        const cy0 = Math.floor(cur / nx), cx0 = cur % nx;
+        for (const [dx, dy, w] of DIR) {
+          const ix = cx0 + dx, iy = cy0 + dy;
+          if (!inb(ix, iy)) continue;
+          const ni = idx(ix, iy);
+          if (blocked[ni]) continue;
+          if (dx && dy && (blocked[idx(cx0 + dx, cy0)] || blocked[idx(cx0, cy0 + dy)])) continue; // 禁切角
+          const ng = gc[cur] + w;
+          if (ng < gc[ni] - 1e-9) { gc[ni] = ng; par[ni] = cur; push(ng + h(ix, iy), ni); }
+        }
+      }
+      if (!found) return { ok: false, reason: '找不到路徑（單層擁擠或被隔斷）' };
+      // 回溯 + 共線合併
+      const cells = [];
+      for (let cur = goal; cur !== -1; cur = par[cur]) cells.push([cur % nx, Math.floor(cur / nx)]);
+      cells.reverse();
+      const pts = [[line.x1, line.y1]];
+      let pd = null;
+      for (let i = 1; i < cells.length; i++) {
+        const d = [cells[i][0] - cells[i - 1][0], cells[i][1] - cells[i - 1][1]];
+        if (pd && (d[0] !== pd[0] || d[1] !== pd[1])) pts.push([ox + cells[i - 1][0] * g, oy + cells[i - 1][1] * g]);
+        pd = d;
+      }
+      pts.push([line.x2, line.y2]);
+      const segs = [];
+      for (let i = 1; i < pts.length; i++) {
+        if (Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]) < 1e-9) continue;
+        segs.push({ x1: pts[i - 1][0], y1: pts[i - 1][1], x2: pts[i][0], y2: pts[i][1] });
+      }
+      return { ok: true, segs };
+    }
+  };
+
   window.NetRules = NetRules;
   window.Ratsnest = Ratsnest;
+  window.AutoRoute = AutoRoute;
 })();
