@@ -8,7 +8,7 @@
  *     （圓角以 16 段/角折線，最大徑向偏差 ≈0.3µm，遠小於板廠 ±25µm 公差）。
  *   - 鋪銅＝KiCad filled_polygon（已含避讓）→ G36 區域；無 filled_polygon 的 zone 列入警告。
  *   - 鑽孔＝Excellon METRIC 小數座標；圓孔 T 工具、橢圓孔 G85 開槽。
- * 誠實界定：絲印層（SilkS）未匯出（模型未抽取）；手放無 pad 元件不會出現在銅層——皆列入回報。
+ * 誠實界定：絲印文字用內建向量字體重繪（非 KiCad 原生字形）；手放無 pad 元件不會出現在銅層——皆列入回報。
  */
 window.GerberExport = (function () {
   'use strict';
@@ -161,6 +161,85 @@ window.GerberExport = (function () {
     return pts.map(p => [cx + p[0] * cos + p[1] * sin, cy - p[0] * sin + p[1] * cos]);
   }
 
+  // ---------- 內建向量字體（絲印文字用；0-9 A-Z 常用符號，未知字元畫方框） ----------
+  // 每字 = 折線陣列，座標 0..0.7(寬) × 0..1(高，y 向上)
+  const VFONT = {
+    '0': [[[0, 0], [0.7, 0], [0.7, 1], [0, 1], [0, 0]], [[0, 0], [0.7, 1]]],
+    '1': [[[0.15, 0.8], [0.35, 1], [0.35, 0]], [[0.15, 0], [0.55, 0]]],
+    '2': [[[0, 1], [0.7, 1], [0.7, 0.5], [0, 0.5], [0, 0], [0.7, 0]]],
+    '3': [[[0, 1], [0.7, 1], [0.7, 0], [0, 0]], [[0.2, 0.5], [0.7, 0.5]]],
+    '4': [[[0, 1], [0, 0.5], [0.7, 0.5]], [[0.7, 1], [0.7, 0]]],
+    '5': [[[0.7, 1], [0, 1], [0, 0.5], [0.7, 0.5], [0.7, 0], [0, 0]]],
+    '6': [[[0.7, 1], [0, 1], [0, 0], [0.7, 0], [0.7, 0.5], [0, 0.5]]],
+    '7': [[[0, 1], [0.7, 1], [0.3, 0]]],
+    '8': [[[0, 0], [0.7, 0], [0.7, 1], [0, 1], [0, 0]], [[0, 0.5], [0.7, 0.5]]],
+    '9': [[[0.7, 0.5], [0, 0.5], [0, 1], [0.7, 1], [0.7, 0], [0, 0]]],
+    'A': [[[0, 0], [0, 0.8], [0.35, 1], [0.7, 0.8], [0.7, 0]], [[0, 0.45], [0.7, 0.45]]],
+    'B': [[[0, 0], [0, 1], [0.55, 1], [0.7, 0.85], [0.7, 0.6], [0.55, 0.5], [0, 0.5]], [[0.55, 0.5], [0.7, 0.4], [0.7, 0.15], [0.55, 0], [0, 0]]],
+    'C': [[[0.7, 0.15], [0.55, 0], [0.15, 0], [0, 0.15], [0, 0.85], [0.15, 1], [0.55, 1], [0.7, 0.85]]],
+    'D': [[[0, 0], [0, 1], [0.5, 1], [0.7, 0.8], [0.7, 0.2], [0.5, 0], [0, 0]]],
+    'E': [[[0.7, 0], [0, 0], [0, 1], [0.7, 1]], [[0, 0.5], [0.5, 0.5]]],
+    'F': [[[0, 0], [0, 1], [0.7, 1]], [[0, 0.5], [0.5, 0.5]]],
+    'G': [[[0.7, 0.85], [0.55, 1], [0.15, 1], [0, 0.85], [0, 0.15], [0.15, 0], [0.55, 0], [0.7, 0.15], [0.7, 0.45], [0.4, 0.45]]],
+    'H': [[[0, 0], [0, 1]], [[0.7, 0], [0.7, 1]], [[0, 0.5], [0.7, 0.5]]],
+    'I': [[[0.35, 0], [0.35, 1]], [[0.15, 0], [0.55, 0]], [[0.15, 1], [0.55, 1]]],
+    'J': [[[0.7, 1], [0.7, 0.15], [0.55, 0], [0.15, 0], [0, 0.15]]],
+    'K': [[[0, 0], [0, 1]], [[0.7, 1], [0, 0.5], [0.7, 0]]],
+    'L': [[[0, 1], [0, 0], [0.7, 0]]],
+    'M': [[[0, 0], [0, 1], [0.35, 0.6], [0.7, 1], [0.7, 0]]],
+    'N': [[[0, 0], [0, 1], [0.7, 0], [0.7, 1]]],
+    'O': [[[0.15, 0], [0.55, 0], [0.7, 0.15], [0.7, 0.85], [0.55, 1], [0.15, 1], [0, 0.85], [0, 0.15], [0.15, 0]]],
+    'P': [[[0, 0], [0, 1], [0.55, 1], [0.7, 0.85], [0.7, 0.6], [0.55, 0.45], [0, 0.45]]],
+    'Q': [[[0.15, 0], [0.55, 0], [0.7, 0.15], [0.7, 0.85], [0.55, 1], [0.15, 1], [0, 0.85], [0, 0.15], [0.15, 0]], [[0.45, 0.25], [0.7, 0]]],
+    'R': [[[0, 0], [0, 1], [0.55, 1], [0.7, 0.85], [0.7, 0.6], [0.55, 0.45], [0, 0.45]], [[0.35, 0.45], [0.7, 0]]],
+    'S': [[[0.7, 0.85], [0.55, 1], [0.15, 1], [0, 0.85], [0.15, 0.55], [0.55, 0.45], [0.7, 0.15], [0.55, 0], [0.15, 0], [0, 0.15]]],
+    'T': [[[0, 1], [0.7, 1]], [[0.35, 1], [0.35, 0]]],
+    'U': [[[0, 1], [0, 0.15], [0.15, 0], [0.55, 0], [0.7, 0.15], [0.7, 1]]],
+    'V': [[[0, 1], [0.35, 0], [0.7, 1]]],
+    'W': [[[0, 1], [0.15, 0], [0.35, 0.4], [0.55, 0], [0.7, 1]]],
+    'X': [[[0, 0], [0.7, 1]], [[0, 1], [0.7, 0]]],
+    'Y': [[[0, 1], [0.35, 0.5], [0.7, 1]], [[0.35, 0.5], [0.35, 0]]],
+    'Z': [[[0, 1], [0.7, 1], [0, 0], [0.7, 0]]],
+    '.': [[[0.3, 0], [0.42, 0], [0.42, 0.12], [0.3, 0.12], [0.3, 0]]],
+    ',': [[[0.35, 0.12], [0.3, -0.1]]],
+    '-': [[[0.1, 0.5], [0.6, 0.5]]],
+    '+': [[[0.1, 0.5], [0.6, 0.5]], [[0.35, 0.25], [0.35, 0.75]]],
+    '/': [[[0, 0], [0.7, 1]]],
+    '_': [[[0, 0], [0.7, 0]]],
+    ':': [[[0.3, 0.2], [0.42, 0.2], [0.42, 0.32], [0.3, 0.32], [0.3, 0.2]], [[0.3, 0.68], [0.42, 0.68], [0.42, 0.8], [0.3, 0.8], [0.3, 0.68]]],
+    '(': [[[0.5, 1], [0.3, 0.7], [0.3, 0.3], [0.5, 0]]],
+    ')': [[[0.2, 1], [0.4, 0.7], [0.4, 0.3], [0.2, 0]]],
+    ' ': []
+  };
+  const VBOX = [[[0.05, 0.1], [0.65, 0.1], [0.65, 0.9], [0.05, 0.9], [0.05, 0.1]]]; // 未知字元
+
+  // 絲印文字 → 線段（中心對齊；board 座標 y 向下；mirror=底面）
+  function emitText(gf, ax, ay, rotDeg, sizeMm, thickMm, text, mirror) {
+    const s = String(text || '');
+    if (!s) return;
+    const adv = 0.9 * sizeMm;
+    const W = s.length * adv - 0.2 * sizeMm;
+    const th = (rotDeg || 0) * Math.PI / 180;
+    const c = Math.cos(th), sn = Math.sin(th);
+    const put = (lx, lyUp) => {
+      let rx = lx, ry = -lyUp;          // 文字 y 向上 → 板座標 y 向下
+      if (mirror) rx = -rx;
+      return { x: ax + rx * c + ry * sn, y: ay - rx * sn + ry * c };
+    };
+    for (let i = 0; i < s.length; i++) {
+      const ch = s[i].toUpperCase();
+      const glyph = VFONT[ch] !== undefined ? VFONT[ch] : VBOX;
+      const x0 = -W / 2 + i * adv;
+      for (const poly of glyph) {
+        for (let k = 0; k + 1 < poly.length; k++) {
+          const a = put(x0 + poly[k][0] * sizeMm, (poly[k][1] - 0.5) * sizeMm);
+          const b = put(x0 + poly[k + 1][0] * sizeMm, (poly[k + 1][1] - 0.5) * sizeMm);
+          gf.line(a.x, a.y, b.x, b.y, thickMm || 0.15);
+        }
+      }
+    }
+  }
+
   // pad → 銅層繪製（flash 或 region）
   function emitPad(gf, comp, pad, padAbsFn) {
     const p = padAbsFn(comp, pad);
@@ -224,6 +303,44 @@ window.GerberExport = (function () {
       files.push({ name: base + suffix, gf });
     }
 
+    // 絲印層（footprint 圖形＋文字＋板級圖形；文字用內建向量字體）
+    const rot2 = deg => (deg % 360 + 360) % 360;
+    const silkDefs = [['F', 'Legend,Top', '-F_SilkS.gbr'], ['B', 'Legend,Bot', '-B_SilkS.gbr']];
+    let silkCount = 0;
+    for (const [side, fn, suffix] of silkDefs) {
+      const gf = GerberFile(fn);
+      const emitShape = (g, toAbs) => {
+        if (g.side !== side) return;
+        silkCount++;
+        if (g.kind === 'line') {
+          const a = toAbs(g.x1, g.y1), b = toAbs(g.x2, g.y2);
+          gf.line(a.x, a.y, b.x, b.y, g.w || 0.12);
+        } else if (g.kind === 'circle') {
+          const cc = toAbs(g.cx, g.cy);
+          // 整圓：兩段半圓 G75 圓弧
+          gf.arc3(cc.x - g.r, cc.y, cc.x, cc.y - g.r, cc.x + g.r, cc.y, g.w || 0.12);
+          gf.arc3(cc.x + g.r, cc.y, cc.x, cc.y + g.r, cc.x - g.r, cc.y, g.w || 0.12);
+        } else if (g.kind === 'arc') {
+          const a = toAbs(g.x1, g.y1), m = toAbs(g.xm, g.ym), b = toAbs(g.x2, g.y2);
+          gf.arc3(a.x, a.y, m.x, m.y, b.x, b.y, g.w || 0.12);
+        }
+      };
+      (state.components || []).forEach(c => {
+        const th = (c.rot || 0) * Math.PI / 180, co = Math.cos(th), si = Math.sin(th);
+        const toAbs = (rx, ry) => ({ x: c.x + rx * co + ry * si, y: c.y - rx * si + ry * co });
+        (c.silk || []).forEach(g => emitShape(g, toAbs));
+        (c.silkTexts || []).forEach(t => {
+          if (t.side !== side) return;
+          silkCount++;
+          const p = toAbs(t.x, t.y);
+          const delta = (c.rot || 0) - (c.kicadRot0 !== undefined ? c.kicadRot0 : (c.rot || 0));
+          emitText(gf, p.x, p.y, rot2(t.rot0 + delta), t.size || 1, t.thick || 0.15, t.text, side === 'B');
+        });
+      });
+      (state.silkGr || []).forEach(g => emitShape(g, (x, y) => ({ x, y })));
+      files.push({ name: base + suffix, gf });
+    }
+
     // 板框
     const gfEdge = GerberFile('Profile,NP');
     const edges = (state.edgeSegs && state.edgeSegs.length) ? state.edgeSegs
@@ -277,7 +394,8 @@ window.GerberExport = (function () {
     if (zonesNoFill) warnings.push('板上有 ' + state.zones.length + ' 個鋪銅 zone 但檔內無 filled_polygon（KiCad 內按 B 灌銅後再存檔），銅層 Gerber 不含鋪銅');
     const noPadComps = (state.components || []).filter(c => !c.pads || !c.pads.length);
     if (noPadComps.length) warnings.push(noPadComps.length + ' 個元件無 pad 幾何（手放/公版示意），不會出現在銅層：' + noPadComps.slice(0, 8).map(c => c.ref || c.label).join(',') + (noPadComps.length > 8 ? '…' : ''));
-    warnings.push('絲印層（SilkS）未匯出（本模型未抽取絲印圖形）');
+    if (silkCount > 0) warnings.push('絲印文字以內建向量字體重繪（非 KiCad 原生字形，字寬/字距近似）；隱藏文字未輸出');
+    else warnings.push('絲印層為空（板上無絲印圖形，或匯入來源未含絲印）');
 
     const out = files.map(f => ({ name: f.name, text: f.gf.text(), stats: f.gf.stats })).concat(drills.map(d => ({ name: d.name, text: d.text, stats: null })));
     return { files: out, warnings, drillCounts: { pth: pth.length, npth: npth.length, slots: slots.length } };

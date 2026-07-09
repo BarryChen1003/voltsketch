@@ -248,7 +248,40 @@ window.PadDrc = (() => {
         add('孔對孔', 'error', `鑽孔過近：${holes[i].label} ↔ ${holes[j].label} 孔壁距 ${fmt(Math.max(0, g))}mm < ${holeGapMin}mm（斷鑽風險）`);
     }
 
-    // 7) 走線 ↔ 板框（有真實板框幾何才做；矩形近似版在 pcb.js）
+    // 7) courtyard 重疊（KiCad 匯入元件有 CrtYd 外框才查；旋轉矩形精確判斷）
+    const cyComps = (state.components || []).filter(c => c.crtyd);
+    for (let i = 0; i < cyComps.length; i++) for (let j = i + 1; j < cyComps.length; j++) {
+      const A = cyComps[i], B = cyComps[j];
+      if ((A.side || 'top') !== (B.side || 'top')) continue;
+      const poly = c => {
+        const b = c.crtyd;
+        const th = (c.rot || 0) * Math.PI / 180, co = Math.cos(th), si = Math.sin(th);
+        return [[b.minx, b.miny], [b.maxx, b.miny], [b.maxx, b.maxy], [b.minx, b.maxy]]
+          .map(([rx, ry]) => [c.x + rx * co + ry * si, c.y - rx * si + ry * co]);
+      };
+      if (polyDist(poly(A), poly(B)) <= EPS)
+        add('courtyard', 'warning', `courtyard 重疊：${A.ref || A.label} ↔ ${B.ref || B.label} @(${A.x.toFixed(1)},${A.y.toFixed(1)})`);
+    }
+
+    // 8) 絲印壓 pad（同面，絲印線與 pad 銅面真重疊才報，比照 KiCad；文字不查）
+    const SILK_CL = 0;
+    for (const c of (state.components || [])) {
+      for (const g of (c.silk || [])) {
+        if (g.kind !== 'line') continue;
+        const th = (c.rot || 0) * Math.PI / 180, co = Math.cos(th), si = Math.sin(th);
+        const ax = c.x + g.x1 * co + g.y1 * si, ay = c.y - g.x1 * si + g.y1 * co;
+        const bx = c.x + g.x2 * co + g.y2 * si, by = c.y - g.x2 * si + g.y2 * co;
+        for (const P of pads) {
+          if (P.side !== '*' && P.side !== g.side) continue;
+          if (ptSegDist(P.sh.cx, P.sh.cy, ax, ay, bx, by) - P.sh.circ - (g.w || 0.12) / 2 >= SILK_CL) continue;
+          const d = segPadDist(ax, ay, bx, by, P.sh) - (g.w || 0.12) / 2;
+          if (d < SILK_CL - EPS)
+            add('絲印壓pad', 'warning', `絲印線壓到焊盤銅面：${c.ref || c.label} 絲印 ↔ ${P.label}（重疊 ${fmt(Math.abs(d))}mm）${at(P.sh)}`);
+        }
+      }
+    }
+
+    // 9) 走線 ↔ 板框（有真實板框幾何才做；矩形近似版在 pcb.js）
     const eSegs = state.edgeSegs || [];
     if (eSegs.length) {
       const lim = cl.traceToEdge;

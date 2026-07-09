@@ -59,6 +59,7 @@ const pcbApp = {
     cu.forEach((l, i) => { l.color = palette[i % palette.length]; l.kind = 'copper'; });
     return cu.concat([
       { id: 'F.SilkS', name: 'F.SilkS (絲印)', color: '#f1c40f', kind: 'silk' },
+      { id: 'B.SilkS', name: 'B.SilkS (底絲印)', color: '#b7950b', kind: 'silk' },
       { id: 'Edge.Cuts', name: 'Edge.Cuts (板框)', color: '#95a5a6', kind: 'edge' }
     ]);
   },
@@ -122,6 +123,9 @@ const pcbApp = {
 
     // Draw vias
     this.drawVias(scale);
+
+    // 絲印（KiCad 匯入的 footprint 圖形與文字）
+    this.drawSilk(scale);
 
     // 飛線與畫線預覽
     this.drawRatsnest(scale);
@@ -671,8 +675,16 @@ const pcbApp = {
       side: c.layer === 'B.Cu' ? 'bottom' : 'top',
       kind: 'ic', ref: c.ref, part: c.value || c.lib, label: c.ref,
       pads: c.pads, kicadNode: c.node,
-      kicadTexts: c.texts, kicadRot0: c.rot
+      kicadTexts: c.texts, kicadRot0: c.rot,
+      silk: c.silk, silkTexts: c.silkTexts, crtyd: c.crtyd
     }));
+    s.silkGr = (m.silkGr || []).map(g => {
+      const o = { ...g };
+      if (g.kind === 'line') { o.x1 -= off.x; o.y1 -= off.y; o.x2 -= off.x; o.y2 -= off.y; }
+      else if (g.kind === 'circle') { o.cx -= off.x; o.cy -= off.y; }
+      else if (g.kind === 'arc') { o.x1 -= off.x; o.y1 -= off.y; o.xm -= off.x; o.ym -= off.y; o.x2 -= off.x; o.y2 -= off.y; }
+      return o;
+    });
     s.traces = m.traces.map((t, i) => ({
       id: `kicad-t-${i}`, x1: t.x1 - off.x, y1: t.y1 - off.y, x2: t.x2 - off.x, y2: t.y2 - off.y,
       width: t.width, layer: t.layer, net: t.net
@@ -1084,6 +1096,60 @@ const pcbApp = {
     ctx.font = 'bold 11px monospace';
     ctx.fillStyle = over ? '#e74c3c' : '#ecf0f1';
     ctx.fillText(label, X((td.x1 + td.x2) / 2) + 8, Y((td.y1 + td.y2) / 2) - 6);
+    ctx.restore();
+  },
+
+  // footprint 相對點 → 絕對（同 padAbs 旋轉公式）
+  compRel(comp, rx, ry) {
+    const th = (comp.rot || 0) * Math.PI / 180;
+    const c = Math.cos(th), s = Math.sin(th);
+    return { x: comp.x + rx * c + ry * s, y: comp.y - rx * s + ry * c };
+  },
+
+  drawSilk(scale) {
+    const { ctx, state } = this;
+    const fVis = state.visibleLayers.includes('F.SilkS'), bVis = state.visibleLayers.includes('B.SilkS');
+    if (!fVis && !bVis) return;
+    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const colF = '#f1c40f', colB = '#b7950b';
+    const visOk = side => side === 'B' ? bVis : fVis;
+    ctx.save();
+    ctx.lineCap = 'round';
+    const drawItem = (g, toAbs) => {
+      if (!visOk(g.side)) return;
+      ctx.strokeStyle = g.side === 'B' ? colB : colF;
+      ctx.lineWidth = Math.max(0.6, (g.w || 0.12) * scale);
+      ctx.beginPath();
+      if (g.kind === 'line') {
+        const a = toAbs(g.x1, g.y1), b = toAbs(g.x2, g.y2);
+        ctx.moveTo(X(a.x), Y(a.y)); ctx.lineTo(X(b.x), Y(b.y));
+      } else if (g.kind === 'circle') {
+        const c = toAbs(g.cx, g.cy);
+        ctx.arc(X(c.x), Y(c.y), Math.max(0.5, g.r * scale), 0, Math.PI * 2);
+      } else if (g.kind === 'arc') {
+        // 三點折 12 段
+        const pts = window.KicadIO && window.KicadIO._arcPoints
+          ? window.KicadIO._arcPoints(g.x1, g.y1, g.xm, g.ym, g.x2, g.y2, 12) : [[g.x1, g.y1], [g.x2, g.y2]];
+        pts.forEach((p, i) => {
+          const a = toAbs(p[0], p[1]);
+          i ? ctx.lineTo(X(a.x), Y(a.y)) : ctx.moveTo(X(a.x), Y(a.y));
+        });
+      }
+      ctx.stroke();
+    };
+    for (const comp of state.components) {
+      const toAbs = (rx, ry) => this.compRel(comp, rx, ry);
+      (comp.silk || []).forEach(g => drawItem(g, toAbs));
+      (comp.silkTexts || []).forEach(t => {
+        if (!visOk(t.side)) return;
+        const p = this.compRel(comp, t.x, t.y);
+        ctx.fillStyle = t.side === 'B' ? colB : colF;
+        ctx.font = `${Math.max(7, t.size * scale)}px monospace`;
+        ctx.textAlign = 'center';
+        ctx.fillText(t.text, X(p.x), Y(p.y) + t.size * scale * 0.35);
+      });
+    }
+    (state.silkGr || []).forEach(g => drawItem(g, (x, y) => ({ x, y })));
     ctx.restore();
   },
 

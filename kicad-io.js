@@ -150,12 +150,111 @@ window.KicadIO = (function () {
           else { minx = Math.min(minx, x); maxx = Math.max(maxx, x); miny = Math.min(miny, y); maxy = Math.max(maxy, y); }
         }
       }
+      // 絲印圖形（相對座標）＋courtyard 外框（DRC 用）
+      const strokeW = n => {
+        const st = find(n, 'stroke');
+        return num((find(st || [], 'width') || [])[1]) || num((find(n, 'width') || [])[1]) || 0.12;
+      };
+      const silk = [], cyPts = [];
+      const shapeNodes = [
+        ...findAll(fp, 'fp_line').map(n => ['line', n]),
+        ...findAll(fp, 'fp_rect').map(n => ['rect', n]),
+        ...findAll(fp, 'fp_circle').map(n => ['circle', n]),
+        ...findAll(fp, 'fp_arc').map(n => ['arc', n])
+      ];
+      for (const [kind, n] of shapeNodes) {
+        const lay = val((find(n, 'layer') || [])[1] || '');
+        const silky = /^[FB]\.SilkS$/.test(lay), cy = /CrtYd$/.test(lay);
+        if (!silky && !cy) continue;
+        const P = key => { const p = find(n, key); return p ? [num(p[1]), num(p[2])] : null; };
+        const side = lay[0]; // F/B
+        if (kind === 'line') {
+          const s = P('start'), e = P('end');
+          if (!s || !e) continue;
+          if (silky) silk.push({ kind: 'line', x1: s[0], y1: s[1], x2: e[0], y2: e[1], w: strokeW(n), side });
+          if (cy) cyPts.push(s, e);
+        } else if (kind === 'rect') {
+          const s = P('start'), e = P('end');
+          if (!s || !e) continue;
+          if (silky) {
+            const w = strokeW(n);
+            silk.push({ kind: 'line', x1: s[0], y1: s[1], x2: e[0], y2: s[1], w, side });
+            silk.push({ kind: 'line', x1: e[0], y1: s[1], x2: e[0], y2: e[1], w, side });
+            silk.push({ kind: 'line', x1: e[0], y1: e[1], x2: s[0], y2: e[1], w, side });
+            silk.push({ kind: 'line', x1: s[0], y1: e[1], x2: s[0], y2: s[1], w, side });
+          }
+          if (cy) cyPts.push(s, e);
+        } else if (kind === 'circle') {
+          const c = P('center'), e = P('end');
+          if (!c || !e) continue;
+          const r = Math.hypot(e[0] - c[0], e[1] - c[1]);
+          if (silky) silk.push({ kind: 'circle', cx: c[0], cy: c[1], r, w: strokeW(n), side });
+          if (cy) cyPts.push([c[0] - r, c[1] - r], [c[0] + r, c[1] + r]);
+        } else if (kind === 'arc') {
+          const s = P('start'), m = P('mid'), e = P('end');
+          if (!s || !m || !e) continue; // v5 angle 形式不支援，略過
+          if (silky) silk.push({ kind: 'arc', x1: s[0], y1: s[1], xm: m[0], ym: m[1], x2: e[0], y2: e[1], w: strokeW(n), side });
+          if (cy) cyPts.push(s, m, e);
+        }
+      }
+      let crtyd = null;
+      if (cyPts.length) {
+        const xs = cyPts.map(p => p[0]), ys = cyPts.map(p => p[1]);
+        crtyd = { minx: Math.min(...xs), miny: Math.min(...ys), maxx: Math.max(...xs), maxy: Math.max(...ys) };
+      }
+      // 可見絲印文字（reference/value/user；hide 略過）
+      const silkTexts = [];
+      for (const t of findAll(fp, 'fp_text')) {
+        if (t.some(x => val(x) === 'hide')) continue;
+        const lay = val((find(t, 'layer') || [])[1] || '');
+        if (!/^[FB]\.SilkS$/.test(lay)) continue;
+        const kindT = val(t[1]);
+        const content = kindT === 'reference' ? ref : (kindT === 'value' ? value : val(t[2]));
+        const a = find(t, 'at') || [];
+        const font = find(find(t, 'effects') || [], 'font') || [];
+        const sz = find(font, 'size') || [];
+        silkTexts.push({
+          text: String(content || ''), x: num(a[1]) || 0, y: num(a[2]) || 0, rot0: num(a[3]) || 0,
+          size: num(sz[1]) || 1, thick: num((find(font, 'thickness') || [])[1]) || 0.15, side: lay[0]
+        });
+      }
       comps.push({
         node: fp, lib: val(fp[1] || ''), ref, value, layer, kx, ky, rot, pads,
         bw: Math.max(0.6, maxx - minx), bh: Math.max(0.6, maxy - miny),
+        silk, silkTexts, crtyd,
         // fp_text 節點+原始角度（footprint 旋轉編輯時回寫絲印字方向用）
         texts: findAll(fp, 'fp_text').map(t => { const a = find(t, 'at') || []; return { node: t, rot0: num(a[3]) || 0 }; })
       });
+    }
+
+    // 板級絲印圖形（絕對座標）
+    const silkGr = [];
+    for (const [kind, tag] of [['line', 'gr_line'], ['rect', 'gr_rect'], ['circle', 'gr_circle'], ['arc', 'gr_arc']]) {
+      for (const n of findAll(tree, tag)) {
+        const lay = val((find(n, 'layer') || [])[1] || '');
+        if (!/^[FB]\.SilkS$/.test(lay)) continue;
+        const P = key => { const p = find(n, key); return p ? [num(p[1]), num(p[2])] : null; };
+        const w = (() => { const st = find(n, 'stroke'); return num((find(st || [], 'width') || [])[1]) || num((find(n, 'width') || [])[1]) || 0.12; })();
+        const side = lay[0];
+        if (kind === 'line') {
+          const s = P('start'), e = P('end');
+          if (s && e) silkGr.push({ kind: 'line', x1: s[0], y1: s[1], x2: e[0], y2: e[1], w, side });
+        } else if (kind === 'rect') {
+          const s = P('start'), e = P('end');
+          if (s && e) {
+            silkGr.push({ kind: 'line', x1: s[0], y1: s[1], x2: e[0], y2: s[1], w, side });
+            silkGr.push({ kind: 'line', x1: e[0], y1: s[1], x2: e[0], y2: e[1], w, side });
+            silkGr.push({ kind: 'line', x1: e[0], y1: e[1], x2: s[0], y2: e[1], w, side });
+            silkGr.push({ kind: 'line', x1: s[0], y1: e[1], x2: s[0], y2: s[1], w, side });
+          }
+        } else if (kind === 'circle') {
+          const c = P('center'), e = P('end');
+          if (c && e) silkGr.push({ kind: 'circle', cx: c[0], cy: c[1], r: Math.hypot(e[0] - c[0], e[1] - c[1]), w, side });
+        } else if (kind === 'arc') {
+          const s = P('start'), m = P('mid'), e = P('end');
+          if (s && m && e) silkGr.push({ kind: 'arc', x1: s[0], y1: s[1], xm: m[0], ym: m[1], x2: e[0], y2: e[1], w, side });
+        }
+      }
     }
 
     // 走線
@@ -252,7 +351,7 @@ window.KicadIO = (function () {
     return {
       tree,
       model: {
-        cuLayers, nets, comps, traces: traces.concat(arcSegs), arcsRaw, vias, zones, zoneFills, edgeSegs,
+        cuLayers, nets, comps, traces: traces.concat(arcSegs), arcsRaw, vias, zones, zoneFills, edgeSegs, silkGr,
         bbox: { x: bx[0], y: by[0], w: bx[1] - bx[0], h: by[1] - by[0] }
       }
     };
