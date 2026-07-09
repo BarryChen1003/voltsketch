@@ -7730,5 +7730,1563 @@ window.IC_DATA = [
       "MS1/MS2/ADR 電阻分壓對照表須確認一致"
     ],
     "dropIn": []
+  },
+  {
+    "part": "TPS7H4012-SP",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "太空級同步降壓轉換器 (Rad-Hard)",
+    "package": "20-Pin CFP(HLC)；同系列另有 44-Pin HTSSOP(DDW)封裝版本(pinout 名稱相同、腳號對應不同，尺寸見 datasheet)",
+    "whatIs": "抗輻射太空級同步降壓(step-down)直流轉換器：將輸入電源轉換為可調輸出電壓，最高輸出電流 6A(TPS7H4012 家族)，供衛星/太空酬載板上電源使用。TPS7H4012 與 TPS7H4013 為同一份 datasheet 內的姊妹型號，pinout 完全相同，僅最高輸出電流不同(4012=6A、4013=3A)。",
+    "func": "採用外部可調頻率、外部補償架構的同步降壓轉換器。EN 腳致能元件(可用 VIN 至 GND 電阻分壓程式化開啟位準)；RT 腳外接電阻至 GND 設定切換頻率(100kHz~1MHz)，若使用外部時脈可懸空或加電阻作為時脈遺失時的備援頻率；SYNC1 腳可接受外部時脈輸入，並與另一相位差 180° 同步(不使用時建議接地以防雜訊耦合)。VIN 供控制電路，PVIN 供輸出級功率，兩者須外部短接同電壓；LDOCAP 為內部線性穩壓器(標稱 AVDD=5V)輸出電容腳，需 1µF 電容。SW 為切換節點，可選接蕭特基二極體至 PGND 以改善雜訊與效率。PWRGD 為開集極電源良好旗標(輸出電壓在標稱值 ±5% 內 asserted，超出 8% 或故障時 deasserted)。RSC 腳外接電阻至 GND 設定斜率補償；SS_TR 腳外接電容可延緩軟啟動並可用於電源追蹤(tracking)/時序控制；VSNS+ 為回授腳(標稱 0.6V)；COMP 為 OTA 誤差放大器輸出，須外接 RC 補償網路；REFCAP 為能隙參考電容腳(標稱 VBG=1.2V，需 470nF 電容)，不可外接其他電路。抗輻射規格(SP 等級)：TID 100krad(Si) RLAT，DSEE(破壞性單事件效應)免疫至 75MeV-cm²/mg；提供 QMLV-RHA(20-pin CFP HLC)與 QMLP-RHA(44-pin HTSSOP DDW)兩種封裝等級。",
+    "usedIn": "衛星/太空酬載板上點負載電源、通訊/導航/科學酬載等需抗輻射降壓轉換器的太空應用。",
+    "desc": "20-Pin CFP(HLC)封裝，抗輻射(TID 100krad(Si))太空級同步降壓轉換器，最高輸出電流 6A，外部可調開關頻率(100kHz~1MHz)並可外部時脈同步，外部補償架構(COMP/REFCAP)。與 TPS7H4013-SP 共用同一份 datasheet 與相同 pinout(僅最高輸出電流不同：4012=6A、4013=3A)，兩者電氣規格不同、不互為 dropIn。同系列另有 44-Pin HTSSOP(DDW)封裝版本；本條目每一腳的 desc 已註記對應之 HTSSOP-44(DDW) 腳號。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps7h4012-sp.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "GND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "控制電路接地(Ground)，為內部電路回接參考點。對應 HTSSOP-44(DDW) pin 1,2。"
+      },
+      {
+        "num": "2",
+        "name": "EN",
+        "side": "L",
+        "type": "Input",
+        "desc": "致能輸入；驅動高電位致能元件、低電位關閉。可用 VIN 至 GND 電阻分壓設定開啟電壓位準。對應 HTSSOP-44(DDW) pin 3。"
+      },
+      {
+        "num": "3",
+        "name": "RT",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "開關頻率設定腳；接電阻至 GND 設定切換頻率(100kHz~1MHz)。若使用外部時脈，此腳可懸空或接電阻作為外部時脈遺失時的備援頻率。對應 HTSSOP-44(DDW) pin 4。"
+      },
+      {
+        "num": "4",
+        "name": "VIN",
+        "side": "L",
+        "type": "Power",
+        "desc": "輸入電壓，供控制電路使用；VIN 須與 PVIN 同電壓，建議外部短接 VIN 與 PVIN。對應 HTSSOP-44(DDW) pin 5。"
+      },
+      {
+        "num": "5",
+        "name": "LDOCAP",
+        "side": "L",
+        "type": "Analog Out",
+        "desc": "線性穩壓器輸出電容腳；須外接 1µF 電容供內部線性穩壓器使用，輸出電壓 AVDD 標稱 5V。不可額外以外部電路負載此腳。對應 HTSSOP-44(DDW) pin 6。"
+      },
+      {
+        "num": "6",
+        "name": "SYNC1",
+        "side": "L",
+        "type": "Input",
+        "desc": "同步腳1；作為外部時脈輸入，與另一相位差 180° 同步切換頻率。若不使用外部時脈，建議接地以防止雜訊耦合。對應 HTSSOP-44(DDW) pin 8。"
+      },
+      {
+        "num": "7",
+        "name": "PVIN",
+        "side": "L",
+        "type": "Power",
+        "desc": "功率級輸入電壓，供切換穩壓器輸出級使用。對應 HTSSOP-44(DDW) pin 11-15(共5腳)。"
+      },
+      {
+        "num": "8",
+        "name": "PVIN",
+        "side": "L",
+        "type": "Power",
+        "desc": "功率級輸入電壓，供切換穩壓器輸出級使用。對應 HTSSOP-44(DDW) pin 11-15(共5腳)。"
+      },
+      {
+        "num": "9",
+        "name": "PGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "功率級接地，為低側功率 MOSFET 回接，須連接至 GND。對應 HTSSOP-44(DDW) pin 16-22(共7腳)。"
+      },
+      {
+        "num": "10",
+        "name": "PGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "功率級接地，為低側功率 MOSFET 回接，須連接至 GND。對應 HTSSOP-44(DDW) pin 16-22(共7腳)。"
+      },
+      {
+        "num": "20",
+        "name": "REFCAP",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "參考電容腳；內部能隙(bandgap)參考需外接 470nF 電容，標稱電壓 VBG=1.2V。不可外接其他電路至此腳。對應 HTSSOP-44(DDW) pin 44。"
+      },
+      {
+        "num": "19",
+        "name": "COMP",
+        "side": "R",
+        "type": "I/O",
+        "desc": "補償腳；為 OTA(跨導)誤差放大器輸出，亦為切換電流比較器輸入，須於此腳接頻率補償網路。對應 HTSSOP-44(DDW) pin 43。"
+      },
+      {
+        "num": "18",
+        "name": "VSNS+",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "正電壓感測腳(回授腳)；標稱 0.6V，透過適當電阻分壓網路設定回授電壓。對應 HTSSOP-44(DDW) pin 42。"
+      },
+      {
+        "num": "17",
+        "name": "SS_TR",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "軟啟動與追蹤(tracking)腳；datasheet 原文為「於此腳與 VSNS− 間外接電容可延緩內部參考電壓上升時間，亦可用於電源軌追蹤與時序控制」，惟本封裝/型號 Pin Functions 表未列出獨立 VSNS− 腳，實際接法請以原廠 datasheet 為準。對應 HTSSOP-44(DDW) pin 40。"
+      },
+      {
+        "num": "16",
+        "name": "RSC",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "斜率補償腳；接電阻至 GND 設定所需的斜率補償。對應 HTSSOP-44(DDW) pin 39。"
+      },
+      {
+        "num": "15",
+        "name": "PWRGD",
+        "side": "R",
+        "type": "Output",
+        "desc": "電源良好旗標腳，開集極(open-drain)輸出；須接提升電阻至 VOUT(需低於7V)或所需邏輯位準。輸出電壓在標稱值 ±5%(典型)內時為 asserted，超出 8%(典型)或發生故障(如過熱關機)時 deasserted。對應 HTSSOP-44(DDW) pin 36。"
+      },
+      {
+        "num": "14",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "切換節點腳；開關輸出。可於 SW 與 PGND 間接蕭特基二極體以改善內部雜訊與效率。對應 HTSSOP-44(DDW) pin 23-34(共12腳)。"
+      },
+      {
+        "num": "13",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "切換節點腳；開關輸出。可於 SW 與 PGND 間接蕭特基二極體以改善內部雜訊與效率。對應 HTSSOP-44(DDW) pin 23-34(共12腳)。"
+      },
+      {
+        "num": "12",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "切換節點腳；開關輸出。可於 SW 與 PGND 間接蕭特基二極體以改善內部雜訊與效率。對應 HTSSOP-44(DDW) pin 23-34(共12腳)。"
+      },
+      {
+        "num": "11",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "切換節點腳；開關輸出。可於 SW 與 PGND 間接蕭特基二極體以改善內部雜訊與效率。對應 HTSSOP-44(DDW) pin 23-34(共12腳)。"
+      },
+      {
+        "num": "21",
+        "name": "THERMAL PAD",
+        "side": "B",
+        "type": "Ground",
+        "desc": "散熱墊(Thermal Pad)，內部連接至 GND。建議連接大面積接地銅箔以利散熱；TI 建議以電氣方式連接至 GND 或 PGND，惟該散熱墊亦可依需求採電氣浮接。對應 HTSSOP-44(DDW) pin 45(封裝金屬外殼 Metal lid 亦內部接 GND，但無對應腳號)。",
+        "ep": true
+      }
+    ],
+    "specs": [
+      {
+        "k": "最高輸出電流(本型號)",
+        "v": "6A（TPS7H4012 家族；姊妹型號 TPS7H4013 家族為 3A）"
+      },
+      {
+        "k": "輸入電壓(絕對最大額定 VIN/PVIN)",
+        "v": "−0.3V ~ 16V"
+      },
+      {
+        "k": "開關頻率",
+        "v": "100kHz ~ 1MHz(RT 電阻設定，可外部同步)"
+      },
+      {
+        "k": "回授電壓(VSNS+)",
+        "v": "標稱 0.6V"
+      },
+      {
+        "k": "內部線性穩壓器輸出(AVDD)",
+        "v": "標稱 5V(LDOCAP 腳，需 1µF 電容)"
+      },
+      {
+        "k": "參考電壓(REFCAP/VBG)",
+        "v": "標稱 1.2V(需 470nF 電容)"
+      },
+      {
+        "k": "PWRGD 門檻",
+        "v": "輸出電壓 ±5%(典型)內 asserted，超出 8%(典型)或故障時 deasserted"
+      },
+      {
+        "k": "ESD",
+        "v": "HBM ±1000V、CDM ±500V"
+      },
+      {
+        "k": "抗輻射(SP 等級)",
+        "v": "TID 100krad(Si) RLAT；DSEE 免疫至 75MeV-cm²/mg；QMLV-RHA(20-pin CFP HLC)或 QMLP-RHA(44-pin HTSSOP DDW)"
+      },
+      {
+        "k": "工作接面溫度",
+        "v": "−55°C ~ 150°C"
+      },
+      {
+        "k": "封裝",
+        "v": "20-Pin CFP(HLC)；同系列另有 44-Pin HTSSOP(DDW)"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 相容(20-Pin CFP HLC，pin-to-pin)",
+      "最高輸出電流同等或更佳(≥6A)",
+      "開關頻率可調範圍涵蓋(100kHz~1MHz)且支援外部同步(SYNC1，180° 相位)",
+      "外部補償架構相容(COMP/REFCAP 腳位與外部 RC/電容需求一致)",
+      "太空抗輻射等級(TID、DSEE)同等或更佳；若替代非太空級零件須另行評估",
+      "PWRGD 開集極旗標邏輯與門檻一致",
+      "VIN/PVIN 分離供電腳位架構相同"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "TPS7H4013-SP",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "太空級同步降壓轉換器 (Rad-Hard)",
+    "package": "20-Pin CFP(HLC)；同系列另有 44-Pin HTSSOP(DDW)封裝版本(pinout 名稱相同、腳號對應不同，尺寸見 datasheet)",
+    "whatIs": "抗輻射太空級同步降壓(step-down)直流轉換器：將輸入電源轉換為可調輸出電壓，最高輸出電流 3A(TPS7H4013 家族)，供衛星/太空酬載板上電源使用。TPS7H4013 與 TPS7H4012 為同一份 datasheet 內的姊妹型號，pinout 完全相同，僅最高輸出電流不同(4013=3A、4012=6A)。",
+    "func": "採用外部可調頻率、外部補償架構的同步降壓轉換器。EN 腳致能元件(可用 VIN 至 GND 電阻分壓程式化開啟位準)；RT 腳外接電阻至 GND 設定切換頻率(100kHz~1MHz)，若使用外部時脈可懸空或加電阻作為時脈遺失時的備援頻率；SYNC1 腳可接受外部時脈輸入，並與另一相位差 180° 同步(不使用時建議接地以防雜訊耦合)。VIN 供控制電路，PVIN 供輸出級功率，兩者須外部短接同電壓；LDOCAP 為內部線性穩壓器(標稱 AVDD=5V)輸出電容腳，需 1µF 電容。SW 為切換節點，可選接蕭特基二極體至 PGND 以改善雜訊與效率。PWRGD 為開集極電源良好旗標(輸出電壓在標稱值 ±5% 內 asserted，超出 8% 或故障時 deasserted)。RSC 腳外接電阻至 GND 設定斜率補償；SS_TR 腳外接電容可延緩軟啟動並可用於電源追蹤(tracking)/時序控制；VSNS+ 為回授腳(標稱 0.6V)；COMP 為 OTA 誤差放大器輸出，須外接 RC 補償網路；REFCAP 為能隙參考電容腳(標稱 VBG=1.2V，需 470nF 電容)，不可外接其他電路。抗輻射規格(SP 等級)：TID 100krad(Si) RLAT，DSEE(破壞性單事件效應)免疫至 75MeV-cm²/mg；提供 QMLV-RHA(20-pin CFP HLC)與 QMLP-RHA(44-pin HTSSOP DDW)兩種封裝等級。",
+    "usedIn": "衛星/太空酬載板上點負載電源、通訊/導航/科學酬載等需抗輻射降壓轉換器的太空應用。",
+    "desc": "20-Pin CFP(HLC)封裝，抗輻射(TID 100krad(Si))太空級同步降壓轉換器，最高輸出電流 3A，外部可調開關頻率(100kHz~1MHz)並可外部時脈同步，外部補償架構(COMP/REFCAP)。與 TPS7H4012-SP 共用同一份 datasheet 與相同 pinout(僅最高輸出電流不同：4013=3A、4012=6A)，兩者電氣規格不同、不互為 dropIn。同系列另有 44-Pin HTSSOP(DDW)封裝版本；本條目每一腳的 desc 已註記對應之 HTSSOP-44(DDW) 腳號。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps7h4013-sp.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "GND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "控制電路接地(Ground)，為內部電路回接參考點。對應 HTSSOP-44(DDW) pin 1,2。"
+      },
+      {
+        "num": "2",
+        "name": "EN",
+        "side": "L",
+        "type": "Input",
+        "desc": "致能輸入；驅動高電位致能元件、低電位關閉。可用 VIN 至 GND 電阻分壓設定開啟電壓位準。對應 HTSSOP-44(DDW) pin 3。"
+      },
+      {
+        "num": "3",
+        "name": "RT",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "開關頻率設定腳；接電阻至 GND 設定切換頻率(100kHz~1MHz)。若使用外部時脈，此腳可懸空或接電阻作為外部時脈遺失時的備援頻率。對應 HTSSOP-44(DDW) pin 4。"
+      },
+      {
+        "num": "4",
+        "name": "VIN",
+        "side": "L",
+        "type": "Power",
+        "desc": "輸入電壓，供控制電路使用；VIN 須與 PVIN 同電壓，建議外部短接 VIN 與 PVIN。對應 HTSSOP-44(DDW) pin 5。"
+      },
+      {
+        "num": "5",
+        "name": "LDOCAP",
+        "side": "L",
+        "type": "Analog Out",
+        "desc": "線性穩壓器輸出電容腳；須外接 1µF 電容供內部線性穩壓器使用，輸出電壓 AVDD 標稱 5V。不可額外以外部電路負載此腳。對應 HTSSOP-44(DDW) pin 6。"
+      },
+      {
+        "num": "6",
+        "name": "SYNC1",
+        "side": "L",
+        "type": "Input",
+        "desc": "同步腳1；作為外部時脈輸入，與另一相位差 180° 同步切換頻率。若不使用外部時脈，建議接地以防止雜訊耦合。對應 HTSSOP-44(DDW) pin 8。"
+      },
+      {
+        "num": "7",
+        "name": "PVIN",
+        "side": "L",
+        "type": "Power",
+        "desc": "功率級輸入電壓，供切換穩壓器輸出級使用。對應 HTSSOP-44(DDW) pin 11-15(共5腳)。"
+      },
+      {
+        "num": "8",
+        "name": "PVIN",
+        "side": "L",
+        "type": "Power",
+        "desc": "功率級輸入電壓，供切換穩壓器輸出級使用。對應 HTSSOP-44(DDW) pin 11-15(共5腳)。"
+      },
+      {
+        "num": "9",
+        "name": "PGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "功率級接地，為低側功率 MOSFET 回接，須連接至 GND。對應 HTSSOP-44(DDW) pin 16-22(共7腳)。"
+      },
+      {
+        "num": "10",
+        "name": "PGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "功率級接地，為低側功率 MOSFET 回接，須連接至 GND。對應 HTSSOP-44(DDW) pin 16-22(共7腳)。"
+      },
+      {
+        "num": "20",
+        "name": "REFCAP",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "參考電容腳；內部能隙(bandgap)參考需外接 470nF 電容，標稱電壓 VBG=1.2V。不可外接其他電路至此腳。對應 HTSSOP-44(DDW) pin 44。"
+      },
+      {
+        "num": "19",
+        "name": "COMP",
+        "side": "R",
+        "type": "I/O",
+        "desc": "補償腳；為 OTA(跨導)誤差放大器輸出，亦為切換電流比較器輸入，須於此腳接頻率補償網路。對應 HTSSOP-44(DDW) pin 43。"
+      },
+      {
+        "num": "18",
+        "name": "VSNS+",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "正電壓感測腳(回授腳)；標稱 0.6V，透過適當電阻分壓網路設定回授電壓。對應 HTSSOP-44(DDW) pin 42。"
+      },
+      {
+        "num": "17",
+        "name": "SS_TR",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "軟啟動與追蹤(tracking)腳；datasheet 原文為「於此腳與 VSNS− 間外接電容可延緩內部參考電壓上升時間，亦可用於電源軌追蹤與時序控制」，惟本封裝/型號 Pin Functions 表未列出獨立 VSNS− 腳，實際接法請以原廠 datasheet 為準。對應 HTSSOP-44(DDW) pin 40。"
+      },
+      {
+        "num": "16",
+        "name": "RSC",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "斜率補償腳；接電阻至 GND 設定所需的斜率補償。對應 HTSSOP-44(DDW) pin 39。"
+      },
+      {
+        "num": "15",
+        "name": "PWRGD",
+        "side": "R",
+        "type": "Output",
+        "desc": "電源良好旗標腳，開集極(open-drain)輸出；須接提升電阻至 VOUT(需低於7V)或所需邏輯位準。輸出電壓在標稱值 ±5%(典型)內時為 asserted，超出 8%(典型)或發生故障(如過熱關機)時 deasserted。對應 HTSSOP-44(DDW) pin 36。"
+      },
+      {
+        "num": "14",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "切換節點腳；開關輸出。可於 SW 與 PGND 間接蕭特基二極體以改善內部雜訊與效率。對應 HTSSOP-44(DDW) pin 23-34(共12腳)。"
+      },
+      {
+        "num": "13",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "切換節點腳；開關輸出。可於 SW 與 PGND 間接蕭特基二極體以改善內部雜訊與效率。對應 HTSSOP-44(DDW) pin 23-34(共12腳)。"
+      },
+      {
+        "num": "12",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "切換節點腳；開關輸出。可於 SW 與 PGND 間接蕭特基二極體以改善內部雜訊與效率。對應 HTSSOP-44(DDW) pin 23-34(共12腳)。"
+      },
+      {
+        "num": "11",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "切換節點腳；開關輸出。可於 SW 與 PGND 間接蕭特基二極體以改善內部雜訊與效率。對應 HTSSOP-44(DDW) pin 23-34(共12腳)。"
+      },
+      {
+        "num": "21",
+        "name": "THERMAL PAD",
+        "side": "B",
+        "type": "Ground",
+        "desc": "散熱墊(Thermal Pad)，內部連接至 GND。建議連接大面積接地銅箔以利散熱；TI 建議以電氣方式連接至 GND 或 PGND，惟該散熱墊亦可依需求採電氣浮接。對應 HTSSOP-44(DDW) pin 45(封裝金屬外殼 Metal lid 亦內部接 GND，但無對應腳號)。",
+        "ep": true
+      }
+    ],
+    "specs": [
+      {
+        "k": "最高輸出電流(本型號)",
+        "v": "3A（TPS7H4013 家族；姊妹型號 TPS7H4012 家族為 6A）"
+      },
+      {
+        "k": "輸入電壓(絕對最大額定 VIN/PVIN)",
+        "v": "−0.3V ~ 16V"
+      },
+      {
+        "k": "開關頻率",
+        "v": "100kHz ~ 1MHz(RT 電阻設定，可外部同步)"
+      },
+      {
+        "k": "回授電壓(VSNS+)",
+        "v": "標稱 0.6V"
+      },
+      {
+        "k": "內部線性穩壓器輸出(AVDD)",
+        "v": "標稱 5V(LDOCAP 腳，需 1µF 電容)"
+      },
+      {
+        "k": "參考電壓(REFCAP/VBG)",
+        "v": "標稱 1.2V(需 470nF 電容)"
+      },
+      {
+        "k": "PWRGD 門檻",
+        "v": "輸出電壓 ±5%(典型)內 asserted，超出 8%(典型)或故障時 deasserted"
+      },
+      {
+        "k": "ESD",
+        "v": "HBM ±1000V、CDM ±500V"
+      },
+      {
+        "k": "抗輻射(SP 等級)",
+        "v": "TID 100krad(Si) RLAT；DSEE 免疫至 75MeV-cm²/mg；QMLV-RHA(20-pin CFP HLC)或 QMLP-RHA(44-pin HTSSOP DDW)"
+      },
+      {
+        "k": "工作接面溫度",
+        "v": "−55°C ~ 150°C"
+      },
+      {
+        "k": "封裝",
+        "v": "20-Pin CFP(HLC)；同系列另有 44-Pin HTSSOP(DDW)"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 相容(20-Pin CFP HLC，pin-to-pin)",
+      "最高輸出電流同等或更佳(≥6A)",
+      "開關頻率可調範圍涵蓋(100kHz~1MHz)且支援外部同步(SYNC1，180° 相位)",
+      "外部補償架構相容(COMP/REFCAP 腳位與外部 RC/電容需求一致)",
+      "太空抗輻射等級(TID、DSEE)同等或更佳；若替代非太空級零件須另行評估",
+      "PWRGD 開集極旗標邏輯與門檻一致",
+      "VIN/PVIN 分離供電腳位架構相同"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "TPS99002S-Q1",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "車用 DLP 頭燈系統電源管理暨照明控制 IC",
+    "package": "100-Pin HTQFP(PZP)",
+    "whatIs": "車用 DLP(Digital Light Processing)投影頭燈系統電源管理與控制 IC：整合多路降壓致能/監控、DMD(數位微鏡元件)專用電源軌產生、LED/雷射照明通道驅動與電流回授、光電二極體(TIA)類比前端，供車用 DLP 智慧頭燈模組使用。",
+    "func": "主要功能區塊如下。1) 電源監控/致能：ENB_1P1V/ENB_1P8V/ENB_3P3V 致能外部 buck，V1P1V/V1P8V/V3P3V 監控其電壓。2) DMD 專用電源：DMD_VOFFSET/DMD_VBIAS/DMD_VRESET 三組電源軌(各需外接電容)，DRST_HS_IND/DRST_LS_IND 為內部電感切換節點，VIN_DRST/VSS_DRST/DRST_PGND 為 6V 輸入與接地。3) LED/雷射照明驅動：D_EN/S_EN/LED_SEL_0-3 控制 LED 致能與通道選擇，R_EN/G_EN/B_EN 驅動紅/綠/藍通道低側 NFET，S_EN1/S_EN2 驅動分流 NFET，IADJ/R_IADJ 設定外部 LED 控制器電流，SYNC 提供外部 LED buck 同步觸發，DRV_EN/CMODE 為 LM3409 相關驅動訊號。4) 光電回授(TIA)：TIA_PD1/TIA_PD2 為光電二極體陰極驅動，TIA_PD1_FILT/TIA_PD2_FILT 為低頻寬取樣濾波，並有專屬 VLDOT_3P3V/VLDOT_5V/VLDOT_M8 三組 LDO 供電。5) 外部 ADC 介面：ADC_IN1-7 類比輸入通道、ADC_VREF 參考輸出、ADC_MISO/ADC_MOSI 為其專用 SPI 介面。6) 數位主機介面：SPI1/SPI2 兩組數位介面(CLK/DIN/DOUT/SS_Z)、COMPOUT 高速比較器輸出。7) 系統握手：WD1/WD2 看門狗中斷通道、PARK_Z 鏡面停泊訊號、RESET_Z/INT_Z 對 DLPC23xS-Q1 的重置/中斷訊號、PROJ_ON 投影機致能、nRST 對應腳位於本次擷取範圍未列出(見下方資料限制說明)。8) 測試/除錯：DMUX0/DMUX1 數位測試點、AMUX0/AMUX1 類比測試多工輸出。資料限制：ADC_MISO/ADC_MOSI(pin4,5)、SPI1_CLK/SS_Z/DOUT/DIN(pin27-30)、SPI2_DIN/DOUT/SS_Z/CLK(pin31-34)、LS_SENSE_N/P(pin82,83)、ADC_IN1-7(pin85,86,88,90,92,93,94)共19腳，其名稱係依封裝圖(Figure 4-1)判讀並與其餘81腳的 Pin Functions 表(Table 4-1~4-4)交叉核對編號一致性(所有可核對腳位100%吻合)，惟這19腳的官方功能敘述文字未收錄於本次擷取範圍，詳細規格請查閱原廠 datasheet 完整 Pin Functions 表。",
+    "usedIn": "車用 DLP 智慧投影頭燈(adaptive driving beam)模組，搭配 DLPC23xS-Q1 數位控制器與 DMD 元件，驅動 R/G/B 或白光 LED/雷射光源並回授光電二極體訊號進行閉迴路控制。",
+    "desc": "100-Pin HTQFP(PZP)封裝，車用 DLP 頭燈系統電源管理暨照明控制 IC，整合多路 buck 致能/監控、DMD 專用電源軌(VOFFSET/VBIAS/VRESET)、RGB LED/雷射驅動與電流回授、雙通道 TIA 光電前端、7 通道外部 ADC 介面與雙組 SPI 數位介面。PBKG(25,60,75,99)、AVSS(78,100)、VSSL_ADC(81,84,87,89,91)、VSS_IO(13,35)、VDD_IO(14,36)為多腳合併同名腳位。19 個腳位(pin 4,5,27-34,82,83,85,86,88,90,92-94)之名稱依封裝圖判讀，官方 Pin Functions 表描述文字未收錄於本次擷取範圍，功能細節請查原廠 datasheet(此為判斷取捨，可翻案)。本次擷取的 Pin Functions 表未見獨立散熱墊(exposed pad)列，故本條目不含 EP 腳。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps99002s-q1.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "ENB_1P1V",
+        "side": "L",
+        "type": "Output",
+        "desc": "外部 1.1V buck 致能訊號(3.3V 輸出位準)。"
+      },
+      {
+        "num": "2",
+        "name": "ENB_1P8V",
+        "side": "L",
+        "type": "Output",
+        "desc": "外部 1.8V buck 致能訊號(3.3V 輸出位準)。"
+      },
+      {
+        "num": "3",
+        "name": "ENB_3P3V",
+        "side": "L",
+        "type": "Output",
+        "desc": "外部 3.3V buck 致能訊號(3.3V 輸出位準)。"
+      },
+      {
+        "num": "4",
+        "name": "ADC_MISO",
+        "side": "L",
+        "type": "Input",
+        "desc": "外部 ADC 專用 SPI 介面資料輸入(Master In Slave Out)。"
+      },
+      {
+        "num": "5",
+        "name": "ADC_MOSI",
+        "side": "L",
+        "type": "Output",
+        "desc": "外部 ADC 專用 SPI 介面資料輸出(Master Out Slave In)。"
+      },
+      {
+        "num": "6",
+        "name": "WD1",
+        "side": "L",
+        "type": "Input",
+        "desc": "看門狗中斷通道1。"
+      },
+      {
+        "num": "7",
+        "name": "WD2",
+        "side": "L",
+        "type": "Input",
+        "desc": "看門狗中斷通道2。"
+      },
+      {
+        "num": "8",
+        "name": "PARK_Z",
+        "side": "L",
+        "type": "Output",
+        "desc": "DMD 反射鏡停泊(park)訊號，低電位有效。"
+      },
+      {
+        "num": "9",
+        "name": "RESET_Z",
+        "side": "L",
+        "type": "Output",
+        "desc": "輸出至 DLPC23xS-Q1 的重置訊號，由 TPS99002S-Q1 控制。"
+      },
+      {
+        "num": "10",
+        "name": "INT_Z",
+        "side": "L",
+        "type": "Output",
+        "desc": "輸出至 DLPC23xS-Q1 的中斷訊號(開集極輸出)；建議提升電阻拉至由 TPS99002S-Q1 的 ENB_3P3V 訊號控制的 DLPC23xS-Q1 3.3V 電源軌。"
+      },
+      {
+        "num": "11",
+        "name": "PROJ_ON",
+        "side": "L",
+        "type": "Input",
+        "desc": "致能/關閉本 IC 與 DLP 投影機的輸入訊號。"
+      },
+      {
+        "num": "12",
+        "name": "COMPOUT",
+        "side": "L",
+        "type": "Output",
+        "desc": "光電二極體(PD)介面高速比較器輸出。"
+      },
+      {
+        "num": "13",
+        "name": "VSS_IO",
+        "side": "L",
+        "type": "Ground",
+        "desc": "數位 IO 介面接地。"
+      },
+      {
+        "num": "14",
+        "name": "VDD_IO",
+        "side": "L",
+        "type": "Power",
+        "desc": "IO 電源軌 3.3V 供電輸入。"
+      },
+      {
+        "num": "15",
+        "name": "SYNC",
+        "side": "L",
+        "type": "Output",
+        "desc": "外部 LED buck 驅動器同步觸發輸出。"
+      },
+      {
+        "num": "16",
+        "name": "SEQ_START",
+        "side": "L",
+        "type": "Input",
+        "desc": "PWM shadow latch 控制訊號；表示序列(sequence)開始。"
+      },
+      {
+        "num": "17",
+        "name": "SEQ_CLK",
+        "side": "L",
+        "type": "Input",
+        "desc": "定序器(sequencer)時脈輸入。"
+      },
+      {
+        "num": "18",
+        "name": "D_EN",
+        "side": "L",
+        "type": "Input",
+        "desc": "LED 介面：buck 高側 FET 驅動致能。"
+      },
+      {
+        "num": "19",
+        "name": "S_EN",
+        "side": "L",
+        "type": "Input",
+        "desc": "LED 旁路分流(bypass shunt)觸發輸入。"
+      },
+      {
+        "num": "20",
+        "name": "LED_SEL_0",
+        "side": "L",
+        "type": "Input",
+        "desc": "LED 致能觸發輸入0。"
+      },
+      {
+        "num": "21",
+        "name": "LED_SEL_1",
+        "side": "L",
+        "type": "Input",
+        "desc": "LED 致能觸發輸入1。"
+      },
+      {
+        "num": "22",
+        "name": "LED_SEL_2",
+        "side": "L",
+        "type": "Input",
+        "desc": "LED 致能觸發輸入2。"
+      },
+      {
+        "num": "23",
+        "name": "LED_SEL_3",
+        "side": "L",
+        "type": "Input",
+        "desc": "LED 致能觸發輸入3。"
+      },
+      {
+        "num": "24",
+        "name": "DVSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "數位核心接地回路。"
+      },
+      {
+        "num": "25",
+        "name": "PBKG",
+        "side": "L",
+        "type": "Ground",
+        "desc": "基板(substrate)接地與 ESD 接地回路。"
+      },
+      {
+        "num": "26",
+        "name": "DVDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "數位核心 3.3V 電源輸入。"
+      },
+      {
+        "num": "27",
+        "name": "SPI1_CLK",
+        "side": "B",
+        "type": "Input",
+        "desc": "SPI1 介面序列時脈輸入。"
+      },
+      {
+        "num": "28",
+        "name": "SPI1_SS_Z",
+        "side": "B",
+        "type": "Input",
+        "desc": "SPI1 介面晶片選擇輸入(低電位有效)。"
+      },
+      {
+        "num": "29",
+        "name": "SPI1_DOUT",
+        "side": "B",
+        "type": "Output",
+        "desc": "SPI1 介面資料輸出。"
+      },
+      {
+        "num": "30",
+        "name": "SPI1_DIN",
+        "side": "B",
+        "type": "Input",
+        "desc": "SPI1 介面資料輸入。"
+      },
+      {
+        "num": "31",
+        "name": "SPI2_DIN",
+        "side": "B",
+        "type": "Input",
+        "desc": "SPI2 介面資料輸入。"
+      },
+      {
+        "num": "32",
+        "name": "SPI2_DOUT",
+        "side": "B",
+        "type": "Output",
+        "desc": "SPI2 介面資料輸出。"
+      },
+      {
+        "num": "33",
+        "name": "SPI2_SS_Z",
+        "side": "B",
+        "type": "Input",
+        "desc": "SPI2 介面晶片選擇輸入(低電位有效)。"
+      },
+      {
+        "num": "34",
+        "name": "SPI2_CLK",
+        "side": "B",
+        "type": "Input",
+        "desc": "SPI2 介面序列時脈輸入。"
+      },
+      {
+        "num": "35",
+        "name": "VSS_IO",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位 IO 介面接地。"
+      },
+      {
+        "num": "36",
+        "name": "VDD_IO",
+        "side": "B",
+        "type": "Power",
+        "desc": "IO 電源軌 3.3V 供電輸入。"
+      },
+      {
+        "num": "37",
+        "name": "EXT_SMPL",
+        "side": "B",
+        "type": "Input",
+        "desc": "保留腳，須接地。"
+      },
+      {
+        "num": "38",
+        "name": "DRV_EN",
+        "side": "B",
+        "type": "Output",
+        "desc": "LM3409 驅動致能輸出。"
+      },
+      {
+        "num": "39",
+        "name": "CMODE",
+        "side": "B",
+        "type": "Output",
+        "desc": "電容選擇輸出(CM 模式下可用較小電容以降低過衝/欠衝)，開集極輸出。"
+      },
+      {
+        "num": "40",
+        "name": "DMUX0",
+        "side": "B",
+        "type": "Output",
+        "desc": "數位測試點輸出。"
+      },
+      {
+        "num": "41",
+        "name": "DMUX1",
+        "side": "B",
+        "type": "Output",
+        "desc": "數位測試點輸出。"
+      },
+      {
+        "num": "42",
+        "name": "DRVR_PWR",
+        "side": "B",
+        "type": "Power",
+        "desc": "FET 驅動器電源輸入(6V 或 3.3V)；供 S_EN1、S_EN2、R_EN、G_EN、B_EN 輸出使用。"
+      },
+      {
+        "num": "43",
+        "name": "S_EN1",
+        "side": "B",
+        "type": "Output",
+        "desc": "低阻抗分流 NFET 驅動致能(高電位=分流動作)。"
+      },
+      {
+        "num": "44",
+        "name": "S_EN2",
+        "side": "B",
+        "type": "Output",
+        "desc": "高阻抗分流 NFET 驅動致能(高電位=分流動作)。"
+      },
+      {
+        "num": "45",
+        "name": "R_EN",
+        "side": "B",
+        "type": "Output",
+        "desc": "紅色通道選擇，驅動低側 NFET。"
+      },
+      {
+        "num": "46",
+        "name": "G_EN",
+        "side": "B",
+        "type": "Output",
+        "desc": "綠色通道選擇，驅動低側 NFET。"
+      },
+      {
+        "num": "47",
+        "name": "B_EN",
+        "side": "B",
+        "type": "Output",
+        "desc": "藍色通道選擇，驅動低側 NFET。"
+      },
+      {
+        "num": "48",
+        "name": "VSS_DRVR",
+        "side": "B",
+        "type": "Ground",
+        "desc": "FET 驅動器電源接地。"
+      },
+      {
+        "num": "49",
+        "name": "DMD_VOFFSET",
+        "side": "B",
+        "type": "Power",
+        "desc": "VOFFSET 輸出軌；須於此腳接 1µF 陶瓷電容至地。"
+      },
+      {
+        "num": "50",
+        "name": "DMD_VBIAS",
+        "side": "B",
+        "type": "Power",
+        "desc": "VBIAS 輸出軌；須於此腳接 0.47µF 陶瓷電容至地。"
+      },
+      {
+        "num": "75",
+        "name": "PBKG",
+        "side": "R",
+        "type": "Ground",
+        "desc": "基板(substrate)接地與 ESD 接地回路。"
+      },
+      {
+        "num": "74",
+        "name": "TIA_PD1_FILT",
+        "side": "R",
+        "type": "Output",
+        "desc": "TIA1 外接濾波電容—低頻寬取樣。"
+      },
+      {
+        "num": "73",
+        "name": "TIA_PD1",
+        "side": "R",
+        "type": "Input",
+        "desc": "TIA1 光電二極體陰極驅動。"
+      },
+      {
+        "num": "72",
+        "name": "VSS_TIA1",
+        "side": "R",
+        "type": "Ground",
+        "desc": "TIA1 專用接地。"
+      },
+      {
+        "num": "71",
+        "name": "VSS_TIA2",
+        "side": "R",
+        "type": "Ground",
+        "desc": "TIA2 專用接地。"
+      },
+      {
+        "num": "70",
+        "name": "TIA_PD2",
+        "side": "R",
+        "type": "Input",
+        "desc": "TIA2 光電二極體陰極驅動。"
+      },
+      {
+        "num": "69",
+        "name": "TIA_PD2_FILT",
+        "side": "R",
+        "type": "Output",
+        "desc": "TIA2 外接濾波電容—低頻寬取樣。"
+      },
+      {
+        "num": "68",
+        "name": "VLDOT_3P3V",
+        "side": "R",
+        "type": "Power",
+        "desc": "3.3V TIA LDO 濾波電容介面。"
+      },
+      {
+        "num": "67",
+        "name": "VIN_LDOT_3P3V",
+        "side": "R",
+        "type": "Power",
+        "desc": "3.3V TIA LDO 之 6V 電源輸入。"
+      },
+      {
+        "num": "66",
+        "name": "GND_LDO",
+        "side": "R",
+        "type": "Ground",
+        "desc": "LDO 電源接地回路。"
+      },
+      {
+        "num": "65",
+        "name": "VIN_LDOT_5V",
+        "side": "R",
+        "type": "Power",
+        "desc": "5V TIA LDO 之 6V 電源輸入。"
+      },
+      {
+        "num": "64",
+        "name": "VLDOT_5V",
+        "side": "R",
+        "type": "Power",
+        "desc": "5V TIA LDO 濾波電容介面。"
+      },
+      {
+        "num": "63",
+        "name": "VLDOT_M8",
+        "side": "R",
+        "type": "Power",
+        "desc": "TIA 介面專用 −8V LDO 輸出。"
+      },
+      {
+        "num": "62",
+        "name": "VIN_LDOT_M8",
+        "side": "R",
+        "type": "Output",
+        "desc": "TIA 介面專用 −8V LDO 外部調整用 FET 驅動訊號。"
+      },
+      {
+        "num": "61",
+        "name": "AMUX0",
+        "side": "R",
+        "type": "Output",
+        "desc": "類比測試多工器輸出0。"
+      },
+      {
+        "num": "60",
+        "name": "PBKG",
+        "side": "R",
+        "type": "Ground",
+        "desc": "基板(substrate)接地與 ESD 接地回路。"
+      },
+      {
+        "num": "59",
+        "name": "AVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "類比電路 3.3V 電源供電輸入。"
+      },
+      {
+        "num": "58",
+        "name": "VMAIN",
+        "side": "R",
+        "type": "Input",
+        "desc": "主要中間電壓監控輸入；以外部電阻分壓器設定電壓輸入以進行欠壓(brownout)監控。"
+      },
+      {
+        "num": "57",
+        "name": "AMUX1",
+        "side": "R",
+        "type": "Output",
+        "desc": "類比測試多工器輸出1。"
+      },
+      {
+        "num": "56",
+        "name": "VSS_DRST",
+        "side": "R",
+        "type": "Ground",
+        "desc": "DMD 電源供應接地。"
+      },
+      {
+        "num": "55",
+        "name": "VIN_DRST",
+        "side": "R",
+        "type": "Power",
+        "desc": "DMD 電源供應 6V 輸入。"
+      },
+      {
+        "num": "54",
+        "name": "DRST_HS_IND",
+        "side": "R",
+        "type": "Power",
+        "desc": "DMD 電源供應用電感(10µH)接點。"
+      },
+      {
+        "num": "53",
+        "name": "DRST_PGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "DMD 電源供應之功率接地；須接至接地平面。"
+      },
+      {
+        "num": "52",
+        "name": "DRST_LS_IND",
+        "side": "R",
+        "type": "Power",
+        "desc": "DMD 電源供應用電感(10µH)接點；須接 330pF/50V 電容至地(建議 X7R)。"
+      },
+      {
+        "num": "51",
+        "name": "DMD_VRESET",
+        "side": "R",
+        "type": "Power",
+        "desc": "VRESET 輸出軌；須接 1µF 陶瓷電容至地，並經外部二極體接至 DRST_HS_IND(二極體陽極接 DMD_VRESET)。"
+      },
+      {
+        "num": "100",
+        "name": "AVSS",
+        "side": "T",
+        "type": "Ground",
+        "desc": "類比接地。"
+      },
+      {
+        "num": "99",
+        "name": "PBKG",
+        "side": "T",
+        "type": "Ground",
+        "desc": "基板(substrate)接地與 ESD 接地回路。"
+      },
+      {
+        "num": "98",
+        "name": "V1P1V",
+        "side": "T",
+        "type": "Input",
+        "desc": "外部 1.1V buck 電壓監控輸入。"
+      },
+      {
+        "num": "97",
+        "name": "V1P8V",
+        "side": "T",
+        "type": "Input",
+        "desc": "外部 1.8V buck 電壓監控輸入。"
+      },
+      {
+        "num": "96",
+        "name": "V3P3V",
+        "side": "T",
+        "type": "Input",
+        "desc": "外部 3.3V buck 電壓監控輸入。"
+      },
+      {
+        "num": "95",
+        "name": "ADC_VREF",
+        "side": "T",
+        "type": "Power",
+        "desc": "ADC 參考電壓輸出。"
+      },
+      {
+        "num": "94",
+        "name": "ADC_IN7",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "外部類比訊號輸入通道7，經專用 ADC 介面取樣。"
+      },
+      {
+        "num": "93",
+        "name": "ADC_IN6",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "外部類比訊號輸入通道6，經專用 ADC 介面取樣。"
+      },
+      {
+        "num": "92",
+        "name": "ADC_IN5",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "外部類比訊號輸入通道5，經專用 ADC 介面取樣。"
+      },
+      {
+        "num": "91",
+        "name": "VSSL_ADC",
+        "side": "T",
+        "type": "Ground",
+        "desc": "外部 ADC 通道 bondwire 與導線架隔離接地。"
+      },
+      {
+        "num": "90",
+        "name": "ADC_IN4",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "外部類比訊號輸入通道4，經專用 ADC 介面取樣。"
+      },
+      {
+        "num": "89",
+        "name": "VSSL_ADC",
+        "side": "T",
+        "type": "Ground",
+        "desc": "外部 ADC 通道 bondwire 與導線架隔離接地。"
+      },
+      {
+        "num": "88",
+        "name": "ADC_IN3",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "外部類比訊號輸入通道3，經專用 ADC 介面取樣。"
+      },
+      {
+        "num": "87",
+        "name": "VSSL_ADC",
+        "side": "T",
+        "type": "Ground",
+        "desc": "外部 ADC 通道 bondwire 與導線架隔離接地。"
+      },
+      {
+        "num": "86",
+        "name": "ADC_IN2",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "外部類比訊號輸入通道2，經專用 ADC 介面取樣。"
+      },
+      {
+        "num": "85",
+        "name": "ADC_IN1",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "外部類比訊號輸入通道1，經專用 ADC 介面(VSSL_ADC 隔離接地)取樣。"
+      },
+      {
+        "num": "84",
+        "name": "VSSL_ADC",
+        "side": "T",
+        "type": "Ground",
+        "desc": "外部 ADC 通道 bondwire 與導線架隔離接地。"
+      },
+      {
+        "num": "83",
+        "name": "LS_SENSE_P",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "低側電流/電壓感測正端輸入。"
+      },
+      {
+        "num": "82",
+        "name": "LS_SENSE_N",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "低側電流/電壓感測負端輸入。"
+      },
+      {
+        "num": "81",
+        "name": "VSSL_ADC",
+        "side": "T",
+        "type": "Ground",
+        "desc": "外部 ADC 通道 bondwire 與導線架隔離接地。"
+      },
+      {
+        "num": "80",
+        "name": "VLDOA_3P3",
+        "side": "T",
+        "type": "Power",
+        "desc": "外部 ADC 介面專用 3.3V LDO 濾波電容輸出。"
+      },
+      {
+        "num": "79",
+        "name": "VIN_LDOA_3P3",
+        "side": "T",
+        "type": "Power",
+        "desc": "外部 ADC 介面專用 3.3V LDO 供電之 6V 電源輸入。"
+      },
+      {
+        "num": "78",
+        "name": "AVSS",
+        "side": "T",
+        "type": "Ground",
+        "desc": "類比接地。"
+      },
+      {
+        "num": "77",
+        "name": "IADJ",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "電流輸出，用於調整外部 LED 控制器的驅動電流設定點。"
+      },
+      {
+        "num": "76",
+        "name": "R_IADJ",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "外部電阻接點，將 IADJ 電壓轉換為電流設定用途。"
+      }
+    ],
+    "specs": [
+      {
+        "k": "封裝",
+        "v": "100-Pin HTQFP(PZP)"
+      },
+      {
+        "k": "電源監控/致能通道",
+        "v": "1.1V/1.8V/3.3V 三組外部 buck 致能(ENB_1P1V/1P8V/3P3V)與電壓監控(V1P1V/1P8V/3P3V)"
+      },
+      {
+        "k": "DMD 電源軌",
+        "v": "VOFFSET(1µF)、VBIAS(0.47µF)、VRESET(1µF，經二極體接 DRST_HS_IND)，DRST 級 6V 輸入"
+      },
+      {
+        "k": "TIA 通道數",
+        "v": "2 通道(PD1/PD2)，各具專屬濾波與 LDO(3.3V/5V/−8V)"
+      },
+      {
+        "k": "外部 ADC 介面",
+        "v": "7 類比輸入通道(ADC_IN1-7)＋ADC_VREF 參考輸出＋專用 SPI(ADC_MISO/MOSI，詳細功能見 datasheet)"
+      },
+      {
+        "k": "數位介面",
+        "v": "SPI1、SPI2 各一組(CLK/DIN/DOUT/SS_Z)，詳細功能見 datasheet"
+      },
+      {
+        "k": "LED/雷射驅動通道",
+        "v": "R_EN/G_EN/B_EN 三色低側驅動＋S_EN1/S_EN2 分流驅動，IADJ/R_IADJ 設定外部電流"
+      },
+      {
+        "k": "看門狗/系統握手",
+        "v": "WD1、WD2 中斷通道；PARK_Z、RESET_Z、INT_Z 與 DLPC23xS-Q1 握手；PROJ_ON 投影機致能"
+      },
+      {
+        "k": "文件版本",
+        "v": "DLPS298 – DECEMBER 2025"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 完全相容(100-Pin HTQFP PZP，pin-to-pin)",
+      "電源監控/致能腳數與電壓等級一致(1.1V/1.8V/3.3V 三組)",
+      "DMD 專用電源軌(VOFFSET/VBIAS/VRESET)電壓與外接電容需求一致",
+      "TIA 光電前端通道數(2)與專屬 LDO 電壓(3.3V/5V/−8V)一致",
+      "LED/雷射驅動通道數與邏輯(R/G/B、分流 S_EN1/S_EN2)一致",
+      "外部 ADC 介面通道數(7)與參考輸出一致",
+      "車規認證(AEC-Q100)等級同等或更佳",
+      "本條目 19 腳功能敘述未完整核實(見 desc 說明)，選用替代料前務必以原廠完整 datasheet 覆核這些腳位"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "LM851772-Q1",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "車用同步 Buck-Boost 雙半橋閘極驅動控制器",
+    "package": "40-Pin QFN(RHA)",
+    "whatIs": "車用同步 buck-boost/雙半橋閘極驅動控制器 IC：整合類比前端(電流/電壓感測)、I2C 數位介面與 buck+boost 雙半橋閘極驅動，可組成四開關 buck-boost 或雙路獨立降壓/升壓轉換器，供車用電源系統使用。",
+    "func": "VCC1 為輔助5V穩壓器輸出；SS/ATRK 兼具軟啟動程式化(外接電容至AGND)與類比輸出電壓追蹤(可接可變電壓參考如DAC，內部電路取此腳電壓與內部參考電壓中較低者)兩種功能；SYNC 為同步時脈輸入/輸出(可設定0°或180°相位供雙裝置並聯運作)；DTRK 為動態輸出電壓追蹤用數位PWM輸入；SDA/SCL 構成I2C介面(須外接提升電阻)；MODE 選擇省電模式(PSM)或強制PWM/CCM運作，可動態切換；CFG2 透過外接電阻至GND選擇裝置運作設定；ADDR(CFG1) 設定I2C位址LSB；CDC 為纜線壓降補償或電流監控輸出(可經電阻至AGND設定增益)；nFLT/nINT 為開集極故障/電源良好或中斷輸出(STATUS暫存器變動時拉低256µs)；RT 外接電阻至AGND設定切換頻率；COMP 為誤差放大器輸出，須外接RC補償網路；FB/SEL_intFB 為輸出電壓回授腳，接VCC2可選用裝置預設固定輸出電壓，或啟動前接VCC2選擇內部回授；ILIMCOMP 為平均電流限制迴路補償/設定腳(可用內部DAC或外接電阻設定門檻，接VCC2可停用此區塊降低靜態電流)；VOUT為輸出電壓感測輸入；ISNSN/ISNSP為(選用)平均電流感測放大器差動輸入，可置於輸入側或輸出側，停用時可分別接地或短接至AGND；CSB/CSA為電感峰值電流感測差動輸入，須以Kelvin接法連接外部感測電阻；SW1/HO1/HB1/LO1與PGND構成buck半橋(HB1須外接bootstrap電容至SW1)；VCC2為內部線性偏壓穩壓器輸出，供內部邏輯與閘極驅動器；SW2/HO2/HB2/LO2構成boost半橋(HB2須外接bootstrap電容至SW2)；DRV1為可設定的外部FET驅動腳(推挽/開集極/電荷幫浦三種型態擇一)；BIAS為VCC2偏壓穩壓器的選用外部輸入，可降低高VIN下內部LDO功耗；EN/UVLO為致能輸入，具精準類比比較器與遲滯，搭配電阻分壓器可程式化UVLO；nRST為裝置內部邏輯/介面/VCC1穩壓器致能輸入；VIN為功率級供電與感測輸入；散熱墊內部接地。",
+    "usedIn": "車用電源轉換模組，如車載充電、LED/馬達驅動前級等需要 buck-boost 雙半橋閘極驅動、精準電流/電壓感測與 I2C 數位控制的應用（本文件標註 ADVANCE INFORMATION，規格可能異動）。",
+    "desc": "40-Pin QFN(RHA)封裝，車用同步 buck+boost 雙半橋閘極驅動控制器，整合 I2C 數位介面、可程式化軟啟動/追蹤、峰值與平均電流感測，含 3 顆 NC 腳(26,34,39)與 1 個散熱墊(內部接地)。本文件為 ADVANCE INFORMATION(2026-06)，規格可能異動。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/lm851772-q1.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "VCC1",
+        "type": "Power",
+        "desc": "輔助 5V 穩壓器輸出；靠近此腳放置去耦電容。若依邏輯設定停用此輸出，須以電阻將此腳接地或提升至 VCC2；不可懸空。",
+        "side": "L"
+      },
+      {
+        "num": "2",
+        "name": "SS/ATRK",
+        "type": "Analog In",
+        "desc": "軟啟動程式化腳：於 SS 腳與 AGND 間接電容可設定軟啟動時間。亦為類比輸出電壓追蹤(analog output voltage tracking)腳：可接至可變電壓參考(例如 DAC)以程式化 VOUT 調節目標；內部電路會在此腳電壓與內部參考電壓間選擇較低者。",
+        "side": "L"
+      },
+      {
+        "num": "3",
+        "name": "SYNC",
+        "type": "Input",
+        "desc": "同步時脈輸入/輸出腳：運作中若偵測到有效外部時脈訊號，內部振盪器會同步至該時脈；不可懸空，若不使用此功能請接至 VCC2 或 GND。此腳亦可依裝置邏輯設定輸出同步時脈訊號，相位可選 0° 或 180°，供兩顆裝置並聯(雙相)運作。",
+        "side": "L"
+      },
+      {
+        "num": "4",
+        "name": "DTRK",
+        "type": "Input",
+        "desc": "動態輸出電壓追蹤用數位 PWM 輸入腳；不可懸空，若不使用此功能請接至 VCC 或 GND。",
+        "side": "L"
+      },
+      {
+        "num": "5",
+        "name": "SDA",
+        "type": "I/O",
+        "desc": "I2C 介面序列資料線；須外接提升電阻。",
+        "side": "L"
+      },
+      {
+        "num": "6",
+        "name": "SCL",
+        "type": "Input",
+        "desc": "I2C 介面序列時脈線；須外接提升電阻。",
+        "side": "L"
+      },
+      {
+        "num": "7",
+        "name": "MODE",
+        "type": "Input",
+        "desc": "裝置運作模式選擇數位輸入：低電位=省電模式(PSM)、高電位=強制 PWM/CCM 運作；運作中可動態切換模式；不可懸空。",
+        "side": "L"
+      },
+      {
+        "num": "8",
+        "name": "CFG2",
+        "type": "I/O",
+        "desc": "裝置設定腳；於 CFG2 與 GND 間接電阻以選擇裝置運作方式(詳見原廠 datasheet)。",
+        "side": "L"
+      },
+      {
+        "num": "9",
+        "name": "ADDR(CFG1)",
+        "type": "Input",
+        "desc": "位址選擇腳；接地=I2C 目標位址 LSB=0，接 VCC2=I2C 目標位址 LSB=1。",
+        "side": "L"
+      },
+      {
+        "num": "10",
+        "name": "CDC",
+        "type": "Analog Out",
+        "desc": "纜線壓降補償(cable drop compensation)或電流監控輸出腳；於 CDC 與 AGND 間接電阻以選擇補償增益。預設此腳輸出 ISNSP 與 ISNSN 間感測電壓的電流監控訊號；若停用電流監控功能，將 CDC 接地。",
+        "side": "L"
+      },
+      {
+        "num": "11",
+        "name": "nFLT/nINT",
+        "type": "Output",
+        "desc": "開集極輸出腳，用於故障指示或電源良好指示；若設定為中斷腳，STATUS 暫存器變動時此腳會拉低 256µs。",
+        "side": "B"
+      },
+      {
+        "num": "12",
+        "name": "RT",
+        "type": "Analog In",
+        "desc": "切換頻率程式化腳；於 RT 與 AGND 間接外部電阻以設定切換頻率。",
+        "side": "B"
+      },
+      {
+        "num": "13",
+        "name": "COMP",
+        "type": "Output",
+        "desc": "誤差放大器輸出；須於 COMP 與 AGND 間接外部 RC 網路以穩定/補償穩壓迴路。",
+        "side": "B"
+      },
+      {
+        "num": "14",
+        "name": "FB/SEL_intFB",
+        "type": "Analog In",
+        "desc": "輸出電壓調節回授腳；由轉換器輸出端接電阻分壓網路至 FB 腳。將 FB 接至 VCC2 可運作於裝置預設的固定輸出電壓；欲選擇內部回授，須在裝置啟動前將此腳接至 VCC2。",
+        "side": "B"
+      },
+      {
+        "num": "15",
+        "name": "AGND",
+        "type": "Ground",
+        "desc": "接至 AGND(類比地)。",
+        "side": "B"
+      },
+      {
+        "num": "16",
+        "name": "ILIMCOMP",
+        "type": "Analog In",
+        "desc": "平均電流限制迴路補償腳；若電流限制由內部 DAC 設定，須接電容或 2R-C 型網路。若停用內部 DAC，此腳可設定平均電流限制門檻，須接電阻至 AGND，並依應用需求並接濾波電容。將 ILIMCOMP 接至 VCC2 可停用此功能並降低靜態電流。",
+        "side": "B"
+      },
+      {
+        "num": "17",
+        "name": "AGND",
+        "type": "Ground",
+        "desc": "類比地。",
+        "side": "B"
+      },
+      {
+        "num": "18",
+        "name": "VOUT",
+        "type": "Analog In",
+        "desc": "輸出電壓感測輸入；連接至功率級輸出軌。",
+        "side": "B"
+      },
+      {
+        "num": "19",
+        "name": "ISNSN",
+        "type": "Analog In",
+        "desc": "輸出或輸入平均電流感測放大器負端感測輸入；若使用內部平均電流感測器，須於 ISNSN 與 ISNSP 間接選用的電流感測電阻(可置於功率級輸入側或輸出側)。若停用選用電流感測器，將 ISNSN 與 ISNSP 一併接至 AGND。",
+        "side": "B"
+      },
+      {
+        "num": "20",
+        "name": "ISNSP",
+        "type": "Analog In",
+        "desc": "輸出或輸入電流感測放大器正端感測輸入；若使用內部平均電流感測器，須於 ISNSN 與 ISNSP 間接選用的電流感測電阻(可置於功率級輸入側或輸出側)。若停用選用電流感測器，將 ISNSP 接地。",
+        "side": "B"
+      },
+      {
+        "num": "30",
+        "name": "LO2",
+        "type": "Output",
+        "desc": "boost 半橋低側閘極驅動輸出。",
+        "side": "R"
+      },
+      {
+        "num": "29",
+        "name": "VCC2",
+        "type": "Power",
+        "desc": "內部線性偏壓穩壓器輸出；須於 VCC 與 PGND 間接陶瓷去耦電容，此電源軌供內部邏輯與閘極驅動器使用。電容須靠近此腳放置，腳與電容間不可有電阻，以利良好去耦。",
+        "side": "R"
+      },
+      {
+        "num": "28",
+        "name": "PGND",
+        "type": "Ground",
+        "desc": "功率地。",
+        "side": "R"
+      },
+      {
+        "num": "27",
+        "name": "LO1",
+        "type": "Output",
+        "desc": "buck 半橋低側閘極驅動輸出。",
+        "side": "R"
+      },
+      {
+        "num": "26",
+        "name": "NC",
+        "type": "NC",
+        "desc": "無內部連接(Not Connected)。",
+        "side": "R"
+      },
+      {
+        "num": "25",
+        "name": "HB1",
+        "type": "Power",
+        "desc": "buck 半橋 bootstrap 供電腳；須於 HB1 與 SW1 間接外部電容，為高側 MOSFET 閘極驅動器提供偏壓。電容須靠近此腳放置，腳與電容間不可有電阻，以利良好去耦。",
+        "side": "R"
+      },
+      {
+        "num": "24",
+        "name": "HO1",
+        "type": "Output",
+        "desc": "buck 半橋高側閘極驅動輸出。",
+        "side": "R"
+      },
+      {
+        "num": "23",
+        "name": "SW1",
+        "type": "Power",
+        "desc": "buck 半橋電感切換節點。",
+        "side": "R"
+      },
+      {
+        "num": "22",
+        "name": "CSA",
+        "type": "Analog In",
+        "desc": "電感峰值電流感測正端輸入；以 Kelvin 接法連接至外部電流感測電阻的正端。",
+        "side": "R"
+      },
+      {
+        "num": "21",
+        "name": "CSB",
+        "type": "Analog In",
+        "desc": "電感峰值電流感測負端輸入；以 Kelvin 接法連接至外部電流感測電阻的負端。",
+        "side": "R"
+      },
+      {
+        "num": "40",
+        "name": "VIN",
+        "type": "Power",
+        "desc": "輸入電源與感測輸入；連接至功率級供電電源。",
+        "side": "T"
+      },
+      {
+        "num": "39",
+        "name": "NC",
+        "type": "NC",
+        "desc": "無內部連接(Not Connected)。",
+        "side": "T"
+      },
+      {
+        "num": "38",
+        "name": "nRST",
+        "type": "Input",
+        "desc": "數位輸入腳，用於致能裝置內部邏輯、介面運作，以及(若已選用)VCC1 穩壓器。",
+        "side": "T"
+      },
+      {
+        "num": "37",
+        "name": "EN/UVLO",
+        "type": "Input",
+        "desc": "致能腳，數位輸入以致能轉換器切換動作。此輸入具備精準類比比較器與遲滯特性以監控輸入電壓；須接電阻分壓器(由輸入電壓分壓)以維持 UVLO(欠壓鎖定)功能。",
+        "side": "T"
+      },
+      {
+        "num": "36",
+        "name": "BIAS",
+        "type": "Power",
+        "desc": "VCC2 偏壓穩壓器選用輸入；以外部電源對 VCC2 供電(取代由 VIN 供電)，可在高 VIN 時降低內部 LDO 的功率損耗。",
+        "side": "T"
+      },
+      {
+        "num": "35",
+        "name": "DRV1",
+        "type": "Output",
+        "desc": "外部 FET 驅動腳；依所選設定可作為高壓推挽(push-pull)級、開集極輸出、或電荷幫浦(charge pump)驅動級。若不使用此選用 DRV 腳功能，保持懸空。",
+        "side": "T"
+      },
+      {
+        "num": "34",
+        "name": "NC",
+        "type": "NC",
+        "desc": "無內部連接(Not Connected)。",
+        "side": "T"
+      },
+      {
+        "num": "33",
+        "name": "SW2",
+        "type": "Power",
+        "desc": "boost 半橋電感切換節點。",
+        "side": "T"
+      },
+      {
+        "num": "32",
+        "name": "HO2",
+        "type": "Output",
+        "desc": "boost 半橋高側閘極驅動輸出。",
+        "side": "T"
+      },
+      {
+        "num": "31",
+        "name": "HB2",
+        "type": "Power",
+        "desc": "boost 半橋 bootstrap 供電腳；須於 HB2 與 SW2 間接外部電容，為高側 MOSFET 閘極驅動器提供偏壓。電容須靠近此腳放置，腳與電容間不可有電阻，以利良好去耦。",
+        "side": "T"
+      },
+      {
+        "num": "PAD",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "散熱墊(Thermal Pad)，內部接地。",
+        "ep": true
+      }
+    ],
+    "specs": [
+      {
+        "k": "輸入電壓(建議操作)",
+        "v": "0V ~ 80V(VIN)，啟動電壓 3.5V"
+      },
+      {
+        "k": "BIAS 輸入電壓範圍",
+        "v": "0V ~ 55V"
+      },
+      {
+        "k": "輸出電壓感測範圍",
+        "v": "1V ~ 55V"
+      },
+      {
+        "k": "開關頻率",
+        "v": "100kHz ~ 2.2MHz(典型)，可外部同步"
+      },
+      {
+        "k": "電流限制感測電阻",
+        "v": "典型 10mΩ，容差 ±1%"
+      },
+      {
+        "k": "VCC1/VCC2 輸出電容需求",
+        "v": "VCC1 ≥2µF、VCC2 ≥6µF"
+      },
+      {
+        "k": "ESD",
+        "v": "HBM ±2000V；CDM 角腳 ±750V、其他腳 ±500V"
+      },
+      {
+        "k": "工作接面溫度",
+        "v": "−40°C ~ 150°C"
+      },
+      {
+        "k": "熱阻(RθJA)",
+        "v": "33.9°C/W(40-Pin QFN)"
+      },
+      {
+        "k": "封裝",
+        "v": "40-Pin QFN(RHA)"
+      },
+      {
+        "k": "文件狀態",
+        "v": "ADVANCE INFORMATION，SLVSJL6 – JUNE 2026"
+      }
+    ],
+    "secondSource": [
+      "封裝+pinout 相容(40-Pin QFN RHA，pin-to-pin)",
+      "輸入電壓範圍涵蓋(0~80V)，BIAS 輸入範圍涵蓋(0~55V)",
+      "開關頻率可調範圍涵蓋(100kHz~2.2MHz)且支援外部同步(0°/180°相位)",
+      "buck+boost 雙半橋閘極驅動架構與 bootstrap 電容需求一致(HB1/SW1、HB2/SW2)",
+      "電流感測架構一致(峰值 CSA/CSB Kelvin 接法 + 選用平均電流感測 ISNSP/ISNSN)",
+      "I2C 位址選擇與介面邏輯(ADDR/CFG1、CFG2 設定電阻)相容",
+      "車規認證(AEC-Q100)等級同等或更佳",
+      "本文件為 ADVANCE INFORMATION，正式量產版規格請以原廠最終 datasheet 為準"
+    ],
+    "dropIn": []
   }
 ];
