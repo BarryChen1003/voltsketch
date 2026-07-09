@@ -9288,5 +9288,2128 @@ window.IC_DATA = [
       "本文件為 ADVANCE INFORMATION，正式量產版規格請以原廠最終 datasheet 為準"
     ],
     "dropIn": []
+  },
+  {
+    "part": "TAC5111-Q1",
+    "mfr": "Texas Instruments",
+    "category": "audio",
+    "subcategory": "車用音訊 Codec（mono ADC＋DAC）",
+    "package": "32-WQFN (RTV) 5×5mm 0.5mm pitch",
+    "whatIs": "車規低功耗單聲道音訊 Codec：105dB 動態範圍 ADC＋114dB 動態範圍 DAC，支援差動/單端輸入輸出，AEC-Q100 Grade 1（−40~+125°C），供 eCall、車用主機等音訊擷取與播放。",
+    "func": "ADC 支援線路/麥克風差動輸入（2VRMS 滿刻度）與 AC/DC 耦合，內建可程式麥克風偏壓（最高 3V）；DAC 可組態線路輸出或耳機負載（16Ω 驅動至 62.5mW），支援差動 2VRMS／單端 1VRMS。整合可程式通道增益、數位音量、低抖動 PLL、HPF/雙二階 EQ、低延遲濾波模式；取樣率 4kHz~768kHz、自動時脈/取樣率偵測；音訊介面 TDM/I2S/LJ（16/20/24/32-bit），控制介面 I2C 或 SPI；語音/超音波活動偵測、電池與熱回退保護。",
+    "usedIn": "車用緊急呼叫（eCall）、車載資通訊（Telematics）控制單元、主動降噪（ANC）、車用主機等空間受限的車規音訊系統。",
+    "desc": "車規單聲道音訊 Codec：105dB ADC＋114dB DAC、4k~768kHz 取樣、TDM/I2S/LJ、I2C/SPI 控制、AEC-Q100 Grade 1，32-WQFN 5×5mm。",
+    "datasheet": "TI SLASFC3A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "VSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "2",
+        "name": "DREG",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位側片上穩壓器輸出（標稱 1.5V），供內部數位電源；外接去耦電容"
+      },
+      {
+        "num": "3",
+        "name": "BCLK",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面位元時脈（bus controller/target 模式皆可）"
+      },
+      {
+        "num": "4",
+        "name": "FSYNC",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面框同步訊號"
+      },
+      {
+        "num": "5",
+        "name": "DOUT",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面資料輸出"
+      },
+      {
+        "num": "6",
+        "name": "DIN",
+        "side": "L",
+        "type": "Input",
+        "desc": "音訊序列介面資料輸入"
+      },
+      {
+        "num": "7",
+        "name": "IOVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位 I/O 電源（標稱 1.2V／1.8V／3.3V）"
+      },
+      {
+        "num": "8",
+        "name": "VSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "9",
+        "name": "SCL",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2C 控制介面時脈（SPI 模式時功能見 datasheet）"
+      },
+      {
+        "num": "10",
+        "name": "SDA",
+        "side": "B",
+        "type": "I/O",
+        "desc": "I2C 控制介面資料（表列 Digital Input，I2C 資料線實務為雙向開汲極）"
+      },
+      {
+        "num": "11",
+        "name": "GPIO1",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用數位輸出入 1（菊鏈輸入、音訊資料輸出、PLL 時脈源、中斷等多工功能）"
+      },
+      {
+        "num": "12",
+        "name": "GPIO2",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用數位輸出入 2（菊鏈輸入、音訊資料輸出、PLL 時脈源、中斷等多工功能）"
+      },
+      {
+        "num": "13",
+        "name": "GPO1",
+        "side": "B",
+        "type": "Output",
+        "desc": "通用數位輸出 1（音訊資料輸出、中斷等多工功能）"
+      },
+      {
+        "num": "14",
+        "name": "GPI1",
+        "side": "B",
+        "type": "Input",
+        "desc": "通用數位輸入 1（菊鏈輸入、PLL 時脈源等多工功能）"
+      },
+      {
+        "num": "15",
+        "name": "VSS",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "16",
+        "name": "ADDR",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "I2C 位址設定腳（類比位準偵測）"
+      },
+      {
+        "num": "17",
+        "name": "MICBIAS",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "麥克風偏壓輸出（可程式，最高 3V）"
+      },
+      {
+        "num": "18",
+        "name": "IN1P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 1P（差動正端；亦支援單端組態）"
+      },
+      {
+        "num": "19",
+        "name": "IN1M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 1M（差動負端）"
+      },
+      {
+        "num": "20",
+        "name": "IN2P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 2P（使用 ADC 通道交換選項時）"
+      },
+      {
+        "num": "21",
+        "name": "IN2M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 2M（使用 ADC 通道交換選項時）"
+      },
+      {
+        "num": "22",
+        "name": "VSSI",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地，直接短接板上接地平面"
+      },
+      {
+        "num": "23",
+        "name": "VSSI",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地，直接短接板上接地平面"
+      },
+      {
+        "num": "24",
+        "name": "VSSI",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地，直接短接板上接地平面"
+      },
+      {
+        "num": "25",
+        "name": "VSSI",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地，直接短接板上接地平面"
+      },
+      {
+        "num": "26",
+        "name": "VSS",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "27",
+        "name": "OUT1M",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 1M（差動負端；線路輸出或耳機負載）"
+      },
+      {
+        "num": "28",
+        "name": "OUT1P",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 1P（差動正端）"
+      },
+      {
+        "num": "29",
+        "name": "OUT2P",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 2P（使用 DAC 通道交換選項時）"
+      },
+      {
+        "num": "30",
+        "name": "OUT2M",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 2M（使用 DAC 通道交換選項時）"
+      },
+      {
+        "num": "31",
+        "name": "AVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比電源（標稱 1.8V 或 3.3V，單電源操作）"
+      },
+      {
+        "num": "32",
+        "name": "VREF",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比參考電壓濾波輸出；外接去耦電容至地"
+      },
+      {
+        "num": "33",
+        "name": "VSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤，內部接元件地；直接短接板上接地平面",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露焊盤=VSS（圖 4-1 中央標示 (VSS) Thermal Pad、表列 Thermal Pad 列），須短接板上接地平面",
+    "specs": [
+      {
+        "k": "ADC 動態範圍",
+        "v": "105dB（線路/麥克風差動輸入）；THD+N −97dB"
+      },
+      {
+        "k": "DAC 動態範圍",
+        "v": "114dB（差動線路/耳機輸出）；THD+N −96dB"
+      },
+      {
+        "k": "取樣率",
+        "v": "ADC/DAC 皆 4kHz ~ 768kHz"
+      },
+      {
+        "k": "輸入/輸出",
+        "v": "差動 2VRMS／單端 1VRMS；耳機 16Ω 驅動至 62.5mW"
+      },
+      {
+        "k": "麥克風偏壓",
+        "v": "可程式，最高 3V"
+      },
+      {
+        "k": "音訊介面",
+        "v": "TDM / I2S / 左對齊（16/20/24/32-bit），controller/target 模式"
+      },
+      {
+        "k": "控制介面",
+        "v": "I2C 或 SPI"
+      },
+      {
+        "k": "電源",
+        "v": "AVDD 1.8V/3.3V 單電源；IOVDD 1.2V/1.8V/3.3V"
+      },
+      {
+        "k": "低功耗",
+        "v": "1 通道錄音 5mW／播放 7mW（1.8V 供電）"
+      },
+      {
+        "k": "車規",
+        "v": "AEC-Q100 Grade 1（−40°C ~ +125°C）"
+      },
+      {
+        "k": "封裝",
+        "v": "32-WQFN (RTV) 5×5mm，0.5mm pitch，EP=VSS"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 相容（32-WQFN 5×5mm、EP=VSS）",
+      "功能相同（車規 mono codec，ADC 105dB/DAC 114dB 同級）",
+      "音訊介面相容（TDM/I2S/LJ）",
+      "控制介面相容（I2C/SPI、位址設定方式）",
+      "電源軌相容（AVDD 1.8/3.3V、IOVDD 1.2~3.3V）",
+      "AEC-Q100 Grade 1 車規",
+      "取樣率範圍涵蓋"
+    ],
+    "dropIn": [
+      {
+        "part": "TAC5112-Q1",
+        "note": "同封裝同腳位（32-WQFN 逐腳同名同號）；5112 為立體聲 ADC 版，規格分級不同，確認通道需求"
+      }
+    ]
+  },
+  {
+    "part": "LMKDB1112",
+    "mfr": "Texas Instruments",
+    "category": "clocks",
+    "subcategory": "PCIe LP-HCSL 時脈緩衝器（1:12）",
+    "package": "64-pin LGA (ZSF) 5×5mm",
+    "whatIs": "超低附加抖動 LP-HCSL 時脈緩衝器：1 路差動輸入扇出 12 路 LP-HCSL 差動輸出，支援 PCIe Gen 1~Gen 7（CC 與 IR 架構、含 SSC 輸入），與 Intel DB1206 腳位相容。",
+    "func": "12 路 LP-HCSL 輸出各有獨立 OE# 致能（內建上拉）；SBI（Side-Band Interface）可高速批次開關輸出（SBI_EN 決定 OE2/4/7/10 腳的雙重功能）；SMBus 介面（SADR0/1 三階位址）供暫存器控制；LOS# 開汲極輸出指示輸入時脈遺失；fail-safe 輸入、彈性上電順序、自動輸出停用；輸出阻抗 85Ω/100Ω 可選、斜率兩檔（SLEWRATE_SEL）。",
+    "usedIn": "高效能運算、伺服器主機板、NIC/SmartNIC、硬體加速卡等 PCIe 時脈樹扇出（AI 伺服器 PCIe retimer/switch 前端常見）。",
+    "desc": "PCIe Gen1~7 LP-HCSL 1:12 時脈緩衝器，附加抖動 5fs（Gen5）/2.1fs（Gen7）max，SMBus＋SBI 控制，1.8V/3.3V 供電，64-LGA 5×5mm（DB1206 腳位相容）。",
+    "datasheet": "TI SNAS855G（LMKDB11xx family）",
+    "pins": [
+      {
+        "num": "E1",
+        "name": "CLKIN_P",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入正端"
+      },
+      {
+        "num": "F1",
+        "name": "CLKIN_N",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入負端"
+      },
+      {
+        "num": "D1",
+        "name": "SMB_CLK",
+        "side": "L",
+        "type": "Input",
+        "desc": "SMBus 時脈；需外部上拉電阻，未用可 NC"
+      },
+      {
+        "num": "D2",
+        "name": "SMB_DATA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "SMBus 資料；需外部上拉電阻，未用可 NC"
+      },
+      {
+        "num": "B1",
+        "name": "SADR1",
+        "side": "L",
+        "type": "Input",
+        "desc": "SMBus 位址三階輸入 1（內建上拉+下拉，_tri）"
+      },
+      {
+        "num": "C1",
+        "name": "SADR0",
+        "side": "L",
+        "type": "Input",
+        "desc": "SMBus 位址三階輸入 0（內建上拉+下拉，_tri）"
+      },
+      {
+        "num": "C2",
+        "name": "SLEWRATE_SEL",
+        "side": "L",
+        "type": "Input",
+        "desc": "LP-HCSL 輸出斜率選擇（內建上拉）：低=慢斜率、高=快斜率"
+      },
+      {
+        "num": "K1",
+        "name": "SBI_EN",
+        "side": "L",
+        "type": "Input",
+        "desc": "SBI 介面致能（內建下拉）；上電後不可改變狀態：上電時低=SBI 停用（該三腳作 OE），高=SBI 啟用"
+      },
+      {
+        "num": "K2",
+        "name": "PWRGD/{PWRDN}",
+        "side": "L",
+        "type": "Input",
+        "desc": "Power Good/Power Down 多功能腳（內建上拉）：首次低→高=啟動元件；之後低=省電模式、高=正常"
+      },
+      {
+        "num": "A1",
+        "name": "{LOS}",
+        "side": "L",
+        "type": "Output",
+        "desc": "輸入時脈遺失指示（active-low，開汲極需外部上拉）：低=輸入時脈無效"
+      },
+      {
+        "num": "B3",
+        "name": "{OE0}",
+        "side": "L",
+        "type": "Input",
+        "desc": "CLK0 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "B4",
+        "name": "{OE1}",
+        "side": "L",
+        "type": "Input",
+        "desc": "CLK1 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "B7",
+        "name": "{OE2}/SBI_OUT",
+        "side": "L",
+        "type": "I/O",
+        "desc": "CLK2 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用；或 SBI 資料輸出（SBI_EN 選擇功能）"
+      },
+      {
+        "num": "B8",
+        "name": "{OE3}",
+        "side": "L",
+        "type": "Input",
+        "desc": "CLK3 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "A10",
+        "name": "{OE4}/SBI_CLK",
+        "side": "L",
+        "type": "I/O",
+        "desc": "CLK4 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用；或 SBI 時脈輸入（SBI_EN 選擇功能；SBI 模式內建下拉）"
+      },
+      {
+        "num": "E9",
+        "name": "{OE5}",
+        "side": "L",
+        "type": "Input",
+        "desc": "CLK5 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "G9",
+        "name": "{OE6}",
+        "side": "L",
+        "type": "Input",
+        "desc": "CLK6 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "K10",
+        "name": "{OE7}/SBI_IN",
+        "side": "L",
+        "type": "I/O",
+        "desc": "CLK7 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用；或 SBI 資料輸入（SBI_EN 選擇功能；SBI 模式內建下拉）"
+      },
+      {
+        "num": "J8",
+        "name": "{OE8}",
+        "side": "L",
+        "type": "Input",
+        "desc": "CLK8 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "J6",
+        "name": "{OE9}",
+        "side": "L",
+        "type": "Input",
+        "desc": "CLK9 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "J4",
+        "name": "{OE10}/{SHFT_LD}",
+        "side": "L",
+        "type": "Input",
+        "desc": "CLK10 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用；或 SBI 移位暫存器載入（SBI_EN 選擇功能；SBI 模式內建下拉）"
+      },
+      {
+        "num": "G1",
+        "name": "{OE11}",
+        "side": "L",
+        "type": "Input",
+        "desc": "CLK11 輸出致能（active-low，內建上拉）：0=輸出作用、1=輸出停用"
+      },
+      {
+        "num": "A3",
+        "name": "CLK0_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 0 正端；未用可 NC"
+      },
+      {
+        "num": "A2",
+        "name": "CLK0_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 0 負端；未用可 NC"
+      },
+      {
+        "num": "A5",
+        "name": "CLK1_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 1 正端；未用可 NC"
+      },
+      {
+        "num": "A4",
+        "name": "CLK1_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 1 負端；未用可 NC"
+      },
+      {
+        "num": "A7",
+        "name": "CLK2_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 2 正端；未用可 NC"
+      },
+      {
+        "num": "A6",
+        "name": "CLK2_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 2 負端；未用可 NC"
+      },
+      {
+        "num": "A9",
+        "name": "CLK3_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 3 正端；未用可 NC"
+      },
+      {
+        "num": "A8",
+        "name": "CLK3_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 3 負端；未用可 NC"
+      },
+      {
+        "num": "C10",
+        "name": "CLK4_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 4 正端；未用可 NC"
+      },
+      {
+        "num": "B10",
+        "name": "CLK4_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 4 負端；未用可 NC"
+      },
+      {
+        "num": "E10",
+        "name": "CLK5_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 5 正端；未用可 NC"
+      },
+      {
+        "num": "D10",
+        "name": "CLK5_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 5 負端；未用可 NC"
+      },
+      {
+        "num": "G10",
+        "name": "CLK6_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 6 正端；未用可 NC"
+      },
+      {
+        "num": "F10",
+        "name": "CLK6_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 6 負端；未用可 NC"
+      },
+      {
+        "num": "J10",
+        "name": "CLK7_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 7 正端；未用可 NC"
+      },
+      {
+        "num": "H10",
+        "name": "CLK7_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 7 負端；未用可 NC"
+      },
+      {
+        "num": "K8",
+        "name": "CLK8_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 8 正端；未用可 NC"
+      },
+      {
+        "num": "K9",
+        "name": "CLK8N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 8 負端；未用可 NC（datasheet 表與圖均印作 CLK8N，即 CLK8_N）"
+      },
+      {
+        "num": "K6",
+        "name": "CLK9_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 9 正端；未用可 NC"
+      },
+      {
+        "num": "K7",
+        "name": "CLK9_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 9 負端；未用可 NC"
+      },
+      {
+        "num": "K4",
+        "name": "CLK10_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 10 正端；未用可 NC"
+      },
+      {
+        "num": "K5",
+        "name": "CLK10_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 10 負端；未用可 NC"
+      },
+      {
+        "num": "H1",
+        "name": "CLK11_P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 11 正端；未用可 NC"
+      },
+      {
+        "num": "J1",
+        "name": "CLK11_N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LP-HCSL 差動時脈輸出 11 負端；未用可 NC"
+      },
+      {
+        "num": "F2",
+        "name": "VDDA",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比電源；建議額外電源濾波（見 datasheet §10.3）"
+      },
+      {
+        "num": "B5",
+        "name": "VDDCLK",
+        "side": "T",
+        "type": "Power",
+        "desc": "輸出級電源"
+      },
+      {
+        "num": "C9",
+        "name": "VDDCLK",
+        "side": "T",
+        "type": "Power",
+        "desc": "輸出級電源"
+      },
+      {
+        "num": "H2",
+        "name": "VDDCLK",
+        "side": "T",
+        "type": "Power",
+        "desc": "輸出級電源"
+      },
+      {
+        "num": "H9",
+        "name": "VDDCLK",
+        "side": "T",
+        "type": "Power",
+        "desc": "輸出級電源"
+      },
+      {
+        "num": "J3",
+        "name": "VDDCLK",
+        "side": "T",
+        "type": "Power",
+        "desc": "輸出級電源"
+      },
+      {
+        "num": "D4",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "D5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "D6",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "D7",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "E4",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "E5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "E6",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "E7",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "F4",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "F5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "F6",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "F7",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "G4",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "G5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "G6",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "G7",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "元件接地（中央 4×4 接地陣列）"
+      },
+      {
+        "num": "B2",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "B6",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "B9",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "D9",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "E2",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "F9",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "G2",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "J2",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "J5",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "J7",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "J9",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "K3",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      }
+    ],
+    "thermalPad": "中央 4×4 GND land 陣列（D4~G7 共 16 點，兼散熱與接地；封裝計數 64 pin 不含此陣列），須接板上接地平面",
+    "specs": [
+      {
+        "k": "拓樸",
+        "v": "1 路差動輸入 → 12 路 LP-HCSL 差動輸出"
+      },
+      {
+        "k": "PCIe 支援",
+        "v": "Gen 1 ~ Gen 7（CC/IR 架構、SSC 輸入皆可）；DB2000QL 規格、DB1206 腳位相容"
+      },
+      {
+        "k": "附加抖動",
+        "v": "31fs max（12kHz-20MHz RMS @156.25MHz）；PCIe Gen4 13fs／Gen5 5fs／Gen6 3fs／Gen7 2.1fs max"
+      },
+      {
+        "k": "控制",
+        "v": "逐路 OE#＋SBI 高速開關＋SMBus（三階位址×2）"
+      },
+      {
+        "k": "輸出阻抗",
+        "v": "85Ω 或 100Ω"
+      },
+      {
+        "k": "供電",
+        "v": "1.8V／3.3V ±10%（VDDA＋VDDCLK×5）"
+      },
+      {
+        "k": "溫度",
+        "v": "−40°C ~ +105°C"
+      },
+      {
+        "k": "封裝",
+        "v": "64-pin LGA (ZSF) 5×5mm＋中央 16 點 GND 陣列"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 相容（64-LGA 5×5mm 或 Intel DB1206 腳位）",
+      "功能相同（PCIe 1:12 LP-HCSL 緩衝）",
+      "附加抖動同級或更佳（Gen5 ≤5fs）",
+      "OE/SMBus/SBI 控制相容",
+      "供電相容（1.8V/3.3V）",
+      "溫度範圍涵蓋"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "TAC5112-Q1",
+    "mfr": "Texas Instruments",
+    "category": "audio",
+    "subcategory": "車用音訊 Codec（stereo ADC＋DAC）",
+    "package": "32-WQFN (RTV) 5×5mm 0.5mm pitch",
+    "whatIs": "車規低功耗立體聲音訊 Codec：105dB 動態範圍立體聲 ADC＋114dB 動態範圍立體聲 DAC（單端四通道模式 107dB），支援差動/單端輸入輸出，AEC-Q100 Grade 1（−40~+125°C），供 eCall、車用主機等音訊擷取與播放。",
+    "func": "ADC 支援線路/麥克風差動輸入（2VRMS 滿刻度）與 AC/DC 耦合，最高可組態 4 個錄音通道（2 類比+2 數位／1 類比+3 數位／4 數位）；內建可程式麥克風偏壓（最高 3V）。DAC 可組態立體聲差動或四通道單端輸出，線路輸出或耳機負載（16Ω 驅動至 62.5mW），支援差動 2VRMS／偽差動與單端 1VRMS。整合可程式通道增益、數位音量、低抖動 PLL、HPF/雙二階 EQ、低延遲濾波模式；取樣率 4kHz~768kHz、自動時脈/取樣率偵測；音訊介面 TDM/I2S/LJ（16/20/24/32-bit），controller/target 模式，控制介面 I2C 或 SPI；語音/超音波活動偵測、電池與熱回退保護、訊號失真限制器。",
+    "usedIn": "車用緊急呼叫（eCall）、車載資通訊（Telematics）控制單元、主動降噪（ANC）、車用主機等空間受限的車規音訊系統。",
+    "desc": "車規立體聲音訊 Codec：105dB 立體聲 ADC＋114dB DAC（單端四通道 107dB）、4k~768kHz 取樣、TDM/I2S/LJ、I2C/SPI 控制，AEC-Q100 Grade 1，32-WQFN 5×5mm；pinout 與 TAC5111-Q1（mono 款）逐腳同名同位，僅通道模式與規格說明不同，與 TAC5301/5312/5412-Q1 不相容。",
+    "datasheet": "TI SLASFC2A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "VSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "2",
+        "name": "DREG",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位側片上穩壓器輸出（標稱 1.5V），供內部數位電源；外接去耦電容"
+      },
+      {
+        "num": "3",
+        "name": "BCLK",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面位元時脈（bus controller/target 模式皆可）"
+      },
+      {
+        "num": "4",
+        "name": "FSYNC",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面框同步訊號"
+      },
+      {
+        "num": "5",
+        "name": "DOUT",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面資料輸出"
+      },
+      {
+        "num": "6",
+        "name": "DIN",
+        "side": "L",
+        "type": "Input",
+        "desc": "音訊序列介面資料輸入"
+      },
+      {
+        "num": "7",
+        "name": "IOVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位 I/O 電源（標稱 1.2V／1.8V／3.3V）"
+      },
+      {
+        "num": "8",
+        "name": "VSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "9",
+        "name": "SCL",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2C 控制介面時脈"
+      },
+      {
+        "num": "10",
+        "name": "SDA",
+        "side": "B",
+        "type": "I/O",
+        "desc": "I2C 控制介面資料（表列 Digital Input，I2C 資料線實務為雙向開汲極）"
+      },
+      {
+        "num": "11",
+        "name": "GPIO1",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用數位輸出入 1（菊鏈輸入、音訊資料輸出、PLL 時脈源、中斷等多工功能）"
+      },
+      {
+        "num": "12",
+        "name": "GPIO2",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用數位輸出入 2（菊鏈輸入、音訊資料輸出、PLL 時脈源、中斷等多工功能）"
+      },
+      {
+        "num": "13",
+        "name": "GPO1",
+        "side": "B",
+        "type": "Output",
+        "desc": "通用數位輸出 1（音訊資料輸出、中斷等多工功能）"
+      },
+      {
+        "num": "14",
+        "name": "GPI1",
+        "side": "B",
+        "type": "Input",
+        "desc": "通用數位輸入 1（菊鏈輸入、PLL 時脈源等多工功能）"
+      },
+      {
+        "num": "15",
+        "name": "VSS",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "16",
+        "name": "ADDR",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "I2C 位址設定腳（類比位準偵測）"
+      },
+      {
+        "num": "17",
+        "name": "MICBIAS",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "麥克風偏壓輸出（可程式，最高 3V）"
+      },
+      {
+        "num": "18",
+        "name": "IN1P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 1P（立體聲第 1 聲道差動正端；亦支援單端組態）"
+      },
+      {
+        "num": "19",
+        "name": "IN1M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 1M（立體聲第 1 聲道差動負端）"
+      },
+      {
+        "num": "20",
+        "name": "IN2P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 2P（立體聲第 2 聲道差動正端）"
+      },
+      {
+        "num": "21",
+        "name": "IN2M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 2M（立體聲第 2 聲道差動負端）"
+      },
+      {
+        "num": "22",
+        "name": "VSSI",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地，直接短接板上接地平面"
+      },
+      {
+        "num": "23",
+        "name": "VSSI",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地，直接短接板上接地平面"
+      },
+      {
+        "num": "24",
+        "name": "VSSI",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地，直接短接板上接地平面"
+      },
+      {
+        "num": "25",
+        "name": "VSSI",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地，直接短接板上接地平面"
+      },
+      {
+        "num": "26",
+        "name": "VSS",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "27",
+        "name": "OUT1M",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 1M（立體聲第 1 聲道差動負端；線路輸出或耳機負載）"
+      },
+      {
+        "num": "28",
+        "name": "OUT1P",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 1P（立體聲第 1 聲道差動正端）"
+      },
+      {
+        "num": "29",
+        "name": "OUT2P",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 2P（立體聲第 2 聲道差動正端）"
+      },
+      {
+        "num": "30",
+        "name": "OUT2M",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 2M（立體聲第 2 聲道差動負端）"
+      },
+      {
+        "num": "31",
+        "name": "AVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比電源（標稱 1.8V 或 3.3V，單電源操作）"
+      },
+      {
+        "num": "32",
+        "name": "VREF",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比參考電壓濾波輸出；外接去耦電容至地"
+      },
+      {
+        "num": "33",
+        "name": "VSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤，內部接元件地；直接短接板上接地平面",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露焊盤=VSS（圖 4-1 標示 Thermal Pad (VSS)、表 4-1 Thermal Pad 列），須短接板上接地平面",
+    "specs": [
+      {
+        "k": "ADC 動態範圍",
+        "v": "105dB（線路/麥克風差動輸入，立體聲）；THD+N −97dB；通道加總模式 SNR 108dB"
+      },
+      {
+        "k": "DAC 動態範圍",
+        "v": "114dB（差動線路/耳機輸出，立體聲）；單端四通道 107dB；THD+N −96dB"
+      },
+      {
+        "k": "取樣率",
+        "v": "ADC/DAC 皆 4kHz ~ 768kHz"
+      },
+      {
+        "k": "輸入/輸出",
+        "v": "差動 2VRMS／單端 1VRMS；耳機 16Ω 驅動至 62.5mW"
+      },
+      {
+        "k": "錄音通道組態",
+        "v": "最高 4 通道（2 類比+2 數位／1 類比+3 數位／4 數位）"
+      },
+      {
+        "k": "麥克風偏壓",
+        "v": "可程式，最高 3V"
+      },
+      {
+        "k": "音訊介面",
+        "v": "TDM / I2S / 左對齊（16/20/24/32-bit），controller/target 模式"
+      },
+      {
+        "k": "控制介面",
+        "v": "I2C 或 SPI"
+      },
+      {
+        "k": "電源",
+        "v": "AVDD 1.8V/3.3V 單電源；IOVDD 1.2V/1.8V/3.3V"
+      },
+      {
+        "k": "低功耗",
+        "v": "2 通道錄音 8mW／播放 10.5mW（1.8V 供電）"
+      },
+      {
+        "k": "車規",
+        "v": "AEC-Q100 Grade 1（−40°C ~ +125°C）"
+      },
+      {
+        "k": "封裝",
+        "v": "32-WQFN (RTV) 5×5mm，0.5mm pitch，EP=VSS"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 與 TAC5111-Q1 完全相同（32-WQFN 5×5mm、EP=VSS，逐腳同名同位）",
+      "功能相同（車規 codec，ADC 105dB/DAC 114dB 同級，惟 TAC5111 為 mono、TAC5112 為 stereo）",
+      "音訊介面相容（TDM/I2S/LJ）",
+      "控制介面相容（I2C/SPI）",
+      "電源軌相容（AVDD 1.8/3.3V、IOVDD 1.2~3.3V）",
+      "AEC-Q100 Grade 1 車規",
+      "取樣率範圍涵蓋（4k~768kHz）"
+    ],
+    "dropIn": [
+      {
+        "part": "TAC5111-Q1",
+        "note": "同封裝同腳位（逐腳同名同號）；規格分級不同，確認動態範圍需求"
+      }
+    ]
+  },
+  {
+    "part": "TAC5301-Q1",
+    "mfr": "Texas Instruments",
+    "category": "audio",
+    "subcategory": "車用音訊 Codec（mono ADC＋DAC，高壓 micbias）",
+    "package": "24-QFN (RGE) 4×4mm with Corner Pins",
+    "whatIs": "車規單聲道音訊 Codec：ADC 動態範圍約 100~101dB（差動輸入；datasheet 標題標示 101dB、Features 內文標示 100dB，兩者略有差異見 datasheet）＋DAC 110dB，支援可程式高壓麥克風偏壓（3V~10V，需外部 HVDD 供電），AEC-Q100 Grade 1（−40~+125°C），24-Pin QFN 特殊轉角腳封裝。",
+    "func": "ADC 支援線路/麥克風差動輸入（2VRMS 滿刻度）與 AC/DC 耦合；麥克風偏壓可程式 3V~10V，須外接高壓 HVDD 電源（無內建升壓轉換器，與同家族 TAC5312-Q1/TAC5412-Q1 不同）。DAC 可組態單聲道差動或立體聲單端輸出，線路輸出或耳機負載（16Ω 驅動至 62.5mW），支援差動 2VRMS／偽差動與單端 1VRMS。整合可程式通道增益、數位音量、低抖動 PLL、HPF/雙二階 EQ、低延遲濾波模式；取樣率 8kHz~192kHz（窄於同家族其他型號的 4k~768kHz）；音訊介面 TDM/I2S/LJ（16/20/24/32-bit），僅支援 I2C 控制介面（不支援 SPI）；語音/超音波活動偵測、電池與熱回退保護、訊號失真限制器。",
+    "usedIn": "車載資通訊（Telematics）控制單元、車用主機、車用儀表（Cluster）、後座娛樂系統等空間受限的車規音訊系統。",
+    "desc": "車規單聲道音訊 Codec：ADC 約 100~101dB／DAC 110dB、8k~192kHz 取樣、僅 I2C 控制（無 SPI）、高壓麥克風偏壓 3~10V（需外部 HVDD）、AVDD 僅 3.3V，24-Pin QFN 4×4mm 特殊轉角腳封裝＋EP；腳位配置與家族其他 32-WQFN 型號（TAC5112/5312/5412-Q1）完全不相容。",
+    "datasheet": "TI SLASFD9A",
+    "pins": [
+      {
+        "num": "A1",
+        "name": "VSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地腳（轉角腳 Corner Pin，封裝四角特殊接地墊），直接短接板上接地平面"
+      },
+      {
+        "num": "1",
+        "name": "DREG",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位側片上穩壓器輸出（標稱 1.5V），供內部數位電源；外接去耦電容"
+      },
+      {
+        "num": "2",
+        "name": "BCLK",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面位元時脈（bus controller/target 模式皆可）"
+      },
+      {
+        "num": "3",
+        "name": "FSYNC",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面框同步訊號"
+      },
+      {
+        "num": "4",
+        "name": "DOUT",
+        "side": "L",
+        "type": "Output",
+        "desc": "音訊序列介面資料輸出"
+      },
+      {
+        "num": "5",
+        "name": "DIN",
+        "side": "L",
+        "type": "Input",
+        "desc": "音訊序列介面資料輸入"
+      },
+      {
+        "num": "6",
+        "name": "IOVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位 I/O 電源（標稱 1.2V／1.8V／3.3V）"
+      },
+      {
+        "num": "A2",
+        "name": "IOVSS",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位 I/O 電源接地腳（轉角腳 Corner Pin），直接短接板上接地平面"
+      },
+      {
+        "num": "7",
+        "name": "SCL",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2C 控制介面時脈"
+      },
+      {
+        "num": "8",
+        "name": "SDA",
+        "side": "B",
+        "type": "I/O",
+        "desc": "I2C 控制介面資料"
+      },
+      {
+        "num": "9",
+        "name": "GPIO1",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用數位輸出入 1（菊鏈輸入、音訊資料輸出、PLL 時脈源、中斷等多工功能）"
+      },
+      {
+        "num": "10",
+        "name": "VSSA",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比電源接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "11",
+        "name": "AVDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "類比電源（標稱 3.3V）"
+      },
+      {
+        "num": "12",
+        "name": "VSSA",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比電源接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "A3",
+        "name": "AVSS",
+        "side": "R",
+        "type": "Ground",
+        "desc": "類比電源接地腳（轉角腳 Corner Pin），直接短接板上接地平面"
+      },
+      {
+        "num": "13",
+        "name": "HVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "高壓類比電源（最高 12V），用於產生麥克風偏壓"
+      },
+      {
+        "num": "14",
+        "name": "MICBIAS",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "麥克風偏壓輸出（可程式，最高 10V）"
+      },
+      {
+        "num": "15",
+        "name": "IN1P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 1P（差動正端；亦支援單端組態）"
+      },
+      {
+        "num": "16",
+        "name": "IN1M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 1M（差動負端）"
+      },
+      {
+        "num": "17",
+        "name": "IN2P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 2P（Table 4-1 僅標示 Analog Input，ADC 標稱為 mono 規格，實際使用組態見 datasheet）"
+      },
+      {
+        "num": "18",
+        "name": "IN2M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 2M（同 IN2P，實際使用組態見 datasheet）"
+      },
+      {
+        "num": "A4",
+        "name": "AVSS",
+        "side": "T",
+        "type": "Ground",
+        "desc": "類比電源接地腳（轉角腳 Corner Pin），直接短接板上接地平面"
+      },
+      {
+        "num": "19",
+        "name": "OUT1M",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 1M（差動負端；線路輸出或耳機負載）"
+      },
+      {
+        "num": "20",
+        "name": "OUT1P",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 1P（差動正端）"
+      },
+      {
+        "num": "21",
+        "name": "OUT2P",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 2P（單端立體聲第 2 聲道；DAC 為 mono 差動或 stereo 單端二擇一模式）"
+      },
+      {
+        "num": "22",
+        "name": "OUT2M",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 2M（同 OUT2P，單端立體聲第 2 聲道）"
+      },
+      {
+        "num": "23",
+        "name": "AVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比電源（標稱 3.3V）"
+      },
+      {
+        "num": "24",
+        "name": "VREF",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比參考電壓濾波輸出；外接去耦電容至地"
+      },
+      {
+        "num": "EP",
+        "name": "VSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤，內部接元件地；直接短接板上接地平面",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露焊盤=VSS（圖 4-1 標示 Thermal Pad (VSS)、表 4-1 Thermal Pad 列），須短接板上接地平面；封裝另含 4 顆轉角腳（A1~A4，皆為 Ground），為此 24-Pin QFN with Exposed Thermal Pad and Corner Pins 特殊封裝所獨有，非標準 24-QFN，見 datasheet 圖 4-1",
+    "specs": [
+      {
+        "k": "ADC 動態範圍",
+        "v": "差動輸入 100dB（Features 內文）／datasheet 標題標示 101dB，見 datasheet 確認；THD+N −87dB"
+      },
+      {
+        "k": "DAC 動態範圍",
+        "v": "差動線路輸出 110dB／差動耳機輸出 109dB；THD+N −101dB"
+      },
+      {
+        "k": "取樣率",
+        "v": "ADC/DAC 皆 8kHz ~ 192kHz"
+      },
+      {
+        "k": "輸入/輸出",
+        "v": "差動 2VRMS／單端 1VRMS；耳機 16Ω 驅動至 62.5mW"
+      },
+      {
+        "k": "麥克風偏壓",
+        "v": "可程式 3V~10V，須外部 HVDD 供電（無內建升壓電路）"
+      },
+      {
+        "k": "音訊介面",
+        "v": "TDM / I2S / 左對齊（16/20/24/32-bit），controller/target 模式"
+      },
+      {
+        "k": "控制介面",
+        "v": "僅 I2C（不支援 SPI）"
+      },
+      {
+        "k": "電源",
+        "v": "AVDD 僅 3.3V 單電源；IOVDD 1.2V/1.8V/3.3V；HVDD 最高 12V"
+      },
+      {
+        "k": "車規",
+        "v": "AEC-Q100 Grade 1（−40°C ~ +125°C）"
+      },
+      {
+        "k": "封裝",
+        "v": "24-Pin QFN (RGE) 4×4mm，含 4 顆轉角腳（Corner Pin）＋EP=VSS，非標準均分佈局"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 需逐腳核對（24-Pin QFN with Exposed Thermal Pad and Corner Pins 特殊封裝，非通用 24-QFN，不可用一般 24-QFN 料件替代）",
+      "控制介面須為 I2C-only（不可用需 SPI 才能運作的替代 codec）",
+      "電源軌相容（AVDD 3.3V、IOVDD 1.2~3.3V、HVDD 高壓偏壓電源）",
+      "AEC-Q100 Grade 1 車規",
+      "取樣率範圍需涵蓋 8k~192kHz"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "TAC5312-Q1",
+    "mfr": "Texas Instruments",
+    "category": "audio",
+    "subcategory": "車用音訊 Codec（stereo ADC＋DAC，高壓輸入/micbias＋診斷）",
+    "package": "32-WQFN (RTV) 5×5mm 0.5mm pitch",
+    "whatIs": "車規立體聲音訊 Codec：10VRMS 高壓差動輸入、104dB 動態範圍 ADC＋2VRMS 差動輸出、114dB 動態範圍 DAC，內建升壓轉換器產生高壓可程式麥克風偏壓（3V~10V）並支援麥克風輸入故障診斷，AEC-Q100 Grade 1（−40~+125°C）。",
+    "func": "ADC 支援線路/麥克風差動輸入，差動 10VRMS／單端 5VRMS 高壓滿刻度輸入，AC/DC 耦合皆可；內建升壓轉換器（僅需 3.3V 供電）或外部 HVDD 供電產生可程式麥克風偏壓（3V~10V）；提供麥克風輸入開路/短路、短接至地/MICBIAS/VBAT、偏壓過電流等故障診斷。DAC 可組態立體聲差動或單端輸出，線路輸出或耳機負載（16Ω 驅動至 62.5mW），差動 2VRMS／單端 1VRMS。整合可程式通道增益、數位音量、低抖動 PLL、HPF/雙二階 EQ、低延遲/超低延遲濾波模式；取樣率 4kHz~768kHz；音訊介面 TDM/I2S/LJ（16/20/24/32-bit），控制介面 I2C 或 SPI。",
+    "usedIn": "車用緊急呼叫（eCall）、車載資通訊（Telematics）控制單元、主動降噪（ANC）、車用主機等需高壓麥克風直接連接與故障診斷的車規音訊系統。",
+    "desc": "車規立體聲音訊 Codec：10VRMS 高壓差動輸入 104dB ADC＋114dB DAC、內建升壓轉換器高壓麥克風偏壓（3~10V）＋輸入故障診斷、4k~768kHz 取樣、TDM/I2S/LJ、I2C/SPI 控制，AEC-Q100 Grade 1，32-WQFN 5×5mm；pinout 與 TAC5412-Q1 逐腳完全相同（僅 ADC/DAC 動態範圍規格不同），與 TAC5112-Q1/TAC5301-Q1 不相容。",
+    "datasheet": "TI SLASF35A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "VSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "2",
+        "name": "DREG",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位側片上穩壓器輸出（標稱 1.5V），供內部數位電源；外接去耦電容"
+      },
+      {
+        "num": "3",
+        "name": "BCLK",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面位元時脈（bus controller/target 模式皆可）"
+      },
+      {
+        "num": "4",
+        "name": "FSYNC",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面框同步訊號"
+      },
+      {
+        "num": "5",
+        "name": "DOUT",
+        "side": "L",
+        "type": "Output",
+        "desc": "音訊序列介面資料輸出"
+      },
+      {
+        "num": "6",
+        "name": "DIN",
+        "side": "L",
+        "type": "Input",
+        "desc": "音訊序列介面資料輸入"
+      },
+      {
+        "num": "7",
+        "name": "IOVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位 I/O 電源（標稱 1.2V、1.8V 或 3.3V）"
+      },
+      {
+        "num": "8",
+        "name": "IOVSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "數位 I/O 電源接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "9",
+        "name": "SCL",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2C 控制介面時脈"
+      },
+      {
+        "num": "10",
+        "name": "SDA",
+        "side": "B",
+        "type": "I/O",
+        "desc": "I2C 控制介面資料"
+      },
+      {
+        "num": "11",
+        "name": "GPIO1",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用數位輸出入 1（菊鏈輸入、音訊資料輸出、PLL 時脈源、中斷等多工功能）"
+      },
+      {
+        "num": "12",
+        "name": "VBATIN",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比 VBAT 輸入監測腳（供輸入故障診斷使用）"
+      },
+      {
+        "num": "13",
+        "name": "BSTVDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "升壓轉換器供電電源（標稱 3.3V）"
+      },
+      {
+        "num": "14",
+        "name": "BSTSW",
+        "side": "B",
+        "type": "Power",
+        "desc": "升壓轉換器切換腳（Switching pin）"
+      },
+      {
+        "num": "15",
+        "name": "BSTVSS",
+        "side": "B",
+        "type": "Ground",
+        "desc": "升壓轉換器供電接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "16",
+        "name": "BSTOUT",
+        "side": "B",
+        "type": "Power",
+        "desc": "升壓轉換器輸出電壓"
+      },
+      {
+        "num": "17",
+        "name": "MICBIAS",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "麥克風偏壓輸出（可程式，最高 10V）"
+      },
+      {
+        "num": "18",
+        "name": "IN1P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 1P（差動正端）"
+      },
+      {
+        "num": "19",
+        "name": "IN1M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 1M（差動負端）"
+      },
+      {
+        "num": "20",
+        "name": "IN2P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 2P（差動正端）"
+      },
+      {
+        "num": "21",
+        "name": "IN2M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 2M（差動負端）"
+      },
+      {
+        "num": "22",
+        "name": "ADDRA",
+        "side": "R",
+        "type": "Input",
+        "desc": "I2C 位址選擇腳"
+      },
+      {
+        "num": "23",
+        "name": "GPO1A",
+        "side": "R",
+        "type": "Output",
+        "desc": "通用數位輸出 1A（音訊資料輸出、中斷等多工功能）"
+      },
+      {
+        "num": "24",
+        "name": "GPI2A",
+        "side": "R",
+        "type": "Input",
+        "desc": "通用數位輸入 2A（菊鏈輸入、音訊資料輸入、PLL 時脈源等多工功能）"
+      },
+      {
+        "num": "25",
+        "name": "GPI1A",
+        "side": "T",
+        "type": "Input",
+        "desc": "通用數位輸入 1A（菊鏈輸入、音訊資料輸入、PLL 時脈源等多工功能）"
+      },
+      {
+        "num": "26",
+        "name": "AVSS",
+        "side": "T",
+        "type": "Ground",
+        "desc": "類比電源接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "27",
+        "name": "OUT1M",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 1M（差動負端）"
+      },
+      {
+        "num": "28",
+        "name": "OUT1P",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 1P（差動正端）"
+      },
+      {
+        "num": "29",
+        "name": "OUT2P",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 2P（差動正端）"
+      },
+      {
+        "num": "30",
+        "name": "OUT2M",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 2M（差動負端）"
+      },
+      {
+        "num": "31",
+        "name": "AVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比電源（標稱 3.3V）"
+      },
+      {
+        "num": "32",
+        "name": "VREF",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比參考電壓濾波輸出；外接去耦電容至地"
+      },
+      {
+        "num": "33",
+        "name": "VSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤，內部接元件地；直接短接板上接地平面",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露焊盤=VSS（圖 4-1 標示 Thermal Pad (VSS)、表 4-1 Thermal Pad 列），須短接板上接地平面",
+    "specs": [
+      {
+        "k": "ADC 動態範圍",
+        "v": "104dB（線路/麥克風差動輸入）；THD+N −97dB；通道加總模式 SNR 107dB"
+      },
+      {
+        "k": "DAC 動態範圍",
+        "v": "114dB（差動線路輸出）；107dB（單端耳機輸出）；THD+N −96dB"
+      },
+      {
+        "k": "取樣率",
+        "v": "ADC/DAC 皆 4kHz ~ 768kHz"
+      },
+      {
+        "k": "輸入/輸出",
+        "v": "差動 10VRMS／單端 5VRMS 輸入；差動 2VRMS／單端 1VRMS 輸出；耳機 16Ω 驅動至 62.5mW"
+      },
+      {
+        "k": "麥克風偏壓",
+        "v": "可程式 3V~10V，內建升壓轉換器（3.3V 供電）或外部 HVDD"
+      },
+      {
+        "k": "故障診斷",
+        "v": "麥克風輸入開路/短路、短接地/MICBIAS/VBAT、偏壓過電流保護"
+      },
+      {
+        "k": "音訊介面",
+        "v": "TDM / I2S / 左對齊（16/20/24/32-bit）"
+      },
+      {
+        "k": "控制介面",
+        "v": "I2C 或 SPI"
+      },
+      {
+        "k": "電源",
+        "v": "AVDD 僅 3.3V 單電源；IOVDD 1.2V/1.8V/3.3V；BSTVDD 3.3V"
+      },
+      {
+        "k": "車規",
+        "v": "AEC-Q100 Grade 1（−40°C ~ +125°C）"
+      },
+      {
+        "k": "封裝",
+        "v": "32-WQFN (RTV) 5×5mm，0.5mm pitch，EP=VSS"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 與 TAC5412-Q1 完全相同（32-WQFN 5×5mm、EP=VSS，逐腳同名同位）",
+      "功能相同（車規立體聲高壓輸入 codec＋升壓麥克風偏壓＋故障診斷）",
+      "音訊介面相容（TDM/I2S/LJ）",
+      "控制介面相容（I2C/SPI）",
+      "電源軌相容（AVDD 3.3V、IOVDD 1.2~3.3V、BSTVDD 3.3V）",
+      "AEC-Q100 Grade 1 車規",
+      "取樣率範圍涵蓋（4k~768kHz）"
+    ],
+    "dropIn": [
+      {
+        "part": "TAC5412-Q1",
+        "note": "同封裝同腳位（逐腳同名同號）；規格分級不同，確認動態範圍需求"
+      }
+    ]
+  },
+  {
+    "part": "TAC5412-Q1",
+    "mfr": "Texas Instruments",
+    "category": "audio",
+    "subcategory": "車用音訊 Codec（stereo ADC＋DAC，高壓輸入/micbias＋診斷，高階款）",
+    "package": "32-WQFN (RTV) 5×5mm 0.5mm pitch",
+    "whatIs": "車規立體聲音訊 Codec（家族最高性能款）：10VRMS 高壓差動輸入、112dB 動態範圍 ADC＋2VRMS 差動輸出、120dB 動態範圍 DAC，內建升壓轉換器產生高壓可程式麥克風偏壓（3V~10V）並支援麥克風輸入故障診斷，AEC-Q100 Grade 1（−40~+125°C）。",
+    "func": "ADC 支援線路/麥克風差動輸入，差動 10VRMS／單端 5VRMS 高壓滿刻度輸入，AC/DC 耦合皆可；內建升壓轉換器（僅需 3.3V 供電）或外部 HVDD 供電產生可程式麥克風偏壓（3V~10V）；提供麥克風輸入開路/短路、短接至地/MICBIAS/VBAT、偏壓過電流等故障診斷。DAC 可組態立體聲差動或單端輸出，線路輸出或耳機負載（16Ω 驅動至 62.5mW），差動 2VRMS／單端 1VRMS。整合可程式通道增益、數位音量、低抖動 PLL、HPF/雙二階 EQ、低延遲/超低延遲濾波模式；取樣率 4kHz~768kHz；音訊介面 TDM/I2S/LJ（16/20/24/32-bit），控制介面 I2C 或 SPI。",
+    "usedIn": "車用緊急呼叫（eCall）、車載資通訊（Telematics）控制單元、主動降噪（ANC）、車用主機等需高壓麥克風直接連接與故障診斷、且要求更高訊噪比的車規音訊系統。",
+    "desc": "車規立體聲音訊 Codec（家族最高性能）：10VRMS 高壓差動輸入 112dB ADC＋120dB DAC、內建升壓轉換器高壓麥克風偏壓（3~10V）＋輸入故障診斷、4k~768kHz 取樣、TDM/I2S/LJ、I2C/SPI 控制，AEC-Q100 Grade 1，32-WQFN 5×5mm；pinout 與 TAC5312-Q1 逐腳完全相同（僅 ADC/DAC 動態範圍規格不同，5412 較高階），與 TAC5112-Q1/TAC5301-Q1 不相容。",
+    "datasheet": "TI SLASF33A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "VSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "2",
+        "name": "DREG",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位側片上穩壓器輸出（標稱 1.5V），供內部數位電源；外接去耦電容"
+      },
+      {
+        "num": "3",
+        "name": "BCLK",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面位元時脈（bus controller/target 模式皆可）"
+      },
+      {
+        "num": "4",
+        "name": "FSYNC",
+        "side": "L",
+        "type": "I/O",
+        "desc": "音訊序列介面框同步訊號"
+      },
+      {
+        "num": "5",
+        "name": "DOUT",
+        "side": "L",
+        "type": "Output",
+        "desc": "音訊序列介面資料輸出"
+      },
+      {
+        "num": "6",
+        "name": "DIN",
+        "side": "L",
+        "type": "Input",
+        "desc": "音訊序列介面資料輸入"
+      },
+      {
+        "num": "7",
+        "name": "IOVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位 I/O 電源（標稱 1.2V、1.8V 或 3.3V）"
+      },
+      {
+        "num": "8",
+        "name": "IOVSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "數位 I/O 電源接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "9",
+        "name": "SCL",
+        "side": "B",
+        "type": "Input",
+        "desc": "I2C 控制介面時脈"
+      },
+      {
+        "num": "10",
+        "name": "SDA",
+        "side": "B",
+        "type": "I/O",
+        "desc": "I2C 控制介面資料"
+      },
+      {
+        "num": "11",
+        "name": "GPIO1",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用數位輸出入 1（菊鏈輸入、音訊資料輸出、PLL 時脈源、中斷等多工功能）"
+      },
+      {
+        "num": "12",
+        "name": "VBATIN",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比 VBAT 輸入監測腳（供輸入故障診斷使用）"
+      },
+      {
+        "num": "13",
+        "name": "BSTVDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "升壓轉換器供電電源（標稱 3.3V）"
+      },
+      {
+        "num": "14",
+        "name": "BSTSW",
+        "side": "B",
+        "type": "Power",
+        "desc": "升壓轉換器切換腳（Switching pin）"
+      },
+      {
+        "num": "15",
+        "name": "BSTVSS",
+        "side": "B",
+        "type": "Ground",
+        "desc": "升壓轉換器供電接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "16",
+        "name": "BSTOUT",
+        "side": "B",
+        "type": "Power",
+        "desc": "升壓轉換器輸出電壓"
+      },
+      {
+        "num": "17",
+        "name": "MICBIAS",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "麥克風偏壓輸出（可程式，最高 10V）"
+      },
+      {
+        "num": "18",
+        "name": "IN1P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 1P（差動正端）"
+      },
+      {
+        "num": "19",
+        "name": "IN1M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 1M（差動負端）"
+      },
+      {
+        "num": "20",
+        "name": "IN2P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 2P（差動正端）"
+      },
+      {
+        "num": "21",
+        "name": "IN2M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入 2M（差動負端）"
+      },
+      {
+        "num": "22",
+        "name": "ADDRA",
+        "side": "R",
+        "type": "Input",
+        "desc": "I2C 位址選擇腳"
+      },
+      {
+        "num": "23",
+        "name": "GPO1A",
+        "side": "R",
+        "type": "Output",
+        "desc": "通用數位輸出 1A（音訊資料輸出、中斷等多工功能）"
+      },
+      {
+        "num": "24",
+        "name": "GPI2A",
+        "side": "R",
+        "type": "Input",
+        "desc": "通用數位輸入 2A（菊鏈輸入、音訊資料輸入、PLL 時脈源等多工功能）"
+      },
+      {
+        "num": "25",
+        "name": "GPI1A",
+        "side": "T",
+        "type": "Input",
+        "desc": "通用數位輸入 1A（菊鏈輸入、音訊資料輸入、PLL 時脈源等多工功能）"
+      },
+      {
+        "num": "26",
+        "name": "AVSS",
+        "side": "T",
+        "type": "Ground",
+        "desc": "類比電源接地腳，直接短接板上接地平面"
+      },
+      {
+        "num": "27",
+        "name": "OUT1M",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 1M（差動負端）"
+      },
+      {
+        "num": "28",
+        "name": "OUT1P",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 1P（差動正端）"
+      },
+      {
+        "num": "29",
+        "name": "OUT2P",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 2P（差動正端）"
+      },
+      {
+        "num": "30",
+        "name": "OUT2M",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比輸出 2M（差動負端）"
+      },
+      {
+        "num": "31",
+        "name": "AVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比電源（標稱 3.3V）"
+      },
+      {
+        "num": "32",
+        "name": "VREF",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "類比參考電壓濾波輸出；外接去耦電容至地"
+      },
+      {
+        "num": "33",
+        "name": "VSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤，內部接元件地；直接短接板上接地平面",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露焊盤=VSS（圖 4-1 標示 Thermal Pad (VSS)、表 4-1 Thermal Pad 列），須短接板上接地平面",
+    "specs": [
+      {
+        "k": "ADC 動態範圍",
+        "v": "112dB（線路/麥克風差動輸入）；THD+N −99dB；通道加總模式 SNR 114dB"
+      },
+      {
+        "k": "DAC 動態範圍",
+        "v": "120dB（差動線路輸出）；111dB（單端耳機輸出）；THD+N −102dB"
+      },
+      {
+        "k": "取樣率",
+        "v": "ADC/DAC 皆 4kHz ~ 768kHz"
+      },
+      {
+        "k": "輸入/輸出",
+        "v": "差動 10VRMS／單端 5VRMS 輸入；差動 2VRMS／單端 1VRMS 輸出；耳機 16Ω 驅動至 62.5mW"
+      },
+      {
+        "k": "麥克風偏壓",
+        "v": "可程式 3V~10V，內建升壓轉換器（3.3V 供電）或外部 HVDD"
+      },
+      {
+        "k": "故障診斷",
+        "v": "麥克風輸入開路/短路、短接地/MICBIAS/VBAT、偏壓過電流保護"
+      },
+      {
+        "k": "音訊介面",
+        "v": "TDM / I2S / 左對齊（16/20/24/32-bit）"
+      },
+      {
+        "k": "控制介面",
+        "v": "I2C 或 SPI"
+      },
+      {
+        "k": "電源",
+        "v": "AVDD 僅 3.3V 單電源；IOVDD 1.2V/1.8V/3.3V；BSTVDD 3.3V"
+      },
+      {
+        "k": "車規",
+        "v": "AEC-Q100 Grade 1（−40°C ~ +125°C）"
+      },
+      {
+        "k": "封裝",
+        "v": "32-WQFN (RTV) 5×5mm，0.5mm pitch，EP=VSS"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 與 TAC5312-Q1 完全相同（32-WQFN 5×5mm、EP=VSS，逐腳同名同位）",
+      "功能相同（車規立體聲高壓輸入 codec＋升壓麥克風偏壓＋故障診斷，5412 為家族最高階款）",
+      "音訊介面相容（TDM/I2S/LJ）",
+      "控制介面相容（I2C/SPI）",
+      "電源軌相容（AVDD 3.3V、IOVDD 1.2~3.3V、BSTVDD 3.3V）",
+      "AEC-Q100 Grade 1 車規",
+      "取樣率範圍涵蓋（4k~768kHz）"
+    ],
+    "dropIn": [
+      {
+        "part": "TAC5312-Q1",
+        "note": "同封裝同腳位（逐腳同名同號）；規格分級不同，確認動態範圍需求"
+      }
+    ]
   }
 ];
