@@ -16705,5 +16705,1245 @@ window.IC_DATA = [
       }
     ],
     "thermalPad": "外露焊盤（datasheet 圖 6-2 48-pin RGZ 中央標示 Thermal Pad），須接板上接地平面"
+  },
+  {
+    "part": "ADC3683-EP",
+    "mfr": "Texas Instruments",
+    "category": "data-converters",
+    "subcategory": "低雜訊低功耗雙通道 18-bit ADC（65MSPS）",
+    "package": "40-VQFN (RSB) 5×5mm",
+    "whatIs": "低雜訊低功耗 18-bit 雙通道類比數位轉換器（ADC），65MSPS 取樣率，序列 LVDS 數位介面，鎖定太空/國防等高可靠度應用；料號字尾 -EP 為 TI Enhanced Product（增強型產品，強化製程與品保管控），與封裝外露焊盤（exposed pad）無關。與同系列 -SEP 抗輻射版共用同一 Pin Functions 表，本條目僅收錄 -EP 一般增強型版本。",
+    "func": "雙通道差動類比輸入（AINP/AINM、BINP/BINM），VCM 提供 0.95V 共模電壓輸出，VREF 可接外部 1.6V 參考、REFGND 為參考地；CLKP/CLKM 為差動取樣時脈輸入。序列 LVDS 數位輸出支援 2 線／1 線／1/2 線可設定模式，含每通道 2 個資料 lane（DA0/DA1、DB0/DB1）、資料位元時脈輸出（DCLKP/M）與框時脈輸出（FCLKP/M），另有 LVDS 位元時脈輸入（DCLKINP/M，內建 100Ω 端接）供外部時脈同步。內建可選式 DSP（2/4/8/16/32 倍抽取、32-bit NCO，可略過）。SPI 相容序列介面（SCLK/SDIO/{SEN}）供暫存器設定；PDN/SYNC 供電源關斷或多晶片同步（高態動作）；RESET 為硬體重置（高態動作）；REFBUF/CTRL 於上電時設定預設時脈型態與參考來源。",
+    "usedIn": "衛星光通訊酬載、衛星成像酬載、衛星通訊酬載、衛星雷達/光達（RADAR/LIDAR）酬載等高速控制迴路與訊號擷取系統。",
+    "desc": "低雜訊低功耗雙通道 18-bit ADC，65MSPS，雜訊底床 -160dBFS/Hz，功耗 94mW/ch，延遲 1-2 個時脈週期，序列 LVDS 介面，40-VQFN 5×5mm，溫度範圍 -55°C~105°C（Enhanced Product）。",
+    "datasheet": "TI SBASAP6",
+    "pins": [
+      {
+        "num": "1",
+        "name": "PDN/SYNC",
+        "side": "L",
+        "type": "Input",
+        "desc": "電源關斷／同步輸入；經 SPI 介面設定，高態動作；內建 21kΩ 下拉電阻"
+      },
+      {
+        "num": "2",
+        "name": "VREF",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "外部電壓參考輸入，1.6V"
+      },
+      {
+        "num": "3",
+        "name": "REFGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "參考地輸入，0V"
+      },
+      {
+        "num": "4",
+        "name": "REFBUF/CTRL",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定上電時預設取樣時脈型態與參考電壓來源；內建 100kΩ 上拉電阻至 AVDD"
+      },
+      {
+        "num": "5",
+        "name": "AVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "類比 1.8V 電源"
+      },
+      {
+        "num": "6",
+        "name": "CLKP",
+        "side": "L",
+        "type": "Input",
+        "desc": "ADC 取樣時脈差動輸入正端"
+      },
+      {
+        "num": "7",
+        "name": "CLKM",
+        "side": "L",
+        "type": "Input",
+        "desc": "ADC 取樣時脈差動輸入負端"
+      },
+      {
+        "num": "8",
+        "name": "VCM",
+        "side": "L",
+        "type": "Analog Out",
+        "desc": "類比輸入共模電壓輸出，0.95V"
+      },
+      {
+        "num": "9",
+        "name": "RESET",
+        "side": "L",
+        "type": "Input",
+        "desc": "硬體重置，高態動作；內建 21kΩ 下拉電阻"
+      },
+      {
+        "num": "10",
+        "name": "SDIO",
+        "side": "L",
+        "type": "I/O",
+        "desc": "序列介面資料輸入輸出；內建 21kΩ 下拉電阻"
+      },
+      {
+        "num": "11",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V；Table 4-1 於 GND 列附註 PowerPAD™（EP 是否獨立列見自查回報，未建為獨立腳位）"
+      },
+      {
+        "num": "12",
+        "name": "AINP",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入正端，A 通道"
+      },
+      {
+        "num": "13",
+        "name": "AINM",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入負端，A 通道"
+      },
+      {
+        "num": "14",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V；PowerPAD™（同上）"
+      },
+      {
+        "num": "15",
+        "name": "AVDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "類比 1.8V 電源"
+      },
+      {
+        "num": "16",
+        "name": "{SEN}",
+        "side": "B",
+        "type": "Input",
+        "desc": "序列介面致能，低態動作；內建 21kΩ 上拉電阻至 AVDD"
+      },
+      {
+        "num": "17",
+        "name": "DA1M",
+        "side": "B",
+        "type": "Output",
+        "desc": "A 通道 lane 1 序列 LVDS 輸出負端"
+      },
+      {
+        "num": "18",
+        "name": "DA1P",
+        "side": "B",
+        "type": "Output",
+        "desc": "A 通道 lane 1 序列 LVDS 輸出正端"
+      },
+      {
+        "num": "19",
+        "name": "DA0M",
+        "side": "B",
+        "type": "Output",
+        "desc": "A 通道 lane 0 序列 LVDS 輸出負端"
+      },
+      {
+        "num": "20",
+        "name": "DA0P",
+        "side": "B",
+        "type": "Output",
+        "desc": "A 通道 lane 0 序列 LVDS 輸出正端"
+      },
+      {
+        "num": "21",
+        "name": "IOVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "數位介面 1.8V 電源"
+      },
+      {
+        "num": "22",
+        "name": "DCLKM",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列 LVDS 位元時脈輸出負端"
+      },
+      {
+        "num": "23",
+        "name": "DCLKP",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列 LVDS 位元時脈輸出正端"
+      },
+      {
+        "num": "24",
+        "name": "DCLKINM",
+        "side": "R",
+        "type": "Input",
+        "desc": "序列 LVDS 位元時脈輸入負端；內建 100Ω 差動端接"
+      },
+      {
+        "num": "25",
+        "name": "DCLKINP",
+        "side": "R",
+        "type": "Input",
+        "desc": "序列 LVDS 位元時脈輸入正端；內建 100Ω 差動端接"
+      },
+      {
+        "num": "26",
+        "name": "IOGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "數位介面接地，0V"
+      },
+      {
+        "num": "27",
+        "name": "NC",
+        "side": "R",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "28",
+        "name": "FCLKP",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列 LVDS 框時脈輸出正端"
+      },
+      {
+        "num": "29",
+        "name": "FCLKM",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列 LVDS 框時脈輸出負端"
+      },
+      {
+        "num": "30",
+        "name": "IOVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "數位介面 1.8V 電源"
+      },
+      {
+        "num": "31",
+        "name": "DB0P",
+        "side": "T",
+        "type": "Output",
+        "desc": "B 通道 lane 0 序列 LVDS 輸出正端"
+      },
+      {
+        "num": "32",
+        "name": "DB0M",
+        "side": "T",
+        "type": "Output",
+        "desc": "B 通道 lane 0 序列 LVDS 輸出負端"
+      },
+      {
+        "num": "33",
+        "name": "DB1P",
+        "side": "T",
+        "type": "Output",
+        "desc": "B 通道 lane 1 序列 LVDS 輸出正端"
+      },
+      {
+        "num": "34",
+        "name": "DB1M",
+        "side": "T",
+        "type": "Output",
+        "desc": "B 通道 lane 1 序列 LVDS 輸出負端"
+      },
+      {
+        "num": "35",
+        "name": "SCLK",
+        "side": "T",
+        "type": "Input",
+        "desc": "序列介面時脈輸入；內建 21kΩ 下拉電阻"
+      },
+      {
+        "num": "36",
+        "name": "AVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源"
+      },
+      {
+        "num": "37",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地，0V；PowerPAD™（同上）"
+      },
+      {
+        "num": "38",
+        "name": "BINM",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入負端，B 通道"
+      },
+      {
+        "num": "39",
+        "name": "BINP",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入正端，B 通道"
+      },
+      {
+        "num": "40",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地，0V；PowerPAD™（同上）"
+      },
+      {
+        "num": "41",
+        "name": "GND (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露焊盤 PowerPAD（圖 4-1 中央 Thermal Pad；表 GND 列含 PowerPAD 字樣）；接地平面",
+        "ep": true
+      }
+    ],
+    "specs": [
+      {
+        "k": "解析度",
+        "v": "18-bit（no missing codes）"
+      },
+      {
+        "k": "取樣率",
+        "v": "雙通道 65 MSPS"
+      },
+      {
+        "k": "雜訊底床",
+        "v": "-160 dBFS/Hz"
+      },
+      {
+        "k": "功耗",
+        "v": "94 mW/ch（65MSPS 時）"
+      },
+      {
+        "k": "延遲",
+        "v": "1-2 個時脈週期"
+      },
+      {
+        "k": "INL/DNL",
+        "v": "INL: ±7 LSB，DNL: ±0.7 LSB（typical）"
+      },
+      {
+        "k": "參考電壓",
+        "v": "外部或內部可選"
+      },
+      {
+        "k": "數位介面",
+        "v": "序列 LVDS（2-wire／1-wire／1/2-wire 可選）"
+      },
+      {
+        "k": "頻譜性能（fIN=5MHz）",
+        "v": "SNR 83.8dBFS；SFDR 89dBc（HD2/HD3）；SFDR 101dBFS（最差雜散）"
+      },
+      {
+        "k": "封裝",
+        "v": "40-QFN 5×5mm"
+      },
+      {
+        "k": "溫度範圍",
+        "v": "-55°C ~ 105°C（Enhanced Product）"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": [],
+    "thermalPad": "外露焊盤 PowerPAD=GND（datasheet 圖 4-1 中央標示 Thermal Pad、Table 4-1 GND 列註 PowerPAD），須接板上接地平面"
+  },
+  {
+    "part": "ADS125H18",
+    "mfr": "Texas Instruments",
+    "category": "data-converters",
+    "subcategory": "高壓輸入多工 8/16 通道 24-bit Delta-Sigma ADC",
+    "package": "36-VQFN (RHB) 5.00×5.00mm",
+    "whatIs": "高壓輸入多工型 8/16 通道、24-bit Delta-Sigma ADC，資料速率最高 1.067MSPS；每路輸入前端含高阻抗精密電阻分壓網路，可將高電壓輸入直接降壓至 ADC 輸入範圍，免外加降壓電路，適合工業高壓類比訊號量測。",
+    "func": "類比多工器支援 17 路獨立可選輸入（最多 8 全差動或 16 單端，AIN0~AIN15），輸入緩衝與參考緩衝皆為 rail-to-rail；RESP/RESN 為前端電阻分壓網路正負端連接。內建電壓參考可選輸出 2.5V 或 4.096V（REFOUT），REFP/TDACOUT 可作正參考輸入或測試 DAC 輸出，REFN 為負參考輸入。具通道自動定序器與 FIFO 緩衝、故障偵測與系統監控電路；4 組可調速度模式在資料速率、解析度與功耗間取捨；於 ≤25SPS 時可同時抑制 50Hz/60Hz 干擾。SPI 序列介面（SCLK/SDI/SDO-{DRDY}/{CS}）供控制與資料讀取，{RESET} 為硬體重置；GPIO0~3 可多工作為 START（轉換啟動）、CLKIN（外部時脈）、FAULT（故障輸出）等專用功能。",
+    "usedIn": "工廠自動化與控制（狀態監測、類比輸入模組）、測試量測（資料擷取 DAQ、半導體測試設備）等需直接接受高壓類比訊號的工業量測系統。",
+    "desc": "高壓輸入多工 8/16 通道 24-bit Delta-Sigma ADC，1.067MSPS，內建精密電阻分壓網路，17 路可選輸入，內部 25.6MHz 1% 振盪器，36-VQFN 5×5mm，溫度範圍 -40°C~125°C。",
+    "datasheet": "TI SBASAE3",
+    "pins": [
+      {
+        "num": "1",
+        "name": "AIN0",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 0"
+      },
+      {
+        "num": "2",
+        "name": "AIN1",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 1"
+      },
+      {
+        "num": "3",
+        "name": "AIN2",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 2"
+      },
+      {
+        "num": "4",
+        "name": "AIN3",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 3"
+      },
+      {
+        "num": "5",
+        "name": "AIN4",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 4"
+      },
+      {
+        "num": "6",
+        "name": "AIN5",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 5"
+      },
+      {
+        "num": "7",
+        "name": "AIN6",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 6"
+      },
+      {
+        "num": "8",
+        "name": "AIN7",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 7"
+      },
+      {
+        "num": "9",
+        "name": "AIN8",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 8"
+      },
+      {
+        "num": "10",
+        "name": "AIN9",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入 9"
+      },
+      {
+        "num": "11",
+        "name": "AIN10",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入 10"
+      },
+      {
+        "num": "12",
+        "name": "AIN11",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入 11"
+      },
+      {
+        "num": "13",
+        "name": "REFOUT",
+        "side": "B",
+        "type": "Analog Out",
+        "desc": "電壓參考輸出"
+      },
+      {
+        "num": "14",
+        "name": "REFP/TDACOUT",
+        "side": "B",
+        "type": "I/O",
+        "desc": "正參考電壓輸入／測試 DAC 輸出"
+      },
+      {
+        "num": "15",
+        "name": "REFN",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "負參考電壓輸入"
+      },
+      {
+        "num": "16",
+        "name": "{RESET}",
+        "side": "B",
+        "type": "Input",
+        "desc": "重置，低態動作"
+      },
+      {
+        "num": "17",
+        "name": "GPIO0/START",
+        "side": "B",
+        "type": "Input",
+        "desc": "通用輸出入 0；可設為專用轉換啟動 START 輸入"
+      },
+      {
+        "num": "18",
+        "name": "{CS}",
+        "side": "B",
+        "type": "Input",
+        "desc": "晶片選擇，低態動作"
+      },
+      {
+        "num": "19",
+        "name": "SCLK",
+        "side": "R",
+        "type": "Input",
+        "desc": "序列資料時脈"
+      },
+      {
+        "num": "20",
+        "name": "SDI",
+        "side": "R",
+        "type": "Input",
+        "desc": "序列資料輸入"
+      },
+      {
+        "num": "21",
+        "name": "SDO/{DRDY}",
+        "side": "R",
+        "type": "I/O",
+        "desc": "序列資料輸出／資料就緒（低態動作，可選）"
+      },
+      {
+        "num": "22",
+        "name": "{DRDY}/GPIO1",
+        "side": "R",
+        "type": "I/O",
+        "desc": "資料就緒（低態動作）／通用輸出入 1"
+      },
+      {
+        "num": "23",
+        "name": "GPIO2/CLKIN",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸出入 2；可設為外部時脈輸入"
+      },
+      {
+        "num": "24",
+        "name": "IOVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "I/O 供電電源"
+      },
+      {
+        "num": "25",
+        "name": "DGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "26",
+        "name": "CAPD",
+        "side": "R",
+        "type": "Power",
+        "desc": "數位電壓穩壓器輸出，外接旁路電容"
+      },
+      {
+        "num": "27",
+        "name": "GPIO3/FAULT",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸出入 3；可設為專用 FAULT 輸出"
+      },
+      {
+        "num": "28",
+        "name": "AVSS",
+        "side": "T",
+        "type": "Power",
+        "desc": "負類比電源"
+      },
+      {
+        "num": "29",
+        "name": "CAPA",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比電壓穩壓器輸出，外接旁路電容"
+      },
+      {
+        "num": "30",
+        "name": "AVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "正類比電源"
+      },
+      {
+        "num": "31",
+        "name": "RESP",
+        "side": "T",
+        "type": "Power",
+        "desc": "電阻分壓網路正端連接"
+      },
+      {
+        "num": "32",
+        "name": "RESN",
+        "side": "T",
+        "type": "Power",
+        "desc": "電阻分壓網路負端連接"
+      },
+      {
+        "num": "33",
+        "name": "AIN12",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入 12"
+      },
+      {
+        "num": "34",
+        "name": "AIN13",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入 13"
+      },
+      {
+        "num": "35",
+        "name": "AIN14",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入 14"
+      },
+      {
+        "num": "36",
+        "name": "AIN15",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入 15"
+      },
+      {
+        "num": "37",
+        "name": "AVSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤（Table 4-1 Thermal Pad 列）；接 AVSS",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露散熱焊盤（Table 4-1 明列 Thermal Pad 列）；接 AVSS",
+    "specs": [
+      {
+        "k": "資料速率",
+        "v": "可程式，最高 1.067MSPS"
+      },
+      {
+        "k": "輸入多工",
+        "v": "17 路獨立可選輸入，最多 8 全差動或 16 單端"
+      },
+      {
+        "k": "輸入前端",
+        "v": "高阻抗電壓分壓網路，內建精密匹配電阻"
+      },
+      {
+        "k": "緩衝",
+        "v": "類比輸入緩衝與參考緩衝皆為 rail-to-rail"
+      },
+      {
+        "k": "內部參考",
+        "v": "可選輸出 2.5V 或 4.096V"
+      },
+      {
+        "k": "振盪器",
+        "v": "內部 25.6MHz，準確度 1%"
+      },
+      {
+        "k": "定序與緩衝",
+        "v": "通道自動定序器＋FIFO 緩衝"
+      },
+      {
+        "k": "雜訊抑制",
+        "v": "≤25SPS 時同時抑制 50Hz 與 60Hz"
+      },
+      {
+        "k": "速度模式",
+        "v": "四組可調速度模式"
+      },
+      {
+        "k": "封裝",
+        "v": "36-VQFN 5.00×5.00mm，EP=AVSS"
+      },
+      {
+        "k": "溫度範圍",
+        "v": "-40°C ~ 125°C"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "ADS125P08",
+    "mfr": "Texas Instruments",
+    "category": "data-converters",
+    "subcategory": "多工 8/16 通道 24-bit Delta-Sigma ADC（CRC 資料校驗）",
+    "package": "36-VQFN (RHB) 5.00×5.00mm",
+    "whatIs": "多工型 8/16 通道、24-bit Delta-Sigma ADC，資料速率最高 1.067MSPS，內建高阻抗輸入緩衝與參考緩衝降低訊號負載；輸出入資料與暫存器設定具循環冗餘校驗（CRC）以提升操作可靠度，適合工廠自動化、病患監測等應用。與 ADS125H18 同封裝同接腳基礎，但省去高壓電阻分壓前端，AIN8~15 改可複用為類比通用輸出入（AGPIO）。",
+    "func": "類比多工器支援 17 路獨立可選輸入（最多 8 全差動或 16 單端，AIN0~AIN15），其中 AIN8~AIN15 可另設為類比通用輸出入 AGPIO0~7；AINCOM 為單端輸入之共用參考點，接類比地。內建電壓參考可選輸出 2.5V 或 4.096V（REFOUT），REFP/TDACOUT 可作正參考輸入或測試 DAC 輸出，REFN 為負參考輸入。具通道自動定序器與 FIFO 緩衝、故障偵測與系統監控電路；4 組可調速度模式；於 ≤25SPS 時可同時抑制 50Hz/60Hz 干擾。SPI 序列介面（SCLK/SDI/SDO-{DRDY}/{CS}）供控制與資料讀取，{RESET} 為硬體重置；GPIO0~3 可多工作為 START、CLKIN、FAULT 等專用功能。",
+    "usedIn": "工廠自動化與控制（狀態監測、類比輸入模組、流量計等現場變送器）、病患監測（ECG、輸液幫浦）、測試量測（資料擷取 DAQ、半導體測試設備）。",
+    "desc": "多工 8/16 通道 24-bit Delta-Sigma ADC，1.067MSPS，內建 CRC 資料/暫存器校驗，17 路可選輸入含類比 GPIO 複用，內部 25.6MHz 1% 振盪器，36-VQFN 5×5mm，溫度範圍 -40°C~125°C。",
+    "datasheet": "TI SBASAE4",
+    "pins": [
+      {
+        "num": "1",
+        "name": "AIN0",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 0"
+      },
+      {
+        "num": "2",
+        "name": "AIN1",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 1"
+      },
+      {
+        "num": "3",
+        "name": "AIN2",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 2"
+      },
+      {
+        "num": "4",
+        "name": "AIN3",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 3"
+      },
+      {
+        "num": "5",
+        "name": "AIN4",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 4"
+      },
+      {
+        "num": "6",
+        "name": "AIN5",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 5"
+      },
+      {
+        "num": "7",
+        "name": "AIN6",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 6"
+      },
+      {
+        "num": "8",
+        "name": "AIN7",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 7"
+      },
+      {
+        "num": "9",
+        "name": "AIN8/AGPIO0",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入 8／類比通用輸出入 0"
+      },
+      {
+        "num": "10",
+        "name": "AIN9/AGPIO1",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入 9／類比通用輸出入 1"
+      },
+      {
+        "num": "11",
+        "name": "AIN10/AGPIO2",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入 10／類比通用輸出入 2"
+      },
+      {
+        "num": "12",
+        "name": "AIN11/AGPIO3",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入 11／類比通用輸出入 3"
+      },
+      {
+        "num": "13",
+        "name": "REFOUT",
+        "side": "B",
+        "type": "Analog Out",
+        "desc": "電壓參考輸出"
+      },
+      {
+        "num": "14",
+        "name": "REFP/TDACOUT",
+        "side": "B",
+        "type": "I/O",
+        "desc": "正參考電壓輸入／測試 DAC 輸出"
+      },
+      {
+        "num": "15",
+        "name": "REFN",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "負參考電壓輸入"
+      },
+      {
+        "num": "16",
+        "name": "{RESET}",
+        "side": "B",
+        "type": "Input",
+        "desc": "重置，低態動作"
+      },
+      {
+        "num": "17",
+        "name": "GPIO0/START",
+        "side": "B",
+        "type": "Input",
+        "desc": "通用輸出入 0；可設為專用轉換啟動 START 輸入"
+      },
+      {
+        "num": "18",
+        "name": "{CS}",
+        "side": "B",
+        "type": "Input",
+        "desc": "晶片選擇，低態動作"
+      },
+      {
+        "num": "19",
+        "name": "SCLK",
+        "side": "R",
+        "type": "Input",
+        "desc": "序列資料時脈"
+      },
+      {
+        "num": "20",
+        "name": "SDI",
+        "side": "R",
+        "type": "Input",
+        "desc": "序列資料輸入"
+      },
+      {
+        "num": "21",
+        "name": "SDO/{DRDY}",
+        "side": "R",
+        "type": "I/O",
+        "desc": "序列資料輸出／資料就緒（低態動作，可選）"
+      },
+      {
+        "num": "22",
+        "name": "{DRDY}/GPIO1",
+        "side": "R",
+        "type": "I/O",
+        "desc": "資料就緒（低態動作）／通用輸出入 1"
+      },
+      {
+        "num": "23",
+        "name": "GPIO2/CLKIN",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸出入 2；可設為外部時脈輸入"
+      },
+      {
+        "num": "24",
+        "name": "IOVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "I/O 供電電源"
+      },
+      {
+        "num": "25",
+        "name": "DGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "26",
+        "name": "CAPD",
+        "side": "R",
+        "type": "Power",
+        "desc": "數位電壓穩壓器輸出，外接旁路電容"
+      },
+      {
+        "num": "27",
+        "name": "GPIO3/FAULT",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸出入 3；可設為專用 FAULT 輸出"
+      },
+      {
+        "num": "28",
+        "name": "AVSS",
+        "side": "T",
+        "type": "Power",
+        "desc": "負類比電源"
+      },
+      {
+        "num": "29",
+        "name": "CAPA",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比電壓穩壓器輸出，外接旁路電容"
+      },
+      {
+        "num": "30",
+        "name": "AVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "正類比電源"
+      },
+      {
+        "num": "31",
+        "name": "NC",
+        "side": "T",
+        "type": "NC",
+        "desc": "未接腳，需懸空；未使用腳位處理見 datasheet 8.1.3 節"
+      },
+      {
+        "num": "32",
+        "name": "AINCOM",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入共用點；單端輸入組態時各輸入以此為參考，接類比地"
+      },
+      {
+        "num": "33",
+        "name": "AIN12/AGPIO4",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入 12／類比通用輸出入 4"
+      },
+      {
+        "num": "34",
+        "name": "AIN13/AGPIO5",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入 13／類比通用輸出入 5"
+      },
+      {
+        "num": "35",
+        "name": "AIN14/AGPIO6",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入 14／類比通用輸出入 6"
+      },
+      {
+        "num": "36",
+        "name": "AIN15/AGPIO7",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入 15／類比通用輸出入 7"
+      },
+      {
+        "num": "37",
+        "name": "AVSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤（Table 4-1 Thermal Pad 列）；接 AVSS",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露散熱焊盤（Table 4-1 明列 Thermal Pad 列）；接 AVSS",
+    "specs": [
+      {
+        "k": "資料速率",
+        "v": "可程式，最高 1.067MSPS"
+      },
+      {
+        "k": "輸入多工",
+        "v": "17 路獨立可選輸入，最多 8 全差動或 16 單端"
+      },
+      {
+        "k": "緩衝",
+        "v": "rail-to-rail 類比輸入緩衝與參考緩衝"
+      },
+      {
+        "k": "內部參考",
+        "v": "可選輸出 2.5V 或 4.096V"
+      },
+      {
+        "k": "資料完整性",
+        "v": "輸出入資料與暫存器設定具 CRC 循環冗餘校驗"
+      },
+      {
+        "k": "振盪器",
+        "v": "內部 25.6MHz，準確度 1%"
+      },
+      {
+        "k": "定序與緩衝",
+        "v": "通道自動定序器＋FIFO 緩衝"
+      },
+      {
+        "k": "雜訊抑制",
+        "v": "≤25SPS 時同時抑制 50Hz 與 60Hz"
+      },
+      {
+        "k": "速度模式",
+        "v": "四組可調速度模式"
+      },
+      {
+        "k": "封裝",
+        "v": "36-VQFN 5.00×5.00mm，EP=AVSS"
+      },
+      {
+        "k": "溫度範圍",
+        "v": "-40°C ~ 125°C"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "AFE10004-EP",
+    "mfr": "Texas Instruments",
+    "category": "data-converters",
+    "subcategory": "四通道功率放大器偏壓控制精密類比前端（含 EEPROM 與閘極偏壓開關）",
+    "package": "24-VQFN (RGE) 4×4mm",
+    "whatIs": "高整合度自主式功率放大器（PA）精密偏壓類比前端（AFE），內建四組溫度補償 DAC、EEPROM 與閘極偏壓開關；開機後可依內部 EEPROM 儲存之溫度-電壓轉換函數自動修正偏壓，無需系統控制器持續介入即可完成 PA 偏壓設定與溫度補償，適合國防/太空 RF 系統。料號字尾 -EP 為 TI Enhanced Product（增強型產品，強化製程與品保管控），與封裝外露焊盤（exposed pad）無關——本裝置恰好兩者皆具備（見 Table 4-1 Thermal Pad 列）。",
+    "func": "四組 13-bit 單調 DAC（DAC0~3）緩衝輸出，開機時自動配置輸出範圍（正輸出最高 5.5V、負輸出最低 -10V），高電流驅動（source 最高 100mA、sink 最高 20mA），可承受高達 15µF 電容負載；OUT1/OUT2 為 DAC1/DAC2 經閘極偏壓開關後之切換輸出，DRVEN1/DRVEN2 為對應非同步開關控制訊號，具兩組可程式關斷電壓與快速響應，用於保護 GaAs/GaN 等空乏型電晶體並配合 PA_ON 完成功放序時控制。CLAMP1/CLAMP2 為輔助 DAC 緩衝輸出，切換時間典型 50ns、導通電阻最高 3Ω。內建本地與遠端（D+/D–）二極體溫度感測器，誤差 ±2.5°C（max）、解析度 0.0625°C。內建 2.5V 參考。SPI（4 線，SCL/{CS}、A2/SCLK、A1/SDI、A0/SDO）與 I2C（SDA、SCL、8 組可選位址）雙介面可選，操作電壓 1.7V~3.6V；{RESET}/{ALMIN} 為重置輸入，亦可設為低態動作警報輸入。",
+    "usedIn": "雷達、電子戰、通訊酬載、國防無線電等 RF 系統中 LDMOS/GaAs/GaN 功率放大器之自主偏壓控制電路。",
+    "desc": "四通道功放偏壓精密 AFE，內建 EEPROM 儲存 4 組溫度-電壓轉換函數與閘極偏壓開關，DAC 解析度 13-bit/1.22mV，SPI/I2C 雙介面，24-VQFN 4×4mm，溫度範圍 -55°C~125°C（Enhanced Product）。",
+    "datasheet": "TI SLASFM1A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "DRVEN2",
+        "side": "L",
+        "type": "Input",
+        "desc": "非同步開關控制訊號（對應 OUT2/DAC2 路徑）"
+      },
+      {
+        "num": "2",
+        "name": "DRVEN1",
+        "side": "L",
+        "type": "Input",
+        "desc": "非同步開關控制訊號（對應 OUT1/DAC1 路徑）"
+      },
+      {
+        "num": "3",
+        "name": "SDA",
+        "side": "L",
+        "type": "I/O",
+        "desc": "I2C 雙向資料線；以 SPI 通訊時此腳須接 GND"
+      },
+      {
+        "num": "4",
+        "name": "SCL/{CS}",
+        "side": "L",
+        "type": "Input",
+        "desc": "I2C：時脈輸入。SPI：低態動作序列資料致能（訊框同步訊號，低態時致能輸入移位暫存器）"
+      },
+      {
+        "num": "5",
+        "name": "A2/SCLK",
+        "side": "L",
+        "type": "Input",
+        "desc": "I2C：目標位址選擇。SPI：時脈輸入"
+      },
+      {
+        "num": "6",
+        "name": "A1/SDI",
+        "side": "L",
+        "type": "Input",
+        "desc": "I2C：目標位址選擇。SPI：資料輸入，於 SCLK 下降緣鎖入"
+      },
+      {
+        "num": "7",
+        "name": "A0/SDO",
+        "side": "B",
+        "type": "I/O",
+        "desc": "I2C：目標位址選擇。SPI：資料輸出（須先設定 SDOEN 位元致能），於 SCLK 上升緣輸出"
+      },
+      {
+        "num": "8",
+        "name": "VIO",
+        "side": "B",
+        "type": "Power",
+        "desc": "I/O 供電電源（1.65V~3.6V），設定數位 I/O 操作電壓"
+      },
+      {
+        "num": "9",
+        "name": "PA_ON",
+        "side": "B",
+        "type": "Output",
+        "desc": "序時同步訊號，CMOS 輸出；元件未就緒或偵測到警報狀態時拉低"
+      },
+      {
+        "num": "10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "所有電路的接地參考點"
+      },
+      {
+        "num": "11",
+        "name": "OUT1",
+        "side": "B",
+        "type": "Output",
+        "desc": "DAC1 開關輸出"
+      },
+      {
+        "num": "12",
+        "name": "DAC1",
+        "side": "B",
+        "type": "Output",
+        "desc": "DAC1 緩衝輸出"
+      },
+      {
+        "num": "13",
+        "name": "CLAMP1",
+        "side": "R",
+        "type": "Output",
+        "desc": "CLAMP1 緩衝輸出"
+      },
+      {
+        "num": "14",
+        "name": "DAC0",
+        "side": "R",
+        "type": "Output",
+        "desc": "DAC0 緩衝輸出"
+      },
+      {
+        "num": "15",
+        "name": "VSS",
+        "side": "R",
+        "type": "Power",
+        "desc": "輸出緩衝器負類比電源（–11V ~ 0V）"
+      },
+      {
+        "num": "16",
+        "name": "VCC",
+        "side": "R",
+        "type": "Power",
+        "desc": "輸出緩衝器正類比電源（0V ~ 5.5V）"
+      },
+      {
+        "num": "17",
+        "name": "DAC3",
+        "side": "R",
+        "type": "Output",
+        "desc": "DAC3 緩衝輸出"
+      },
+      {
+        "num": "18",
+        "name": "CLAMP2",
+        "side": "R",
+        "type": "Output",
+        "desc": "CLAMP2 緩衝輸出"
+      },
+      {
+        "num": "19",
+        "name": "DAC2",
+        "side": "T",
+        "type": "Output",
+        "desc": "DAC2 緩衝輸出"
+      },
+      {
+        "num": "20",
+        "name": "OUT2",
+        "side": "T",
+        "type": "Output",
+        "desc": "DAC2 開關輸出"
+      },
+      {
+        "num": "21",
+        "name": "VDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比供電電源（4.5V~5.5V）"
+      },
+      {
+        "num": "22",
+        "name": "D+",
+        "side": "T",
+        "type": "Input",
+        "desc": "遠端溫度感測器連接；未使用時需與 D– 短接在一起"
+      },
+      {
+        "num": "23",
+        "name": "D–",
+        "side": "T",
+        "type": "Input",
+        "desc": "遠端溫度感測器連接（另一端）；未使用時需與 D+ 短接在一起"
+      },
+      {
+        "num": "24",
+        "name": "{RESET}/{ALMIN}",
+        "side": "T",
+        "type": "Input",
+        "desc": "低態動作重置輸入；邏輯低態使元件執行重置，亦可設為低態動作警報輸入以觸發警報事件"
+      },
+      {
+        "num": "25",
+        "name": "Thermal Pad",
+        "side": "B",
+        "type": "Ground",
+        "desc": "封裝底部散熱焊盤（Table 4-1 Thermal Pad 列）；建議以多顆過孔接至內部 PCB 接地層",
+        "ep": true
+      }
+    ],
+    "thermalPad": "封裝底部散熱焊盤（Table 4-1 明列 Thermal Pad 列）；以多顆過孔接至內部 PCB 接地層",
+    "specs": [
+      {
+        "k": "DAC 解析度",
+        "v": "13-bit，四組單調 DAC，解析度 1.22mV"
+      },
+      {
+        "k": "輸出範圍",
+        "v": "自動配置：正輸出最高 5.5V／負輸出最低 -10V"
+      },
+      {
+        "k": "驅動能力",
+        "v": "source 最高 100mA／sink 最高 20mA；可承受電容負載達 15µF"
+      },
+      {
+        "k": "閘極偏壓開關",
+        "v": "兩組可程式關斷電壓，快速響應"
+      },
+      {
+        "k": "輔助 DAC",
+        "v": "兩組（CLAMP1/2），解析度 1.22mV，切換時間典型 50ns，導通電阻最高 3Ω"
+      },
+      {
+        "k": "溫度感測",
+        "v": "本地與遠端二極體溫度感測，誤差 ±2.5°C（max），解析度 0.0625°C"
+      },
+      {
+        "k": "EEPROM",
+        "v": "內建，儲存四組獨立溫度-電壓轉換函數與元件設定，另留使用者儲存空間，額定 15 年資料保存"
+      },
+      {
+        "k": "參考電壓",
+        "v": "內建 2.5V"
+      },
+      {
+        "k": "介面",
+        "v": "SPI（4 線）與 I2C（8 組可選位址），操作電壓 1.7V~3.6V"
+      },
+      {
+        "k": "溫度範圍",
+        "v": "-55°C ~ 125°C"
+      },
+      {
+        "k": "封裝",
+        "v": "24-VQFN 4×4mm，含底部散熱焊盤"
+      },
+      {
+        "k": "特殊規格",
+        "v": "國防/太空應用規格：controlled baseline、單一組裝測試廠、單一晶圓廠、產品可追溯性、延長產品生命週期"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];
