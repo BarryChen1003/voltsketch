@@ -710,32 +710,172 @@ window.IC_DATA = [
     dropIn: []
   },
   {
-    part: 'TPS61290', mfr: 'Texas Instruments', category: 'power',
-    subcategory: '同步升壓轉換器 (5.5V, 11A, I2C, 含旁路)', package: 'BGA-16 (4×4)',
-    whatIs: '同步升壓(boost)轉換器：把較低的輸入電壓升到較高的輸出電壓，內建高/低側功率 MOSFET（同步整流、效率高），可由 I2C 設定，並有旁路(bypass)模式。大電流（開關電流 11A）。',
-    func: '電池/低壓源 → 升壓供電；同步整流省損耗；I2C 動態設定輸出電壓與模式；不需升壓時切 bypass 直通省電。BGA 16 球，VIN/VOUT/SW/GND 各 3 球分擔大電流。',
-    usedIn: '電池供電裝置升壓（手機/穿戴/IoT）、RF 功率放大器供電、需 I2C 動態調壓的系統。',
-    desc: '5.5V、11A 同步升壓轉換器，I2C 控制、含旁路模式（BGA-16）。',
-    datasheet: 'IC-spec/tps61290.pdf',
-    pins: [
-      { num: 'A1', name: 'EN', side: 'L', type: 'Digital In', desc: '致能；高=啟用、低=關斷' },
-      { num: 'B1', name: 'SCL', side: 'L', type: 'Digital In', desc: 'I2C 時脈（勿浮接，需終端）' },
-      { num: 'C1', name: 'SDA', side: 'L', type: 'Digital I/O', desc: 'I2C 位址/資料（勿浮接）' },
-      { num: 'D1', name: 'GPIO', side: 'L', type: 'Digital I/O', desc: 'ADDR（I2C 位址選擇）或 VSEL（升壓/旁路門檻選擇）' },
-      { num: 'A2-A4', name: 'VIN', side: 'T', type: 'Power', desc: '電源輸入（球 A2/A3/A4）' },
-      { num: 'B2-B4', name: 'VOUT', side: 'R', type: 'Power', desc: '升壓輸出（球 B2/B3/B4）' },
-      { num: 'C2-C4', name: 'SW', side: 'R', type: 'Power', desc: '開關節點（內部高低側 MOSFET 連接點；接電感，球 C2/C3/C4）' },
-      { num: 'D2-D4', name: 'GND', side: 'B', type: 'Ground', desc: '接地（球 D2/D3/D4；輸出電容地要靠近）' }
+    "part": "TPS61290",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "同步升壓轉換器 (5.5V, 11A, I2C, 含旁路)",
+    "package": "16-DSBGA (YBG) 4×4",
+    "whatIs": "同步升壓(boost)轉換器：把較低的輸入電壓升到較高的輸出電壓，內建高/低側功率 MOSFET（同步整流、效率高），可由 I2C 設定，並有旁路(bypass)模式。大電流（開關電流 11A）。",
+    "func": "電池/低壓源 → 升壓供電；同步整流省損耗；I2C 動態設定輸出電壓與模式；不需升壓時切 bypass 直通省電。BGA 16 球，VIN/VOUT/SW/GND 各 3 球分擔大電流。",
+    "usedIn": "電池供電裝置升壓（手機/穿戴/IoT）、RF 功率放大器供電、需 I2C 動態調壓的系統。",
+    "desc": "5.5V、11A 同步升壓轉換器，I2C 控制、含旁路模式（BGA-16）。",
+    "datasheet": "IC-spec/tps61290.pdf",
+    "pins": [
+      {
+        "num": "A1",
+        "name": "EN",
+        "side": "L",
+        "type": "Digital In",
+        "desc": "致能；高=啟用、低=關斷"
+      },
+      {
+        "num": "B1",
+        "name": "SCL",
+        "side": "L",
+        "type": "Digital In",
+        "desc": "I2C 時脈（勿浮接，需終端）"
+      },
+      {
+        "num": "C1",
+        "name": "SDA",
+        "side": "L",
+        "type": "Digital I/O",
+        "desc": "I2C 位址/資料（勿浮接）"
+      },
+      {
+        "num": "D1",
+        "name": "GPIO",
+        "side": "L",
+        "type": "Digital I/O",
+        "desc": "ADDR（I2C 位址選擇）或 VSEL（升壓/旁路門檻選擇）"
+      },
+      {
+        "num": "A2",
+        "name": "VIN",
+        "side": "T",
+        "type": "Power",
+        "desc": "電源輸入"
+      },
+      {
+        "num": "A3",
+        "name": "VIN",
+        "side": "T",
+        "type": "Power",
+        "desc": "電源輸入"
+      },
+      {
+        "num": "A4",
+        "name": "VIN",
+        "side": "T",
+        "type": "Power",
+        "desc": "電源輸入"
+      },
+      {
+        "num": "B2",
+        "name": "VOUT",
+        "side": "R",
+        "type": "Power",
+        "desc": "升壓輸出"
+      },
+      {
+        "num": "B3",
+        "name": "VOUT",
+        "side": "R",
+        "type": "Power",
+        "desc": "升壓輸出"
+      },
+      {
+        "num": "B4",
+        "name": "VOUT",
+        "side": "R",
+        "type": "Power",
+        "desc": "升壓輸出"
+      },
+      {
+        "num": "C2",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "開關節點（內部高低側 MOSFET 連接點；接電感，球 C2/C3/C4）"
+      },
+      {
+        "num": "C3",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "開關節點（內部高低側 MOSFET 連接點；接電感，球 C2/C3/C4）"
+      },
+      {
+        "num": "C4",
+        "name": "SW",
+        "side": "R",
+        "type": "Power",
+        "desc": "開關節點（內部高低側 MOSFET 連接點；接電感，球 C2/C3/C4）"
+      },
+      {
+        "num": "D2",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地（球 D2/D3/D4；輸出電容地要靠近）"
+      },
+      {
+        "num": "D3",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地（球 D2/D3/D4；輸出電容地要靠近）"
+      },
+      {
+        "num": "D4",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地（球 D2/D3/D4；輸出電容地要靠近）"
+      }
     ],
-    thermalPad: null,
-    specs: [
-      { k: '功能', v: '同步升壓(boost)轉換器、含旁路模式' }, { k: '輸入', v: '最高 5.5 V' },
-      { k: '開關電流', v: '11 A' }, { k: '整流', v: '同步（內建高/低側 MOSFET）' },
-      { k: '控制', v: 'I2C（可調輸出電壓/模式）；EN 致能' }, { k: '旁路', v: '不需升壓時 bypass 直通省電' },
-      { k: '封裝', v: 'BGA-16（4×4；VIN/VOUT/SW/GND 各 3 球）' }
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "功能",
+        "v": "同步升壓(boost)轉換器、含旁路模式"
+      },
+      {
+        "k": "輸入",
+        "v": "最高 5.5 V"
+      },
+      {
+        "k": "開關電流",
+        "v": "11 A"
+      },
+      {
+        "k": "整流",
+        "v": "同步（內建高/低側 MOSFET）"
+      },
+      {
+        "k": "控制",
+        "v": "I2C（可調輸出電壓/模式）；EN 致能"
+      },
+      {
+        "k": "旁路",
+        "v": "不需升壓時 bypass 直通省電"
+      },
+      {
+        "k": "封裝",
+        "v": "BGA-16（4×4；VIN/VOUT/SW/GND 各 3 球）"
+      }
     ],
-    secondSource: ['封裝 + ball-out 相容（BGA-16 4×4、同球位）', '輸入電壓範圍涵蓋（≤5.5V）', '開關/輸出電流 ≥ 需求（11A）', '同步整流、效率相容', '控制介面相同（I2C、位址相容）', '旁路模式支援（若需）', '輸出電壓設定範圍涵蓋', '工作溫度涵蓋'],
-    dropIn: []
+    "secondSource": [
+      "封裝 + ball-out 相容（BGA-16 4×4、同球位）",
+      "輸入電壓範圍涵蓋（≤5.5V）",
+      "開關/輸出電流 ≥ 需求（11A）",
+      "同步整流、效率相容",
+      "控制介面相同（I2C、位址相容）",
+      "旁路模式支援（若需）",
+      "輸出電壓設定範圍涵蓋",
+      "工作溫度涵蓋"
+    ],
+    "dropIn": []
   },
   {
     part: 'TPS61129-Q1', mfr: 'Texas Instruments', category: 'power',
