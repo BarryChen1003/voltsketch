@@ -14094,5 +14094,1317 @@ window.IC_DATA = [
       "供電／工作溫度涵蓋"
     ],
     "dropIn": []
+  },
+  {
+    "part": "ADS9324",
+    "mfr": "Texas Instruments",
+    "category": "data-converters",
+    "subcategory": "16通道 16-bit 同步採樣 SAR ADC（整合類比前端）",
+    "package": "64-VQFN (RSK) 8.00mm × 8.00mm",
+    "whatIs": "16通道、16-bit 逐次逼近（SAR）同步採樣資料擷取系統：每通道最高 1MSPS，每通道皆內建完整類比前端，含 1MΩ 輸入阻抗可程式增益放大器（PGA）、輸入箝位、低通濾波器與 ADC 輸入驅動器；並內建低漂移精密參考電壓與緩衝器驅動 ADC。高輸入阻抗可直接連接感測器與變壓器，免除外部驅動電路，支援差動與單端輸入。",
+    "func": "序列介面可組態為 1-lane、2-lane、4-lane、8-lane 讀出 ADC 輸出；ADC 亦可彈性組態為 2-CH、4-CH、8-CH、16-CH 同步採樣模式；輸入範圍：差動 ±12.5V/±10V/±6.25V/±5V/±2.5V，共模電壓 ±12.5V；類比頻寬選項 25kHz 與 325kHz；開路安全輸入（浮接輸入時 ADC 輸出碼趨近零）；典型性能 INL ±0.5LSB、DNL ±0.5LSB、SNR 88dB、THD −103dB、DC CMRR 100dB；低漂移片上參考電壓 4.096V（緩衝，15ppm/°C 典型溫度飄移）；數位功能含片上數位濾波器（過採樣）、系統偏移/增益/相位校正、數位窗口比較器、ADC 輸出資料隨機化器。",
+    "usedIn": "變電站自動化、馬達保護電驛與接觸器、馬達控制電流感測、工業自動化、測試與量測等需高精度多通道同步採樣的場合。",
+    "desc": "16通道 16-bit 同步採樣 SAR ADC，整合 PGA/箝位/濾波前端與 4.096V 低漂移參考，1MSPS/通道，1/2/4/8-lane 可組態序列介面，−40°C~125°C，64-VQFN 8×8mm。",
+    "datasheet": "TI SBASB22",
+    "pins": [
+      {
+        "num": "1",
+        "name": "AIN5P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 5，正端"
+      },
+      {
+        "num": "2",
+        "name": "AIN5M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 5，負端"
+      },
+      {
+        "num": "3",
+        "name": "AIN6P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 6，正端"
+      },
+      {
+        "num": "4",
+        "name": "AIN6M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 6，負端"
+      },
+      {
+        "num": "5",
+        "name": "AIN7P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 7，正端"
+      },
+      {
+        "num": "6",
+        "name": "AIN7M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 7，負端"
+      },
+      {
+        "num": "7",
+        "name": "AIN8P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 8，正端"
+      },
+      {
+        "num": "8",
+        "name": "AIN8M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 8，負端"
+      },
+      {
+        "num": "9",
+        "name": "AIN9P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 9，正端"
+      },
+      {
+        "num": "10",
+        "name": "AIN9M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 9，負端"
+      },
+      {
+        "num": "11",
+        "name": "AIN10P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 10，正端"
+      },
+      {
+        "num": "12",
+        "name": "AIN10M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 10，負端"
+      },
+      {
+        "num": "13",
+        "name": "AIN11P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 11，正端"
+      },
+      {
+        "num": "14",
+        "name": "AIN11M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 11，負端"
+      },
+      {
+        "num": "15",
+        "name": "AIN12P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 12，正端"
+      },
+      {
+        "num": "16",
+        "name": "AIN12M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 12，負端"
+      },
+      {
+        "num": "17",
+        "name": "AIN13P",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入通道 13，正端"
+      },
+      {
+        "num": "18",
+        "name": "AIN13M",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入通道 13，負端"
+      },
+      {
+        "num": "19",
+        "name": "AIN14P",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入通道 14，正端"
+      },
+      {
+        "num": "20",
+        "name": "AIN14M",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入通道 14，負端"
+      },
+      {
+        "num": "21",
+        "name": "AIN15P",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入通道 15，正端"
+      },
+      {
+        "num": "22",
+        "name": "AIN15M",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入通道 15，負端"
+      },
+      {
+        "num": "23",
+        "name": "AIN16P",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入通道 16，正端"
+      },
+      {
+        "num": "24",
+        "name": "AIN16M",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "類比輸入通道 16，負端"
+      },
+      {
+        "num": "25",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "26",
+        "name": "AVDD_5V",
+        "side": "B",
+        "type": "Power",
+        "desc": "5V 類比電源；建議並接 1µF 與 0.1µF 去耦電容至 GND"
+      },
+      {
+        "num": "27",
+        "name": "AVDD_5V",
+        "side": "B",
+        "type": "Power",
+        "desc": "5V 類比電源；建議並接 1µF 與 0.1µF 去耦電容至 GND"
+      },
+      {
+        "num": "28",
+        "name": "REFM",
+        "side": "B",
+        "type": "Ground",
+        "desc": "參考接地腳；於 PCB 上短接至 GND 平面（外部）"
+      },
+      {
+        "num": "29",
+        "name": "REFCAPB",
+        "side": "B",
+        "type": "Analog Out",
+        "desc": "參考放大器輸出腳；於腳 29、28 間並接低 ESR 1µF、X7R 去耦電容"
+      },
+      {
+        "num": "30",
+        "name": "AVDD_1V8",
+        "side": "B",
+        "type": "Power",
+        "desc": "1.8V 類比電源；建議並接 1µF 與 0.1µF 去耦電容至 GND"
+      },
+      {
+        "num": "31",
+        "name": "REFSEL",
+        "side": "B",
+        "type": "Input",
+        "desc": "邏輯輸入，選擇 ADC 參考電壓來源"
+      },
+      {
+        "num": "32",
+        "name": "{RESET}",
+        "side": "B",
+        "type": "Input",
+        "desc": "元件重置輸入；active low"
+      },
+      {
+        "num": "33",
+        "name": "GND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "34",
+        "name": "IOVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "數位 I/O 介面供電；建議並接 1µF 與 0.1µF 去耦電容至 GND"
+      },
+      {
+        "num": "35",
+        "name": "{CS}",
+        "side": "R",
+        "type": "Input",
+        "desc": "SPI 組態晶片選擇輸入；active low"
+      },
+      {
+        "num": "36",
+        "name": "SDI",
+        "side": "R",
+        "type": "Input",
+        "desc": "數位介面序列資料輸入"
+      },
+      {
+        "num": "37",
+        "name": "SCLK",
+        "side": "R",
+        "type": "Input",
+        "desc": "數位介面序列時脈輸入"
+      },
+      {
+        "num": "38",
+        "name": "SDOUT",
+        "side": "R",
+        "type": "Output",
+        "desc": "使用者暫存器讀取或單通道模式的序列資料輸出"
+      },
+      {
+        "num": "39",
+        "name": "D7",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列輸出資料通道 7"
+      },
+      {
+        "num": "40",
+        "name": "D6",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列輸出資料通道 6"
+      },
+      {
+        "num": "41",
+        "name": "D5",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列輸出資料通道 5"
+      },
+      {
+        "num": "42",
+        "name": "D4",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列輸出資料通道 4"
+      },
+      {
+        "num": "43",
+        "name": "D3",
+        "side": "R",
+        "type": "I/O",
+        "desc": "序列輸出資料通道 3，或菊鏈輸入 3"
+      },
+      {
+        "num": "44",
+        "name": "D2",
+        "side": "R",
+        "type": "I/O",
+        "desc": "序列輸出資料通道 2，或菊鏈輸入 2"
+      },
+      {
+        "num": "45",
+        "name": "D1",
+        "side": "R",
+        "type": "I/O",
+        "desc": "序列輸出資料通道 1，或菊鏈輸入 1"
+      },
+      {
+        "num": "46",
+        "name": "D0",
+        "side": "R",
+        "type": "I/O",
+        "desc": "序列輸出資料通道 0，或菊鏈輸入 0"
+      },
+      {
+        "num": "47",
+        "name": "IOVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "數位 I/O 介面供電；建議並接 1µF 與 0.1µF 去耦電容至 GND"
+      },
+      {
+        "num": "48",
+        "name": "GND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "49",
+        "name": "DRDY/ALARM",
+        "side": "T",
+        "type": "I/O",
+        "desc": "資料就緒或告警旗標輸出；active high"
+      },
+      {
+        "num": "50",
+        "name": "CONVST",
+        "side": "T",
+        "type": "Input",
+        "desc": "邏輯輸入，控制轉換啟動"
+      },
+      {
+        "num": "51",
+        "name": "AVDD_1V8",
+        "side": "T",
+        "type": "Power",
+        "desc": "1.8V 類比電源；建議並接 1µF 與 0.1µF 去耦電容至 GND"
+      },
+      {
+        "num": "52",
+        "name": "REFCAPA",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "參考放大器輸出腳；於腳 52、53 間並接低 ESR 1µF、X7R 去耦電容"
+      },
+      {
+        "num": "53",
+        "name": "REFM",
+        "side": "T",
+        "type": "Ground",
+        "desc": "參考接地腳；於 PCB 上短接至 GND 平面（外部）"
+      },
+      {
+        "num": "54",
+        "name": "REFIO",
+        "side": "T",
+        "type": "Analog Out",
+        "desc": "REFSEL 為高時作內部參考電壓輸出；REFSEL 為低時作外部參考輸入腳；與腳 53（REFM）以 4.7µF 電容去耦"
+      },
+      {
+        "num": "55",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地"
+      },
+      {
+        "num": "56",
+        "name": "AVDD_5V",
+        "side": "T",
+        "type": "Power",
+        "desc": "5V 類比電源；建議並接 1µF 與 0.1µF 去耦電容至 GND"
+      },
+      {
+        "num": "57",
+        "name": "AIN1P",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入通道 1，正端"
+      },
+      {
+        "num": "58",
+        "name": "AIN1M",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入通道 1，負端"
+      },
+      {
+        "num": "59",
+        "name": "AIN2P",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入通道 2，正端"
+      },
+      {
+        "num": "60",
+        "name": "AIN2M",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入通道 2，負端"
+      },
+      {
+        "num": "61",
+        "name": "AIN3P",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入通道 3，正端"
+      },
+      {
+        "num": "62",
+        "name": "AIN3M",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入通道 3，負端"
+      },
+      {
+        "num": "63",
+        "name": "AIN4P",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入通道 4，正端"
+      },
+      {
+        "num": "64",
+        "name": "AIN4M",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "類比輸入通道 4，負端"
+      },
+      {
+        "num": "65",
+        "name": "GND (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤；datasheet 表列 Thermal Pad，須接 GND",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露焊盤，datasheet 表列 Thermal Pad，須接 GND（Figure 4-1 圖示位於封裝中央）",
+    "specs": [
+      {
+        "k": "解析度/通道數",
+        "v": "16-bit、16 通道同步採樣"
+      },
+      {
+        "k": "吞吐率",
+        "v": "每通道最高 1MSPS"
+      },
+      {
+        "k": "輸入前端",
+        "v": "整合 PGA，1MΩ 輸入阻抗，支援單端與差動輸入"
+      },
+      {
+        "k": "輸入範圍",
+        "v": "差動 ±12.5V/±10V/±6.25V/±5V/±2.5V；共模電壓 ±12.5V"
+      },
+      {
+        "k": "類比頻寬",
+        "v": "25kHz 或 325kHz（可選）"
+      },
+      {
+        "k": "典型性能",
+        "v": "INL ±0.5LSB；DNL ±0.5LSB；SNR 88dB；THD −103dB；DC CMRR 100dB"
+      },
+      {
+        "k": "參考電壓",
+        "v": "片上低漂移 4.096V＋緩衝器，15ppm/°C typical"
+      },
+      {
+        "k": "數位介面",
+        "v": "1/2/4/8-lane 可組態序列輸出；2/4/8/16-CH 同步採樣模式可組態"
+      },
+      {
+        "k": "電源",
+        "v": "類比供電 5V 及 1.8V；數位 I/O 供電 1.8V~3.3V"
+      },
+      {
+        "k": "溫度範圍",
+        "v": "−40°C ~ +125°C"
+      },
+      {
+        "k": "封裝",
+        "v": "64-VQFN (RSK) 8.00mm × 8.00mm，EP=GND"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 相容（64-VQFN 8×8mm、EP=GND）",
+      "功能相同（16通道 16-bit 同步採樣 SAR ADC，整合 PGA 前端）",
+      "吞吐率相容（1MSPS/通道）",
+      "輸入範圍涵蓋（差動 ±12.5V~±2.5V 多檔）",
+      "數位介面相容（1/2/4/8-lane 序列輸出）",
+      "電源軌相容（5V/1.8V 類比、1.8~3.3V 數位 I/O）",
+      "溫度範圍涵蓋（−40°C~125°C）"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "ADC3664-EP",
+    "mfr": "Texas Instruments",
+    "category": "data-converters",
+    "subcategory": "雙通道 14-bit 125MSPS 低雜訊低功耗 ADC（Enhanced Product）",
+    "package": "40-QFN (RSB) 5mm × 5mm",
+    "whatIs": "低雜訊、超低功耗雙通道 14-bit、125MSPS 高速 ADC。設計以達最佳雜訊表現，雜訊頻譜密度 −156.9dBFS/Hz，兼具線性度與動態範圍；支援 IF 取樣，短至 2 個時脈週期延遲。part number 的 -EP 為 TI「Enhanced Product」強化產品等級（非本表 exposed pad 之 EP 縮寫），符合 ASTM E595 除氣規範、有 VID（Vendor Item Drawing）、−55°C~105°C 延伸溫度範圍、單一晶圓/封裝/測試廠、金線鍵合＋NiPdAu 接腳鍍層、晶圓批次可追溯、延長產品生命週期；-EP 不具耐輻射特性（耐輻射僅 -SEP 版本）。",
+    "func": "電壓參考可選外部（1~125MSPS）或內部（100~125MSPS）；輸入頻寬 200MHz（3dB）；INL ±2.6LSB、DNL ±0.9LSB（typical）；內建可選/可略過的片上 DSP，支援 2/4/8/16/32 倍抽取與 32-bit NCO；序列 LVDS 數位介面支援 2-wire、1-wire、1/2-wire 模式；頻譜性能（fIN=5MHz）：SNR 77.5dBFS、SFDR 84dBc（HD2/HD3）、SFDR 92dBFS（worst spur）；功耗 100mW/通道（125MSPS）。",
+    "usedIn": "高速資料擷取、衛星光通訊酬載、衛星成像酬載、衛星通訊酬載、衛星雷達與光達（RADAR/LIDAR）酬載等太空與高可靠度應用。",
+    "desc": "雙通道 14-bit 125MSPS 低雜訊 ADC，雜訊本底 −156.9dBFS/Hz，100mW/通道，序列 LVDS 介面，40-QFN 5×5mm；-EP 為強化產品等級（−55°C~105°C，非耐輻射，耐輻射見 -SEP）。",
+    "datasheet": "TI SBASAP4",
+    "pins": [
+      {
+        "num": "1",
+        "name": "{PDN}/SYNC",
+        "side": "L",
+        "type": "Input",
+        "desc": "省電/同步輸入，經 SPI 介面組態；active high；內建 21kΩ 下拉電阻"
+      },
+      {
+        "num": "2",
+        "name": "VREF",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "外部電壓參考輸入"
+      },
+      {
+        "num": "3",
+        "name": "REFGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "參考接地輸入，0V"
+      },
+      {
+        "num": "4",
+        "name": "REFBUF/CTRL",
+        "side": "L",
+        "type": "Input",
+        "desc": "用於設定上電時預設取樣時脈類型與電壓參考來源；內建 100kΩ 上拉電阻至 AVDD"
+      },
+      {
+        "num": "5",
+        "name": "AVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "1.8V 類比電源"
+      },
+      {
+        "num": "6",
+        "name": "CLKP",
+        "side": "L",
+        "type": "Input",
+        "desc": "ADC 取樣時脈差動輸入，正端"
+      },
+      {
+        "num": "7",
+        "name": "CLKM",
+        "side": "L",
+        "type": "Input",
+        "desc": "ADC 取樣時脈差動輸入，負端"
+      },
+      {
+        "num": "8",
+        "name": "VCM",
+        "side": "L",
+        "type": "Analog Out",
+        "desc": "類比輸入共模電壓輸出，0.95V"
+      },
+      {
+        "num": "9",
+        "name": "{RESET}",
+        "side": "L",
+        "type": "Input",
+        "desc": "硬體重置；active high；內建 21kΩ 下拉電阻"
+      },
+      {
+        "num": "10",
+        "name": "SDIO",
+        "side": "L",
+        "type": "I/O",
+        "desc": "序列介面資料輸入與輸出；內建 21kΩ 下拉電阻"
+      },
+      {
+        "num": "11",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V（與 PowerPAD 同列於表中）"
+      },
+      {
+        "num": "12",
+        "name": "AINP",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "正極性類比輸入，通道 A"
+      },
+      {
+        "num": "13",
+        "name": "AINM",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "負極性類比輸入，通道 A"
+      },
+      {
+        "num": "14",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V（與 PowerPAD 同列於表中）"
+      },
+      {
+        "num": "15",
+        "name": "AVDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "1.8V 類比電源"
+      },
+      {
+        "num": "16",
+        "name": "{SEN}",
+        "side": "B",
+        "type": "Input",
+        "desc": "序列介面致能；active low；內建 21kΩ 上拉電阻至 AVDD"
+      },
+      {
+        "num": "17",
+        "name": "DA1M",
+        "side": "B",
+        "type": "Output",
+        "desc": "A 通道 lane 1 序列 LVDS 輸出，負端"
+      },
+      {
+        "num": "18",
+        "name": "DA1P",
+        "side": "B",
+        "type": "Output",
+        "desc": "A 通道 lane 1 序列 LVDS 輸出，正端"
+      },
+      {
+        "num": "19",
+        "name": "DA0M",
+        "side": "B",
+        "type": "Output",
+        "desc": "A 通道 lane 0 序列 LVDS 輸出，負端"
+      },
+      {
+        "num": "20",
+        "name": "DA0P",
+        "side": "B",
+        "type": "Output",
+        "desc": "A 通道 lane 0 序列 LVDS 輸出，正端"
+      },
+      {
+        "num": "21",
+        "name": "IOVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "數位介面 1.8V 電源"
+      },
+      {
+        "num": "22",
+        "name": "DCLKM",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列 LVDS 位元時脈輸出，負端"
+      },
+      {
+        "num": "23",
+        "name": "DCLKP",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列 LVDS 位元時脈輸出，正端"
+      },
+      {
+        "num": "24",
+        "name": "DCLKINM",
+        "side": "R",
+        "type": "Input",
+        "desc": "序列 LVDS 位元時脈輸入，負端；內建 100Ω 差動終端電阻"
+      },
+      {
+        "num": "25",
+        "name": "DCLKINP",
+        "side": "R",
+        "type": "Input",
+        "desc": "序列 LVDS 位元時脈輸入，正端；內建 100Ω 差動終端電阻"
+      },
+      {
+        "num": "26",
+        "name": "IOGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "數位介面接地，0V"
+      },
+      {
+        "num": "27",
+        "name": "NC",
+        "side": "R",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "28",
+        "name": "FCLKP",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列 LVDS 框時脈輸出，正端"
+      },
+      {
+        "num": "29",
+        "name": "FCLKM",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列 LVDS 框時脈輸出，負端"
+      },
+      {
+        "num": "30",
+        "name": "IOVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "數位介面 1.8V 電源"
+      },
+      {
+        "num": "31",
+        "name": "DB0P",
+        "side": "T",
+        "type": "Output",
+        "desc": "B 通道 lane 0 序列 LVDS 輸出，正端"
+      },
+      {
+        "num": "32",
+        "name": "DB0M",
+        "side": "T",
+        "type": "Output",
+        "desc": "B 通道 lane 0 序列 LVDS 輸出，負端"
+      },
+      {
+        "num": "33",
+        "name": "DB1P",
+        "side": "T",
+        "type": "Output",
+        "desc": "B 通道 lane 1 序列 LVDS 輸出，正端"
+      },
+      {
+        "num": "34",
+        "name": "DB1M",
+        "side": "T",
+        "type": "Output",
+        "desc": "B 通道 lane 1 序列 LVDS 輸出，負端"
+      },
+      {
+        "num": "35",
+        "name": "SCLK",
+        "side": "T",
+        "type": "Input",
+        "desc": "序列介面時脈輸入；內建 21kΩ 下拉電阻"
+      },
+      {
+        "num": "36",
+        "name": "AVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "1.8V 類比電源"
+      },
+      {
+        "num": "37",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地，0V（與 PowerPAD 同列於表中）"
+      },
+      {
+        "num": "38",
+        "name": "BINM",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "負極性類比輸入，通道 B"
+      },
+      {
+        "num": "39",
+        "name": "BINP",
+        "side": "T",
+        "type": "Analog In",
+        "desc": "正極性類比輸入，通道 B"
+      },
+      {
+        "num": "40",
+        "name": "GND",
+        "side": "T",
+        "type": "Ground",
+        "desc": "接地，0V（與 PowerPAD 同列於表中）"
+      },
+      {
+        "num": "41",
+        "name": "GND (EP/PowerPAD)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "PowerPAD 外露散熱焊盤；datasheet Pin Functions 表 GND 列與 Figure 4-1 均列 PowerPAD/Thermal Pad，須接 GND",
+        "ep": true
+      }
+    ],
+    "thermalPad": "PowerPAD 外露散熱焊盤=GND（與腳 11,14,37,40 同列於 Pin Functions 表 GND 列），須接 GND",
+    "specs": [
+      {
+        "k": "通道/解析度/速率",
+        "v": "雙通道、14-bit（no missing codes）、125MSPS"
+      },
+      {
+        "k": "雜訊本底",
+        "v": "−156.9dBFS/Hz"
+      },
+      {
+        "k": "功耗",
+        "v": "100mW/通道（125MSPS）"
+      },
+      {
+        "k": "延遲",
+        "v": "2 個時脈週期"
+      },
+      {
+        "k": "電壓參考",
+        "v": "外部：1~125MSPS；內部：100~125MSPS"
+      },
+      {
+        "k": "輸入頻寬",
+        "v": "200MHz（3dB）"
+      },
+      {
+        "k": "線性度",
+        "v": "INL ±2.6LSB；DNL ±0.9LSB（typical）"
+      },
+      {
+        "k": "片上 DSP",
+        "v": "可選/可略過；抽取 2/4/8/16/32 倍；32-bit NCO"
+      },
+      {
+        "k": "數位介面",
+        "v": "序列 LVDS（2-wire、1-wire、1/2-wire 可選）"
+      },
+      {
+        "k": "頻譜性能（fIN=5MHz）",
+        "v": "SNR 77.5dBFS；SFDR 84dBc（HD2/HD3）；SFDR 92dBFS（worst spur）"
+      },
+      {
+        "k": "溫度範圍",
+        "v": "−55°C ~ +105°C（Enhanced Product）"
+      },
+      {
+        "k": "封裝",
+        "v": "40-QFN (RSB) 5mm × 5mm，EP(PowerPAD)=GND"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 相容（40-QFN 5×5mm、PowerPAD=GND）",
+      "功能相同（雙通道 14-bit 125MSPS 低雜訊 ADC）",
+      "雜訊/功耗同級（噪聲本底 ≤−156dBFS/Hz、≤100mW/通道 @125MSPS）",
+      "數位介面相容（序列 LVDS，lane 數可組態）",
+      "電源軌相容（AVDD/IOVDD 1.8V）",
+      "溫度範圍涵蓋（−55°C~105°C）",
+      "Enhanced Product 等級相容（如需同等級認證）"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "MSPM0C1105-Q1",
+    "mfr": "Texas Instruments",
+    "category": "mcu",
+    "subcategory": "車規 Arm Cortex-M0+ 混合訊號 MCU（32KB flash／8KB RAM）",
+    "package": "48-VQFN (RGZ)",
+    "whatIs": "車規混合訊號 MCU：Arm 32-bit Cortex-M0+ 核心（含記憶體保護單元，最高 32MHz），AEC-Q100 Grade 1（−40°C~125°C），最高 64KB flash＋8KB SRAM，內建 12-bit 1.6Msps ADC（最多 27 個外部通道）、含 8-bit 參考 DAC 的比較器（COMP）、整合溫度感測器；封裝選項含 48-pin LQFP (PT)／VQFN (RGZ)、32-pin VQFN (RHB)、28-pin VSSOP (DGS28)、24-pin VQFN (RGE)、20-pin WQFN (RUK)／VSSOP (DGS20)。MSPM0C1105-Q1＝32KB flash／8KB RAM；同系列 MSPM0C1106-Q1＝64KB flash／8KB RAM。",
+    "func": "低功耗模式：RUN 91µA/MHz（CoreMark）、STANDBY 2µA（SRAM 與暫存器全保留）、SHUTDOWN 68nA（支援 I/O 喚醒）；數位周邊：3 通道 DMA 控制器、7 通道事件矩陣（event fabric）、5 顆計時器最多支援 18 路 PWM 輸出且皆可於 STANDBY 模式下運作（1 顆 16-bit 進階計時器含 deadband，計時器頻率最高 64MHz；1 顆 16-bit 通用計時器含 4 組 capture/compare；3 顆 16-bit 通用計時器各含 2 組 capture/compare）、視窗看門狗（WWDT）、獨立看門狗（IWDT）、含鬧鈴與行事曆模式的 RTC、BEEPER（可產生 1/2/4/8kHz 方波驅動外部蜂鳴器）；通訊介面：3 組 UART（其中 1 組支援 LIN、IrDA、DALI、smart card、Manchester）、2 組 I2C（支援 SMBus/PMBus 與 STOP 模式喚醒，最高支援 FM+ 1Mbps）、1 組 SPI（最高支援 16Mbps）；時脈系統：內建 32MHz 振盪器 SYSOSC（精度 −2.1%~1.6%）、內建 32kHz 振盪器 LFOSC（精度 ±3%）、外部 4MHz~32MHz 石英振盪器 HFXT、外部 32kHz 石英振盪器 LFXT、外部低頻/高頻數位時脈輸入、數位時脈輸出；資料完整性：CRC-16 循環冗餘檢查；I/O：最多 45 個 GPIO，其中 2 個為 5V 耐受開汲極 IO；開發支援：2-pin 序列線除錯（SWD）。",
+    "usedIn": "車用車身電子與照明、車用閘道器（Gateway）、方向盤系統、車用馬達控制、DC-AC 逆變器、車用室內照明、車門把手模組、Kick-to-open 模組、車輛乘客偵測、座椅舒適模組等車用場合。",
+    "desc": "車規 Arm Cortex-M0+ MCU，最高 32MHz／32KB flash／8KB SRAM，12-bit 1.6Msps ADC（最多 27 通道），AEC-Q100 Grade 1，48-VQFN (RGZ) 等多種封裝可選。",
+    "datasheet": "TI SLASFJ7A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "PA0",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA0（緩衝類型：ODIO 5V耐受開汲極，支援喚醒）；IOMUX 多工：PA0, UART0_TX, I2C0_SDA, TIMA0_C0, TIMA_FAL1, FCC_IN, TIMG8_C1, BEEP, TIMG14_C0, SPI0_CS1_MISO1, RTC_OUT"
+      },
+      {
+        "num": "2",
+        "name": "PA1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA1（緩衝類型：ODIO 5V耐受開汲極，支援喚醒）；IOMUX 多工：PA1, UART0_RX, I2C0_SCL, TIMA0_C1, TIMA_FAL2, TIMG8_IDX, TIMG8_C0, TIMG14_C1, SPI0_CS3_CD_MISO3, HFCLKIN, UART0_TX, UART1_RTS, I2C0_SDA"
+      },
+      {
+        "num": "3",
+        "name": "PA28",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA28（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA28, UART0_TX, I2C0_SDA, TIMA0_C3, TIMA_FAL0, TIMG2_C0, TIMA0_C1"
+      },
+      {
+        "num": "4",
+        "name": "{NRST}",
+        "side": "L",
+        "type": "Input",
+        "desc": "外部硬體重置輸入；依腳名 N 前綴慣例判定為 active-low（本摘錄頁未附明文敘述，如需精確確認見 datasheet §6.3）；Non-IOMUX 專用腳，無 GPIO 替代功能"
+      },
+      {
+        "num": "5",
+        "name": "PA31",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA31（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA31, UART0_RX, I2C0_SCL, TIMA0_C3N, CLK_OUT"
+      },
+      {
+        "num": "6",
+        "name": "VDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "電源腳（表列 SIGNAL TYPE：PWR；供電範圍 1.62V~3.6V 見頁 1）"
+      },
+      {
+        "num": "7",
+        "name": "VSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地腳（表列 SIGNAL TYPE：PWR，為元件接地）"
+      },
+      {
+        "num": "8",
+        "name": "PA2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA2（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA2, TIMG8_C1, SPI0_CS0, TIMG2_C1, TIMG8_IDX, TIMA0_C3N, TIMA0_C2N, TIMA_FAL0, TIMA_FAL1, TIMA0_C0, I2C0_SCL"
+      },
+      {
+        "num": "9",
+        "name": "PA3",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA3（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA3, TIMG8_C0, SPI0_CS1_MISO1, I2C1_SDA, TIMA0_C1, TIMG2_C0, TIMA0_C2, UART2_CTS, UART1_TX, SPI0_CS3_CD_MISO3, I2C0_SDA, COMP0_OUT；另有非 IOMUX 類比功能 LFXIN（32kHz 石英振盪器輸入）"
+      },
+      {
+        "num": "10",
+        "name": "PA4",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA4（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA4, TIMG8_C1, SPI0_POCI, I2C1_SCL, TIMA0_C1N, LFCLKIN, TIMG2_C1, TIMA0_C3, UART2_RTS, UART1_RX, SPI0_CS0, TIMA0_C0N, HFCLKIN；另有非 IOMUX 類比功能 LFXOUT（32kHz 石英振盪器輸出）"
+      },
+      {
+        "num": "11",
+        "name": "PA5",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA5（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA5, TIMG8_C0, SPI0_PICO, I2C1_SDA, TIMG14_C0, FCC_IN, TIMG1_C0, TIMA_FAL1, UART0_CTS, UART1_TX, TIMA0_C1；另有非 IOMUX 類比功能 HFXIN（4~32MHz 石英振盪器輸入）"
+      },
+      {
+        "num": "12",
+        "name": "PA6",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA6（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA6, TIMG8_C1, SPI0_SCLK, I2C1_SCL, TIMG14_C1, HFCLKIN, TIMG1_C1, TIMA_FAL0, UART0_RTS, TIMA0_C2N, UART1_RX, TIMA0_C2, I2C0_SDA, BEEP；另有非 IOMUX 類比功能 HFXOUT（4~32MHz 石英振盪器輸出）"
+      },
+      {
+        "num": "13",
+        "name": "PA7",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA7（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA7, CLK_OUT, TIMG8_C0, TIMA0_C2, TIMG8_IDX, TIMG2_C1, TIMA0_C1, SPI0_CS2_MISO2, FCC_IN, SPI0_POCI, SPI0_PICO, UART1_TX, TIMG1_C0, COMP0_OUT"
+      },
+      {
+        "num": "14",
+        "name": "PB2",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB2（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB2, UART2_CTS, I2C1_SCL, TIMA0_C3, UART1_CTS, TIMG1_C0, UART2_TX, HFCLKIN, SPI0_PICO, UART1_RX, TIMA0_C1N"
+      },
+      {
+        "num": "15",
+        "name": "PB3",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB3（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB3, TIMA_FAL0, UART2_RTS, I2C1_SDA, TIMA0_C3N, UART1_RTS, TIMG1_C1, UART2_RX, TIMG2_C1, TIMA0_C0, SPI0_SCLK, SPI0_CS0, UART1_TX, RTC_OUT"
+      },
+      {
+        "num": "16",
+        "name": "PA8",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA8（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA8, UART1_TX, SPI0_CS0, I2C0_SDA, TIMA0_C0, TIMA_FAL2, TIMA_FAL0, SPI0_CS3_CD_MISO3, TIMG2_C1, HFCLKIN, UART0_RTS, SPI0_SCLK, UART1_RX, TIMA0_C3N"
+      },
+      {
+        "num": "17",
+        "name": "PA9",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA9（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA9, UART1_RX, SPI0_PICO, I2C0_SCL, TIMA0_C0N, CLK_OUT, TIMA0_C1, RTC_OUT, TIMG2_C0, SPI0_POCI, UART0_CTS, TIMA_FAL1, TIMG1_C1"
+      },
+      {
+        "num": "18",
+        "name": "PA10",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA10（緩衝類型：SDIO 標準驅動，支援喚醒）；IOMUX 多工：PA10, UART0_TX, SPI0_POCI, I2C0_SDA, TIMA0_C2, CLK_OUT, TIMG14_C0, I2C1_SDA, TIMA_FAL1, TIMG2_C1, TIMA0_C1N, TIMG8_C1, SPI0_PICO"
+      },
+      {
+        "num": "19",
+        "name": "PA11",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA11（緩衝類型：SDIO 標準驅動，支援喚醒）；IOMUX 多工：PA11, UART0_RX, SPI0_SCLK, I2C0_SCL, TIMA0_C2N, UART1_RX, TIMG14_C1, I2C1_SCL, TIMA_FAL0, SPI0_CS0, COMP0_OUT；另有非 IOMUX 類比功能 ADC0_25（ADC 通道）、COMP0_DAC_OUT（比較器內建 DAC 輸出）"
+      },
+      {
+        "num": "20",
+        "name": "PB6",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB6（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB6, UART1_TX, TIMG8_C0, UART2_CTS, TIMG1_C0, TIMA_FAL2, SPI0_CS1_MISO1, TIMA0_C3N, TIMG8_C1, TIMA0_C2N, UART0_TX；另有非 IOMUX 類比功能 ADC0_24（ADC 通道）"
+      },
+      {
+        "num": "21",
+        "name": "PB7",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB7（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB7, UART1_RX, TIMG8_C1, UART2_RTS, TIMG1_C1, SPI0_CS2_MISO2, BEEP, SPI0_SCLK, UART0_RX；另有非 IOMUX 類比功能 ADC0_23（ADC 通道）"
+      },
+      {
+        "num": "22",
+        "name": "PB8",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB8（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB8, UART1_CTS, TIMA0_C0, TIMG1_C0, SPI0_SCLK, BEEP, TIMG8_C0, UART0_RX, SPI0_POCI, I2C0_SCL, COMP0_OUT"
+      },
+      {
+        "num": "23",
+        "name": "PB9",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB9（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB9, UART1_RTS, TIMA0_C0N, TIMA0_C1, TIMG1_C1, TIMG2_C0, SPI0_POCI, UART0_RX, I2C0_SCL, UART0_TX, I2C0_SDA"
+      },
+      {
+        "num": "24",
+        "name": "PB14",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB14（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB14, TIMA0_C0, TIMG8_IDX, SPI0_CS3_CD_MISO3, TIMG2_C1, I2C0_SDA, SPI0_PICO, UART0_TX, TIMA_FAL2, TIMA_FAL0, TIMG14_C2；另有非 IOMUX 類比功能 ADC0_21（ADC 通道）"
+      },
+      {
+        "num": "25",
+        "name": "PB15",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PB15（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB15, UART2_TX, TIMG8_C0, TIMG2_C0, TIMA0_C1N, UART1_TX, TIMG2_C1；另有非 IOMUX 類比功能 ADC0_20（ADC 通道）"
+      },
+      {
+        "num": "26",
+        "name": "PB16",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PB16（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB16, UART2_RX, TIMG8_C1, TIMG2_C1, TIMA0_C2N, UART1_RX, I2C1_SDA；另有非 IOMUX 類比功能 ADC0_19（ADC 通道）"
+      },
+      {
+        "num": "27",
+        "name": "PA12",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA12（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA12, SPI0_SCLK, TIMA0_C3, FCC_IN, TIMG14_C0, SPI0_CS1_MISO1, UART2_CTS, UART1_CTS, TIMA0_C3N, I2C1_SCL, TIMG2_C1, COMP0_OUT；另有非 IOMUX 類比功能 ADC0_18（ADC 通道）"
+      },
+      {
+        "num": "28",
+        "name": "PA13",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA13（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA13, UART0_RX, SPI0_POCI, TIMA0_C2N, TIMA0_C3N, RTC_OUT, TIMG14_C1, TIMG14_C3, SPI0_CS3_CD_MISO3, UART2_TX, UART1_RTS, SPI0_CS0, TIMG8_C1, TIMA0_C1；另有非 IOMUX 類比功能 ADC0_17（ADC 通道）、COMP0_IN2-（比較器負輸入2）"
+      },
+      {
+        "num": "29",
+        "name": "PA14",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA14（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA14, UART0_CTS, SPI0_PICO, TIMG1_C0, CLK_OUT, SPI0_CS2_MISO2, UART2_RX, I2C0_SCL, UART0_TX, TIMA0_C2；另有非 IOMUX 類比功能 ADC0_16（ADC 通道）、COMP0_IN2+（比較器正輸入2）"
+      },
+      {
+        "num": "30",
+        "name": "PA15",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA15（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA15, UART0_RTS, SPI0_CS2_MISO2, I2C1_SCL, TIMA0_C2, TIMG8_IDX, UART2_RTS, TIMG14_C1；另有非 IOMUX 類比功能 ADC0_15（ADC 通道）、COMP0_IN3+（比較器正輸入3）"
+      },
+      {
+        "num": "31",
+        "name": "PA16",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA16（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA16, SPI0_POCI, I2C1_SDA, TIMA0_C2N, FCC_IN, UART2_CTS, TIMG14_C2, COMP0_OUT；另有非 IOMUX 類比功能 ADC0_14（ADC 通道）"
+      },
+      {
+        "num": "32",
+        "name": "PA17",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA17（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA17, UART1_TX, TIMA0_C2, I2C1_SCL, TIMA0_C3, TIMG2_C0, TIMG8_C0, TIMA0_C0N, SPI0_CS1_MISO1, SPI0_SCLK, I2C0_SDA, UART0_RX；另有非 IOMUX 類比功能 ADC0_13（ADC 通道）、COMP0_IN1-（比較器負輸入1）"
+      },
+      {
+        "num": "33",
+        "name": "PA18",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA18（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA18, UART1_RX, UART1_RTS, I2C1_SDA, TIMA0_C3N, TIMG2_C1, TIMG8_C1, SPI0_PICO, SPI0_CS0, TIMA0_C1N, TIMA0_C0, SPI0_POCI, TIMA_FAL2, CLK_OUT；另有非 IOMUX 功能 ADC0_12（ADC 通道）、COMP0_IN1+（比較器正輸入1）、BSL_invoke (Flash)（開機載入程式喚起）"
+      },
+      {
+        "num": "34",
+        "name": "PA19",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA19（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA19, SWDIO, SPI0_SCLK, I2C1_SDA, TIMA0_C2, TIMG14_C0, SPI0_POCI, UART0_CTS, UART1_RX, SPI0_PICO；另有非 IOMUX 類比功能 ADC0_22（ADC 通道）；SWDIO 為 SWD 除錯資料腳"
+      },
+      {
+        "num": "35",
+        "name": "PA20",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA20（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA20, SWCLK, TIMA_FAL1, I2C1_SCL, TIMA0_C2N, TIMG14_C1, SPI0_PICO, TIMA0_C0, UART0_RTS, UART1_TX, SPI0_CS0, UART1_RX；另有非 IOMUX 類比功能 ADC0_4（ADC 通道）；SWCLK 為 SWD 除錯時脈腳"
+      },
+      {
+        "num": "36",
+        "name": "PB17",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PB17（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB17, UART2_TX, SPI0_PICO, I2C0_SCL, TIMA0_C2, TIMG14_C0, TIMG1_C0, SPI0_CS0；另有非 IOMUX 類比功能 ADC0_11（ADC 通道）"
+      },
+      {
+        "num": "37",
+        "name": "PB18",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB18（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB18, UART2_RX, SPI0_SCLK, I2C0_SDA, TIMA0_C2N, TIMG14_C1, SPI0_CS0, TIMG1_C1, TIMA0_C1, UART0_RTS；另有非 IOMUX 類比功能 ADC0_10（ADC 通道）"
+      },
+      {
+        "num": "38",
+        "name": "PB19",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB19（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB19, SPI0_POCI, TIMG8_C1, UART0_CTS, TIMG2_C1, TIMG8_IDX, UART2_CTS, TIMA0_C1N, UART2_RX, COMP0_OUT；另有非 IOMUX 類比功能 ADC0_9（ADC 通道）"
+      },
+      {
+        "num": "39",
+        "name": "PA21",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA21（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA21, UART2_TX, SPI0_CS3_CD_MISO3, UART1_CTS, TIMA0_C0, TIMG1_C0, UART2_CTS, TIMG8_C0, TIMA0_C0N, UART2_RX；另有非 IOMUX 類比功能 ADC0_8（ADC 通道）、ADC0_VREF-（ADC 參考電壓負端）"
+      },
+      {
+        "num": "40",
+        "name": "PA22",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA22（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA22, UART2_RX, SPI0_CS2_MISO2, UART1_RTS, TIMA0_C0N, TIMG1_C1, TIMA0_C1, CLK_OUT, I2C0_SCL, TIMG8_C1, UART1_RX, SPI0_POCI, UART2_TX；另有非 IOMUX 類比功能 ADC0_7（ADC 通道）"
+      },
+      {
+        "num": "41",
+        "name": "PB20",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB20（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB20, SPI0_CS2_MISO2, TIMA0_C2, TIMA_FAL1, TIMA0_C1, UART2_RTS, I2C0_SDA, UART1_CTS, TIMA0_C2N, TIMG8_C1；另有非 IOMUX 類比功能 ADC0_6（ADC 通道）"
+      },
+      {
+        "num": "42",
+        "name": "PB24",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB24（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB24, SPI0_CS3_CD_MISO3, SPI0_CS1_MISO1, TIMA0_C3, TIMA0_C1N, UART2_RTS, SPI0_SCLK, TIMG14_C2, UART0_RTS；另有非 IOMUX 類比功能 ADC0_5（ADC 通道）"
+      },
+      {
+        "num": "43",
+        "name": "PA23",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA23（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA23, UART2_TX, SPI0_CS3_CD_MISO3, TIMA0_C3, TIMG8_C0, TIMG2_C0, UART0_TX, TIMG14_C0, SPI0_POCI, UART0_CTS；另有非 IOMUX 類比功能 ADC0_26（ADC 通道）、ADC0_VREF+（ADC 參考電壓正端）"
+      },
+      {
+        "num": "44",
+        "name": "PA24",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA24（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA24, UART2_RX, SPI0_CS2_MISO2, UART0_RTS, TIMA0_C3N, TIMG8_C1, TIMG2_C1, UART1_RX, TIMG14_C1, SPI0_PICO, I2C0_SDA；另有非 IOMUX 類比功能 ADC0_3（ADC 通道）"
+      },
+      {
+        "num": "45",
+        "name": "PA25",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA25（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA25, SPI0_PICO, SPI0_POCI, SPI0_SCLK, TIMA0_C3, TIMA0_C1N, TIMA0_C2, UART2_CTS, TIMG14_C0, TIMG1_C0, I2C0_SDA, UART0_TX, TIMA_FAL2, I2C0_SCL；另有非 IOMUX 類比功能 ADC0_2（ADC 通道）"
+      },
+      {
+        "num": "46",
+        "name": "PA26",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA26（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA26, BEEP, SPI0_POCI, TIMG8_C0, TIMA_FAL0, TIMA0_C3N, TIMG2_C0, UART2_RTS, I2C0_SCL, TIMG1_C1, UART0_RX, TIMA0_C0, I2C0_SDA, UART1_CTS；另有非 IOMUX 類比功能 ADC0_1（ADC 通道）、COMP0_IN0+（比較器正輸入0）"
+      },
+      {
+        "num": "47",
+        "name": "PA27",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA27（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA27, SPI0_CS3_CD_MISO3, TIMA0_C0N, TIMG8_C1, TIMA_FAL2, CLK_OUT, TIMG2_C1, RTC_OUT, UART1_CTS, I2C0_SCL, UART0_TX, SPI0_POCI, COMP0_OUT；另有非 IOMUX 類比功能 ADC0_0（ADC 通道）、COMP0_IN0-（比較器負輸入0）"
+      },
+      {
+        "num": "48",
+        "name": "PA30",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA30（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA30, UART0_RX, TIMG8_IDX, TIMA0_C0, UART1_RTS, TIMG2_C1, TIMG14_C2, I2C0_SDA"
+      },
+      {
+        "num": "49",
+        "name": "VSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤（圖 6-1 中央 Thermal Pad）；接 VSS/接地平面",
+        "ep": true
+      }
+    ],
+    "specs": [
+      {
+        "k": "核心",
+        "v": "Arm 32-bit Cortex-M0+，含記憶體保護單元，最高 32MHz"
+      },
+      {
+        "k": "車規",
+        "v": "AEC-Q100 Grade 1（−40°C ~ 125°C）"
+      },
+      {
+        "k": "供電範圍",
+        "v": "1.62V ~ 3.6V"
+      },
+      {
+        "k": "記憶體",
+        "v": "MSPM0C1105-Q1：32KB flash／8KB SRAM（同系列 MSPM0C1106-Q1：64KB flash／8KB SRAM）"
+      },
+      {
+        "k": "ADC",
+        "v": "12-bit、1.6Msps，最多 27 個外部通道"
+      },
+      {
+        "k": "參考電壓",
+        "v": "可組態 1.4V 或 2.5V 內部共用 VREF"
+      },
+      {
+        "k": "比較器",
+        "v": "COMP，含 8-bit 參考 DAC；整合溫度感測器"
+      },
+      {
+        "k": "低功耗",
+        "v": "RUN 91µA/MHz（CoreMark）；STANDBY 2µA；SHUTDOWN 68nA（支援 I/O 喚醒）"
+      },
+      {
+        "k": "通訊介面",
+        "v": "3×UART（1 組支援 LIN/IrDA/DALI/smart card/Manchester）；2×I2C（SMBus/PMBus，最高 FM+ 1Mbps）；1×SPI（最高 16Mbps）"
+      },
+      {
+        "k": "時脈",
+        "v": "內建 32MHz SYSOSC（−2.1%~1.6%）；內建 32kHz LFOSC（±3%）；外部 4~32MHz HFXT；外部 32kHz LFXT"
+      },
+      {
+        "k": "I/O",
+        "v": "最多 45 個 GPIO，其中 2 個 5V 耐受開汲極"
+      },
+      {
+        "k": "封裝選項",
+        "v": "48-pin LQFP (PT)／VQFN (RGZ)；32-pin VQFN (RHB)；28-pin VSSOP (DGS28)；24-pin VQFN (RGE)；20-pin WQFN (RUK)／VSSOP (DGS20)"
+      },
+      {
+        "k": "除錯",
+        "v": "2-pin SWD"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 相容（48-VQFN (RGZ) 或 48-LQFP (PT)，二者 pin 編號相容）",
+      "功能相同（Arm Cortex-M0+ 車規混合訊號 MCU）",
+      "ADC/比較器規格相容（12-bit 1.6Msps ADC、含 DAC 比較器）",
+      "通訊介面相容（UART/I2C/SPI 數量與速率）",
+      "電源範圍涵蓋（1.62V~3.6V）",
+      "車規等級相容（AEC-Q100 Grade 1，−40°C~125°C）"
+    ],
+    "dropIn": [],
+    "thermalPad": "外露焊盤=VSS（datasheet 圖 6-1 48-pin RGZ 中央標示 Thermal Pad），須接板上接地平面"
   }
 ];
