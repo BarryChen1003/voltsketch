@@ -756,7 +756,7 @@ const pcbApp = {
     if (!ic) { say('找不到料號：' + partName); return; }
     const n = this.state.components.length;
     const ref = 'U' + (this.state.components.filter(c => /^U\d+$/.test(c.ref || '')).length + 1);
-    const base = { id: `lib-${Date.now()}`, type: 'ic', ref, part: ic.part, label: ref, side: 'top', kind: 'ic', rot: 0, x: (n % 5) * 8 - 16, y: Math.floor(n / 5) * 8 - 8 };
+    const base = { id: `lib-${Date.now()}`, type: 'ic', ref, part: ic.part, package: ic.package || '', label: ref, side: 'top', kind: 'ic', rot: 0, x: (n % 5) * 8 - 16, y: Math.floor(n / 5) * 8 - 8 };
     const r = window.FootprintGen ? window.FootprintGen.fromIC(ic) : { ok: false, reason: 'footprint-gen 未載入' };
     let comp;
     if (r.ok) {

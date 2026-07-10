@@ -123,7 +123,7 @@ window.KicadIO = (function () {
           } else drill = num(drillN[1]) || 0;
         }
         const pLayers = (find(pd, 'layers') || []).slice(1).map(val);
-        const side = pLayers.some(l => l === '*.Cu') ? '*' : (pLayers.some(l => l === 'B.Cu') ? 'B' : 'F');
+        const side = pLayers.some(l => l === '*.Cu') ? '*' : (pLayers.some(l => l.startsWith('B.')) ? 'B' : 'F'); // B.Paste-only 開窗也歸 B
         const pnetN = find(pd, 'net');
         const rrN = find(pd, 'roundrect_rratio');
         pads.push({
@@ -132,6 +132,7 @@ window.KicadIO = (function () {
           rr: rrN ? num(rrN[1]) : 0,
           side, net: pnetN ? val(pnetN[2] || '') : '',
           cu: pLayers.some(l => l.endsWith('.Cu')), // paste/mask-only pad（鋼網開窗）無銅
+          paste: pLayers.some(l => l.endsWith('.Paste')), // 該 pad 是否上錫膏（EP 常無 paste、由拆分開窗供）
           node: pd // 旋轉編輯回寫用（pad at 角度是總角度，隨 footprint 旋轉必須同步改）
         });
         const ex = Math.abs(px) + pw / 2, ey = Math.abs(py) + ph / 2;
