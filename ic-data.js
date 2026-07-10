@@ -3762,7 +3762,8 @@ window.IC_DATA = [
         "side": "T",
         "type": "io",
         "desc": "傳送輸出電平設定；接 12.1kΩ 1% 電阻到地"
-      }
+      },
+      { "num": "49", "name": "P_GND", "side": "B", "type": "ground", "desc": "外露散熱焊墊（PADDLE），必須接地（datasheet：P_GND to ground）", "ep": true }
     ],
     "thermalPad": "PADDLE GROUND（晶片底部外露焊墊），須接地（P_GND to ground）",
     "specs": [
