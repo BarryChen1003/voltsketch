@@ -769,36 +769,185 @@ window.IC_DATA = [
     dropIn: []
   },
   {
-    part: 'UCC34141-Q1', mfr: 'Texas Instruments', category: 'power',
-    subcategory: '整合式隔離偏置電源 (12Vin → 25Vout, 車規)', package: 'QFN-16',
-    whatIs: '整合式隔離偏置電源：一次側 12V 輸入，跨電氣隔離在二次側產生正負偏置電壓（VDD 與 VEE，合計約 25V）給閘極驅動等用；含雙路回授穩壓與內部 buck-boost。車規(Q1)、高功率密度、1.5W。',
-    func: '提供 IGBT/SiC/GaN 閘極驅動所需的隔離「正負偏壓」（如 +15V / −4V）。一次 12V 進(VIN/GNDP)，二次 VDD−COM 與 COM−VEE 兩路可各自回授(FBVDD/FBVEE)設定；BSW 接電感做 buck-boost 產生負軌；ENA 致能(可設 UVLO)、PG 指示電源就緒。一二次電氣隔離。',
-    usedIn: 'IGBT/SiC/GaN 閘極驅動的隔離正負偏壓、馬達驅動/逆變器/車載充電閘極電源、需 ± 偏壓的隔離供電。',
-    desc: '1.5W、12Vin→25Vout 的整合式隔離偏置電源，二次產生正負偏壓供閘極驅動（QFN-16，車規）。',
-    datasheet: 'IC-spec/ucc34141-q1.pdf',
-    pins: [
-      { num: 1, name: 'ENA', side: 'L', type: 'Digital In', desc: '致能（低=關斷、高=啟用；可用分壓設 VIN UVLO）' },
-      { num: 2, name: 'PG', side: 'L', type: 'Digital Out', desc: '電源就緒指示（開汲極輸出）' },
-      { num: '3,4', name: 'VIN', side: 'L', type: 'Power', desc: '一次側電源輸入（約 12V；腳 3/4）' },
-      { num: '5-8', name: 'GNDP', side: 'L', type: 'Ground', desc: '一次側功率地（腳 5/6/7/8；接功率開關源極）' },
-      { num: 12, name: 'VDD', side: 'R', type: 'Power', desc: '二次側正輸出（VDD−COM 受 FBVDD 穩壓）' },
-      { num: 13, name: 'BSW', side: 'R', type: 'Power', desc: '內部 buck-boost 開關腳（接 3.3~10µH 電感到 COM；單輸出模式浮接）' },
-      { num: 14, name: 'VEE', side: 'R', type: 'Power', desc: '二次側負輸出（COM−VEE 受 FBVEE 設定，2~8V）' },
-      { num: 15, name: 'FBVDD', side: 'R', type: 'Analog In', desc: '正輸出(VDD−COM)回授；分壓中點，調節點 2.5V' },
-      { num: 16, name: 'FBVEE', side: 'R', type: 'Analog In', desc: '負輸出(COM−VEE)回授；設定 2~8V' },
-      { num: 9, name: 'COMA', side: 'B', type: 'Ground', desc: '二次側類比感測參考地（FBVDD/FBVEE 去耦就近接此）' },
-      { num: '10,11', name: 'COM', side: 'B', type: 'Ground', desc: '二次側地（腳 10/11；接二次閘極驅動電壓參考）' }
+    "part": "UCC34141-Q1",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "整合式隔離偏置電源 (12Vin → 25Vout, 車規)",
+    "package": "16-SSOP (DHA)",
+    "whatIs": "整合式隔離偏置電源：一次側 12V 輸入，跨電氣隔離在二次側產生正負偏置電壓（VDD 與 VEE，合計約 25V）給閘極驅動等用；含雙路回授穩壓與內部 buck-boost。車規(Q1)、高功率密度、1.5W。",
+    "func": "提供 IGBT/SiC/GaN 閘極驅動所需的隔離「正負偏壓」（如 +15V / −4V）。一次 12V 進(VIN/GNDP)，二次 VDD−COM 與 COM−VEE 兩路可各自回授(FBVDD/FBVEE)設定；BSW 接電感做 buck-boost 產生負軌；ENA 致能(可設 UVLO)、PG 指示電源就緒。一二次電氣隔離。",
+    "usedIn": "IGBT/SiC/GaN 閘極驅動的隔離正負偏壓、馬達驅動/逆變器/車載充電閘極電源、需 ± 偏壓的隔離供電。",
+    "desc": "1.5W、12Vin→25Vout 的整合式隔離偏置電源，二次產生正負偏壓供閘極驅動（16-SSOP(DHA)，車規）。（封裝依 datasheet Figure 5-1「DHA Package, 16-Pin SSOP」；其熱阻表另標 DHA (SOIC)，以圖為準。原庫誤植 QFN-16 已於 2026-07-10 修正）",
+    "datasheet": "IC-spec/ucc34141-q1.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "ENA",
+        "side": "L",
+        "type": "input",
+        "desc": "致能腳。拉低停用、拉高正常；可用 VIN 分壓電阻設定輸入 UVLO"
+      },
+      {
+        "num": "2",
+        "name": "{PG}",
+        "side": "L",
+        "type": "output",
+        "desc": "Power-Good 開汲極輸出（本型號 active-low）。上拉 4.99kΩ 到 3.3V/5V；腳旁放 1µF 0402 去耦"
+      },
+      {
+        "num": "3",
+        "name": "VIN",
+        "side": "L",
+        "type": "power",
+        "desc": "一次側輸入電壓。VIN-GNDP 接 10µF＋0.1µF（0402 靠腳）"
+      },
+      {
+        "num": "4",
+        "name": "VIN",
+        "side": "L",
+        "type": "power",
+        "desc": "一次側輸入電壓。VIN-GNDP 接 10µF＋0.1µF（0402 靠腳）"
+      },
+      {
+        "num": "5",
+        "name": "GNDP",
+        "side": "L",
+        "type": "ground",
+        "desc": "一次側接地。多打 via 到銅面散熱"
+      },
+      {
+        "num": "6",
+        "name": "GNDP",
+        "side": "L",
+        "type": "ground",
+        "desc": "一次側接地。多打 via 到銅面散熱"
+      },
+      {
+        "num": "7",
+        "name": "GNDP",
+        "side": "L",
+        "type": "ground",
+        "desc": "一次側接地。多打 via 到銅面散熱"
+      },
+      {
+        "num": "8",
+        "name": "GNDP",
+        "side": "L",
+        "type": "ground",
+        "desc": "一次側接地。多打 via 到銅面散熱"
+      },
+      {
+        "num": "16",
+        "name": "FBVEE",
+        "side": "R",
+        "type": "input",
+        "desc": "COM-VEE 回授。單顆電阻到 VEE 設定 2V~8V；10pF 到 COMA 濾高頻；單輸出模式接 180kΩ 到 VEE"
+      },
+      {
+        "num": "15",
+        "name": "FBVDD",
+        "side": "R",
+        "type": "input",
+        "desc": "VDD-COM 回授。VDD→COMA 分壓中點接此腳，內部調節 2.5V；並 470pF 高頻去耦"
+      },
+      {
+        "num": "14",
+        "name": "VEE",
+        "side": "R",
+        "type": "power",
+        "desc": "二次側隔離負軌輸出。VEE-COM 接 2.2µF；單輸出模式 VEE 直接接 COM"
+      },
+      {
+        "num": "13",
+        "name": "BSW",
+        "side": "R",
+        "type": "power",
+        "desc": "內建 buck-boost 開關腳。經 3.3µH~10µH 電感接 COM；單輸出模式懸空"
+      },
+      {
+        "num": "12",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "二次側隔離正輸出。VDD-COM 接 10µF＋0.1µF（0402 靠腳）"
+      },
+      {
+        "num": "11",
+        "name": "COM",
+        "side": "R",
+        "type": "ground",
+        "desc": "二次側接地。接功率開關 Source"
+      },
+      {
+        "num": "10",
+        "name": "COM",
+        "side": "R",
+        "type": "ground",
+        "desc": "二次側接地。接功率開關 Source"
+      },
+      {
+        "num": "9",
+        "name": "COMA",
+        "side": "R",
+        "type": "ground",
+        "desc": "二次側類比感測參考。FBVDD/FBVEE 低側回授電阻與高頻去耦靠此腳，單點接 COM"
+      }
     ],
-    thermalPad: null,
-    specs: [
-      { k: '功能', v: '整合式隔離偏置電源（產正負偏壓）' }, { k: '輸入', v: '12 V（VIN）' },
-      { k: '輸出', v: '約 25 V（VDD 與 VEE 雙路，可各自回授設定）' }, { k: '功率', v: '1.5 W' },
-      { k: '隔離', v: '一二次電氣隔離' }, { k: '拓樸', v: '內部 buck-boost（BSW 接電感產生負軌）' },
-      { k: '回授', v: 'FBVDD 調 VDD−COM、FBVEE 調 COM−VEE (2~8V)' }, { k: '指示/致能', v: 'PG 就緒、ENA（可設 UVLO）' },
-      { k: '認證', v: '車規 AEC-Q100 (Q1)' }, { k: '封裝', v: 'QFN-16' }
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "功能",
+        "v": "整合式隔離偏置電源（產正負偏壓）"
+      },
+      {
+        "k": "輸入",
+        "v": "12 V（VIN）"
+      },
+      {
+        "k": "輸出",
+        "v": "約 25 V（VDD 與 VEE 雙路，可各自回授設定）"
+      },
+      {
+        "k": "功率",
+        "v": "1.5 W"
+      },
+      {
+        "k": "隔離",
+        "v": "一二次電氣隔離"
+      },
+      {
+        "k": "拓樸",
+        "v": "內部 buck-boost（BSW 接電感產生負軌）"
+      },
+      {
+        "k": "回授",
+        "v": "FBVDD 調 VDD−COM、FBVEE 調 COM−VEE (2~8V)"
+      },
+      {
+        "k": "指示/致能",
+        "v": "PG 就緒、ENA（可設 UVLO）"
+      },
+      {
+        "k": "認證",
+        "v": "車規 AEC-Q100 (Q1)"
+      },
+      {
+        "k": "封裝",
+        "v": "QFN-16"
+      }
     ],
-    secondSource: ['封裝 + pinout 相容（QFN-16、pin-to-pin）', '輸入電壓涵蓋（12V）', '輸出電壓/功率 ≥ 需求（~25V / 1.5W）', '正負雙輸出與回授方式相容（FBVDD/FBVEE）', '隔離等級涵蓋', 'buck-boost/電感需求相容（BSW）', 'PG/ENA 行為相容', '車規認證涵蓋（Q1）', '工作溫度涵蓋'],
-    dropIn: []
+    "secondSource": [
+      "封裝 + pinout 相容（QFN-16、pin-to-pin）",
+      "輸入電壓涵蓋（12V）",
+      "輸出電壓/功率 ≥ 需求（~25V / 1.5W）",
+      "正負雙輸出與回授方式相容（FBVDD/FBVEE）",
+      "隔離等級涵蓋",
+      "buck-boost/電感需求相容（BSW）",
+      "PG/ENA 行為相容",
+      "車規認證涵蓋（Q1）",
+      "工作溫度涵蓋"
+    ],
+    "dropIn": []
   },
   {
     part: 'TMAG6184', mfr: 'Texas Instruments', category: 'sensors',
@@ -13576,6 +13725,233 @@ window.IC_DATA = [
       "雜訊性能同級（噪聲底 −159dBc/Hz@6GHz）",
       "組態模式相容（Pin mode 或 SPI）",
       "可靠性等級相容（Controlled Baseline 高可靠系列，−55~125°C）"
+    ],
+    "dropIn": []
+  },
+  {
+    "part": "TPS7H3034-SP",
+    "mfr": "Texas Instruments",
+    "category": "power",
+    "subcategory": "太空級四路電壓監控／定序器（Quad Voltage Supervisor, push-pull 輸出, Rad-Hard）",
+    "package": "22-Pin CFP (HFT)；同一份 datasheet 內另有 open-drain 輸出版本 TPS7H3124-SP/TPS7H3134-SP（同為 22-Pin CFP，pin14/15/17/18 定義不同，見各腳 desc）；另有可選 2UV+2OV 或 2-window 模式版 TPS7H3024-SP（push-pull，pinout 與本型號相同）",
+    "whatIs": "太空級四路電源電壓監控／定序器：同時監控四路電源軌(SENSE1-4)的欠壓(UV)／過壓(OV)狀態，經對應 RESET 輸出通知系統，並內建看門狗(Watchdog)計時器。",
+    "func": "SENSE1~SENSE4 各自接外部電阻分壓監控一路電源軌，比較器門檻電壓典型 599.7mV(VTH_SENSEx)。MODE 腳選擇輸出行為：MODE=0 為 2UV+2OV，MODE=1 為 2-window；本 TPS7H3034-SP 為 push-pull 輸出、4 UV 或 4 OV 功能版本(依 MODE 設定，此腳不可動態切換)。RESET1~RESET4 為對應 SENSE 通道故障時的重置輸出(push-pull，VOH 由 PULL_UP1 決定；開集極版由外部提升電阻決定)。WDI 為看門狗輸入，須定期由低翻高清除計時器，逾時未清除則 WDO 拉低(push-pull，VOH 由 PULL_UP2 決定)；WD_TMR/DLY_TMR 各以一顆電阻至 GND 設定看門狗逾時時間(0.52s~1.5s)與故障後延遲時間(0.25ms~25ms)，懸空則分別停用看門狗／無延遲。PWRGD 於全部電源軌(SENSE1-4)都在正常範圍內時輸出高。SR_UVLO 為系統重置與 UVLO 輸入，拉低會強制所有輸出低態，可用電阻分壓對 VIN 程式化開啟位準(datasheet Type 欄標示 O，惟功能描述為輸入訊號，以功能描述為準)。VLDO 為內部穩壓器輸出(需外接至少 1µF 電容至 GND，最大負載 5mA、無過電流保護，可用於監測負電壓時產生正偏移)。REFCAP 為 1.2V 內部參考電容腳(需 470nF 電容，禁止外接其他電路)。抗輻射太空級(QMLV-RHA)：TID 100krad(Si) RLAT，DSEE 免疫至 75MeV-cm²/mg。",
+    "usedIn": "衛星、太空酬載板上多路電源電壓監控與定序、看門狗保護、電源良好旗標產生等太空應用。",
+    "desc": "22-Pin CFP(HFT)封裝，抗輻射(TID 100krad(Si))太空級四路電壓監控器(push-pull 輸出版，依 MODE 設定 4UV 或 4OV)，含看門狗計時器(WDI/WDO/WD_TMR)與故障延遲計時器(DLY_TMR)。同一份 datasheet 內另有：可選 2UV+2OV 或 2-window 模式版 TPS7H3024-SP(同 pinout)；open-drain 輸出版 TPS7H3124-SP/TPS7H3134-SP(TPS7H31x4)——後者 pin17/18 改為 VLDO(與 pin15 並接)/GND(與 pin14 並接)，本條目 pin14/15/17/18 的 desc 已註記 open-drain 版對應差異。訂購型號 5962R2420603VXC 於原文標註「Advanced information」(尚未定案之預先發布資訊)，實際規格請覆核最新版 datasheet。Thermal Pad 內部接地(GND)，金屬上蓋(Metal lid)透過封環內部連接至 Thermal Pad 與 GND。",
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps7h3034-sp.pdf",
+    "pins": [
+      {
+        "num": "1",
+        "name": "SENSE1",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "比較器非反相輸入，監控電源軌 1；於受監控電源軌與 GND 間接外部電阻分壓器，分壓中點接此腳，設定 VON1/VOFF1。門檻電壓典型 599.7mV(VTH_SENSEx)。"
+      },
+      {
+        "num": "2",
+        "name": "SENSE2",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "比較器非反相輸入，監控電源軌 2；接法同 SENSE1，設定 VON2/VOFF2。"
+      },
+      {
+        "num": "3",
+        "name": "SENSE3",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "比較器非反相輸入，監控電源軌 3；接法同 SENSE1，設定 VON3/VOFF3。"
+      },
+      {
+        "num": "4",
+        "name": "SENSE4",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "比較器非反相輸入，監控電源軌 4；接法同 SENSE1，設定 VON4/VOFF4。"
+      },
+      {
+        "num": "5",
+        "name": "REFCAP",
+        "side": "L",
+        "type": "Analog Out",
+        "desc": "1.2V 內部參考電容腳；需外接 470nF 電容至 GND，不可額外以外部電路負載此腳。"
+      },
+      {
+        "num": "6",
+        "name": "HYS",
+        "side": "L",
+        "type": "Analog Out",
+        "desc": "遲滯電流設定腳；接 49.9kΩ 電阻(建議 0.1% 或更佳誤差)至 GND，設定 SENSE1~SENSE4 的遲滯電流(典型 24µA)。"
+      },
+      {
+        "num": "7",
+        "name": "SR_UVLO",
+        "side": "L",
+        "type": "Input",
+        "desc": "系統重置與 UVLO 輸入；拉低此腳強制所有輸出為低態，可用 VIN 至 GND 電阻分壓器設定開啟電壓位準。datasheet Type 欄標示為 O，惟功能描述為輸入訊號，以功能描述為準。"
+      },
+      {
+        "num": "8",
+        "name": "WDI",
+        "side": "L",
+        "type": "Digital In",
+        "desc": "看門狗輸入；須由低翻高切換以清除看門狗計時器，逾時未翻轉則 WDO 輸出低態。"
+      },
+      {
+        "num": "9",
+        "name": "IN",
+        "side": "L",
+        "type": "Power",
+        "desc": "元件輸入供電；輸入電壓範圍 3V~14V，建議靠近此腳放置至少 0.1µF 陶瓷電容。"
+      },
+      {
+        "num": "10",
+        "name": "WD_TMR",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "看門狗計時器設定腳；接 56.2kΩ~174kΩ 電阻至 GND，可設定逾時時間 0.52s~1.5s，懸空則停用看門狗。"
+      },
+      {
+        "num": "11",
+        "name": "DLY_TMR",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "延遲計時器設定腳；接 10.5kΩ~1.18MΩ 電阻至 GND，可設定故障後延遲時間 0.25ms~25ms，懸空則無延遲。"
+      },
+      {
+        "num": "22",
+        "name": "RESET1",
+        "side": "R",
+        "type": "Output",
+        "desc": "重置輸出 1；SENSE1 故障時輸出低態。Push-pull 或開集極輸出，push-pull 的 VOH 由 PULL_UP1 決定，開集極版建議外接 10kΩ 提升電阻。"
+      },
+      {
+        "num": "21",
+        "name": "RESET2",
+        "side": "R",
+        "type": "Output",
+        "desc": "重置輸出 2；SENSE2 故障時輸出低態。接法同 RESET1。"
+      },
+      {
+        "num": "20",
+        "name": "RESET3",
+        "side": "R",
+        "type": "Output",
+        "desc": "重置輸出 3；SENSE3 故障時輸出低態。接法同 RESET1。"
+      },
+      {
+        "num": "19",
+        "name": "RESET4",
+        "side": "R",
+        "type": "Output",
+        "desc": "重置輸出 4；SENSE4 故障時輸出低態。接法同 RESET1。"
+      },
+      {
+        "num": "18",
+        "name": "PULL_UP1",
+        "side": "R",
+        "type": "Power",
+        "desc": "RESET1~RESET4 推挽輸出的全域上拉電源電壓輸入；靠近此腳放置至少 1µF 陶瓷電容。開集極輸出版(TPS7H31x4)本腳改為 GND。"
+      },
+      {
+        "num": "17",
+        "name": "PULL_UP2",
+        "side": "R",
+        "type": "Power",
+        "desc": "PWRGD 與 WDO 推挽輸出的上拉電源電壓輸入；靠近此腳放置至少 1µF 陶瓷電容。開集極輸出版(TPS7H31x4)本腳改為 VLDO，並建議與腳15(VLDO)以 10kΩ 電阻外部相接。"
+      },
+      {
+        "num": "16",
+        "name": "MODE",
+        "side": "R",
+        "type": "Digital In",
+        "desc": "輸出行為選擇腳(2UV+2OV 或 2-window)；不可動態切換。MODE=0 對應 2UV+2OV，MODE=1 對應 2-window。"
+      },
+      {
+        "num": "15",
+        "name": "VLDO",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "內部穩壓器輸出；需外接至少 1µF 陶瓷電容至 GND，可用於監測負電壓時產生正偏移，最大負載電流 5mA、無過電流保護。開集極輸出版(TPS7H31x4)另有腳17並接為 VLDO，建議腳15與腳17間以 10kΩ 電阻外部相接。"
+      },
+      {
+        "num": "14",
+        "name": "GND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地。開集極輸出版(TPS7H31x4)另有腳18並接為 GND。"
+      },
+      {
+        "num": "13",
+        "name": "PWRGD",
+        "side": "R",
+        "type": "Output",
+        "desc": "電源良好指示；當 SENSE1~SENSE4 全部在正常範圍內時輸出高態。Push-pull 或開集極輸出，push-pull 的 VOH 由 PULL_UP2 決定，開集極版建議外接 10kΩ 提升電阻。"
+      },
+      {
+        "num": "12",
+        "name": "WDO",
+        "side": "R",
+        "type": "Output",
+        "desc": "看門狗輸出。Push-pull 或開集極輸出，push-pull 的 VOH 由 PULL_UP2 決定，開集極版建議外接 10kΩ 提升電阻。"
+      },
+      {
+        "num": "23",
+        "name": "Thermal Pad",
+        "side": "B",
+        "type": "Ground",
+        "desc": "散熱墊，內部接地(GND)；建議連接大面積接地銅箔以利散熱。金屬上蓋(Metal lid)透過封環內部連接至此 Thermal Pad 與 GND。原文佐證：「Thermal pad — — — Internally grounded...」、「Metal lid Lid Lid — The lid is internally connected to the thermal pad and GND through the seal ring.」",
+        "ep": true
+      }
+    ],
+    "specs": [
+      {
+        "k": "功能",
+        "v": "太空級四路電壓監控／定序器(push-pull 輸出)"
+      },
+      {
+        "k": "感測門檻(SENSE1-4，典型)",
+        "v": "599.7mV"
+      },
+      {
+        "k": "遲滯電流(典型)",
+        "v": "24µA（HYS 電阻 49.9kΩ 設定）"
+      },
+      {
+        "k": "看門狗逾時範圍",
+        "v": "0.52s ~ 1.5s（WD_TMR 電阻 56.2k~174kΩ）"
+      },
+      {
+        "k": "故障延遲範圍",
+        "v": "0.25ms ~ 25ms（DLY_TMR 電阻 10.5k~1.18MΩ）"
+      },
+      {
+        "k": "主電源輸入(IN)",
+        "v": "3V ~ 14V"
+      },
+      {
+        "k": "抗輻射",
+        "v": "TID 100krad(Si) RLAT；DSEE 免疫至 75MeV-cm²/mg"
+      },
+      {
+        "k": "認證等級",
+        "v": "QMLV-RHA"
+      },
+      {
+        "k": "封裝",
+        "v": "22-Pin CFP (HFT)"
+      },
+      {
+        "k": "訂購型號",
+        "v": "5962R2420603VXC（原文標註 Advanced information，預先發布）"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 相容(22-Pin CFP HFT、push-pull 輸出型腳位)",
+      "感測門檻／遲滯電流同等或更佳",
+      "看門狗與延遲計時器可程式化範圍涵蓋",
+      "抗輻射規格同等或更佳(TID/DSEE)",
+      "認證等級涵蓋(QMLV-RHA)",
+      "供電／工作溫度涵蓋"
     ],
     "dropIn": []
   }
