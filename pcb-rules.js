@@ -63,18 +63,66 @@
         }
       }
       // 3) 差分對長度差：pairTol>0 的規則，命中 net 依基底名配對（去尾 P/N/+/-/_P/_N）
-      for (const r of rules) {
-        if (!(r.pairTol > 0)) continue;
+      const pairGroups = r => {
         const hit = nets.filter(n => matchPat(r.pattern, n));
         const base = n => n.replace(/(_?[PN]|[+-])$/i, '');
         const groups = {};
         hit.forEach(n => { (groups[base(n)] = groups[base(n)] || []).push(n); });
-        for (const [b, g] of Object.entries(groups)) {
-          if (g.length !== 2) continue;
+        return Object.values(groups).filter(g => g.length === 2);
+      };
+      for (const r of rules) {
+        if (!(r.pairTol > 0)) continue;
+        for (const g of pairGroups(r)) {
           const L0 = this.netLength(traces, g[0]), L1 = this.netLength(traces, g[1]);
           const d = Math.abs(L0 - L1);
           if (d > r.pairTol + 1e-9)
             res.push({ type: 'warning', message: `差分對長度差：${g[0]}(${L0.toFixed(2)}mm) vs ${g[1]}(${L1.toFixed(2)}mm) 差 ${d.toFixed(2)}mm > ${r.pairTol}mm` });
+        }
+      }
+      // 4) 差分對間距/耦合：gap>0 的規則（目標邊到邊 gap，容差 ±max(25%, 0.05mm)）
+      //    逐段分類：過近（< gap−tol）=error；耦合（gap±tol）；未耦合（> gap+tol 或同層無對手）
+      //    未耦合長度佔比 > 20% 報 warning（進出 pad 的短引出段屬正常，故留佔比餘裕）
+      const ptSeg = (px, py, x1, y1, x2, y2) => {
+        const dx = x2 - x1, dy = y2 - y1, l2 = dx * dx + dy * dy;
+        if (l2 === 0) return Math.hypot(px - x1, py - y1);
+        let t = ((px - x1) * dx + (py - y1) * dy) / l2;
+        t = Math.max(0, Math.min(1, t));
+        return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+      };
+      for (const r of rules) {
+        if (!(r.gap > 0)) continue;
+        const tol = Math.max(0.05, r.gap * 0.25);
+        for (const g of pairGroups(r)) {
+          const segsA = traces.filter(t => t.net === g[0]);
+          const segsB = traces.filter(t => t.net === g[1]);
+          if (!segsA.length || !segsB.length) continue;
+          // 逐點取樣分類（每 ~0.5mm 一樣本）：整段取 min 會被「端點擦到」誤判整段耦合
+          let total = 0, coupled = 0, tooClose = 0, worstClose = Infinity;
+          for (const a of segsA) {
+            const len = Math.hypot(a.x2 - a.x1, a.y2 - a.y1);
+            if (len < 1e-9) continue;
+            total += len;
+            const nS = Math.max(2, Math.ceil(len / 0.5));
+            const dl = len / nS;
+            for (let s = 0; s < nS; s++) {
+              const f = (s + 0.5) / nS;
+              const px = a.x1 + (a.x2 - a.x1) * f, py = a.y1 + (a.y2 - a.y1) * f;
+              let best = Infinity;
+              for (const b of segsB) {
+                if ((a.layer || 'F.Cu') !== (b.layer || 'F.Cu')) continue;
+                const gap = ptSeg(px, py, b.x1, b.y1, b.x2, b.y2) - (a.width || 0.3) / 2 - (b.width || 0.3) / 2;
+                if (gap < best) best = gap;
+              }
+              if (best < r.gap - tol - 1e-9) { tooClose += dl; worstClose = Math.min(worstClose, best); }
+              else if (best <= r.gap + tol + 1e-9) coupled += dl;
+            }
+          }
+          if (total < 1e-9) continue;
+          if (tooClose > 1e-9)
+            res.push({ type: 'error', message: `差分對間距過近：${g[0]}/${g[1]} 有 ${tooClose.toFixed(2)}mm 段間距 ${Math.max(0, worstClose).toFixed(3)}mm < 目標 ${r.gap}±${tol.toFixed(2)}mm（過近會改變差動阻抗）` });
+          const unc = total - coupled - tooClose;
+          if (unc > total * 0.2 + 1e-9)
+            res.push({ type: 'warning', message: `差分對耦合不足：${g[0]}/${g[1]} 未耦合 ${unc.toFixed(2)}mm／${total.toFixed(2)}mm（${Math.round(unc / total * 100)}%）＞20%（目標 gap ${r.gap}±${tol.toFixed(2)}mm，同層才計耦合）` });
         }
       }
       return res;

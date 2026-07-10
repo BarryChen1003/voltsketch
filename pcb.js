@@ -587,6 +587,7 @@ const pcbApp = {
       clearance: { traceToTrace: cl, traceToPad: cl, padToPad: cl, traceToEdge: v('ruleEdge', 0.3), viaToVia: cl, holeToHole: 0.25 },
       width: { minTrace: v('ruleMinTrace', 0.1), maxTrace: 20, minPowerTrace: v('ruleMinPower', 0.3) },
       via: { minDrill: 0.2, minRing: 0.15 },
+      maskSliver: v('ruleMaskSliver', 0.15),
       compSpacing: v('ruleCompSpace', 2),
       cinDist: v('ruleCinDist', 5)
     };
@@ -1281,11 +1282,12 @@ const pcbApp = {
     if (!host) return;
     const rules = this.state.netRules || [];
     host.innerHTML = rules.map((r, i) =>
-      `<div class="nr-row" data-i="${i}" style="display:grid;grid-template-columns:1fr 50px 50px 50px 20px;gap:4px;margin-bottom:4px;font-size:12px">
+      `<div class="nr-row" data-i="${i}" style="display:grid;grid-template-columns:1fr 46px 46px 46px 46px 20px;gap:4px;margin-bottom:4px;font-size:12px">
         <input class="nr-pat" value="${(r.pattern || '').replace(/"/g, '&quot;')}" placeholder="net 含…或 /regex/" style="padding:3px">
         <input class="nr-minw" type="number" step="0.05" min="0" value="${r.minW || 0}" title="線寬下限 mm（0=不查）" style="padding:3px">
         <input class="nr-maxl" type="number" step="1" min="0" value="${r.maxLen || 0}" title="線長上限 mm（0=不限）" style="padding:3px">
         <input class="nr-pair" type="number" step="0.1" min="0" value="${r.pairTol || 0}" title="差分對長度差上限 mm（0=不查）" style="padding:3px">
+        <input class="nr-gap" type="number" step="0.05" min="0" value="${r.gap || 0}" title="差分對目標間距 mm，邊到邊（0=不查；容差 ±max(25%,0.05)）" style="padding:3px">
         <button class="nr-del" title="刪除規則" style="padding:0;cursor:pointer">✕</button>
       </div>`).join('') || '<p style="color:var(--muted);font-size:12px;margin:0">尚無規則，按「＋規則」新增</p>';
   },
@@ -1296,7 +1298,8 @@ const pcbApp = {
       pattern: r.querySelector('.nr-pat').value.trim(),
       minW: parseFloat(r.querySelector('.nr-minw').value) || 0,
       maxLen: parseFloat(r.querySelector('.nr-maxl').value) || 0,
-      pairTol: parseFloat(r.querySelector('.nr-pair').value) || 0
+      pairTol: parseFloat(r.querySelector('.nr-pair').value) || 0,
+      gap: parseFloat(r.querySelector('.nr-gap').value) || 0
     })).filter(r => r.pattern);
     if (window.NetRules) window.NetRules.save(this.state.netRules);
   },

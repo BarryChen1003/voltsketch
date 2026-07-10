@@ -152,6 +152,24 @@ window.PadDrc = (() => {
           `${fmt(Math.max(0, d))}mm < ${cl.padToPad}mm ${at(A.sh)}`);
     }
 
+    // 1b) 阻焊橋（mask sliver）：同面兩開窗（=pad 外形，margin 0）之間阻焊條過細會斷
+    //     與 net 無關（物理阻焊橋）；gap ≤ 0 = 開窗合併非 sliver 不報；via 蓋油無開窗不參與
+    const sliverMin = rules.maskSliver > 0 ? rules.maskSliver : 0;
+    if (sliverMin > 0) {
+      const facesOf = s => s === '*' ? ['F', 'B'] : [s];
+      for (let i = 0; i < pads.length; i++) for (let j = i + 1; j < pads.length; j++) {
+        const A = pads[i], B = pads[j];
+        if (!facesOf(A.side).some(f => facesOf(B.side).includes(f))) continue;
+        const cd = Math.hypot(A.sh.cx - B.sh.cx, A.sh.cy - B.sh.cy);
+        if (cd - A.sh.circ - B.sh.circ >= sliverMin) continue;
+        const d = padDist(A.sh, B.sh);
+        if (d > EPS && d < sliverMin - EPS)
+          add('阻焊橋', 'warning',
+            `阻焊橋過細：${A.label} ↔ ${B.label} 開窗間 ${fmt(d)}mm < ${sliverMin}mm` +
+            `（標準綠油下限常見 0.2mm；細 pitch 量產可與板廠確認或改合併開窗）${at(A.sh)}`);
+      }
+    }
+
     // 2) 走線 ↔ pad 淨距
     const traces = state.traces || [];
     for (const t of traces) {
