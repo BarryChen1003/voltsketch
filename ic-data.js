@@ -32464,5 +32464,2531 @@ window.IC_DATA = [
         "note": "同一 FSC 154-Pin LGA 封裝與球位定義（Table 4-1 PAD ID 一致）；DLP3940S-Q1 為 1080p FHD 版本，僅用 C、D 兩組高速差動資料 Lane（本型號 DLP3944-Q1 之 A/B/C/D 四組 Lane 皆使用，DLP3940S-Q1 對應 A/B 球位為 N/C）。兩者非電氣相容替代，僅封裝與部分球位定義共用。"
       }
     ]
+  },
+  {
+    "part": "DLP481RE",
+    "mfr": "Texas Instruments",
+    "category": "dlp",
+    "subcategory": "0.48吋 WUXGA 數位微鏡陣列（DMD）",
+    "package": "FXM (PGA, 173)，32.2mm × 22.3mm",
+    "whatIs": "0.48吋對角數位微鏡元件（DMD），MEMS 空間光調變器，提供 WUXGA（1920×1200）顯示解析度，最高支援 240Hz；屬 TI DLP 0.48吋 WUXGA 晶片組核心，需搭配 DLPC8454 顯示控制器、DLPA3082 PMIC 與 DLPA100 色輪驅動器組成完整晶片組，供智慧型投影機、企業投影機、雷射電視、遊戲投影機、家庭劇院、高爾夫模擬器等應用。",
+    "func": "數位控制 MEMS 微鏡陣列光調變器：每顆微鏡對應一像素，以 ±14.5° 傾角（相對平面）反射入射光；5.4µm 微鏡間距，轉角照明（Corner illumination）；經 SubLVDS 高速差動介面接收 DLPC8454 控制器送來的畫面資料，A/B/C/D 四組高速差動資料 Lane，各 8 對差動資料線 + 1 對差動時脈；支援 RGB 雷射、LED 與 Laser Phosphor 光源驅動；另提供 LS_Interface 低速介面（LSIF）與溫度感測二極體（TEMP_N/TEMP_P）。",
+    "usedIn": "智慧型投影機、企業投影機、雷射電視、遊戲投影機、家庭劇院、高爾夫模擬器等顯示投影應用；需搭配 DLPC8454 DMD 控制器、DLPA3082 PMIC 與 DLPA100 色輪驅動器組成完整晶片組。",
+    "desc": "0.48吋 WUXGA（1920×1200），最高支援 240Hz DMD，5.4µm 微鏡間距、±14.5° 傾角、轉角照明，SubLVDS 介面，FXM 173-Pin PGA 封裝 32.2mm×22.3mm，PRODUCTION DATA。",
+    "datasheet": "TI SLVSJK2",
+    "pins": [
+      {
+        "num": "R2",
+        "name": "D_AP(0)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 0 正端"
+      },
+      {
+        "num": "P2",
+        "name": "D_AN(0)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 0 負端"
+      },
+      {
+        "num": "T4",
+        "name": "D_AP(1)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 1 正端"
+      },
+      {
+        "num": "T3",
+        "name": "D_AN(1)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 1 負端"
+      },
+      {
+        "num": "P1",
+        "name": "D_AP(2)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 2 正端"
+      },
+      {
+        "num": "N1",
+        "name": "D_AN(2)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 2 負端"
+      },
+      {
+        "num": "R5",
+        "name": "D_AP(3)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 3 正端"
+      },
+      {
+        "num": "R6",
+        "name": "D_AN(3)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 3 負端"
+      },
+      {
+        "num": "T5",
+        "name": "D_AP(4)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 4 正端"
+      },
+      {
+        "num": "T6",
+        "name": "D_AN(4)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 4 負端"
+      },
+      {
+        "num": "K2",
+        "name": "D_AP(5)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 5 正端"
+      },
+      {
+        "num": "L2",
+        "name": "D_AN(5)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 5 負端"
+      },
+      {
+        "num": "T7",
+        "name": "D_AP(6)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 6 正端"
+      },
+      {
+        "num": "T8",
+        "name": "D_AN(6)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 6 負端"
+      },
+      {
+        "num": "J1",
+        "name": "D_AP(7)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 7 正端"
+      },
+      {
+        "num": "K1",
+        "name": "D_AN(7)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 7 負端"
+      },
+      {
+        "num": "L1",
+        "name": "DCLK_AP",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）A 通道 正端"
+      },
+      {
+        "num": "M1",
+        "name": "DCLK_AN",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）A 通道 負端"
+      },
+      {
+        "num": "T13",
+        "name": "D_BP(0)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 0 正端"
+      },
+      {
+        "num": "T14",
+        "name": "D_BN(0)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 0 負端"
+      },
+      {
+        "num": "T17",
+        "name": "D_BP(1)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 1 正端"
+      },
+      {
+        "num": "T18",
+        "name": "D_BN(1)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 1 負端"
+      },
+      {
+        "num": "T12",
+        "name": "D_BP(2)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 2 正端"
+      },
+      {
+        "num": "T11",
+        "name": "D_BN(2)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 2 負端"
+      },
+      {
+        "num": "T15",
+        "name": "D_BP(3)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 3 正端"
+      },
+      {
+        "num": "T16",
+        "name": "D_BN(3)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 3 負端"
+      },
+      {
+        "num": "P20",
+        "name": "D_BP(4)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 4 正端"
+      },
+      {
+        "num": "N20",
+        "name": "D_BN(4)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 4 負端"
+      },
+      {
+        "num": "M20",
+        "name": "D_BP(5)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 5 正端"
+      },
+      {
+        "num": "L20",
+        "name": "D_BN(5)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 5 負端"
+      },
+      {
+        "num": "L19",
+        "name": "D_BP(6)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 6 正端"
+      },
+      {
+        "num": "K19",
+        "name": "D_BN(6)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 6 負端"
+      },
+      {
+        "num": "K20",
+        "name": "D_BP(7)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 7 正端"
+      },
+      {
+        "num": "J20",
+        "name": "D_BN(7)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 7 負端"
+      },
+      {
+        "num": "R19",
+        "name": "DCLK_BP",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）B 通道 正端"
+      },
+      {
+        "num": "P19",
+        "name": "DCLK_BN",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）B 通道 負端"
+      },
+      {
+        "num": "H1",
+        "name": "D_CP(0)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 0 正端"
+      },
+      {
+        "num": "G1",
+        "name": "D_CN(0)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 0 負端"
+      },
+      {
+        "num": "H2",
+        "name": "D_CP(1)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 1 正端"
+      },
+      {
+        "num": "G2",
+        "name": "D_CN(1)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 1 負端"
+      },
+      {
+        "num": "F1",
+        "name": "D_CP(2)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 2 正端"
+      },
+      {
+        "num": "E1",
+        "name": "D_CN(2)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 2 負端"
+      },
+      {
+        "num": "E2",
+        "name": "D_CP(3)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 3 正端"
+      },
+      {
+        "num": "D2",
+        "name": "D_CN(3)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 3 負端"
+      },
+      {
+        "num": "A4",
+        "name": "D_CP(4)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 4 正端"
+      },
+      {
+        "num": "A5",
+        "name": "D_CN(4)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 4 負端"
+      },
+      {
+        "num": "A7",
+        "name": "D_CP(5)",
+        "side": "T",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 5 正端"
+      },
+      {
+        "num": "A6",
+        "name": "D_CN(5)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 5 負端"
+      },
+      {
+        "num": "B7",
+        "name": "D_CP(6)",
+        "side": "T",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 6 正端"
+      },
+      {
+        "num": "B8",
+        "name": "D_CN(6)",
+        "side": "T",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 6 負端"
+      },
+      {
+        "num": "B5",
+        "name": "D_CP(7)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 7 正端"
+      },
+      {
+        "num": "B4",
+        "name": "D_CN(7)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 7 負端"
+      },
+      {
+        "num": "A9",
+        "name": "DCLK_CP",
+        "side": "T",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）C 通道 正端"
+      },
+      {
+        "num": "A8",
+        "name": "DCLK_CN",
+        "side": "T",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）C 通道 負端"
+      },
+      {
+        "num": "H19",
+        "name": "D_DP(0)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 0 正端"
+      },
+      {
+        "num": "G19",
+        "name": "D_DN(0)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 0 負端"
+      },
+      {
+        "num": "H20",
+        "name": "D_DP(1)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 1 正端"
+      },
+      {
+        "num": "G20",
+        "name": "D_DN(1)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 1 負端"
+      },
+      {
+        "num": "F20",
+        "name": "D_DP(2)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 2 正端"
+      },
+      {
+        "num": "E20",
+        "name": "D_DN(2)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 2 負端"
+      },
+      {
+        "num": "E19",
+        "name": "D_DP(3)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 3 正端"
+      },
+      {
+        "num": "D19",
+        "name": "D_DN(3)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 3 負端"
+      },
+      {
+        "num": "B19",
+        "name": "D_DP(4)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 4 正端"
+      },
+      {
+        "num": "B18",
+        "name": "D_DN(4)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 4 負端"
+      },
+      {
+        "num": "A18",
+        "name": "D_DP(5)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 5 正端"
+      },
+      {
+        "num": "A17",
+        "name": "D_DN(5)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 5 負端"
+      },
+      {
+        "num": "B16",
+        "name": "D_DP(6)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 6 正端"
+      },
+      {
+        "num": "B15",
+        "name": "D_DN(6)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 6 負端"
+      },
+      {
+        "num": "A16",
+        "name": "D_DP(7)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 7 正端"
+      },
+      {
+        "num": "A15",
+        "name": "D_DN(7)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 7 負端"
+      },
+      {
+        "num": "D20",
+        "name": "DCLK_DP",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）D 通道 正端"
+      },
+      {
+        "num": "C20",
+        "name": "DCLK_DN",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）D 通道 負端"
+      },
+      {
+        "num": "L3",
+        "name": "LS_WDATA",
+        "side": "L",
+        "type": "input",
+        "desc": "低速介面（LSIF）寫入資料"
+      },
+      {
+        "num": "P4",
+        "name": "LS_CLK",
+        "side": "L",
+        "type": "input",
+        "desc": "低速介面（LSIF）時脈"
+      },
+      {
+        "num": "N4",
+        "name": "LS_RDATA_A",
+        "side": "L",
+        "type": "output",
+        "desc": "LPSDR 輸出（低速介面讀取資料，A 通道）"
+      },
+      {
+        "num": "M3",
+        "name": "LS_RDATA_B",
+        "side": "L",
+        "type": "output",
+        "desc": "LPSDR 輸出（低速介面讀取資料，B 通道）"
+      },
+      {
+        "num": "J4",
+        "name": "LS_RDATA_C",
+        "side": "L",
+        "type": "output",
+        "desc": "LPSDR 輸出（低速介面讀取資料，C 通道）"
+      },
+      {
+        "num": "K3",
+        "name": "LS_RDATA_D",
+        "side": "L",
+        "type": "output",
+        "desc": "LPSDR 輸出（低速介面讀取資料，D 通道）"
+      },
+      {
+        "num": "H4",
+        "name": "DMD_DEN_A/RSTZ",
+        "side": "L",
+        "type": "input",
+        "desc": "datasheet Table 4-1 原文 NAME 欄跨兩行列為 DMD_DEN_A 與 RSTZ（合併為同一 PAD ID H4 之單一列，二者間無分隔符號可辨），DESCRIPTION 欄原文僅列 \"ARSTZ\"，未附完整文字說明；確切腳位定義與時序請見原始 datasheet"
+      },
+      {
+        "num": "D18",
+        "name": "TP0",
+        "side": "R",
+        "type": "input",
+        "desc": "測試腳位；datasheet Table 4-1 未附文字說明"
+      },
+      {
+        "num": "C17",
+        "name": "TP1",
+        "side": "R",
+        "type": "input",
+        "desc": "測試腳位；datasheet Table 4-1 未附文字說明"
+      },
+      {
+        "num": "C18",
+        "name": "TP2",
+        "side": "R",
+        "type": "input",
+        "desc": "測試腳位；datasheet Table 4-1 未附文字說明"
+      },
+      {
+        "num": "E17",
+        "name": "TEMP_N",
+        "side": "R",
+        "type": "input",
+        "desc": "溫度感測二極體負端（Temp Diode N）"
+      },
+      {
+        "num": "F17",
+        "name": "TEMP_P",
+        "side": "R",
+        "type": "input",
+        "desc": "溫度感測二極體正端（Temp Diode P）"
+      },
+      {
+        "num": "A10",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "A12",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "A13",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "A20",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "B2",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "B10",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "B11",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "B14",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "C4",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "D1",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "D4",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "E3",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "E18",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "F3",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "F4",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "G17",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "J3",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "J18",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "M18",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "N3",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "N18",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R3",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R8",
+        "name": "VDD",
+        "side": "B",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R10",
+        "name": "VDD",
+        "side": "B",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R12",
+        "name": "VDD",
+        "side": "B",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R13",
+        "name": "VDD",
+        "side": "B",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R18",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "T9",
+        "name": "VDD",
+        "side": "B",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "D3",
+        "name": "VDDI",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "F18",
+        "name": "VDDI",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "G4",
+        "name": "VDDI",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "H18",
+        "name": "VDDI",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "K4",
+        "name": "VDDI",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "K18",
+        "name": "VDDI",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "L18",
+        "name": "VDDI",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "M4",
+        "name": "VDDI",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "T2",
+        "name": "VRESET",
+        "side": "L",
+        "type": "power",
+        "desc": "VRESET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "T19",
+        "name": "VRESET",
+        "side": "R",
+        "type": "power",
+        "desc": "VRESET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "R1",
+        "name": "VBIAS",
+        "side": "L",
+        "type": "power",
+        "desc": "VBIAS 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "R20",
+        "name": "VBIAS",
+        "side": "R",
+        "type": "power",
+        "desc": "VBIAS 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "D17",
+        "name": "VOFFSET",
+        "side": "R",
+        "type": "power",
+        "desc": "VOFFSET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "E4",
+        "name": "VOFFSET",
+        "side": "L",
+        "type": "power",
+        "desc": "VOFFSET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "T1",
+        "name": "VOFFSET",
+        "side": "L",
+        "type": "power",
+        "desc": "VOFFSET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "T20",
+        "name": "VOFFSET",
+        "side": "R",
+        "type": "power",
+        "desc": "VOFFSET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "A3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "A11",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "A14",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "A19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B9",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B12",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B13",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B17",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B20",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "C1",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "C2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "C3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "C19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "F2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "F19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "G3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "G18",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "H3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "J2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "J19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "L4",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "M2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "M19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "N2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "N19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "P3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "P18",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R4",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R7",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R9",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R11",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R14",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R17",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "T10",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "H17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "R16",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "R15",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "P17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "N17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "M17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "L17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "K17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "J17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      }
+    ],
+    "thermalPad": "173-Pin PGA 針陣列，散熱經針與基板，無獨立外露焊墊",
+    "specs": [
+      {
+        "k": "顯示解析度",
+        "v": "WUXGA（1920×1200），最高支援 240Hz"
+      },
+      {
+        "k": "微鏡陣列",
+        "v": "0.48吋對角，5.4µm 微鏡間距，±14.5° 傾角（相對平面），轉角照明（Corner illumination）"
+      },
+      {
+        "k": "高速資料介面",
+        "v": "SubLVDS 輸入資料匯流排；A/B/C/D 四組高速差動資料 Lane，各 8 對資料線 + 1 對差動時脈，Differential 100Ω 端接"
+      },
+      {
+        "k": "電源軌",
+        "v": "VDD（數位核心）、VDDI、VBIAS、VRESET、VOFFSET"
+      },
+      {
+        "k": "封裝",
+        "v": "FXM (PGA, 173)，32.2mm × 22.3mm"
+      },
+      {
+        "k": "配套晶片組",
+        "v": "DLPC8454 顯示控制器、DLPA3082 PMIC、DLPA100 色輪驅動器"
+      },
+      {
+        "k": "文件狀態",
+        "v": "PRODUCTION DATA；SLVSJK2 – 2025年12月"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": [
+      {
+        "part": "DLP481XE",
+        "note": "同 FXM 173-Pin PGA 封裝、Table 4-1 逐腳定義完全相同；差異僅顯示解析度模式（WUXGA vs 4K+），需搭配對應 DLPC 控制器配置（DLP481RE 配 DLPC8454，DLP481XE 配 DLPC8455）。"
+      }
+    ]
+  },
+  {
+    "part": "DLP481XE",
+    "mfr": "Texas Instruments",
+    "category": "dlp",
+    "subcategory": "0.48吋 4K+ 數位微鏡陣列（DMD）",
+    "package": "FXM (PGA, 173)，32.2mm × 22.3mm",
+    "whatIs": "0.48吋對角數位微鏡元件（DMD），MEMS 空間光調變器，提供 4K+（3840×2400）顯示解析度 @60Hz，並向下支援 WUXGA（1920×1200）最高 240Hz；屬 TI DLP 0.48吋 4K+ 晶片組核心，需搭配 DLPC8455 顯示控制器、DLPA3082 PMIC 與 DLPA100 色輪驅動器組成完整晶片組，供智慧型投影機、企業投影機、雷射電視、遊戲投影機、家庭劇院、高爾夫模擬器等應用。",
+    "func": "數位控制 MEMS 微鏡陣列光調變器：每顆微鏡對應一像素，以 ±14.5° 傾角（相對平面）反射入射光；5.4µm 微鏡間距，轉角照明（Corner illumination）；經 SubLVDS 高速差動介面接收 DLPC8455 控制器送來的畫面資料，A/B/C/D 四組高速差動資料 Lane，各 8 對差動資料線 + 1 對差動時脈；支援 RGB 雷射、LED 與 Laser Phosphor 光源驅動；另提供 LS_Interface 低速介面（LSIF）與溫度感測二極體（TEMP_N/TEMP_P）。",
+    "usedIn": "智慧型投影機、企業投影機、雷射電視、遊戲投影機、家庭劇院、高爾夫模擬器等顯示投影應用；需搭配 DLPC8455 DMD 控制器、DLPA3082 PMIC 與 DLPA100 色輪驅動器組成完整晶片組。",
+    "desc": "0.48吋 4K+（3840×2400）@60Hz；並支援 WUXGA（1920×1200）最高 240Hz DMD，5.4µm 微鏡間距、±14.5° 傾角、轉角照明，SubLVDS 介面，FXM 173-Pin PGA 封裝 32.2mm×22.3mm，PRODUCTION DATA。",
+    "datasheet": "TI SLVSJK5",
+    "pins": [
+      {
+        "num": "R2",
+        "name": "D_AP(0)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 0 正端"
+      },
+      {
+        "num": "P2",
+        "name": "D_AN(0)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 0 負端"
+      },
+      {
+        "num": "T4",
+        "name": "D_AP(1)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 1 正端"
+      },
+      {
+        "num": "T3",
+        "name": "D_AN(1)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 1 負端"
+      },
+      {
+        "num": "P1",
+        "name": "D_AP(2)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 2 正端"
+      },
+      {
+        "num": "N1",
+        "name": "D_AN(2)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 2 負端"
+      },
+      {
+        "num": "R5",
+        "name": "D_AP(3)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 3 正端"
+      },
+      {
+        "num": "R6",
+        "name": "D_AN(3)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 3 負端"
+      },
+      {
+        "num": "T5",
+        "name": "D_AP(4)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 4 正端"
+      },
+      {
+        "num": "T6",
+        "name": "D_AN(4)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 4 負端"
+      },
+      {
+        "num": "K2",
+        "name": "D_AP(5)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 5 正端"
+      },
+      {
+        "num": "L2",
+        "name": "D_AN(5)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 5 負端"
+      },
+      {
+        "num": "T7",
+        "name": "D_AP(6)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 6 正端"
+      },
+      {
+        "num": "T8",
+        "name": "D_AN(6)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 6 負端"
+      },
+      {
+        "num": "J1",
+        "name": "D_AP(7)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 7 正端"
+      },
+      {
+        "num": "K1",
+        "name": "D_AN(7)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）A 通道 Lane 7 負端"
+      },
+      {
+        "num": "L1",
+        "name": "DCLK_AP",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）A 通道 正端"
+      },
+      {
+        "num": "M1",
+        "name": "DCLK_AN",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）A 通道 負端"
+      },
+      {
+        "num": "T13",
+        "name": "D_BP(0)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 0 正端"
+      },
+      {
+        "num": "T14",
+        "name": "D_BN(0)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 0 負端"
+      },
+      {
+        "num": "T17",
+        "name": "D_BP(1)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 1 正端"
+      },
+      {
+        "num": "T18",
+        "name": "D_BN(1)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 1 負端"
+      },
+      {
+        "num": "T12",
+        "name": "D_BP(2)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 2 正端"
+      },
+      {
+        "num": "T11",
+        "name": "D_BN(2)",
+        "side": "B",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 2 負端"
+      },
+      {
+        "num": "T15",
+        "name": "D_BP(3)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 3 正端"
+      },
+      {
+        "num": "T16",
+        "name": "D_BN(3)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 3 負端"
+      },
+      {
+        "num": "P20",
+        "name": "D_BP(4)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 4 正端"
+      },
+      {
+        "num": "N20",
+        "name": "D_BN(4)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 4 負端"
+      },
+      {
+        "num": "M20",
+        "name": "D_BP(5)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 5 正端"
+      },
+      {
+        "num": "L20",
+        "name": "D_BN(5)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 5 負端"
+      },
+      {
+        "num": "L19",
+        "name": "D_BP(6)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 6 正端"
+      },
+      {
+        "num": "K19",
+        "name": "D_BN(6)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 6 負端"
+      },
+      {
+        "num": "K20",
+        "name": "D_BP(7)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 7 正端"
+      },
+      {
+        "num": "J20",
+        "name": "D_BN(7)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）B 通道 Lane 7 負端"
+      },
+      {
+        "num": "R19",
+        "name": "DCLK_BP",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）B 通道 正端"
+      },
+      {
+        "num": "P19",
+        "name": "DCLK_BN",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）B 通道 負端"
+      },
+      {
+        "num": "H1",
+        "name": "D_CP(0)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 0 正端"
+      },
+      {
+        "num": "G1",
+        "name": "D_CN(0)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 0 負端"
+      },
+      {
+        "num": "H2",
+        "name": "D_CP(1)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 1 正端"
+      },
+      {
+        "num": "G2",
+        "name": "D_CN(1)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 1 負端"
+      },
+      {
+        "num": "F1",
+        "name": "D_CP(2)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 2 正端"
+      },
+      {
+        "num": "E1",
+        "name": "D_CN(2)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 2 負端"
+      },
+      {
+        "num": "E2",
+        "name": "D_CP(3)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 3 正端"
+      },
+      {
+        "num": "D2",
+        "name": "D_CN(3)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 3 負端"
+      },
+      {
+        "num": "A4",
+        "name": "D_CP(4)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 4 正端"
+      },
+      {
+        "num": "A5",
+        "name": "D_CN(4)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 4 負端"
+      },
+      {
+        "num": "A7",
+        "name": "D_CP(5)",
+        "side": "T",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 5 正端"
+      },
+      {
+        "num": "A6",
+        "name": "D_CN(5)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 5 負端"
+      },
+      {
+        "num": "B7",
+        "name": "D_CP(6)",
+        "side": "T",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 6 正端"
+      },
+      {
+        "num": "B8",
+        "name": "D_CN(6)",
+        "side": "T",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 6 負端"
+      },
+      {
+        "num": "B5",
+        "name": "D_CP(7)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 7 正端"
+      },
+      {
+        "num": "B4",
+        "name": "D_CN(7)",
+        "side": "L",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）C 通道 Lane 7 負端"
+      },
+      {
+        "num": "A9",
+        "name": "DCLK_CP",
+        "side": "T",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）C 通道 正端"
+      },
+      {
+        "num": "A8",
+        "name": "DCLK_CN",
+        "side": "T",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）C 通道 負端"
+      },
+      {
+        "num": "H19",
+        "name": "D_DP(0)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 0 正端"
+      },
+      {
+        "num": "G19",
+        "name": "D_DN(0)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 0 負端"
+      },
+      {
+        "num": "H20",
+        "name": "D_DP(1)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 1 正端"
+      },
+      {
+        "num": "G20",
+        "name": "D_DN(1)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 1 負端"
+      },
+      {
+        "num": "F20",
+        "name": "D_DP(2)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 2 正端"
+      },
+      {
+        "num": "E20",
+        "name": "D_DN(2)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 2 負端"
+      },
+      {
+        "num": "E19",
+        "name": "D_DP(3)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 3 正端"
+      },
+      {
+        "num": "D19",
+        "name": "D_DN(3)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 3 負端"
+      },
+      {
+        "num": "B19",
+        "name": "D_DP(4)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 4 正端"
+      },
+      {
+        "num": "B18",
+        "name": "D_DN(4)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 4 負端"
+      },
+      {
+        "num": "A18",
+        "name": "D_DP(5)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 5 正端"
+      },
+      {
+        "num": "A17",
+        "name": "D_DN(5)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 5 負端"
+      },
+      {
+        "num": "B16",
+        "name": "D_DP(6)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 6 正端"
+      },
+      {
+        "num": "B15",
+        "name": "D_DN(6)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 6 負端"
+      },
+      {
+        "num": "A16",
+        "name": "D_DP(7)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 7 正端"
+      },
+      {
+        "num": "A15",
+        "name": "D_DN(7)",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動資料對（SubLVDS）D 通道 Lane 7 負端"
+      },
+      {
+        "num": "D20",
+        "name": "DCLK_DP",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）D 通道 正端"
+      },
+      {
+        "num": "C20",
+        "name": "DCLK_DN",
+        "side": "R",
+        "type": "input",
+        "desc": "高速差動時脈（SubLVDS）D 通道 負端"
+      },
+      {
+        "num": "L3",
+        "name": "LS_WDATA",
+        "side": "L",
+        "type": "input",
+        "desc": "低速介面（LSIF）寫入資料"
+      },
+      {
+        "num": "P4",
+        "name": "LS_CLK",
+        "side": "L",
+        "type": "input",
+        "desc": "低速介面（LSIF）時脈"
+      },
+      {
+        "num": "N4",
+        "name": "LS_RDATA_A",
+        "side": "L",
+        "type": "output",
+        "desc": "LPSDR 輸出（低速介面讀取資料，A 通道）"
+      },
+      {
+        "num": "M3",
+        "name": "LS_RDATA_B",
+        "side": "L",
+        "type": "output",
+        "desc": "LPSDR 輸出（低速介面讀取資料，B 通道）"
+      },
+      {
+        "num": "J4",
+        "name": "LS_RDATA_C",
+        "side": "L",
+        "type": "output",
+        "desc": "LPSDR 輸出（低速介面讀取資料，C 通道）"
+      },
+      {
+        "num": "K3",
+        "name": "LS_RDATA_D",
+        "side": "L",
+        "type": "output",
+        "desc": "LPSDR 輸出（低速介面讀取資料，D 通道）"
+      },
+      {
+        "num": "H4",
+        "name": "DMD_DEN_A/RSTZ",
+        "side": "L",
+        "type": "input",
+        "desc": "datasheet Table 4-1 原文 NAME 欄跨兩行列為 DMD_DEN_A 與 RSTZ（合併為同一 PAD ID H4 之單一列，二者間無分隔符號可辨），DESCRIPTION 欄原文僅列 \"ARSTZ\"，未附完整文字說明；確切腳位定義與時序請見原始 datasheet"
+      },
+      {
+        "num": "D18",
+        "name": "TP0",
+        "side": "R",
+        "type": "input",
+        "desc": "測試腳位；datasheet Table 4-1 未附文字說明"
+      },
+      {
+        "num": "C17",
+        "name": "TP1",
+        "side": "R",
+        "type": "input",
+        "desc": "測試腳位；datasheet Table 4-1 未附文字說明"
+      },
+      {
+        "num": "C18",
+        "name": "TP2",
+        "side": "R",
+        "type": "input",
+        "desc": "測試腳位；datasheet Table 4-1 未附文字說明"
+      },
+      {
+        "num": "E17",
+        "name": "TEMP_N",
+        "side": "R",
+        "type": "input",
+        "desc": "溫度感測二極體負端（Temp Diode N）"
+      },
+      {
+        "num": "F17",
+        "name": "TEMP_P",
+        "side": "R",
+        "type": "input",
+        "desc": "溫度感測二極體正端（Temp Diode P）"
+      },
+      {
+        "num": "A10",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "A12",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "A13",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "A20",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "B2",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "B10",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "B11",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "B14",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "C4",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "D1",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "D4",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "E3",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "E18",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "F3",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "F4",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "G17",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "J3",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "J18",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "M18",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "N3",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "N18",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R3",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R8",
+        "name": "VDD",
+        "side": "B",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R10",
+        "name": "VDD",
+        "side": "B",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R12",
+        "name": "VDD",
+        "side": "B",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R13",
+        "name": "VDD",
+        "side": "B",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "R18",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "T9",
+        "name": "VDD",
+        "side": "B",
+        "type": "power",
+        "desc": "數位核心供電電壓（Digital Core Supply Voltage，datasheet 原文）"
+      },
+      {
+        "num": "D3",
+        "name": "VDDI",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "F18",
+        "name": "VDDI",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "G4",
+        "name": "VDDI",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "H18",
+        "name": "VDDI",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "K4",
+        "name": "VDDI",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "K18",
+        "name": "VDDI",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "L18",
+        "name": "VDDI",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "M4",
+        "name": "VDDI",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDI 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "T2",
+        "name": "VRESET",
+        "side": "L",
+        "type": "power",
+        "desc": "VRESET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "T19",
+        "name": "VRESET",
+        "side": "R",
+        "type": "power",
+        "desc": "VRESET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "R1",
+        "name": "VBIAS",
+        "side": "L",
+        "type": "power",
+        "desc": "VBIAS 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "R20",
+        "name": "VBIAS",
+        "side": "R",
+        "type": "power",
+        "desc": "VBIAS 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "D17",
+        "name": "VOFFSET",
+        "side": "R",
+        "type": "power",
+        "desc": "VOFFSET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "E4",
+        "name": "VOFFSET",
+        "side": "L",
+        "type": "power",
+        "desc": "VOFFSET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "T1",
+        "name": "VOFFSET",
+        "side": "L",
+        "type": "power",
+        "desc": "VOFFSET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "T20",
+        "name": "VOFFSET",
+        "side": "R",
+        "type": "power",
+        "desc": "VOFFSET 電源供應腳；datasheet Table 4-1 僅標示 Type=P（Power），未附文字說明"
+      },
+      {
+        "num": "A3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "A11",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "A14",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "A19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B9",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B12",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B13",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B17",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "B20",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "C1",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "C2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "C3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "C19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "F2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "F19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "G3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "G18",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "H3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "J2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "J19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "L4",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "M2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "M19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "N2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "N19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "P3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "P18",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R4",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R7",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R9",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R11",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R14",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "R17",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "T10",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（Ground，datasheet 原文）"
+      },
+      {
+        "num": "H17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "R16",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "R15",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "P17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "N17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "M17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "L17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "K17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      },
+      {
+        "num": "J17",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接腳位（No Connect Pin，datasheet 原文）"
+      }
+    ],
+    "thermalPad": "173-Pin PGA 針陣列，散熱經針與基板，無獨立外露焊墊",
+    "specs": [
+      {
+        "k": "顯示解析度",
+        "v": "4K+（3840×2400）@60Hz；並支援 WUXGA（1920×1200）最高 240Hz"
+      },
+      {
+        "k": "微鏡陣列",
+        "v": "0.48吋對角，5.4µm 微鏡間距，±14.5° 傾角（相對平面），轉角照明（Corner illumination）"
+      },
+      {
+        "k": "高速資料介面",
+        "v": "SubLVDS 輸入資料匯流排；A/B/C/D 四組高速差動資料 Lane，各 8 對資料線 + 1 對差動時脈，Differential 100Ω 端接"
+      },
+      {
+        "k": "電源軌",
+        "v": "VDD（數位核心）、VDDI、VBIAS、VRESET、VOFFSET"
+      },
+      {
+        "k": "封裝",
+        "v": "FXM (PGA, 173)，32.2mm × 22.3mm"
+      },
+      {
+        "k": "配套晶片組",
+        "v": "DLPC8455 顯示控制器、DLPA3082 PMIC、DLPA100 色輪驅動器"
+      },
+      {
+        "k": "文件狀態",
+        "v": "PRODUCTION DATA；SLVSJK5 – 2025年12月"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": [
+      {
+        "part": "DLP481RE",
+        "note": "同 FXM 173-Pin PGA 封裝、Table 4-1 逐腳定義完全相同；差異僅顯示解析度模式（WUXGA vs 4K+），需搭配對應 DLPC 控制器配置（DLP481RE 配 DLPC8454，DLP481XE 配 DLPC8455）。"
+      }
+    ]
   }
 ];
