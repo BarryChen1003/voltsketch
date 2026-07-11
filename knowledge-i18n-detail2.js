@@ -406,6 +406,206 @@
         designNotes: ['적합한 인덕터 선택(포화 전류 > 피크 전류의 1.3배)', '입력 커패시터를 IC 가까이 두어 입력 리플 저감', '저 Vf 쇼트키 다이오드 선택', '출력 전압이 IC 최대 정격을 넘지 않게 함', 'PCB 레이아웃에서 스위칭 루프 면적 최소화'],
         commonMistakes: ['인덕터 포화 전류 부족으로 효율 저하', '출력 커패시터 ESR 과다로 리플 과대', '다이오드 역회복 시간이 효율 저하', 'PCB 레이아웃 불량으로 EMI 문제', '경부하 시 DCM 모드 미고려']
       }
+    },
+    'buck-boost-converter': {
+      en: {
+        principles: 'A buck-boost converter combines the traits of buck and boost, allowing any voltage conversion. An inverting buck-boost gives an output opposite in polarity to the input; a non-inverting buck-boost uses four switches to give a positive output.',
+        keyFormulas: ['Vout = -Vin * D / (1 - D) (inverting)', 'Vout = Vin * D / (1 - D) (non-inverting)', 'D = Vout / (Vin + Vout)', 'Inductor current ΔIL = Vin * D / (f * L)'],
+        designNotes: ['An inverting buck-boost produces a negative output', 'A non-inverting buck-boost uses four switches', 'Inductor choice must account for peak current', 'The output capacitor must handle large ripple current', 'Mind the duty-cycle boundary (D > 0.5 boost, D < 0.5 buck)'],
+        commonMistakes: ['Not handling the ground issue of the inverting output', 'Wrong inductor value causing CCM/DCM confusion', 'Output capacitor ripple-current rating too low', 'Switching frequency too low, making the inductor too big', 'Not considering light-load efficiency']
+      },
+      ja: {
+        principles: 'Buck-Boost コンバータは Buck と Boost の特性を組み合わせ、任意の電圧変換ができる。反転 Buck-Boost は入力と逆極性の出力、非反転 Buck-Boost は 4 スイッチで正出力を得る。',
+        keyFormulas: ['Vout = -Vin * D / (1 - D)（反転）', 'Vout = Vin * D / (1 - D)（非反転）', 'D = Vout / (Vin + Vout)', 'インダクタ電流 ΔIL = Vin * D / (f * L)'],
+        designNotes: ['反転 Buck-Boost は負電圧出力', '非反転 Buck-Boost は 4 スイッチを使う', 'インダクタ選択はピーク電流を考慮', '出力コンデンサは大きなリップル電流に耐える必要', 'デューティ比の境界に注意（D > 0.5 昇圧、D < 0.5 降圧）'],
+        commonMistakes: ['反転出力の接地問題を処理しない', 'インダクタ値が不適切で CCM/DCM が混乱', '出力コンデンサのリップル電流定格が不足', 'スイッチング周波数が低くインダクタが大型化', '軽負荷効率を考慮しない']
+      },
+      ko: {
+        principles: 'Buck-Boost 컨버터는 Buck과 Boost의 특성을 결합해 임의의 전압 변환이 가능하다. 반전 Buck-Boost는 입력과 반대 극성의 출력, 비반전 Buck-Boost는 4개 스위치로 양의 출력을 얻는다.',
+        keyFormulas: ['Vout = -Vin * D / (1 - D) (반전)', 'Vout = Vin * D / (1 - D) (비반전)', 'D = Vout / (Vin + Vout)', '인덕터 전류 ΔIL = Vin * D / (f * L)'],
+        designNotes: ['반전 Buck-Boost는 음전압 출력', '비반전 Buck-Boost는 4개 스위치 사용', '인덕터 선택은 피크 전류를 고려', '출력 커패시터는 큰 리플 전류를 견뎌야 함', '듀티비 경계 주의(D > 0.5 승압, D < 0.5 강압)'],
+        commonMistakes: ['반전 출력의 접지 문제를 처리하지 않음', '인덕터 값 부적절로 CCM/DCM 혼란', '출력 커패시터 리플 전류 정격 부족', '스위칭 주파수가 낮아 인덕터가 커짐', '경부하 효율 미고려']
+      }
+    },
+    'ldo-selection': {
+      en: {
+        principles: 'LDO selection weighs input/output voltage range, load current, dropout voltage, PSRR, output noise, quiescent current, and package thermal capability.',
+        keyFormulas: ['Pd = (Vin - Vout) * Iout', 'Tj = Ta + Pd * θJA', 'Efficiency η = Vout/Vin * 100%', 'Dropout = Vin - Vout (min)'],
+        designNotes: ['Power Pd = (Vin-Vout)*Iout; keep Tj < 125°C', 'The dropout voltage must be less than Vin-Vout', 'A high-PSRR LDO suits RF/analog circuits', 'A low-noise LDO suits precision measurement circuits', 'Quiescent current Iq affects battery life'],
+        commonMistakes: ['Not calculating power, causing overheating', 'Chosen LDO dropout too high', 'Ignoring PSRR frequency behavior', 'Insufficient thermal design', 'Output capacitor ESR out of spec']
+      },
+      ja: {
+        principles: 'LDO 選定は入出力電圧範囲、負荷電流、ドロップアウト電圧、PSRR、出力雑音、静止電流、パッケージ放熱能力を考慮する。',
+        keyFormulas: ['Pd = (Vin - Vout) * Iout', 'Tj = Ta + Pd * θJA', '効率 η = Vout/Vin * 100%', 'ドロップアウト = Vin - Vout (min)'],
+        designNotes: ['損失 Pd = (Vin-Vout)*Iout、Tj < 125°C を確保', 'ドロップアウト電圧は Vin-Vout より小さく', '高 PSRR LDO は RF/アナログ回路に適する', '低雑音 LDO は精密測定回路に適する', '静止電流 Iq が電池寿命に影響'],
+        commonMistakes: ['損失を計算せず過熱', '選んだ LDO のドロップアウトが高すぎる', 'PSRR の周波数特性を考慮しない', '放熱設計が不足', '出力コンデンサの ESR が規格外']
+      },
+      ko: {
+        principles: 'LDO 선정은 입출력 전압 범위, 부하 전류, 드롭아웃 전압, PSRR, 출력 잡음, 정지 전류, 패키지 방열 능력을 고려한다.',
+        keyFormulas: ['Pd = (Vin - Vout) * Iout', 'Tj = Ta + Pd * θJA', '효율 η = Vout/Vin * 100%', '드롭아웃 = Vin - Vout (min)'],
+        designNotes: ['손실 Pd = (Vin-Vout)*Iout, Tj < 125°C 확보', '드롭아웃 전압은 Vin-Vout보다 작게', '고 PSRR LDO는 RF/아날로그 회로에 적합', '저잡음 LDO는 정밀 측정 회로에 적합', '정지 전류 Iq가 배터리 수명에 영향'],
+        commonMistakes: ['손실을 계산하지 않아 과열', '선택한 LDO 드롭아웃이 너무 높음', 'PSRR 주파수 특성 미고려', '방열 설계 부족', '출력 커패시터 ESR 규격 미달']
+      }
+    },
+    'power-sequencing': {
+      en: {
+        principles: 'Many ICs (FPGA, DSP, ARM) require their supplies to come up in a specific order, e.g. core voltage first, then I/O voltage. The wrong order can cause latch-up or permanent damage.',
+        keyFormulas: ['Delay = R * C (RC delay)', 'Power-up time difference Δt > 10ms (typical)', 'Core voltage before I/O voltage', 'Release reset only after the monitored voltage is stable'],
+        designNotes: ['Use a PMIC with built-in sequencing control', 'An RC delay circuit is simple but low-accuracy', 'A dedicated sequencing IC (e.g. TPS3808) is more reliable', 'Release the MCU reset only after the monitored voltage is stable', 'Consider the reverse order at power-down'],
+        commonMistakes: ['Wrong sequencing causing latch-up', 'Not considering the reverse order at power-down', 'Insufficient delay time', 'Wrong monitor voltage threshold', 'Not accounting for load affecting power-up time']
+      },
+      ja: {
+        principles: '多くの IC（FPGA、DSP、ARM）は電源を特定順序で投入する必要がある。例：コア電圧を先、I/O 電圧を後。順序を誤るとラッチアップや永久破損の恐れ。',
+        keyFormulas: ['遅延 = R * C（RC 遅延）', '投入時間差 Δt > 10ms（典型）', 'コア電圧を I/O 電圧より先に', '監視電圧が安定してからリセット解除'],
+        designNotes: ['投入順序制御を内蔵した PMIC を使う', 'RC 遅延回路は簡単だが精度が低い', '専用の順序制御 IC（TPS3808 等）がより確実', '監視電圧が安定してから MCU リセットを解除', '電源切断時の逆順序を考慮'],
+        commonMistakes: ['投入順序誤りでラッチアップ', '電源切断時の逆順序を考慮しない', '遅延時間が不足', '監視電圧のしきい値が不適切', '負荷が投入時間に与える影響を考慮しない']
+      },
+      ko: {
+        principles: '많은 IC(FPGA, DSP, ARM)는 전원을 특정 순서로 인가해야 한다. 예: 코어 전압 먼저, I/O 전압 나중. 순서를 틀리면 래치업이나 영구 손상 우려.',
+        keyFormulas: ['지연 = R * C (RC 지연)', '인가 시간차 Δt > 10ms(전형)', '코어 전압을 I/O 전압보다 먼저', '감시 전압이 안정된 후 리셋 해제'],
+        designNotes: ['시퀀싱 제어가 내장된 PMIC 사용', 'RC 지연 회로는 간단하나 정확도 낮음', '전용 시퀀싱 IC(TPS3808 등)가 더 확실', '감시 전압이 안정된 후 MCU 리셋 해제', '전원 차단 시 역순서 고려'],
+        commonMistakes: ['시퀀싱 오류로 래치업', '전원 차단 시 역순서 미고려', '지연 시간 부족', '감시 전압 문턱 부적절', '부하가 인가 시간에 주는 영향 미고려']
+      }
+    },
+    'decoupling-capacitor': {
+      en: {
+        principles: 'Decoupling capacitors provide local charge storage for an IC, reducing supply impedance. Different values cover different frequency ranges: large caps (10-100µF) for low frequency, small caps (0.1µF-10nF) for high frequency.',
+        keyFormulas: ['Resonant frequency f0 = 1 / (2π√(L*C))', 'Impedance Z = √(ESR^2 + (Xc-Xl)^2)', 'Larger capacitance, lower resonant frequency', 'Smaller ESL, better high-frequency performance'],
+        designNotes: ['Every IC power pin should have a decoupling capacitor', 'Place capacitors as close to the IC as possible (< 5mm)', 'Large caps for low frequency, small caps for high frequency', 'Choose low-ESL ceramic capacitors (0402/0201)', 'Via connections reduce parasitic inductance'],
+        commonMistakes: ['Capacitor too far from the IC', 'Using only a single value', 'Ignoring ESR/ESL', 'Too few vias', 'Not accounting for temperature effects on capacitance']
+      },
+      ja: {
+        principles: 'デカップリングコンデンサは IC に局所的な電荷蓄積を提供し電源インピーダンスを下げる。容量ごとに異なる周波数域をカバー：大容量（10-100µF）は低域、小容量（0.1µF-10nF）は高域。',
+        keyFormulas: ['共振周波数 f0 = 1 / (2π√(L*C))', 'インピーダンス Z = √(ESR^2 + (Xc-Xl)^2)', '容量が大きいほど共振周波数は低い', 'ESL が小さいほど高周波性能が良い'],
+        designNotes: ['各 IC 電源ピンにデカップリングコンデンサを配置', 'コンデンサを IC のできるだけ近くに（< 5mm）', '大容量は低域、小容量は高域', '低 ESL のセラミックコンデンサ（0402/0201）を選ぶ', 'ビア接続で寄生インダクタンスを低減'],
+        commonMistakes: ['コンデンサが IC から遠すぎる', '単一容量のみ使用', 'ESR/ESL を考慮しない', 'ビア数が不足', '温度が容量に与える影響を考慮しない']
+      },
+      ko: {
+        principles: '디커플링 커패시터는 IC에 국소 전하 저장을 제공해 전원 임피던스를 낮춘다. 용량별로 다른 주파수 대역을 커버: 대용량(10-100µF)은 저역, 소용량(0.1µF-10nF)은 고역.',
+        keyFormulas: ['공진 주파수 f0 = 1 / (2π√(L*C))', '임피던스 Z = √(ESR^2 + (Xc-Xl)^2)', '용량이 클수록 공진 주파수가 낮음', 'ESL이 작을수록 고주파 성능이 좋음'],
+        designNotes: ['각 IC 전원 핀에 디커플링 커패시터 배치', '커패시터를 IC에 최대한 가까이(< 5mm)', '대용량은 저역, 소용량은 고역', '저 ESL 세라믹 커패시터(0402/0201) 선택', '비아 연결로 기생 인덕턴스 저감'],
+        commonMistakes: ['커패시터가 IC에서 너무 멂', '단일 용량만 사용', 'ESR/ESL 미고려', '비아 수 부족', '온도가 용량에 주는 영향 미고려']
+      }
+    },
+    'common-mode-choke': {
+      en: {
+        principles: 'A common-mode choke uses flux cancellation to present low impedance to differential signals and high impedance to common-mode noise. It is widely used for EMI filtering on USB, HDMI and power lines.',
+        keyFormulas: ['Common-mode impedance Zcm = jωLcm', 'Differential impedance Zdm ≈ 0 (flux cancellation)', 'Rated current ≥ load current', 'Lower DCR is better (less voltage drop)'],
+        designNotes: ['Choose a suitable rated current (20% margin)', 'Mind the effect of DCR on voltage drop', 'For high-frequency use choose a ferrite core', 'Keep the differential signal lines tightly coupled', 'Place it at the connector entry'],
+        commonMistakes: ['Insufficient rated current causing saturation', 'DCR too large causing voltage drop', 'Ignoring differential signal integrity', 'Poor placement', 'Wrong core material']
+      },
+      ja: {
+        principles: 'コモンモードチョークは磁束打ち消しを利用し、差動信号に低インピーダンス、コモンモード雑音に高インピーダンスを呈する。USB、HDMI、電源線の EMI ろ波に広く使われる。',
+        keyFormulas: ['コモンモードインピーダンス Zcm = jωLcm', '差動インピーダンス Zdm ≈ 0（磁束打ち消し）', '定格電流 ≥ 負荷電流', 'DCR は小さいほど良い（電圧降下が少ない）'],
+        designNotes: ['適切な定格電流を選ぶ（20% の余裕）', 'DCR の電圧降下への影響に注意', '高周波用途はフェライトコアを選ぶ', '差動信号線を密結合に保つ', 'コネクタ入口に配置'],
+        commonMistakes: ['定格電流不足で飽和', 'DCR が大きく電圧降下', '差動信号品質を考慮しない', '配置が不適切', 'コア材料の選択が不適切']
+      },
+      ko: {
+        principles: '공통 모드 초크는 자속 상쇄를 이용해 차동 신호에는 저임피던스, 공통 모드 잡음에는 고임피던스를 나타낸다. USB, HDMI, 전원선 EMI 여파에 널리 쓰인다.',
+        keyFormulas: ['공통 모드 임피던스 Zcm = jωLcm', '차동 임피던스 Zdm ≈ 0(자속 상쇄)', '정격 전류 ≥ 부하 전류', 'DCR은 작을수록 좋음(전압 강하 적음)'],
+        designNotes: ['적절한 정격 전류 선택(20% 여유)', 'DCR의 전압 강하 영향 주의', '고주파 용도는 페라이트 코어 선택', '차동 신호선을 밀결합으로 유지', '커넥터 입구에 배치'],
+        commonMistakes: ['정격 전류 부족으로 포화', 'DCR이 커서 전압 강하', '차동 신호 무결성 미고려', '배치 부적절', '코어 재료 선택 부적절']
+      }
+    },
+    'emi-layout': {
+      en: {
+        principles: 'The root cause of EMI is high-frequency current-loop area. Reducing loop area, providing a low-impedance return path, and using complete reference planes effectively lowers EMI.',
+        keyFormulas: ['EMI ∝ I * A * f^2', 'A = loop area', 'Reducing A effectively lowers EMI', 'The return path hugs the signal path'],
+        designNotes: ['Route high-speed signals right next to a reference plane', 'Keep a complete, continuous reference plane', 'Avoid routing signals across a plane split', 'Minimize via count and stub length', 'Use guard traces or a common-mode choke'],
+        commonMistakes: ['Routing signals across a plane split', 'Discontinuous reference plane', 'Return path too long', 'Ignoring the high-frequency behavior of the power plane', 'No filtering at the connector']
+      },
+      ja: {
+        principles: 'EMI の根本原因は高周波電流ループの面積。ループ面積の縮小、低インピーダンスのリターン経路の提供、完全な基準面の使用で EMI を効果的に低減できる。',
+        keyFormulas: ['EMI ∝ I * A * f^2', 'A = ループ面積', 'A の縮小で EMI を効果的に低減', 'リターン経路は信号経路に密接'],
+        designNotes: ['高速信号を基準面のすぐ隣に配線', '完全で連続した基準面を保つ', '信号を分割プレーンを跨いで配線しない', 'ビア数とスタブ長を最小化', 'ガード配線やコモンモードチョークを使う'],
+        commonMistakes: ['信号を分割プレーンを跨いで配線', '基準面が不連続', 'リターン経路が長すぎる', '電源プレーンの高周波特性を考慮しない', 'コネクタでろ波なし']
+      },
+      ko: {
+        principles: 'EMI의 근본 원인은 고주파 전류 루프 면적. 루프 면적 축소, 저임피던스 리턴 경로 제공, 완전한 기준면 사용으로 EMI를 효과적으로 낮출 수 있다.',
+        keyFormulas: ['EMI ∝ I * A * f^2', 'A = 루프 면적', 'A 축소로 EMI를 효과적으로 저감', '리턴 경로는 신호 경로에 밀착'],
+        designNotes: ['고속 신호를 기준면 바로 옆에 배선', '완전하고 연속된 기준면 유지', '신호를 분할 플레인을 가로질러 배선하지 않음', '비아 수와 스터브 길이 최소화', '가드 배선이나 공통 모드 초크 사용'],
+        commonMistakes: ['신호를 분할 플레인을 가로질러 배선', '기준면 불연속', '리턴 경로 과다', '전원 플레인의 고주파 특성 미고려', '커넥터에서 여파 없음']
+      }
+    },
+    'tvd-selection': {
+      en: {
+        principles: 'A TVS (transient voltage suppressor) diode conducts quickly on overvoltage (< 1ns), clamping the voltage to a safe range to protect downstream circuits. Selection weighs clamping voltage, power rating and capacitance.',
+        keyFormulas: ['Vclamp = Vbr + Ipp * Rdyn', 'Power = Vclamp * Ipp', 'Capacitance < 1pF (high-speed)', 'Response time < 1ns'],
+        designNotes: ['VRWM > operating voltage (so it does not conduct normally)', 'Vclamp < the maximum rating of the IC to be protected', 'Choose low-capacitance TVS for high-speed signals', 'Place the TVS at the connector entry', 'Keep the ground path short and wide'],
+        commonMistakes: ['VRWM chosen too low, conducting under normal operation', 'Vclamp too high, failing to protect the IC', 'Capacitance too large, affecting high-speed signals', 'Ground path too long', 'Not considering the power rating']
+      },
+      ja: {
+        principles: 'TVS（過渡電圧サプレッサ）ダイオードは過電圧時に高速導通し（< 1ns）、電圧を安全範囲にクランプして後段回路を保護する。選定はクランプ電圧、電力定格、容量を考慮。',
+        keyFormulas: ['Vclamp = Vbr + Ipp * Rdyn', 'Power = Vclamp * Ipp', '容量 < 1pF（高速）', '応答時間 < 1ns'],
+        designNotes: ['VRWM > 動作電圧（通常時に導通しないよう）', 'Vclamp < 保護対象 IC の最大定格電圧', '高速信号には低容量 TVS を選ぶ', 'TVS をコネクタ入口に配置', '接地経路を短く太く'],
+        commonMistakes: ['VRWM が低すぎて通常時に導通', 'Vclamp が高すぎて IC を保護できない', '容量が大きく高速信号に影響', '接地経路が長すぎる', '電力定格を考慮しない']
+      },
+      ko: {
+        principles: 'TVS(과도 전압 억제) 다이오드는 과전압 시 빠르게 도통(< 1ns)해 전압을 안전 범위로 클램프해 후단 회로를 보호한다. 선정은 클램프 전압, 전력 정격, 용량을 고려.',
+        keyFormulas: ['Vclamp = Vbr + Ipp * Rdyn', 'Power = Vclamp * Ipp', '용량 < 1pF(고속)', '응답 시간 < 1ns'],
+        designNotes: ['VRWM > 동작 전압(정상 시 도통하지 않도록)', 'Vclamp < 보호 대상 IC의 최대 정격 전압', '고속 신호에는 저용량 TVS 선택', 'TVS를 커넥터 입구에 배치', '접지 경로를 짧고 넓게'],
+        commonMistakes: ['VRWM이 너무 낮아 정상 시 도통', 'Vclamp가 너무 높아 IC 보호 실패', '용량이 커서 고속 신호에 영향', '접지 경로 과다', '전력 정격 미고려']
+      }
+    },
+    'reverse-polarity': {
+      en: {
+        principles: 'Reversed supply polarity can damage a circuit. Common protections: a series diode (simple but with a drop), a MOSFET reverse-polarity block (low drop), and a bridge rectifier (polarity-agnostic but low efficiency).',
+        keyFormulas: ['Diode drop Vf = 0.3-0.7V', 'MOSFET Rds_on = a few mΩ', 'Efficiency η = (Vin - Vdrop)/Vin', 'Power loss P = I^2 * Rds_on'],
+        designNotes: ['MOSFET block: choose a low-Rds_on P-MOS', 'Diode block: choose a Schottky (low Vf)', 'Bridge rectifier: polarity-agnostic but two diode drops', 'For high current prefer the MOSFET approach', "Mind the MOSFET's Vgs rating"],
+        commonMistakes: ['Diode drop too large, lowering efficiency', 'Insufficient MOSFET Vgs rating', 'Ignoring reverse leakage current', 'Insufficient thermal design', 'Choosing the wrong protection scheme']
+      },
+      ja: {
+        principles: '電源の逆極性接続は回路を破損しうる。代表的保護：直列ダイオード（簡単だが電圧降下あり）、MOSFET 逆接保護（低降下）、ブリッジ整流（極性不問だが効率低）。',
+        keyFormulas: ['ダイオード降下 Vf = 0.3-0.7V', 'MOSFET Rds_on = 数 mΩ', '効率 η = (Vin - Vdrop)/Vin', '電力損失 P = I^2 * Rds_on'],
+        designNotes: ['MOSFET 保護：低 Rds_on の P-MOS を選ぶ', 'ダイオード保護：ショットキー（低 Vf）を選ぶ', 'ブリッジ整流：極性不問だがダイオード降下が 2 つ', '大電流用途は MOSFET 方式を優先', 'MOSFET の Vgs 定格に注意'],
+        commonMistakes: ['ダイオード降下が大きく効率低下', 'MOSFET の Vgs 定格が不足', '逆漏れ電流を考慮しない', '放熱設計が不足', '不適切な保護方式を選ぶ']
+      },
+      ko: {
+        principles: '전원 역극성 연결은 회로를 손상할 수 있다. 대표적 보호: 직렬 다이오드(간단하나 전압 강하), MOSFET 역접속 보호(저강하), 브리지 정류(극성 무관하나 효율 낮음).',
+        keyFormulas: ['다이오드 강하 Vf = 0.3-0.7V', 'MOSFET Rds_on = 수 mΩ', '효율 η = (Vin - Vdrop)/Vin', '전력 손실 P = I^2 * Rds_on'],
+        designNotes: ['MOSFET 보호: 저 Rds_on P-MOS 선택', '다이오드 보호: 쇼트키(저 Vf) 선택', '브리지 정류: 극성 무관하나 다이오드 강하 2개', '대전류 용도는 MOSFET 방식 우선', 'MOSFET의 Vgs 정격 주의'],
+        commonMistakes: ['다이오드 강하가 커서 효율 저하', 'MOSFET Vgs 정격 부족', '역누설 전류 미고려', '방열 설계 부족', '부적합한 보호 방식 선택']
+      }
+    },
+    'thermal-design': {
+      en: {
+        principles: 'Heat from power components must be dissipated effectively, or efficiency drops, lifetime shortens and the part can fail. Thermal design covers thermal-resistance calculation, heat-path optimization and heatsink selection.',
+        keyFormulas: ['Tj = Ta + Pd * θJA', 'θJA = θJC + θCS + θSA', 'Pd = (Vin - Vout) * Iout', 'Tj(max) < 125°C (typical)'],
+        designNotes: ['Compute thermal resistance: θJA = θJC + θCS + θSA', 'Add thermal vias (under the thermal pad)', 'Use thick copper for heat spreading', 'Add a heatsink or thermal pad', 'Consider airflow direction and heat path'],
+        commonMistakes: ['Not calculating thermal resistance, causing overheating', 'Too few thermal vias', 'Ignoring thermal influence of nearby components', 'Wrong heatsink orientation', 'No thermal simulation verification']
+      },
+      ja: {
+        principles: 'パワー部品の発熱は効果的に放熱しないと、効率低下・寿命短縮・破損につながる。熱設計は熱抵抗計算、放熱経路最適化、放熱部品選択を含む。',
+        keyFormulas: ['Tj = Ta + Pd * θJA', 'θJA = θJC + θCS + θSA', 'Pd = (Vin - Vout) * Iout', 'Tj(max) < 125°C（典型）'],
+        designNotes: ['熱抵抗を計算：θJA = θJC + θCS + θSA', 'サーマルビアを追加（サーマルパッド下）', '厚い銅層で放熱', 'ヒートシンクやサーマルパッドを追加', '気流方向と放熱経路を考慮'],
+        commonMistakes: ['熱抵抗を計算せず過熱', 'サーマルビア数が不足', '周辺部品の熱影響を考慮しない', 'ヒートシンクの向きが不適切', '熱シミュレーション検証をしない']
+      },
+      ko: {
+        principles: '전력 부품의 발열은 효과적으로 방열하지 않으면 효율 저하·수명 단축·손상으로 이어진다. 열 설계는 열저항 계산, 방열 경로 최적화, 방열 부품 선택을 포함한다.',
+        keyFormulas: ['Tj = Ta + Pd * θJA', 'θJA = θJC + θCS + θSA', 'Pd = (Vin - Vout) * Iout', 'Tj(max) < 125°C(전형)'],
+        designNotes: ['열저항 계산: θJA = θJC + θCS + θSA', '서멀 비아 추가(서멀 패드 아래)', '두꺼운 구리층으로 방열', '히트싱크나 서멀 패드 추가', '기류 방향과 방열 경로 고려'],
+        commonMistakes: ['열저항을 계산하지 않아 과열', '서멀 비아 수 부족', '주변 부품의 열 영향 미고려', '히트싱크 방향 부적절', '열 시뮬레이션 검증 미실시']
+      }
+    },
+    'via-design': {
+      en: {
+        principles: 'Vias connect traces on different layers but introduce parasitic capacitance and inductance that affect high-speed signal quality. Via design must consider drill diameter, annular ring, stub length and back-drilling.',
+        keyFormulas: ['C_via ≈ 0.3-0.5pF', 'L_via ≈ 0.8-1.0nH', 'Impedance discontinuity ΔZ ≈ 5-10%', 'Stub length < λ/20'],
+        designNotes: ['Back-drill high-speed signal vias to remove the stub', 'Microvias suit HDI designs', 'Keep the via drill small to reduce parasitics', 'Add a ground via next to the signal via for a return path', 'Mind the process capability limits on vias'],
+        commonMistakes: ['Ignoring via parasitics', 'Stub too long causing resonance', 'Via drill too small, hard to manufacture', 'No return path provided', 'Ignoring the thermal effect of vias']
+      },
+      ja: {
+        principles: 'ビアは異なる層の配線を接続するが、寄生容量とインダクタンスを導入し高速信号品質に影響する。ビア設計は穴径、アニュラリング、スタブ長、バックドリルを考慮する必要がある。',
+        keyFormulas: ['C_via ≈ 0.3-0.5pF', 'L_via ≈ 0.8-1.0nH', 'インピーダンス不連続 ΔZ ≈ 5-10%', 'スタブ長 < λ/20'],
+        designNotes: ['高速信号ビアはバックドリルでスタブを除去', 'マイクロビアは HDI 設計に適する', 'ビア穴径をできるだけ小さくし寄生を低減', '信号ビアの隣に接地ビアを追加しリターン経路を確保', 'ビアのプロセス能力の制限に注意'],
+        commonMistakes: ['ビアの寄生効果を考慮しない', 'スタブが長すぎて共振', 'ビア穴径が小さすぎて製造困難', 'リターン経路を用意しない', 'ビアの熱効果を考慮しない']
+      },
+      ko: {
+        principles: '비아는 다른 층의 배선을 연결하지만 기생 커패시턴스와 인덕턴스를 도입해 고속 신호 품질에 영향을 준다. 비아 설계는 드릴 지름, 애뉼러 링, 스터브 길이, 백드릴을 고려해야 한다.',
+        keyFormulas: ['C_via ≈ 0.3-0.5pF', 'L_via ≈ 0.8-1.0nH', '임피던스 불연속 ΔZ ≈ 5-10%', '스터브 길이 < λ/20'],
+        designNotes: ['고속 신호 비아는 백드릴로 스터브 제거', '마이크로비아는 HDI 설계에 적합', '비아 드릴 지름을 최대한 작게 해 기생 저감', '신호 비아 옆에 접지 비아를 추가해 리턴 경로 확보', '비아의 공정 능력 제한 주의'],
+        commonMistakes: ['비아 기생 효과 미고려', '스터브가 너무 길어 공진', '비아 드릴이 너무 작아 제조 곤란', '리턴 경로 미제공', '비아의 열 효과 미고려']
+      }
     }
   };
   var M = window.KNOWLEDGE_I18N = window.KNOWLEDGE_I18N || {};
