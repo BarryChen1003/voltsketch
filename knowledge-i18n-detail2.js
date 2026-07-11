@@ -806,6 +806,206 @@
         designNotes: ['부트스트랩 다이오드는 고속 회복·충분한 내압으로 선택', '게이트 저항으로 스위칭 속도와 EMI 조정', '드라이버 IC를 MOSFET 가까이 배치'],
         commonMistakes: ['부트스트랩 커패시터가 너무 작아 하이사이드 전원 상실', '밀러 클램프 없어 오도통']
       }
+    },
+    'comparator-hysteresis': {
+      en: {
+        principles: 'The comparator output is fed back positively through a resistor to the + input, splitting the switching threshold into an upper and lower value (VTH, VTL); input noise within the hysteresis band does not flip the output.',
+        keyFormulas: ['VH = VTH - VTL', 'VTH/VTL set by the Rf and R1 divider'],
+        designNotes: ['Hysteresis must exceed the noise amplitude', 'An open-drain output needs a pull-up', 'For high-speed use mind propagation delay'],
+        commonMistakes: ['Misusing an op-amp as a comparator causing oscillation', 'Insufficient hysteresis causing output chatter']
+      },
+      ja: {
+        principles: 'コンパレータ出力を抵抗で＋端子へ正帰還し、切替しきい値を上下 2 値（VTH、VTL）に分ける。ヒステリシス帯内の入力雑音では出力が反転しない。',
+        keyFormulas: ['VH = VTH - VTL', 'VTH/VTL は Rf と R1 の分圧で決まる'],
+        designNotes: ['ヒステリシス量は雑音振幅より大きく', 'オープンドレイン出力はプルアップが必要', '高速用途は伝搬遅延に注意'],
+        commonMistakes: ['オペアンプをコンパレータに誤用し発振', 'ヒステリシス不足で出力がチャタリング']
+      },
+      ko: {
+        principles: '비교기 출력을 저항으로 +단자에 정귀환시켜 스위칭 문턱을 상하 두 값(VTH, VTL)으로 나눈다. 히스테리시스 대역 내 입력 잡음은 출력을 뒤집지 않는다.',
+        keyFormulas: ['VH = VTH - VTL', 'VTH/VTL은 Rf와 R1 분압으로 결정'],
+        designNotes: ['히스테리시스 양은 잡음 진폭보다 크게', '오픈드레인 출력은 풀업 필요', '고속 용도는 전파 지연 주의'],
+        commonMistakes: ['op-amp를 비교기로 오용해 발진', '히스테리시스 부족으로 출력 채터링']
+      }
+    },
+    'comparator-vs-opamp': {
+      en: {
+        principles: 'A comparator is designed for open-loop comparison of two voltages -> a digital high/low output: open-drain or push-pull rail-to-rail output, no phase compensation, fast, often with built-in hysteresis. An op-amp is designed for closed-loop linear amplification: phase compensation ensures negative-feedback stability, but used open-loop as a comparator it is slow, may oscillate, and its output is not a digital level. A comparator must not have negative feedback (it would oscillate in the linear region); an op-amp must not be used as a comparator without feedback.',
+        keyFormulas: ['Comparator: Vout = (V+ > V-) ? VOH : VOL', 'Op-amp (negative feedback): Vout = A(V+ - V-), virtual short V+≈V-', 'Hysteresis: VH = VTH - VTL'],
+        designNotes: ['A comparator open-drain output needs a pull-up to the logic voltage', 'Add positive feedback (hysteresis) to a comparator for noise immunity, not negative feedback', 'An op-amp needs negative feedback + compensation; do not use it open-loop as a comparator', 'Mind comparator propagation delay and op-amp GBW/SR', 'Choose a comparator when driving logic (clear levels)'],
+        commonMistakes: ['Using an op-amp as a comparator -> slow / oscillation / undefined levels', 'Adding negative feedback to a comparator -> linear-region oscillation', 'Forgetting the comparator pull-up (open-drain floating)', 'Confusing the two output characteristics']
+      },
+      ja: {
+        principles: 'コンパレータは「2 電圧を開ループ比較→デジタル H/L 出力」用に設計：出力段はオープンドレインまたはプッシュプルのレール・ツー・レール、位相補償なし、高速、多くはヒステリシス内蔵。オペアンプは「閉ループ線形増幅」用：位相補償で負帰還の安定性を保証するが、開ループでコンパレータとして使うと遷移が遅く発振の恐れ、出力もデジタル準位でない。コンパレータに負帰還を接続してはならない（線形領域で発振）、オペアンプを帰還なしでコンパレータに使ってはならない。',
+        keyFormulas: ['コンパレータ：Vout = (V+ > V-) ? VOH : VOL', 'オペアンプ（負帰還）：Vout = A(V+ - V-)、バーチャルショート V+≈V-', 'ヒステリシス：VH = VTH - VTL'],
+        designNotes: ['コンパレータのオープンドレイン出力はロジック電圧へプルアップ', 'コンパレータには正帰還（ヒステリシス）で耐雑音、負帰還は不可', 'オペアンプは負帰還＋補償が必要、帰還なしでコンパレータに使わない', 'コンパレータの伝搬遅延、オペアンプの GBW/SR に注意', 'ロジック駆動時はコンパレータを選ぶ（準位が明確）'],
+        commonMistakes: ['オペアンプをコンパレータに使う→遅い/発振/準位不明', 'コンパレータに負帰還→線形領域で発振', 'コンパレータのプルアップを忘れる（オープンドレインが浮動）', '両者の出力特性を混同']
+      },
+      ko: {
+        principles: "비교기는 '두 전압을 개루프 비교→디지털 H/L 출력'용으로 설계된다: 출력단은 오픈드레인 또는 푸시풀 레일 투 레일, 위상 보상 없음, 고속, 흔히 히스테리시스 내장. op-amp는 '폐루프 선형 증폭'용: 위상 보상으로 부귀환 안정성을 보장하나, 개루프로 비교기로 쓰면 천이가 느리고 발진할 수 있으며 출력도 디지털 레벨이 아니다. 비교기에는 부귀환을 연결하면 안 되고(선형 영역에서 발진), op-amp를 귀환 없이 비교기로 쓰면 안 된다.",
+        keyFormulas: ['비교기: Vout = (V+ > V-) ? VOH : VOL', 'op-amp(부귀환): Vout = A(V+ - V-), 가상 단락 V+≈V-', '히스테리시스: VH = VTH - VTL'],
+        designNotes: ['비교기 오픈드레인 출력은 로직 전압으로 풀업', '비교기에는 정귀환(히스테리시스)으로 내잡음, 부귀환 금지', 'op-amp는 부귀환+보상 필요, 귀환 없이 비교기로 쓰지 않음', '비교기 전파 지연, op-amp GBW/SR 주의', '로직 구동 시 비교기 선택(레벨 명확)'],
+        commonMistakes: ['op-amp를 비교기로 사용→느림/발진/레벨 불명', '비교기에 부귀환→선형 영역 발진', '비교기 풀업을 잊음(오픈드레인 플로팅)', '둘의 출력 특성 혼동']
+      }
+    },
+    'tl431-reference': {
+      en: {
+        principles: 'It has an internal 2.5V reference; when the REF-pin voltage reaches 2.5V the cathode starts to conduct and shunt current. An external divider sets the regulation point.',
+        keyFormulas: ['Vka = 2.5 * (1 + R1/R2)', 'Ika must be > 1mA to maintain regulation'],
+        designNotes: ['A limiting resistor ensures the minimum operating current', 'Feedback often pairs with an optocoupler for isolation', 'Mind capacitive-load stability'],
+        commonMistakes: ['Insufficient operating current, cannot regulate', 'Improper phase compensation causing oscillation']
+      },
+      ja: {
+        principles: '内部に 2.5V 基準を持ち、REF ピン電圧が 2.5V に達するとカソードが導通しシャントを開始。外部分圧で調節点電圧を設定。',
+        keyFormulas: ['Vka = 2.5 * (1 + R1/R2)', 'Ika は調節維持のため > 1mA 必要'],
+        designNotes: ['制限抵抗で最小動作電流を確保', '帰還はフォトカプラと組み絶縁にすることが多い', '容量負荷の安定性に注意'],
+        commonMistakes: ['動作電流不足で安定化できない', '位相補償が不適切で発振']
+      },
+      ko: {
+        principles: '내부에 2.5V 기준을 가지며, REF 핀 전압이 2.5V에 도달하면 캐소드가 도통해 션트를 시작. 외부 분압으로 조절점 전압을 설정.',
+        keyFormulas: ['Vka = 2.5 * (1 + R1/R2)', 'Ika는 조절 유지를 위해 > 1mA 필요'],
+        designNotes: ['제한 저항으로 최소 동작 전류 확보', '피드백은 포토커플러와 조합해 절연하는 경우가 많음', '용량성 부하 안정성 주의'],
+        commonMistakes: ['동작 전류 부족으로 안정화 불가', '위상 보상 부적절로 발진']
+      }
+    },
+    'rc-lowpass-filter': {
+      en: {
+        principles: 'A resistor and capacitor in series/shunt; high frequencies are bypassed and attenuated by the capacitor. Cutoff frequency fc = 1/(2πRC), rolling off 20dB per decade.',
+        keyFormulas: ['fc = 1/(2πRC)', '-3dB @ fc', 'Phase shift 45° @ fc'],
+        designNotes: ['Anti-alias filter before an ADC', 'Too large an R is affected by input impedance', 'Consider capacitor dielectric absorption'],
+        commonMistakes: ['Wrong cutoff-frequency design', 'Not including source/load impedance in the calculation']
+      },
+      ja: {
+        principles: '抵抗とコンデンサを直並列に接続、高周波はコンデンサでバイパスし減衰。カットオフ周波数 fc = 1/(2πRC)、10 倍周波数ごとに 20dB 減衰。',
+        keyFormulas: ['fc = 1/(2πRC)', '-3dB @ fc', '位相シフト 45° @ fc'],
+        designNotes: ['ADC 前のアンチエイリアシングろ波', 'R が大きすぎると入力インピーダンスの影響を受ける', 'コンデンサの誘電体吸収を考慮'],
+        commonMistakes: ['カットオフ周波数の設計ミス', '源/負荷インピーダンスを計算に入れない']
+      },
+      ko: {
+        principles: '저항과 커패시터를 직병렬로 연결, 고주파는 커패시터로 바이패스되어 감쇠. 차단 주파수 fc = 1/(2πRC), 10배 주파수마다 20dB 감쇠.',
+        keyFormulas: ['fc = 1/(2πRC)', '-3dB @ fc', '위상 이동 45° @ fc'],
+        designNotes: ['ADC 앞단 안티에일리어싱 여파', 'R이 너무 크면 입력 임피던스의 영향을 받음', '커패시터 유전체 흡수 고려'],
+        commonMistakes: ['차단 주파수 설계 오류', '소스/부하 임피던스를 계산에 넣지 않음']
+      }
+    },
+    'crystal-oscillator': {
+      en: {
+        principles: 'The Pierce topology uses an inverting amplifier and the crystal to form a positive-feedback oscillator; the two load capacitors set the oscillation-frequency accuracy.',
+        keyFormulas: ['CL = (C1*C2)/(C1+C2) + Cstray', 'f set by the crystal and CL'],
+        designNotes: ['Match the load capacitors to the crystal spec', 'Short traces, add a ground guard ring', 'Avoid interference from adjacent high-speed signals'],
+        commonMistakes: ['Wrong load-capacitor value shifting the frequency', 'Too-long routing failing to start oscillation']
+      },
+      ja: {
+        principles: 'Pierce 構成は反転増幅器と水晶で正帰還発振を形成、2 つの負荷容量が発振周波数精度を決める。',
+        keyFormulas: ['CL = (C1*C2)/(C1+C2) + Cstray', 'f は水晶と CL で決まる'],
+        designNotes: ['負荷容量を水晶の仕様に合わせる', '配線を短く、ガードリングを追加', '隣接する高速信号の干渉を避ける'],
+        commonMistakes: ['負荷容量値の誤りで周波数がずれる', '配線が長すぎて発振しない']
+      },
+      ko: {
+        principles: 'Pierce 구성은 반전 증폭기와 수정으로 정귀환 발진을 형성, 두 부하 커패시터가 발진 주파수 정확도를 결정한다.',
+        keyFormulas: ['CL = (C1*C2)/(C1+C2) + Cstray', 'f는 수정과 CL로 결정'],
+        designNotes: ['부하 커패시터를 수정 사양에 맞춤', '배선을 짧게, 가드 링 추가', '인접 고속 신호 간섭 회피'],
+        commonMistakes: ['부하 커패시터 값 오류로 주파수 이동', '배선이 너무 길어 발진 안 함']
+      }
+    },
+    'ntc-thermistor': {
+      en: {
+        principles: "An NTC's resistance drops as temperature rises; dividing it with a fixed pull-up resistor, the ADC reads the divider voltage and converts to temperature via a lookup table or the Steinhart equation.",
+        keyFormulas: ['1/T = A + B*ln(R) + C*ln(R)^3', 'Vadc = Vcc * Rntc/(Rpu+Rntc)'],
+        designNotes: ['Choose the pull-up value for best resolution in the target temperature range', 'Reduce sensing current to lower self-heating', 'Add RC filtering for noise immunity'],
+        commonMistakes: ['Self-heating causing a high reading', 'No linearization causing large error']
+      },
+      ja: {
+        principles: 'NTC は温度上昇で抵抗値が下がる。固定プルアップ抵抗と分圧し、ADC が分圧電圧を読み、テーブルや Steinhart 方程式で温度に換算。',
+        keyFormulas: ['1/T = A + B*ln(R) + C*ln(R)^3', 'Vadc = Vcc * Rntc/(Rpu+Rntc)'],
+        designNotes: ['目標温度域の分解能が最良になるプルアップ値を選ぶ', '自己発熱を下げるため測定電流を低減', 'RC ろ波で耐雑音'],
+        commonMistakes: ['自己発熱で読値が高くなる', '線形化しないと誤差が大きい']
+      },
+      ko: {
+        principles: 'NTC는 온도 상승으로 저항값이 낮아진다. 고정 풀업 저항과 분압하고, ADC가 분압 전압을 읽어 룩업 테이블이나 Steinhart 방정식으로 온도로 환산.',
+        keyFormulas: ['1/T = A + B*ln(R) + C*ln(R)^3', 'Vadc = Vcc * Rntc/(Rpu+Rntc)'],
+        designNotes: ['목표 온도 구간의 분해능이 최적인 풀업 값 선택', '자기 발열을 낮추기 위해 측정 전류 저감', 'RC 여파로 내잡음'],
+        commonMistakes: ['자기 발열로 읽기값이 높아짐', '선형화하지 않으면 오차가 큼']
+      }
+    },
+    'hot-swap': {
+      en: {
+        principles: 'A series MOSFET, controlled by a hot-swap controller sensing current through a shunt resistor, opens the gate slowly to limit dI/dt and inrush, and provides overcurrent protection.',
+        keyFormulas: ['Ilimit = Vsense_th / Rsense', 'The SOA must cover V*I at startup', 'dV/dt set by the gate capacitance'],
+        designNotes: ['The MOSFET must stay within the safe operating area (SOA)', 'A soft-start capacitor sets the inrush slope', 'Add decoupling capacitors at the load side'],
+        commonMistakes: ['MOSFET exceeding SOA and failing', 'Excessive inrush tripping upstream protection']
+      },
+      ja: {
+        principles: '直列 MOSFET をホットスワップコントローラがシャント抵抗で電流検出しつつ制御し、ゲートを緩やかに開いて dI/dt と突入電流を制限、過電流保護も提供する。',
+        keyFormulas: ['Ilimit = Vsense_th / Rsense', 'SOA は起動時の V*I をカバーする必要', 'dV/dt はゲート容量で設定'],
+        designNotes: ['MOSFET は安全動作領域（SOA）内に収める', 'ソフトスタート容量で突入電流の傾きを設定', '負荷側にデカップリングコンデンサを追加'],
+        commonMistakes: ['MOSFET が SOA を超えて破損', '突入電流が大きすぎ上流保護が作動']
+      },
+      ko: {
+        principles: '직렬 MOSFET을 핫스왑 컨트롤러가 션트 저항으로 전류를 감지하며 제어하고, 게이트를 천천히 열어 dI/dt와 인러시를 제한하며 과전류 보호도 제공한다.',
+        keyFormulas: ['Ilimit = Vsense_th / Rsense', 'SOA는 기동 시 V*I를 커버해야 함', 'dV/dt는 게이트 용량으로 설정'],
+        designNotes: ['MOSFET은 안전 동작 영역(SOA) 내에 둠', '소프트 스타트 커패시터로 인러시 기울기 설정', '부하 측에 디커플링 커패시터 추가'],
+        commonMistakes: ['MOSFET이 SOA를 초과해 파손', '인러시가 너무 커 상류 보호 작동']
+      }
+    },
+    'optocoupler-feedback': {
+      en: {
+        principles: 'The primary-side LED emits light that drives the secondary-side phototransistor, passing the signal optically for galvanic isolation. Often paired with a TL431 for isolated power-supply feedback.',
+        keyFormulas: ['CTR = Ic/If (current transfer ratio)', 'If set by a limiting resistor'],
+        designNotes: ['Account for CTR degradation with temperature/aging', 'Isolation creepage distance meets safety standards', 'Limited bandwidth, not for high speed'],
+        commonMistakes: ['Insufficient CTR margin failing the feedback', 'Primary/secondary grounds not properly separated']
+      },
+      ja: {
+        principles: '一次側 LED が発光し二次側フォトトランジスタを駆動、光で信号を伝えて電気的絶縁を実現。TL431 と組み絶縁電源帰還に使うことが多い。',
+        keyFormulas: ['CTR = Ic/If（電流伝達比）', 'If は制限抵抗で設定'],
+        designNotes: ['CTR の温度/経年劣化を考慮', '絶縁の沿面距離が安全規格に適合', '帯域が限られ高速には不向き'],
+        commonMistakes: ['CTR の余裕不足で帰還が失効', '一次/二次接地が正しく分離されていない']
+      },
+      ko: {
+        principles: '1차 측 LED가 발광해 2차 측 포토트랜지스터를 구동, 빛으로 신호를 전달해 전기적 절연을 실현. TL431과 조합해 절연 전원 피드백에 쓰는 경우가 많다.',
+        keyFormulas: ['CTR = Ic/If(전류 전달비)', 'If는 제한 저항으로 설정'],
+        designNotes: ['CTR의 온도/노화 열화 고려', '절연 연면 거리가 안전 규격 충족', '대역이 제한되어 고속에 부적합'],
+        commonMistakes: ['CTR 여유 부족으로 피드백 실효', '1차/2차 접지가 올바르게 분리되지 않음']
+      }
+    },
+    'oring-power': {
+      en: {
+        principles: 'A diode-OR connection lets the higher voltage supply power and blocks back-feed; an ideal diode replaces the Schottky with a MOSFET + controller, greatly lowering the conduction drop and loss.',
+        keyFormulas: ['Ploss = I^2 * Rds_on (ideal diode)', 'Schottky drop ≈ 0.3-0.5V'],
+        designNotes: ['An ideal-diode controller prevents back-feed', 'Mind the voltage droop at the switchover instant', 'Use a low-Rds_on MOSFET for high current'],
+        commonMistakes: ['Diode drop causing heating', 'No back-feed protection damaging the supply']
+      },
+      ja: {
+        principles: 'ダイオード OR 接続で高い電圧側が給電し逆流を阻止、理想ダイオードはショットキーを MOSFET＋コントローラに置換し導通降下と損失を大幅に低減。',
+        keyFormulas: ['Ploss = I^2 * Rds_on（理想ダイオード）', 'ショットキー降下 ≈ 0.3-0.5V'],
+        designNotes: ['理想ダイオードコントローラで逆流を防止', '切替瞬間の電圧降下に注意', '大電流には低 Rds_on の MOSFET を使う'],
+        commonMistakes: ['ダイオード降下で発熱', '逆流保護なしで電源が破損']
+      },
+      ko: {
+        principles: '다이오드 OR 연결로 더 높은 전압 측이 급전하고 역류를 차단, 이상 다이오드는 쇼트키를 MOSFET+컨트롤러로 대체해 도통 강하와 손실을 크게 낮춘다.',
+        keyFormulas: ['Ploss = I^2 * Rds_on(이상 다이오드)', '쇼트키 강하 ≈ 0.3-0.5V'],
+        designNotes: ['이상 다이오드 컨트롤러로 역류 방지', '전환 순간의 전압 강하 주의', '대전류에는 저 Rds_on MOSFET 사용'],
+        commonMistakes: ['다이오드 강하로 발열', '역류 보호 없어 전원 손상']
+      }
+    },
+    'charge-pump': {
+      en: {
+        principles: 'A clock alternately switches a flying capacitor to move charge to the output capacitor, doing voltage doubling, inversion or division. Suited to small-current loads.',
+        keyFormulas: ['Vout ≈ N * Vin (ideal)', 'Rout ≈ 1/(f*Cfly)', 'Output impedance falls with frequency'],
+        designNotes: ['Flying-capacitor value and frequency set the output current', 'Low-ESR capacitors reduce ripple', 'Only suitable for light loads'],
+        commonMistakes: ['Output voltage collapsing under too heavy a load', 'Too small a capacitor causing large ripple']
+      },
+      ja: {
+        principles: 'クロックがフライングコンデンサを交互に切り替え電荷を出力コンデンサへ移動、倍圧・反転・分圧ができる。小電流負荷に適する。',
+        keyFormulas: ['Vout ≈ N * Vin（理想）', 'Rout ≈ 1/(f*Cfly)', '出力インピーダンスは周波数とともに低下'],
+        designNotes: ['フライングコンデンサ値と周波数が出力電流を決める', '低 ESR コンデンサでリップルを低減', '軽負荷にのみ適する'],
+        commonMistakes: ['負荷が重すぎて出力電圧が崩壊', 'コンデンサが小さすぎリップルが大きい']
+      },
+      ko: {
+        principles: '클록이 플라잉 커패시터를 교대로 스위칭해 전하를 출력 커패시터로 옮겨 배압·반전·분압을 한다. 소전류 부하에 적합.',
+        keyFormulas: ['Vout ≈ N * Vin(이상)', 'Rout ≈ 1/(f*Cfly)', '출력 임피던스는 주파수에 따라 하락'],
+        designNotes: ['플라잉 커패시터 값과 주파수가 출력 전류를 결정', '저 ESR 커패시터로 리플 저감', '경부하에만 적합'],
+        commonMistakes: ['부하가 너무 무거워 출력 전압 붕괴', '커패시터가 너무 작아 리플 과대']
+      }
     }
   };
   var M = window.KNOWLEDGE_I18N = window.KNOWLEDGE_I18N || {};
