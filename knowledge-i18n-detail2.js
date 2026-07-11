@@ -1206,6 +1206,206 @@
         designNotes: ['Q1, Q2는 정합시키고 열 결합', '이미터 축퇴 저항으로 정합 개선', '얼리 효과(출력 임피던스) 고려', 'Wilson/캐스코드로 정확도 향상'],
         commonMistakes: ['트랜지스터 불일치로 미러 오차', '얼리 효과 무시', '열 기울기로 비대칭']
       }
+    },
+    'bjt-switch': {
+      en: {
+        principles: 'Injecting enough base current through a limiting resistor saturates the BJT (Vce ≈ 0.2V), turning the collector load on. Ib > Ic/β ensures saturation. With no base current the collector cuts off.',
+        keyFormulas: ['Ib ≥ Ic / β (overdrive needed for saturation)', 'Rb = (Vin - Vbe)/Ib', 'Vce(sat) ≈ 0.2V'],
+        designNotes: ['Base resistor ensures saturation (2-5x overdrive)', 'Add a freewheeling diode for inductive loads', 'For speed add a base-emitter bleed resistor', 'Power loss = Vce(sat) x Ic'],
+        commonMistakes: ['Insufficient base current, not saturated, heating', 'Freewheeling diode missing on an inductive load', 'Base resistor too large, slow switching']
+      },
+      ja: {
+        principles: 'ベースに制限抵抗経由で十分な電流を注入し BJT を飽和させる（Vce ≈ 0.2V）と、コレクタ負荷が導通。飽和には Ib > Ic/β が必要。遮断時はベース電流ゼロでコレクタがカットオフ。',
+        keyFormulas: ['Ib ≥ Ic / β（飽和には過駆動が必要）', 'Rb = (Vin - Vbe)/Ib', 'Vce(sat) ≈ 0.2V'],
+        designNotes: ['ベース抵抗で飽和を確保（過駆動 2～5 倍）', '誘導性負荷にはフリーホイールダイオードを追加', '高速化にはベース-エミッタ間に放電抵抗', '電力損失 = Vce(sat) x Ic'],
+        commonMistakes: ['ベース電流不足で未飽和・発熱', '誘導性負荷でフリーホイールダイオードを付け忘れ', 'ベース抵抗が大きすぎてスイッチングが遅い']
+      },
+      ko: {
+        principles: '베이스에 제한 저항을 거쳐 충분한 전류를 주입해 BJT를 포화시키면(Vce ≈ 0.2V) 컬렉터 부하가 도통. 포화에는 Ib > Ic/β 필요. 차단 시 베이스 전류 0으로 컬렉터 컷오프.',
+        keyFormulas: ['Ib ≥ Ic / β(포화에 과구동 필요)', 'Rb = (Vin - Vbe)/Ib', 'Vce(sat) ≈ 0.2V'],
+        designNotes: ['베이스 저항으로 포화 확보(과구동 2~5배)', '유도성 부하에는 프리휠 다이오드 추가', '고속화에는 베이스-이미터 방전 저항', '전력 손실 = Vce(sat) x Ic'],
+        commonMistakes: ['베이스 전류 부족으로 미포화·발열', '유도성 부하에 프리휠 다이오드 누락', '베이스 저항이 너무 커 스위칭이 느림']
+      }
+    },
+    'push-pull-converter': {
+      en: {
+        principles: 'The primary center tap connects to V+, and two MOSFETs conduct alternately so the transformer flux swings both ways (high utilization). The secondary usually uses center-tapped full-wave rectification. The two switches must never conduct together.',
+        keyFormulas: ['Vout ≈ (Ns/Np) * Vin * D * 2 (full-wave)', 'Switch voltage rating ≥ 2*Vin (plus leakage spike)', 'Dead time needed to prevent shoot-through'],
+        designNotes: ['The two switches must alternate with dead time; simultaneous conduction burns them', 'Switch Vds at least 2*Vin with margin for leakage spikes', 'Symmetric transformer center tap reduces flux imbalance', 'Add flux balancing / current-mode control to avoid staircase saturation'],
+        commonMistakes: ['Flux imbalance causing saturation', 'Switch voltage rating below 2*Vin', 'No dead time causing shoot-through']
+      },
+      ja: {
+        principles: '一次側センタータップを V+ に接続し、2 つの MOSFET が交互に導通してトランス磁束を双方向に振らせる（利用率が高い）。二次側はセンタータップ全波整流が多い。両スイッチの同時導通は禁止。',
+        keyFormulas: ['Vout ≈ (Ns/Np) * Vin * D * 2（全波）', 'スイッチ耐圧 ≥ 2*Vin（漏れインダクタンスのスパイクを加味）', '直通防止にデッドタイムが必要'],
+        designNotes: ['両スイッチは必ず交互に、デッドタイムを設ける。同時導通は焼損', 'スイッチ Vds は最低 2*Vin、漏れスパイクの余裕を確保', 'トランスのセンタータップを対称にし磁束不平衡を低減', '磁束平衡/電流モード制御で偏磁飽和を回避'],
+        commonMistakes: ['偏磁（磁束不平衡）で飽和', 'スイッチ耐圧不足（2*Vin）', 'デッドタイムなしで直通']
+      },
+      ko: {
+        principles: '1차 측 센터탭을 V+에 연결하고 두 MOSFET이 교대로 도통해 트랜스 자속을 양방향으로 스윙(이용률 높음). 2차 측은 센터탭 전파 정류가 많다. 두 스위치의 동시 도통 금지.',
+        keyFormulas: ['Vout ≈ (Ns/Np) * Vin * D * 2(전파)', '스위치 내압 ≥ 2*Vin(누설 스파이크 가산)', '슛스루 방지에 데드타임 필요'],
+        designNotes: ['두 스위치는 반드시 교대로, 데드타임 추가. 동시 도통은 소손', '스위치 Vds는 최소 2*Vin, 누설 스파이크 여유 확보', '트랜스 센터탭을 대칭으로 해 자속 불평형 저감', '자속 평형/전류 모드 제어로 편자 포화 회피'],
+        commonMistakes: ['편자(자속 불평형)로 포화', '스위치 내압 부족(2*Vin)', '데드타임 없어 슛스루']
+      }
+    },
+    'full-bridge-converter': {
+      en: {
+        principles: 'Four MOSFETs conduct in diagonal pairs (Q1+Q4 / Q2+Q3), giving the primary a full-amplitude alternating voltage - best transformer utilization. The secondary usually uses bridge or center-tapped rectification.',
+        keyFormulas: ['Vout ≈ (Ns/Np) * Vin * D', 'Switch voltage rating ≈ Vin (better than push-pull 2*Vin)', 'Dead time needed against same-leg shoot-through'],
+        designNotes: ['Diagonal switches conduct in pairs; always add dead time against same-leg shoot-through', 'The high side needs bootstrap or isolated drive', 'Phase-shift control achieves ZVS soft switching', 'A DC-blocking capacitor on the primary prevents flux walking'],
+        commonMistakes: ['Same-leg shoot-through burning transistors', 'Insufficient high-side drive supply', 'Flux walking unhandled, causing saturation']
+      },
+      ja: {
+        principles: '4 つの MOSFET が対角ペアで導通し（Q1+Q4 / Q2+Q3）、一次側に正負交互の全振幅電圧を与える——トランス利用率が最良。二次側はブリッジまたはセンタータップ整流が多い。',
+        keyFormulas: ['Vout ≈ (Ns/Np) * Vin * D', 'スイッチ耐圧 ≈ Vin（プッシュプルの 2*Vin より有利）', '同アーム直通防止にデッドタイムが必要'],
+        designNotes: ['対角スイッチをペアで導通、必ずデッドタイムで同アーム直通を防ぐ', 'ハイサイドはブートストラップか絶縁駆動', '位相シフト制御で ZVS ソフトスイッチング', '一次側に直流阻止コンデンサで偏磁を防止'],
+        commonMistakes: ['同アーム上下直通で焼損', 'ハイサイド駆動電源が不足', '偏磁未対策で飽和']
+      },
+      ko: {
+        principles: 'MOSFET 4개가 대각 쌍으로 도통(Q1+Q4 / Q2+Q3)해 1차 측에 정부 교대의 전폭 전압을 준다 - 트랜스 이용률 최적. 2차 측은 브리지 또는 센터탭 정류가 많다.',
+        keyFormulas: ['Vout ≈ (Ns/Np) * Vin * D', '스위치 내압 ≈ Vin(푸시풀의 2*Vin보다 유리)', '동일 레그 슛스루 방지에 데드타임 필요'],
+        designNotes: ['대각 스위치를 쌍으로 도통, 반드시 데드타임으로 동일 레그 슛스루 방지', '하이사이드는 부트스트랩이나 절연 구동', '위상 시프트 제어로 ZVS 소프트 스위칭', '1차 측에 직류 차단 커패시터로 편자 방지'],
+        commonMistakes: ['동일 레그 상하 슛스루로 소손', '하이사이드 구동 전원 부족', '편자 미처리로 포화']
+      }
+    },
+    'pwm-control': {
+      en: {
+        principles: 'A comparator compares a fixed-frequency sawtooth with the error-amplifier output (Vctrl): output high when sawtooth > Vctrl, low otherwise -> a square wave whose duty follows Vctrl. Closing the loop on Vctrl regulates voltage/speed.',
+        keyFormulas: ['D = Vctrl / Vramp_pk', 'fsw = sawtooth frequency', 'Vout = Vin * D (buck)'],
+        designNotes: ['Sawtooth linearity affects modulation accuracy', 'Add slope compensation against current-mode subharmonic oscillation', 'The comparator must be fast and low-delay', 'Mind min/max duty-cycle limits'],
+        commonMistakes: ['Improper error-amp compensation causing oscillation', 'Duty saturation losing regulation', 'Noise coupling into the comparator causing false triggers']
+      },
+      ja: {
+        principles: 'コンパレータが固定周波数の鋸歯波と誤差増幅器出力（Vctrl）を比較：鋸歯 > Vctrl で出力高、逆で低 → デューティが Vctrl に追従する方形波を生成。閉ループで Vctrl を調整すれば安定化/速度制御になる。',
+        keyFormulas: ['D = Vctrl / Vramp_pk', 'fsw = 鋸歯波周波数', 'Vout = Vin * D（Buck）'],
+        designNotes: ['鋸歯波の線形性が変調精度に影響', 'スロープ補償で電流モードのサブハーモニック発振を回避', 'コンパレータは高速・低遅延が必要', '最小/最大デューティ比の制限に注意'],
+        commonMistakes: ['誤差増幅器の補償不良で発振', 'デューティ飽和で調節を失う', '雑音がコンパレータに結合し誤トリガ']
+      },
+      ko: {
+        principles: '비교기가 고정 주파수 톱니파와 오차 증폭기 출력(Vctrl)을 비교: 톱니 > Vctrl이면 출력 하이, 반대면 로우 → 듀티가 Vctrl을 따르는 구형파 생성. 폐루프로 Vctrl을 조정하면 안정화/속도 제어.',
+        keyFormulas: ['D = Vctrl / Vramp_pk', 'fsw = 톱니파 주파수', 'Vout = Vin * D (Buck)'],
+        designNotes: ['톱니파 선형성이 변조 정확도에 영향', '슬로프 보상으로 전류 모드 서브하모닉 발진 회피', '비교기는 고속·저지연 필요', '최소/최대 듀티비 제한 주의'],
+        commonMistakes: ['오차 증폭기 보상 불량으로 발진', '듀티 포화로 조절 상실', '잡음이 비교기에 결합해 오트리거']
+      }
+    },
+    'ddr-termination': {
+      en: {
+        principles: 'DDR signal rates are high; traces need impedance matching. A common scheme parallel-terminates the far end to VTT (mid voltage), or uses on-die termination (ODT). VTT comes from a dedicated VTT regulator that can source and sink current.',
+        keyFormulas: ['Rt = Z0 (match the characteristic impedance)', 'VTT = Vdd/2', 'The VTT regulator must source/sink current'],
+        designNotes: ['The VTT rail needs plenty of decoupling and low impedance', 'Termination resistors close to the receiver', 'Use ODT to reduce external components', 'VTT routing wide and short, bidirectional current'],
+        commonMistakes: ['Insufficient VTT decoupling causing bounce', 'Wrong termination position leaving reflections', 'Using an ordinary LDO for VTT (cannot sink current)']
+      },
+      ja: {
+        principles: 'DDR は信号速度が高く、配線にインピーダンス整合が必要。終端に並列抵抗を VTT（中点電圧）へ接続するか、チップ内蔵の ODT（On-Die Termination）を使う。VTT は電流を吐き/吸いできる専用 VTT レギュレータが供給。',
+        keyFormulas: ['Rt = Z0（特性インピーダンスを整合）', 'VTT = Vdd/2', 'VTT レギュレータは source/sink 電流が必要'],
+        designNotes: ['VTT レールは大量のデカップリングと低インピーダンスが必要', '終端抵抗は受信端の近くに', 'ODT を活用し外部部品を削減', 'VTT 配線は太く短く、双方向電流'],
+        commonMistakes: ['VTT デカップリング不足で変動', '終端位置の誤りで反射が残る', '通常の LDO を VTT に使う（電流を吸えない）']
+      },
+      ko: {
+        principles: 'DDR은 신호 속도가 높아 배선에 임피던스 정합 필요. 종단에 병렬 저항을 VTT(중점 전압)에 연결하거나 칩 내장 ODT(On-Die Termination)를 쓴다. VTT는 전류를 소스/싱크할 수 있는 전용 VTT 레귤레이터가 공급.',
+        keyFormulas: ['Rt = Z0(특성 임피던스 정합)', 'VTT = Vdd/2', 'VTT 레귤레이터는 source/sink 전류 필요'],
+        designNotes: ['VTT 레일은 대량 디커플링과 저임피던스 필요', '종단 저항은 수신단 가까이', 'ODT를 활용해 외부 부품 절감', 'VTT 배선은 넓고 짧게, 양방향 전류'],
+        commonMistakes: ['VTT 디커플링 부족으로 흔들림', '종단 위치 오류로 반사 잔존', '일반 LDO를 VTT로 사용(전류를 못 빨아들임)']
+      }
+    },
+    'zener-regulator': {
+      en: {
+        principles: 'A Zener diode in reverse breakdown holds a nearly fixed voltage (Vz). A series limiting resistor Rs absorbs the difference between Vin and Vz, with the Zener shunting the output to clamp it. Suited to small-current references or protection.',
+        keyFormulas: ['Rs = (Vin - Vz)/(Iz + Iload)', 'Iz must stay between Izk and Izm', 'P_zener = Vz * Iz'],
+        designNotes: ['The limiting resistor keeps the Zener in its operating current', 'Regulation degrades with large load-current swings', 'Mind Zener power dissipation and tempco', 'Use an LDO for higher currents'],
+        commonMistakes: ['Wrong Rs making Iz too low or too high', 'Ignoring Zener dissipation, burning it', 'Using it as a high-current regulator (poor efficiency)']
+      },
+      ja: {
+        principles: 'ツェナーダイオードは逆方向降伏時に両端電圧がほぼ一定（Vz）。直列制限抵抗 Rs が Vin と Vz の差を吸収し、ツェナーを出力に並列して電圧をクランプ。小電流の基準や保護に適する。',
+        keyFormulas: ['Rs = (Vin - Vz)/(Iz + Iload)', 'Iz は Izk ～ Izm の間に維持', 'P_zener = Vz * Iz'],
+        designNotes: ['制限抵抗でツェナーの動作電流を確保', '負荷電流変動が大きいと安定化性能が低下', 'ツェナーの損失と温度係数に注意', '大電流には LDO を使う'],
+        commonMistakes: ['Rs の選定ミスで Iz が不足または過大', 'ツェナー損失を無視して焼損', '大電流レギュレータとして使う（効率が悪い）']
+      },
+      ko: {
+        principles: '제너 다이오드는 역방향 항복 시 양단 전압이 거의 일정(Vz). 직렬 제한 저항 Rs가 Vin과 Vz의 차를 흡수하고, 제너를 출력에 병렬로 전압을 클램프. 소전류 기준이나 보호에 적합.',
+        keyFormulas: ['Rs = (Vin - Vz)/(Iz + Iload)', 'Iz는 Izk ~ Izm 사이에 유지', 'P_zener = Vz * Iz'],
+        designNotes: ['제한 저항으로 제너 동작 전류 확보', '부하 전류 변동이 크면 안정화 성능 저하', '제너 손실과 온도계수 주의', '대전류는 LDO 사용'],
+        commonMistakes: ['Rs 선정 오류로 Iz 부족 또는 과대', '제너 손실 무시로 소손', '대전류 레귤레이터로 사용(효율 나쁨)']
+      }
+    },
+    'photodiode-tia': {
+      en: {
+        principles: 'A photodiode generates current I_PD under light. Connected to the op-amp inverting input (virtual ground), feedback resistor Rf converts current to voltage: Vout = -I_PD * Rf. The + input is grounded so the - input is a virtual ground, keeping the diode at zero bias (photovoltaic) or reverse bias (photoconductive).',
+        keyFormulas: ['Vout = -I_PD * Rf', 'Bandwidth ∝ 1/(Rf * Cin)', 'Add Cf in feedback for stability compensation'],
+        designNotes: ['Large Rf -> high gain but low bandwidth and high noise', 'Add feedback capacitor Cf to compensate and avoid oscillation', 'Use a low-bias-current, low-input-capacitance op-amp', 'A PCB guard ring lowers leakage current'],
+        commonMistakes: ['No Cf compensation causing oscillation', 'Op-amp bias current causing error', 'Layout leakage current affecting tiny currents']
+      },
+      ja: {
+        principles: 'フォトダイオードは受光で電流 I_PD を生成。オペアンプの反転入力（仮想接地）に接続し、帰還抵抗 Rf が電流を電圧に変換：Vout = -I_PD * Rf。＋端子を接地し－端子が仮想接地となり、ダイオードをゼロバイアス（光起電力）または逆バイアス（光導電）に保つ。',
+        keyFormulas: ['Vout = -I_PD * Rf', '帯域幅 ∝ 1/(Rf * Cin)', '帰還に Cf を追加し補償・安定化'],
+        designNotes: ['Rf 大→利得は高いが帯域が狭く雑音が大きい', '帰還コンデンサ Cf で補償し発振を回避', '低バイアス電流・低入力容量のオペアンプを使う', 'PCB ガードリングで漏れ電流を低減'],
+        commonMistakes: ['Cf 補償なしで発振', 'オペアンプのバイアス電流で誤差', '配線の漏れ電流が微小電流に影響']
+      },
+      ko: {
+        principles: '포토다이오드는 수광으로 전류 I_PD를 생성. op-amp 반전 입력(가상 접지)에 연결하고 피드백 저항 Rf가 전류를 전압으로 변환: Vout = -I_PD * Rf. +단자를 접지해 -단자가 가상 접지가 되어 다이오드를 제로 바이어스(광기전) 또는 역바이어스(광도전)로 유지.',
+        keyFormulas: ['Vout = -I_PD * Rf', '대역폭 ∝ 1/(Rf * Cin)', '피드백에 Cf 추가로 보상·안정화'],
+        designNotes: ['Rf 크면→이득 높으나 대역 좁고 잡음 큼', '피드백 커패시터 Cf로 보상해 발진 회피', '저바이어스 전류·저입력 용량 op-amp 사용', 'PCB 가드 링으로 누설 전류 저감'],
+        commonMistakes: ['Cf 보상 없어 발진', 'op-amp 바이어스 전류로 오차', '배선 누설 전류가 미소 전류에 영향']
+      }
+    },
+    'instrumentation-amplifier': {
+      en: {
+        principles: 'The front stage A1/A2 are non-inverting buffers giving very high input impedance; gain resistor Rg spans the two - inputs, so the differential signal falls entirely on Rg while common-mode passes through unamplified. The rear stage A3 is a standard difference amplifier that subtracts the A1/A2 outputs and removes common mode. A single Rg adjusts the whole gain without affecting CMRR.',
+        keyFormulas: ['Vout = (1 + 2R1/Rg) * (R3/R2) * (V2 - V1)', 'Front-stage gain = 1 + 2R1/Rg', 'Rear-stage gain = R3/R2', 'CMRR depends on R2/R3 ratio matching'],
+        designNotes: ['Changing Rg changes gain without touching CMRR; the symmetric front stage avoids resistor matching', 'Rear-stage R2/R3 need precision matching (0.1%) to hold CMRR', 'Use low-bias, low-drift op-amps to lower offset', 'The Ref pin can take a virtual ground for level shifting', 'An integrated INA (INA128/AD620) avoids the matching hassle'],
+        commonMistakes: ['Rear-stage resistor mismatch degrading CMRR', 'Rg tolerance turning directly into gain error', 'Driving the Ref pin from a high-impedance source ruining CMRR', 'No return path for input bias current causing saturation']
+      },
+      ja: {
+        principles: '前段 A1/A2 は非反転バッファで極めて高い入力インピーダンスを提供；利得抵抗 Rg を両－端間に接続すると差動信号は全て Rg に落ち、同相信号は同相のまま増幅されない。後段 A3 は標準差動増幅器で A1/A2 出力を減算し同相を除去。単一の Rg で全体利得を調整でき CMRR に影響しない。',
+        keyFormulas: ['Vout = (1 + 2R1/Rg) * (R3/R2) * (V2 - V1)', '前段利得 = 1 + 2R1/Rg', '後段利得 = R3/R2', 'CMRR は R2/R3 比の整合に依存'],
+        designNotes: ['Rg で利得を変えても CMRR に影響なし、前段は対称で抵抗整合不要', '後段 R2/R3 は精密整合（0.1%）で CMRR を維持', '低バイアス・低ドリフトのオペアンプでオフセットを低減', 'Ref ピンに仮想接地を接続しレベルシフト可能', '一体型 INA（INA128/AD620）を使えば整合の手間が省ける'],
+        commonMistakes: ['後段抵抗の不整合で CMRR が劣化', 'Rg の公差がそのまま利得誤差になる', 'Ref ピンを高インピーダンス源で駆動し CMRR を破壊', '入力バイアス電流の帰還経路がなく飽和']
+      },
+      ko: {
+        principles: '전단 A1/A2는 비반전 버퍼로 매우 높은 입력 임피던스를 제공; 이득 저항 Rg를 두 -단자 사이에 연결하면 차동 신호는 전부 Rg에 걸리고 공통 모드는 그대로 통과해 증폭되지 않는다. 후단 A3는 표준 차동 증폭기로 A1/A2 출력을 빼고 공통 모드를 제거. 단일 Rg로 전체 이득을 조정하며 CMRR에 영향 없음.',
+        keyFormulas: ['Vout = (1 + 2R1/Rg) * (R3/R2) * (V2 - V1)', '전단 이득 = 1 + 2R1/Rg', '후단 이득 = R3/R2', 'CMRR은 R2/R3 비 정합에 의존'],
+        designNotes: ['Rg로 이득을 바꿔도 CMRR 무영향, 전단은 대칭이라 저항 정합 불요', '후단 R2/R3는 정밀 정합(0.1%)으로 CMRR 유지', '저바이어스·저드리프트 op-amp로 오프셋 저감', 'Ref 핀에 가상 접지를 연결해 레벨 시프트 가능', '통합형 INA(INA128/AD620)를 쓰면 정합 수고 절감'],
+        commonMistakes: ['후단 저항 불일치로 CMRR 열화', 'Rg 공차가 그대로 이득 오차', 'Ref 핀을 고임피던스 소스로 구동해 CMRR 파괴', '입력 바이어스 전류 귀환 경로가 없어 포화']
+      }
+    },
+    'prevent-leakage-fet': {
+      en: {
+        principles: 'Each stage = NMOS + pull-up resistor = an inverter. The first-stage gate lives in the source domain (pull-up R388 to STBY), inverting LR_L into RTC_CLR_G; the second-stage gate takes RTC_CLR_G, and its drain is the open-drain output RTC_CLR_OD_L (pull-up in the destination domain). Two inversions cancel -> overall a non-inverting open-drain buffer. Open-drain "sinks only, never sources" plus a pull-up to the always-on STBY rail (large 100k), so when either voltage domain powers down no current back-feeds through I/O clamp diodes - achieving leakage prevention and domain isolation.',
+        keyFormulas: ['Each stage inverts: Vout high <-> gate low', 'LR_L low -> RTC_CLR_G high -> OD_L pulled low (active)', 'Standby current ≈ VSTBY / R_pullup (100k -> ~33µA worst case)', 'Open-drain output: sinks current (low), high-Z when released'],
+        designNotes: ['Pull up to the always-on STBY rail with a large value (100k) to keep static current low', 'The open-drain output prevents back-feeding an unpowered domain (the core of leakage prevention)', 'The BSS138 body-diode direction must agree with the anti-backfeed direction', 'The gate draws no DC current, no leakage path', 'Slower edges (R*C) - suited to static reset/clear signals'],
+        commonMistakes: ['Pulling up to a rail that powers down defeats the leak prevention', 'Replacing open-drain with an active push-pull output back-feeds the unpowered domain', 'Getting the polarity (double inversion) wrong', 'Pull-up value too small, standby current too high', 'Long trace + large pull-up: poor noise immunity / slow rise']
+      },
+      ja: {
+        principles: '各段 = NMOS + プルアップ抵抗 = インバータ。第 1 段のゲートは元ドメイン側（プルアップ R388 を STBY へ）で LR_L を反転し RTC_CLR_G に；第 2 段のゲートは RTC_CLR_G を受け、ドレインがオープンドレイン出力 RTC_CLR_OD_L（プルアップは先方ドメイン）。2 回の反転が打ち消し合い→全体として非反転オープンドレインバッファ。オープンドレインは「吸うだけで吐かない」＋プルアップを常時オンの STBY レール（100k の大きな値）に接続するため、どちらの電圧ドメインが電源断でも I/O クランプダイオード経由の逆給電が起きない——漏れ防止とドメイン絶縁を実現。',
+        keyFormulas: ['各段は反転：Vout 高 ⇔ ゲート低', 'LR_L 低→RTC_CLR_G 高→OD_L がロー（有効）', '待機電流 ≈ VSTBY / R_pullup（100k→最悪 ~33µA）', 'オープンドレイン出力：吸い込みのみ（low）、解放時は高インピーダンス'],
+        designNotes: ['プルアップは常時オンの STBY レールへ、大きな値（100k）で静的電流を抑える', 'オープンドレイン出力が未通電ドメインへの逆給電を防ぐ（漏れ防止の核心）', 'BSS138 のボディダイオードの向きは逆給電防止方向と一致させる', 'ゲートは DC 電流を消費せず、漏れ経路なし', 'エッジは遅め（R*C）、静的な reset/clear 信号に適する'],
+        commonMistakes: ['プルアップを電源断するメインレールに接続→漏れ防止の意味を失う', 'オープンドレインを能動プッシュプル出力に置き換え→未通電ドメインへ逆給電', '極性（2 回反転）の計算ミス', 'プルアップ値が小さすぎ→待機電流が過大', '長い配線＋大きなプルアップ→耐雑音が悪い/立ち上がりが遅い']
+      },
+      ko: {
+        principles: "각 단 = NMOS + 풀업 저항 = 인버터. 1단 게이트는 소스 도메인 측(풀업 R388을 STBY로)에서 LR_L을 반전해 RTC_CLR_G로; 2단 게이트는 RTC_CLR_G를 받고 드레인이 오픈드레인 출력 RTC_CLR_OD_L(풀업은 목적 도메인). 두 번의 반전이 상쇄→전체적으로 비반전 오픈드레인 버퍼. 오픈드레인은 '빨아들이기만 하고 내보내지 않음'+풀업을 상시 온 STBY 레일(큰 100k)에 연결하므로 어느 전압 도메인이 전원 차단돼도 I/O 클램프 다이오드를 통한 역급전이 없다 - 누설 방지와 도메인 절연 달성.",
+        keyFormulas: ['각 단은 반전: Vout 하이 <-> 게이트 로우', 'LR_L 로우→RTC_CLR_G 하이→OD_L 로우로 당김(유효)', '대기 전류 ≈ VSTBY / R_pullup(100k→최악 ~33µA)', '오픈드레인 출력: 전류 싱크만(low), 해제 시 고임피던스'],
+        designNotes: ['풀업은 상시 온 STBY 레일로, 큰 값(100k)으로 정적 전류 억제', '오픈드레인 출력이 미통전 도메인으로의 역급전을 방지(누설 방지의 핵심)', 'BSS138 보디 다이오드 방향은 역급전 방지 방향과 일치시킴', '게이트는 DC 전류를 소비하지 않아 누설 경로 없음', '에지가 느림(R*C) - 정적 reset/clear 신호에 적합'],
+        commonMistakes: ['풀업을 전원이 꺼지는 메인 레일에 연결→누설 방지 의미 상실', '오픈드레인을 능동 푸시풀 출력으로 대체→미통전 도메인에 역급전', '극성(2회 반전) 계산 오류', '풀업 값이 너무 작음→대기 전류 과대', '긴 배선+큰 풀업→내잡음 나쁨/상승 느림']
+      }
+    },
+    'bandgap-reference': {
+      en: {
+        principles: "A BJT's VBE falls with temperature (CTAT, about -2mV/°C). Two BJTs with emitter-area ratio 1:N at equal currents produce ΔVBE = VT*ln(N), where VT=kT/q rises with temperature (PTAT, positive coefficient). Multiplying ΔVBE by a factor M to give it a +2mV/°C slope and adding it to VBE cancels the slopes, yielding Vref = VBE + M*VT*ln(N) ≈ Eg/q ≈ 1.2V (the silicon bandgap voltage), with drift down to tens of ppm/°C. Typically an op-amp forces the two branch nodes equal, and the resistor ratio sets M.",
+        keyFormulas: ['Vref = VBE + M*VT*ln(N) ≈ 1.2V', 'VT = kT/q ≈ 26mV @300K', 'ΔVBE = VT*ln(N) (area ratio N)', 'VBE about -2mV/°C; the PTAT term is tuned to +2mV/°C to cancel'],
+        designNotes: ['Area ratio N is commonly 8 (laid out 3x3 common-centroid)', 'The resistor ratio sets M; needs precision matching and common-centroid layout', "The op-amp's offset becomes reference error directly -> use chopper/auto-zero", 'Add a startup circuit to avoid the zero-current stable state', 'Buffer and decouple the output; curvature compensation lowers drift further'],
+        commonMistakes: ['No startup circuit -> stuck at the 0V degenerate point', 'R/BJT mismatch -> large drift and initial error', 'Op-amp offset unhandled -> reference shifted', 'Loading the reference node directly -> droop/instability', 'Ignoring curvature (higher-order temperature terms) causing a mid-temperature bump']
+      },
+      ja: {
+        principles: 'BJT の VBE は温度で低下する（CTAT、約 -2mV/°C）。エミッタ面積比 1:N の 2 つの BJT に同じ電流を流すと ΔVBE = VT*ln(N) が生じ、VT=kT/q は温度で上昇（PTAT、正係数）。ΔVBE に係数 M を掛けて傾き +2mV/°C にし、VBE と加算 → 傾きが相殺され Vref = VBE + M*VT*ln(N) ≈ Eg/q ≈ 1.2V（シリコンのバンドギャップ電圧）、温度ドリフトは数十 ppm/°C まで低減可能。通常はオペアンプで両支路のノードを等電位に強制し、抵抗比で M を設定。',
+        keyFormulas: ['Vref = VBE + M*VT*ln(N) ≈ 1.2V', 'VT = kT/q ≈ 26mV @300K', 'ΔVBE = VT*ln(N)（面積比 N）', 'VBE 約 -2mV/°C；PTAT 項を +2mV/°C に調整して相殺'],
+        designNotes: ['面積比 N は 8 が多い（3x3 共通重心レイアウト）', '抵抗比が M を決める、精密整合と共通重心レイアウトが必要', 'オペアンプのオフセットが直接基準誤差になる→チョッパ/オートゼロを使う', '起動回路を追加しゼロ電流の安定点を回避', '出力にバッファとデカップリング；曲率補償でさらにドリフト低減'],
+        commonMistakes: ['起動回路なし→0V の縮退点に固着', 'R/BJT 不整合→ドリフトと初期誤差が大きい', 'オペアンプのオフセット未対策→基準がずれる', '基準ノードを直接負荷で引く→電圧降下/不安定', '曲率（高次温度項）を無視し中温で凸になる']
+      },
+      ko: {
+        principles: 'BJT의 VBE는 온도에 따라 하강(CTAT, 약 -2mV/°C). 이미터 면적비 1:N인 두 BJT에 같은 전류를 흘리면 ΔVBE = VT*ln(N)이 생기고, VT=kT/q는 온도에 따라 상승(PTAT, 양의 계수). ΔVBE에 계수 M을 곱해 기울기를 +2mV/°C로 만들어 VBE와 더하면 → 기울기가 상쇄되어 Vref = VBE + M*VT*ln(N) ≈ Eg/q ≈ 1.2V(실리콘 밴드갭 전압), 드리프트는 수십 ppm/°C까지 낮출 수 있다. 보통 op-amp로 두 지로 노드를 등전위로 강제하고 저항비로 M을 설정.',
+        keyFormulas: ['Vref = VBE + M*VT*ln(N) ≈ 1.2V', 'VT = kT/q ≈ 26mV @300K', 'ΔVBE = VT*ln(N)(면적비 N)', 'VBE 약 -2mV/°C; PTAT 항을 +2mV/°C로 조정해 상쇄'],
+        designNotes: ['면적비 N은 8이 흔함(3x3 공통 중심 배치)', '저항비가 M을 결정, 정밀 정합과 공통 중심 레이아웃 필요', 'op-amp 오프셋이 그대로 기준 오차→초퍼/오토제로 사용', '기동 회로를 추가해 제로 전류 안정점 회피', '출력에 버퍼와 디커플링; 곡률 보상으로 드리프트 추가 저감'],
+        commonMistakes: ['기동 회로 없음→0V 축퇴점에 고착', 'R/BJT 불일치→드리프트와 초기 오차 큼', 'op-amp 오프셋 미처리→기준 편이', '기준 노드를 직접 부하로 당김→강하/불안정', '곡률(고차 온도항) 무시로 중온에서 볼록']
+      }
     }
   };
   var M = window.KNOWLEDGE_I18N = window.KNOWLEDGE_I18N || {};
