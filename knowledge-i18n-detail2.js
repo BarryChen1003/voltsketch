@@ -606,6 +606,206 @@
         designNotes: ['고속 신호 비아는 백드릴로 스터브 제거', '마이크로비아는 HDI 설계에 적합', '비아 드릴 지름을 최대한 작게 해 기생 저감', '신호 비아 옆에 접지 비아를 추가해 리턴 경로 확보', '비아의 공정 능력 제한 주의'],
         commonMistakes: ['비아 기생 효과 미고려', '스터브가 너무 길어 공진', '비아 드릴이 너무 작아 제조 곤란', '리턴 경로 미제공', '비아의 열 효과 미고려']
       }
+    },
+    'grounding-design': {
+      en: {
+        principles: 'Grounding is the foundation of EMI and signal integrity. Low-frequency circuits use single-point grounding to avoid ground loops; high-frequency circuits use multi-point grounding to lower ground impedance; mixed circuits need partitioned grounding.',
+        keyFormulas: ['Single-point ground: f < 1MHz', 'Multi-point ground: f > 10MHz', 'Ground impedance Z = R + jωL', 'Ground-loop area ∝ EMI'],
+        designNotes: ['Use single-point grounding for low-frequency circuits', 'Use multi-point grounding for high-frequency circuits', 'Partition analog/digital grounds', 'Place the single ground point at the power entry', 'Keep a complete ground plane'],
+        commonMistakes: ['Ground loops causing EMI', 'Incomplete ground plane', 'Analog/digital grounds not separated', 'Ground path too long', 'Ignoring high-frequency grounding behavior']
+      },
+      ja: {
+        principles: '接地は EMI と信号品質の基礎。低周波回路は一点接地でグランドループを避け、高周波回路は多点接地で接地インピーダンスを下げ、混在回路は分割接地が必要。',
+        keyFormulas: ['一点接地：f < 1MHz', '多点接地：f > 10MHz', '接地インピーダンス Z = R + jωL', 'グランドループ面積 ∝ EMI'],
+        designNotes: ['低周波回路は一点接地を使う', '高周波回路は多点接地を使う', 'アナログ/デジタル接地を分割', '一点接地点を電源入口に置く', '完全な接地面を保つ'],
+        commonMistakes: ['グランドループが EMI を引き起こす', '接地面が不完全', 'アナログ/デジタル接地が未分離', '接地経路が長すぎる', '高周波接地特性を考慮しない']
+      },
+      ko: {
+        principles: '접지는 EMI와 신호 무결성의 기초다. 저주파 회로는 단일점 접지로 접지 루프를 피하고, 고주파 회로는 다중점 접지로 접지 임피던스를 낮추며, 혼합 회로는 분할 접지가 필요하다.',
+        keyFormulas: ['단일점 접지: f < 1MHz', '다중점 접지: f > 10MHz', '접지 임피던스 Z = R + jωL', '접지 루프 면적 ∝ EMI'],
+        designNotes: ['저주파 회로는 단일점 접지 사용', '고주파 회로는 다중점 접지 사용', '아날로그/디지털 접지 분할', '단일 접지점을 전원 입구에 배치', '완전한 접지면 유지'],
+        commonMistakes: ['접지 루프가 EMI 유발', '접지면 불완전', '아날로그/디지털 접지 미분리', '접지 경로 과다', '고주파 접지 특성 미고려']
+      }
+    },
+    'differential-pair': {
+      en: {
+        principles: 'A differential pair transmits data as the difference of two signals, giving good common-mode noise rejection. Key points: impedance matching, length matching, tight coupling, symmetric routing.',
+        keyFormulas: ['Zdiff = 2 * Z0 * (1 - 0.48 * exp(-0.96*s/h))', 'Skew < 5mil (intra-pair)', 'Spacing s < 2x dielectric thickness h', 'Differential impedance: USB 90Ω, PCIe 85Ω'],
+        designNotes: ['Length-match the differential pair (skew < 5mil)', 'Keep constant spacing (tight coupling)', 'Do not route other traces between the pair', 'Use 45° or arc corners', 'Add a return capacitor when crossing a plane split'],
+        commonMistakes: ['Excessive differential-pair skew', 'Inconsistent spacing', 'Other traces routed between the pair', 'Ignoring the return path', 'Impedance mismatch']
+      },
+      ja: {
+        principles: '差動ペアは 2 信号の差でデータを伝送し、優れた同相雑音耐性を持つ。要点：インピーダンス整合、等長整合、密結合、対称配線。',
+        keyFormulas: ['Zdiff = 2 * Z0 * (1 - 0.48 * exp(-0.96*s/h))', 'スキュー < 5mil（ペア内）', '間隔 s < 誘電体厚 h の 2 倍', '差動インピーダンス：USB 90Ω, PCIe 85Ω'],
+        designNotes: ['差動ペアを等長整合（スキュー < 5mil）', '一定の間隔を保つ（密結合）', 'ペア間に他の配線を入れない', '曲がりは 45° か円弧を使う', '分割プレーンを跨ぐ際はリターンコンデンサを追加'],
+        commonMistakes: ['差動ペアのスキューが過大', '間隔が不均一', 'ペア間に他の配線を入れる', 'リターン経路を考慮しない', 'インピーダンス不整合']
+      },
+      ko: {
+        principles: '차동 쌍은 두 신호의 차로 데이터를 전송해 우수한 공통 모드 잡음 내성을 가진다. 요점: 임피던스 정합, 등장 정합, 밀결합, 대칭 배선.',
+        keyFormulas: ['Zdiff = 2 * Z0 * (1 - 0.48 * exp(-0.96*s/h))', '스큐 < 5mil(쌍 내)', '간격 s < 유전체 두께 h의 2배', '차동 임피던스: USB 90Ω, PCIe 85Ω'],
+        designNotes: ['차동 쌍을 등장 정합(스큐 < 5mil)', '일정한 간격 유지(밀결합)', '쌍 사이에 다른 배선을 넣지 않음', '코너는 45° 또는 원호 사용', '분할 플레인을 가로지를 때 리턴 커패시터 추가'],
+        commonMistakes: ['차동 쌍 스큐 과다', '간격 불균일', '쌍 사이에 다른 배선 삽입', '리턴 경로 미고려', '임피던스 불일치']
+      }
+    },
+    'automotive-transient': {
+      en: {
+        principles: 'Automotive power lines see many transients: cold crank (6V), load dump (40-100V), etc. Protect with TVS, clamp diodes and similar devices.',
+        keyFormulas: ['Load dump: 40-100V, 100-400ms', 'Cold crank: 6V, 10s', 'TVS power rating > transient energy', 'V_br > maximum operating voltage'],
+        designNotes: ['Choose TVS to cover all transient types', 'Mind the TVS power rating', 'Add LC filtering at the DC-DC input', 'Consider the low input voltage during cold crank', 'Keep the ground path short and wide'],
+        commonMistakes: ['Insufficient TVS power rating', 'Not covering all transient types', 'Ground path too long', 'Not considering cold-crank low voltage', 'Insufficient filtering causing EMI']
+      },
+      ja: {
+        principles: '車載電源線には多様な過渡がある：コールドクランク（6V）、ロードダンプ（40-100V）など。TVS やクランプダイオードで保護する。',
+        keyFormulas: ['ロードダンプ：40-100V, 100-400ms', 'コールドクランク：6V, 10s', 'TVS 電力定格 > 過渡エネルギー', 'V_br > 最大動作電圧'],
+        designNotes: ['TVS はすべての過渡タイプをカバーするよう選ぶ', 'TVS の電力定格に注意', 'DC-DC 入力に LC ろ波を追加', 'コールドクランク時の低入力電圧を考慮', '接地経路を短く太く'],
+        commonMistakes: ['TVS 電力定格が不足', 'すべての過渡タイプをカバーしない', '接地経路が長すぎる', 'コールドクランクの低電圧を考慮しない', 'ろ波不足で EMI']
+      },
+      ko: {
+        principles: '차량 전원선에는 다양한 과도가 있다: 콜드 크랭크(6V), 로드 덤프(40-100V) 등. TVS와 클램프 다이오드로 보호한다.',
+        keyFormulas: ['로드 덤프: 40-100V, 100-400ms', '콜드 크랭크: 6V, 10s', 'TVS 전력 정격 > 과도 에너지', 'V_br > 최대 동작 전압'],
+        designNotes: ['TVS는 모든 과도 유형을 커버하도록 선택', 'TVS 전력 정격 주의', 'DC-DC 입력에 LC 여파 추가', '콜드 크랭크 시 저입력 전압 고려', '접지 경로를 짧고 넓게'],
+        commonMistakes: ['TVS 전력 정격 부족', '모든 과도 유형을 커버하지 않음', '접지 경로 과다', '콜드 크랭크 저전압 미고려', '여파 부족으로 EMI']
+      }
+    },
+    'led-driver': {
+      en: {
+        principles: 'LEDs need constant-current drive for consistent brightness and lifetime. Drive methods: resistor limiting (simple but inefficient), linear constant-current (medium), switching constant-current (high efficiency).',
+        keyFormulas: ['Iled = (Vin - Vled) / Rs (resistor limiting)', 'Iled = Vref / Rs (constant current)', 'Pled = Vled * Iled', 'Efficiency η = Pled / Pin'],
+        designNotes: ['Constant-current drive keeps brightness consistent', 'Choose a suitable Vref (low drop raises efficiency)', 'Choose a low-tempco resistor for Rs', 'Mind the LED forward-voltage range', 'High-power LEDs need thermal design'],
+        commonMistakes: ['Resistor limiting causing inconsistent brightness', 'Rs tempco causing current variation', 'Not accounting for LED forward-voltage variation', 'Insufficient heat sinking shortening LED life', 'Driver efficiency too low']
+      },
+      ja: {
+        principles: 'LED は輝度の一貫性と寿命のため定電流駆動が必要。駆動方式：抵抗制限（簡単だが低効率）、リニア定電流（中）、スイッチング定電流（高効率）。',
+        keyFormulas: ['Iled = (Vin - Vled) / Rs（抵抗制限）', 'Iled = Vref / Rs（定電流）', 'Pled = Vled * Iled', '効率 η = Pled / Pin'],
+        designNotes: ['定電流駆動で輝度を一定に保つ', '適切な Vref を選ぶ（低降下で効率向上）', 'Rs は低温度係数の抵抗を選ぶ', 'LED の順方向電圧範囲に注意', '大電力 LED は放熱設計が必要'],
+        commonMistakes: ['抵抗制限で輝度が不均一', 'Rs の温度係数で電流が変動', 'LED 順方向電圧の変動を考慮しない', '放熱不足で LED 寿命が短縮', 'ドライバ効率が低すぎる']
+      },
+      ko: {
+        principles: 'LED는 밝기 일관성과 수명을 위해 정전류 구동이 필요하다. 구동 방식: 저항 제한(간단하나 저효율), 선형 정전류(중), 스위칭 정전류(고효율).',
+        keyFormulas: ['Iled = (Vin - Vled) / Rs(저항 제한)', 'Iled = Vref / Rs(정전류)', 'Pled = Vled * Iled', '효율 η = Pled / Pin'],
+        designNotes: ['정전류 구동으로 밝기를 일정하게 유지', '적절한 Vref 선택(저강하로 효율 향상)', 'Rs는 저온도계수 저항 선택', 'LED 순방향 전압 범위 주의', '대전력 LED는 방열 설계 필요'],
+        commonMistakes: ['저항 제한으로 밝기 불균일', 'Rs 온도계수로 전류 변동', 'LED 순방향 전압 변동 미고려', '방열 부족으로 LED 수명 단축', '드라이버 효율 과저']
+      }
+    },
+    'battery-charger': {
+      en: {
+        principles: 'Lithium-battery charging follows the CC-CV (constant-current, constant-voltage) curve: charge at constant current to 4.2V, then at constant voltage until the current drops to 0.05C. The charger IC needs overcharge, over-discharge and overcurrent protection.',
+        keyFormulas: ['CC stage: I = constant (0.5C-1C)', 'CV stage: V = 4.2V (±50mV)', 'Charge time ≈ 2-3 hours', 'Cutoff current = 0.05C'],
+        designNotes: ['Choose a charger IC with CC-CV', 'Charge-current choice (0.5C-1C)', 'Battery protection (overcharge/over-discharge/overcurrent)', 'Temperature monitoring (no charging at low temperature)', 'Charge-indicator LED design'],
+        commonMistakes: ['Charge current too high shortening battery life', 'Inaccurate CV voltage causing overcharge', 'No temperature protection', 'No battery reverse-connection protection', 'Insufficient charger IC heat sinking']
+      },
+      ja: {
+        principles: 'リチウム電池の充電は CC-CV（定電流-定電圧）曲線に従う：定電流で 4.2V まで充電し、次に電流が 0.05C に下がるまで定電圧で充電。充電 IC は過充電・過放電・過電流保護が必要。',
+        keyFormulas: ['CC 段階：I = 一定（0.5C～1C）', 'CV 段階：V = 4.2V（±50mV）', '充電時間 ≈ 2～3 時間', 'カットオフ電流 = 0.05C'],
+        designNotes: ['CC-CV 対応の充電 IC を選ぶ', '充電電流の選択（0.5C～1C）', '電池保護（過充電/過放電/過電流）', '温度監視（低温では充電禁止）', '充電表示 LED の設計'],
+        commonMistakes: ['充電電流が大きすぎ電池寿命が短縮', 'CV 電圧が不正確で過充電', '温度保護なし', '電池逆接続保護なし', '充電 IC の放熱が不足']
+      },
+      ko: {
+        principles: '리튬 배터리 충전은 CC-CV(정전류-정전압) 곡선을 따른다: 정전류로 4.2V까지 충전한 뒤, 전류가 0.05C로 떨어질 때까지 정전압으로 충전. 충전 IC는 과충전·과방전·과전류 보호가 필요하다.',
+        keyFormulas: ['CC 단계: I = 일정(0.5C~1C)', 'CV 단계: V = 4.2V(±50mV)', '충전 시간 ≈ 2~3시간', '컷오프 전류 = 0.05C'],
+        designNotes: ['CC-CV 지원 충전 IC 선택', '충전 전류 선택(0.5C~1C)', '배터리 보호(과충전/과방전/과전류)', '온도 감시(저온에서 충전 금지)', '충전 표시 LED 설계'],
+        commonMistakes: ['충전 전류가 너무 커 배터리 수명 단축', 'CV 전압 부정확으로 과충전', '온도 보호 없음', '배터리 역접속 보호 없음', '충전 IC 방열 부족']
+      }
+    },
+    'opamp-configurations': {
+      en: {
+        principles: 'Based on the virtual-short and virtual-open rules, an op-amp can implement: inverting amp, non-inverting amp, difference amp, integrator, differentiator, voltage follower, current-to-voltage converter, comparator and instrumentation amp.',
+        keyFormulas: ['Inverting: Av = -Rf/Rin', 'Non-inverting: Av = 1 + Rf/Rin', 'Difference: Vout = (Rf/R1)(V2-V1)', 'Integrator: Vout = -1/(RC)∫Vin dt', 'Differentiator: Vout = -RC * dVin/dt'],
+        designNotes: ['Compensation resistor Rb = Rin ∥ Rf on the + input (balances bias current)', 'A single supply needs a VCC/2 virtual ground', 'An integrator needs clamping to prevent saturation', 'A differentiator needs band-limiting to prevent oscillation', '0.1µF decoupling capacitor close to the supply pin'],
+        commonMistakes: ['No compensation resistor causing DC offset', 'Integrator without clamping saturating', 'Differentiator oscillating', 'Insufficient GBW giving inadequate bandwidth', 'Insufficient SR causing large-signal distortion']
+      },
+      ja: {
+        principles: 'バーチャルショート・バーチャルオープンの原則に基づき、オペアンプは次を実現できる：反転増幅、非反転増幅、差動増幅、積分器、微分器、ボルテージフォロワ、電流-電圧変換、コンパレータ、計装増幅器。',
+        keyFormulas: ['反転：Av = -Rf/Rin', '非反転：Av = 1 + Rf/Rin', '差動：Vout = (Rf/R1)(V2-V1)', '積分：Vout = -1/(RC)∫Vin dt', '微分：Vout = -RC * dVin/dt'],
+        designNotes: ['＋端子に補償抵抗 Rb = Rin ∥ Rf（バイアス電流を平衡）', '単電源は VCC/2 の仮想グランドが必要', '積分器は飽和防止のクランプが必要', '微分器は発振防止の帯域制限が必要', '0.1µF デカップリングコンデンサを電源ピンの近くに'],
+        commonMistakes: ['補償抵抗なしで DC オフセット', '積分器がクランプなしで飽和', '微分器が発振', 'GBW 不足で帯域幅が足りない', 'SR 不足で大信号が歪む']
+      },
+      ko: {
+        principles: '가상 단락·가상 개방 원칙에 기반해 op-amp는 다음을 구현할 수 있다: 반전 증폭, 비반전 증폭, 차동 증폭, 적분기, 미분기, 전압 팔로워, 전류-전압 변환, 비교기, 계장 증폭기.',
+        keyFormulas: ['반전: Av = -Rf/Rin', '비반전: Av = 1 + Rf/Rin', '차동: Vout = (Rf/R1)(V2-V1)', '적분: Vout = -1/(RC)∫Vin dt', '미분: Vout = -RC * dVin/dt'],
+        designNotes: ['+단자에 보상 저항 Rb = Rin ∥ Rf(바이어스 전류 평형)', '단일 전원은 VCC/2 가상 접지 필요', '적분기는 포화 방지 클램프 필요', '미분기는 발진 방지 대역 제한 필요', '0.1µF 디커플링 커패시터를 전원 핀 가까이'],
+        commonMistakes: ['보상 저항 없어 DC 오프셋', '적분기가 클램프 없이 포화', '미분기 발진', 'GBW 부족으로 대역폭 미달', 'SR 부족으로 대신호 왜곡']
+      }
+    },
+    'current-sensing': {
+      en: {
+        principles: 'Current-sensing methods: shunt resistor (low-side/high-side), Hall sensor (isolated), current transformer (AC). The choice depends on accuracy, cost and isolation needs.',
+        keyFormulas: ['V = I * Rs', 'Power loss P = I^2 * Rs', 'Low-side: sense at the ground return', 'High-side: sense at the supply side'],
+        designNotes: ['Rs choice: accuracy, power, tempco', 'Low-side sensing: simple but raises GND', 'High-side sensing: needs a dedicated IC', 'Four-wire (Kelvin) sensing reduces error', 'A difference amplifier reads the Rs voltage'],
+        commonMistakes: ['Insufficient Rs power rating', 'Rs tempco degrading accuracy', 'Low-side sensing raising GND', 'Routing adding extra resistance', 'Amplifier offset voltage affecting accuracy']
+      },
+      ja: {
+        principles: '電流検出方式：シャント抵抗（ローサイド/ハイサイド）、ホールセンサ（絶縁）、電流トランス（AC）。精度・コスト・絶縁要件で選ぶ。',
+        keyFormulas: ['V = I * Rs', '電力損失 P = I^2 * Rs', 'ローサイド：接地帰還側で検出', 'ハイサイド：電源側で検出'],
+        designNotes: ['Rs 選択：精度、電力、温度係数', 'ローサイド検出：簡単だが GND を持ち上げる', 'ハイサイド検出：専用 IC が必要', '4 線（ケルビン）検出で誤差を低減', '差動増幅器で Rs 電圧を読む'],
+        commonMistakes: ['Rs 電力定格が不足', 'Rs 温度係数で精度低下', 'ローサイド検出で GND が持ち上がる', '配線が余分な抵抗を導入', '増幅器のオフセット電圧が精度に影響']
+      },
+      ko: {
+        principles: '전류 감지 방식: 션트 저항(로우사이드/하이사이드), 홀 센서(절연), 전류 변성기(AC). 정확도·비용·절연 요건으로 선택한다.',
+        keyFormulas: ['V = I * Rs', '전력 손실 P = I^2 * Rs', '로우사이드: 접지 귀환 측에서 감지', '하이사이드: 전원 측에서 감지'],
+        designNotes: ['Rs 선택: 정확도, 전력, 온도계수', '로우사이드 감지: 간단하나 GND를 들어올림', '하이사이드 감지: 전용 IC 필요', '4선(켈빈) 감지로 오차 저감', '차동 증폭기로 Rs 전압 읽기'],
+        commonMistakes: ['Rs 전력 정격 부족', 'Rs 온도계수로 정확도 저하', '로우사이드 감지로 GND 상승', '배선이 추가 저항 도입', '증폭기 오프셋 전압이 정확도에 영향']
+      }
+    },
+    'flyback-converter': {
+      en: {
+        principles: 'When the switch turns on, energy is stored in the transformer primary inductance; when it turns off, the energy is released to the output through the secondary diode. The primary-to-secondary turns ratio sets the voltage ratio and provides galvanic isolation.',
+        keyFormulas: ['Vout = Vin * (Ns/Np) * D/(1-D)', 'Must account for the voltage spike from leakage inductance', 'Turns ratio n = Np/Ns'],
+        designNotes: ['The primary needs an RCD clamp to absorb leakage-inductance energy', 'Mind transformer saturation and hysteresis loss', 'Optocoupler + TL431 for isolated feedback', 'A Y-capacitor across the primary/secondary grounds lowers common-mode noise'],
+        commonMistakes: ['Insufficient leakage clamp burning the switch', 'Transformer design without flux margin', 'Insufficient output-diode voltage rating']
+      },
+      ja: {
+        principles: 'スイッチオンでエネルギーがトランス一次インダクタンスに蓄えられ、オフで二次側ダイオードを経て出力へ放出される。一次-二次巻数比が電圧比を決め、電気的絶縁を提供する。',
+        keyFormulas: ['Vout = Vin * (Ns/Np) * D/(1-D)', '漏れインダクタンスによる電圧スパイクを考慮', '巻数比 n = Np/Ns'],
+        designNotes: ['一次側に RCD クランプで漏れインダクタンスのエネルギーを吸収', 'トランス飽和とヒステリシス損失に注意', 'フォトカプラ + TL431 で絶縁帰還', '一次/二次グランド間の Y コンデンサでコモンモード雑音を低減'],
+        commonMistakes: ['漏れクランプ不足でスイッチ焼損', 'トランス設計に磁束余裕がない', '出力ダイオードの耐圧が不足']
+      },
+      ko: {
+        principles: '스위치 온에서 에너지가 트랜스 1차 인덕턴스에 저장되고, 오프에서 2차 측 다이오드를 거쳐 출력으로 방출된다. 1차-2차 권선비가 전압비를 결정하고 전기적 절연을 제공한다.',
+        keyFormulas: ['Vout = Vin * (Ns/Np) * D/(1-D)', '누설 인덕턴스로 인한 전압 스파이크 고려', '권선비 n = Np/Ns'],
+        designNotes: ['1차 측에 RCD 클램프로 누설 인덕턴스 에너지 흡수', '트랜스 포화와 히스테리시스 손실 주의', '포토커플러 + TL431로 절연 피드백', '1차/2차 접지 간 Y 커패시터로 공통 모드 잡음 저감'],
+        commonMistakes: ['누설 클램프 부족으로 스위치 소손', '트랜스 설계에 자속 여유 없음', '출력 다이오드 내압 부족']
+      }
+    },
+    'half-bridge': {
+      en: {
+        principles: 'The high-side and low-side MOSFETs conduct complementarily (with dead time), and the midpoint voltage switches between V+ and ground. The high side needs a bootstrap or isolated driver.',
+        keyFormulas: ['Average Vsw = V+ * D', 'Dead time tdead prevents shoot-through', 'Bootstrap voltage ≈ V+ - Vf'],
+        designNotes: ['Always add dead time to avoid upper/lower-arm shoot-through', 'Use a bootstrap capacitor or isolated supply for the high side', 'Keep the SW node trace short to reduce ringing', 'Consider body-diode reverse-recovery loss'],
+        commonMistakes: ['Insufficient dead time causing shoot-through and blown transistors', 'Insufficient bootstrap capacitance failing the high-side drive', 'Gate resistor too small causing ringing']
+      },
+      ja: {
+        principles: 'ハイサイドとローサイドの MOSFET が相補的に導通し（デッドタイムあり）、中点電圧は V+ と接地の間で切り替わる。ハイサイドはブートストラップか絶縁駆動が必要。',
+        keyFormulas: ['平均 Vsw = V+ * D', 'デッドタイム tdead で直通を防ぐ', 'ブートストラップ電圧 ≈ V+ - Vf'],
+        designNotes: ['必ずデッドタイムを設け上下アームの直通を回避', 'ハイサイドはブートストラップコンデンサか絶縁電源を使う', 'SW ノード配線を短くしリンギングを低減', 'ボディダイオードの逆回復損失を考慮'],
+        commonMistakes: ['デッドタイム不足で直通し素子焼損', 'ブートストラップ容量不足でハイサイド駆動が失敗', 'ゲート抵抗が小さすぎリンギング']
+      },
+      ko: {
+        principles: '하이사이드와 로우사이드 MOSFET이 상보적으로 도통하고(데드타임 포함), 중점 전압은 V+와 접지 사이에서 전환된다. 하이사이드는 부트스트랩이나 절연 구동이 필요하다.',
+        keyFormulas: ['평균 Vsw = V+ * D', '데드타임 tdead가 슛스루 방지', '부트스트랩 전압 ≈ V+ - Vf'],
+        designNotes: ['반드시 데드타임을 두어 상하암 슛스루 회피', '하이사이드는 부트스트랩 커패시터나 절연 전원 사용', 'SW 노드 배선을 짧게 해 링잉 저감', '보디 다이오드 역회복 손실 고려'],
+        commonMistakes: ['데드타임 부족으로 슛스루되어 소자 소손', '부트스트랩 용량 부족으로 하이사이드 구동 실패', '게이트 저항이 너무 작아 링잉']
+      }
+    },
+    'gate-driver': {
+      en: {
+        principles: 'The gate capacitance needs large charge/discharge currents to switch fast. A high-side MOSFET source floats and is powered by a bootstrap capacitor charged while the low side conducts.',
+        keyFormulas: ['Total gate charge Qg sets the drive current', 'tsw ≈ Qg / Idrive', 'Cboot ≥ 10 * Qg/ΔV'],
+        designNotes: ['Choose a fast-recovery bootstrap diode with adequate voltage rating', 'A gate resistor tunes switching speed and EMI', 'Place the driver IC close to the MOSFET'],
+        commonMistakes: ['Bootstrap capacitor too small, high side loses power', 'No Miller clamp causing false turn-on']
+      },
+      ja: {
+        principles: 'ゲート容量を高速に切り替えるには大電流の充放電が必要。ハイサイド MOSFET のソースは浮動し、ローサイド導通時に充電されるブートストラップコンデンサで給電される。',
+        keyFormulas: ['総ゲート電荷 Qg が駆動電流を決める', 'tsw ≈ Qg / Idrive', 'Cboot ≥ 10 * Qg/ΔV'],
+        designNotes: ['ブートストラップダイオードは高速回復で耐圧十分なものを選ぶ', 'ゲート抵抗でスイッチング速度と EMI を調整', 'ドライバ IC を MOSFET の近くに配置'],
+        commonMistakes: ['ブートストラップコンデンサが小さすぎハイサイドが電源喪失', 'ミラークランプなしで誤導通']
+      },
+      ko: {
+        principles: '게이트 용량을 빠르게 스위칭하려면 대전류 충방전이 필요하다. 하이사이드 MOSFET 소스는 플로팅되며, 로우사이드 도통 시 충전되는 부트스트랩 커패시터로 급전된다.',
+        keyFormulas: ['총 게이트 전하 Qg가 구동 전류를 결정', 'tsw ≈ Qg / Idrive', 'Cboot ≥ 10 * Qg/ΔV'],
+        designNotes: ['부트스트랩 다이오드는 고속 회복·충분한 내압으로 선택', '게이트 저항으로 스위칭 속도와 EMI 조정', '드라이버 IC를 MOSFET 가까이 배치'],
+        commonMistakes: ['부트스트랩 커패시터가 너무 작아 하이사이드 전원 상실', '밀러 클램프 없어 오도통']
+      }
     }
   };
   var M = window.KNOWLEDGE_I18N = window.KNOWLEDGE_I18N || {};
