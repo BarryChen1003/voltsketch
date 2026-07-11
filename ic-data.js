@@ -47430,5 +47430,328 @@ window.IC_DATA = [
       "電源軌相容（AVDD12/AVDD18/AVDDCLK12/AVDDCLK18/DVDD09）"
     ],
     "dropIn": []
+  },
+  {
+    "part": "ADS8688W",
+    "mfr": "Texas Instruments",
+    "category": "data-converters",
+    "subcategory": "8 通道 SAR ADC（整合類比前端）",
+    "package": "38-pin TSSOP (DBT) 9.70×6.40mm",
+    "whatIs": "16-bit、500kSPS、8 通道單電源 SAR ADC，整合類比前端（AFE）：內建 8 通道多工器（自動/手動掃描）、可程式輸入範圍、內部參考與警報功能，供工業量測、資料擷取等多通道類比擷取。",
+    "func": "8 路差動類比輸入經內建多工器（自動/手動掃描）進 16-bit SAR ADC；可程式輸入範圍與 AFE、內部參考（REFSEL 切內/外部，REFIO/REFCAP/REFGND）、輔助輸入通道（AUX_INP/AUX_GND）、可程式門檻警報（ALARM）；SPI 介面（SDI/SDO/SCLK/{CS}）含菊鏈（DAISY）；{RST}/{PD} 重置/關機。ADS8684W 為 4 通道版（AIN_6/7 腳為 NC）。",
+    "usedIn": "工業自動化量測、多通道資料擷取（DAQ）、電源監控、感測器擷取等單電源多通道類比輸入系統。",
+    "desc": "16-bit 500kSPS 8 通道單電源 SAR ADC，整合 AFE＋多工器＋內部參考，SPI 介面，38-TSSOP。",
+    "datasheet": "TI SBASBC4A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "SDI",
+        "side": "L",
+        "type": "Input",
+        "desc": "序列通訊資料輸入"
+      },
+      {
+        "num": "2",
+        "name": "{RST}/{PD}",
+        "side": "L",
+        "type": "Input",
+        "desc": "active-low 邏輯輸入；雙功能：重置或關機（power-down）"
+      },
+      {
+        "num": "3",
+        "name": "DAISY",
+        "side": "L",
+        "type": "Input",
+        "desc": "菊鏈模式下序列通訊的鏈接資料輸入"
+      },
+      {
+        "num": "4",
+        "name": "{REFSEL}",
+        "side": "L",
+        "type": "Input",
+        "desc": "active-low 邏輯輸入，致能內部參考：低=啟用內部參考（REFIO 輸出含 VREF）；高=停用（REFIO 為外部 VREF 輸入）"
+      },
+      {
+        "num": "5",
+        "name": "REFIO",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "內部參考輸出／外部參考輸入腳；與 pin6 REFGND 去耦"
+      },
+      {
+        "num": "6",
+        "name": "REFGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "參考地腳；短接類比地平面，與 REFIO/REFCAP 去耦"
+      },
+      {
+        "num": "7",
+        "name": "REFCAP",
+        "side": "L",
+        "type": "Analog Out",
+        "desc": "ADC 參考去耦電容腳；與 pin6 REFGND 去耦"
+      },
+      {
+        "num": "8",
+        "name": "AGND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "類比地；與 pin9 AVDD 去耦"
+      },
+      {
+        "num": "9",
+        "name": "AVDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "類比電源；與 pin8 AGND 去耦"
+      },
+      {
+        "num": "10",
+        "name": "AUX_INP",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "輔助輸入通道正端；與 pin11 AUX_GND 去耦"
+      },
+      {
+        "num": "11",
+        "name": "AUX_GND",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "輔助輸入通道負端；與 pin10 AUX_INP 去耦"
+      },
+      {
+        "num": "12",
+        "name": "AIN_6P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 6 正端；與 pin13 AIN_6M 去耦"
+      },
+      {
+        "num": "13",
+        "name": "AIN_6M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 6 負端"
+      },
+      {
+        "num": "14",
+        "name": "AIN_7P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 7 正端"
+      },
+      {
+        "num": "15",
+        "name": "AIN_7M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 7 負端"
+      },
+      {
+        "num": "16",
+        "name": "AIN_0P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 0 正端"
+      },
+      {
+        "num": "17",
+        "name": "AIN_0M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 0 負端"
+      },
+      {
+        "num": "18",
+        "name": "AIN_1P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 1 正端"
+      },
+      {
+        "num": "19",
+        "name": "AIN_1M",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "類比輸入通道 1 負端"
+      },
+      {
+        "num": "20",
+        "name": "AIN_2M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入通道 2 負端"
+      },
+      {
+        "num": "21",
+        "name": "AIN_2P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入通道 2 正端"
+      },
+      {
+        "num": "22",
+        "name": "AIN_3M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入通道 3 負端"
+      },
+      {
+        "num": "23",
+        "name": "AIN_3P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入通道 3 正端"
+      },
+      {
+        "num": "24",
+        "name": "AIN_4M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入通道 4 負端"
+      },
+      {
+        "num": "25",
+        "name": "AIN_4P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入通道 4 正端"
+      },
+      {
+        "num": "26",
+        "name": "AIN_5M",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入通道 5 負端"
+      },
+      {
+        "num": "27",
+        "name": "AIN_5P",
+        "side": "R",
+        "type": "Analog In",
+        "desc": "類比輸入通道 5 正端"
+      },
+      {
+        "num": "28",
+        "name": "AGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "類比地"
+      },
+      {
+        "num": "29",
+        "name": "AGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "類比地"
+      },
+      {
+        "num": "30",
+        "name": "AVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "類比電源"
+      },
+      {
+        "num": "31",
+        "name": "AGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "類比地"
+      },
+      {
+        "num": "32",
+        "name": "AGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "類比地"
+      },
+      {
+        "num": "33",
+        "name": "DGND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "數位地"
+      },
+      {
+        "num": "34",
+        "name": "DVDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "數位電源"
+      },
+      {
+        "num": "35",
+        "name": "ALARM",
+        "side": "R",
+        "type": "Output",
+        "desc": "警報輸出（超出可程式門檻時觸發）"
+      },
+      {
+        "num": "36",
+        "name": "SDO",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列資料輸出"
+      },
+      {
+        "num": "37",
+        "name": "SCLK",
+        "side": "R",
+        "type": "Input",
+        "desc": "序列時脈輸入"
+      },
+      {
+        "num": "38",
+        "name": "{CS}",
+        "side": "R",
+        "type": "Input",
+        "desc": "晶片選擇輸入（active-low）"
+      }
+    ],
+    "thermalPad": "38-pin TSSOP（有引腳封裝，無外露散熱焊盤）",
+    "specs": [
+      {
+        "k": "解析度",
+        "v": "16-bit"
+      },
+      {
+        "k": "取樣率",
+        "v": "500kSPS"
+      },
+      {
+        "k": "通道",
+        "v": "8 通道（ADS8684W 為 4 通道）＋1 輔助通道，含多工器自動/手動掃描"
+      },
+      {
+        "k": "類比前端",
+        "v": "整合 AFE、可程式輸入範圍、內部參考"
+      },
+      {
+        "k": "介面",
+        "v": "SPI（SDI/SDO/SCLK/{CS}）＋菊鏈"
+      },
+      {
+        "k": "保護/警報",
+        "v": "可程式門檻 ALARM 輸出"
+      },
+      {
+        "k": "封裝",
+        "v": "38-pin TSSOP (DBT) 9.70×6.40mm"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 相容（38-TSSOP DBT）",
+      "功能相近（單電源多通道 SAR ADC＋AFE）",
+      "SPI 介面相容",
+      "內部參考架構相容"
+    ],
+    "dropIn": [
+      {
+        "part": "ADS8684W",
+        "note": "同封裝同腳位的 4 通道版（AIN_6/AIN_7 腳為 NC）；確認通道數需求"
+      }
+    ]
   }
 ];
