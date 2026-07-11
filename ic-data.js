@@ -29869,5 +29869,340 @@ window.IC_DATA = [
     ],
     "secondSource": [],
     "dropIn": []
+  },
+  {
+    "part": "EFR32BG24L",
+    "mfr": "Silicon Labs",
+    "category": "wireless",
+    "subcategory": "Bluetooth LE / Mesh 無線 SoC",
+    "package": "40-pin QFN",
+    "whatIs": "Bluetooth Low Energy 與 Bluetooth mesh 無線 SoC：內建 78MHz Arm Cortex-M33、up to 768KB flash / 96KB RAM、高效能 2.4GHz 射頻、AI/ML 硬體加速器與 Secure Vault 安全子系統，供智慧家庭、照明、可攜醫療等低功耗物聯網裝置。",
+    "func": "以 Cortex-M33（≤78MHz）執行應用與 BLE/mesh 協定，整合 2.4GHz 射頻前端（輸出功率 up to +10dBm）；內建 DCDC 穩壓器（VREGSW/VREGVDD/VREGVSS＋DECOUPLE 去耦）降低功耗；提供 PA/PB/PC/PD 埠多工 GPIO（替代功能含 SWD 除錯 SWCLK/SWDIO、IADC 參考、TRACE 等，見 datasheet Table 6.2）；含 AI/ML 硬體加速器、Secure Vault 安全、通道測距（Channel Sounding）。",
+    "usedIn": "智慧家庭閘道/感測/開關/門鎖/插座、LED 照明、可攜醫療（血糖機/血氧機）、AI/ML 邊緣（預測維護/異常偵測）等 BLE 物聯網產品。",
+    "desc": "BLE / Bluetooth mesh 無線 SoC，Cortex-M33 78MHz，≤768KB flash / 96KB RAM，2.4GHz +10dBm，內建 DCDC＋Secure Vault＋AI/ML 加速器，40-QFN。",
+    "datasheet": "Silicon Labs EFR32BG24L Family Data Sheet Rev 1.0",
+    "pins": [
+      {
+        "num": "1",
+        "name": "PC00",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PC00（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "2",
+        "name": "PC01",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PC01（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "3",
+        "name": "PC02",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PC02（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "4",
+        "name": "PC03",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PC03（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "5",
+        "name": "PC04",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PC04（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "6",
+        "name": "PC05",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PC05（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "7",
+        "name": "PC06",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PC06（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "8",
+        "name": "PC07",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PC07（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "9",
+        "name": "HFXTAL_I",
+        "side": "L",
+        "type": "Passive",
+        "desc": "高頻晶振輸入"
+      },
+      {
+        "num": "10",
+        "name": "HFXTAL_O",
+        "side": "L",
+        "type": "Passive",
+        "desc": "高頻晶振輸出"
+      },
+      {
+        "num": "11",
+        "name": "{RESET}",
+        "side": "B",
+        "type": "Input",
+        "desc": "重置腳（active-low，原文 RESETn；內部上拉至 DVDD）"
+      },
+      {
+        "num": "12",
+        "name": "RFVDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "射頻電源"
+      },
+      {
+        "num": "13",
+        "name": "RFVSS",
+        "side": "B",
+        "type": "Ground",
+        "desc": "射頻地"
+      },
+      {
+        "num": "14",
+        "name": "RF2G4_IO",
+        "side": "B",
+        "type": "Passive",
+        "desc": "2.4GHz 射頻輸入/輸出（天線埠）"
+      },
+      {
+        "num": "15",
+        "name": "PAVDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "功率放大器（PA）電源"
+      },
+      {
+        "num": "16",
+        "name": "PB04",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PB04（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "17",
+        "name": "PB03",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PB03（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "18",
+        "name": "PB02",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PB02（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "19",
+        "name": "PB01",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PB01（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "20",
+        "name": "PB00",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PB00（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "21",
+        "name": "PA00",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PA00（可多工週邊功能，替代功能見 datasheet Table 6.2）（替代：IADC0.VREFP）"
+      },
+      {
+        "num": "22",
+        "name": "PA01",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PA01（可多工週邊功能，替代功能見 datasheet Table 6.2）（替代：SWCLK）"
+      },
+      {
+        "num": "23",
+        "name": "PA02",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PA02（可多工週邊功能，替代功能見 datasheet Table 6.2）（替代：SWDIO）"
+      },
+      {
+        "num": "24",
+        "name": "PA03",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PA03（可多工週邊功能，替代功能見 datasheet Table 6.2）（替代：SWV/TDO/TRACEDATA0）"
+      },
+      {
+        "num": "25",
+        "name": "PA04",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PA04（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "26",
+        "name": "PA05",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PA05（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "27",
+        "name": "PA06",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PA06（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "28",
+        "name": "PA07",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PA07（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "29",
+        "name": "PA08",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PA08（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "30",
+        "name": "DECOUPLE",
+        "side": "R",
+        "type": "Power",
+        "desc": "晶片內穩壓器去耦輸出；此腳須外接去耦電容"
+      },
+      {
+        "num": "31",
+        "name": "VREGSW",
+        "side": "T",
+        "type": "Power",
+        "desc": "DCDC 穩壓器切換節點"
+      },
+      {
+        "num": "32",
+        "name": "VREGVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "DCDC 穩壓器輸入電源"
+      },
+      {
+        "num": "33",
+        "name": "VREGVSS",
+        "side": "T",
+        "type": "Ground",
+        "desc": "DCDC 地"
+      },
+      {
+        "num": "34",
+        "name": "DVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源"
+      },
+      {
+        "num": "35",
+        "name": "AVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比電源"
+      },
+      {
+        "num": "36",
+        "name": "IOVDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "37",
+        "name": "PD03",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PD03（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "38",
+        "name": "PD02",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PD02（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "39",
+        "name": "PD01",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PD01（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "40",
+        "name": "PD00",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 PD00（可多工週邊功能，替代功能見 datasheet Table 6.2）"
+      },
+      {
+        "num": "41",
+        "name": "GND (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "QFN40 中央外露接地焊盤（見 datasheet §7 QFN40 Land Pattern）；接板上接地平面",
+        "ep": true
+      }
+    ],
+    "thermalPad": "QFN40 中央外露接地焊盤（GND）；見 datasheet §7 QFN40 Land Pattern，接板上接地平面",
+    "specs": [
+      {
+        "k": "CPU",
+        "v": "Arm Cortex-M33 @ ≤78MHz"
+      },
+      {
+        "k": "無線",
+        "v": "Bluetooth Low Energy／Bluetooth mesh，2.4GHz，輸出 up to +10dBm"
+      },
+      {
+        "k": "記憶體",
+        "v": "up to 768KB flash／96KB RAM"
+      },
+      {
+        "k": "安全",
+        "v": "Secure Vault™（防遠端與本地攻擊）"
+      },
+      {
+        "k": "加速器",
+        "v": "AI/ML 硬體加速器；Channel Sounding 測距"
+      },
+      {
+        "k": "電源",
+        "v": "內建 DCDC 穩壓器（低主動/睡眠電流）"
+      },
+      {
+        "k": "封裝",
+        "v": "40-pin QFN（中央 GND 散熱焊盤）"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];

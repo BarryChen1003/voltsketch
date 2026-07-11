@@ -285,6 +285,6 @@ window.IC_CLASSIFICATION = {
   "cc3351mod",
   "cc3501e",
   "cc3551e",
-  "efr32bg24l_datasheet"
+  "EFR32BG24L"
  ]
 };
