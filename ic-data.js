@@ -22312,5 +22312,832 @@ window.IC_DATA = [
         "note": "同一份 datasheet（TI SBAS932A）、Table 5-1 共用同一份 256-ball FCBGA pinout（球號、球名逐一相同）；RF10 為雙通道版本，本部品（RFS10）之 DACOUTB+/DACOUTB−（球 T12/T13）依 datasheet 明載 \"Not available in single channel devices\"，本檔已將該二球 type 標為 NC。通道 B 相關電源腳（VDDA18B/VDDLB/VDDEB/VEEBM18/TXEN1 等）datasheet 未明文排除，是否於單通道版停用/懸空須查閱完整 datasheet 或洽 TI 確認。"
       }
     ]
+  },
+  {
+    "part": "DRV8218",
+    "mfr": "Texas Instruments",
+    "category": "motor",
+    "subcategory": "有刷直流馬達驅動（單通道 H-Bridge）",
+    "package": "8-WSON (DSG) 2.0×2.0mm",
+    "whatIs": "11V/8A 單通道 H-bridge 有刷直流馬達驅動器：四顆 N 通道功率 FET＋三倍壓電荷泵＋保護電路整合單晶片，電容全內建，1.8V 即可工作。",
+    "func": "接收 PWM／PH-EN／獨立半橋三種控制介面（MODE 三態腳選擇），驅動一顆雙向有刷馬達、兩顆單向馬達、繼電器或螺線管；睡眠模式靜態電流 <120nA。",
+    "usedIn": "電動牙刷、智慧門鎖、水電瓦斯表、玩具機器人、網路攝影機 IR-cut、視訊門鈴、血壓計、輸液幫浦等電池供電小馬達應用。",
+    "desc": "8-WSON 的 H-bridge 馬達驅動器，VM 1.8–11V、VCC 1.8–5.5V，80mΩ RDS(ON)（HS+LS）、8A 峰值，支援並聯半橋（20mΩ）。內建 UVLO/OCP/TSD 保護。DRV8210/8212/8220 為同腳位家族（不同電壓/阻值，庫內未建）。ADVANCE INFORMATION（2026-05 預產文件），量產前照最新版 datasheet 覆核。",
+    "datasheet": "TI SLVSI75",
+    "pins": [
+      {
+        "num": "1",
+        "name": "VM",
+        "side": "L",
+        "type": "power",
+        "desc": "馬達電源 1.8–11V；0.1µF 陶瓷旁路至 GND＋足量 bulk 電容"
+      },
+      {
+        "num": "2",
+        "name": "OUT1",
+        "side": "L",
+        "type": "output",
+        "desc": "H-bridge 輸出，接馬達或其他負載"
+      },
+      {
+        "num": "3",
+        "name": "OUT2",
+        "side": "L",
+        "type": "output",
+        "desc": "H-bridge 輸出，接馬達或其他負載"
+      },
+      {
+        "num": "4",
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "裝置接地，接系統地"
+      },
+      {
+        "num": "5",
+        "name": "IN2/EN",
+        "side": "R",
+        "type": "input",
+        "desc": "IN2 控制輸入（PH/EN 模式時為 EN）；內建下拉電阻"
+      },
+      {
+        "num": "6",
+        "name": "IN1/PH",
+        "side": "R",
+        "type": "input",
+        "desc": "IN1 控制輸入（PH/EN 模式時為 PH）；內建下拉電阻"
+      },
+      {
+        "num": "7",
+        "name": "MODE",
+        "side": "R",
+        "type": "input",
+        "desc": "控制介面模式三態輸入（參考 VCC 電壓）：低=PWM、高=PH/EN、Hi-Z=獨立半橋；非閂鎖可運轉中切換"
+      },
+      {
+        "num": "8",
+        "name": "VCC",
+        "side": "R",
+        "type": "power",
+        "desc": "邏輯電源 1.8–5.5V；0.1µF 陶瓷旁路至 GND"
+      },
+      {
+        "num": "9",
+        "name": "EP",
+        "side": "B",
+        "type": "ground",
+        "desc": "散熱焊墊（Thermal Pad），接系統地",
+        "ep": true
+      }
+    ],
+    "thermalPad": "Thermal Pad 接系統地（表列＋pin 圖中央雙佐證）",
+    "specs": [
+      {
+        "k": "馬達電源",
+        "v": "1.8V–11V（VM）"
+      },
+      {
+        "k": "邏輯電源",
+        "v": "1.8V–5.5V（VCC），支援 1.8/3.3/5V 邏輯"
+      },
+      {
+        "k": "輸出",
+        "v": "8A 峰值，RDS(ON) 80mΩ（HS+LS 合計）；並聯半橋 20mΩ"
+      },
+      {
+        "k": "睡眠電流",
+        "v": "<120nA（VM=5V, VCC=3.3V, 25°C）"
+      },
+      {
+        "k": "控制介面",
+        "v": "PWM (IN1/IN2)、PH/EN、獨立半橋、並聯半橋"
+      },
+      {
+        "k": "保護",
+        "v": "UVLO、OCP、TSD"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "DRV81646-Q1",
+    "mfr": "Texas Instruments",
+    "category": "motor",
+    "subcategory": "車用四通道低邊驅動器（Hardware/SPI）",
+    "package": "24-HVSSOP (DGQ) 6.10×4.90mm",
+    "whatIs": "車規 65V 四通道整合低邊開關：每通道 140mΩ RDS(ON)，內建續流二極體接 VCLAMP，電流限制與斜率可設定。",
+    "func": "以硬體 GPIO（每通道獨立 PWM 輸入）或 4 線 SPI 控制四路低邊開關，驅動繼電器/電磁閥/LED/單向馬達；ILIM 單電阻全域設 0.5–4A 電流限制、RSLEW/CNTL 設斜率（100–1500ns），nFAULT 回報故障。",
+    "usedIn": "車身電子與照明、引擎管理、BMS、區域控制器（Zone Control Unit）的繼電器/閥/LED 驅動。",
+    "desc": "24-HVSSOP 車規（AEC-Q100 系）四通道低邊驅動器，4.5–65V（70V abs max），PWM 最高 500kHz，每通道獨立過溫/過流保護、可設定過流切斷延遲（COD 0.5–2ms）與 INRUSH 模式。SRC1–4 獨立引出可外接感測電阻。ADVANCE INFORMATION（2026-05 預產文件），量產前照最新版 datasheet 覆核。",
+    "datasheet": "TI SLVSIJ3",
+    "pins": [
+      {
+        "num": "1",
+        "name": "SRC3",
+        "side": "L",
+        "type": "ground",
+        "desc": "通道 3 低邊 FET 源極：接系統地，或經感測電阻接地做外部電流感測"
+      },
+      {
+        "num": "2",
+        "name": "SRC4",
+        "side": "L",
+        "type": "ground",
+        "desc": "通道 4 低邊 FET 源極：接系統地，或經感測電阻接地做外部電流感測"
+      },
+      {
+        "num": "3",
+        "name": "NC",
+        "side": "L",
+        "type": "nc",
+        "desc": "無連接"
+      },
+      {
+        "num": "4",
+        "name": "VCLAMP",
+        "side": "L",
+        "type": "power",
+        "desc": "箝位/續流路徑：接 VM 電源，或經 Zener/TVS 二極體至 VM 或 GND；不可懸空（表列 4, 21 兩腳）"
+      },
+      {
+        "num": "5",
+        "name": "NC",
+        "side": "L",
+        "type": "nc",
+        "desc": "無連接"
+      },
+      {
+        "num": "6",
+        "name": "IN1/SDI",
+        "side": "L",
+        "type": "input",
+        "desc": "硬體模式=通道 1 控制輸入（未用通道接 GND 或經 10kΩ 接地）；SPI 模式=串列資料輸入。內建下拉電阻"
+      },
+      {
+        "num": "7",
+        "name": "IN2/SCLK",
+        "side": "L",
+        "type": "input",
+        "desc": "硬體模式=通道 2 控制輸入；SPI 模式=串列時脈（上升緣移出資料、下降緣取樣）。內建下拉電阻"
+      },
+      {
+        "num": "8",
+        "name": "IN3/NSCS",
+        "side": "L",
+        "type": "input",
+        "desc": "硬體模式=通道 3 控制輸入；SPI 模式=晶片選擇（低有效致能通訊）。內建下拉電阻"
+      },
+      {
+        "num": "9",
+        "name": "IN4/SDO",
+        "side": "L",
+        "type": "io",
+        "desc": "硬體模式=通道 4 控制輸入（內建下拉）；SPI 模式=串列資料輸出（開汲極，需外部上拉，SCLK 上升緣移出）"
+      },
+      {
+        "num": "10",
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "裝置接地，接系統地"
+      },
+      {
+        "num": "11",
+        "name": "RSLEW/CNTL",
+        "side": "L",
+        "type": "input",
+        "desc": "斜率與控制介面選擇：接電阻至 GND 設定斜率＋介面（Hardware/SPI）組合"
+      },
+      {
+        "num": "12",
+        "name": "nFAULT",
+        "side": "L",
+        "type": "output",
+        "desc": "故障輸出（開汲極，低=故障）；上拉電阻接外部邏輯電源"
+      },
+      {
+        "num": "13",
+        "name": "COD/INRUSH",
+        "side": "R",
+        "type": "input",
+        "desc": "過流切斷延遲（COD）/湧浪模式設定：電阻至 GND 設延遲、接 GND 停用、懸空（Hi-Z）=INRUSH 模式"
+      },
+      {
+        "num": "14",
+        "name": "ILIM",
+        "side": "R",
+        "type": "input",
+        "desc": "電流限制設定：電阻接 GND 設全域門檻（0.5–4A）；不可懸空，直接接 GND=最大電流限制"
+      },
+      {
+        "num": "15",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "無連接"
+      },
+      {
+        "num": "16",
+        "name": "VM",
+        "side": "R",
+        "type": "power",
+        "desc": "電源 4.5–65V；0.1µF 陶瓷旁路至 GND＋足量 bulk 電容"
+      },
+      {
+        "num": "17",
+        "name": "OUT4",
+        "side": "R",
+        "type": "output",
+        "desc": "通道 4 輸出，接負載 4"
+      },
+      {
+        "num": "18",
+        "name": "OUT3",
+        "side": "R",
+        "type": "output",
+        "desc": "通道 3 輸出，接負載 3"
+      },
+      {
+        "num": "19",
+        "name": "OUT2",
+        "side": "R",
+        "type": "output",
+        "desc": "通道 2 輸出，接負載 2"
+      },
+      {
+        "num": "20",
+        "name": "OUT1",
+        "side": "R",
+        "type": "output",
+        "desc": "通道 1 輸出，接負載 1"
+      },
+      {
+        "num": "21",
+        "name": "VCLAMP",
+        "side": "R",
+        "type": "power",
+        "desc": "箝位/續流路徑，同 pin 4（表列 4, 21 合併展開）；接 VM 或經 Zener/TVS；不可懸空"
+      },
+      {
+        "num": "22",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "無連接"
+      },
+      {
+        "num": "23",
+        "name": "SRC1",
+        "side": "R",
+        "type": "ground",
+        "desc": "通道 1 低邊 FET 源極：接系統地，或經感測電阻接地做外部電流感測"
+      },
+      {
+        "num": "24",
+        "name": "SRC2",
+        "side": "R",
+        "type": "ground",
+        "desc": "通道 2 低邊 FET 源極：接系統地，或經感測電阻接地做外部電流感測"
+      },
+      {
+        "num": "25",
+        "name": "EP",
+        "side": "B",
+        "type": "ground",
+        "desc": "散熱焊墊（THERMAL PAD），接系統地；接連續地銅面並直連 via 散熱",
+        "ep": true
+      }
+    ],
+    "thermalPad": "THERMAL PAD 接系統地（表列＋pin 圖中央雙佐證）；連續地銅面＋direct-connect via",
+    "specs": [
+      {
+        "k": "電源",
+        "v": "4.5V–65V（70V 絕對最大）"
+      },
+      {
+        "k": "通道",
+        "v": "4 通道低邊，RDS(ON) 140mΩ/通道（25°C）"
+      },
+      {
+        "k": "電流限制",
+        "v": "0.5A–4A 可選（ILIM 電阻全域設定）"
+      },
+      {
+        "k": "PWM",
+        "v": "最高 500kHz"
+      },
+      {
+        "k": "斜率",
+        "v": "100–1500ns 可設定（RSLEW）"
+      },
+      {
+        "k": "介面",
+        "v": "Hardware（每通道 PWM）或 4 線 SPI；nFAULT 中斷"
+      },
+      {
+        "k": "保護",
+        "v": "每通道獨立過溫/過流、COD 0.5–2ms、INRUSH 模式"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "FAN31790",
+    "mfr": "Texas Instruments",
+    "category": "motor",
+    "subcategory": "風扇控制器（6 通道 PWM/RPM，I2C）",
+    "package": "28-LGA (ZFP) 4.0×4.0mm",
+    "whatIs": "6 通道智慧風扇控制器：獨立 9-bit PWM 輸出＋專用 TACH 輸入閉迴路轉速控制，I2C 介面，與常見風扇控制器 pin-to-pin/BOM-to-BOM 相容。",
+    "func": "以 6 路 PWM（25Hz–25kHz）驅動 4 線風扇（3 線/2 線經外部電晶體），最多 12 路 11-bit 轉速計輸入監測；自動調佔空比維持目標轉速，故障偵測進安全狀態；上電預設值由外部接腳硬體設定。",
+    "usedIn": "桌機/伺服器主機板、GPU 卡與硬體加速器、車用座椅風扇、空氣清淨機的風扇調速與監控。",
+    "desc": "28-LGA（4×4mm，腳位同 WQFN 4×4）6 通道風扇控制器，供電 1.62–3.6V、–40~125°C。內建 ±5% 32kHz 振盪器、可外接 32.768kHz 石英（XTAL1/2）並由 CLKOUT 輸出；I2C fast-mode 400kbps、16 種位址（ADD0/1 四態）；整合看門狗。暫存器映射相容既有驅動軟體。注意：本封裝編號為逆時針（pin 1 左下、1–7 底邊）。",
+    "datasheet": "TI SLVSIZ2",
+    "pins": [
+      {
+        "num": "1",
+        "name": "FREQ_START",
+        "side": "B",
+        "type": "input",
+        "desc": "上電取樣：設定 PWM 輸出頻率的 power-up 預設值"
+      },
+      {
+        "num": "2",
+        "name": "SPIN_START",
+        "side": "B",
+        "type": "input",
+        "desc": "上電取樣：設定初始 spin-up 行為"
+      },
+      {
+        "num": "3",
+        "name": "ADD1",
+        "side": "B",
+        "type": "input",
+        "desc": "I2C 位址選擇：可接 VCC/GND/SCL/SDA 組合出 16 種位址；每次 I2C 傳輸開始時取樣"
+      },
+      {
+        "num": "4",
+        "name": "ADD0",
+        "side": "B",
+        "type": "input",
+        "desc": "I2C 位址選擇（與 ADD1 同表格合併描述）"
+      },
+      {
+        "num": "5",
+        "name": "WD_START",
+        "side": "B",
+        "type": "input",
+        "desc": "上電取樣：設定看門狗初始行為"
+      },
+      {
+        "num": "6",
+        "name": "XTAL2",
+        "side": "B",
+        "type": "input",
+        "desc": "可選 32.768kHz 石英振盪器接腳；未接晶體時使用內建 32kHz 振盪器"
+      },
+      {
+        "num": "7",
+        "name": "XTAL1",
+        "side": "B",
+        "type": "input",
+        "desc": "可選 32.768kHz 石英振盪器接腳（與 XTAL2 成對）"
+      },
+      {
+        "num": "8",
+        "name": "GND/VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": "9",
+        "name": "TACH6",
+        "side": "R",
+        "type": "input",
+        "desc": "轉速計輸入 6（數位或類比訊號可設定）；數位 TACH 可做 RPM 閉迴路，類比可偵測 2 線風扇失效"
+      },
+      {
+        "num": "10",
+        "name": "PWMOUT6",
+        "side": "R",
+        "type": "io",
+        "desc": "開汲極 PWM 輸出 6（4 線風扇 PWM 或經電晶體調變 2/3 線風扇）；可再配置為 TACH12 輸入；可上拉至 3.3V"
+      },
+      {
+        "num": "11",
+        "name": "TACH5",
+        "side": "R",
+        "type": "input",
+        "desc": "轉速計輸入 5（數位或類比訊號可設定）"
+      },
+      {
+        "num": "12",
+        "name": "PWMOUT5",
+        "side": "R",
+        "type": "io",
+        "desc": "開汲極 PWM 輸出 5；可再配置為 TACH11 輸入"
+      },
+      {
+        "num": "13",
+        "name": "TACH4",
+        "side": "R",
+        "type": "input",
+        "desc": "轉速計輸入 4（數位或類比訊號可設定）"
+      },
+      {
+        "num": "14",
+        "name": "PWMOUT4",
+        "side": "R",
+        "type": "io",
+        "desc": "開汲極 PWM 輸出 4；可再配置為 TACH10 輸入"
+      },
+      {
+        "num": "15",
+        "name": "TACH3",
+        "side": "T",
+        "type": "input",
+        "desc": "轉速計輸入 3（數位或類比訊號可設定）"
+      },
+      {
+        "num": "16",
+        "name": "PWMOUT3",
+        "side": "T",
+        "type": "io",
+        "desc": "開汲極 PWM 輸出 3；可再配置為 TACH9 輸入"
+      },
+      {
+        "num": "17",
+        "name": "TACH2",
+        "side": "T",
+        "type": "input",
+        "desc": "轉速計輸入 2（數位或類比訊號可設定）"
+      },
+      {
+        "num": "18",
+        "name": "PWMOUT2",
+        "side": "T",
+        "type": "io",
+        "desc": "開汲極 PWM 輸出 2；可再配置為 TACH8 輸入"
+      },
+      {
+        "num": "19",
+        "name": "TACH1",
+        "side": "T",
+        "type": "input",
+        "desc": "轉速計輸入 1（數位或類比訊號可設定）"
+      },
+      {
+        "num": "20",
+        "name": "PWMOUT1",
+        "side": "T",
+        "type": "io",
+        "desc": "開汲極 PWM 輸出 1；可再配置為 TACH7 輸入"
+      },
+      {
+        "num": "21",
+        "name": "VCC",
+        "side": "T",
+        "type": "power",
+        "desc": "電源 1.62–3.6V；至少 0.1µF 旁路電容至 GND"
+      },
+      {
+        "num": "22",
+        "name": "SDA",
+        "side": "L",
+        "type": "io",
+        "desc": "I2C 串列資料（開汲極）"
+      },
+      {
+        "num": "23",
+        "name": "SCL",
+        "side": "L",
+        "type": "input",
+        "desc": "I2C 串列時脈（開汲極）"
+      },
+      {
+        "num": "24",
+        "name": "{FAN_FAIL}",
+        "side": "L",
+        "type": "output",
+        "desc": "風扇故障輸出（低有效、開汲極）：偵測到故障條件時拉低"
+      },
+      {
+        "num": "25",
+        "name": "PWM_START0",
+        "side": "L",
+        "type": "input",
+        "desc": "上電取樣：設定所有 PWMOUT 佔空比預設值"
+      },
+      {
+        "num": "26",
+        "name": "PWM_START1",
+        "side": "L",
+        "type": "input",
+        "desc": "上電取樣：設定所有 PWMOUT 佔空比預設值（與 PWM_START0 成對）"
+      },
+      {
+        "num": "27",
+        "name": "{FULL_SPEED}",
+        "side": "L",
+        "type": "input",
+        "desc": "拉低時強制所有 PWM 100% 佔空比（唯一例外：已失效風扇且選了失效佔空比歸零模式）"
+      },
+      {
+        "num": "28",
+        "name": "CLKOUT",
+        "side": "L",
+        "type": "output",
+        "desc": "32.768kHz 時脈輸出（源自外部晶體或內建振盪器），恆常有效"
+      },
+      {
+        "num": "29",
+        "name": "EP",
+        "side": "B",
+        "type": "ground",
+        "desc": "散熱焊墊 Thermal Pad（GND/VSS），接 GND",
+        "ep": true
+      }
+    ],
+    "thermalPad": "Thermal Pad（GND/VSS）接 GND（表列＋pin 圖中央雙佐證）",
+    "specs": [
+      {
+        "k": "電源",
+        "v": "1.62V–3.6V；–40°C~125°C"
+      },
+      {
+        "k": "PWM",
+        "v": "6 路 9-bit，25Hz–25kHz，佔空比變化率可設"
+      },
+      {
+        "k": "TACH",
+        "v": "6 專用＋PWMOUT 可再配置，最多 12 路 11-bit"
+      },
+      {
+        "k": "介面",
+        "v": "I2C fast-mode 400kbps，16 種硬體位址"
+      },
+      {
+        "k": "時脈",
+        "v": "內建 32kHz ±5%；可外接 32.768kHz 晶體；CLKOUT 輸出"
+      },
+      {
+        "k": "相容",
+        "v": "與常見風扇控制器 pin-to-pin / BOM-to-BOM / 暫存器相容"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "X4003",
+    "mfr": "Intersil (Renesas)",
+    "category": "power",
+    "subcategory": "CPU 監控器（POR＋看門狗＋低電壓監測）",
+    "package": "8-SOIC / 8-MSOP / 8-TSSOP（本條目取 SOIC 腳位）",
+    "whatIs": "CPU 監控器三合一：上電復位（POR）、可選看門狗計時器、供電電壓監測，單晶片取代三顆功能降低成本。",
+    "func": "上電時維持 RESET 有效 250ms 讓電源與振盪器穩定；運轉中 VCC 跌破 VTRIP 門檻即斷言 RESET；看門狗監看 SDA/SCL 活動（I2C start＋stop 樣式餵狗），逾時未餵即復位。",
+    "usedIn": "微控制器/微處理器系統的電源監督與當機自復（工控板、嵌入式系統的 supervisor 位置）。",
+    "desc": "8 腳 CPU supervisor（2005 年 Intersil 文件 FN8113.0，現屬 Renesas）。看門狗 200ms/600ms/1.4s/關閉四檔可選；五檔標準 VTRIP（4.62/4.38/2.92/2.68/1.75V）且可用特殊程序微調；RESET 有效至 VCC=1V。X4003=RESET 低有效、X4005=RESET 高有效（同檔姊妹料）。TSSOP 腳位映射：WP=1,VCC=2,NC=3,4,RESET=5,VSS=6,SDA=7,SCL=8；MSOP：VCC=1,RESET=2,VSS=3,SDA=4,SCL=5,WP=6。",
+    "datasheet": "Intersil FN8113.0",
+    "pins": [
+      {
+        "num": "1",
+        "name": "NC",
+        "side": "L",
+        "type": "nc",
+        "desc": "無內部連接"
+      },
+      {
+        "num": "2",
+        "name": "NC",
+        "side": "L",
+        "type": "nc",
+        "desc": "無內部連接"
+      },
+      {
+        "num": "3",
+        "name": "{RESET}",
+        "side": "L",
+        "type": "output",
+        "desc": "復位輸出（X4003 低有效，開汲極）：VCC 低於 VTRIP、看門狗逾時、或上電時有效；上電後維持 250ms。X4005 版本為高有效 RESET"
+      },
+      {
+        "num": "4",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": "5",
+        "name": "SDA",
+        "side": "R",
+        "type": "io",
+        "desc": "I2C 串列資料（開汲極、需上拉、可 wire-OR；輸入緩衝恆有效）；兼看門狗餵狗輸入（SDA 高→低＋SCL 高→低＋stop 條件=餵狗）"
+      },
+      {
+        "num": "6",
+        "name": "SCL",
+        "side": "R",
+        "type": "input",
+        "desc": "I2C 串列時脈，控制資料輸出入時序"
+      },
+      {
+        "num": "7",
+        "name": "WP",
+        "side": "R",
+        "type": "input",
+        "desc": "寫入保護：拉高鎖定看門狗計時器設定"
+      },
+      {
+        "num": "8",
+        "name": "VCC",
+        "side": "R",
+        "type": "power",
+        "desc": "電源 1.8–5.5V"
+      }
+    ],
+    "thermalPad": "無（SOIC/MSOP/TSSOP 皆無外露焊墊）",
+    "specs": [
+      {
+        "k": "電源",
+        "v": "1.8V–5.5V"
+      },
+      {
+        "k": "看門狗",
+        "v": "200ms / 600ms / 1.4s / 關閉，四檔可選（非揮發設定，WP 可鎖）"
+      },
+      {
+        "k": "VTRIP",
+        "v": "標準五檔 4.62/4.38/2.92/2.68/1.75V，可程式微調"
+      },
+      {
+        "k": "待機電流",
+        "v": "12µA typ（看門狗開）／800nA typ（看門狗關）；工作 3mA"
+      },
+      {
+        "k": "介面",
+        "v": "I2C 400kHz"
+      },
+      {
+        "k": "變體",
+        "v": "X4003=RESET 低有效；X4005=RESET 高有效（同 datasheet）"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "NX48P0407",
+    "mfr": "NXP Semiconductors",
+    "category": "power",
+    "subcategory": "USB Type-C CC/SBU 保護 IC（48V，USB PD EPR）",
+    "package": "HVQFN16",
+    "whatIs": "48V Type-C CC 與 SBU 線路保護 IC：以超快 OVP 響應保護 CC/SBU 腳免於 short-to-VBUS 損壞，支援 USB PD EPR（最高 48V VBUS）系統。",
+    "func": "串接在 USB PD 控制器（HOST 側）與 Type-C 連接器（CON 側）之間，CC1/CC2 與 SBU1/SBU2 各走一對開關；偵測過壓即切斷並以 FLAG 回報；內建 dead-battery Rd（DBRD 腳）讓無電池狀態仍能被供電端識別。",
+    "usedIn": "USB PD EPR（28V/36V/48V）筆電/行動電源/顯示器的 Type-C 埠保護，PD 控制器前端。",
+    "desc": "HVQFN16 的 Type-C CC/SBU 保護 IC（NXP short datasheet Rev 1.0, 2024-08）。含 IEC ESD/突波保護、post clamp、OVP（OVPSEL 選檔）、POR/OTP/UVLO、電荷泵與 dead-battery 電路。注意：datasheet 表中 CON_SBU1 描述誤印為「Connect SBU2」、CON_CC1 誤印為「Connect CC2」，照名稱對應即可。",
+    "datasheet": "NXP NX48P0407_SDS Rev 1.0",
+    "pins": [
+      {
+        "num": "1",
+        "name": "HOST_CC1",
+        "side": "L",
+        "type": "io",
+        "desc": "系統側 CC1（P/AIO）：接 USB CC/PD 控制器的 CC1"
+      },
+      {
+        "num": "2",
+        "name": "HOST_CC2",
+        "side": "L",
+        "type": "io",
+        "desc": "系統側 CC2（P/AIO）：接 USB CC/PD 控制器的 CC2"
+      },
+      {
+        "num": "3",
+        "name": "HOST_SBU1",
+        "side": "L",
+        "type": "io",
+        "desc": "系統側 SBU1（A/DIO）"
+      },
+      {
+        "num": "4",
+        "name": "HOST_SBU2",
+        "side": "L",
+        "type": "io",
+        "desc": "系統側 SBU2（A/DIO）"
+      },
+      {
+        "num": "5",
+        "name": "SBUEN",
+        "side": "B",
+        "type": "input",
+        "desc": "SBU 開關致能（DI）：拉高開啟 SBU 開關；內建 1.8MΩ 下拉電阻"
+      },
+      {
+        "num": "6",
+        "name": "FLAG",
+        "side": "B",
+        "type": "output",
+        "desc": "故障指示輸出（DO，開汲極低有效）：故障時拉低；需外部上拉電阻"
+      },
+      {
+        "num": "7",
+        "name": "OVPSEL",
+        "side": "B",
+        "type": "input",
+        "desc": "SBU 過壓保護（OVP）檔位選擇（DI）"
+      },
+      {
+        "num": "8",
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地（AG）"
+      },
+      {
+        "num": "9",
+        "name": "CON_SBU2",
+        "side": "R",
+        "type": "io",
+        "desc": "連接器側 SBU2（A/DIO）：接 Type-C 連接器 SBU2"
+      },
+      {
+        "num": "10",
+        "name": "CON_SBU1",
+        "side": "R",
+        "type": "io",
+        "desc": "連接器側 SBU1（A/DIO）：接 Type-C 連接器 SBU1（datasheet 描述欄誤印 SBU2，照名稱對應）"
+      },
+      {
+        "num": "11",
+        "name": "CON_CC2",
+        "side": "R",
+        "type": "io",
+        "desc": "連接器側 CC2（P/AIO）：接 Type-C 連接器 CC2"
+      },
+      {
+        "num": "12",
+        "name": "CON_CC1",
+        "side": "R",
+        "type": "io",
+        "desc": "連接器側 CC1（P/AIO）：接 Type-C 連接器 CC1（datasheet 描述欄誤印 CC2，照名稱對應）"
+      },
+      {
+        "num": "13",
+        "name": "DBRD_CC1",
+        "side": "T",
+        "type": "analog",
+        "desc": "Dead-Battery 模式 CC1 的 Rd 端（AG）"
+      },
+      {
+        "num": "14",
+        "name": "DBRD_CC2",
+        "side": "T",
+        "type": "analog",
+        "desc": "Dead-Battery 模式 CC2 的 Rd 端（AG）"
+      },
+      {
+        "num": "15",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "電源輸入（PI）：接系統電壓，1µF 旁路電容至 GND"
+      },
+      {
+        "num": "16",
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地（AG）"
+      }
+    ],
+    "thermalPad": "short datasheet 的 pin 表與 pin 圖均未標示 EP 接法——HVQFN 封裝物理上有中央裸露焊墊，接法照 NXP 完整版 datasheet 確認（誠實界定，不編造）",
+    "specs": [
+      {
+        "k": "保護對象",
+        "v": "Type-C CC1/CC2 與 SBU1/SBU2 的 short-to-VBUS（最高 48V PD EPR）"
+      },
+      {
+        "k": "保護機制",
+        "v": "超快 OVP 切斷、IEC ESD/突波保護、post clamp、OTP"
+      },
+      {
+        "k": "Dead battery",
+        "v": "內建 Rd（DBRD_CC1/CC2），無電池仍可被識別供電"
+      },
+      {
+        "k": "指示",
+        "v": "FLAG 開汲極低有效故障輸出"
+      },
+      {
+        "k": "文件",
+        "v": "Product short data sheet Rev 1.0（2024-08）；完整規格見 NXP 完整版"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];

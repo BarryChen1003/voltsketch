@@ -1,5 +1,5 @@
 // 自動產生：IC-spec 依分類（檔名為 part）。重產：node tools/classify-ics.js 後再轉。
-// 手動校正：_unclassified 已清空歸位；_docs=技術手冊/勘誤非晶片；isotmp35r→sensors；tcan4572-q1→interface。
+// 手動校正：_unclassified 已清空歸位；_docs=技術手冊/勘誤非晶片；isotmp35r→sensors；tcan4572-q1→interface；X4003/NX48P0407_SDS→power（原 rf 誤類，2026-07-11）。
 window.IC_CLASSIFICATION = {
  "_docs": [
   "slau846d",
@@ -196,7 +196,9 @@ window.IC_CLASSIFICATION = {
  ],
  "power": [
   "AXP209",
+  "NX48P0407",
   "RT6150",
+  "X4003",
   "lm851772-q1",
   "lmg1020-q1",
   "lmg2104r044",
@@ -234,9 +236,7 @@ window.IC_CLASSIFICATION = {
  "rf": [
   "AAA3FPBAUZ",
   "MA4P504_1072",
-  "NX48P0407_SDS",
   "Qorvo_11-18-2025_QPD1004A-DataSheet",
-  "X4003",
   "awr2188",
   "awrl6844",
   "iwrl6432aop",

@@ -194,7 +194,9 @@
  ],
  "power": [
   "AXP209",
+  "NX48P0407",
   "RT6150",
+  "X4003",
   "lm851772-q1",
   "lmg1020-q1",
   "lmg2104r044",
@@ -232,9 +234,7 @@
  "rf": [
   "AAA3FPBAUZ",
   "MA4P504_1072",
-  "NX48P0407_SDS",
   "Qorvo_11-18-2025_QPD1004A-DataSheet",
-  "X4003",
   "awr2188",
   "awrl6844",
   "iwrl6432aop",
