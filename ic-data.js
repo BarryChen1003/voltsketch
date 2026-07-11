@@ -47753,5 +47753,2083 @@ window.IC_DATA = [
         "note": "同封裝同腳位的 4 通道版（AIN_6/AIN_7 腳為 NC）；確認通道數需求"
       }
     ]
+  },
+  {
+    "part": "DAC39RF20",
+    "mfr": "Texas Instruments",
+    "category": "data-converters",
+    "subcategory": "22/44GSPS 雙通道 16-bit RF DAC（JESD204C）",
+    "package": "289-Ball FCCSP 13.8×13.8mm, 0.8mm pitch",
+    "whatIs": "22GSPS 或 44GSPS 16-bit 單/雙通道多奈奎斯特（multi-Nyquist）數位類比轉換器：外部全速時脈下 NRZ/RF 模式最高 22GSPS（單邊取樣），DES2XL/DES2XH 模式最高 44GSPS（雙邊取樣），JESD204C 高速序列介面，供衛星通訊、相位陣列天線、合成孔徑雷達激勵源、RF 時脈/本地振盪器合成等高速訊號產生應用。",
+    "func": "可作非內插或內插 DAC 用於直接 RF 取樣或複數基頻訊號產生；雙通道最大輸入資料率 21GSPS（12-bit）或 15.75GSPS（16-bit），單通道最高 22GSPS（16-bit）；內建 4 組數位上變頻器（DUC），內插倍率 1x、4x、6x、8x 至 256x，支援複數基頻 I/Q 輸出與直接 RF 取樣之複數轉實數上變頻，64-bit NCO 頻率解析度，支援相位連續跳頻；DUC 或 DAC 輸入端可程式化 FIR 等化器；內建直接數位合成（DDS）功能，4 組分段線性波形產生器，16 組預存波形、共 256 組向量，支援自動或同步外部觸發；選用內建 PLL/VCO 供 DAC 時脈產生；JESD204C 介面最高 16 lane、單 lane 最高 32.5Gbps，Class C-S subclass-1 相容；自動時脈與 SYSREF 校正與追蹤。",
+    "usedIn": "衛星通訊（SATCOM）、相位陣列天線系統、合成孔徑雷達（SAR）激勵源、RF 時脈或本地振盪器（LO）合成、無線通訊測試儀、任意波形產生器（AWG）等高速訊號產生應用。",
+    "desc": "22/44GSPS 16-bit 單/雙通道 multi-Nyquist DAC，JESD204C 最高 16 lane @32.5Gbps，−3dB 輸出頻寬 22GHz，內建 PLL/VCO 與 DDS 波形產生器，289-Ball FCCSP 13.8×13.8mm 0.8mm pitch。",
+    "datasheet": "TI SBASAO8A",
+    "thermalPad": "無外露焊盤（289-ball FCCSP，散熱經球陣列與基板）；熱設計見 datasheet",
+    "pins": [
+      {
+        "num": "A13",
+        "name": "DACOUTA-",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "DAC 通道 A 類比輸出負端；輸出電壓須符合 DAC 相容電壓範圍以維持指標效能。未使用時可接至 VDDA18A"
+      },
+      {
+        "num": "A11",
+        "name": "DACOUTA+",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "DAC 通道 A 類比輸出正端；輸出電壓須符合 DAC 相容電壓範圍以維持指標效能。未使用時可接至 VDDA18A"
+      },
+      {
+        "num": "U13",
+        "name": "DACOUTB-",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "DAC 通道 B 類比輸出負端；輸出電壓須符合 DAC 相容電壓範圍以維持指標效能。未使用時可接至 VDDA18B"
+      },
+      {
+        "num": "U11",
+        "name": "DACOUTB+",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "DAC 通道 B 類比輸出正端；輸出電壓須符合 DAC 相容電壓範圍以維持指標效能。未使用時可接至 VDDA18B"
+      },
+      {
+        "num": "P17",
+        "name": "CLK-",
+        "side": "L",
+        "type": "Input",
+        "desc": "元件時脈輸入負端；CLK+/CLK− 間內建 100Ω 差動端接，自偏壓，須交流耦合至時脈源"
+      },
+      {
+        "num": "N17",
+        "name": "CLK+",
+        "side": "L",
+        "type": "Input",
+        "desc": "元件時脈輸入正端；CLK+/CLK− 間內建 100Ω 差動端接，自偏壓，須交流耦合至時脈源"
+      },
+      {
+        "num": "E17",
+        "name": "SYSREF-",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動 JESD204C SYSREF 輸入負端；SYSREF+/SYSREF− 間內建 100Ω 差動端接；若交流耦合則自偏壓，若直流耦合須符合建議操作條件之 VCMI 規格；未使用時可懸空"
+      },
+      {
+        "num": "D17",
+        "name": "SYSREF+",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動 JESD204C SYSREF 輸入正端；SYSREF+/SYSREF− 間內建 100Ω 差動端接；未使用時可懸空"
+      },
+      {
+        "num": "A7",
+        "name": "0SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 0 負端輸入；內建 100Ω 端接至 0SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "A8",
+        "name": "0SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 0 正端輸入；內建 100Ω 端接至 0SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "B7",
+        "name": "1SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 1 負端輸入；內建 100Ω 端接至 1SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "B8",
+        "name": "1SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 1 正端輸入；內建 100Ω 端接至 1SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "A4",
+        "name": "2SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 2 負端輸入；內建 100Ω 端接至 2SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "A5",
+        "name": "2SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 2 正端輸入；內建 100Ω 端接至 2SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "B4",
+        "name": "3SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 3 負端輸入；內建 100Ω 端接至 3SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "B5",
+        "name": "3SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 3 正端輸入；內建 100Ω 端接至 3SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "D1",
+        "name": "4SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 4 負端輸入；內建 100Ω 端接至 4SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "C1",
+        "name": "4SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 4 正端輸入；內建 100Ω 端接至 4SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "D2",
+        "name": "5SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 5 負端輸入；內建 100Ω 端接至 5SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "C2",
+        "name": "5SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 5 正端輸入；內建 100Ω 端接至 5SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "G1",
+        "name": "6SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 6 負端輸入；內建 100Ω 端接至 6SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "F1",
+        "name": "6SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 6 正端輸入；內建 100Ω 端接至 6SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "G2",
+        "name": "7SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 7 負端輸入；內建 100Ω 端接至 7SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "F2",
+        "name": "7SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 7 正端輸入；內建 100Ω 端接至 7SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "U8",
+        "name": "8SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 8 負端輸入；內建 100Ω 端接至 8SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "U7",
+        "name": "8SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 8 正端輸入；內建 100Ω 端接至 8SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "T8",
+        "name": "9SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 9 負端輸入；內建 100Ω 端接至 9SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "T7",
+        "name": "9SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 9 正端輸入；內建 100Ω 端接至 9SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "U5",
+        "name": "10SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 10 負端輸入；內建 100Ω 端接至 10SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "U4",
+        "name": "10SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 10 正端輸入；內建 100Ω 端接至 10SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "T5",
+        "name": "11SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 11 負端輸入；內建 100Ω 端接至 11SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "T4",
+        "name": "11SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 11 正端輸入；內建 100Ω 端接至 11SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "R1",
+        "name": "12SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 12 負端輸入；內建 100Ω 端接至 12SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "P1",
+        "name": "12SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 12 正端輸入；內建 100Ω 端接至 12SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "R2",
+        "name": "13SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 13 負端輸入；內建 100Ω 端接至 13SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "P2",
+        "name": "13SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 13 正端輸入；內建 100Ω 端接至 13SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "M1",
+        "name": "14SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 14 負端輸入；內建 100Ω 端接至 14SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "L1",
+        "name": "14SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 14 正端輸入；內建 100Ω 端接至 14SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "M2",
+        "name": "15SRX-",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 15 負端輸入；內建 100Ω 端接至 15SRX+；未使用時可懸空不接"
+      },
+      {
+        "num": "L2",
+        "name": "15SRX+",
+        "side": "L",
+        "type": "Input",
+        "desc": "SerDes 通道 15 正端輸入；內建 100Ω 端接至 15SRX-；未使用時可懸空不接"
+      },
+      {
+        "num": "E3",
+        "name": "ALARM",
+        "side": "R",
+        "type": "Output",
+        "desc": "警示輸出：偵測到內部未遮罩告警時動作；告警遮罩由 ALM_MASK 暫存器設定；無上下拉"
+      },
+      {
+        "num": "E5",
+        "name": "{RESET}",
+        "side": "L",
+        "type": "Input",
+        "desc": "元件重置輸入，active-low；上電後須切換一次；內建上拉"
+      },
+      {
+        "num": "F3",
+        "name": "SCANEN",
+        "side": "L",
+        "type": "Input",
+        "desc": "TI 內部測試用腳，可懸空不接；內建下拉"
+      },
+      {
+        "num": "J1",
+        "name": "SCLK",
+        "side": "L",
+        "type": "Input",
+        "desc": "序列程式介面（SPI）時脈輸入；無上下拉"
+      },
+      {
+        "num": "K3",
+        "name": "{SCS}",
+        "side": "L",
+        "type": "Input",
+        "desc": "序列程式介面（SPI）晶片選擇輸入，active-low；內建上拉"
+      },
+      {
+        "num": "J3",
+        "name": "SDI",
+        "side": "L",
+        "type": "Input",
+        "desc": "序列程式介面（SPI）資料輸入；無上下拉"
+      },
+      {
+        "num": "J2",
+        "name": "SDO",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列程式介面（SPI）資料輸出；未讀取 SPI 資料時為高阻抗；無上下拉"
+      },
+      {
+        "num": "E4",
+        "name": "{SYNC}",
+        "side": "R",
+        "type": "I/O",
+        "desc": "JESD204C SYNC 輸出，active-low；作為輸入使用時上拉致能"
+      },
+      {
+        "num": "D9",
+        "name": "TRIG0",
+        "side": "L",
+        "type": "Input",
+        "desc": "觸發介面球 0；於 FR Interface 亦作為資料輸入 0；內建下拉"
+      },
+      {
+        "num": "D8",
+        "name": "TRIG1",
+        "side": "L",
+        "type": "Input",
+        "desc": "觸發介面球 1；於 FR Interface 亦作為資料輸入 1；內建下拉"
+      },
+      {
+        "num": "D7",
+        "name": "TRIG2",
+        "side": "L",
+        "type": "Input",
+        "desc": "觸發介面球 2；於 FR Interface 亦作為資料輸入 2；內建下拉"
+      },
+      {
+        "num": "D6",
+        "name": "TRIG3",
+        "side": "L",
+        "type": "Input",
+        "desc": "觸發介面球 3；於 FR Interface 亦作為資料輸入 3；內建下拉"
+      },
+      {
+        "num": "D5",
+        "name": "TRIG4",
+        "side": "L",
+        "type": "Input",
+        "desc": "觸發介面球 4；於 FR Interface 亦作為晶片選擇輸入；內建下拉"
+      },
+      {
+        "num": "D4",
+        "name": "TRIGCLK",
+        "side": "L",
+        "type": "I/O",
+        "desc": "觸發介面時脈；作為 FR Interface 輸入時脈，或作為觸發介面輸出時脈；內建下拉"
+      },
+      {
+        "num": "G3",
+        "name": "TXEN0",
+        "side": "L",
+        "type": "Input",
+        "desc": "DAC 輸出靜音或進入 APP Sleep 之腳位控制（見 TX_EN_SEL 暫存器）；另見 datasheet Transmit Enables 章節；內建上拉"
+      },
+      {
+        "num": "H3",
+        "name": "TXEN1",
+        "side": "L",
+        "type": "Input",
+        "desc": "DAC 輸出靜音或進入 APP Sleep 之腳位控制（見 TX_EN_SEL 暫存器）；另見 datasheet Transmit Enables 章節；內建上拉"
+      },
+      {
+        "num": "P9",
+        "name": "ATEST",
+        "side": "R",
+        "type": "Output",
+        "desc": "類比測試腳；未使用時可懸空不接"
+      },
+      {
+        "num": "K17",
+        "name": "EXTREF",
+        "side": "L",
+        "type": "I/O",
+        "desc": "參考電壓輸出或輸入，由 EXTREF_EN 暫存器欄位決定；若使用內部參考，此球應經 0.1μF 電容接至 AGND"
+      },
+      {
+        "num": "H17",
+        "name": "RBIAS-",
+        "side": "R",
+        "type": "Output",
+        "desc": "滿刻度輸出電流偏壓：由本腳至 RBIAS+ 間所接電阻設定"
+      },
+      {
+        "num": "J17",
+        "name": "RBIAS+",
+        "side": "R",
+        "type": "Output",
+        "desc": "滿刻度輸出電流偏壓：由本腳至 RBIAS− 間所接電阻設定"
+      },
+      {
+        "num": "P10",
+        "name": "TDIODE+",
+        "side": "L",
+        "type": "Input",
+        "desc": "溫度二極體正端（供外部電路量測）"
+      },
+      {
+        "num": "R10",
+        "name": "TDIODE-",
+        "side": "L",
+        "type": "Input",
+        "desc": "溫度二極體負端（供外部電路量測）"
+      },
+      {
+        "num": "A15",
+        "name": "TMSTPA+",
+        "side": "R",
+        "type": "Output",
+        "desc": "保留腳（Reserved）"
+      },
+      {
+        "num": "A16",
+        "name": "TMSTPA-",
+        "side": "R",
+        "type": "Output",
+        "desc": "保留腳（Reserved）"
+      },
+      {
+        "num": "U15",
+        "name": "TMSTPB+",
+        "side": "R",
+        "type": "Output",
+        "desc": "保留腳（Reserved）"
+      },
+      {
+        "num": "U16",
+        "name": "TMSTPB-",
+        "side": "R",
+        "type": "Output",
+        "desc": "保留腳（Reserved）"
+      },
+      {
+        "num": "G16",
+        "name": "VDDA18A",
+        "side": "T",
+        "type": "Power",
+        "desc": "DAC 通道 A 1.8V 電源；可與 VDDA18B 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "G17",
+        "name": "VDDA18A",
+        "side": "T",
+        "type": "Power",
+        "desc": "DAC 通道 A 1.8V 電源；可與 VDDA18B 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "L16",
+        "name": "VDDA18B",
+        "side": "T",
+        "type": "Power",
+        "desc": "DAC 通道 B 1.8V 電源；可與 VDDA18A 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "L17",
+        "name": "VDDA18B",
+        "side": "T",
+        "type": "Power",
+        "desc": "DAC 通道 B 1.8V 電源；可與 VDDA18A 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "J11",
+        "name": "VDDCLK08",
+        "side": "T",
+        "type": "Power",
+        "desc": "內部取樣時脈分佈路徑 0.8V 電源；雜訊或突波會劣化相位雜訊效能；建議與 VDDDIG、VDDLA/B 分離以取得最佳效能"
+      },
+      {
+        "num": "F12",
+        "name": "VDDCLK08",
+        "side": "T",
+        "type": "Power",
+        "desc": "內部取樣時脈分佈路徑 0.8V 電源；雜訊或突波會劣化相位雜訊效能；建議與 VDDDIG、VDDLA/B 分離以取得最佳效能"
+      },
+      {
+        "num": "H12",
+        "name": "VDDCLK08",
+        "side": "T",
+        "type": "Power",
+        "desc": "內部取樣時脈分佈路徑 0.8V 電源；雜訊或突波會劣化相位雜訊效能；建議與 VDDDIG、VDDLA/B 分離以取得最佳效能"
+      },
+      {
+        "num": "K12",
+        "name": "VDDCLK08",
+        "side": "T",
+        "type": "Power",
+        "desc": "內部取樣時脈分佈路徑 0.8V 電源；雜訊或突波會劣化相位雜訊效能；建議與 VDDDIG、VDDLA/B 分離以取得最佳效能"
+      },
+      {
+        "num": "M12",
+        "name": "VDDCLK08",
+        "side": "T",
+        "type": "Power",
+        "desc": "內部取樣時脈分佈路徑 0.8V 電源；雜訊或突波會劣化相位雜訊效能；建議與 VDDDIG、VDDLA/B 分離以取得最佳效能"
+      },
+      {
+        "num": "E13",
+        "name": "VDDCLK08",
+        "side": "T",
+        "type": "Power",
+        "desc": "內部取樣時脈分佈路徑 0.8V 電源；雜訊或突波會劣化相位雜訊效能；建議與 VDDDIG、VDDLA/B 分離以取得最佳效能"
+      },
+      {
+        "num": "G13",
+        "name": "VDDCLK08",
+        "side": "T",
+        "type": "Power",
+        "desc": "內部取樣時脈分佈路徑 0.8V 電源；雜訊或突波會劣化相位雜訊效能；建議與 VDDDIG、VDDLA/B 分離以取得最佳效能"
+      },
+      {
+        "num": "L13",
+        "name": "VDDCLK08",
+        "side": "T",
+        "type": "Power",
+        "desc": "內部取樣時脈分佈路徑 0.8V 電源；雜訊或突波會劣化相位雜訊效能；建議與 VDDDIG、VDDLA/B 分離以取得最佳效能"
+      },
+      {
+        "num": "N13",
+        "name": "VDDCLK08",
+        "side": "T",
+        "type": "Power",
+        "desc": "內部取樣時脈分佈路徑 0.8V 電源；雜訊或突波會劣化相位雜訊效能；建議與 VDDDIG、VDDLA/B 分離以取得最佳效能"
+      },
+      {
+        "num": "L14",
+        "name": "VDDCLK18",
+        "side": "T",
+        "type": "Power",
+        "desc": "時脈（CLK+/CLK−）輸入緩衝器 1.8V 電源；雜訊或突波會劣化相位雜訊效能"
+      },
+      {
+        "num": "M14",
+        "name": "VDDCLK18",
+        "side": "T",
+        "type": "Power",
+        "desc": "時脈（CLK+/CLK−）輸入緩衝器 1.8V 電源；雜訊或突波會劣化相位雜訊效能"
+      },
+      {
+        "num": "J13",
+        "name": "VDDCP18",
+        "side": "T",
+        "type": "Power",
+        "desc": "資料轉換器 PLL 1.8V 電源"
+      },
+      {
+        "num": "J14",
+        "name": "VDDCP18",
+        "side": "T",
+        "type": "Power",
+        "desc": "資料轉換器 PLL 1.8V 電源"
+      },
+      {
+        "num": "G4",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "J4",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "L4",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "F5",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "H5",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "K5",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "M5",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "N5",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "G6",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "J6",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "L6",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "H7",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "K7",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "G8",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "J8",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "L8",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "H9",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "K9",
+        "name": "VDDDIG",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位區塊 0.8V 電源；建議與 VDDLA/B、VDDCLK 分離以取得最佳效能"
+      },
+      {
+        "num": "F10",
+        "name": "VDDEA",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 A DAC 編碼器 0.8V 電源；可與 VDDEB、VDDDIG 併接"
+      },
+      {
+        "num": "G10",
+        "name": "VDDEA",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 A DAC 編碼器 0.8V 電源；可與 VDDEB、VDDDIG 併接"
+      },
+      {
+        "num": "L10",
+        "name": "VDDEB",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 B DAC 編碼器 0.8V 電源；可與 VDDEA、VDDDIG 併接"
+      },
+      {
+        "num": "M10",
+        "name": "VDDEB",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 B DAC 編碼器 0.8V 電源；可與 VDDEA、VDDDIG 併接"
+      },
+      {
+        "num": "C9",
+        "name": "VDDIO",
+        "side": "T",
+        "type": "Power",
+        "desc": "CMOS 輸出入端子 1.8V 電源"
+      },
+      {
+        "num": "C10",
+        "name": "VDDIO",
+        "side": "T",
+        "type": "Power",
+        "desc": "CMOS 輸出入端子 1.8V 電源"
+      },
+      {
+        "num": "F11",
+        "name": "VDDLA",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 A DAC 類比閂鎖 0.8V 電源；與 VDDLB 分離以取得最佳通道間串擾（XTALK）；須與 VDDDIG 分離以取得最佳效能"
+      },
+      {
+        "num": "H11",
+        "name": "VDDLA",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 A DAC 類比閂鎖 0.8V 電源；與 VDDLB 分離以取得最佳通道間串擾（XTALK）；須與 VDDDIG 分離以取得最佳效能"
+      },
+      {
+        "num": "K11",
+        "name": "VDDLB",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 B DAC 類比閂鎖 0.8V 電源；與 VDDLA 分離以取得最佳通道間串擾（XTALK）；須與 VDDDIG 分離以取得最佳效能"
+      },
+      {
+        "num": "M11",
+        "name": "VDDLB",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 B DAC 類比閂鎖 0.8V 電源；與 VDDLA 分離以取得最佳通道間串擾（XTALK）；須與 VDDDIG 分離以取得最佳效能"
+      },
+      {
+        "num": "N4",
+        "name": "VDDR18",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 接收器 1.8V 電源"
+      },
+      {
+        "num": "P4",
+        "name": "VDDR18",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 接收器 1.8V 電源"
+      },
+      {
+        "num": "J10",
+        "name": "VDDSP18",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes PLL 1.8V 電源"
+      },
+      {
+        "num": "F14",
+        "name": "VDDSYS18",
+        "side": "T",
+        "type": "Power",
+        "desc": "SYSREF（SYSREF+/SYSREF−）輸入緩衝器 1.8V 電源；SYSREF 停用時可與 VDDCLK18 併接；持續運作時須與 VDDCLK18 分離以避免雜訊耦合並降低相位雜訊劣化"
+      },
+      {
+        "num": "G14",
+        "name": "VDDSYS18",
+        "side": "T",
+        "type": "Power",
+        "desc": "SYSREF（SYSREF+/SYSREF−）輸入緩衝器 1.8V 電源；SYSREF 停用時可與 VDDCLK18 併接；持續運作時須與 VDDCLK18 分離以避免雜訊耦合並降低相位雜訊劣化"
+      },
+      {
+        "num": "C3",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "D3",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "L3",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "M3",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "N3",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "P3",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "R3",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "C4",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "R4",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "C5",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "R5",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "C6",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "R6",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "C7",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "F7",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "M7",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "R7",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "C8",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "F8",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "M8",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "R8",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "F9",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "M9",
+        "name": "VDDT",
+        "side": "T",
+        "type": "Power",
+        "desc": "SerDes 端接 0.8V 電源"
+      },
+      {
+        "num": "C12",
+        "name": "VEEAM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 A DAC 電流源偏壓 −1.8V 電源；可與 VEEBM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "D12",
+        "name": "VEEAM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 A DAC 電流源偏壓 −1.8V 電源；可與 VEEBM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "C13",
+        "name": "VEEAM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 A DAC 電流源偏壓 −1.8V 電源；可與 VEEBM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "D13",
+        "name": "VEEAM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 A DAC 電流源偏壓 −1.8V 電源；可與 VEEBM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "C14",
+        "name": "VEEAM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 A DAC 電流源偏壓 −1.8V 電源；可與 VEEBM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "D14",
+        "name": "VEEAM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 A DAC 電流源偏壓 −1.8V 電源；可與 VEEBM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "P12",
+        "name": "VEEBM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 B DAC 電流源偏壓 −1.8V 電源；可與 VEEAM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "R12",
+        "name": "VEEBM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 B DAC 電流源偏壓 −1.8V 電源；可與 VEEAM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "P13",
+        "name": "VEEBM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 B DAC 電流源偏壓 −1.8V 電源；可與 VEEAM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "R13",
+        "name": "VEEBM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 B DAC 電流源偏壓 −1.8V 電源；可與 VEEAM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "P14",
+        "name": "VEEBM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 B DAC 電流源偏壓 −1.8V 電源；可與 VEEAM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "R14",
+        "name": "VEEBM18",
+        "side": "T",
+        "type": "Power",
+        "desc": "通道 B DAC 電流源偏壓 −1.8V 電源；可與 VEEAM18 併接，但會劣化通道間串擾（XTALK）"
+      },
+      {
+        "num": "P6",
+        "name": "VQPS",
+        "side": "T",
+        "type": "Power",
+        "desc": "TI 專用腳，正常操作時可接至 DGND"
+      },
+      {
+        "num": "P7",
+        "name": "VQPS",
+        "side": "T",
+        "type": "Power",
+        "desc": "TI 專用腳，正常操作時可接至 DGND"
+      },
+      {
+        "num": "A10",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "B10",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "D10",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "E10",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "N10",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "T10",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "U10",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "B11",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "C11",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "D11",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "P11",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "R11",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "T11",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "B12",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "A12",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "T12",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "U12",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "B13",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "T13",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "A14",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "B14",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "T14",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "U14",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "B15",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "C15",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "D15",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "P15",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "R15",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "T15",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "B16",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "H16",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "J16",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "K16",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "T16",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "A17",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "B17",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "T17",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "U17",
+        "name": "AGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比接地"
+      },
+      {
+        "num": "A1",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "B1",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "E1",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "H1",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "K1",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "N1",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "T1",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "U1",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "A2",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "B2",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "E2",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "H2",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "K2",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "N2",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "T2",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "U2",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "A3",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "B3",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "T3",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "U3",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "F4",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "H4",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "K4",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "M4",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "G5",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "J5",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "L5",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "P5",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "A6",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "B6",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "E6",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "F6",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "H6",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "K6",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "M6",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "N6",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "T6",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "U6",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "E7",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "G7",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "J7",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "L7",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "N7",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "E8",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "H8",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "K8",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "N8",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "P8",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "A9",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "B9",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "E9",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "G9",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "J9",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "L9",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "N9",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "R9",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "T9",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "U9",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "H10",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "K10",
+        "name": "DGND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "數位接地"
+      },
+      {
+        "num": "E11",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "G11",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "L11",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "N11",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "E12",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "G12",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "J12",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "L12",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "N12",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "F13",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "H13",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "K13",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "M13",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "E14",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "H14",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "K14",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "N14",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "E15",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "F15",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "G15",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "H15",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "J15",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "K15",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "L15",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "M15",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "N15",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "C16",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "D16",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "E16",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "F16",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "M16",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "N16",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "P16",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "R16",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "C17",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "F17",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "M17",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      },
+      {
+        "num": "R17",
+        "name": "VSSCLK",
+        "side": "B",
+        "type": "Ground",
+        "desc": "時脈接地"
+      }
+    ],
+    "specs": [
+      {
+        "k": "解析度/DAC 取樣率",
+        "v": "16-bit；NRZ/RF 模式 22GSPS；DES2XL/DES2XH 模式 44GSPS"
+      },
+      {
+        "k": "最大輸入資料率",
+        "v": "雙通道：12-bit 21GSPS/ch、16-bit 15.75GSPS/ch；單通道：16-bit 22GSPS"
+      },
+      {
+        "k": "輸出頻寬",
+        "v": "−3dB 22GHz"
+      },
+      {
+        "k": "AC 效能（fOUT=8.9GHz，DES2XL，IOUT=40mA）",
+        "v": "雜訊底床（小訊號，DEM/Dither off）−162dBFS/Hz；SFDR(−0.1dBFS) −64dBc；IMD3(−7dBFS/tone) −67dBc；附加相位雜訊 −133dBc/Hz@10kHz offset"
+      },
+      {
+        "k": "內部 PLL/VCO 模式取樣率",
+        "v": "NRZ/RF 模式 17GSPS；DES2XL/DES2XH 模式 34GSPS（使用內部 PLL/VCO 時）"
+      },
+      {
+        "k": "數位上變頻",
+        "v": "4 組 DUC，內插 1x、4x、6x、8x…至 256x；64-bit NCO 頻率解析度；複數基頻 I/Q 輸出與複數轉實數上變頻"
+      },
+      {
+        "k": "波形產生",
+        "v": "直接數位合成（DDS）：4 組分段線性波形產生器，16 組預存波形、256 組總向量，支援自動/同步外部觸發"
+      },
+      {
+        "k": "JESD204C 介面",
+        "v": "最高 16 lane，單 lane 最高 32.5Gbps；Class C-S subclass-1 相容；自動時脈與 SYSREF 校正追蹤"
+      },
+      {
+        "k": "封裝",
+        "v": "289-Ball FCCSP，13.8mm×13.8mm，0.8mm pitch"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];

@@ -15,7 +15,7 @@ window.FootprintGen = (function () {
   // 家族判定（第一個封裝為準；「A / B」複列取 A）
   function parsePackage(str) {
     const s = String(str || '').split('/')[0];
-    const famM = s.match(/(DHVQFN|HVQFN|WQFN|VQFN|HR-?QFN|QFN|HTSSOP|TSSOP|MSOP|VSSOP|SSOP|SOIC|SOP\b|SC-?70|SOT-?23|SOT\b|X2SON|WSON|SON\b|WDFN|DFN|TLGA|LGA|DSBGA|FCBGA|BGA|HTQFP|TQFP|LQFP|QFP|PDIP|DIP|CFP|DFP|SO(?=\d))/i);
+    const famM = s.match(/(DHVQFN|HVQFN|WQFN|VQFN|HR-?QFN|QFN|HTSSOP|TSSOP|MSOP|VSSOP|SSOP|SOIC|SOP\b|SC-?70|SOT-?23|SOT\b|X2SON|WSON|SON\b|WDFN|DFN|TLGA|LGA|DSBGA|FCBGA|BGA|FCCSP|WCSP|CSP|HTQFP|TQFP|LQFP|QFP|PDIP|DIP|CFP|DFP|SO(?=\d))/i);
     let fam = famM ? famM[1].toUpperCase().replace('-', '') : null;
     // 別名歸位：SO14→SOIC、CFP/DFP（陶瓷/雙列 flatpack）→SOIC 型雙列、DHVQFN→QFN
     if (fam === 'SO') fam = 'SOIC';
@@ -38,7 +38,7 @@ window.FootprintGen = (function () {
   const DUAL_GW = ['SOIC', 'TSSOP', 'HTSSOP', 'MSOP', 'VSSOP', 'SSOP', 'SOP', 'SOT23', 'SOT', 'SC70', 'CFP'];
   const DUAL_NL = ['WSON', 'SON', 'WDFN', 'DFN', 'X2SON'];
   const QUAD_GW = ['HTQFP', 'TQFP', 'LQFP', 'QFP'];
-  const GRID = ['LGA', 'TLGA', 'BGA', 'DSBGA', 'FCBGA'];
+  const GRID = ['LGA', 'TLGA', 'BGA', 'DSBGA', 'FCBGA', 'FCCSP', 'WCSP', 'CSP'];
   const THT_DUAL = ['PDIP', 'DIP'];
 
   // 家族預設（body 寬 mm、pitch mm、pad 長）——缺尺寸時用
