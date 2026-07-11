@@ -24471,5 +24471,1395 @@ window.IC_DATA = [
     ],
     "secondSource": [],
     "dropIn": []
+  },
+  {
+    "part": "CC2745P10-Q1",
+    "mfr": "Texas Instruments",
+    "category": "wireless",
+    "subcategory": "SimpleLink 藍牙低功耗無線 MCU (Cortex-M33, 車規, +20dBm PA)",
+    "package": "QFN-40 (RHA) 6×6mm, 0.5mm pitch",
+    "whatIs": "車規（AEC-Q100 Grade 2）2.4GHz 無線微控制器（MCU）：Arm Cortex-M33 核心＋Bluetooth Low Energy 6.0 收發器，內建硬體安全模組（HSM），本 P10 版本支援最高 +20dBm 輸出功率。",
+    "func": "整合 96MHz Arm Cortex-M33（含 FPU、TrustZone-M）與 96MHz 演算法處理單元（APU），APU 協助 Bluetooth Channel Sounding 高精度測距的後處理（IFFT、MUSIC 等超解析演算法及向量/矩陣運算）；內含 HSM 加密子系統（AES-256、ECC-521、RSA-3072、SHA-512、真隨機數產生器）與獨立 LAES-128 加速器處理連結層即時加解密，另有 TrustZone-M、記憶體防火牆與電壓故障監測（VGM）提供車用資安等級防護；整合 BALUN 與 RF 開關，P 版本仍以單一 RF 腳完成收發，降低 BOM。",
+    "usedIn": "車用門禁與安全系統：數位鑰匙（Digital Key）、手機當鑰匙（PaaK）、被動式進入及啟動（PEPS）、遙控鑰匙（RKE）。",
+    "desc": "AEC-Q100 車規 2.4GHz BLE 6.0 無線 MCU，Cortex-M33 + APU，1024KB Flash / 162KB SRAM，最高 +20dBm 輸出，QFN40 封裝，含 CAN-FD 與 HSM，鎖定車用門禁應用之高功率版。",
+    "datasheet": "TI SWRS304D",
+    "pins": [
+      {
+        "num": 1,
+        "name": "VDDR",
+        "side": "L",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或 GLDO 供電，勿由外部電路供電；須與 pin2、pin34 並接於 PCB"
+      },
+      {
+        "num": 2,
+        "name": "VDDR",
+        "side": "L",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或內部 LDO 供電，勿由外部電路供電；須與 pin1、pin34 並接於 PCB"
+      },
+      {
+        "num": 3,
+        "name": "DIO0",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 4,
+        "name": "DIO1",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 5,
+        "name": "DIO2",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO，具高驅動能力 (high-drive)"
+      },
+      {
+        "num": 6,
+        "name": "DIO3",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO，具高驅動能力 (high-drive)"
+      },
+      {
+        "num": 7,
+        "name": "DIO4",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 8,
+        "name": "DIO5",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 9,
+        "name": "VDDIO",
+        "side": "L",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 分離軌 I/O 供電"
+      },
+      {
+        "num": 10,
+        "name": "DIO7",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 11,
+        "name": "DIO9_SWDIO",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO；SWD 除錯介面：模式選擇或 SWDIO，具高驅動能力"
+      },
+      {
+        "num": 12,
+        "name": "DIO10_SWDCK",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO；SWD 除錯介面：序列時脈 SWDCK，具高驅動能力"
+      },
+      {
+        "num": 13,
+        "name": "DIO11",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 14,
+        "name": "DIO12",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 15,
+        "name": "DIO15",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 16,
+        "name": "DIO16",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 17,
+        "name": "VDDIO",
+        "side": "B",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 分離軌 I/O 供電"
+      },
+      {
+        "num": 18,
+        "name": "VDDS",
+        "side": "B",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 19,
+        "name": "DIO17_A8",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO，具類比能力與高驅動能力"
+      },
+      {
+        "num": 20,
+        "name": "DIO18_A7",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO，具類比能力與高驅動能力"
+      },
+      {
+        "num": 30,
+        "name": "DCDC",
+        "side": "R",
+        "type": "power",
+        "desc": "內部 DC/DC 轉換器切換節點"
+      },
+      {
+        "num": 29,
+        "name": "VDDS",
+        "side": "R",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 28,
+        "name": "VDDD",
+        "side": "R",
+        "type": "power",
+        "desc": "內部 1.32V 核心穩壓輸出；須外接 1μF 去耦電容"
+      },
+      {
+        "num": 27,
+        "name": "DIO24_X32N",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO；32kHz 石英振盪器接腳 2"
+      },
+      {
+        "num": 26,
+        "name": "DIO23_X32P",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO；32kHz 石英振盪器接腳 1，可選作 TCXO 輸入"
+      },
+      {
+        "num": 25,
+        "name": "RSTN",
+        "side": "R",
+        "type": "input",
+        "desc": "重置腳，低態動作；無內部提升電阻"
+      },
+      {
+        "num": 24,
+        "name": "DIO22_A3",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 23,
+        "name": "DIO21_A4",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 22,
+        "name": "DIO20_A5",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 21,
+        "name": "DIO19_A6",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 40,
+        "name": "NC",
+        "side": "T",
+        "type": "nc",
+        "desc": "未接至晶片內部；官方參考設計 LP-EM-CC2745R10-Q1、LP-EM-CC2755P10 建議此腳接地以增加天線路徑屏蔽"
+      },
+      {
+        "num": 39,
+        "name": "ANT",
+        "side": "T",
+        "type": "analog",
+        "desc": "2.4GHz 收發共用天線腳 (RF, TX/RX)"
+      },
+      {
+        "num": 38,
+        "name": "VDDS",
+        "side": "T",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 37,
+        "name": "NC",
+        "side": "T",
+        "type": "nc",
+        "desc": "無連接"
+      },
+      {
+        "num": 36,
+        "name": "X48N",
+        "side": "T",
+        "type": "analog",
+        "desc": "48MHz 石英振盪器接腳 2"
+      },
+      {
+        "num": 35,
+        "name": "X48P",
+        "side": "T",
+        "type": "analog",
+        "desc": "48MHz 石英振盪器接腳 1"
+      },
+      {
+        "num": 34,
+        "name": "VDDR",
+        "side": "T",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或內部 LDO 供電；須外接 10μF 去耦電容；與 pin1、pin2 並接於 PCB"
+      },
+      {
+        "num": 33,
+        "name": "DIO28_A0",
+        "side": "T",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 32,
+        "name": "DIO27_A1",
+        "side": "T",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 31,
+        "name": "VDDS",
+        "side": "T",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電；須外接 10μF 去耦電容"
+      },
+      {
+        "num": 41,
+        "name": "EGP",
+        "side": "B",
+        "type": "ground",
+        "desc": "外露接地墊 (exposed ground pad)，為晶片唯一接地連接；PCB 須有良好接地連接才能正常運作",
+        "ep": true
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "核心",
+        "v": "Arm Cortex-M33 96MHz + APU 96MHz（Bluetooth Channel Sounding 後處理）"
+      },
+      {
+        "k": "記憶體",
+        "v": "Flash 1024KB（其中 96KB 保留給 HSM 韌體）、SRAM 162KB（啟用 parity 時 144KB）"
+      },
+      {
+        "k": "無線",
+        "v": "Bluetooth Low Energy 6.0 認證，支援 Channel Sounding；輸出功率最高 +20dBm"
+      },
+      {
+        "k": "接收靈敏度",
+        "v": "BLE 125kbps −103.5dBm／1Mbps −97dBm"
+      },
+      {
+        "k": "周邊",
+        "v": "23 GPIO、2×UART(LIN)、2×SPI、1×I2C、1×I2S、1×CAN-FD、12-bit ADC 1.2MSPS"
+      },
+      {
+        "k": "安全",
+        "v": "HSM（AES-256/ECC-521/RSA-3072/SHA-512/TRNG）、獨立 LAES-128、TrustZone-M、VGM"
+      },
+      {
+        "k": "車規/封裝",
+        "v": "AEC-Q100 Grade 2，Tj −40~125°C；QFN-40 (RHA) 6×6mm"
+      }
+    ],
+    "secondSource": [
+      "封裝與腳位相容（QFN-40 RHA、6×6mm、0.5mm pitch、pin-to-pin）",
+      "須支援 AEC-Q100 車規認證",
+      "Bluetooth Low Energy 6.0 協定與 Channel Sounding 功能相容",
+      "輸出功率需達 +20dBm 等級",
+      "Flash ≥1024KB／SRAM ≥162KB",
+      "具備 HSM 硬體安全模組與 CAN-FD 控制器",
+      "工作溫度涵蓋 −40°C ~ 125°C (Tj)"
+    ],
+    "dropIn": [
+      {
+        "part": "CC2745R7-Q1",
+        "note": "同一份 datasheet、腳位 100% 相同；R7 為標準功率版本（PA 最高 +10dBm，Flash 864KB/SRAM 128KB，P10 為 +20dBm、1024KB/162KB）"
+      }
+    ]
+  },
+  {
+    "part": "CC2745R7-Q1",
+    "mfr": "Texas Instruments",
+    "category": "wireless",
+    "subcategory": "SimpleLink 藍牙低功耗無線 MCU (Cortex-M33, 車規, +10dBm PA)",
+    "package": "QFN-40 (RHA) 6×6mm, 0.5mm pitch",
+    "whatIs": "車規（AEC-Q100 Grade 2）2.4GHz 無線微控制器（MCU）：Arm Cortex-M33 核心＋Bluetooth Low Energy 6.0 收發器，內建硬體安全模組（HSM），本 R7 版本為標準功率版（最高 +10dBm），Flash/SRAM 容量較 P10/R10 版小。",
+    "func": "整合 96MHz Arm Cortex-M33（含 FPU、TrustZone-M）與 96MHz 演算法處理單元（APU），APU 協助 Bluetooth Channel Sounding 高精度測距的後處理（IFFT、MUSIC 等超解析演算法及向量/矩陣運算）；內含 HSM 加密子系統（AES-256、ECC-521、RSA-3072、SHA-512、真隨機數產生器）與獨立 LAES-128 加速器處理連結層即時加解密，另有 TrustZone-M、記憶體防火牆與電壓故障監測（VGM）提供車用資安等級防護；整合 BALUN 與 RF 開關，最高輸出功率 +10dBm，降低 BOM。",
+    "usedIn": "車用門禁與安全系統：數位鑰匙（Digital Key）、手機當鑰匙（PaaK）、被動式進入及啟動（PEPS）、遙控鑰匙（RKE）。",
+    "desc": "AEC-Q100 車規 2.4GHz BLE 6.0 無線 MCU，Cortex-M33 + APU，864KB Flash / 128KB SRAM，最高 +10dBm 輸出，QFN40 封裝，含 CAN-FD 與 HSM，車用門禁應用之標準功率版。",
+    "datasheet": "TI SWRS304D",
+    "pins": [
+      {
+        "num": 1,
+        "name": "VDDR",
+        "side": "L",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或 GLDO 供電，勿由外部電路供電；須與 pin2、pin34 並接於 PCB"
+      },
+      {
+        "num": 2,
+        "name": "VDDR",
+        "side": "L",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或內部 LDO 供電，勿由外部電路供電；須與 pin1、pin34 並接於 PCB"
+      },
+      {
+        "num": 3,
+        "name": "DIO0",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 4,
+        "name": "DIO1",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 5,
+        "name": "DIO2",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO，具高驅動能力 (high-drive)"
+      },
+      {
+        "num": 6,
+        "name": "DIO3",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO，具高驅動能力 (high-drive)"
+      },
+      {
+        "num": 7,
+        "name": "DIO4",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 8,
+        "name": "DIO5",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 9,
+        "name": "VDDIO",
+        "side": "L",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 分離軌 I/O 供電"
+      },
+      {
+        "num": 10,
+        "name": "DIO7",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 11,
+        "name": "DIO9_SWDIO",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO；SWD 除錯介面：模式選擇或 SWDIO，具高驅動能力"
+      },
+      {
+        "num": 12,
+        "name": "DIO10_SWDCK",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO；SWD 除錯介面：序列時脈 SWDCK，具高驅動能力"
+      },
+      {
+        "num": 13,
+        "name": "DIO11",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 14,
+        "name": "DIO12",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 15,
+        "name": "DIO15",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 16,
+        "name": "DIO16",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 17,
+        "name": "VDDIO",
+        "side": "B",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 分離軌 I/O 供電"
+      },
+      {
+        "num": 18,
+        "name": "VDDS",
+        "side": "B",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 19,
+        "name": "DIO17_A8",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO，具類比能力與高驅動能力"
+      },
+      {
+        "num": 20,
+        "name": "DIO18_A7",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO，具類比能力與高驅動能力"
+      },
+      {
+        "num": 30,
+        "name": "DCDC",
+        "side": "R",
+        "type": "power",
+        "desc": "內部 DC/DC 轉換器切換節點"
+      },
+      {
+        "num": 29,
+        "name": "VDDS",
+        "side": "R",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 28,
+        "name": "VDDD",
+        "side": "R",
+        "type": "power",
+        "desc": "內部 1.32V 核心穩壓輸出；須外接 1μF 去耦電容"
+      },
+      {
+        "num": 27,
+        "name": "DIO24_X32N",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO；32kHz 石英振盪器接腳 2"
+      },
+      {
+        "num": 26,
+        "name": "DIO23_X32P",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO；32kHz 石英振盪器接腳 1，可選作 TCXO 輸入"
+      },
+      {
+        "num": 25,
+        "name": "RSTN",
+        "side": "R",
+        "type": "input",
+        "desc": "重置腳，低態動作；無內部提升電阻"
+      },
+      {
+        "num": 24,
+        "name": "DIO22_A3",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 23,
+        "name": "DIO21_A4",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 22,
+        "name": "DIO20_A5",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 21,
+        "name": "DIO19_A6",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 40,
+        "name": "NC",
+        "side": "T",
+        "type": "nc",
+        "desc": "未接至晶片內部；官方參考設計 LP-EM-CC2745R10-Q1、LP-EM-CC2755P10 建議此腳接地以增加天線路徑屏蔽"
+      },
+      {
+        "num": 39,
+        "name": "ANT",
+        "side": "T",
+        "type": "analog",
+        "desc": "2.4GHz 收發共用天線腳 (RF, TX/RX)"
+      },
+      {
+        "num": 38,
+        "name": "VDDS",
+        "side": "T",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 37,
+        "name": "NC",
+        "side": "T",
+        "type": "nc",
+        "desc": "無連接"
+      },
+      {
+        "num": 36,
+        "name": "X48N",
+        "side": "T",
+        "type": "analog",
+        "desc": "48MHz 石英振盪器接腳 2"
+      },
+      {
+        "num": 35,
+        "name": "X48P",
+        "side": "T",
+        "type": "analog",
+        "desc": "48MHz 石英振盪器接腳 1"
+      },
+      {
+        "num": 34,
+        "name": "VDDR",
+        "side": "T",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或內部 LDO 供電；須外接 10μF 去耦電容；與 pin1、pin2 並接於 PCB"
+      },
+      {
+        "num": 33,
+        "name": "DIO28_A0",
+        "side": "T",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 32,
+        "name": "DIO27_A1",
+        "side": "T",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 31,
+        "name": "VDDS",
+        "side": "T",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電；須外接 10μF 去耦電容"
+      },
+      {
+        "num": 41,
+        "name": "EGP",
+        "side": "B",
+        "type": "ground",
+        "desc": "外露接地墊 (exposed ground pad)，為晶片唯一接地連接；PCB 須有良好接地連接才能正常運作",
+        "ep": true
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "核心",
+        "v": "Arm Cortex-M33 96MHz + APU 96MHz（Bluetooth Channel Sounding 後處理）"
+      },
+      {
+        "k": "記憶體",
+        "v": "Flash 864KB（其中 96KB 保留給 HSM 韌體）、SRAM 128KB"
+      },
+      {
+        "k": "無線",
+        "v": "Bluetooth Low Energy 6.0 認證，支援 Channel Sounding；輸出功率最高 +10dBm"
+      },
+      {
+        "k": "接收靈敏度",
+        "v": "BLE 125kbps −103.5dBm／1Mbps −97dBm"
+      },
+      {
+        "k": "周邊",
+        "v": "23 GPIO、2×UART(LIN)、2×SPI、1×I2C、1×I2S、1×CAN-FD、12-bit ADC 1.2MSPS"
+      },
+      {
+        "k": "安全",
+        "v": "HSM（AES-256/ECC-521/RSA-3072/SHA-512/TRNG）、獨立 LAES-128、TrustZone-M、VGM"
+      },
+      {
+        "k": "車規/封裝",
+        "v": "AEC-Q100 Grade 2，Tj −40~125°C；QFN-40 (RHA) 6×6mm"
+      }
+    ],
+    "secondSource": [
+      "封裝與腳位相容（QFN-40 RHA、6×6mm、0.5mm pitch、pin-to-pin）",
+      "須支援 AEC-Q100 車規認證",
+      "Bluetooth Low Energy 6.0 協定與 Channel Sounding 功能相容",
+      "輸出功率需達 +10dBm 等級即可（毋須 +20dBm）",
+      "Flash ≥864KB／SRAM ≥128KB",
+      "具備 HSM 硬體安全模組與 CAN-FD 控制器",
+      "工作溫度涵蓋 −40°C ~ 125°C (Tj)"
+    ],
+    "dropIn": [
+      {
+        "part": "CC2745P10-Q1",
+        "note": "同一份 datasheet、腳位 100% 相同；P10 為高功率版本（PA 最高 +20dBm，Flash 1024KB/SRAM 162KB，R7 為 +10dBm、864KB/128KB）"
+      }
+    ]
+  },
+  {
+    "part": "CC2755P10",
+    "mfr": "Texas Instruments",
+    "category": "wireless",
+    "subcategory": "SimpleLink 多協定 2.4GHz 無線 MCU (Cortex-M33, BLE/Zigbee/Thread/Matter, +20dBm PA)",
+    "package": "QFN-40 (RHA) 6×6mm, 0.5mm pitch",
+    "whatIs": "非車規 2.4GHz 多協定無線微控制器（MCU）：Arm Cortex-M33 核心，支援 Bluetooth Low Energy 6.0、Zigbee 3.0、Thread、Matter 與專屬 2.4GHz 協定，本 P10 版本支援最高 +20dBm 輸出功率。",
+    "func": "整合 96MHz Arm Cortex-M33（含 FPU、TrustZone-M）與 96MHz 演算法處理單元（APU），APU 協助 Bluetooth Channel Sounding 高精度測距的後處理（IFFT、MUSIC 等超解析演算法）；同一顆晶片可依 SimpleLink SDK 燒錄 BLE、Zigbee、Thread 或 Matter 協定堆疊，支援 OTA 韌體更新（OAD）；內含 HSM 加密子系統（AES-256、ECC-521、RSA-3072、SHA-512、TRNG）與獨立 LAES-128 加速器、TrustZone-M、VGM 等資安機制；整合 BALUN 與 RF 開關，P 版本仍以單一 RF 腳完成收發，降低 BOM。",
+    "usedIn": "居家醫療照護（血糖機、血壓計、CPAP、電子體溫計）、患者監測感測貼片、穿戴健身裝置；建築保全（動作偵測、智慧門鎖、門窗感測器、車庫門）、HVAC 恆溫器與環境感測、消防偵煙偵熱、IP 監控攝影機；照明控制；工廠自動化；零售電子貨架標籤；智慧水/電/瓦斯表與電網通訊；無線 LAN/路由設備；消費性周邊裝置、玩具與非醫療穿戴裝置。",
+    "desc": "非車規 2.4GHz 多協定（BLE/Zigbee/Thread/Matter）無線 MCU，Cortex-M33 + APU，1024KB Flash / 162KB SRAM，最高 +20dBm 輸出，QFN40 封裝。",
+    "datasheet": "TI SWRS306D",
+    "pins": [
+      {
+        "num": 1,
+        "name": "VDDR",
+        "side": "L",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或 GLDO 供電，勿由外部電路供電；須與 pin2、pin34 並接於 PCB"
+      },
+      {
+        "num": 2,
+        "name": "VDDR",
+        "side": "L",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或內部 LDO 供電，勿由外部電路供電；須與 pin1、pin34 並接於 PCB"
+      },
+      {
+        "num": 3,
+        "name": "DIO0",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 4,
+        "name": "DIO1",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 5,
+        "name": "DIO2",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO，具高驅動能力 (high-drive)"
+      },
+      {
+        "num": 6,
+        "name": "DIO3",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO，具高驅動能力 (high-drive)"
+      },
+      {
+        "num": 7,
+        "name": "DIO4",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 8,
+        "name": "DIO5",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 9,
+        "name": "VDDIO",
+        "side": "L",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 分離軌 I/O 供電"
+      },
+      {
+        "num": 10,
+        "name": "DIO7",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 11,
+        "name": "DIO9_SWDIO",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO；SWD 除錯介面：模式選擇或 SWDIO，具高驅動能力"
+      },
+      {
+        "num": 12,
+        "name": "DIO10_SWDCK",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO；SWD 除錯介面：序列時脈 SWDCK，具高驅動能力"
+      },
+      {
+        "num": 13,
+        "name": "DIO11",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 14,
+        "name": "DIO12",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 15,
+        "name": "DIO15",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 16,
+        "name": "DIO16",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 17,
+        "name": "VDDIO",
+        "side": "B",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 分離軌 I/O 供電"
+      },
+      {
+        "num": 18,
+        "name": "VDDS",
+        "side": "B",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 19,
+        "name": "DIO17_A8",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO，具類比能力與高驅動能力"
+      },
+      {
+        "num": 20,
+        "name": "DIO18_A7",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO，具類比能力與高驅動能力"
+      },
+      {
+        "num": 30,
+        "name": "DCDC",
+        "side": "R",
+        "type": "power",
+        "desc": "內部 DC/DC 轉換器切換節點"
+      },
+      {
+        "num": 29,
+        "name": "VDDS",
+        "side": "R",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 28,
+        "name": "VDDD",
+        "side": "R",
+        "type": "power",
+        "desc": "內部 1.32V 核心穩壓輸出；須外接 1μF 去耦電容"
+      },
+      {
+        "num": 27,
+        "name": "DIO24_X32N",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO；32kHz 石英振盪器接腳 2"
+      },
+      {
+        "num": 26,
+        "name": "DIO23_X32P",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO；32kHz 石英振盪器接腳 1，可選作 TCXO 輸入"
+      },
+      {
+        "num": 25,
+        "name": "RSTN",
+        "side": "R",
+        "type": "input",
+        "desc": "重置腳，低態動作；無內部提升電阻"
+      },
+      {
+        "num": 24,
+        "name": "DIO22_A3",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 23,
+        "name": "DIO21_A4",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 22,
+        "name": "DIO20_A5",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 21,
+        "name": "DIO19_A6",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 40,
+        "name": "NC",
+        "side": "T",
+        "type": "nc",
+        "desc": "未接至晶片內部；官方參考設計 LP-EM-CC2745R10-Q1 建議此腳接地以增加天線路徑屏蔽"
+      },
+      {
+        "num": 39,
+        "name": "ANT",
+        "side": "T",
+        "type": "analog",
+        "desc": "2.4GHz 收發共用天線腳 (RF, TX/RX)"
+      },
+      {
+        "num": 38,
+        "name": "VDDS",
+        "side": "T",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 37,
+        "name": "NC",
+        "side": "T",
+        "type": "nc",
+        "desc": "無連接"
+      },
+      {
+        "num": 36,
+        "name": "X48N",
+        "side": "T",
+        "type": "analog",
+        "desc": "48MHz 石英振盪器接腳 2"
+      },
+      {
+        "num": 35,
+        "name": "X48P",
+        "side": "T",
+        "type": "analog",
+        "desc": "48MHz 石英振盪器接腳 1"
+      },
+      {
+        "num": 34,
+        "name": "VDDR",
+        "side": "T",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或內部 LDO 供電；須外接 10μF 去耦電容；與 pin1、pin2 並接於 PCB"
+      },
+      {
+        "num": 33,
+        "name": "DIO28_A0",
+        "side": "T",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 32,
+        "name": "DIO27_A1",
+        "side": "T",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 31,
+        "name": "VDDS",
+        "side": "T",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電；須外接 10μF 去耦電容"
+      },
+      {
+        "num": 41,
+        "name": "EGP",
+        "side": "B",
+        "type": "ground",
+        "desc": "外露接地墊 (exposed ground pad)，為晶片唯一接地連接；PCB 須有良好接地連接才能正常運作",
+        "ep": true
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "核心",
+        "v": "Arm Cortex-M33 96MHz + APU 96MHz（Bluetooth Channel Sounding 後處理）"
+      },
+      {
+        "k": "記憶體",
+        "v": "Flash 1024KB（其中 96KB 保留給 HSM 韌體）、SRAM 162KB"
+      },
+      {
+        "k": "無線協定",
+        "v": "Bluetooth Low Energy 6.0、IEEE 802.15.4（Zigbee 3.0 認證、Thread、Matter、專屬 2.4GHz、多協定）；輸出功率最高 +20dBm"
+      },
+      {
+        "k": "接收靈敏度",
+        "v": "BLE 125kbps −103.5dBm／1Mbps −97dBm；IEEE 802.15.4 −103dBm"
+      },
+      {
+        "k": "周邊",
+        "v": "23 GPIO、2×UART(LIN)、2×SPI、1×I2C、1×I2S、12-bit ADC 1.2MSPS（不含 CAN-FD）"
+      },
+      {
+        "k": "安全",
+        "v": "HSM（AES-256/ECC-521/RSA-3072/SHA-512/TRNG）、獨立 LAES-128、TrustZone-M、VGM"
+      },
+      {
+        "k": "封裝",
+        "v": "QFN-40 (RHA) 6×6mm；同系列另有 WCSP 3.5×3.4mm 預覽封裝（非本料號）"
+      }
+    ],
+    "secondSource": [
+      "封裝與腳位相容（QFN-40 RHA、6×6mm、0.5mm pitch、pin-to-pin）",
+      "支援 Bluetooth Low Energy 6.0 及所需之 Zigbee/Thread/Matter 協定堆疊",
+      "輸出功率需達 +20dBm 等級",
+      "Flash ≥1024KB／SRAM ≥162KB",
+      "具備 HSM 硬體安全模組",
+      "工作溫度涵蓋 −40°C ~ 125°C (Tj)"
+    ],
+    "dropIn": [
+      {
+        "part": "CC2755R10",
+        "note": "同一份 datasheet、腳位 100% 相同；R10 為標準功率版本（PA 最高 +10dBm，Flash/SRAM 皆與 P10 相同：1024KB/162KB）"
+      }
+    ]
+  },
+  {
+    "part": "CC2755R10",
+    "mfr": "Texas Instruments",
+    "category": "wireless",
+    "subcategory": "SimpleLink 多協定 2.4GHz 無線 MCU (Cortex-M33, BLE/Zigbee/Thread/Matter, +10dBm PA)",
+    "package": "QFN-40 (RHA) 6×6mm, 0.5mm pitch",
+    "whatIs": "非車規 2.4GHz 多協定無線微控制器（MCU）：Arm Cortex-M33 核心，支援 Bluetooth Low Energy 6.0、Zigbee 3.0、Thread、Matter 與專屬 2.4GHz 協定，本 R10 版本為標準功率版（最高 +10dBm）。",
+    "func": "整合 96MHz Arm Cortex-M33（含 FPU、TrustZone-M）與 96MHz 演算法處理單元（APU），APU 協助 Bluetooth Channel Sounding 高精度測距的後處理（IFFT、MUSIC 等超解析演算法）；同一顆晶片可依 SimpleLink SDK 燒錄 BLE、Zigbee、Thread 或 Matter 協定堆疊，支援 OTA 韌體更新（OAD）；內含 HSM 加密子系統（AES-256、ECC-521、RSA-3072、SHA-512、TRNG）與獨立 LAES-128 加速器、TrustZone-M、VGM 等資安機制；整合 BALUN 與 RF 開關，最高輸出功率 +10dBm，降低 BOM。",
+    "usedIn": "居家醫療照護（血糖機、血壓計、CPAP、電子體溫計）、患者監測感測貼片、穿戴健身裝置；建築保全（動作偵測、智慧門鎖、門窗感測器、車庫門）、HVAC 恆溫器與環境感測、消防偵煙偵熱、IP 監控攝影機；照明控制；工廠自動化；零售電子貨架標籤；智慧水/電/瓦斯表與電網通訊；無線 LAN/路由設備；消費性周邊裝置、玩具與非醫療穿戴裝置。",
+    "desc": "非車規 2.4GHz 多協定（BLE/Zigbee/Thread/Matter）無線 MCU，Cortex-M33 + APU，1024KB Flash / 162KB SRAM，最高 +10dBm 輸出，QFN40 封裝。",
+    "datasheet": "TI SWRS306D",
+    "pins": [
+      {
+        "num": 1,
+        "name": "VDDR",
+        "side": "L",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或 GLDO 供電，勿由外部電路供電；須與 pin2、pin34 並接於 PCB"
+      },
+      {
+        "num": 2,
+        "name": "VDDR",
+        "side": "L",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或內部 LDO 供電，勿由外部電路供電；須與 pin1、pin34 並接於 PCB"
+      },
+      {
+        "num": 3,
+        "name": "DIO0",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 4,
+        "name": "DIO1",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 5,
+        "name": "DIO2",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO，具高驅動能力 (high-drive)"
+      },
+      {
+        "num": 6,
+        "name": "DIO3",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO，具高驅動能力 (high-drive)"
+      },
+      {
+        "num": 7,
+        "name": "DIO4",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 8,
+        "name": "DIO5",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 9,
+        "name": "VDDIO",
+        "side": "L",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 分離軌 I/O 供電"
+      },
+      {
+        "num": 10,
+        "name": "DIO7",
+        "side": "L",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 11,
+        "name": "DIO9_SWDIO",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO；SWD 除錯介面：模式選擇或 SWDIO，具高驅動能力"
+      },
+      {
+        "num": 12,
+        "name": "DIO10_SWDCK",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO；SWD 除錯介面：序列時脈 SWDCK，具高驅動能力"
+      },
+      {
+        "num": 13,
+        "name": "DIO11",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 14,
+        "name": "DIO12",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 15,
+        "name": "DIO15",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 16,
+        "name": "DIO16",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO"
+      },
+      {
+        "num": 17,
+        "name": "VDDIO",
+        "side": "B",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 分離軌 I/O 供電"
+      },
+      {
+        "num": 18,
+        "name": "VDDS",
+        "side": "B",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 19,
+        "name": "DIO17_A8",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO，具類比能力與高驅動能力"
+      },
+      {
+        "num": 20,
+        "name": "DIO18_A7",
+        "side": "B",
+        "type": "io",
+        "desc": "GPIO，具類比能力與高驅動能力"
+      },
+      {
+        "num": 30,
+        "name": "DCDC",
+        "side": "R",
+        "type": "power",
+        "desc": "內部 DC/DC 轉換器切換節點"
+      },
+      {
+        "num": 29,
+        "name": "VDDS",
+        "side": "R",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 28,
+        "name": "VDDD",
+        "side": "R",
+        "type": "power",
+        "desc": "內部 1.32V 核心穩壓輸出；須外接 1μF 去耦電容"
+      },
+      {
+        "num": 27,
+        "name": "DIO24_X32N",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO；32kHz 石英振盪器接腳 2"
+      },
+      {
+        "num": 26,
+        "name": "DIO23_X32P",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO；32kHz 石英振盪器接腳 1，可選作 TCXO 輸入"
+      },
+      {
+        "num": 25,
+        "name": "RSTN",
+        "side": "R",
+        "type": "input",
+        "desc": "重置腳，低態動作；無內部提升電阻"
+      },
+      {
+        "num": 24,
+        "name": "DIO22_A3",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 23,
+        "name": "DIO21_A4",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 22,
+        "name": "DIO20_A5",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 21,
+        "name": "DIO19_A6",
+        "side": "R",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 40,
+        "name": "NC",
+        "side": "T",
+        "type": "nc",
+        "desc": "未接至晶片內部；官方參考設計 LP-EM-CC2745R10-Q1 建議此腳接地以增加天線路徑屏蔽"
+      },
+      {
+        "num": 39,
+        "name": "ANT",
+        "side": "T",
+        "type": "analog",
+        "desc": "2.4GHz 收發共用天線腳 (RF, TX/RX)"
+      },
+      {
+        "num": 38,
+        "name": "VDDS",
+        "side": "T",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電"
+      },
+      {
+        "num": 37,
+        "name": "NC",
+        "side": "T",
+        "type": "nc",
+        "desc": "無連接"
+      },
+      {
+        "num": 36,
+        "name": "X48N",
+        "side": "T",
+        "type": "analog",
+        "desc": "48MHz 石英振盪器接腳 2"
+      },
+      {
+        "num": 35,
+        "name": "X48P",
+        "side": "T",
+        "type": "analog",
+        "desc": "48MHz 石英振盪器接腳 1"
+      },
+      {
+        "num": 34,
+        "name": "VDDR",
+        "side": "T",
+        "type": "power",
+        "desc": "內部供電，須由內部 DC/DC 轉換器或內部 LDO 供電；須外接 10μF 去耦電容；與 pin1、pin2 並接於 PCB"
+      },
+      {
+        "num": 33,
+        "name": "DIO28_A0",
+        "side": "T",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 32,
+        "name": "DIO27_A1",
+        "side": "T",
+        "type": "io",
+        "desc": "GPIO，具類比能力"
+      },
+      {
+        "num": 31,
+        "name": "VDDS",
+        "side": "T",
+        "type": "power",
+        "desc": "1.71V ~ 3.8V 供電；須外接 10μF 去耦電容"
+      },
+      {
+        "num": 41,
+        "name": "EGP",
+        "side": "B",
+        "type": "ground",
+        "desc": "外露接地墊 (exposed ground pad)，為晶片唯一接地連接；PCB 須有良好接地連接才能正常運作",
+        "ep": true
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "核心",
+        "v": "Arm Cortex-M33 96MHz + APU 96MHz（Bluetooth Channel Sounding 後處理）"
+      },
+      {
+        "k": "記憶體",
+        "v": "Flash 1024KB（其中 96KB 保留給 HSM 韌體）、SRAM 162KB"
+      },
+      {
+        "k": "無線協定",
+        "v": "Bluetooth Low Energy 6.0、IEEE 802.15.4（Zigbee 3.0 認證、Thread、Matter、專屬 2.4GHz、多協定）；輸出功率最高 +10dBm"
+      },
+      {
+        "k": "接收靈敏度",
+        "v": "BLE 125kbps −103.5dBm／1Mbps −97dBm；IEEE 802.15.4 −103dBm"
+      },
+      {
+        "k": "周邊",
+        "v": "23 GPIO、2×UART(LIN)、2×SPI、1×I2C、1×I2S、12-bit ADC 1.2MSPS（不含 CAN-FD）"
+      },
+      {
+        "k": "安全",
+        "v": "HSM（AES-256/ECC-521/RSA-3072/SHA-512/TRNG）、獨立 LAES-128、TrustZone-M、VGM"
+      },
+      {
+        "k": "封裝",
+        "v": "QFN-40 (RHA) 6×6mm；同系列另有 WCSP 3.5×3.4mm 預覽封裝（非本料號）"
+      }
+    ],
+    "secondSource": [
+      "封裝與腳位相容（QFN-40 RHA、6×6mm、0.5mm pitch、pin-to-pin）",
+      "支援 Bluetooth Low Energy 6.0 及所需之 Zigbee/Thread/Matter 協定堆疊",
+      "輸出功率需達 +10dBm 等級即可（毋須 +20dBm）",
+      "Flash ≥1024KB／SRAM ≥162KB",
+      "具備 HSM 硬體安全模組",
+      "工作溫度涵蓋 −40°C ~ 125°C (Tj)"
+    ],
+    "dropIn": [
+      {
+        "part": "CC2755P10",
+        "note": "同一份 datasheet、腳位 100% 相同；P10 為高功率版本（PA 最高 +20dBm，Flash/SRAM 皆與 R10 相同：1024KB/162KB）"
+      }
+    ]
   }
 ];
