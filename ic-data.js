@@ -23139,5 +23139,1337 @@ window.IC_DATA = [
     ],
     "secondSource": [],
     "dropIn": []
+  },
+  {
+    "part": "MCT8376Z-Q1",
+    "mfr": "Texas Instruments",
+    "category": "motor",
+    "subcategory": "感測式梯形波無刷直流馬達驅動（整合功率FET）",
+    "package": "28-VQFN 6.00×5.00mm",
+    "whatIs": "感測式（Hall-based）梯形波（120°方波）三相無刷直流馬達驅動器，內建六顆功率 MOSFET（三組半橋），免外接驅動 IC 或 MCU 即可完成 BLDC 換相控制。",
+    "func": "內建三組類比 Hall 比較器讀取轉子位置，以固定功能狀態機執行 120° 感測式梯形波換相；PWM 輸入控制轉速，DIR/BRAKE 控制方向與煞車，nFAULT 輸出故障狀態。裝置分兩種設定變體：MCT8376ZS-Q1 提供 5MHz 16-bit SPI 供設定與故障診斷讀取；MCT8376ZH-Q1 改用外部電阻在特定腳位做硬體式設定（ADVANCE、MODE、GAIN_SLEW_tLOCK 等 7-level 電阻分壓輸入腳）。",
+    "usedIn": "HVAC 送風馬達、辦公室自動化機器、工廠自動化與機器人、無線天線旋轉馬達、無人機等 4.5–65V BLDC 馬達模組應用。",
+    "desc": "28-VQFN 露孔封裝，4.5V–65V 工作電壓（70V 絕對最大）、400mΩ RDS(ON)（高側+低側合計）@TA=25°C、4.5A 尖峰輸出電流；內建 3.3V/30mA 與 5V/30mA 兩組 LDO；具 UVLO、CPUV、OCP（cycle-by-cycle 相電流限制）、馬達鎖定保護、OTW/OTSD 等保護。本條目為 MCT8376Z-Q1 通用型號，涵蓋硬體設定版 MCT8376ZH-Q1 與 SPI 版 MCT8376ZS-Q1，兩者共用同一 28-VQFN 封裝與腳位編號，僅 pin20/21/22/23 四腳功能依變體不同，已於各腳位說明中並列兩種變體的功能。",
+    "datasheet": "TI SLVSHK4",
+    "pins": [
+      {
+        "num": "1",
+        "name": "CP",
+        "side": "L",
+        "type": "power",
+        "desc": "電荷泵輸出。CP 與 VM 間接一顆 X5R 或 X7R、1µF、16V 陶瓷電容。"
+      },
+      {
+        "num": "2",
+        "name": "VM",
+        "side": "L",
+        "type": "power",
+        "desc": "馬達電源輸入，4.5V–65V（70V 絕對最大）。VM 與 PGND 間旁路 0.1µF 陶瓷電容，再加一顆額定電壓涵蓋 VM 的 bulk 電容；建議電容耐壓至少為正常工作電壓的兩倍。"
+      },
+      {
+        "num": "3",
+        "name": "PGND",
+        "side": "L",
+        "type": "ground",
+        "desc": "裝置功率地。原表列為合併腳位「PGND 3, 7」，本檔已展開為兩個獨立腳位（本腳為 pin3）。"
+      },
+      {
+        "num": "4",
+        "name": "OUTA",
+        "side": "L",
+        "type": "output",
+        "desc": "半橋輸出 A，接馬達 A 相。"
+      },
+      {
+        "num": "5",
+        "name": "OUTB",
+        "side": "L",
+        "type": "output",
+        "desc": "半橋輸出 B，接馬達 B 相。"
+      },
+      {
+        "num": "6",
+        "name": "OUTC",
+        "side": "L",
+        "type": "output",
+        "desc": "半橋輸出 C，接馬達 C 相。"
+      },
+      {
+        "num": "7",
+        "name": "PGND",
+        "side": "B",
+        "type": "ground",
+        "desc": "裝置功率地。原表列為合併腳位「PGND 3, 7」，本檔已展開為兩個獨立腳位（本腳為 pin7）。"
+      },
+      {
+        "num": "8",
+        "name": "AGND",
+        "side": "B",
+        "type": "ground",
+        "desc": "裝置類比地。"
+      },
+      {
+        "num": "9",
+        "name": "AVDD",
+        "side": "B",
+        "type": "power",
+        "desc": "3.3V 內建穩壓器輸出，可對外供電最高 30mA。AVDD 與 AGND 間接一顆 X5R 或 X7R、1µF、6.3V 陶瓷電容。"
+      },
+      {
+        "num": "10",
+        "name": "GVDD",
+        "side": "B",
+        "type": "power",
+        "desc": "5V 內建穩壓器輸出，可對外供電最高 30mA；GVDD 與 AGND 間接一顆 X5R 或 X7R、1µF、10V 陶瓷電容（datasheet 原文寫「AVDD 與 AGND 間接...」，依腳位功能判斷疑為原廠文件誤植電源名稱，本檔依接腳關係列出對應接法，實際佈線前請核對最新版 datasheet）。"
+      },
+      {
+        "num": "11",
+        "name": "DRVOFF",
+        "side": "B",
+        "type": "input",
+        "desc": "拉高時關閉六顆功率 MOSFET，所有輸出進入高阻抗（Hi-Z）狀態。"
+      },
+      {
+        "num": "12",
+        "name": "nFAULT",
+        "side": "B",
+        "type": "output",
+        "desc": "故障指示，開洩極（open-drain）輸出，故障時被拉低，需外接 1.8V–5.0V 上拉電阻；若以外部電源上拉，須確保上電時該電源已拉至 >2.2V。"
+      },
+      {
+        "num": "13",
+        "name": "nSLEEP",
+        "side": "B",
+        "type": "input",
+        "desc": "驅動器睡眠控制。邏輯低時進入低功耗睡眠模式；施加 20–40µs 低脈波可重置故障狀態而不進入睡眠模式。"
+      },
+      {
+        "num": "14",
+        "name": "HPA",
+        "side": "B",
+        "type": "input",
+        "desc": "A 相 Hall 元件正端輸入。建議在正負 Hall 輸入間加裝雜訊濾波電容。"
+      },
+      {
+        "num": "15",
+        "name": "HNA",
+        "side": "R",
+        "type": "input",
+        "desc": "A 相 Hall 元件負端輸入。建議在正負 Hall 輸入間加裝雜訊濾波電容。"
+      },
+      {
+        "num": "16",
+        "name": "HPB",
+        "side": "R",
+        "type": "input",
+        "desc": "B 相 Hall 元件正端輸入。建議在正負 Hall 輸入間加裝雜訊濾波電容。"
+      },
+      {
+        "num": "17",
+        "name": "HNB",
+        "side": "R",
+        "type": "input",
+        "desc": "B 相 Hall 元件負端輸入。建議在正負 Hall 輸入間加裝雜訊濾波電容。"
+      },
+      {
+        "num": "18",
+        "name": "HPC",
+        "side": "R",
+        "type": "input",
+        "desc": "C 相 Hall 元件正端輸入。建議在正負 Hall 輸入間加裝雜訊濾波電容。"
+      },
+      {
+        "num": "19",
+        "name": "HNC",
+        "side": "R",
+        "type": "input",
+        "desc": "C 相 Hall 元件負端輸入。建議在正負 Hall 輸入間加裝雜訊濾波電容。"
+      },
+      {
+        "num": "20",
+        "name": "SDO/MODE",
+        "side": "R",
+        "type": "io",
+        "desc": "雙功能腳（依變體切換）：SPI 版（S-Q1）為 SDO，序列資料輸出，於 SCLK 上升緣移出，需外接上拉電阻；硬體設定版（H-Q1）為 MODE，PWM 輸入模式與 Hall 組態設定腳，由外部電阻分壓設定 7 個等級。"
+      },
+      {
+        "num": "21",
+        "name": "SDI/GAIN_SLEW_tLOCK",
+        "side": "T",
+        "type": "input",
+        "desc": "雙功能腳（依變體切換）：SPI 版（S-Q1）為 SDI，序列資料輸入，於 SCLK 下降緣擷取；硬體設定版（H-Q1）為 GAIN_SLEW_tLOCK，馬達鎖定偵測時間、電流感測放大器增益與 slew rate 設定腳。"
+      },
+      {
+        "num": "22",
+        "name": "SCLK/ADVANCE",
+        "side": "T",
+        "type": "input",
+        "desc": "雙功能腳（依變體切換）：SPI 版（S-Q1）為 SCLK，序列時脈輸入；硬體設定版（H-Q1）為 ADVANCE，超前角等級設定腳，由外部電阻分壓設定 7 個等級。"
+      },
+      {
+        "num": "23",
+        "name": "nSCS/DIR",
+        "side": "T",
+        "type": "input",
+        "desc": "雙功能腳（依變體切換）：SPI 版（S-Q1）為 nSCS，序列晶片選擇，邏輯低致能 SPI 通訊；硬體設定版（H-Q1）為 DIR，設定馬達正反轉方向。"
+      },
+      {
+        "num": "24",
+        "name": "SO",
+        "side": "T",
+        "type": "output",
+        "desc": "電流感測放大器輸出，可接電容負載，或以電阻串聯＋對地電容組成低通濾波器。"
+      },
+      {
+        "num": "25",
+        "name": "BRAKE",
+        "side": "T",
+        "type": "input",
+        "desc": "高準位：拉高所有低側 MOSFET 使馬達煞車；低準位：正常運作。"
+      },
+      {
+        "num": "26",
+        "name": "PWM",
+        "side": "T",
+        "type": "input",
+        "desc": "馬達控制 PWM 輸入，設定馬達相電壓的責任週期與切換頻率（datasheet Table 5-1 該列 TYPE 欄位留空，依功能歸類為輸入）。"
+      },
+      {
+        "num": "27",
+        "name": "FG",
+        "side": "T",
+        "type": "output",
+        "desc": "馬達轉速指示，開洩極輸出，需外接 1.8–5.0V 上拉電阻；可設定不同的 Hall 訊號除頻比。（datasheet Table 5-1 該列 TYPE 欄位標示為 I，與描述文字「輸出」矛盾，依功能判斷此為開洩極輸出，本檔以 output 分類，佈線前請以最新版 datasheet 為準）"
+      },
+      {
+        "num": "28",
+        "name": "ILIMIT",
+        "side": "T",
+        "type": "analog",
+        "desc": "設定 cycle-by-cycle 相電流限制的閾值，由外部電阻分壓決定（datasheet Table 5-1 該列 TYPE 欄位留空，依功能歸類為類比設定腳）。"
+      },
+      {
+        "num": "29",
+        "name": "Thermal Pad",
+        "side": "B",
+        "type": "ground",
+        "desc": "外露散熱焊墊，須連接類比地（AGND）。",
+        "ep": true
+      }
+    ],
+    "thermalPad": "Thermal Pad 須接類比地 AGND（Table 5-1 明文：Must be connected to analog ground）。",
+    "specs": [
+      {
+        "k": "工作電壓",
+        "v": "4.5V–65V（70V 絕對最大）"
+      },
+      {
+        "k": "RDS(ON)",
+        "v": "400mΩ（高側+低側合計）@TA=25°C"
+      },
+      {
+        "k": "尖峰輸出電流",
+        "v": "4.5A"
+      },
+      {
+        "k": "睡眠電流",
+        "v": "1.5µA typ（VVM=24V, TA=25°C）"
+      },
+      {
+        "k": "PWM 頻率",
+        "v": "最高 100kHz"
+      },
+      {
+        "k": "LDO",
+        "v": "3.3V/30mA、5V/30mA 各一組內建 LDO"
+      },
+      {
+        "k": "設定介面",
+        "v": "H-Q1：外部電阻硬體設定；S-Q1：5MHz 16-bit SPI"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "DRV8363",
+    "mfr": "Texas Instruments",
+    "category": "motor",
+    "subcategory": "48V 三相智慧型閘極驅動器（外接功率MOSFET）",
+    "package": "48-QFN 7×7mm",
+    "whatIs": "48V 電池應用三相智慧型閘極驅動器（外接功率 MOSFET）：驅動六顆 N 通道 MOSFET 組成三相半橋，內建低邊精密電流感測放大器與完整故障監控。",
+    "func": "以自舉架構驅動三組高側/低側閘極，Smart Gate Drive 架構提供 15 段可調峰值閘極驅動電流（最高 1A source / 2A sink），支援 6x、3x、1x 與獨立 PWM 四種控制模式；SPI 提供詳細設定與故障診斷讀取，DRVOFF 可獨立關閉驅動器輸出，ASCIN 觸發主動短路（active short circuit）煞車。",
+    "usedIn": "家電、無線園藝與電動工具、割草機、BLDC/PMSM 馬達模組、風扇/幫浦/伺服驅動、電動自行車/滑板車、無線吸塵器、無人機與工業/物流機器人、RC 玩具等 48V 電池馬達應用。",
+    "desc": "48-QFN 露孔封裝，8V–85V 寬工作電壓，支援 50mA 平均閘極切換電流可驅動 400nC MOSFET @20kHz；trickle 電荷泵支援 100% PWM 責任週期並提供 overdrive 供電給外部開關。低邊電流感測放大器輸入偏移 1mV，4 段可調增益，輸出偏壓可調以支援單向或雙向感測。整合電池/電源電壓監控、MOSFET VDS 與 Rsense 過電流監控、VGS 閘極故障監控、裝置熱警告/關機、故障指示腳等保護。",
+    "datasheet": "TI SLVSHQ3",
+    "pins": [
+      {
+        "num": "1",
+        "name": "GLC",
+        "side": "L",
+        "type": "output",
+        "desc": "低側閘極驅動輸出，接低側功率 MOSFET 的閘極。"
+      },
+      {
+        "num": "2",
+        "name": "SLC",
+        "side": "L",
+        "type": "input",
+        "desc": "低側源極感測輸入，接低側功率 MOSFET 的源極。"
+      },
+      {
+        "num": "3",
+        "name": "SPA",
+        "side": "L",
+        "type": "input",
+        "desc": "低側電流分流放大器輸入，接低側功率 MOSFET 源極與電流分流電阻高壓側。"
+      },
+      {
+        "num": "4",
+        "name": "SNA",
+        "side": "L",
+        "type": "input",
+        "desc": "電流感測放大器輸入，接電流分流電阻低壓側。"
+      },
+      {
+        "num": "5",
+        "name": "SPB",
+        "side": "L",
+        "type": "input",
+        "desc": "低側電流分流放大器輸入，接低側功率 MOSFET 源極與電流分流電阻高壓側（B 相）。"
+      },
+      {
+        "num": "6",
+        "name": "SNB",
+        "side": "L",
+        "type": "input",
+        "desc": "電流感測放大器輸入，接電流分流電阻低壓側（B 相）。"
+      },
+      {
+        "num": "7",
+        "name": "SPC",
+        "side": "L",
+        "type": "input",
+        "desc": "低側電流分流放大器輸入，接低側功率 MOSFET 源極與電流分流電阻高壓側（C 相）。"
+      },
+      {
+        "num": "8",
+        "name": "SNC",
+        "side": "L",
+        "type": "input",
+        "desc": "電流感測放大器輸入，接電流分流電阻低壓側（C 相）。"
+      },
+      {
+        "num": "9",
+        "name": "DRVOFF",
+        "side": "L",
+        "type": "input",
+        "desc": "高準位主動關斷輸入，拉高時下拉關閉閘極驅動輸出 GHx 與 GLx。"
+      },
+      {
+        "num": "10",
+        "name": "AGND",
+        "side": "L",
+        "type": "ground",
+        "desc": "裝置接地。"
+      },
+      {
+        "num": "11",
+        "name": "INHA",
+        "side": "L",
+        "type": "input",
+        "desc": "高側閘極驅動控制輸入，控制高側閘極驅動器輸出。"
+      },
+      {
+        "num": "12",
+        "name": "INLA",
+        "side": "L",
+        "type": "input",
+        "desc": "低側閘極驅動控制輸入，控制低側閘極驅動器輸出。"
+      },
+      {
+        "num": "13",
+        "name": "INHB",
+        "side": "B",
+        "type": "input",
+        "desc": "高側閘極驅動控制輸入，控制高側閘極驅動器輸出（B 相）。"
+      },
+      {
+        "num": "14",
+        "name": "INLB",
+        "side": "B",
+        "type": "input",
+        "desc": "低側閘極驅動控制輸入，控制低側閘極驅動器輸出（B 相）。"
+      },
+      {
+        "num": "15",
+        "name": "INHC",
+        "side": "B",
+        "type": "input",
+        "desc": "高側閘極驅動控制輸入，控制高側閘極驅動器輸出（C 相）。"
+      },
+      {
+        "num": "16",
+        "name": "INLC",
+        "side": "B",
+        "type": "input",
+        "desc": "低側閘極驅動控制輸入，控制低側閘極驅動器輸出（C 相）。"
+      },
+      {
+        "num": "17",
+        "name": "SDO",
+        "side": "B",
+        "type": "output",
+        "desc": "序列資料輸出。"
+      },
+      {
+        "num": "18",
+        "name": "SDI",
+        "side": "B",
+        "type": "input",
+        "desc": "序列資料輸入。"
+      },
+      {
+        "num": "19",
+        "name": "SCLK",
+        "side": "B",
+        "type": "input",
+        "desc": "序列時脈輸入。"
+      },
+      {
+        "num": "20",
+        "name": "nSCS",
+        "side": "B",
+        "type": "input",
+        "desc": "序列晶片選擇。邏輯低致能序列介面通訊。"
+      },
+      {
+        "num": "21",
+        "name": "nSLEEP",
+        "side": "B",
+        "type": "input",
+        "desc": "閘極驅動器 nSLEEP。邏輯低時裝置進入低功耗睡眠模式。"
+      },
+      {
+        "num": "22",
+        "name": "nFAULT",
+        "side": "B",
+        "type": "output",
+        "desc": "故障指示輸出（開洩極），故障狀況下被拉為邏輯低，需外接上拉電阻。"
+      },
+      {
+        "num": "23",
+        "name": "VREF",
+        "side": "B",
+        "type": "power",
+        "desc": "電流感測放大器外部電壓參考輸入。"
+      },
+      {
+        "num": "24",
+        "name": "SOC",
+        "side": "B",
+        "type": "output",
+        "desc": "電流感測放大器輸出（C 相）。"
+      },
+      {
+        "num": "25",
+        "name": "SOB",
+        "side": "R",
+        "type": "output",
+        "desc": "電流感測放大器輸出（B 相）。"
+      },
+      {
+        "num": "26",
+        "name": "SOA",
+        "side": "R",
+        "type": "output",
+        "desc": "電流感測放大器輸出（A 相）。"
+      },
+      {
+        "num": "27",
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "裝置接地。"
+      },
+      {
+        "num": "28",
+        "name": "DVDD",
+        "side": "R",
+        "type": "power",
+        "desc": "3.3V/5V LDO 輸出。與相鄰 GND 間接一顆額定 >10V 的陶瓷電容。"
+      },
+      {
+        "num": "29",
+        "name": "ASCIN",
+        "side": "R",
+        "type": "input",
+        "desc": "ASC 外部觸發腳。邏輯高時，裝置開啟三個低側或高側閘極（主動短路煞車）。"
+      },
+      {
+        "num": "30",
+        "name": "GVDD",
+        "side": "R",
+        "type": "power",
+        "desc": "閘極驅動器電源輸入。外接調節後的 8V–15V 電源，GVDD 與 GND 間接一顆 GVDD 額定陶瓷電容。"
+      },
+      {
+        "num": "31",
+        "name": "NC",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接，懸空。"
+      },
+      {
+        "num": "32",
+        "name": "CPTL",
+        "side": "R",
+        "type": "power",
+        "desc": "Trickle 電荷泵切換節點。CPTL 與 CPTH 間接飛跨電容。"
+      },
+      {
+        "num": "33",
+        "name": "CPTH",
+        "side": "R",
+        "type": "power",
+        "desc": "Trickle 電荷泵切換節點。CPTL 與 CPTH 間接飛跨電容。"
+      },
+      {
+        "num": "34",
+        "name": "VCP",
+        "side": "R",
+        "type": "power",
+        "desc": "Trickle 電荷泵儲能電容腳。VCP 與 VDRAIN 間接陶瓷電容。"
+      },
+      {
+        "num": "35",
+        "name": "VDRAIN",
+        "side": "R",
+        "type": "power",
+        "desc": "高側汲極感測輸入，亦為電荷泵電源輸入。"
+      },
+      {
+        "num": "36",
+        "name": "BSTA",
+        "side": "R",
+        "type": "output",
+        "desc": "自舉輸出腳。BSTA 與 SHA 間接自舉電容。"
+      },
+      {
+        "num": "37",
+        "name": "SHA",
+        "side": "T",
+        "type": "input",
+        "desc": "高側源極感測輸入，接高側功率 MOSFET 的源極。"
+      },
+      {
+        "num": "38",
+        "name": "GHA",
+        "side": "T",
+        "type": "output",
+        "desc": "高側閘極驅動輸出，接高側功率 MOSFET 的閘極。"
+      },
+      {
+        "num": "39",
+        "name": "GLA",
+        "side": "T",
+        "type": "output",
+        "desc": "低側閘極驅動輸出，接低側功率 MOSFET 的閘極。"
+      },
+      {
+        "num": "40",
+        "name": "SLA",
+        "side": "T",
+        "type": "input",
+        "desc": "低側源極感測輸入，接低側功率 MOSFET 的源極。"
+      },
+      {
+        "num": "41",
+        "name": "SLB",
+        "side": "T",
+        "type": "input",
+        "desc": "低側源極感測輸入，接低側功率 MOSFET 的源極（B 相）。"
+      },
+      {
+        "num": "42",
+        "name": "GLB",
+        "side": "T",
+        "type": "output",
+        "desc": "低側閘極驅動輸出，接低側功率 MOSFET 的閘極（B 相）。"
+      },
+      {
+        "num": "43",
+        "name": "GHB",
+        "side": "T",
+        "type": "output",
+        "desc": "高側閘極驅動輸出，接高側功率 MOSFET 的閘極（B 相）。"
+      },
+      {
+        "num": "44",
+        "name": "SHB",
+        "side": "T",
+        "type": "input",
+        "desc": "高側源極感測輸入，接高側功率 MOSFET 的源極（B 相）。"
+      },
+      {
+        "num": "45",
+        "name": "BSTB",
+        "side": "T",
+        "type": "output",
+        "desc": "自舉輸出腳。BSTB 與 SHB 間接自舉電容。"
+      },
+      {
+        "num": "46",
+        "name": "BSTC",
+        "side": "T",
+        "type": "output",
+        "desc": "自舉輸出腳。BSTC 與 SHC 間接自舉電容。"
+      },
+      {
+        "num": "47",
+        "name": "SHC",
+        "side": "T",
+        "type": "input",
+        "desc": "高側源極感測輸入，接高側功率 MOSFET 的源極（C 相）。"
+      },
+      {
+        "num": "48",
+        "name": "GHC",
+        "side": "T",
+        "type": "output",
+        "desc": "高側閘極驅動輸出，接高側功率 MOSFET 的閘極（C 相）。"
+      },
+      {
+        "num": "49",
+        "name": "Thermal Pad",
+        "side": "B",
+        "type": "ground",
+        "desc": "外露散熱焊墊。datasheet Layout 章節（p.87）明載：此焊墊僅供散熱、非電性接地，與 GND/AGND 腳為高阻抗連接；建議將焊墊接至最佳散熱地（thermal GND），GND/AGND 腳另接至 MCU 參考地。Pin Functions 表（Table 4-1）未單獨列出此腳位的文字說明。",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露焊墊僅供散熱、非電性接地，與 GND/AGND 為高阻抗連接（datasheet Layout 章節 p.87 明載）；Table 4-1 Pin Functions 未單獨列出此腳位。",
+    "specs": [
+      {
+        "k": "工作電壓",
+        "v": "8V–85V（VDRAIN）"
+      },
+      {
+        "k": "閘極驅動電流",
+        "v": "15 段可調，最高 1A source / 2A sink"
+      },
+      {
+        "k": "可驅動MOSFET",
+        "v": "50mA 平均閘極切換電流，可驅動 400nC MOSFET @20kHz"
+      },
+      {
+        "k": "電流感測",
+        "v": "低邊分流放大器，輸入偏移 1mV，4 段可調增益"
+      },
+      {
+        "k": "控制介面",
+        "v": "SPI 設定與診斷；6x/3x/1x/獨立 PWM 模式"
+      },
+      {
+        "k": "保護",
+        "v": "電源電壓監控、VDS/Rsense 過流、VGS 閘極故障、熱警告/關機"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "DRV8762-Q1",
+    "mfr": "Texas Instruments",
+    "category": "motor",
+    "subcategory": "車用48V H橋智慧型閘極驅動器（外接功率MOSFET）",
+    "package": "48-QFN 7×7mm",
+    "whatIs": "車規 48V H 橋智慧型閘極驅動器（外接功率 MOSFET）：驅動四顆 N 通道 MOSFET 組成單組 H 橋，內建低邊精密電流感測放大器與完整故障監控，通過 AEC-Q100 車用測試。",
+    "func": "以自舉架構驅動兩組高側/低側閘極，Smart Gate Drive 架構提供 8 段可調峰值閘極驅動電流（最高 224mA source / 448mA sink）；支援 4x 與 2x PWM 模式；SPI 提供詳細設定與故障診斷讀取；DRVOFF 可獨立關閉驅動器輸出；ASCIN 觸發主動短路煞車。48-QFN 封裝與六通道版 DRV8363 共用同一腳位框架，多數未用通道以 RSVD 保留腳呈現。",
+    "usedIn": "車用車身馬達（Automotive Body Motors）、變速箱致動器（Transmission Actuators）、車用直流有刷馬達（Automotive BDC motors）等 48V 車用馬達控制應用。",
+    "desc": "48-QFN 露孔封裝，AEC-Q100 車規（裝置環境溫度 -40°C 至 +125°C），8V–85V 寬工作電壓，50mA 平均閘極切換電流可驅動 400nC MOSFET @20kHz；trickle 電荷泵支援 100% PWM 責任週期並提供 overdrive 供電給外部開關。低邊電流感測放大器輸入偏移 1mV，4 段可調增益。整合電池/電源電壓監控、MOSFET VDS 與 Rsense 過電流監控、VGS 閘極故障監控、裝置熱警告/關機、故障指示腳等保護。BSTB2(pin46)/SHB2(pin47) 為 B 通道自舉/源極感測之並聯輔助腳，分別併接 BSTB(pin45)/SHB(pin44)。",
+    "datasheet": "TI SLVSLR7",
+    "pins": [
+      {
+        "num": "1",
+        "name": "RSVD",
+        "side": "L",
+        "type": "nc",
+        "desc": "保留腳。懸空（floating）。"
+      },
+      {
+        "num": "2",
+        "name": "RSVD",
+        "side": "L",
+        "type": "ground",
+        "desc": "保留腳。接地。"
+      },
+      {
+        "num": "3",
+        "name": "SPA",
+        "side": "L",
+        "type": "input",
+        "desc": "低側電流分流放大器輸入，接低側功率 MOSFET 源極與電流分流電阻高壓側。"
+      },
+      {
+        "num": "4",
+        "name": "SNA",
+        "side": "L",
+        "type": "input",
+        "desc": "電流感測放大器輸入，接電流分流電阻低壓側。"
+      },
+      {
+        "num": "5",
+        "name": "SPB",
+        "side": "L",
+        "type": "input",
+        "desc": "低側電流分流放大器輸入，接低側功率 MOSFET 源極與電流分流電阻高壓側（B 相）。"
+      },
+      {
+        "num": "6",
+        "name": "SNB",
+        "side": "L",
+        "type": "input",
+        "desc": "電流感測放大器輸入，接電流分流電阻低壓側（B 相）。"
+      },
+      {
+        "num": "7",
+        "name": "RSVD",
+        "side": "L",
+        "type": "ground",
+        "desc": "保留腳。建議接地，亦可懸空。"
+      },
+      {
+        "num": "8",
+        "name": "RSVD",
+        "side": "L",
+        "type": "ground",
+        "desc": "保留腳。建議接地，亦可懸空。"
+      },
+      {
+        "num": "9",
+        "name": "DRVOFF",
+        "side": "L",
+        "type": "input",
+        "desc": "高準位主動關斷輸入，拉高時下拉關閉閘極驅動輸出 GHx 與 GLx。"
+      },
+      {
+        "num": "10",
+        "name": "AGND",
+        "side": "L",
+        "type": "ground",
+        "desc": "裝置接地。"
+      },
+      {
+        "num": "11",
+        "name": "INHA",
+        "side": "L",
+        "type": "input",
+        "desc": "高側閘極驅動控制輸入，控制高側閘極驅動器輸出。"
+      },
+      {
+        "num": "12",
+        "name": "INLA",
+        "side": "L",
+        "type": "input",
+        "desc": "低側閘極驅動控制輸入，控制低側閘極驅動器輸出。"
+      },
+      {
+        "num": "13",
+        "name": "INHB",
+        "side": "B",
+        "type": "input",
+        "desc": "高側閘極驅動控制輸入，控制高側閘極驅動器輸出（B 相）。"
+      },
+      {
+        "num": "14",
+        "name": "INLB",
+        "side": "B",
+        "type": "input",
+        "desc": "低側閘極驅動控制輸入，控制低側閘極驅動器輸出（B 相）。"
+      },
+      {
+        "num": "15",
+        "name": "RSVD",
+        "side": "B",
+        "type": "nc",
+        "desc": "保留腳。懸空。"
+      },
+      {
+        "num": "16",
+        "name": "RSVD",
+        "side": "B",
+        "type": "nc",
+        "desc": "保留腳。懸空。"
+      },
+      {
+        "num": "17",
+        "name": "SDO",
+        "side": "B",
+        "type": "output",
+        "desc": "序列資料輸出。"
+      },
+      {
+        "num": "18",
+        "name": "SDI",
+        "side": "B",
+        "type": "input",
+        "desc": "序列資料輸入。"
+      },
+      {
+        "num": "19",
+        "name": "SCLK",
+        "side": "B",
+        "type": "input",
+        "desc": "序列時脈輸入。"
+      },
+      {
+        "num": "20",
+        "name": "nSCS",
+        "side": "B",
+        "type": "input",
+        "desc": "序列晶片選擇。"
+      },
+      {
+        "num": "21",
+        "name": "nSLEEP",
+        "side": "B",
+        "type": "input",
+        "desc": "閘極驅動器 nSLEEP。邏輯低時裝置進入低功耗睡眠模式。"
+      },
+      {
+        "num": "22",
+        "name": "nFAULT",
+        "side": "B",
+        "type": "output",
+        "desc": "故障指示輸出（開洩極），故障狀況下被拉為邏輯低，需外接上拉電阻。（pin 圖上此腳誤植為「nFALUT」，Table 4-1 文字表列拼字為 nFAULT，本檔採表格拼法）"
+      },
+      {
+        "num": "23",
+        "name": "VREF",
+        "side": "B",
+        "type": "power",
+        "desc": "電流感測放大器外部電壓參考輸入。"
+      },
+      {
+        "num": "24",
+        "name": "RSVD",
+        "side": "B",
+        "type": "nc",
+        "desc": "保留腳。懸空。"
+      },
+      {
+        "num": "25",
+        "name": "SOB",
+        "side": "R",
+        "type": "output",
+        "desc": "電流感測放大器輸出（B 相）。"
+      },
+      {
+        "num": "26",
+        "name": "SOA",
+        "side": "R",
+        "type": "output",
+        "desc": "電流感測放大器輸出（A 相）。"
+      },
+      {
+        "num": "27",
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "裝置接地。"
+      },
+      {
+        "num": "28",
+        "name": "DVDD",
+        "side": "R",
+        "type": "power",
+        "desc": "3.3V/5V LDO 輸出。與相鄰 GND 間接一顆額定 >10V 的陶瓷電容。"
+      },
+      {
+        "num": "29",
+        "name": "ASCIN",
+        "side": "R",
+        "type": "input",
+        "desc": "ASC 外部觸發腳。邏輯高時，裝置開啟兩個低側或高側閘極（主動短路煞車）。"
+      },
+      {
+        "num": "30",
+        "name": "GVDD",
+        "side": "R",
+        "type": "power",
+        "desc": "閘極驅動器電源輸入。外接調節後的 8V–15V 電源，GVDD 與 GND 間接一顆 GVDD 額定陶瓷電容。"
+      },
+      {
+        "num": "31",
+        "name": "RSVD",
+        "side": "R",
+        "type": "nc",
+        "desc": "保留腳。懸空。"
+      },
+      {
+        "num": "32",
+        "name": "CPTL",
+        "side": "R",
+        "type": "power",
+        "desc": "Trickle 電荷泵切換節點。CPTL 與 CPTH 間接飛跨電容。"
+      },
+      {
+        "num": "33",
+        "name": "CPTH",
+        "side": "R",
+        "type": "power",
+        "desc": "Trickle 電荷泵切換節點。CPTL 與 CPTH 間接飛跨電容。"
+      },
+      {
+        "num": "34",
+        "name": "VCP",
+        "side": "R",
+        "type": "power",
+        "desc": "Trickle 電荷泵儲能電容腳。VCP 與 VDRAIN 間接陶瓷電容。"
+      },
+      {
+        "num": "35",
+        "name": "VDRAIN",
+        "side": "R",
+        "type": "power",
+        "desc": "高側汲極感測輸入，亦為電荷泵電源輸入。"
+      },
+      {
+        "num": "36",
+        "name": "BSTA",
+        "side": "R",
+        "type": "output",
+        "desc": "自舉輸出腳。BSTA 與 SHA 間接自舉電容。"
+      },
+      {
+        "num": "37",
+        "name": "SHA",
+        "side": "T",
+        "type": "input",
+        "desc": "高側源極感測輸入，接高側功率 MOSFET 的源極。"
+      },
+      {
+        "num": "38",
+        "name": "GHA",
+        "side": "T",
+        "type": "output",
+        "desc": "高側閘極驅動輸出，接高側功率 MOSFET 的閘極。"
+      },
+      {
+        "num": "39",
+        "name": "GLA",
+        "side": "T",
+        "type": "output",
+        "desc": "低側閘極驅動輸出，接低側功率 MOSFET 的閘極。"
+      },
+      {
+        "num": "40",
+        "name": "SLA",
+        "side": "T",
+        "type": "input",
+        "desc": "低側源極感測輸入，接低側功率 MOSFET 的源極。"
+      },
+      {
+        "num": "41",
+        "name": "SLB",
+        "side": "T",
+        "type": "input",
+        "desc": "低側源極感測輸入，接低側功率 MOSFET 的源極（B 相）。"
+      },
+      {
+        "num": "42",
+        "name": "GLB",
+        "side": "T",
+        "type": "output",
+        "desc": "低側閘極驅動輸出，接低側功率 MOSFET 的閘極（B 相）。"
+      },
+      {
+        "num": "43",
+        "name": "GHB",
+        "side": "T",
+        "type": "output",
+        "desc": "高側閘極驅動輸出，接高側功率 MOSFET 的閘極（B 相）。"
+      },
+      {
+        "num": "44",
+        "name": "SHB",
+        "side": "T",
+        "type": "input",
+        "desc": "高側源極感測輸入，接高側功率 MOSFET 的源極（B 相）。"
+      },
+      {
+        "num": "45",
+        "name": "BSTB",
+        "side": "T",
+        "type": "output",
+        "desc": "自舉輸出腳。BSTB 與 SHB 間接自舉電容。"
+      },
+      {
+        "num": "46",
+        "name": "BSTB2",
+        "side": "T",
+        "type": "output",
+        "desc": "B 通道自舉並聯輔助腳，接至 BSTB（pin45）。"
+      },
+      {
+        "num": "47",
+        "name": "SHB2",
+        "side": "T",
+        "type": "input",
+        "desc": "B 通道源極感測並聯輔助腳，接至 SHB（pin44）。"
+      },
+      {
+        "num": "48",
+        "name": "RSVD",
+        "side": "T",
+        "type": "nc",
+        "desc": "保留腳。懸空。"
+      },
+      {
+        "num": "49",
+        "name": "Thermal Pad",
+        "side": "B",
+        "type": "ground",
+        "desc": "外露散熱焊墊。datasheet Layout 章節（p.75）明載：此焊墊僅供散熱、非電性接地，與 GND/AGND 腳為高阻抗連接；建議將焊墊接至最佳散熱地（thermal GND），GND/AGND 腳另接至 MCU 參考地。Pin Functions 表（Table 4-1）未單獨列出此腳位的文字說明。",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露焊墊僅供散熱、非電性接地，與 GND/AGND 為高阻抗連接（datasheet Layout 章節 p.75 明載）；Table 4-1 Pin Functions 未單獨列出此腳位。",
+    "specs": [
+      {
+        "k": "溫度等級",
+        "v": "AEC-Q100，裝置環境溫度 -40°C 至 +125°C"
+      },
+      {
+        "k": "工作電壓",
+        "v": "8V–85V（VDRAIN）"
+      },
+      {
+        "k": "閘極驅動電流",
+        "v": "8 段可調，最高 224mA source / 448mA sink"
+      },
+      {
+        "k": "可驅動MOSFET",
+        "v": "50mA 平均閘極切換電流，可驅動 400nC MOSFET @20kHz"
+      },
+      {
+        "k": "電流感測",
+        "v": "低邊分流放大器，輸入偏移 1mV，4 段可調增益"
+      },
+      {
+        "k": "控制介面",
+        "v": "SPI 設定與診斷；4x/2x PWM 模式"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "MCF8329HS",
+    "mfr": "Texas Instruments",
+    "category": "motor",
+    "subcategory": "無感測FOC三相無刷馬達閘極驅動器（外接功率MOSFET）",
+    "package": "36-WQFN 5.00×4.00mm",
+    "whatIs": "無感測（sensorless）磁場導向控制（FOC）三相無刷/PMSM 馬達閘極驅動器（外接功率 MOSFET），內建 code-free FOC 演算法，免 MCU 即可驅動馬達。",
+    "func": "內建無感測 FOC 演算法，支援最高 2.5kHz 電氣頻率，提供速度/電流/功率/電壓等控制模式，支援正反轉與逆風自轉（windmilling）；可設定功率與轉速上限；控制輸入可為類比、PWM、頻率或 I2C；設定可儲存於 EEPROM，供裝置獨立運作；具外部 MCU 看門狗監控與 limp-home 模式；支援選用 1 顆 Hall 輸入作位置備援。",
+    "usedIn": "無線吸塵器、洗碗機/洗衣機幫浦、家電風扇與幫浦、無線園藝與電動工具、割草機等 12V/24V BLDC/PMSM 馬達應用。",
+    "desc": "36-WQFN 露孔封裝，4.5V–60V 工作電壓，65V 三相半橋閘極驅動器，自舉架構支援 100% 責任週期，1A/2A 尖峰 source/sink 電流；睡眠電流最大 5µA @24V, 25°C；可設定 EEPROM 並具讀寫安全機制；支援最高 80kHz PWM 切換頻率；可設定 LDO（3.3V 或 5V ±3%, 80mA）。另有功能安全認證版 MCF8329HSULIREER（UL 60730-1 認證，含鎖轉、過載、斷相等安全功能），與標準版 MCF8329HSIREER 共用同一 36-WQFN 封裝與腳位配置。",
+    "datasheet": "TI SLLSG20",
+    "pins": [
+      {
+        "num": "1",
+        "name": "DGND",
+        "side": "L",
+        "type": "ground",
+        "desc": "裝置數位地。"
+      },
+      {
+        "num": "2",
+        "name": "VREG",
+        "side": "L",
+        "type": "power",
+        "desc": "內部 DVDD LDO 之電壓調節器輸入源。接至 AVDD 或外部 3V–5.5V；VREG 與 DGND 間接一顆 X7R、1µF、10V 陶瓷電容。"
+      },
+      {
+        "num": "3",
+        "name": "GCTRL",
+        "side": "L",
+        "type": "output",
+        "desc": "外接 MOSFET 的閘極控制，該 MOSFET 作為穩壓器透過 VREG 腳供電給數位子系統，有助降低裝置內部功耗。"
+      },
+      {
+        "num": "4",
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "裝置功率地。"
+      },
+      {
+        "num": "5",
+        "name": "PVDD",
+        "side": "L",
+        "type": "power",
+        "desc": "閘極驅動器電源輸入，接橋式電源。PVDD 與 GND 間接一顆 X7R、0.1µF、>2 倍 PVDD 耐壓陶瓷電容，另加 >10µF 本地電容；建議電容耐壓至少為工作電壓兩倍。"
+      },
+      {
+        "num": "6",
+        "name": "CPL",
+        "side": "L",
+        "type": "power",
+        "desc": "電荷泵切換節點。CPH 與 CPL 間接一顆 X7R、PVDD 額定耐壓陶瓷電容；建議電容耐壓至少為該腳工作電壓兩倍。"
+      },
+      {
+        "num": "7",
+        "name": "CPH",
+        "side": "L",
+        "type": "power",
+        "desc": "電荷泵切換節點。CPH 與 CPL 間接一顆 X7R、PVDD 額定耐壓陶瓷電容；建議電容耐壓至少為該腳工作電壓兩倍。"
+      },
+      {
+        "num": "8",
+        "name": "GVDD",
+        "side": "L",
+        "type": "power",
+        "desc": "閘極驅動器電源輸出。GVDD 與 GND 間接 ≥10µF 本地電容（30V 耐壓 X7R）；建議電容值 >10 倍 CBSTx，且耐壓至少為工作電壓兩倍。"
+      },
+      {
+        "num": "9",
+        "name": "BSTA",
+        "side": "L",
+        "type": "output",
+        "desc": "自舉輸出腳。BSTA 與 SHA 間接一顆 X7R、1µF、25V 陶瓷電容。"
+      },
+      {
+        "num": "10",
+        "name": "SHA",
+        "side": "L",
+        "type": "io",
+        "desc": "高側源極腳，接高側功率 MOSFET 源極；此腳同時作為 VDS 監控輸入，以及高側閘極驅動器 sink 路徑的輸出。"
+      },
+      {
+        "num": "11",
+        "name": "GHA",
+        "side": "B",
+        "type": "output",
+        "desc": "高側閘極驅動輸出，接高側功率 MOSFET 的閘極。"
+      },
+      {
+        "num": "12",
+        "name": "GLA",
+        "side": "B",
+        "type": "output",
+        "desc": "低側閘極驅動輸出，接低側功率 MOSFET 的閘極。"
+      },
+      {
+        "num": "13",
+        "name": "BSTB",
+        "side": "B",
+        "type": "output",
+        "desc": "自舉輸出腳。BSTB 與 SHB 間接一顆 X7R、1µF、25V 陶瓷電容。"
+      },
+      {
+        "num": "14",
+        "name": "SHB",
+        "side": "B",
+        "type": "io",
+        "desc": "高側源極腳，接高側功率 MOSFET 源極；此腳同時作為 VDS 監控輸入，以及高側閘極驅動器 sink 路徑的輸出（B 相）。"
+      },
+      {
+        "num": "15",
+        "name": "GHB",
+        "side": "B",
+        "type": "output",
+        "desc": "高側閘極驅動輸出，接高側功率 MOSFET 的閘極（B 相）。"
+      },
+      {
+        "num": "16",
+        "name": "GLB",
+        "side": "B",
+        "type": "output",
+        "desc": "低側閘極驅動輸出，接低側功率 MOSFET 的閘極（B 相）。"
+      },
+      {
+        "num": "17",
+        "name": "BSTC",
+        "side": "B",
+        "type": "output",
+        "desc": "自舉輸出腳。BSTC 與 SHC 間接一顆 X7R、1µF、25V 陶瓷電容。"
+      },
+      {
+        "num": "18",
+        "name": "SHC",
+        "side": "B",
+        "type": "io",
+        "desc": "高側源極腳，接高側功率 MOSFET 源極；此腳同時作為 VDS 監控輸入，以及高側閘極驅動器 sink 路徑的輸出（C 相）。"
+      },
+      {
+        "num": "19",
+        "name": "GHC",
+        "side": "R",
+        "type": "output",
+        "desc": "高側閘極驅動輸出，接高側功率 MOSFET 的閘極（C 相）。"
+      },
+      {
+        "num": "20",
+        "name": "GLC",
+        "side": "R",
+        "type": "output",
+        "desc": "低側閘極驅動輸出，接低側功率 MOSFET 的閘極（C 相）。"
+      },
+      {
+        "num": "21",
+        "name": "LSS",
+        "side": "R",
+        "type": "power",
+        "desc": "低側源極腳，所有外部低側 MOSFET 的源極接此腳；為低側閘極驅動器的 sink 路徑，並作為低側 MOSFET VDS 電壓與 VSEN_OCP 電壓的監控輸入。"
+      },
+      {
+        "num": "22",
+        "name": "SP",
+        "side": "R",
+        "type": "input",
+        "desc": "低側電流分流放大器輸入，接低側功率 MOSFET 源極與電流分流電阻高壓側。"
+      },
+      {
+        "num": "23",
+        "name": "SN",
+        "side": "R",
+        "type": "input",
+        "desc": "電流感測放大器輸入，接電流分流電阻低壓側。"
+      },
+      {
+        "num": "24",
+        "name": "DRVOFF",
+        "side": "R",
+        "type": "input",
+        "desc": "獨立驅動器關閉路徑。拉高時將所有外部 MOSFET 的閘極驅動器切至下拉狀態關閉，此訊號會略過並覆寫數位與控制核心。"
+      },
+      {
+        "num": "25",
+        "name": "AGND",
+        "side": "R",
+        "type": "ground",
+        "desc": "裝置類比地。"
+      },
+      {
+        "num": "26",
+        "name": "AVDD",
+        "side": "R",
+        "type": "power",
+        "desc": "3.3V 或 5V 穩壓器輸出。AVDD 與 AGND 間接一顆 X7R、1µF 或 2.2µF、10V 陶瓷電容，可對外供電最高 50mA；電容於工作電壓（AVDD）與溫度降額後有效電容須介於 0.5µF–2.8µF。"
+      },
+      {
+        "num": "27",
+        "name": "SPEED/WAKE",
+        "side": "R",
+        "type": "input",
+        "desc": "多功能輸入：裝置睡眠/喚醒輸入；亦為裝置轉速輸入，支援類比、PWM 或頻率式參考（轉速/功率/電壓）輸入。"
+      },
+      {
+        "num": "28",
+        "name": "FG",
+        "side": "R",
+        "type": "output",
+        "desc": "馬達轉速指示，開洩極輸出，需接 1.8–5V 上拉電阻；可設定 PULLUP_ENABLE=1b 啟用內部上拉至 AVDD，此時勿外接上拉電阻。"
+      },
+      {
+        "num": "29",
+        "name": "SDA",
+        "side": "T",
+        "type": "io",
+        "desc": "I2C 資料線。"
+      },
+      {
+        "num": "30",
+        "name": "SCL",
+        "side": "T",
+        "type": "input",
+        "desc": "I2C 時脈輸入。"
+      },
+      {
+        "num": "31",
+        "name": "DIR",
+        "side": "T",
+        "type": "input",
+        "desc": "馬達旋轉方向設定；低準位時相序為 OUTA→OUTC→OUTB，高準位時為 OUTA→OUTB→OUTC；未使用時接 AGND。"
+      },
+      {
+        "num": "32",
+        "name": "HALL_IN/EXT_CLK",
+        "side": "T",
+        "type": "input",
+        "desc": "多功能腳：外部時脈參考模式下為外部時脈輸入；或作為單顆（3.3V/5V）數位 Hall 栓鎖（選用）輸入，供馬達鎖定偵測的備援。"
+      },
+      {
+        "num": "33",
+        "name": "DACOUT/SOx/SPEED_ANA",
+        "side": "T",
+        "type": "io",
+        "desc": "多功能腳，可設定為 DAC 輸出、電流感測放大器輸出，或類比參考（轉速/功率/電壓）輸入。"
+      },
+      {
+        "num": "34",
+        "name": "BRAKE",
+        "side": "T",
+        "type": "input",
+        "desc": "高準位：煞車馬達；低準位：正常運作；未使用時經 10kΩ 電阻接地。"
+      },
+      {
+        "num": "35",
+        "name": "nFAULT",
+        "side": "T",
+        "type": "output",
+        "desc": "故障指示，故障時被拉為邏輯低的開洩極輸出，需接 1.8–5V 上拉電阻；可設定 PULLUP_ENABLE=1b 啟用內部上拉至 AVDD，此時勿外接上拉電阻。"
+      },
+      {
+        "num": "36",
+        "name": "DVDD",
+        "side": "T",
+        "type": "power",
+        "desc": "1.5V 內部穩壓器輸出。DVDD 與 DGND 間接一顆 X7R、1µF、10V 陶瓷電容。"
+      },
+      {
+        "num": "37",
+        "name": "Thermal Pad",
+        "side": "B",
+        "type": "ground",
+        "desc": "須連接地。",
+        "ep": true
+      }
+    ],
+    "thermalPad": "Thermal Pad 須接地（Table 5-1 明文：Must be connected to ground）。",
+    "specs": [
+      {
+        "k": "工作電壓",
+        "v": "4.5V–60V"
+      },
+      {
+        "k": "電氣頻率",
+        "v": "最高 2.5kHz"
+      },
+      {
+        "k": "閘極驅動電流",
+        "v": "1A/2A 尖峰 source/sink"
+      },
+      {
+        "k": "睡眠電流",
+        "v": "5µA max @24V, 25°C"
+      },
+      {
+        "k": "PWM 切換頻率",
+        "v": "最高 80kHz"
+      },
+      {
+        "k": "LDO",
+        "v": "可設定 3.3V 或 5V ±3%, 80mA"
+      },
+      {
+        "k": "控制輸入",
+        "v": "類比、PWM、頻率或 I2C"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];
