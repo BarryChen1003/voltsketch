@@ -28983,5 +28983,891 @@ window.IC_DATA = [
     ],
     "dropIn": [],
     "thermalPad": "外露焊盤=VSS（datasheet 圖 6-5 48-pin RGZ 中央標示 VSS）；本封裝地連接經此焊盤，須接板上接地平面"
+  },
+  {
+    "part": "CC3501E",
+    "mfr": "Texas Instruments",
+    "category": "wireless",
+    "subcategory": "Wi-Fi 6 + BLE 無線 MCU（SimpleLink）",
+    "package": "56-pin QFN 7×7mm",
+    "whatIs": "SimpleLink™ 單頻（2.4GHz） Wi-Fi 6 與 Bluetooth Low Energy 無線 MCU：內建 160MHz Arm Cortex-M33 處理器，整合 WLAN/BLE 射頻前端、1.1MB SRAM、外接 XiP Flash 的 quad/octal-SPI（含即時解密），供物聯網連網裝置使用。",
+    "func": "以 Cortex-M33（160MHz）執行應用與網路協定堆疊，整合 Wi-Fi 6 與 BLE 射頻；透過 XSPI（quad/octal-SPI）外接 XiP flash 執行程式（on-the-fly 解密）；提供 up to 38 個可多工 I/O（UART×3、SPI×2、I2C×2、I2S、PDM、SD/MMC、SDIO 2.0、CAN 2.0、8 通道 12-bit ADC、8 通用計時器/PWM）；系統服務含 DMA、OTP、RTC、看門狗。",
+    "usedIn": "物聯網（IoT）連網終端、智慧家庭/樓宇、工業聯網等需 Wi-Fi 6 加 BLE 雙模連線的嵌入式產品。",
+    "desc": "單頻（2.4GHz） Wi-Fi 6 + BLE 無線 MCU，Cortex-M33 160MHz，1.1MB SRAM，XiP flash quad/octal-SPI，56-QFN 7×7mm。",
+    "datasheet": "TI SWRS343",
+    "pins": [
+      {
+        "num": "1",
+        "name": "PA_LDO_OUT",
+        "side": "B",
+        "type": "Power",
+        "desc": "功率放大器 LDO 輸出"
+      },
+      {
+        "num": "2",
+        "name": "RF_BG",
+        "side": "B",
+        "type": "Passive",
+        "desc": "RF 頻段參考/偏壓接腳（射頻，佈局見 datasheet RF 章節）"
+      },
+      {
+        "num": "3",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "電源地，接板上接地平面"
+      },
+      {
+        "num": "4",
+        "name": "VDDANA_IN1",
+        "side": "B",
+        "type": "Power",
+        "desc": "類比電源輸入"
+      },
+      {
+        "num": "5",
+        "name": "VDDANA_IN2",
+        "side": "B",
+        "type": "Power",
+        "desc": "類比電源輸入"
+      },
+      {
+        "num": "6",
+        "name": "HFXT_P/EXT",
+        "side": "B",
+        "type": "Passive",
+        "desc": "高頻晶振接腳（HFXT；可接外部時脈或晶體，見 datasheet 時脈章節）"
+      },
+      {
+        "num": "7",
+        "name": "HFXT_N",
+        "side": "B",
+        "type": "Passive",
+        "desc": "高頻晶振接腳（HFXT；可接外部時脈或晶體，見 datasheet 時脈章節）"
+      },
+      {
+        "num": "8",
+        "name": "GPIO35",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO35（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "9",
+        "name": "GPIO34",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO34（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "10",
+        "name": "VDD_DIG_IN",
+        "side": "B",
+        "type": "Power",
+        "desc": "數位核心電源輸入"
+      },
+      {
+        "num": "11",
+        "name": "GPIO33",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO33（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "12",
+        "name": "GPIO32",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO32（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "13",
+        "name": "GPIO31",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO31（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "14",
+        "name": "GPIO30",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO30（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "15",
+        "name": "VIO2",
+        "side": "R",
+        "type": "Power",
+        "desc": "I/O 電源軌（可獨立設定 I/O 電壓）"
+      },
+      {
+        "num": "16",
+        "name": "GPIO29",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO29（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "17",
+        "name": "GPIO28",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO28（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "18",
+        "name": "GPIO27",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO27（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "19",
+        "name": "GPIO26",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO26（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "20",
+        "name": "XSPI_D0",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 資料 0（支援即時解密）"
+      },
+      {
+        "num": "21",
+        "name": "XSPI_CLK",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 時脈（支援即時解密）"
+      },
+      {
+        "num": "22",
+        "name": "XSPI_D3",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 資料 3（支援即時解密）"
+      },
+      {
+        "num": "23",
+        "name": "VDD_SF",
+        "side": "R",
+        "type": "Power",
+        "desc": "串列 Flash（XSPI）介面電源"
+      },
+      {
+        "num": "24",
+        "name": "XSPI_D2",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 資料 2（支援即時解密）"
+      },
+      {
+        "num": "25",
+        "name": "XSPI_D1",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 資料 1（支援即時解密）"
+      },
+      {
+        "num": "26",
+        "name": "XSPI_CS",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 晶片選擇（支援即時解密）"
+      },
+      {
+        "num": "27",
+        "name": "GPIO19",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO19（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "28",
+        "name": "GPIO18",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO18（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "29",
+        "name": "GPIO17",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO17（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "30",
+        "name": "GPIO16",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO16（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "31",
+        "name": "GPIO15",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO15（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "32",
+        "name": "GPIO14",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO14（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "33",
+        "name": "GPIO13",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO13（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "34",
+        "name": "GPIO12",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO12（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "35",
+        "name": "GPIO11",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO11（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "36",
+        "name": "GPIO10",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO10（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "37",
+        "name": "VIO1",
+        "side": "T",
+        "type": "Power",
+        "desc": "I/O 電源軌（可獨立設定 I/O 電壓）"
+      },
+      {
+        "num": "38",
+        "name": "LOGGER",
+        "side": "T",
+        "type": "Output",
+        "desc": "除錯/日誌輸出（Logger）"
+      },
+      {
+        "num": "39",
+        "name": "SWCLK",
+        "side": "T",
+        "type": "Input",
+        "desc": "SWD 除錯時脈輸入"
+      },
+      {
+        "num": "40",
+        "name": "SWDIO",
+        "side": "T",
+        "type": "I/O",
+        "desc": "SWD 除錯資料"
+      },
+      {
+        "num": "41",
+        "name": "GPIO6",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO6（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "42",
+        "name": "GPIO5",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO5（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "43",
+        "name": "GPIO4",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO4（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "44",
+        "name": "GPIO3",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO3（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "45",
+        "name": "VPP_IN",
+        "side": "L",
+        "type": "Power",
+        "desc": "程式化/OTP 電壓輸入（VPP）"
+      },
+      {
+        "num": "46",
+        "name": "GPIO2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO2（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "47",
+        "name": "DIG_LDO_OUT",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位 LDO 輸出；外接去耦電容"
+      },
+      {
+        "num": "48",
+        "name": "VDD_MAIN_IN",
+        "side": "L",
+        "type": "Power",
+        "desc": "主電源輸入"
+      },
+      {
+        "num": "49",
+        "name": "{RESET}",
+        "side": "L",
+        "type": "Input",
+        "desc": "晶片重置輸入（active-low；原文 nRESET）"
+      },
+      {
+        "num": "50",
+        "name": "LFXT_N/GPIO1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO1（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）；亦可作 LFXT_N 功能"
+      },
+      {
+        "num": "51",
+        "name": "SLOW_CLK_IN/LFXT_P/GPIO0",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO0（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）；亦可作 SLOW_CLK_IN/LFXT_P 功能"
+      },
+      {
+        "num": "52",
+        "name": "GPIO37",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO37（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "53",
+        "name": "GPIO36",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO36（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "54",
+        "name": "GND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "電源地，接板上接地平面"
+      },
+      {
+        "num": "55",
+        "name": "PA_LDO_IN2",
+        "side": "L",
+        "type": "Power",
+        "desc": "功率放大器 LDO 輸入電源"
+      },
+      {
+        "num": "56",
+        "name": "PA_LDO_IN1",
+        "side": "L",
+        "type": "Power",
+        "desc": "功率放大器 LDO 輸入電源"
+      }
+    ],
+    "thermalPad": "封裝底部散熱焊盤（QFN 常見）細節見 datasheet 機構圖；本 pin 圖未標編號 EP 腳",
+    "specs": [
+      {
+        "k": "CPU",
+        "v": "Arm Cortex-M33 @ 160MHz"
+      },
+      {
+        "k": "無線",
+        "v": "Wi-Fi 6（802.11ax，單頻（2.4GHz））＋ Bluetooth Low Energy"
+      },
+      {
+        "k": "SRAM",
+        "v": "1.1MB（含 128KB TCM）"
+      },
+      {
+        "k": "Flash",
+        "v": "外接 XiP：quad-SPI / octal-SPI，支援即時解密"
+      },
+      {
+        "k": "I/O",
+        "v": "up to 38 個，彈性多工"
+      },
+      {
+        "k": "週邊",
+        "v": "UART×3、SPI×2、I2C×2、I2S、PDM、SD/MMC、SDIO 2.0、CAN 2.0、8ch 12-bit ADC、8× Timer/PWM"
+      },
+      {
+        "k": "系統",
+        "v": "DMA、OTP、RTC、WDT"
+      },
+      {
+        "k": "封裝",
+        "v": "56-pin QFN 7×7mm"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
+  },
+  {
+    "part": "CC3551E",
+    "mfr": "Texas Instruments",
+    "category": "wireless",
+    "subcategory": "Wi-Fi 6 + BLE 無線 MCU（SimpleLink）",
+    "package": "56-pin QFN 7×7mm",
+    "whatIs": "SimpleLink™ 雙頻（2.4GHz + 5GHz） Wi-Fi 6 與 Bluetooth Low Energy 無線 MCU：內建 160MHz Arm Cortex-M33 處理器，整合 WLAN/BLE 射頻前端、1.1MB SRAM、外接 XiP Flash 的 quad/octal-SPI（含即時解密），供物聯網連網裝置使用。",
+    "func": "以 Cortex-M33（160MHz）執行應用與網路協定堆疊，整合 Wi-Fi 6 與 BLE 射頻；透過 XSPI（quad/octal-SPI）外接 XiP flash 執行程式（on-the-fly 解密）；提供 up to 36 個可多工 I/O（UART×3、SPI×2、I2C×2、I2S、PDM、SD/MMC、SDIO 2.0、CAN 2.0、8 通道 12-bit ADC、8 通用計時器/PWM）；系統服務含 DMA、OTP、RTC、看門狗。",
+    "usedIn": "物聯網（IoT）連網終端、智慧家庭/樓宇、工業聯網等需 Wi-Fi 6 加 BLE 雙模連線的嵌入式產品。",
+    "desc": "雙頻（2.4GHz + 5GHz） Wi-Fi 6 + BLE 無線 MCU，Cortex-M33 160MHz，1.1MB SRAM，XiP flash quad/octal-SPI，56-QFN 7×7mm。",
+    "datasheet": "TI SWRS337A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "PA_LDO_OUT",
+        "side": "B",
+        "type": "Power",
+        "desc": "功率放大器 LDO 輸出"
+      },
+      {
+        "num": "2",
+        "name": "RF_BG",
+        "side": "B",
+        "type": "Passive",
+        "desc": "RF 頻段參考/偏壓接腳（射頻，佈局見 datasheet RF 章節）"
+      },
+      {
+        "num": "3",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "電源地，接板上接地平面"
+      },
+      {
+        "num": "4",
+        "name": "VDDANA_IN1",
+        "side": "B",
+        "type": "Power",
+        "desc": "類比電源輸入"
+      },
+      {
+        "num": "5",
+        "name": "VDDANA_IN2",
+        "side": "B",
+        "type": "Power",
+        "desc": "類比電源輸入"
+      },
+      {
+        "num": "6",
+        "name": "HFXT_P/EXT",
+        "side": "B",
+        "type": "Passive",
+        "desc": "高頻晶振接腳（HFXT；可接外部時脈或晶體，見 datasheet 時脈章節）"
+      },
+      {
+        "num": "7",
+        "name": "HFXT_N",
+        "side": "B",
+        "type": "Passive",
+        "desc": "高頻晶振接腳（HFXT；可接外部時脈或晶體，見 datasheet 時脈章節）"
+      },
+      {
+        "num": "8",
+        "name": "GPIO35",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO35（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "9",
+        "name": "GPIO34",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO34（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "10",
+        "name": "VDD_DIG_IN",
+        "side": "B",
+        "type": "Power",
+        "desc": "數位核心電源輸入"
+      },
+      {
+        "num": "11",
+        "name": "GPIO33",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO33（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "12",
+        "name": "GPIO32",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO32（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "13",
+        "name": "GPIO31",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO31（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "14",
+        "name": "GPIO30",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO30（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "15",
+        "name": "VIO2",
+        "side": "R",
+        "type": "Power",
+        "desc": "I/O 電源軌（可獨立設定 I/O 電壓）"
+      },
+      {
+        "num": "16",
+        "name": "GPIO29",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO29（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "17",
+        "name": "GPIO28",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO28（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "18",
+        "name": "GPIO27",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO27（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "19",
+        "name": "GPIO26",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO26（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "20",
+        "name": "XSPI_D0",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 資料 0（支援即時解密）"
+      },
+      {
+        "num": "21",
+        "name": "XSPI_CLK",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 時脈（支援即時解密）"
+      },
+      {
+        "num": "22",
+        "name": "XSPI_D3",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 資料 3（支援即時解密）"
+      },
+      {
+        "num": "23",
+        "name": "VDD_SF",
+        "side": "R",
+        "type": "Power",
+        "desc": "串列 Flash（XSPI）介面電源"
+      },
+      {
+        "num": "24",
+        "name": "XSPI_D2",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 資料 2（支援即時解密）"
+      },
+      {
+        "num": "25",
+        "name": "XSPI_D1",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 資料 1（支援即時解密）"
+      },
+      {
+        "num": "26",
+        "name": "XSPI_CS",
+        "side": "R",
+        "type": "I/O",
+        "desc": "外接 XiP Flash 的 quad/octal-SPI 介面 晶片選擇（支援即時解密）"
+      },
+      {
+        "num": "27",
+        "name": "GPIO19",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO19（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "28",
+        "name": "GPIO18",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO18（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "29",
+        "name": "GPIO17",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO17（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "30",
+        "name": "GPIO16",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO16（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "31",
+        "name": "GPIO15",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO15（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "32",
+        "name": "GPIO14",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO14（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "33",
+        "name": "GPIO13",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO13（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "34",
+        "name": "GPIO12",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO12（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "35",
+        "name": "GPIO11",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO11（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "36",
+        "name": "GPIO10",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO10（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "37",
+        "name": "VIO1",
+        "side": "T",
+        "type": "Power",
+        "desc": "I/O 電源軌（可獨立設定 I/O 電壓）"
+      },
+      {
+        "num": "38",
+        "name": "LOGGER",
+        "side": "T",
+        "type": "Output",
+        "desc": "除錯/日誌輸出（Logger）"
+      },
+      {
+        "num": "39",
+        "name": "SWCLK",
+        "side": "T",
+        "type": "Input",
+        "desc": "SWD 除錯時脈輸入"
+      },
+      {
+        "num": "40",
+        "name": "SWDIO",
+        "side": "T",
+        "type": "I/O",
+        "desc": "SWD 除錯資料"
+      },
+      {
+        "num": "41",
+        "name": "GPIO6",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO6（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "42",
+        "name": "GPIO5",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO5（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "43",
+        "name": "GPIO4",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO4（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "44",
+        "name": "GPIO3",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO3（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "45",
+        "name": "VPP_IN",
+        "side": "L",
+        "type": "Power",
+        "desc": "程式化/OTP 電壓輸入（VPP）"
+      },
+      {
+        "num": "46",
+        "name": "GPIO2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO2（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）"
+      },
+      {
+        "num": "47",
+        "name": "DIG_LDO_OUT",
+        "side": "L",
+        "type": "Power",
+        "desc": "數位 LDO 輸出；外接去耦電容"
+      },
+      {
+        "num": "48",
+        "name": "VDD_MAIN_IN",
+        "side": "L",
+        "type": "Power",
+        "desc": "主電源輸入"
+      },
+      {
+        "num": "49",
+        "name": "{RESET}",
+        "side": "L",
+        "type": "Input",
+        "desc": "晶片重置輸入（active-low；原文 nRESET）"
+      },
+      {
+        "num": "50",
+        "name": "LFXT_N/GPIO1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO1（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）；亦可作 LFXT_N 功能"
+      },
+      {
+        "num": "51",
+        "name": "SLOW_CLK_IN/LFXT_P/GPIO0",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO0（多工週邊 UART/SPI/I2C/I2S/PWM/ADC 等，指派見 datasheet Signal Descriptions）；亦可作 SLOW_CLK_IN/LFXT_P 功能"
+      },
+      {
+        "num": "52",
+        "name": "D.N.C",
+        "side": "L",
+        "type": "NC",
+        "desc": "請勿連接（Do Not Connect）"
+      },
+      {
+        "num": "53",
+        "name": "D.N.C",
+        "side": "L",
+        "type": "NC",
+        "desc": "請勿連接（Do Not Connect）"
+      },
+      {
+        "num": "54",
+        "name": "RF_A",
+        "side": "L",
+        "type": "Passive",
+        "desc": "射頻天線埠（雙頻 2.4/5GHz 天線連接；RF 匹配/佈局見 datasheet）"
+      },
+      {
+        "num": "55",
+        "name": "PA_LDO_IN2",
+        "side": "L",
+        "type": "Power",
+        "desc": "功率放大器 LDO 輸入電源"
+      },
+      {
+        "num": "56",
+        "name": "PA_LDO_IN1",
+        "side": "L",
+        "type": "Power",
+        "desc": "功率放大器 LDO 輸入電源"
+      }
+    ],
+    "thermalPad": "封裝底部散熱焊盤（QFN 常見）細節見 datasheet 機構圖；本 pin 圖未標編號 EP 腳",
+    "specs": [
+      {
+        "k": "CPU",
+        "v": "Arm Cortex-M33 @ 160MHz"
+      },
+      {
+        "k": "無線",
+        "v": "Wi-Fi 6（802.11ax，雙頻（2.4GHz + 5GHz））＋ Bluetooth Low Energy"
+      },
+      {
+        "k": "SRAM",
+        "v": "1.1MB（含 128KB TCM）"
+      },
+      {
+        "k": "Flash",
+        "v": "外接 XiP：quad-SPI / octal-SPI，支援即時解密"
+      },
+      {
+        "k": "I/O",
+        "v": "up to 36 個，彈性多工"
+      },
+      {
+        "k": "週邊",
+        "v": "UART×3、SPI×2、I2C×2、I2S、PDM、SD/MMC、SDIO 2.0、CAN 2.0、8ch 12-bit ADC、8× Timer/PWM"
+      },
+      {
+        "k": "系統",
+        "v": "DMA、OTP、RTC、WDT"
+      },
+      {
+        "k": "封裝",
+        "v": "56-pin QFN 7×7mm"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];
