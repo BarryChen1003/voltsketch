@@ -25861,5 +25861,2284 @@ window.IC_DATA = [
         "note": "同一份 datasheet、腳位 100% 相同；P10 為高功率版本（PA 最高 +20dBm，Flash/SRAM 皆與 R10 相同：1024KB/162KB）"
       }
     ]
+  },
+  {
+    "part": "CC3300MOD",
+    "mfr": "Texas Instruments",
+    "category": "wireless",
+    "subcategory": "Wi-Fi 6 (2.4GHz) Companion Module",
+    "package": "65-pin LGA 11×11mm，0.65mm pitch",
+    "whatIs": "2.4GHz Wi-Fi 6（802.11ax）隨行模組（companion module）：內建完整 Wi-Fi 6 收發器、PA 與天線前端，透過 SDIO 或 SPI 介面提供主機 MCU/處理器完整 TCP/IP 無線連網能力，免主機自行處理射頻與天線設計。",
+    "func": "整合 MAC、基頻與 2.4GHz RF 收發器，支援 IEEE 802.11 b/g/n/ax；內含 2.4GHz 功率放大器（PA），最高輸出 +18.4dBm；支援 TWT、OFDMA、下行 MU-MIMO、BSS Coloring 等 Wi-Fi 6 效率特性，硬體加速 WPA2/WPA3 加解密；主機介面為 4-bit SDIO 或 SPI；40MHz XTAL 快速時脈已整合於模組內，慢速時脈可用內部或外部 32.768kHz；支援多角色（如同時 STA+AP）與天線分集/選擇；3-wire 或 1-wire PTA 供與其他 2.4GHz 無線電（如 Thread/Zigbee）共存。",
+    "usedIn": "電網基礎設施（電表、串型/微型逆變器、儲能 PCS、電動車充電樁）、樓宇/家庭自動化（HVAC 控制器/閘道器、溫控器、車庫門、IP 攝影機/視訊門鈴）、家電（冰箱、烤箱、洗衣機、熱水器、空氣清淨機、掃地機器人）、醫療設備（輸液幫浦、病患監視器、血壓計）等雲端連網應用。",
+    "desc": "65-pin 11×11mm LGA 封裝的 2.4GHz Wi-Fi 6 隨行模組，內建 PA 與收發器，SDIO/SPI 介面對主機，工作溫度 -40°C 至 +85°C；CC3300MOD 僅 Wi-Fi，不含藍牙（BLE 版本為 CC3301MOD）。",
+    "datasheet": "TI SWRS333A",
+    "pins": [
+      {
+        "num": 29,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 30,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 31,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 32,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 33,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 34,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 35,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 36,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 37,
+        "name": "3V3_IN",
+        "side": "L",
+        "type": "power",
+        "desc": "PA 功率放大器供電電壓 3.3V"
+      },
+      {
+        "num": 38,
+        "name": "3V3_IN",
+        "side": "L",
+        "type": "power",
+        "desc": "PA 功率放大器供電電壓 3.3V"
+      },
+      {
+        "num": 39,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 40,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 41,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 42,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 43,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 28,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 27,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 26,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 25,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 24,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 23,
+        "name": "RF_OUT",
+        "side": "T",
+        "type": "io",
+        "desc": "藍牙低功耗與 WLAN 2.4GHz 共用 RF 埠"
+      },
+      {
+        "num": 22,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 21,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 20,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 19,
+        "name": "VPP_IN",
+        "side": "T",
+        "type": "power",
+        "desc": "1.8V OTP 燒錄輸入電源"
+      },
+      {
+        "num": 18,
+        "name": "SLOW_CLK_IN",
+        "side": "T",
+        "type": "clock",
+        "desc": "32.768kHz RTC 慢速時脈輸入"
+      },
+      {
+        "num": 17,
+        "name": "nReset",
+        "side": "T",
+        "type": "input",
+        "desc": "重置線（低態動作），致能/禁能裝置"
+      },
+      {
+        "num": 16,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 15,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 14,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 13,
+        "name": "SWCLK",
+        "side": "R",
+        "type": "clock",
+        "desc": "序列線除錯（SWD）時脈輸入"
+      },
+      {
+        "num": 12,
+        "name": "SWDIO",
+        "side": "R",
+        "type": "io",
+        "desc": "序列線除錯（SWD）資料 I/O"
+      },
+      {
+        "num": 11,
+        "name": "Host_IRQ_BLE",
+        "side": "R",
+        "type": "output",
+        "desc": "保留供未來使用"
+      },
+      {
+        "num": 10,
+        "name": "Host_IRQ_WL",
+        "side": "R",
+        "type": "output",
+        "desc": "WLAN 對主機中斷請求輸出；開機時裝置會感測本腳狀態"
+      },
+      {
+        "num": 9,
+        "name": "Logger",
+        "side": "R",
+        "type": "output",
+        "desc": "追蹤除錯輸出（UART TX 除錯記錄器）；開機時裝置會感測本腳狀態"
+      },
+      {
+        "num": 8,
+        "name": "SDIO_D0",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D0（I/O），或作 SPI POCI（從出主入）"
+      },
+      {
+        "num": 7,
+        "name": "SDIO_D1",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D1（I/O）"
+      },
+      {
+        "num": 6,
+        "name": "SDIO_D2",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D2（I/O）"
+      },
+      {
+        "num": 5,
+        "name": "SDIO_D3",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D3（I/O），或作 SPI 晶片選擇 CS"
+      },
+      {
+        "num": 4,
+        "name": "SDIO CMD",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 命令線（I/O），或作 SPI PICO（主出從入）"
+      },
+      {
+        "num": 3,
+        "name": "SDIO CLK",
+        "side": "R",
+        "type": "clock",
+        "desc": "SDIO 時脈輸入，或作 SPI 時脈（SPI 模式）"
+      },
+      {
+        "num": 2,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 1,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 44,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 45,
+        "name": "COEX_PRIORITY",
+        "side": "B",
+        "type": "input",
+        "desc": "外部共存介面：優先權（priority）"
+      },
+      {
+        "num": 46,
+        "name": "COEX_REQ",
+        "side": "B",
+        "type": "input",
+        "desc": "外部共存介面：請求（request）"
+      },
+      {
+        "num": 47,
+        "name": "COEX_GRANT",
+        "side": "B",
+        "type": "output",
+        "desc": "外部共存介面：授權（grant）"
+      },
+      {
+        "num": 48,
+        "name": "UART RTS",
+        "side": "B",
+        "type": "output",
+        "desc": "裝置 RTS 訊號，供 BLE HCI 流量控制"
+      },
+      {
+        "num": 49,
+        "name": "UART CTS",
+        "side": "B",
+        "type": "input",
+        "desc": "裝置 CTS 訊號，供 BLE HCI 流量控制"
+      },
+      {
+        "num": 50,
+        "name": "UART RX",
+        "side": "B",
+        "type": "input",
+        "desc": "BLE HCI 用 UART 接收"
+      },
+      {
+        "num": 51,
+        "name": "UART TX",
+        "side": "B",
+        "type": "output",
+        "desc": "BLE HCI 用 UART 傳送"
+      },
+      {
+        "num": 52,
+        "name": "ANT_SEL",
+        "side": "B",
+        "type": "output",
+        "desc": "天線選擇控制線"
+      },
+      {
+        "num": 53,
+        "name": "1V8_IN",
+        "side": "B",
+        "type": "power",
+        "desc": "類比與數位主供電（VDD_MAIN_IN／VDDA_IN1／VDDA_IN2／VIO）"
+      },
+      {
+        "num": 54,
+        "name": "1V8_IN",
+        "side": "B",
+        "type": "power",
+        "desc": "類比與數位主供電（VDD_MAIN_IN／VDDA_IN1／VDDA_IN2／VIO）"
+      },
+      {
+        "num": 55,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 56,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 57,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 58,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 59,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 60,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 61,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 62,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 63,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 64,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 65,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "Wi-Fi",
+        "v": "IEEE 802.11 b/g/n/ax，2.4GHz，20MHz 頻寬，單一空間流（SISO）"
+      },
+      {
+        "k": "藍牙",
+        "v": "不支援（Wi-Fi-only；BLE 版本為 CC3301MOD）"
+      },
+      {
+        "k": "輸出功率",
+        "v": "整合 2.4GHz PA，最高 +18.4dBm"
+      },
+      {
+        "k": "主機介面",
+        "v": "4-bit SDIO 或 SPI"
+      },
+      {
+        "k": "吞吐量",
+        "v": "應用層最高約 50Mbps"
+      },
+      {
+        "k": "工作溫度",
+        "v": "-40°C 至 +85°C"
+      },
+      {
+        "k": "封裝",
+        "v": "65-pin LGA，11mm×11mm，0.65mm pitch"
+      }
+    ],
+    "dropIn": [
+      {
+        "part": "CC3301MOD",
+        "note": "同一 65-pin LGA 腳位配置完全相同（deep-equal 已核對）；CC3301MOD 額外含 BLE 5.4，若方案不需藍牙可互換省成本"
+      }
+    ]
+  },
+  {
+    "part": "CC3301MOD",
+    "mfr": "Texas Instruments",
+    "category": "wireless",
+    "subcategory": "Wi-Fi 6 (2.4GHz) + BLE 5.4 Companion Module",
+    "package": "65-pin LGA 11×11mm，0.65mm pitch",
+    "whatIs": "2.4GHz Wi-Fi 6（802.11ax）與藍牙低功耗 5.4 隨行模組：與 CC3300MOD 相同的 Wi-Fi 6 收發器與 PA，並加入 BLE 5.4 控制器子系統，兩種無線電共用同一 RF 前端與天線。",
+    "func": "整合 MAC、基頻與 2.4GHz RF 收發器，支援 IEEE 802.11 b/g/n/ax；內含 2.4GHz PA，最高輸出 +18.4dBm；支援 TWT、OFDMA、下行 MU-MIMO、BSS Coloring 等 Wi-Fi 6 效率特性，硬體加速 WPA2/WPA3；另整合藍牙低功耗 5.4 控制器子系統，支援 LE Coded PHY（長距離）、LE 2M PHY（高速）與 Advertising Extension，HCI 傳輸可選 UART 或共用 SDIO，內部共存機制使 BLE 與 Wi-Fi 共用同一組 RF 鏈與天線；主機介面為 4-bit SDIO 或 SPI；40MHz XTAL 已整合於模組內。",
+    "usedIn": "同 CC3300MOD 應用（電網基礎設施、樓宇/家庭自動化、家電、醫療設備等），另涵蓋需藍牙配對/資料傳輸的場景，如穿戴裝置配對、行動 App 現場設定、BLE Beacon 混合式連網。",
+    "desc": "65-pin 11×11mm LGA 封裝，2.4GHz Wi-Fi 6 + 藍牙低功耗 5.4 隨行模組，SDIO/SPI 對主機，內部 Wi-Fi/BLE 共存，工作溫度 -40°C 至 +85°C。",
+    "datasheet": "TI SWRS333A",
+    "pins": [
+      {
+        "num": 29,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 30,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 31,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 32,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 33,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 34,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 35,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 36,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 37,
+        "name": "3V3_IN",
+        "side": "L",
+        "type": "power",
+        "desc": "PA 功率放大器供電電壓 3.3V"
+      },
+      {
+        "num": 38,
+        "name": "3V3_IN",
+        "side": "L",
+        "type": "power",
+        "desc": "PA 功率放大器供電電壓 3.3V"
+      },
+      {
+        "num": 39,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 40,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 41,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 42,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 43,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 28,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 27,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 26,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 25,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 24,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 23,
+        "name": "RF_OUT",
+        "side": "T",
+        "type": "io",
+        "desc": "藍牙低功耗與 WLAN 2.4GHz 共用 RF 埠"
+      },
+      {
+        "num": 22,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 21,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 20,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 19,
+        "name": "VPP_IN",
+        "side": "T",
+        "type": "power",
+        "desc": "1.8V OTP 燒錄輸入電源"
+      },
+      {
+        "num": 18,
+        "name": "SLOW_CLK_IN",
+        "side": "T",
+        "type": "clock",
+        "desc": "32.768kHz RTC 慢速時脈輸入"
+      },
+      {
+        "num": 17,
+        "name": "nReset",
+        "side": "T",
+        "type": "input",
+        "desc": "重置線（低態動作），致能/禁能裝置"
+      },
+      {
+        "num": 16,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 15,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 14,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 13,
+        "name": "SWCLK",
+        "side": "R",
+        "type": "clock",
+        "desc": "序列線除錯（SWD）時脈輸入"
+      },
+      {
+        "num": 12,
+        "name": "SWDIO",
+        "side": "R",
+        "type": "io",
+        "desc": "序列線除錯（SWD）資料 I/O"
+      },
+      {
+        "num": 11,
+        "name": "Host_IRQ_BLE",
+        "side": "R",
+        "type": "output",
+        "desc": "保留供未來使用"
+      },
+      {
+        "num": 10,
+        "name": "Host_IRQ_WL",
+        "side": "R",
+        "type": "output",
+        "desc": "WLAN 對主機中斷請求輸出；開機時裝置會感測本腳狀態"
+      },
+      {
+        "num": 9,
+        "name": "Logger",
+        "side": "R",
+        "type": "output",
+        "desc": "追蹤除錯輸出（UART TX 除錯記錄器）；開機時裝置會感測本腳狀態"
+      },
+      {
+        "num": 8,
+        "name": "SDIO_D0",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D0（I/O），或作 SPI POCI（從出主入）"
+      },
+      {
+        "num": 7,
+        "name": "SDIO_D1",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D1（I/O）"
+      },
+      {
+        "num": 6,
+        "name": "SDIO_D2",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D2（I/O）"
+      },
+      {
+        "num": 5,
+        "name": "SDIO_D3",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D3（I/O），或作 SPI 晶片選擇 CS"
+      },
+      {
+        "num": 4,
+        "name": "SDIO CMD",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 命令線（I/O），或作 SPI PICO（主出從入）"
+      },
+      {
+        "num": 3,
+        "name": "SDIO CLK",
+        "side": "R",
+        "type": "clock",
+        "desc": "SDIO 時脈輸入，或作 SPI 時脈（SPI 模式）"
+      },
+      {
+        "num": 2,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 1,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 44,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 45,
+        "name": "COEX_PRIORITY",
+        "side": "B",
+        "type": "input",
+        "desc": "外部共存介面：優先權（priority）"
+      },
+      {
+        "num": 46,
+        "name": "COEX_REQ",
+        "side": "B",
+        "type": "input",
+        "desc": "外部共存介面：請求（request）"
+      },
+      {
+        "num": 47,
+        "name": "COEX_GRANT",
+        "side": "B",
+        "type": "output",
+        "desc": "外部共存介面：授權（grant）"
+      },
+      {
+        "num": 48,
+        "name": "UART RTS",
+        "side": "B",
+        "type": "output",
+        "desc": "裝置 RTS 訊號，供 BLE HCI 流量控制"
+      },
+      {
+        "num": 49,
+        "name": "UART CTS",
+        "side": "B",
+        "type": "input",
+        "desc": "裝置 CTS 訊號，供 BLE HCI 流量控制"
+      },
+      {
+        "num": 50,
+        "name": "UART RX",
+        "side": "B",
+        "type": "input",
+        "desc": "BLE HCI 用 UART 接收"
+      },
+      {
+        "num": 51,
+        "name": "UART TX",
+        "side": "B",
+        "type": "output",
+        "desc": "BLE HCI 用 UART 傳送"
+      },
+      {
+        "num": 52,
+        "name": "ANT_SEL",
+        "side": "B",
+        "type": "output",
+        "desc": "天線選擇控制線"
+      },
+      {
+        "num": 53,
+        "name": "1V8_IN",
+        "side": "B",
+        "type": "power",
+        "desc": "類比與數位主供電（VDD_MAIN_IN／VDDA_IN1／VDDA_IN2／VIO）"
+      },
+      {
+        "num": 54,
+        "name": "1V8_IN",
+        "side": "B",
+        "type": "power",
+        "desc": "類比與數位主供電（VDD_MAIN_IN／VDDA_IN1／VDDA_IN2／VIO）"
+      },
+      {
+        "num": 55,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 56,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 57,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 58,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 59,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 60,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 61,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 62,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 63,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 64,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 65,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "Wi-Fi",
+        "v": "IEEE 802.11 b/g/n/ax，2.4GHz，20MHz 頻寬，單一空間流（SISO）"
+      },
+      {
+        "k": "藍牙",
+        "v": "藍牙低功耗 5.4，支援 LE Coded PHY／LE 2M PHY／Advertising Extension"
+      },
+      {
+        "k": "輸出功率",
+        "v": "整合 2.4GHz PA，最高 +18.4dBm"
+      },
+      {
+        "k": "主機介面",
+        "v": "4-bit SDIO 或 SPI；BLE HCI 另可用 UART 或共用 SDIO"
+      },
+      {
+        "k": "吞吐量",
+        "v": "應用層最高約 50Mbps"
+      },
+      {
+        "k": "工作溫度",
+        "v": "-40°C 至 +85°C"
+      },
+      {
+        "k": "封裝",
+        "v": "65-pin LGA，11mm×11mm，0.65mm pitch"
+      }
+    ],
+    "dropIn": [
+      {
+        "part": "CC3300MOD",
+        "note": "同一 65-pin LGA 腳位配置完全相同（deep-equal 已核對）；CC3300MOD 為單 Wi-Fi 版（無 BLE），不需藍牙時可互換"
+      }
+    ]
+  },
+  {
+    "part": "CC3350MOD",
+    "mfr": "Texas Instruments",
+    "category": "wireless",
+    "subcategory": "Dual-Band (2.4/5GHz) Wi-Fi 6 Companion Module",
+    "package": "65-pin LGA 11×11mm，0.65mm pitch",
+    "whatIs": "2.4GHz 與 5GHz 雙頻 Wi-Fi 6（802.11ax）隨行模組（companion module）：內建雙頻收發器、PA 與天線前端，透過 SDIO 或 SPI 介面提供主機 MCU/處理器完整 TCP/IP 無線連網能力。",
+    "func": "整合 MAC、基頻與雙頻 RF 收發器，支援 IEEE 802.11 a/b/g/n/ax（相容 Wi-Fi 4 與 Wi-Fi 5 802.11ac），2.4GHz 與 5GHz 皆為 20MHz、單一空間流；內含 2.4GHz 與 5GHz PA，最高輸出 +18.3dBm；支援 TWT、OFDMA、下行 MU-MIMO、BSS Coloring 等 Wi-Fi 6 效率特性，硬體加速 WPA2/WPA3；主機介面為 4-bit SDIO 或 SPI；40MHz XTAL 快速時脈已整合於模組內，慢速時脈可用內部或外部 32.768kHz；支援多角色與天線分集/選擇；3-wire 或 1-wire PTA 供外部 2.4GHz 無線電共存。",
+    "usedIn": "電網基礎設施（電表、串型/微型逆變器、儲能 PCS、電動車充電樁）、樓宇/家庭自動化（HVAC 控制器/閘道器、溫控器、車庫門、IP 攝影機/視訊門鈴）、家電（冰箱、烤箱、洗衣機、熱水器、空氣清淨機、掃地機器人）、醫療設備（輸液幫浦、病患監視器、血壓計）等需雙頻 Wi-Fi 之連網應用。",
+    "desc": "65-pin 11×11mm LGA 封裝的 2.4GHz/5GHz 雙頻 Wi-Fi 6 隨行模組，內建雙頻 PA 與收發器，SDIO/SPI 介面對主機，工作溫度 -40°C 至 +85°C；CC3350MOD 僅 Wi-Fi，不含藍牙（BLE 版本為 CC3351MOD）。",
+    "datasheet": "TI SWRS353A",
+    "pins": [
+      {
+        "num": 29,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 30,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 31,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 32,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 33,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 34,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 35,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 36,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 37,
+        "name": "3V3_IN",
+        "side": "L",
+        "type": "power",
+        "desc": "PA 功率放大器供電電壓 3.3V"
+      },
+      {
+        "num": 38,
+        "name": "3V3_IN",
+        "side": "L",
+        "type": "power",
+        "desc": "PA 功率放大器供電電壓 3.3V"
+      },
+      {
+        "num": 39,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 40,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 41,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 42,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 43,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 28,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 27,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 26,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 25,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 24,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 23,
+        "name": "RF_OUT",
+        "side": "T",
+        "type": "io",
+        "desc": "藍牙低功耗與 WLAN 2.4GHz/5GHz 共用 RF 埠"
+      },
+      {
+        "num": 22,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 21,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 20,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 19,
+        "name": "VPP_IN",
+        "side": "T",
+        "type": "power",
+        "desc": "1.8V OTP 燒錄輸入電源"
+      },
+      {
+        "num": 18,
+        "name": "SLOW_CLK_IN",
+        "side": "T",
+        "type": "clock",
+        "desc": "32.768kHz RTC 慢速時脈輸入"
+      },
+      {
+        "num": 17,
+        "name": "nReset",
+        "side": "T",
+        "type": "input",
+        "desc": "重置線（低態動作），致能/禁能裝置"
+      },
+      {
+        "num": 16,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 15,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 14,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 13,
+        "name": "SWCLK",
+        "side": "R",
+        "type": "clock",
+        "desc": "序列線除錯（SWD）時脈輸入"
+      },
+      {
+        "num": 12,
+        "name": "SWDIO",
+        "side": "R",
+        "type": "io",
+        "desc": "序列線除錯（SWD）資料 I/O"
+      },
+      {
+        "num": 11,
+        "name": "Host_IRQ_BLE",
+        "side": "R",
+        "type": "output",
+        "desc": "保留供未來使用"
+      },
+      {
+        "num": 10,
+        "name": "Host_IRQ_WL",
+        "side": "R",
+        "type": "output",
+        "desc": "WLAN 對主機中斷請求輸出；開機時裝置會感測本腳狀態"
+      },
+      {
+        "num": 9,
+        "name": "Logger",
+        "side": "R",
+        "type": "output",
+        "desc": "追蹤除錯輸出（UART TX 除錯記錄器）；開機時裝置會感測本腳狀態"
+      },
+      {
+        "num": 8,
+        "name": "SDIO_D0",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D0（I/O），或作 SPI POCI（從出主入）"
+      },
+      {
+        "num": 7,
+        "name": "SDIO_D1",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D1（I/O）"
+      },
+      {
+        "num": 6,
+        "name": "SDIO_D2",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D2（I/O）"
+      },
+      {
+        "num": 5,
+        "name": "SDIO_D3",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D3（I/O），或作 SPI 晶片選擇 CS"
+      },
+      {
+        "num": 4,
+        "name": "SDIO CMD",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 命令線（I/O），或作 SPI PICO（主出從入）"
+      },
+      {
+        "num": 3,
+        "name": "SDIO CLK",
+        "side": "R",
+        "type": "clock",
+        "desc": "SDIO 時脈輸入，或作 SPI 時脈（SPI 模式）"
+      },
+      {
+        "num": 2,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 1,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 44,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 45,
+        "name": "COEX_PRIORITY",
+        "side": "B",
+        "type": "input",
+        "desc": "外部共存介面：優先權（priority）"
+      },
+      {
+        "num": 46,
+        "name": "COEX_REQ",
+        "side": "B",
+        "type": "input",
+        "desc": "外部共存介面：請求（request）"
+      },
+      {
+        "num": 47,
+        "name": "COEX_GRANT",
+        "side": "B",
+        "type": "output",
+        "desc": "外部共存介面：授權（grant）"
+      },
+      {
+        "num": 48,
+        "name": "UART RTS",
+        "side": "B",
+        "type": "output",
+        "desc": "裝置 RTS 訊號，供 BLE HCI 流量控制"
+      },
+      {
+        "num": 49,
+        "name": "UART CTS",
+        "side": "B",
+        "type": "input",
+        "desc": "裝置 CTS 訊號，供 BLE HCI 流量控制"
+      },
+      {
+        "num": 50,
+        "name": "UART RX",
+        "side": "B",
+        "type": "input",
+        "desc": "BLE HCI 用 UART 接收"
+      },
+      {
+        "num": 51,
+        "name": "UART TX",
+        "side": "B",
+        "type": "output",
+        "desc": "BLE HCI 用 UART 傳送"
+      },
+      {
+        "num": 52,
+        "name": "ANT_SEL",
+        "side": "B",
+        "type": "output",
+        "desc": "天線選擇控制線"
+      },
+      {
+        "num": 53,
+        "name": "1V8_IN",
+        "side": "B",
+        "type": "power",
+        "desc": "類比與數位主供電（VDD_MAIN_IN／VDDA_IN1／VDDA_IN2／VIO）"
+      },
+      {
+        "num": 54,
+        "name": "1V8_IN",
+        "side": "B",
+        "type": "power",
+        "desc": "類比與數位主供電（VDD_MAIN_IN／VDDA_IN1／VDDA_IN2／VIO）"
+      },
+      {
+        "num": 55,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 56,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 57,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 58,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 59,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 60,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 61,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 62,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 63,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 64,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 65,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "Wi-Fi",
+        "v": "IEEE 802.11 a/b/g/n/ax，2.4GHz 與 5GHz 雙頻，20MHz 頻寬，單一空間流（SISO）"
+      },
+      {
+        "k": "藍牙",
+        "v": "不支援（Wi-Fi-only；BLE 版本為 CC3351MOD）"
+      },
+      {
+        "k": "輸出功率",
+        "v": "整合雙頻 PA，最高 +18.3dBm"
+      },
+      {
+        "k": "主機介面",
+        "v": "4-bit SDIO 或 SPI"
+      },
+      {
+        "k": "吞吐量",
+        "v": "應用層最高約 50Mbps"
+      },
+      {
+        "k": "工作溫度",
+        "v": "-40°C 至 +85°C"
+      },
+      {
+        "k": "封裝",
+        "v": "65-pin LGA，11mm×11mm，0.65mm pitch"
+      }
+    ],
+    "dropIn": [
+      {
+        "part": "CC3351MOD",
+        "note": "同一 65-pin LGA 腳位配置完全相同（deep-equal 已核對）；CC3351MOD 額外含 BLE 5.4，若方案不需藍牙可互換省成本"
+      }
+    ]
+  },
+  {
+    "part": "CC3351MOD",
+    "mfr": "Texas Instruments",
+    "category": "wireless",
+    "subcategory": "Dual-Band (2.4/5GHz) Wi-Fi 6 + BLE 5.4 Companion Module",
+    "package": "65-pin LGA 11×11mm，0.65mm pitch",
+    "whatIs": "2.4GHz 與 5GHz 雙頻 Wi-Fi 6（802.11ax）與藍牙低功耗 5.4 隨行模組：與 CC3350MOD 相同的雙頻收發器與 PA，並加入 BLE 5.4 控制器子系統，兩種無線電共用同一 RF 前端與天線。",
+    "func": "整合 MAC、基頻與雙頻 RF 收發器，支援 IEEE 802.11 a/b/g/n/ax（相容 Wi-Fi 4 與 Wi-Fi 5 802.11ac）；內含雙頻 PA，最高輸出 +18.3dBm；支援 TWT、OFDMA、下行 MU-MIMO、BSS Coloring 等 Wi-Fi 6 效率特性，硬體加速 WPA2/WPA3；另整合藍牙低功耗 5.4 控制器子系統，支援 LE Coded PHY（長距離）、LE 2M PHY（高速）與 Advertising Extension，HCI 傳輸可選 UART 或共用 SDIO，內部共存機制使 BLE 與 Wi-Fi 共用同一組 RF 鏈與天線；主機介面為 4-bit SDIO 或 SPI。",
+    "usedIn": "同 CC3350MOD 應用（電網基礎設施、樓宇/家庭自動化、家電、醫療設備等雙頻 Wi-Fi 場景），另涵蓋需藍牙配對/資料傳輸的場景，如穿戴裝置配對、行動 App 現場設定、BLE Beacon 混合式連網。",
+    "desc": "65-pin 11×11mm LGA 封裝，2.4GHz/5GHz 雙頻 Wi-Fi 6 + 藍牙低功耗 5.4 隨行模組，SDIO/SPI 對主機，內部 Wi-Fi/BLE 共存，工作溫度 -40°C 至 +85°C。",
+    "datasheet": "TI SWRS353A",
+    "pins": [
+      {
+        "num": 29,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 30,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 31,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 32,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 33,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 34,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 35,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 36,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 37,
+        "name": "3V3_IN",
+        "side": "L",
+        "type": "power",
+        "desc": "PA 功率放大器供電電壓 3.3V"
+      },
+      {
+        "num": 38,
+        "name": "3V3_IN",
+        "side": "L",
+        "type": "power",
+        "desc": "PA 功率放大器供電電壓 3.3V"
+      },
+      {
+        "num": 39,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 40,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 41,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 42,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 43,
+        "name": "GND",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 28,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 27,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 26,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 25,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 24,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 23,
+        "name": "RF_OUT",
+        "side": "T",
+        "type": "io",
+        "desc": "藍牙低功耗與 WLAN 2.4GHz/5GHz 共用 RF 埠"
+      },
+      {
+        "num": 22,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 21,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 20,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 19,
+        "name": "VPP_IN",
+        "side": "T",
+        "type": "power",
+        "desc": "1.8V OTP 燒錄輸入電源"
+      },
+      {
+        "num": 18,
+        "name": "SLOW_CLK_IN",
+        "side": "T",
+        "type": "clock",
+        "desc": "32.768kHz RTC 慢速時脈輸入"
+      },
+      {
+        "num": 17,
+        "name": "nReset",
+        "side": "T",
+        "type": "input",
+        "desc": "重置線（低態動作），致能/禁能裝置"
+      },
+      {
+        "num": 16,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 15,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 14,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 13,
+        "name": "SWCLK",
+        "side": "R",
+        "type": "clock",
+        "desc": "序列線除錯（SWD）時脈輸入"
+      },
+      {
+        "num": 12,
+        "name": "SWDIO",
+        "side": "R",
+        "type": "io",
+        "desc": "序列線除錯（SWD）資料 I/O"
+      },
+      {
+        "num": 11,
+        "name": "Host_IRQ_BLE",
+        "side": "R",
+        "type": "output",
+        "desc": "保留供未來使用"
+      },
+      {
+        "num": 10,
+        "name": "Host_IRQ_WL",
+        "side": "R",
+        "type": "output",
+        "desc": "WLAN 對主機中斷請求輸出；開機時裝置會感測本腳狀態"
+      },
+      {
+        "num": 9,
+        "name": "Logger",
+        "side": "R",
+        "type": "output",
+        "desc": "追蹤除錯輸出（UART TX 除錯記錄器）；開機時裝置會感測本腳狀態"
+      },
+      {
+        "num": 8,
+        "name": "SDIO_D0",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D0（I/O），或作 SPI POCI（從出主入）"
+      },
+      {
+        "num": 7,
+        "name": "SDIO_D1",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D1（I/O）"
+      },
+      {
+        "num": 6,
+        "name": "SDIO_D2",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D2（I/O）"
+      },
+      {
+        "num": 5,
+        "name": "SDIO_D3",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 資料線 D3（I/O），或作 SPI 晶片選擇 CS"
+      },
+      {
+        "num": 4,
+        "name": "SDIO CMD",
+        "side": "R",
+        "type": "io",
+        "desc": "SDIO 命令線（I/O），或作 SPI PICO（主出從入）"
+      },
+      {
+        "num": 3,
+        "name": "SDIO CLK",
+        "side": "R",
+        "type": "clock",
+        "desc": "SDIO 時脈輸入，或作 SPI 時脈（SPI 模式）"
+      },
+      {
+        "num": 2,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 1,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 44,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 45,
+        "name": "COEX_PRIORITY",
+        "side": "B",
+        "type": "input",
+        "desc": "外部共存介面：優先權（priority）"
+      },
+      {
+        "num": 46,
+        "name": "COEX_REQ",
+        "side": "B",
+        "type": "input",
+        "desc": "外部共存介面：請求（request）"
+      },
+      {
+        "num": 47,
+        "name": "COEX_GRANT",
+        "side": "B",
+        "type": "output",
+        "desc": "外部共存介面：授權（grant）"
+      },
+      {
+        "num": 48,
+        "name": "UART RTS",
+        "side": "B",
+        "type": "output",
+        "desc": "裝置 RTS 訊號，供 BLE HCI 流量控制"
+      },
+      {
+        "num": 49,
+        "name": "UART CTS",
+        "side": "B",
+        "type": "input",
+        "desc": "裝置 CTS 訊號，供 BLE HCI 流量控制"
+      },
+      {
+        "num": 50,
+        "name": "UART RX",
+        "side": "B",
+        "type": "input",
+        "desc": "BLE HCI 用 UART 接收"
+      },
+      {
+        "num": 51,
+        "name": "UART TX",
+        "side": "B",
+        "type": "output",
+        "desc": "BLE HCI 用 UART 傳送"
+      },
+      {
+        "num": 52,
+        "name": "ANT_SEL",
+        "side": "B",
+        "type": "output",
+        "desc": "天線選擇控制線"
+      },
+      {
+        "num": 53,
+        "name": "1V8_IN",
+        "side": "B",
+        "type": "power",
+        "desc": "類比與數位主供電（VDD_MAIN_IN／VDDA_IN1／VDDA_IN2／VIO）"
+      },
+      {
+        "num": 54,
+        "name": "1V8_IN",
+        "side": "B",
+        "type": "power",
+        "desc": "類比與數位主供電（VDD_MAIN_IN／VDDA_IN1／VDDA_IN2／VIO）"
+      },
+      {
+        "num": 55,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 56,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 57,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 58,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 59,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 60,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 61,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 62,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 63,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 64,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      },
+      {
+        "num": 65,
+        "name": "GND",
+        "side": "R",
+        "type": "ground",
+        "desc": "接地（模組中央 3×3 內圈焊墊群之一，內圈墊，鄰近右側訊號區）"
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "Wi-Fi",
+        "v": "IEEE 802.11 a/b/g/n/ax，2.4GHz 與 5GHz 雙頻，20MHz 頻寬，單一空間流（SISO）"
+      },
+      {
+        "k": "藍牙",
+        "v": "藍牙低功耗 5.4，支援 LE Coded PHY／LE 2M PHY／Advertising Extension"
+      },
+      {
+        "k": "輸出功率",
+        "v": "整合雙頻 PA，最高 +18.3dBm"
+      },
+      {
+        "k": "主機介面",
+        "v": "4-bit SDIO 或 SPI；BLE HCI 另可用 UART 或共用 SDIO"
+      },
+      {
+        "k": "吞吐量",
+        "v": "應用層最高約 50Mbps"
+      },
+      {
+        "k": "工作溫度",
+        "v": "-40°C 至 +85°C"
+      },
+      {
+        "k": "封裝",
+        "v": "65-pin LGA，11mm×11mm，0.65mm pitch"
+      }
+    ],
+    "dropIn": [
+      {
+        "part": "CC3350MOD",
+        "note": "同一 65-pin LGA 腳位配置完全相同（deep-equal 已核對）；CC3350MOD 為單 Wi-Fi 版（無 BLE），不需藍牙時可互換"
+      }
+    ]
+  },
+  {
+    "part": "IWRL6432WMOD",
+    "mfr": "Texas Instruments",
+    "category": "rf",
+    "subcategory": "60GHz FMCW mmWave Radar Module（Motion/Presence）",
+    "package": "30-pad LGA (QFM, 4×9 Grid) 31mm×15mm",
+    "whatIs": "60GHz mmWave 雷達模組，用於動作（motion）與存在（presence）偵測：內建 IWRL6432W mmWave 感測晶片、PCB 蝕刻天線與電源網路，主機透過 SPI 設定偵測距離、動作靈敏度與更新率。",
+    "func": "整合式 FMCW（調頻連續波）收發器，內建 PLL、發射器、接收器、基頻與 ADC；3 組接收、2 組發射通道天線蝕刻於 PCB 上，並整合電源分配網路與 40MHz XTAL；5MHz IF 頻寬，僅實數（real-only）接收通道；天線涵蓋 57GHz–61.5GHz（連續頻寬 4.5GHz），視野角 ±60°（方位角與仰角）；主機以 SPI 讀寫組態，動作/存在偵測結果由 GPIO 輸出指示；模組內建 1.8V 穩壓器與晶片上 LDO 網路強化 PSRR，並支援 BOM-Optimized 省料模式；具備低功耗模式。",
+    "usedIn": "空調、自動門/閘門、遊戲/家庭娛樂、IP 網路攝影機、佔用偵測器、PC/筆電、可攜式電子產品、冰箱冷凍櫃、智慧手錶、平板、電視、溫控器、視訊門鈴、機器人等存在/動作感測應用。",
+    "desc": "30-pad LGA（4×9 Grid，QFM）封裝的 60GHz FMCW mmWave 雷達模組，31mm×15mm，內建天線與 1.8V 穩壓，SPI 主機介面，動作/存在偵測經 GPIO 輸出，工作溫度 -40°C 至 +85°C。",
+    "datasheet": "TI SWRS350A",
+    "pins": [
+      {
+        "num": 9,
+        "name": "NC/RESERVED",
+        "side": "T",
+        "type": "nc",
+        "desc": "未連接／保留"
+      },
+      {
+        "num": 8,
+        "name": "VCC",
+        "side": "T",
+        "type": "power",
+        "desc": "3.3V 主供電"
+      },
+      {
+        "num": 7,
+        "name": "VCC",
+        "side": "T",
+        "type": "power",
+        "desc": "3.3V 主供電"
+      },
+      {
+        "num": 6,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 5,
+        "name": "GND",
+        "side": "T",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 4,
+        "name": "NC/RESERVED",
+        "side": "T",
+        "type": "nc",
+        "desc": "未連接／保留"
+      },
+      {
+        "num": 3,
+        "name": "Module Wake Up Input",
+        "side": "T",
+        "type": "input",
+        "desc": "喚醒 IWRL6432W 的輸入訊號"
+      },
+      {
+        "num": 2,
+        "name": "Presence Indication Output",
+        "side": "T",
+        "type": "output",
+        "desc": "偵測區域內存在（presence）指示輸出"
+      },
+      {
+        "num": 1,
+        "name": "SPI BUSY",
+        "side": "T",
+        "type": "output",
+        "desc": "主機中斷／SPI 主機時脈請求訊號輸出"
+      },
+      {
+        "num": 15,
+        "name": "NRESET",
+        "side": "L",
+        "type": "analog",
+        "desc": "重置輸入；datasheet 標示接腳類型為 A，獨立 VIL/VIH 門檻見 Recommended Operating Conditions（NRESET, SOP0 專列）；本腳為 failsafe"
+      },
+      {
+        "num": 14,
+        "name": "NC/RESERVED",
+        "side": "L",
+        "type": "nc",
+        "desc": "未連接／保留"
+      },
+      {
+        "num": 13,
+        "name": "UART TX",
+        "side": "L",
+        "type": "output",
+        "desc": "僅供 uDFP patch 韌體更新使用，非應用介面"
+      },
+      {
+        "num": 21,
+        "name": "SPI MOSI",
+        "side": "L",
+        "type": "input",
+        "desc": "SPI MOSI（主機資料輸入）"
+      },
+      {
+        "num": 20,
+        "name": "SPI CLK",
+        "side": "L",
+        "type": "clock",
+        "desc": "SPI 時脈輸入"
+      },
+      {
+        "num": 19,
+        "name": "SPI CS",
+        "side": "L",
+        "type": "input",
+        "desc": "SPI 晶片選擇"
+      },
+      {
+        "num": 12,
+        "name": "UART RX",
+        "side": "R",
+        "type": "input",
+        "desc": "僅供 uDFP patch 韌體更新使用，非應用介面"
+      },
+      {
+        "num": 11,
+        "name": "NC/RESERVED",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接／保留"
+      },
+      {
+        "num": 10,
+        "name": "SOP0",
+        "side": "R",
+        "type": "analog",
+        "desc": "Sense On Power（上電模式選擇/感測腳）；datasheet 標示接腳類型為 A，獨立 VIL/VIH 門檻見 Recommended Operating Conditions"
+      },
+      {
+        "num": 18,
+        "name": "SPI MISO",
+        "side": "R",
+        "type": "output",
+        "desc": "SPI MISO（資料輸出至主機）"
+      },
+      {
+        "num": 17,
+        "name": "NC/RESERVED",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接／保留"
+      },
+      {
+        "num": 16,
+        "name": "NC/RESERVED",
+        "side": "R",
+        "type": "nc",
+        "desc": "未連接／保留"
+      },
+      {
+        "num": 30,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 29,
+        "name": "VIOIN",
+        "side": "B",
+        "type": "power",
+        "desc": "3.3V I/O 供電，所有 CMOS IO 皆使用本電源"
+      },
+      {
+        "num": 28,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 27,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 26,
+        "name": "NC/RESERVED",
+        "side": "B",
+        "type": "nc",
+        "desc": "未連接／保留"
+      },
+      {
+        "num": 25,
+        "name": "GND",
+        "side": "B",
+        "type": "ground",
+        "desc": "接地"
+      },
+      {
+        "num": 24,
+        "name": "NC/RESERVED",
+        "side": "B",
+        "type": "nc",
+        "desc": "未連接／保留"
+      },
+      {
+        "num": 23,
+        "name": "NC/RESERVED",
+        "side": "B",
+        "type": "nc",
+        "desc": "未連接／保留"
+      },
+      {
+        "num": 22,
+        "name": "NC/RESERVED",
+        "side": "B",
+        "type": "nc",
+        "desc": "未連接／保留"
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "頻率",
+        "v": "57GHz–61.5GHz，連續頻寬 4.5GHz"
+      },
+      {
+        "k": "視野角 FoV",
+        "v": "±60° 方位角；±60° 仰角"
+      },
+      {
+        "k": "偵測距離",
+        "v": "人體存在偵測典型值：0° 方向約 15m；FoV 邊緣約 8m"
+      },
+      {
+        "k": "供電",
+        "v": "VCC/VIOIN 皆 3.3V（3.135–3.465V），內建 1.8V 穩壓"
+      },
+      {
+        "k": "主機介面",
+        "v": "SPI（BUSY/MOSI/MISO/CLK/CS）"
+      },
+      {
+        "k": "IF 頻寬",
+        "v": "5MHz，僅實數（real-only）接收通道"
+      },
+      {
+        "k": "工作溫度",
+        "v": "-40°C 至 +85°C（工業級）"
+      }
+    ]
   }
 ];
