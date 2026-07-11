@@ -1006,6 +1006,206 @@
         designNotes: ['플라잉 커패시터 값과 주파수가 출력 전류를 결정', '저 ESR 커패시터로 리플 저감', '경부하에만 적합'],
         commonMistakes: ['부하가 너무 무거워 출력 전압 붕괴', '커패시터가 너무 작아 리플 과대']
       }
+    },
+    'bridge-rectifier': {
+      en: {
+        principles: 'Four diodes conduct on both AC half-cycles, producing unidirectional pulsating DC, which a large capacitor then smooths into near-DC.',
+        keyFormulas: ['Vdc ≈ Vpk - 2*Vf', 'Ripple ΔV ≈ Iload/(f*C)', 'f = 2*fline (full-wave)'],
+        designNotes: ['Diode voltage rating > Vpk', 'Capacitor voltage and ripple-current ratings adequate', 'Mind inrush current; add an NTC/current limiter'],
+        commonMistakes: ['Capacitor voltage rating too low, bursting', 'No inrush limiting, startup surge too large']
+      },
+      ja: {
+        principles: '4 つのダイオードが交流の正負両半周期で導通し、単方向の脈動 DC を出力、大容量コンデンサでほぼ直流に平滑する。',
+        keyFormulas: ['Vdc ≈ Vpk - 2*Vf', 'リップル ΔV ≈ Iload/(f*C)', 'f = 2*fline（全波）'],
+        designNotes: ['ダイオード耐圧 > Vpk', 'コンデンサの耐圧とリップル電流定格を十分に', '突入電流に注意し NTC/制限を追加'],
+        commonMistakes: ['コンデンサ耐圧不足で破裂', '突入制限なしで起動サージが過大']
+      },
+      ko: {
+        principles: '다이오드 4개가 교류 정부 반주기 모두에서 도통해 단방향 맥동 DC를 출력하고, 대용량 커패시터로 거의 직류로 평활한다.',
+        keyFormulas: ['Vdc ≈ Vpk - 2*Vf', '리플 ΔV ≈ Iload/(f*C)', 'f = 2*fline(전파)'],
+        designNotes: ['다이오드 내압 > Vpk', '커패시터 내압과 리플 전류 정격을 충분히', '돌입 전류 주의, NTC/제한 추가'],
+        commonMistakes: ['커패시터 내압 부족으로 파열', '돌입 제한 없어 기동 서지 과대']
+      }
+    },
+    'h-bridge-motor': {
+      en: {
+        principles: 'Diagonal MOSFET pairs conduct to set the motor current direction (forward/reverse), and PWM duty controls speed. Dead time is needed to prevent shoot-through.',
+        keyFormulas: ['Vmotor = V+ * (D_fwd - D_rev)', 'Dead time required to prevent shoot-through'],
+        designNotes: ['Add freewheeling/body-diode paths', 'Current sensing protects against stall', 'Keep the PWM frequency out of the audible range'],
+        commonMistakes: ['Upper/lower-arm shoot-through burning transistors', 'No freewheeling path, back-EMF causing damage']
+      },
+      ja: {
+        principles: '対角の MOSFET がペアで導通しモータ電流方向（正転/逆転）を決め、PWM のデューティで回転数を制御。直通防止のデッドタイムが必要。',
+        keyFormulas: ['Vmotor = V+ * (D正 - D逆)', '直通防止にデッドタイムが必要'],
+        designNotes: ['フリーホイール/ボディダイオードの還流路を追加', '電流検出でストール保護', 'PWM 周波数は可聴域を避ける'],
+        commonMistakes: ['上下アームの直通で素子焼損', '還流路なしで逆起電力により破損']
+      },
+      ko: {
+        principles: '대각 MOSFET이 쌍으로 도통해 모터 전류 방향(정/역회전)을 정하고, PWM 듀티로 속도를 제어. 슛스루 방지 데드타임 필요.',
+        keyFormulas: ['Vmotor = V+ * (D정 - D역)', '슛스루 방지에 데드타임 필요'],
+        designNotes: ['프리휠/보디 다이오드 환류 경로 추가', '전류 감지로 스톨 보호', 'PWM 주파수는 가청 대역 회피'],
+        commonMistakes: ['상하암 슛스루로 소자 소손', '환류 경로 없어 역기전력으로 손상']
+      }
+    },
+    'load-switch': {
+      en: {
+        principles: 'The PMOS source connects to Vin and the drain to the load; pulling the gate low turns it on. A gate pull-up plus RC typically controls the turn-on slope to avoid inrush.',
+        keyFormulas: ['Vgs(on) = -(Vin - Ven_low)', 'dV/dt set by the gate RC'],
+        designNotes: ['Gate pull-up ensures default-off', 'Add RC soft-start to reduce inrush', 'Reverse protection prevents back-feed'],
+        commonMistakes: ['No pull-up causing false turn-on', 'Turning on too fast, excessive inrush']
+      },
+      ja: {
+        principles: 'PMOS のソースを Vin、ドレインを負荷に接続し、ゲートを低に引くと導通。ゲートプルアップと RC で開通スロープを制御し突入電流を回避するのが一般的。',
+        keyFormulas: ['Vgs(on) = -(Vin - Ven_low)', 'dV/dt はゲート RC で決まる'],
+        designNotes: ['ゲートプルアップでデフォルトオフを確保', 'RC ソフトスタートで突入電流を低減', '逆方向保護で逆流を防止'],
+        commonMistakes: ['プルアップなしで誤導通', '開通が速すぎ突入電流が過大']
+      },
+      ko: {
+        principles: 'PMOS 소스를 Vin, 드레인을 부하에 연결하고 게이트를 로우로 당기면 도통. 게이트 풀업과 RC로 켜짐 기울기를 제어해 인러시를 피하는 것이 일반적.',
+        keyFormulas: ['Vgs(on) = -(Vin - Ven_low)', 'dV/dt는 게이트 RC로 결정'],
+        designNotes: ['게이트 풀업으로 기본 오프 확보', 'RC 소프트 스타트로 인러시 저감', '역방향 보호로 역류 방지'],
+        commonMistakes: ['풀업 없어 오도통', '켜짐이 너무 빨라 인러시 과대']
+      }
+    },
+    'rc-snubber': {
+      en: {
+        principles: 'A series RC across the switch or diode absorbs parasitic LC oscillation energy, damping ringing and limiting dV/dt.',
+        keyFormulas: ['Rs ≈ √(Lpar/Cpar)', 'Cs ≥ Cpar', 'Ploss = Cs*V^2*f'],
+        designNotes: ['Measure the ringing frequency first, then calculate the parasitics', 'Rs balances damping vs loss', 'Resistor power rating adequate'],
+        commonMistakes: ['Cs too large, heating from loss', 'Picking values by feel without measuring']
+      },
+      ja: {
+        principles: 'RC 直列回路をスイッチやダイオードの両端に接続し、寄生 LC 振動のエネルギーを吸収、リンギングを減衰させ dV/dt を制限する。',
+        keyFormulas: ['Rs ≈ √(Lpar/Cpar)', 'Cs ≥ Cpar', 'Ploss = Cs*V^2*f'],
+        designNotes: ['まずリンギング周波数を測定してから寄生値を計算', 'Rs は減衰と損失のバランス', '抵抗の電力定格を十分に'],
+        commonMistakes: ['Cs が大きすぎ損失で発熱', '測定せず感覚で値を選ぶ']
+      },
+      ko: {
+        principles: 'RC 직렬 회로를 스위치나 다이오드 양단에 연결해 기생 LC 진동 에너지를 흡수, 링잉을 감쇠시키고 dV/dt를 제한한다.',
+        keyFormulas: ['Rs ≈ √(Lpar/Cpar)', 'Cs ≥ Cpar', 'Ploss = Cs*V^2*f'],
+        designNotes: ['먼저 링잉 주파수를 측정한 뒤 기생값 계산', 'Rs는 감쇠와 손실의 균형', '저항 전력 정격 충분히'],
+        commonMistakes: ['Cs가 너무 커 손실로 발열', '측정 없이 감으로 값 선택']
+      }
+    },
+    'forward-converter': {
+      en: {
+        principles: 'Unlike a flyback, a forward converter transfers energy to the secondary while the switch conducts; the secondary needs rectifier diode D1, freewheeling diode D2 and output inductor L forming an LC filter. Magnetic reset is required to prevent transformer saturation.',
+        keyFormulas: ['Vout = Vin * (Ns/Np) * D', 'D < 0.5 (reset time needed)', 'L keeps CCM'],
+        designNotes: ['Needs a third winding or RCD for magnetic reset', 'D1 rectifier / D2 freewheeling diode current ratings adequate', 'The output LC sets the ripple', 'Better suited to higher power than flyback'],
+        commonMistakes: ['No magnetic reset, transformer saturates', 'Duty cycle above 0.5', 'Wrong freewheeling-diode choice']
+      },
+      ja: {
+        principles: 'Flyback と異なり、Forward はスイッチ導通時にエネルギーを二次側へ正方向に伝達する。二次側は整流ダイオード D1、還流ダイオード D2、出力インダクタ L で LC フィルタを構成。トランス飽和防止に磁気リセットが必要。',
+        keyFormulas: ['Vout = Vin * (Ns/Np) * D', 'D < 0.5（磁気リセット時間が必要）', 'L で CCM を維持'],
+        designNotes: ['第三巻線か RCD で磁気リセット', 'D1 整流 / D2 還流ダイオードの電流定格を十分に', '出力 LC がリップルを決める', 'Flyback より大電力に適する'],
+        commonMistakes: ['磁気リセットなしでトランス飽和', 'デューティ比が 0.5 超', '還流ダイオードの選択ミス']
+      },
+      ko: {
+        principles: 'Flyback과 달리 Forward는 스위치 도통 시 에너지를 2차 측으로 정방향 전달한다. 2차 측은 정류 다이오드 D1, 환류 다이오드 D2, 출력 인덕터 L로 LC 필터를 구성. 트랜스 포화 방지에 자기 리셋 필요.',
+        keyFormulas: ['Vout = Vin * (Ns/Np) * D', 'D < 0.5(자기 리셋 시간 필요)', 'L로 CCM 유지'],
+        designNotes: ['제3권선이나 RCD로 자기 리셋', 'D1 정류/D2 환류 다이오드 전류 정격 충분히', '출력 LC가 리플 결정', 'Flyback보다 대전력에 적합'],
+        commonMistakes: ['자기 리셋 없어 트랜스 포화', '듀티비 0.5 초과', '환류 다이오드 선택 오류']
+      }
+    },
+    'can-transceiver': {
+      en: {
+        principles: 'CAN transmits differentially on CANH/CANL for noise immunity. A 120Ω termination at each end of the bus matches the characteristic impedance to avoid reflections. The transceiver TXD/RXD connect to the MCU.',
+        keyFormulas: ['Termination = 120Ω at each end (60Ω in parallel)', 'Differential voltage: dominant ~2V / recessive ~0V', 'Rate ≤ 1Mbps (CAN)'],
+        designNotes: ['Terminate only at the two bus ends, not at middle nodes', 'Route CANH/CANL as a length-matched differential pair', 'Add a common-mode choke for EMI', 'TVS for bus ESD protection'],
+        commonMistakes: ['Terminating every node, overloading the bus', 'Missing termination causing reflections', 'Differential pair not length-matched']
+      },
+      ja: {
+        principles: 'CAN は CANH/CANL の差動伝送で耐雑音。バス両端に各 120Ω の終端を接続し特性インピーダンスを整合、反射を防止。トランシーバの TXD/RXD は MCU に接続。',
+        keyFormulas: ['終端 = 両端各 120Ω（並列 60Ω）', '差動電圧：ドミナント ~2V / レセッシブ ~0V', 'レート ≤ 1Mbps（CAN）'],
+        designNotes: ['終端はバス両端のみ、中間ノードには置かない', 'CANH/CANL は等長の差動ペアで配線', 'コモンモードチョークで EMI 抑制', 'TVS でバスの ESD 保護'],
+        commonMistakes: ['全ノードに終端を付けバス負荷過大', '終端漏れで反射', '差動ペアが等長でない']
+      },
+      ko: {
+        principles: 'CAN은 CANH/CANL 차동 전송으로 내잡음. 버스 양단에 각 120Ω 종단을 연결해 특성 임피던스를 정합, 반사 방지. 트랜시버 TXD/RXD는 MCU에 연결.',
+        keyFormulas: ['종단 = 양단 각 120Ω(병렬 60Ω)', '차동 전압: 도미넌트 ~2V / 리세시브 ~0V', '속도 ≤ 1Mbps (CAN)'],
+        designNotes: ['종단은 버스 양단만, 중간 노드에는 두지 않음', 'CANH/CANL은 등장 차동 쌍으로 배선', '공통 모드 초크로 EMI 억제', 'TVS로 버스 ESD 보호'],
+        commonMistakes: ['모든 노드에 종단을 달아 버스 부하 과다', '종단 누락으로 반사', '차동 쌍 등장 미달']
+      }
+    },
+    'rs485-transceiver': {
+      en: {
+        principles: 'RS-485 uses A/B differential lines for long-distance multi-drop communication. DE/RE control the transceive direction. 120Ω terminations at both ends, plus bias resistors usually hold the idle level.',
+        keyFormulas: ['Termination = 120Ω at each end', 'Differential threshold ±200mV', 'Up to 32 unit loads (standard)'],
+        designNotes: ['Half-duplex needs DE/RE direction control', 'Bias resistors hold the idle state', 'Terminate long lines at both ends to avoid reflections', 'Failsafe bias prevents floating false triggers'],
+        commonMistakes: ['Wrong direction-control timing causing bus contention', 'No bias, floating errors', 'Termination in the wrong place']
+      },
+      ja: {
+        principles: 'RS-485 は A/B 差動線で長距離マルチドロップ通信。DE/RE で送受信方向を制御。両端に各 120Ω 終端、さらにバイアス抵抗でアイドル電位を維持することが多い。',
+        keyFormulas: ['終端 = 両端各 120Ω', '差動しきい値 ±200mV', '最大 32 単位負荷（標準）'],
+        designNotes: ['半二重は DE/RE の方向制御が必要', 'バイアス抵抗でアイドル状態を維持', '長距離線は両端終端で反射を回避', 'フェイルセーフバイアスで浮遊誤動作を防止'],
+        commonMistakes: ['方向制御タイミング誤りでバス衝突', 'バイアスなしで浮遊誤り', '終端位置の誤り']
+      },
+      ko: {
+        principles: 'RS-485는 A/B 차동선으로 장거리 멀티드롭 통신. DE/RE로 송수신 방향 제어. 양단에 각 120Ω 종단, 흔히 바이어스 저항으로 유휴 전위 유지.',
+        keyFormulas: ['종단 = 양단 각 120Ω', '차동 문턱 ±200mV', '최대 32 단위 부하(표준)'],
+        designNotes: ['반이중은 DE/RE 방향 제어 필요', '바이어스 저항으로 유휴 상태 유지', '긴 선은 양단 종단으로 반사 회피', '페일세이프 바이어스로 플로팅 오동작 방지'],
+        commonMistakes: ['방향 제어 타이밍 오류로 버스 충돌', '바이어스 없어 플로팅 오류', '종단 위치 오류']
+      }
+    },
+    'relay-driver': {
+      en: {
+        principles: 'A relay coil is an inductor; at switch-off it generates a high back-EMF. A freewheeling diode in parallel (cathode toward V+) gives the current a path, protecting the switching element.',
+        keyFormulas: ['Back-EMF V = -L*di/dt', 'Freewheeling-diode current rating ≥ coil current', 'Release time depends on diode type'],
+        designNotes: ['Always anti-parallel the freewheeling diode across the coil', 'For faster release add a Zener (higher clamping)', 'MOSFET/BJT must have enough drive current', 'Mind contact arcing and lifetime'],
+        commonMistakes: ['Missing freewheeling diode burning the switch', 'Diode polarity reversed', 'Insufficient drive current, relay does not actuate']
+      },
+      ja: {
+        principles: 'リレーコイルはインダクタで、スイッチ遮断の瞬間に高い逆起電力を発生。並列のフリーホイールダイオード（カソードを V+ 側）が電流の還流路を提供し、スイッチ素子を保護。',
+        keyFormulas: ['逆起電力 V = -L*di/dt', 'フリーホイールダイオード耐電流 ≥ コイル電流', '解放時間はダイオードの種類に依存'],
+        designNotes: ['フリーホイールダイオードを必ずコイルに逆並列', '高速解放にはツェナー追加（クランプ電圧が高め）', 'MOSFET/BJT は十分な駆動電流が必要', '接点アークと寿命に注意'],
+        commonMistakes: ['フリーホイールダイオードの付け忘れでスイッチ焼損', 'ダイオードの極性を逆に接続', '駆動電流不足でリレーが動作しない']
+      },
+      ko: {
+        principles: '릴레이 코일은 인덕터로, 스위치 차단 순간 높은 역기전력을 발생. 병렬 프리휠 다이오드(캐소드를 V+ 쪽)가 전류 환류 경로를 제공해 스위칭 소자를 보호.',
+        keyFormulas: ['역기전력 V = -L*di/dt', '프리휠 다이오드 내전류 ≥ 코일 전류', '해제 시간은 다이오드 종류에 의존'],
+        designNotes: ['프리휠 다이오드를 반드시 코일에 역병렬', '고속 해제에는 제너 추가(클램프 전압 높음)', 'MOSFET/BJT는 충분한 구동 전류 필요', '접점 아크와 수명 주의'],
+        commonMistakes: ['프리휠 다이오드 누락으로 스위치 소손', '다이오드 극성 반대 연결', '구동 전류 부족으로 릴레이 미동작']
+      }
+    },
+    'wheatstone-bridge': {
+      en: {
+        principles: 'Four resistors form a bridge; excitation is applied top-to-bottom and the differential output is taken from the two midpoints. When balanced the output is zero; a sensing element changing resistance unbalances the bridge, and the output is proportional to the change, then amplified by an instrumentation amplifier.',
+        keyFormulas: ['Balance: R1/R3 = R2/R4', 'Vo = Vex * (ΔR/R)/4 (quarter bridge)', 'Half/full bridge raises sensitivity'],
+        designNotes: ['Use an instrumentation amplifier for the small differential signal', 'Stable excitation voltage; consider self-heating', 'Compensate lead resistance with 3/4-wire connections', 'Cancel temperature drift with a symmetric arrangement'],
+        commonMistakes: ['Uncontrolled common mode giving large error', 'Unstable excitation affecting readings', 'Lead resistance uncompensated']
+      },
+      ja: {
+        principles: '4 抵抗でブリッジを構成、励起電圧を上下に印加し 2 中点から差動出力を取る。平衡時は出力ゼロ；センサ素子の抵抗変化が平衡を崩し、出力が変化量に比例、計装増幅器で増幅する。',
+        keyFormulas: ['平衡：R1/R3 = R2/R4', 'Vo = Vex * (ΔR/R)/4（1 アーム）', 'ハーフ/フルブリッジで感度向上'],
+        designNotes: ['差動微小信号は計装増幅器で読む', '励起電圧を安定に、自己発熱を考慮', '導線抵抗は 3/4 線式で補償', '温度ドリフトは対称配置で相殺'],
+        commonMistakes: ['同相を抑制せず誤差が大きい', '励起が不安定で読値に影響', '導線抵抗を補償しない']
+      },
+      ko: {
+        principles: '저항 4개로 브리지를 구성, 여기 전압을 상하에 가하고 두 중점에서 차동 출력을 취한다. 평형 시 출력 0; 센서 소자의 저항 변화가 평형을 깨고 출력이 변화량에 비례, 계장 증폭기로 증폭.',
+        keyFormulas: ['평형: R1/R3 = R2/R4', 'Vo = Vex * (ΔR/R)/4(1암)', '하프/풀 브리지로 감도 향상'],
+        designNotes: ['차동 미소 신호는 계장 증폭기로 읽음', '여기 전압을 안정하게, 자기 발열 고려', '도선 저항은 3/4선식으로 보상', '온도 드리프트는 대칭 배치로 상쇄'],
+        commonMistakes: ['공통 모드 미억제로 오차 큼', '여기 불안정이 읽기값에 영향', '도선 저항 미보상']
+      }
+    },
+    'current-mirror': {
+      en: {
+        principles: 'Q1 in diode connection (base tied to collector) sets the reference current; Q2 shares the base-emitter voltage with Q1, so it copies the same collector current (or scaled by area ratio). Requires Vbe matching and good thermal coupling.',
+        keyFormulas: ['I_out = I_ref * (area ratio)', 'I_ref = (Vcc - Vbe)/Rref', 'Affected by the Early effect and Vbe matching'],
+        designNotes: ['Q1 and Q2 must be matched and thermally coupled', 'Emitter-degeneration resistors improve matching', 'Consider the Early effect (output impedance)', 'Wilson/cascode raise accuracy'],
+        commonMistakes: ['Unmatched transistors causing mirror error', 'Ignoring the Early effect', 'Thermal gradient causing asymmetry']
+      },
+      ja: {
+        principles: 'Q1 をダイオード接続（ベースをコレクタに接続）し参照電流を設定；Q2 は Q1 とベース-エミッタ電圧を共有するため、同じ（または面積比に応じた）コレクタ電流を複製する。Vbe の整合と良好な熱結合が必要。',
+        keyFormulas: ['I_out = I_ref * (面積比)', 'I_ref = (Vcc - Vbe)/Rref', 'アーリー効果と Vbe 整合の影響を受ける'],
+        designNotes: ['Q1、Q2 は整合させ熱結合する', 'エミッタ縮退抵抗で整合を改善', 'アーリー効果（出力インピーダンス）を考慮', 'Wilson/カスコードで精度向上'],
+        commonMistakes: ['トランジスタ不整合でミラー誤差', 'アーリー効果を無視', '熱勾配で非対称になる']
+      },
+      ko: {
+        principles: 'Q1을 다이오드 연결(베이스를 컬렉터에 연결)해 기준 전류를 설정; Q2는 Q1과 베이스-이미터 전압을 공유해 같은(또는 면적비에 따른) 컬렉터 전류를 복제한다. Vbe 정합과 양호한 열 결합 필요.',
+        keyFormulas: ['I_out = I_ref * (면적비)', 'I_ref = (Vcc - Vbe)/Rref', '얼리 효과와 Vbe 정합의 영향을 받음'],
+        designNotes: ['Q1, Q2는 정합시키고 열 결합', '이미터 축퇴 저항으로 정합 개선', '얼리 효과(출력 임피던스) 고려', 'Wilson/캐스코드로 정확도 향상'],
+        commonMistakes: ['트랜지스터 불일치로 미러 오차', '얼리 효과 무시', '열 기울기로 비대칭']
+      }
     }
   };
   var M = window.KNOWLEDGE_I18N = window.KNOWLEDGE_I18N || {};
