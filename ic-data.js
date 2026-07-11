@@ -28140,5 +28140,848 @@ window.IC_DATA = [
         "v": "-40°C 至 +85°C（工業級）"
       }
     ]
+  },
+  {
+    "part": "MSPM0G5117",
+    "mfr": "Texas Instruments",
+    "category": "mcu",
+    "subcategory": "Arm Cortex-M0+ USB 2.0-FS 混合訊號 MCU（最高128KB flash／32KB RAM）",
+    "package": "48-VQFN (RGZ)",
+    "whatIs": "混合訊號 MCU：Arm 32-bit Cortex-M0+ 核心（含記憶體保護單元，最高80MHz，PLL可達80MHz），操作溫度−40°C~125°C，供電範圍1.62V~3.6V；最高128KB flash（ECC，雙bank支援位址交換以利OTA更新）＋8KB data flash bank（ECC）＋最高32KB SRAM（ECC或硬體同位）；內建12-bit 1.6Msps ADC（最多26個外部通道，可組態1.6Msps用VREF1或0.9Msps用VREF2，100ksps下14-bit有效解析度）、高速比較器COMP（含8-bit參考DAC，32ns傳播延遲）、兩組VREF、整合溫度感測器；內建USB2.0全速（12Mbps）介面，支援device/host模式、crystal-less device操作、最多8個雙向端點；PSA-L1認證目標。MSPM0G5117、MSPM0G5116、MSPM0G5115 為同系列三款記憶體容量型號，MSPM0G5117 於頁1 Features 列為系列首位（一般對應最大容量128KB flash／32KB SRAM），精確逐型號配置未見於本摘錄頁，見 datasheet Device Comparison。封裝選項含 DGS20、RUY、YCJ、RGE、RHB、RGZ (48-VQFN)、PT (48-LQFP)、PM 共8種，各封裝接腳數與精確尺寸見 datasheet。",
+    "func": "低功耗模式：RUN 103µA/MHz（CoreMark）、SLEEP 34µA/MHz、STOP 199µA@4MHz、STANDBY 1.5µA@32kHz（RTC+全SRAM/狀態保留）、SHUTDOWN 88nA（支援IO喚醒）；數位周邊：12通道DMA控制器、四顆計時器最多支援14路PWM輸出（兩顆16-bit通用計時器；一顆16-bit通用計時器支援STANDBY低功耗運作；一顆16-bit進階計時器含deadband與互補輸出，最多8路PWM）、一顆基本軟體計時器含4組獨立可組態16-bit計數器（可將2組串接為32-bit計數器，可產生2倍中斷驅動PWM）、兩組窗式看門狗（WWDT）、一組獨立看門狗（IWDT）、含鬧鈴與行事曆模式的RTC；通訊介面：四組可組態序列介面UNICOMM（兩組支援UART(LIN)或I2C(SMBus/PMBus)；一組支援UART或SPI；一組支援SPI最高32Mbps）、一組USB2.0全速介面、一組數位音訊介面（支援I2S標準UM11732、Codec LSB/MSB Justified、DSP序列介面每資料腳最多8音訊通道、PCM短/長frame、TDM Classic/I2S/Left/Right Justified最多8 slot）；時脈系統：內建4~32MHz SYSOSC（±1.2%）、PLL最高80MHz、內建60MHz USB FLL（±0.25%）、內建32kHz LFOSC（±3%）、外部4~48MHz HFXT、外部32kHz LFXT、外部時脈輸入；安全：AES加速器（支援GCM/GMAC、CCM/CBC-MAC、CBC、CTR）、最多4組AES金鑰安全儲存；I/O：48-VQFN(RGZ)封裝上共43個GPIO腳（PAx/PBx），另含NRST、VDD、VSS、VCORE、VUSB33各1；開發支援：2-pin SWD。",
+    "usedIn": "適合需要 USB 2.0-FS 介面之通用嵌入式應用，如 USB 周邊裝置、感測器節點、馬達控制、工業自動化、消費性電子、資料擷取模組等（本摘錄頁未含明確 Applications 清單，見 datasheet）。",
+    "desc": "Arm Cortex-M0+ MCU，最高80MHz／最高128KB flash／32KB SRAM，內建USB 2.0-FS介面，12-bit 1.6Msps ADC，48-VQFN (RGZ) 等多種封裝可選。",
+    "datasheet": "TI SLASFL9A",
+    "pins": [
+      {
+        "num": "1",
+        "name": "PA0",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA0（緩衝類型：ODIO 5V耐受開汲極）；IOMUX 多工：PA0, UC1_SDA_TX, FCC_IN, TIMA0_C0, TIMG0_C0, TIMA_FAL1, UC0_SDA_TX, BSLSDA, WAKE"
+      },
+      {
+        "num": "2",
+        "name": "PA1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA1（緩衝類型：ODIO 5V耐受開汲極）；IOMUX 多工：PA1, UC1_SCL_RX, UC2_CS3, TIMA0_C1, TIMG0_C1, TIMA_FAL2, UC0_SCL_RX, BSLSCL, WAKE"
+      },
+      {
+        "num": "3",
+        "name": "PA28",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA28（緩衝類型：HDIO 高驅動）；IOMUX 多工：PA28, UC1_SDA_TX, TIMA0_C1, TIMA0_C3, TIMG7_C0, TIMA_FAL0, UC0_SDA_TX, WAKE"
+      },
+      {
+        "num": "4",
+        "name": "{NRST}",
+        "side": "L",
+        "type": "Input",
+        "desc": "外部硬體重置輸入（緩衝類型：RESET）；IOMUX 多工：NRST, WAKE；依腳名 N 前綴慣例判定為 active-low（本摘錄頁未附明文敘述，如需精確確認見 datasheet）"
+      },
+      {
+        "num": "5",
+        "name": "PA31",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA31（緩衝類型：SDIO 標準驅動，支援喚醒）；IOMUX 多工：PA31, UC1_SCL_RX, UC2_CS3, TIMA0_C3N, TIMG7_C1, CLK_OUT, UC0_SCL_RX, WAKE"
+      },
+      {
+        "num": "6",
+        "name": "VDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "電源腳（表列 SIGNAL TYPE：PWR；供電範圍 1.62V~3.6V 見頁 1）"
+      },
+      {
+        "num": "7",
+        "name": "VSS",
+        "side": "L",
+        "type": "Ground",
+        "desc": "接地腳（表列 SIGNAL TYPE：PWR，為元件接地）"
+      },
+      {
+        "num": "8",
+        "name": "PA2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA2（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA2, UC1_RTS, UC2_CS1, TIMG7_C1, TIMA0_C0, TIMA0_C3N, TIMA0_C2N, TIMA_FAL0, TIMA_FAL1, UC3_CS0_CTS, ROSC"
+      },
+      {
+        "num": "9",
+        "name": "PA3",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA3（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA3, UC1_SDA_TX, UC2_CS1, UC2_CS3, TIMA0_C1, COMP0_OUT, TIMG7_C0, TIMA0_C2, UC1_CTS, LFXIN"
+      },
+      {
+        "num": "10",
+        "name": "PA4",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA4（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA4, UC1_SCL_RX, UC2_POCI, UC2_CS0, TIMA0_C1N, LFCLK_IN, TIMG7_C1, TIMA0_C3, LFXOUT"
+      },
+      {
+        "num": "11",
+        "name": "PA5",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA5（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA5, UC1_SDA_TX, UC2_PICO, UC0_CTS, TIMG0_C0, FCC_IN, TIMG6_C0, TIMA_FAL1, UC3_POCI_RTS, HFXIN"
+      },
+      {
+        "num": "12",
+        "name": "PA6",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA6（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA6, UC1_SCL_RX, UC2_SCK, UC0_RTS, TIMG0_C1, HFCLK_IN, TIMG6_C1, TIMA_FAL0, TIMA0_C2N, UC3_PICO_TX, HFXOUT"
+      },
+      {
+        "num": "13",
+        "name": "PA7",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA7（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA7, UC2_POCI, UC2_CS2, COMP0_OUT, TIMA0_C2, TIMG7_C1, CLK_OUT, TIMA0_C1, FCC_IN"
+      },
+      {
+        "num": "14",
+        "name": "PB2",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB2（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB2, UC3_PICO_TX, UC1_SCL_RX, UC1_CTS, TIMA0_C3, TIMG6_C0, UC2_PICO, HFCLK_IN"
+      },
+      {
+        "num": "15",
+        "name": "PB3",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB3（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB3, UC3_SCK_RX, UC1_SDA_TX, UC1_RTS, TIMA0_C3N, TIMG6_C1, UC2_SCK, TIMA0_C0"
+      },
+      {
+        "num": "16",
+        "name": "PA8",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA8（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA8, UC1_SDA_TX, UC2_CS0, UC0_SDA_TX, TIMA0_C0, TIMA_FAL2, TIMA_FAL0, UC2_CS3, I2S0_WCLK, UC0_RTS, HFCLK_IN"
+      },
+      {
+        "num": "17",
+        "name": "PA9",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA9（緩衝類型：HSIO 高速）；IOMUX 多工：PA9, UC1_SCL_RX, UC2_PICO, UC0_SCL_RX, TIMA0_C0N, CLK_OUT, TIMA0_C1, RTC_OUT, I2S0_BCLK, UC3_SCK_RX, UC0_CTS"
+      },
+      {
+        "num": "18",
+        "name": "PA10",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA10（緩衝類型：HDIO 高驅動）；IOMUX 多工：PA10, UC0_SDA_TX, UC2_POCI, UC1_SDA_TX, TIMA0_C2, CLK_OUT, TIMG0_C0, TIMA_FAL1, I2S0_AD0, UC3_PICO_TX, BSLTX, WAKE"
+      },
+      {
+        "num": "19",
+        "name": "PA11",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA11（緩衝類型：HDIO 高驅動）；IOMUX 多工：PA11, UC0_SCL_RX, UC2_SCK, UC1_SCL_RX, TIMA0_C2N, COMP0_OUT, TIMG0_C1, TIMA_FAL0, I2S0_AD1, UC3_POCI_RTS, BSLRX, WAKE, COMP0_DAC8"
+      },
+      {
+        "num": "20",
+        "name": "PB6",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB6（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB6, UC1_SDA_TX, UC3_CS0_CTS, UC2_CS1, TIMG6_C0, TIMA_FAL2"
+      },
+      {
+        "num": "21",
+        "name": "PB7",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB7（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB7, UC1_SCL_RX, UC3_POCI_RTS, UC2_CS2, TIMG6_C1"
+      },
+      {
+        "num": "22",
+        "name": "PB8",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB8（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB8, UC1_CTS, UC3_PICO_TX, COMP0_OUT, TIMA0_C0"
+      },
+      {
+        "num": "23",
+        "name": "PB9",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB9（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB9, UC1_RTS, UC3_SCK_RX, TIMA0_C1, TIMA0_C0N"
+      },
+      {
+        "num": "24",
+        "name": "PB14",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB14（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB14, UC2_CS3, UC3_POCI_RTS, TIMA0_C2, TIMA0_C0, I2S0_MCLK, A0_21"
+      },
+      {
+        "num": "25",
+        "name": "PB15",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PB15（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB15, UC3_PICO_TX, UC3_CS0_CTS, TIMG7_C0, A0_20"
+      },
+      {
+        "num": "26",
+        "name": "PB16",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PB16（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB16, UC3_SCK_RX, UC3_POCI_RTS, TIMG7_C1, A0_19"
+      },
+      {
+        "num": "27",
+        "name": "PA12",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA12（緩衝類型：HSIO 高速）；IOMUX 多工：PA12, UC3_CS0_CTS, UC2_SCK, COMP0_OUT, TIMA0_C3, FCC_IN, TIMG0_C0, UC1_CTS, I2S0_BCLK, UC0_RTS, UC2_CS0, A0_18"
+      },
+      {
+        "num": "28",
+        "name": "PA13",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA13（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA13, UC3_POCI_RTS, UC2_POCI, UC3_SCK_RX, TIMA0_C3N, RTC_OUT, TIMG0_C1, UC3_CS0_CTS, I2S0_AD0, UC1_RTS, UC2_CS3, A0_17, COMP0_IN2-"
+      },
+      {
+        "num": "29",
+        "name": "PA14",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA14（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA14, UC0_CTS, UC2_PICO, UC3_PICO_TX, TIMG7_C0, CLK_OUT, TIMG6_C0, I2S0_AD1, A0_16, COMP0_IN2+"
+      },
+      {
+        "num": "30",
+        "name": "PA15",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA15（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA15, UC0_RTS, UC2_CS3, UC1_SCL_RX, TIMA0_C2, COMP0_OUT, UC1_RTS, I2S0_WCLK, A0_15, COMP0_IN3+"
+      },
+      {
+        "num": "31",
+        "name": "PA16",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA16（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA16, UC0_CTS, UC3_POCI_RTS, UC1_SDA_TX, TIMA0_C2N, FCC_IN, UC1_CTS, COMP0_OUT, I2S0_MCLK, A0_14"
+      },
+      {
+        "num": "32",
+        "name": "PA17",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA17（緩衝類型：SDIO 標準驅動，支援喚醒）；IOMUX 多工：PA17, UC1_SDA_TX, UC3_SCK_RX, UC1_SCL_RX, TIMA0_C3, TIMG7_C0, UC2_CS1, I2S0_WCLK, WAKE, A0_13, COMP0_IN1-"
+      },
+      {
+        "num": "33",
+        "name": "PA18",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA18（緩衝類型：SDIO 標準驅動，支援喚醒）；IOMUX 多工：PA18, UC1_SCL_RX, UC3_PICO_TX, UC1_SDA_TX, TIMA0_C3N, TIMG7_C1, UC2_CS0, TIMA_FAL2, I2S0_MCLK, BSL_invoke, WAKE, A0_12, COMP0_IN1+"
+      },
+      {
+        "num": "34",
+        "name": "PA19",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA19（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA19, SWDIO, UC3_POCI_RTS, UC1_SDA_TX, TIMA0_C2, TIMG0_C0, I2S0_AD0, A0_1"
+      },
+      {
+        "num": "35",
+        "name": "PA20",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA20（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA20, SWCLK, UC3_SCK_RX, UC1_SCL_RX, TIMA0_C2N, TIMG0_C1, UC3_CS0_CTS, I2S0_AD1, A0_0"
+      },
+      {
+        "num": "36",
+        "name": "PB17",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PB17（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB17, UC0_SCL_RX, UC2_PICO, TIMG0_C0, TIMA0_C2, A0_11"
+      },
+      {
+        "num": "37",
+        "name": "PB18",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB18（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB18, UC0_SDA_TX, UC2_SCK, TIMG0_C1, TIMA0_C2N, A0_10"
+      },
+      {
+        "num": "38",
+        "name": "PB19",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB19（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB19, UC0_CTS, UC2_POCI, TIMG7_C1, COMP0_OUT, A0_9"
+      },
+      {
+        "num": "39",
+        "name": "PA21",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA21（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA21, UC3_PICO_TX, UC2_CS3, UC1_CTS, TIMA0_C0, TIMG6_C0, COMP0_OUT, I2S0_AD0, A0_8, VREF-"
+      },
+      {
+        "num": "40",
+        "name": "PA22",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA22（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA22, UC3_SCK_RX, UC2_CS2, UC1_RTS, TIMA0_C0N, TIMG6_C1, TIMA0_C1, I2S0_BCLK, CLK_OUT, A0_7"
+      },
+      {
+        "num": "41",
+        "name": "PB20",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB20（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB20, UC0_SDA_TX, UC3_CS0_CTS, UC2_CS2, TIMA0_C2, TIMA_FAL1, TIMA0_C1, A0_6"
+      },
+      {
+        "num": "42",
+        "name": "PB24",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB24（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB24, UC2_CS3, UC2_CS1, UC3_POCI_RTS, TIMA0_C3, TIMA0_C1N, A0_5"
+      },
+      {
+        "num": "43",
+        "name": "PA23",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA23（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA23, UC3_PICO_TX, UC2_CS3, UC3_CS0_CTS, TIMA0_C3, TIMG0_C0, TIMG7_C0, I2S0_WCLK, VREF+"
+      },
+      {
+        "num": "44",
+        "name": "PA24",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA24（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA24, UC3_POCI_RTS, UC2_CS2, UC3_SCK_RX, TIMA0_C3N, TIMG0_C1, TIMG7_C1, I2S0_AD1, A0_3"
+      },
+      {
+        "num": "45",
+        "name": "VUSB33",
+        "side": "T",
+        "type": "Power",
+        "desc": "USB 3.3V 電源腳（表列 SIGNAL TYPE：PWR；供 USB2.0-FS 收發器使用）"
+      },
+      {
+        "num": "46",
+        "name": "PA26",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA26（緩衝類型：USBIO（USB 2.0-FS））；IOMUX 多工：PA26, UC0_SDA_TX, UC1_SCL_RX, TIMG7_C0, FCC_IN, TIMA_FAL0, UC3_PICO_TX, BSLUSB_DM, USB_DM"
+      },
+      {
+        "num": "47",
+        "name": "PA27",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA27（緩衝類型：USBIO（USB 2.0-FS））；IOMUX 多工：PA27, UC0_SCL_RX, UC1_SDA_TX, TIMG7_C1, CLK_OUT, RTC_OUT, COMP0_OUT, UC3_SCK_RX, TIMA_FAL2, BSLUSB_DP, USB_DP"
+      },
+      {
+        "num": "48",
+        "name": "VCORE",
+        "side": "T",
+        "type": "Power",
+        "desc": "核心穩壓輸出/去耦腳（表列 SIGNAL TYPE：PWR；內部穩壓器相關，用途細節見 datasheet）"
+      },
+      {
+        "num": "49",
+        "name": "VSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤（圖 6-3 中央標示 Thermal Pad）；接 VSS/接地平面",
+        "ep": true
+      }
+    ],
+    "specs": [
+      {
+        "k": "核心",
+        "v": "Arm 32-bit Cortex-M0+，含記憶體保護單元，最高80MHz（PLL可達80MHz）"
+      },
+      {
+        "k": "供電範圍",
+        "v": "1.62V ~ 3.6V"
+      },
+      {
+        "k": "記憶體",
+        "v": "最高128KB flash（ECC，雙bank支援OTA位址交換）＋8KB data flash bank(ECC)＋最高32KB SRAM(ECC或硬體同位)；MSPM0G5117為系列最大容量型號，精確配置見datasheet"
+      },
+      {
+        "k": "ADC",
+        "v": "12-bit、1.6Msps，最多26個外部通道；可組態1.6Msps(VREF1)或0.9Msps(VREF2)；100ksps下14-bit有效解析度(硬體平均)"
+      },
+      {
+        "k": "比較器",
+        "v": "高速COMP，含8-bit參考DAC，32ns傳播延遲(高速模式)，低功耗模式<1µA"
+      },
+      {
+        "k": "USB",
+        "v": "USB2.0全速(12Mbps)，支援device/host模式，crystal-less device操作，最多8個雙向端點"
+      },
+      {
+        "k": "低功耗",
+        "v": "RUN 103µA/MHz(CoreMark)；SLEEP 34µA/MHz；STOP 199µA@4MHz；STANDBY 1.5µA@32kHz(RTC+全SRAM保留)；SHUTDOWN 88nA(支援IO喚醒)"
+      },
+      {
+        "k": "通訊介面",
+        "v": "4組可組態UNICOMM序列介面(2組UART(LIN)/I2C(SMBus/PMBus)；1組UART或SPI；1組SPI最高32Mbps)；1組數位音訊介面(I2S/PCM/TDM)"
+      },
+      {
+        "k": "時脈",
+        "v": "內建4~32MHz SYSOSC(±1.2%)；PLL最高80MHz；內建60MHz USB FLL(±0.25%)；內建32kHz LFOSC(±3%)；外部4~48MHz HFXT；外部32kHz LFXT"
+      },
+      {
+        "k": "安全",
+        "v": "AES加速器(GCM/GMAC、CCM/CBC-MAC、CBC、CTR)；最多4組AES金鑰安全儲存"
+      },
+      {
+        "k": "I/O",
+        "v": "48-VQFN(RGZ)封裝上43個GPIO"
+      },
+      {
+        "k": "封裝選項",
+        "v": "DGS20、RUY、YCJ、RGE、RHB、RGZ(48-VQFN)、PT(48-LQFP)、PM 共8種"
+      },
+      {
+        "k": "除錯",
+        "v": "2-pin SWD"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout相容（48-VQFN (RGZ) 或 48-LQFP (PT)，二者pin編號相容）",
+      "功能相同（Arm Cortex-M0+ USB2.0-FS 混合訊號MCU）",
+      "ADC/比較器規格相容（12-bit 1.6Msps ADC、含DAC比較器）",
+      "通訊介面相容（UNICOMM序列介面/USB2.0數量與速率）",
+      "電源範圍涵蓋（1.62V~3.6V）"
+    ],
+    "dropIn": [],
+    "thermalPad": "外露焊盤（datasheet 圖 6-3 48-pin RGZ 中央標示 Thermal Pad），須接 VSS 板上接地平面"
+  },
+  {
+    "part": "MSPM33C321A",
+    "mfr": "Texas Instruments",
+    "category": "mcu",
+    "subcategory": "Arm Cortex-M33 TrustZone 混合訊號 MCU（最高1MB flash／256KB RAM，雙CAN-FD，ADVANCE INFORMATION預產品）",
+    "package": "48-VQFN (RGZ)",
+    "whatIs": "【注意：本料號 datasheet（SLASFB6）標示為 ADVANCE INFORMATION，屬預產品（preproduction）規格，如有異動恕不另行通知，正式量產前數值可能變動，務必以 TI 最新版 datasheet 為準】混合訊號 MCU：160MHz Arm 32-bit Cortex-M33 CPU，含TrustZone、FPU、DSP擴充，4kB指令快取支援0 wait-state執行；操作溫度−40°C~125°C，供電範圍1.71V~3.6V；最高1MB flash（ECC，雙bank支援位址交換）＋256KB SRAM（ECC）＋以32KB高耐久data flash模擬EEPROM；安全：ROM內建不可變Root of Trust（支援安全韌體安裝/開機/金鑰佈建）、Global Security Controller（flash/SRAM/周邊動態存取控制）、AES256硬體加速器(GCM)、SHA256硬體加速器(HMAC)、Public Key Accelerator(PKA)、32-bit真隨機數產生器(TRNG)；類比：兩組高速9.4Msps 12-bit ADC（最多36個外部通道）、兩組高速/低功耗比較器(COMP)、兩組可外部取用8-bit DAC、可組態1.4V或2.5V內部共用VREF、整合溫度與供電監控；VBAT island獨立輔助供電（含RTC、三組tamper偵測IO含timestamp、獨立看門狗IWDT、32B備份記憶體）；最多93個GPIO（系列最大封裝）。MSPM33C321A為系列最大容量型號（1MB flash/256KB SRAM），同系列MSPM33C3219為512KB flash/256KB SRAM。封裝選項：100-pin LQFP(0.4mm & 0.5mm pitch，對應PFA/PZ)、80-pin LQFP(0.5mm，PN)、64-pin LQFP(0.5mm，PM)、48-pin VQFN(0.5mm，RGZ)、100-pin nFBGA(0.8mm，ZAW)。",
+    "func": "低功耗模式：RUN 207µA/MHz（CoreMark）、STANDBY 16µA（CPU執行恢復+64KB SRAM保留）、SHUTDOWN <100nA（支援IO喚醒）；數位周邊：兩組DMA控制器共16通道、九顆計時器最多支援30路PWM輸出（兩顆16-bit進階計時器含deadband/故障處理/互補輸出對；四顆16-bit通用計時器；一顆32-bit通用計時器；兩顆16-bit通用計時器支援正交編碼器介面）、一組窗式看門狗、CRC16/32模組；通訊介面：QSPI（外接記憶體用，最高20MB/s）、兩組CAN介面（支援CAN2.0A/B與CAN-FD）、三組可組態序列介面支援UART(LIN)或I2C(SMBus/PMBus)、四組可組態序列介面支援UART/I2C/SPI、兩組專用I2C（最高FM+ 1Mbit/s，SMBus/PMBus）、一組專用SPI、一組專用UART（支援LIN、IrDA、DALI、Smart Card、Manchester）、兩組數位音訊介面（全雙工I2S與TDM 16-slot）；時脈系統：內建32MHz SYSOSC、PLL、內建32kHz LFOSC、外部4~48MHz HFXT、外部32kHz LFXT、外部時脈輸入；開發支援：2-pin SWD；開發套件：LaunchPad EVM LP-MSPM33C321A、MSP SDK；48-VQFN(RGZ)封裝上共38個GPIO腳（PAx/PBx/PCx，含TDI/TDO兩個JTAG兼GPIO腳），另含NRST、VBAT、VDD(2根)、VCORE。",
+    "usedIn": "適合需要高安全性（TrustZone/RoT/AES256/SHA256/PKA/TRNG）與雙CAN-FD通訊之工業自動化、馬達控制、電池管理、資安閘道等應用（本摘錄頁未含明確 Applications 清單，見 datasheet）。",
+    "desc": "Arm Cortex-M33 MCU（160MHz，含TrustZone/FPU/DSP），最高1MB flash／256KB SRAM，雙9.4Msps 12-bit ADC，雙CAN-FD，48-VQFN (RGZ) 等多種封裝可選（ADVANCE INFORMATION，預產品規格，見datasheet SLASFB6）。",
+    "datasheet": "TI SLASFB6",
+    "pins": [
+      {
+        "num": "1",
+        "name": "PA0",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA0（緩衝類型：SDIO 標準驅動，支援喚醒）；IOMUX 多工：PA0, TIMA0_0_FAL1, UC1_0_SDA_TX, UC13_3_SCK_SCL_RX, UC12_TX, UC15_0_SDA, BSL_I2C_SDA, WAKE"
+      },
+      {
+        "num": "2",
+        "name": "PA1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA1（緩衝類型：SDIO 標準驅動，支援喚醒）；IOMUX 多工：PA1, TIMA0_1_FAL0, UC1_0_SCL_RX, UC13_3_PICO_SDA_TX, UC12_RX, UC15_0_SCL, TIMG8_0_IDX, TIMA0_0_C1, BSL_I2C_SCL, WAKE"
+      },
+      {
+        "num": "3",
+        "name": "PA28",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA28（緩衝類型：HDIO 高驅動，支援喚醒）；IOMUX 多工：PA28, TIMA0_0_FAL0, UC1_0_SDA_TX, UC13_3_CS0_CTS, UC12_TX, UC15_0_SDA, WAKE"
+      },
+      {
+        "num": "4",
+        "name": "{NRST}",
+        "side": "L",
+        "type": "Input",
+        "desc": "外部硬體重置輸入（緩衝類型：RESET）；IOMUX 多工：WAKE, NRST；依腳名 N 前綴慣例判定為 active-low（本摘錄頁未附明文敘述，如需精確確認見 datasheet）"
+      },
+      {
+        "num": "5",
+        "name": "VBAT",
+        "side": "L",
+        "type": "Power",
+        "desc": "VBAT 獨立輔助供電腳（表列 SIGNAL TYPE：PWR；VBAT island 獨立供電，支援 RTC、tamper偵測IO、IWDT、32B備份記憶體於主電源關閉時持續運作，見頁1 VBAT island 說明）"
+      },
+      {
+        "num": "6",
+        "name": "VDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "電源腳（表列 SIGNAL TYPE：PWR；供電範圍 1.71V~3.6V 見頁1；RGZ封裝上VDD共2根腳，另一根見pin31）"
+      },
+      {
+        "num": "7",
+        "name": "PC28",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PC28（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PC28, UC13_3_SCK_SCL_RX, UC12_TX"
+      },
+      {
+        "num": "8",
+        "name": "PA2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA2（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA2, TIMG8_0_C1, TIMA0_0_C1, UC12_RX, UC2_CS0, UC13_1_POCI_RTS, UC13_3_POCI_RTS"
+      },
+      {
+        "num": "9",
+        "name": "PA3",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA3（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA3, TIMG8_0_C0, TIMA0_0_C1, UC1_1_SDA_TX, UC2_CS1, COMP1_OUT, UC15_1_SDA, LFXIN"
+      },
+      {
+        "num": "10",
+        "name": "PA4",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA4（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA4, LFCLKIN, TIMA0_0_C1N, UC1_1_SCL_RX, UC2_POCI, UC13_1_CS0_CTS, UC15_1_SCL, LFXOUT"
+      },
+      {
+        "num": "11",
+        "name": "PA5",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA5（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA5, TIMG4_2_C0, TIMG4_0_C0, UC2_PICO, HFXIN"
+      },
+      {
+        "num": "12",
+        "name": "PA6",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO PA6（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA6, TIMG4_2_C1, HFCLKIN, TIMA0_0_C2N, UC2_SCK, TIMG4_0_C1, HFXOUT"
+      },
+      {
+        "num": "13",
+        "name": "PA7",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA7（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA7, TIMG4_3_C1, CLK_OUT, COMP0_OUT, TIMA0_0_C2, I2S0_WCLK"
+      },
+      {
+        "num": "14",
+        "name": "PB2",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB2（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB2, TIMG4_2_C0, TIMA0_0_C3, UC13_1_CS0_CTS, UC1_1_SCL_RX, UC15_1_SCL"
+      },
+      {
+        "num": "15",
+        "name": "PB3",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB3（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB3, TIMG4_2_C1, TIMA0_0_C3N, UC13_1_POCI_RTS, UC1_1_SDA_TX, UC15_1_SDA"
+      },
+      {
+        "num": "16",
+        "name": "PA8",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA8（緩衝類型：HSIO 高速）；IOMUX 多工：PA8, TIMA0_0_C0, TIMA0_1_C0, UC1_0_RTS, UC1_1_SDA_TX, UC2_SCK, UC12_RTS, I2S0_WCLK"
+      },
+      {
+        "num": "17",
+        "name": "TDO",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO TDO（緩衝類型：HSIO 高速）；IOMUX 多工：PA9, TIMA0_0_C0N, RTC_OUT, UC1_0_CTS, UC1_1_SCL_RX, UC2_PICO, UC12_CTS, CLK_OUT, I2S0_MCLK, TDO"
+      },
+      {
+        "num": "18",
+        "name": "PA10",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA10（緩衝類型：HDIO 高驅動，支援喚醒）；IOMUX 多工：PA10, TIMG12_0_C0, TIMA0_0_C2, UC1_0_SDA_TX, UC2_POCI, UC15_0_SDA, UC12_TX, UC13_1_SCK_SCL_RX, BSL_UART_TX, WAKE"
+      },
+      {
+        "num": "19",
+        "name": "PA11",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PA11（緩衝類型：HDIO 高驅動，支援喚醒）；IOMUX 多工：PA11, TIMA0_1_C0N, TIMA0_0_C2N, UC1_0_SCL_RX, UC2_SCK, UC15_0_SCL, UC12_RX, COMP0_OUT, BSL_UART_RX, WAKE"
+      },
+      {
+        "num": "20",
+        "name": "PB6",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB6（緩衝類型：HSIO 高速）；IOMUX 多工：PB6, TIMG4_2_C0, TIMA0_1_C0, I2S1_AD0, UC1_1_SDA_TX, UC12_CTS, UC2_CS1, CAN1_RX"
+      },
+      {
+        "num": "21",
+        "name": "PB7",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB7（緩衝類型：HSIO 高速）；IOMUX 多工：PB7, TIMG4_2_C1, TIMG8_1_C0, TIMA0_1_C0N, I2S1_AD1, UC1_1_SCL_RX, UC12_RTS, UC13_0_POCI_RTS, CAN1_TX"
+      },
+      {
+        "num": "22",
+        "name": "PB8",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB8（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB8, TIMG8_1_IDX, COMP1_OUT, TIMA0_1_FAL1, I2S1_WCLK, UC1_1_CTS, UC13_0_SCK_SCL_RX, UC13_0_PICO_SDA_TX"
+      },
+      {
+        "num": "23",
+        "name": "PB9",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB9（緩衝類型：HSIO 高速）；IOMUX 多工：PB9, TIMG8_1_C1, TIMA0_0_C0N, I2S1_BCLK, UC1_1_RTS, UC13_0_PICO_SDA_TX, UC13_0_SCK_SCL_RX"
+      },
+      {
+        "num": "24",
+        "name": "PB14",
+        "side": "B",
+        "type": "I/O",
+        "desc": "GPIO PB14（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB14, TIMG8_0_IDX, TIMG12_0_C1, TIMA0_0_C0, QSPI_CS0, UC13_0_POCI_RTS, I2S0_MCLK"
+      },
+      {
+        "num": "25",
+        "name": "PB15",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PB15（緩衝類型：HSIO 高速）；IOMUX 多工：PB15, TIMG4_3_C0, TIMG8_0_C0, TIMA0_1_C3, I2S0_MCLK, QSPI_IO3, UC13_1_PICO_SDA_TX, UC12_TX"
+      },
+      {
+        "num": "26",
+        "name": "PB16",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PB16（緩衝類型：HSIO 高速）；IOMUX 多工：PB16, TIMG4_3_C1, TIMG8_0_C1, TIMA0_1_C3N, I2S0_WCLK, QSPI_CLK, UC13_1_SCK_SCL_RX, UC12_RX"
+      },
+      {
+        "num": "27",
+        "name": "PA12",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA12（緩衝類型：HSIO 高速）；IOMUX 多工：PA12, CAN0_TX, TIMG4_0_C0, FCC_IN, I2S0_BCLK, QSPI_IO0, UC13_0_CS0_CTS, TIMA0_1_C1, A0_8"
+      },
+      {
+        "num": "28",
+        "name": "PA13",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA13（緩衝類型：HSIO 高速）；IOMUX 多工：PA13, CAN0_RX, TIMG4_0_C1, TIMA0_1_FAL1, I2S0_AD0, QSPI_IO2, UC13_0_SCK_SCL_RX, UC13_0_POCI_RTS, UC12_TX, A0_9, COMP0_IN2-, VMON3"
+      },
+      {
+        "num": "29",
+        "name": "PA14",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA14（緩衝類型：HSIO 高速）；IOMUX 多工：PA14, CLK_OUT, TIMA0_1_C1N, TIMA0_0_C3, I2S0_AD1, QSPI_IO1, UC1_0_CTS, UC13_0_PICO_SDA_TX, UC12_RX, A0_12, COMP0_IN2+"
+      },
+      {
+        "num": "30",
+        "name": "PA15",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA15（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA15, TIMG8_0_IDX, TIMA0_0_C2, UC1_1_SCL_RX, UC15_1_SCL, UC1_0_RTS, I2S0_WCLK, A1_0, COMP0_IN3+, COMP1_IN3+"
+      },
+      {
+        "num": "31",
+        "name": "VDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "電源腳（表列 SIGNAL TYPE：PWR；供電範圍 1.71V~3.6V 見頁1；RGZ封裝上VDD共2根腳，另一根見pin6）"
+      },
+      {
+        "num": "32",
+        "name": "PA17",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA17（緩衝類型：SDIO 標準驅動，支援喚醒）；IOMUX 多工：WAKE, PA17, TIMG4_3_C0, TIMA0_0_C3, UC1_1_SDA_TX, UC13_0_SCK_SCL_RX"
+      },
+      {
+        "num": "33",
+        "name": "PA18",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PA18（緩衝類型：SDIO 標準驅動，支援喚醒）；IOMUX 多工：PA18, TIMA0_0_C3N, I2S0_WCLK, UC1_1_SCL_RX, UC13_0_PICO_SDA_TX, UC13_1_CS0_CTS, QSPI_CS1, BSL_INVOKE, WAKE, A0_10, A1_3, COMP0_IN1+, VMON0"
+      },
+      {
+        "num": "34",
+        "name": "SWDIO",
+        "side": "R",
+        "type": "I/O",
+        "desc": "SWD 除錯資料（上電預設）；IOMUX 多工：PA19 及其 IOMUX 功能（原表列：PA19, SWDIO, UC15_0_SDA, UC12_TX, A0_15）"
+      },
+      {
+        "num": "35",
+        "name": "SWCLK",
+        "side": "R",
+        "type": "I/O",
+        "desc": "SWD 除錯時脈（上電預設）；IOMUX 多工：PA20 及其 IOMUX 功能（原表列：PA20, SWCLK, UC15_0_SCL, UC12_RX, A0_16）"
+      },
+      {
+        "num": "36",
+        "name": "PB17",
+        "side": "R",
+        "type": "I/O",
+        "desc": "GPIO PB17（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB17, TIMA0_0_C2, UC13_1_PICO_SDA_TX, UC2_PICO, A1_4, COMP1_IN2-"
+      },
+      {
+        "num": "37",
+        "name": "PB18",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB18（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB18, TIMA0_0_C2N, UC13_1_SCK_SCL_RX, UC2_SCK, A1_5, COMP1_IN2+"
+      },
+      {
+        "num": "38",
+        "name": "PB19",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB19（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB19, TIMG4_3_C1, TIMA0_1_C2, UC2_POCI, UC1_0_CTS, A1_6"
+      },
+      {
+        "num": "39",
+        "name": "PA21",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA21（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA21, TIMG4_2_C0, TIMA0_0_C0, I2S0_AD0, UC1_1_CTS, UC13_1_PICO_SDA_TX, UC13_2_CS0_CTS, A1_7, VREF-"
+      },
+      {
+        "num": "40",
+        "name": "TDI",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO TDI（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA22, TIMG4_2_C1, TIMA0_0_C0N, I2S0_BCLK, CLK_OUT, UC13_1_SCK_SCL_RX, UC13_2_POCI_RTS, UC1_1_RTS, TDI, A0_7, A1_9"
+      },
+      {
+        "num": "41",
+        "name": "PB20",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB20（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB20, TIMG12_0_C0, TIMA0_0_C1, TIMA0_1_C2N, I2S1_AD0, UC2_CS2, A0_6"
+      },
+      {
+        "num": "42",
+        "name": "PB24",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PB24（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PB24, TIMG12_0_C1, TIMA0_1_FAL2, TIMG4_1_C1, I2S1_MCLK, UC14_RTS, UC2_CS3, A0_5, COMP1_IN1+"
+      },
+      {
+        "num": "43",
+        "name": "PA23",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA23（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA23, TIMA0_0_C3, I2S0_WCLK, UC13_1_PICO_SDA_TX, UC13_0_CS0_CTS, UC2_CS3, UC13_2_SCK_SCL_RX, TIMG4_0_C0, COMP1_IN1-, VREF+"
+      },
+      {
+        "num": "44",
+        "name": "PA24",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA24（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA24, TIMA0_0_C3N, I2S0_AD1, UC13_1_SCK_SCL_RX, UC13_0_POCI_RTS, UC2_CS2, UC13_2_PICO_SDA_TX, TIMG12_0_C1, TIMG4_0_C1, A0_3, COMP0_DAC_OUT"
+      },
+      {
+        "num": "45",
+        "name": "PA25",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA25（緩衝類型：HSIO 高速）；IOMUX 多工：PA25, TIMA0_0_C1N, I2S0_AD0, UC13_0_SCK_SCL_RX, UC13_3_SCK_SCL_RX, UC13_1_POCI_RTS, A0_2, COMP1_DAC_OUT"
+      },
+      {
+        "num": "46",
+        "name": "PA26",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA26（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA26, TIMG4_3_C0, TIMA0_0_FAL0, CAN0_TX, UC13_0_PICO_SDA_TX, UC13_0_CS0_CTS, UC13_3_PICO_SDA_TX, BSL_CAN_TX, A0_1, COMP0_IN0+, VMON1"
+      },
+      {
+        "num": "47",
+        "name": "PA27",
+        "side": "T",
+        "type": "I/O",
+        "desc": "GPIO PA27（緩衝類型：SDIO 標準驅動）；IOMUX 多工：PA27, TIMG4_3_C1, RTC_OUT, CAN0_RX, TIMG4_1_C0, TIMA0_0_FAL2, UC13_3_POCI_RTS, UC2_CS1, BSL_CAN_RX, A0_0, COMP0_IN0-, VMON2"
+      },
+      {
+        "num": "48",
+        "name": "VCORE",
+        "side": "T",
+        "type": "Power",
+        "desc": "核心穩壓輸出/去耦腳（表列 SIGNAL TYPE：PWR；內部穩壓器相關，用途細節見 datasheet）"
+      },
+      {
+        "num": "49",
+        "name": "VSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤（圖 6-5 中央標示 VSS）；本封裝無編號 VSS 周邊腳，接地經此焊盤，須接板上接地平面",
+        "ep": true
+      }
+    ],
+    "specs": [
+      {
+        "k": "狀態",
+        "v": "ADVANCE INFORMATION（預產品規格，SLASFB6，2025年12月），數值可能異動，正式生產前以TI最新版datasheet為準"
+      },
+      {
+        "k": "核心",
+        "v": "160MHz Arm 32-bit Cortex-M33，含TrustZone、FPU、DSP擴充；4kB指令快取（0 wait-state）"
+      },
+      {
+        "k": "供電範圍",
+        "v": "1.71V ~ 3.6V"
+      },
+      {
+        "k": "記憶體",
+        "v": "最高1MB flash（ECC，雙bank位址交換）＋256KB SRAM（ECC）＋32KB高耐久data flash（EEPROM模擬）；MSPM33C321A為系列最大容量型號"
+      },
+      {
+        "k": "安全",
+        "v": "ROM內建Root of Trust；Global Security Controller；AES256(GCM)；SHA256(HMAC)；PKA；32-bit TRNG"
+      },
+      {
+        "k": "ADC",
+        "v": "兩組高速12-bit ADC，9.4Msps，最多36個外部通道"
+      },
+      {
+        "k": "比較器/DAC",
+        "v": "兩組高速/低功耗COMP；兩組可外部取用8-bit DAC；可組態1.4V/2.5V內部共用VREF；整合溫度與供電監控"
+      },
+      {
+        "k": "低功耗",
+        "v": "RUN 207µA/MHz(CoreMark)；STANDBY 16µA(CPU執行恢復+64KB SRAM保留)；SHUTDOWN <100nA(支援IO喚醒)"
+      },
+      {
+        "k": "通訊介面",
+        "v": "QSPI最高20MB/s；2×CAN(CAN2.0A/B+CAN-FD)；3組UART(LIN)/I2C；4組UART/I2C/SPI；2×專用I2C(FM+ 1Mbit/s)；1×專用SPI；1×專用UART(LIN/IrDA/DALI/SmartCard/Manchester)；2×數位音訊(I2S全雙工/TDM 16-slot)"
+      },
+      {
+        "k": "VBAT island",
+        "v": "獨立供電，含RTC、3組tamper偵測IO(timestamp)、獨立看門狗IWDT、32B備份記憶體"
+      },
+      {
+        "k": "I/O",
+        "v": "最多93個GPIO（系列最大封裝）；48-VQFN(RGZ)封裝上38個GPIO"
+      },
+      {
+        "k": "封裝選項",
+        "v": "100-pin LQFP(0.4mm/0.5mm，PFA/PZ)、80-pin LQFP(PN)、64-pin LQFP(PM)、48-pin VQFN(RGZ)、100-pin nFBGA(ZAW)"
+      },
+      {
+        "k": "除錯",
+        "v": "2-pin SWD"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout相容（48-VQFN (RGZ)）",
+      "功能相同（Arm Cortex-M33 TrustZone 混合訊號MCU，含CAN-FD）",
+      "ADC/比較器/DAC規格相容",
+      "安全功能相容（AES256/SHA256/PKA/TRNG/RoT）",
+      "電源範圍涵蓋（1.71V~3.6V）",
+      "本料號為ADVANCE INFORMATION預產品規格，第二來源評估須以雙方最終量產版datasheet核對"
+    ],
+    "dropIn": [],
+    "thermalPad": "外露焊盤=VSS（datasheet 圖 6-5 48-pin RGZ 中央標示 VSS）；本封裝地連接經此焊盤，須接板上接地平面"
   }
 ];
