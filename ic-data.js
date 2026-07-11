@@ -28,8 +28,7 @@ window.IC_CATEGORIES = [
   { id: 'rf', label: 'RF & microwave 射頻/微波 (含 mmWave 雷達)' },
   { id: 'sensors', label: 'Sensors 感測器' },
   { id: 'switch-mux', label: 'Switch & multiplexers 開關/多工器' },
-  { id: 'wireless', label: 'Wireless connectivity 無線連線' },
-  { id: 'cpu', label: 'CPU / Processors / FPGA' }
+  { id: 'wireless', label: 'Wireless connectivity 無線連線' }
 ];
 
 window.IC_DATA = [
@@ -55700,6 +55699,436 @@ window.IC_DATA = [
         "part": "IWRL6844",
         "note": "同 IWRL6843/6844 家族、同 207-ball FCCSP 封裝；差異為 4 發射通道（IWRL6843 為 3 通道）。封裝 pinout 相同、發射通道數不同。"
       }
+    ]
+  },
+  {
+    "part": "DS1230Y",
+    "mfr": "Maxim (Dallas Semiconductor)",
+    "category": "memory",
+    "subcategory": "非揮發性 SRAM（nvSRAM，內建鋰能源備援）",
+    "package": "28-DIP 740-mil（JEDEC 標準 28-pin DIP）",
+    "whatIs": "256K-bit（32K×8）非揮發性 SRAM：以標準 SRAM 介面（位址／資料／CE／OE／WE）讀寫，內建鋰能源在斷電時自動保存資料，速度與一般 SRAM 相同但斷電不遺失，可直接取代揮發性 SRAM、EEPROM 或 Flash。",
+    "func": "內部為 32K×8 CMOS SRAM 陣列，A0–A14 選址、DQ0–DQ7 讀寫資料，由 {CE}、{OE}、{WE} 控制存取；斷電瞬間內建電路自動把資料寫入保護並切換到鋰能源備援，重新上電後內容原樣保留。存取時間 70ns、寫入次數不限（相對 EEPROM／Flash）。DS1230Y 為 ±10% VCC、DS1230AB 為 ±5% VCC 版本，腳位相同。",
+    "usedIn": "工控主機板、POS、儀器、電信設備等需要斷電保存設定／計數／日誌且要求 SRAM 速度與不限寫入次數的場合；作為 EEPROM／Flash 以外的即時非揮發儲存。",
+    "desc": "256K-bit（32K×8）nvSRAM，70ns 存取、寫入次數不限、內建鋰能源備援，JEDEC 標準 28-pin DIP。DS1230Y=±10% VCC、DS1230AB=±5% VCC。",
+    "datasheet": "Maxim/Dallas DS1230Y/AB, 19-5635 Rev 11/10",
+    "pins": [
+      {
+        "num": "1",
+        "name": "A14",
+        "side": "L",
+        "type": "Input",
+        "desc": "位址輸入 A14"
+      },
+      {
+        "num": "2",
+        "name": "A12",
+        "side": "L",
+        "type": "Input",
+        "desc": "位址輸入 A12"
+      },
+      {
+        "num": "3",
+        "name": "A7",
+        "side": "L",
+        "type": "Input",
+        "desc": "位址輸入 A7"
+      },
+      {
+        "num": "4",
+        "name": "A6",
+        "side": "L",
+        "type": "Input",
+        "desc": "位址輸入 A6"
+      },
+      {
+        "num": "5",
+        "name": "A5",
+        "side": "L",
+        "type": "Input",
+        "desc": "位址輸入 A5"
+      },
+      {
+        "num": "6",
+        "name": "A4",
+        "side": "L",
+        "type": "Input",
+        "desc": "位址輸入 A4"
+      },
+      {
+        "num": "7",
+        "name": "A3",
+        "side": "L",
+        "type": "Input",
+        "desc": "位址輸入 A3"
+      },
+      {
+        "num": "8",
+        "name": "A2",
+        "side": "L",
+        "type": "Input",
+        "desc": "位址輸入 A2"
+      },
+      {
+        "num": "9",
+        "name": "A1",
+        "side": "L",
+        "type": "Input",
+        "desc": "位址輸入 A1"
+      },
+      {
+        "num": "10",
+        "name": "A0",
+        "side": "L",
+        "type": "Input",
+        "desc": "位址輸入 A0"
+      },
+      {
+        "num": "11",
+        "name": "DQ0",
+        "side": "L",
+        "type": "I/O",
+        "desc": "資料輸出入位元 0"
+      },
+      {
+        "num": "12",
+        "name": "DQ1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "資料輸出入位元 1"
+      },
+      {
+        "num": "13",
+        "name": "DQ2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "資料輸出入位元 2"
+      },
+      {
+        "num": "14",
+        "name": "GND",
+        "side": "L",
+        "type": "Ground",
+        "desc": "電源地"
+      },
+      {
+        "num": "28",
+        "name": "VCC",
+        "side": "R",
+        "type": "Power",
+        "desc": "電源（+5V）"
+      },
+      {
+        "num": "27",
+        "name": "{WE}",
+        "side": "R",
+        "type": "Input",
+        "desc": "寫入致能輸入（active-low）"
+      },
+      {
+        "num": "26",
+        "name": "A13",
+        "side": "R",
+        "type": "Input",
+        "desc": "位址輸入 A13"
+      },
+      {
+        "num": "25",
+        "name": "A8",
+        "side": "R",
+        "type": "Input",
+        "desc": "位址輸入 A8"
+      },
+      {
+        "num": "24",
+        "name": "A9",
+        "side": "R",
+        "type": "Input",
+        "desc": "位址輸入 A9"
+      },
+      {
+        "num": "23",
+        "name": "A11",
+        "side": "R",
+        "type": "Input",
+        "desc": "位址輸入 A11"
+      },
+      {
+        "num": "22",
+        "name": "{OE}",
+        "side": "R",
+        "type": "Input",
+        "desc": "輸出致能輸入（active-low）"
+      },
+      {
+        "num": "21",
+        "name": "A10",
+        "side": "R",
+        "type": "Input",
+        "desc": "位址輸入 A10"
+      },
+      {
+        "num": "20",
+        "name": "{CE}",
+        "side": "R",
+        "type": "Input",
+        "desc": "晶片致能輸入（active-low）"
+      },
+      {
+        "num": "19",
+        "name": "DQ7",
+        "side": "R",
+        "type": "I/O",
+        "desc": "資料輸出入位元 7"
+      },
+      {
+        "num": "18",
+        "name": "DQ6",
+        "side": "R",
+        "type": "I/O",
+        "desc": "資料輸出入位元 6"
+      },
+      {
+        "num": "17",
+        "name": "DQ5",
+        "side": "R",
+        "type": "I/O",
+        "desc": "資料輸出入位元 5"
+      },
+      {
+        "num": "16",
+        "name": "DQ4",
+        "side": "R",
+        "type": "I/O",
+        "desc": "資料輸出入位元 4"
+      },
+      {
+        "num": "15",
+        "name": "DQ3",
+        "side": "R",
+        "type": "I/O",
+        "desc": "資料輸出入位元 3"
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "容量",
+        "v": "256K-bit（32K × 8）"
+      },
+      {
+        "k": "存取時間",
+        "v": "70 ns（讀／寫）"
+      },
+      {
+        "k": "資料保存",
+        "v": "斷電下 ≥10 年（內建鋰能源）"
+      },
+      {
+        "k": "寫入次數",
+        "v": "不限（unlimited）"
+      },
+      {
+        "k": "VCC",
+        "v": "5V（DS1230Y ±10% ／ DS1230AB ±5%）"
+      },
+      {
+        "k": "溫度",
+        "v": "商規 0–70°C；工業版（IND）-40–+85°C"
+      }
+    ],
+    "secondSource": [
+      "同 JEDEC 標準 28-pin nvSRAM 腳位者可參考；容量／存取時間／VCC 容差需一致"
+    ],
+    "dropIn": [
+      "DS1230AB（±5% VCC 版，腳位相同）"
+    ]
+  },
+  {
+    "part": "SLG59H1403C",
+    "mfr": "Renesas",
+    "category": "power",
+    "subcategory": "電源多工器／負載開關（雙輸入單輸出 Power MUX）",
+    "package": "20-WLCSP（1.585 × 1.985 mm，0.4mm pitch，20L）",
+    "whatIs": "雙輸入單輸出 3A 電源多工器：內含兩顆 3A 負載開關共用輸出，能在兩路電源之間自動偵測／選擇／無縫切換，或手動切換，適合有多個電源來源的系統做 OR-ing 或 Power MUX。",
+    "func": "兩顆 3A 負載開關（IN1、IN2）共用 OUT，各有整合的 VGS 充電泵；依 PR（優先權）自動選源，或由 SEL 手動強制選 IN2；OV1／OV2 搭外部分壓設定各通道過壓門檻，超過內部 VREF 即關斷該通道並在恢復後回正常。ILIM 外接 1% 電阻設定兩通道限流、SS 外接電容設定輸出軟啟動斜率、ST 為開汲極 active-low 狀態指示（高=選 IN1、低=選 IN2）。具真反向電流阻斷、欠壓鎖定、熱關斷保護。RDSON 典型 52mΩ、輸入範圍 2.8–22V。",
+    "usedIn": "有雙電源（如電池＋轉接器、雙路供電）需自動或手動切換的工控、伺服器輔助電源、備援供電系統；OR-ing／Power-MUX 應用。",
+    "desc": "雙輸入單輸出 3A Power MUX，2.8–22V 輸入、52mΩ RDSON、自動／手動選源、可調過壓／限流／軟啟動、真反向電流阻斷，20-WLCSP。",
+    "datasheet": "Renesas SLG59H1403C, CFR0011-120-01 Rev 1.02（2023-11-28）",
+    "pins": [
+      {
+        "num": "A1",
+        "name": "PR",
+        "side": "L",
+        "type": "Input",
+        "desc": "設定 Channel 1 優先權的類比輸入，與內部 VREF 比較；不需要時接 GND"
+      },
+      {
+        "num": "A2",
+        "name": "OV1",
+        "side": "L",
+        "type": "Input",
+        "desc": "Channel 1 過壓門檻設定（搭外部分壓），VOV1≥VREF 時關斷 Ch1；不用時接 GND"
+      },
+      {
+        "num": "A3",
+        "name": "OV2",
+        "side": "R",
+        "type": "Input",
+        "desc": "Channel 2 過壓門檻設定（搭外部分壓），VOV2≥VREF 時關斷 Ch2；不用時接 GND"
+      },
+      {
+        "num": "A4",
+        "name": "SEL",
+        "side": "R",
+        "type": "Input",
+        "desc": "手動選源：可覆寫優先權強制選 IN2，與內部 VREF 比較；不需要時接 GND"
+      },
+      {
+        "num": "B1",
+        "name": "IN1",
+        "side": "L",
+        "type": "Power",
+        "desc": "Channel 1 負載開關輸入端（IN1，共 B1/B2/C1 三球）；輸入電容耐壓需高於最大輸入電壓"
+      },
+      {
+        "num": "B2",
+        "name": "IN1",
+        "side": "L",
+        "type": "Power",
+        "desc": "Channel 1 負載開關輸入端（IN1，共 B1/B2/C1 三球）"
+      },
+      {
+        "num": "B3",
+        "name": "IN2",
+        "side": "R",
+        "type": "Power",
+        "desc": "Channel 2 負載開關輸入端（IN2，共 B3/B4/C4 三球）；輸入電容耐壓需高於最大輸入電壓"
+      },
+      {
+        "num": "B4",
+        "name": "IN2",
+        "side": "R",
+        "type": "Power",
+        "desc": "Channel 2 負載開關輸入端（IN2，共 B3/B4/C4 三球）"
+      },
+      {
+        "num": "C1",
+        "name": "IN1",
+        "side": "L",
+        "type": "Power",
+        "desc": "Channel 1 負載開關輸入端（IN1，共 B1/B2/C1 三球）"
+      },
+      {
+        "num": "C2",
+        "name": "OUT",
+        "side": "L",
+        "type": "Power",
+        "desc": "共用輸出端（OUT，共 C2/C3/D1/D2/D3/D4 六球）；輸出電容耐壓需高於最大輸入電壓"
+      },
+      {
+        "num": "C3",
+        "name": "OUT",
+        "side": "R",
+        "type": "Power",
+        "desc": "共用輸出端（OUT，共 C2/C3/D1/D2/D3/D4 六球）"
+      },
+      {
+        "num": "C4",
+        "name": "IN2",
+        "side": "R",
+        "type": "Power",
+        "desc": "Channel 2 負載開關輸入端（IN2，共 B3/B4/C4 三球）"
+      },
+      {
+        "num": "D1",
+        "name": "OUT",
+        "side": "L",
+        "type": "Power",
+        "desc": "共用輸出端（OUT，共 C2/C3/D1/D2/D3/D4 六球）"
+      },
+      {
+        "num": "D2",
+        "name": "OUT",
+        "side": "L",
+        "type": "Power",
+        "desc": "共用輸出端（OUT，共 C2/C3/D1/D2/D3/D4 六球）"
+      },
+      {
+        "num": "D3",
+        "name": "OUT",
+        "side": "R",
+        "type": "Power",
+        "desc": "共用輸出端（OUT，共 C2/C3/D1/D2/D3/D4 六球）"
+      },
+      {
+        "num": "D4",
+        "name": "OUT",
+        "side": "R",
+        "type": "Power",
+        "desc": "共用輸出端（OUT，共 C2/C3/D1/D2/D3/D4 六球）"
+      },
+      {
+        "num": "E1",
+        "name": "ST",
+        "side": "L",
+        "type": "Output",
+        "desc": "開汲極 active-low 狀態指示：高=選 IN1、低=選 IN2；不需要時接 GND"
+      },
+      {
+        "num": "E2",
+        "name": "ILIM",
+        "side": "L",
+        "type": "Output",
+        "desc": "ILIM 對 GND 接 1% 電阻設定兩通道限流值"
+      },
+      {
+        "num": "E3",
+        "name": "SS",
+        "side": "R",
+        "type": "Output",
+        "desc": "SS 對 GND 接低 ESR 陶瓷電容設定 VOUT 軟啟動斜率與開啟時間"
+      },
+      {
+        "num": "E4",
+        "name": "GND",
+        "side": "R",
+        "type": "Ground",
+        "desc": "接地，接系統類比／電源地平面"
+      }
+    ],
+    "thermalPad": null,
+    "specs": [
+      {
+        "k": "通道",
+        "v": "2 × 3A 負載開關共用輸出"
+      },
+      {
+        "k": "輸入電壓",
+        "v": "2.8 V – 22 V"
+      },
+      {
+        "k": "RDSON",
+        "v": "52 mΩ（typ）"
+      },
+      {
+        "k": "精度",
+        "v": "< ±5%（限流／過壓）"
+      },
+      {
+        "k": "保護",
+        "v": "過壓、限流、欠壓鎖定、熱關斷、真反向電流阻斷"
+      },
+      {
+        "k": "封裝",
+        "v": "20L WLCSP 1.585×1.985mm 0.4mm pitch"
+      }
+    ],
+    "secondSource": [
+      "Power-MUX／OR-ing 負載開關；電流等級、輸入範圍、保護機能需一致"
+    ],
+    "dropIn": [
+      "SLG59H1403CTR（Tape & Reel，同 die 同腳位）"
     ]
   }
 ];

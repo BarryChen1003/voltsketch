@@ -1,25 +1,6 @@
 // 自動產生：IC-spec 依分類（檔名為 part）。重產：node tools/classify-ics.js 後再轉。
-// 手動校正：_unclassified 已清空歸位；_docs=技術手冊/勘誤非晶片；isotmp35r→sensors；tcan4572-q1→interface；X4003/NX48P0407_SDS→power（原 rf 誤類，2026-07-11）。
+// 手動校正：2026-07-11 移除不可建料（_docs/cpu 參考檔、_misc 非 IC、AFE 無表、audio/interface/motor/power/rf/switch-mux 無 pinout skip）；DS1230Y→memory、SLG59H1403C→power（原 _misc-non-ti，已建檔亮 badge）。
 window.IC_CLASSIFICATION = {
- "_docs": [
-  "slau846d",
-  "slvsjm6",
-  "sprujf2a"
- ],
- "_misc-non-ti": [
-  "040015",
-  "108005",
-  "112003",
-  "BD335",
-  "BD337",
-  "DS1230AB-DS1230Y",
-  "ENG_CD_2379397_A3",
-  "FB800ED-MICOM",
-  "REN_SLG59H1403C_DST_20231128",
-  "TPM1R408RH_datasheet_en_20251208",
-  "am13e23019",
-  "dsdownload"
- ],
  "amplifiers": [
   "lmh32401",
   "lmh32404",
@@ -32,12 +13,9 @@ window.IC_CLASSIFICATION = {
   "tac5301-q1",
   "tac5312-q1",
   "tac5412-q1",
-  "tac5682",
   "tas2120",
   "tas2320",
-  "tas5830",
-  "tas6501-q1",
-  "tas67524-q1"
+  "tas5830"
  ],
  "clocks": [
   "cdc6c-q1",
@@ -58,17 +36,6 @@ window.IC_CLASSIFICATION = {
   "lmx1404-ep",
   "tlc3555"
  ],
- "cpu": [
-  "334661_7th-gen-core-family-mobile-u-y-processor-lines-datasheet-vol1-rev008",
-  "Arm_GPU_Datasheet",
-  "Atmel_2321_FPGA_AT17LV_Datasheet",
-  "FPGA_DS_02078_2_5_Certus_NX_Family",
-  "Intel_792044-004",
-  "ds190-Zynq-7000-Overview-1595492",
-  "nvidia-a100-datasheet-us-nvidia-1758950-r4-web",
-  "nvidia-blackwell-b200-datasheet",
-  "nvidia-h100-datasheet"
- ],
  "data-converters": [
   "adc32rf72",
   "adc3664-ep",
@@ -86,20 +53,10 @@ window.IC_CLASSIFICATION = {
   "ads9324",
   "ads9326",
   "afe10004-ep",
-  "afe159rp8",
-  "afe34rf90",
-  "afe5932",
-  "afe7950-sep",
-  "afe7960",
-  "afe8104",
-  "afe8108",
-  "afe8128",
-  "afe8192",
   "dac39rf10-sp",
   "dac39rf20",
   "dac39rfs10-sp",
-  "dac60516w",
-  "tsmu818a045"
+  "dac60516w"
  ],
  "dlp": [
   "dlp390tp",
@@ -113,16 +70,12 @@ window.IC_CLASSIFICATION = {
   "dlp800xe"
  ],
  "interface": [
+  "dp83td530-q1",
   "KSZ9031RNX",
   "LAN8710A",
-  "dp83td530-q1",
-  "onet2804tlp",
-  "onet8551t",
   "tcan4572-q1",
   "tdel3g510",
-  "thvd9491-sp",
-  "tlin1124a-q1",
-  "txe8124"
+  "thvd9491-sp"
  ],
  "isolation": [
   "amc0200d",
@@ -179,43 +132,38 @@ window.IC_CLASSIFICATION = {
   "mspm33c321a",
   "tms320f28p551sg"
  ],
+ "memory": [
+  "ds1230y",
+  "W25Q128JV"
+ ],
  "motor": [
-  "drv3263-q1",
   "drv7167",
   "drv81646-q1",
   "drv8218",
   "drv8363",
-  "drv8378",
   "drv8762-q1",
   "fan31790",
   "mcf8329hs",
   "mct8376z-q1"
  ],
- "memory": [
-  "W25Q128JV"
- ],
  "power": [
   "AXP209",
-  "NX48P0407",
-  "RT6150",
-  "X4003",
   "lm851772-q1",
   "lmg1020-q1",
-  "lmg2104r044",
   "lmg2652h",
+  "NX48P0407",
+  "RT6150",
+  "slg59h1403c",
   "tps25730a",
   "tps25751a",
   "tps25752a",
   "tps26750a",
-  "tps482h85-q1",
   "tps544b28",
   "tps562246b",
   "tps61129-q1",
   "tps61290",
-  "tps650372-q1",
   "tps7b7802-q1",
   "tps7h3034-sp",
-  "tps7h4002-sp",
   "tps7h4010-sep",
   "tps7h4012-sp",
   "tps7h4013-sp",
@@ -227,22 +175,16 @@ window.IC_CLASSIFICATION = {
   "uc1825b-sp",
   "ucc21711-q1",
   "ucc21751-q1",
-  "ucc23710",
-  "ucc23711",
   "ucc34141-q1",
   "ucc57142-q1",
-  "ucg28846"
+  "ucg28846",
+  "X4003"
  ],
  "rf": [
-  "AAA3FPBAUZ",
-  "MA4P504_1072",
-  "Qorvo_11-18-2025_QPD1004A-DataSheet",
-  "awr2188",
   "awrl6844",
   "iwrl6432aop",
   "iwrl6432wmod",
   "iwrl6843",
-  "iwrl6844",
   "trf1218",
   "trf2001",
   "trf2001p"
@@ -271,8 +213,7 @@ window.IC_CLASSIFICATION = {
   "tmux182-sep",
   "tmux2819",
   "tmux2821",
-  "tmux4819",
-  "tmux9832"
+  "tmux4819"
  ],
  "wireless": [
   "cc2745p10-q1",
