@@ -1390,7 +1390,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-10-extra2';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-11-extra3';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
