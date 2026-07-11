@@ -45340,5 +45340,2095 @@ window.IC_DATA = [
     ],
     "secondSource": [],
     "dropIn": []
+  },
+  {
+    "part": "ADC32RF72",
+    "mfr": "Texas Instruments",
+    "category": "data-converters",
+    "subcategory": "雙通道 1.5GSPS 16-bit RF 取樣 ADC（JESD204B/C）",
+    "package": "289-Ball FCBGA (FCCSP) 13.8×13.8mm，17×17 球陣列",
+    "whatIs": "ADC32RF72 是一款 16-bit、1.5GSPS（非交錯式，non-interleaved）雙通道類比轉數位轉換器（ADC）。設計目標為最高訊噪比（SNR），雜訊頻譜密度達 −163.7dBFS/Hz；透過內部平均模式可將 NSD 進一步改善至 −166.2dBFS/Hz。緩衝類比輸入支援可程式內部端接阻抗 50/100/200Ω，全功率輸入頻寬（−3dB）達 1.8GHz，並可從 IN1/2/3 中任選一路搭配 IN0 使用。",
+    "func": "內建 192-tap/ch 可程式 FIR 等化濾波器、12-bit fractional delay filter，以及多組數位下變頻器（DDC）：最多 8 組 DDC，支援 /2、/3、/5 至 /32768 之複數輸出小數點抽取（decimation），48-bit NCO 支援相位連續跳頻。JESD204B/C 高速序列資料介面，介面速率最高達 24.75Gbps，碼元錯誤率（CER）1E-15 errors/sample。功耗效率高，1.5GSPS 下每通道僅耗電 1.5W，並可隨取樣率降低而調降功耗。SPI 控制介面搭配 GPIO1~23 可程式多工功能腳，硬體 RESET 與 SYNC 供系統同步。另提供 LVDS 輸出介面腳位（目前軟體尚未支援，須保持 No Connect）與 TIMESTAMP 輸入（尚未支援，可接地）。",
+    "usedIn": "相位陣列雷達、晶圓檢測設備、頻譜分析儀、軟體定義無線電（SDR）、電子戰系統、高速數位化儀、有線基礎設施、通訊基礎設施等需要高 SNR 與高取樣率之 RF 取樣應用。",
+    "desc": "雙通道 16-bit 1.5GSPS RF 取樣 ADC，NSD −163.7dBFS/Hz，8 組 DDC＋192-tap FIR 等化濾波器，JESD204B/C 最高 24.75Gbps，1.5W/ch，289-ball FCBGA 13.8×13.8mm。",
+    "datasheet": "TI SBASAL2",
+    "thermalPad": "無外露焊盤（289-ball FCBGA/FCCSP，散熱經球陣列與基板）；熱設計見 datasheet",
+    "pins": [
+      {
+        "num": "B3",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B4",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B5",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B6",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B7",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B8",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B9",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B10",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B11",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B12",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B13",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B14",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "B15",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "F9",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "M3",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "M4",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "M8",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "M11",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "M14",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "M15",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "N3",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "N4",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "N8",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "N11",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "N14",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "N15",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "P3",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "P4",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "P8",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "P11",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "P14",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "P15",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "R3",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "R4",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "R14",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "R15",
+        "name": "AVDD12",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.2V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "T9",
+        "name": "AVDDCLK12",
+        "side": "T",
+        "type": "Power",
+        "desc": "時脈電路電源，1.2V，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "T10",
+        "name": "AVDDCLK12",
+        "side": "T",
+        "type": "Power",
+        "desc": "時脈電路電源，1.2V，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "U12",
+        "name": "AVDDCLK12",
+        "side": "T",
+        "type": "Power",
+        "desc": "時脈電路電源，1.2V，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "E9",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "H5",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "H13",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "J13",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "M6",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "M13",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "N1",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "N6",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "N13",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "N17",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "P6",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "P13",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "R6",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "R13",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "T1",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "T3",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "T4",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "T14",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "T15",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "T17",
+        "name": "AVDD18",
+        "side": "T",
+        "type": "Power",
+        "desc": "類比 1.8V 電源，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "T8",
+        "name": "AVDDCLK18",
+        "side": "T",
+        "type": "Power",
+        "desc": "時脈電路電源，1.8V，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "T11",
+        "name": "AVDDCLK18",
+        "side": "T",
+        "type": "Power",
+        "desc": "時脈電路電源，1.8V，建議搭配低雜訊 LDO"
+      },
+      {
+        "num": "L5",
+        "name": "AVDDGPIO18",
+        "side": "T",
+        "type": "Power",
+        "desc": "GPIO 腳位用 1.8V 電源"
+      },
+      {
+        "num": "U9",
+        "name": "CLKN",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入負端。內建差動 100Ω 端接並自偏壓至共模電壓 0.7V，須外部交流耦合"
+      },
+      {
+        "num": "U10",
+        "name": "CLKP",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動時脈輸入正端。內建差動 100Ω 端接並自偏壓至共模電壓 0.7V，須外部交流耦合"
+      },
+      {
+        "num": "C8",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "D8",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "E8",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "F8",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "G8",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "H8",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "J8",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "K8",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "K13",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "L6",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "L7",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "L8",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "L9",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "L10",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "L11",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "L12",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "L13",
+        "name": "DVDD09",
+        "side": "T",
+        "type": "Power",
+        "desc": "數位電源，0.9V，建議使用切換式 DC/DC 穩壓器"
+      },
+      {
+        "num": "A1",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "A6",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "A9",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "A12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "A17",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "B2",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "B16",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "C10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "D1",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "D10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "D17",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "E10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "F10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "G5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "G9",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "G10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "G13",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "H9",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "H10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "J6",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "J7",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "J9",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "J10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "J11",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "J12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "K6",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "K7",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "K9",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "K10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "K11",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "K12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "M1",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "M2",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "M5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "M7",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "M9",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "M10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "M12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "M16",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "M17",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "N2",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "N5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "N9",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "N10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "N12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "N16",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "P2",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "P5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "P9",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "P10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "P12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "P16",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "R2",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "R5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "R7",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "R8",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "R9",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "R10",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "R11",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "R12",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "R16",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "T2",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "T5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "T6",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "T13",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "T16",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "U1",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "U2",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "U5",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "U8",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "U11",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "U13",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "U16",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "U17",
+        "name": "GND",
+        "side": "B",
+        "type": "Ground",
+        "desc": "接地，0V"
+      },
+      {
+        "num": "K4",
+        "name": "GPIO1",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "L14",
+        "name": "GPIO2",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "J15",
+        "name": "GPIO3",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "L4",
+        "name": "GPIO8",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "J3",
+        "name": "GPIO9",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "K3",
+        "name": "GPIO10",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "J2",
+        "name": "GPIO12",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "K2",
+        "name": "GPIO13",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "L2",
+        "name": "GPIO14",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "C2",
+        "name": "GPIO15",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "D2",
+        "name": "GPIO16",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "K16",
+        "name": "GPIO17",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "L16",
+        "name": "GPIO18",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "J17",
+        "name": "GPIO19",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "K17",
+        "name": "GPIO20",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "L17",
+        "name": "GPIO21",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "C16",
+        "name": "GPIO22",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "D16",
+        "name": "GPIO23",
+        "side": "L",
+        "type": "I/O",
+        "desc": "GPIO 腳位，可透過 SPI 寫入設定不同功能（見 datasheet §7.5.1）"
+      },
+      {
+        "num": "R17",
+        "name": "IN0N",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "差動類比輸入，通道 0 負端。內建可程式 50/100/200Ω 端接"
+      },
+      {
+        "num": "P17",
+        "name": "IN0P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "差動類比輸入，通道 0 正端。內建可程式 50/100/200Ω 端接"
+      },
+      {
+        "num": "U14",
+        "name": "IN1N",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "差動類比輸入，通道 1 負端。內建可程式 50/100/200Ω 端接"
+      },
+      {
+        "num": "U15",
+        "name": "IN1P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "差動類比輸入，通道 1 正端。內建可程式 50/100/200Ω 端接"
+      },
+      {
+        "num": "P1",
+        "name": "IN2N",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "差動類比輸入，通道 2 負端。內建可程式 50/100/200Ω 端接"
+      },
+      {
+        "num": "R1",
+        "name": "IN2P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "差動類比輸入，通道 2 正端。內建可程式 50/100/200Ω 端接"
+      },
+      {
+        "num": "U3",
+        "name": "IN3N",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "差動類比輸入，通道 3 負端。內建可程式 50/100/200Ω 端接"
+      },
+      {
+        "num": "U4",
+        "name": "IN3P",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "差動類比輸入，通道 3 正端。內建可程式 50/100/200Ω 端接"
+      },
+      {
+        "num": "C9",
+        "name": "JESDCLKN",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 JESD 輸出時脈，LVDS 邏輯位準。可設定為 SerDes lane 速率除以 (8×k)；預設關閉此功能，未用時腳位可懸空。此輸出時脈直接源自內部 SerDes PLL，不提供確定性延遲（deterministic latency）"
+      },
+      {
+        "num": "D9",
+        "name": "JESDCLKP",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 JESD 輸出時脈，LVDS 邏輯位準。可設定為 SerDes lane 速率除以 (8×k)；預設關閉此功能，未用時腳位可懸空。此輸出時脈直接源自內部 SerDes PLL，不提供確定性延遲（deterministic latency）"
+      },
+      {
+        "num": "F17",
+        "name": "LVDSDCLK0N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 LVDS 位元時脈輸出。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E17",
+        "name": "LVDSDCLK0P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 LVDS 位元時脈輸出。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F1",
+        "name": "LVDSDCLK1N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 LVDS 位元時脈輸出。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E1",
+        "name": "LVDSDCLK1P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 LVDS 位元時脈輸出。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H17",
+        "name": "LVDSFCLK0N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 LVDS 訊框時脈輸出。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G17",
+        "name": "LVDSFCLK0P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 LVDS 訊框時脈輸出。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H1",
+        "name": "LVDSFCLK1N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 LVDS 訊框時脈輸出。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G1",
+        "name": "LVDSFCLK1P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動 LVDS 訊框時脈輸出。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G11",
+        "name": "LVDSD0N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H11",
+        "name": "LVDSD0P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E11",
+        "name": "LVDSD1N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F11",
+        "name": "LVDSD1P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "C11",
+        "name": "LVDSD2N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "D11",
+        "name": "LVDSD2P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G12",
+        "name": "LVDSD3N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H12",
+        "name": "LVDSD3P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E12",
+        "name": "LVDSD4N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F12",
+        "name": "LVDSD4P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "C12",
+        "name": "LVDSD5N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "D12",
+        "name": "LVDSD5P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E13",
+        "name": "LVDSD6N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F13",
+        "name": "LVDSD6P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "C13",
+        "name": "LVDSD7N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "D13",
+        "name": "LVDSD7P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G14",
+        "name": "LVDSD8N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H14",
+        "name": "LVDSD8P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E14",
+        "name": "LVDSD9N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F14",
+        "name": "LVDSD9P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "C14",
+        "name": "LVDSD10N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "D14",
+        "name": "LVDSD10P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G15",
+        "name": "LVDSD11N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H15",
+        "name": "LVDSD11P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E15",
+        "name": "LVDSD12N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F15",
+        "name": "LVDSD12P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "C15",
+        "name": "LVDSD13N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "D15",
+        "name": "LVDSD13P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G16",
+        "name": "LVDSD14N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H16",
+        "name": "LVDSD14P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E16",
+        "name": "LVDSD15N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F16",
+        "name": "LVDSD15P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G7",
+        "name": "LVDSD16N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H7",
+        "name": "LVDSD16P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E7",
+        "name": "LVDSD17N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F7",
+        "name": "LVDSD17P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "C7",
+        "name": "LVDSD18N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "D7",
+        "name": "LVDSD18P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G6",
+        "name": "LVDSD19N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H6",
+        "name": "LVDSD19P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E6",
+        "name": "LVDSD20N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F6",
+        "name": "LVDSD20P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "C6",
+        "name": "LVDSD21N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "D6",
+        "name": "LVDSD21P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E5",
+        "name": "LVDSD22N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F5",
+        "name": "LVDSD22P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "C5",
+        "name": "LVDSD23N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "D5",
+        "name": "LVDSD23P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G4",
+        "name": "LVDSD24N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H4",
+        "name": "LVDSD24P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E4",
+        "name": "LVDSD25N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F4",
+        "name": "LVDSD25P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "C4",
+        "name": "LVDSD26N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "D4",
+        "name": "LVDSD26P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G3",
+        "name": "LVDSD27N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H3",
+        "name": "LVDSD27P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E3",
+        "name": "LVDSD28N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F3",
+        "name": "LVDSD28P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "C3",
+        "name": "LVDSD29N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "D3",
+        "name": "LVDSD29P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "G2",
+        "name": "LVDSD30N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "H2",
+        "name": "LVDSD30P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "E2",
+        "name": "LVDSD31N",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "F2",
+        "name": "LVDSD31P",
+        "side": "R",
+        "type": "Output",
+        "desc": "LVDS 輸出介面。軟體尚未支援，須保持 No Connect"
+      },
+      {
+        "num": "J5",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "J14",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "K1",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "K5",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "K14",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "L1",
+        "name": "NC",
+        "side": "B",
+        "type": "NC",
+        "desc": "未連接"
+      },
+      {
+        "num": "J1",
+        "name": "{RESET}",
+        "side": "L",
+        "type": "Input",
+        "desc": "硬體重置，低態動作（active-low）。內建 10kΩ 上拉電阻至 AVDD18"
+      },
+      {
+        "num": "K15",
+        "name": "SCLK",
+        "side": "L",
+        "type": "Input",
+        "desc": "序列介面時脈輸入。內建 10kΩ 下拉電阻"
+      },
+      {
+        "num": "L15",
+        "name": "SDIO",
+        "side": "L",
+        "type": "I/O",
+        "desc": "序列介面資料輸入/輸出。內建 10kΩ 下拉電阻"
+      },
+      {
+        "num": "L3",
+        "name": "SDOUT",
+        "side": "R",
+        "type": "Output",
+        "desc": "序列介面資料輸出"
+      },
+      {
+        "num": "J16",
+        "name": "{SEN}",
+        "side": "L",
+        "type": "Input",
+        "desc": "序列介面致能，低態動作（active-low）。內建 10kΩ 上拉電阻至 AVDD18"
+      },
+      {
+        "num": "C17",
+        "name": "STX0N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 0"
+      },
+      {
+        "num": "B17",
+        "name": "STX0P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 0"
+      },
+      {
+        "num": "A16",
+        "name": "STX1N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 1"
+      },
+      {
+        "num": "A15",
+        "name": "STX1P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 1"
+      },
+      {
+        "num": "A14",
+        "name": "STX2N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 2"
+      },
+      {
+        "num": "A13",
+        "name": "STX2P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 2"
+      },
+      {
+        "num": "A11",
+        "name": "STX3N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 3"
+      },
+      {
+        "num": "A10",
+        "name": "STX3P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 3"
+      },
+      {
+        "num": "C1",
+        "name": "STX4N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 4"
+      },
+      {
+        "num": "B1",
+        "name": "STX4P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 4"
+      },
+      {
+        "num": "A2",
+        "name": "STX5N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 5"
+      },
+      {
+        "num": "A3",
+        "name": "STX5P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 5"
+      },
+      {
+        "num": "A4",
+        "name": "STX6N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 6"
+      },
+      {
+        "num": "A5",
+        "name": "STX6P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 6"
+      },
+      {
+        "num": "A7",
+        "name": "STX7N",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 7"
+      },
+      {
+        "num": "A8",
+        "name": "STX7P",
+        "side": "R",
+        "type": "Output",
+        "desc": "差動高速序列 JESD204B/C 輸出資料介面，lane 7"
+      },
+      {
+        "num": "J4",
+        "name": "{SYNC}",
+        "side": "L",
+        "type": "Input",
+        "desc": "JESD 低態動作（active-low）SYNC 輸入。當 SYNC 為低且元件已設定完成時，元件會在 JESD lane 上送出 K character"
+      },
+      {
+        "num": "U6",
+        "name": "SYSREFN",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動 SYSREF 輸入負端（100Ω 差動端接，自偏壓至 1.2V）。支援 AC 與 DC 耦合"
+      },
+      {
+        "num": "U7",
+        "name": "SYSREFP",
+        "side": "L",
+        "type": "Input",
+        "desc": "差動 SYSREF 輸入正端（100Ω 差動端接，自偏壓至 1.2V）。支援 AC 與 DC 耦合"
+      },
+      {
+        "num": "P7",
+        "name": "TIMESTAMPN",
+        "side": "L",
+        "type": "Input",
+        "desc": "軟體尚未支援，可接地（GND）"
+      },
+      {
+        "num": "N7",
+        "name": "TIMESTAMPP",
+        "side": "L",
+        "type": "Input",
+        "desc": "軟體尚未支援，可接地（GND）"
+      },
+      {
+        "num": "T7",
+        "name": "VCM",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "共模電壓參考輸出，兩腳內部短接在一起"
+      },
+      {
+        "num": "T12",
+        "name": "VCM",
+        "side": "R",
+        "type": "Analog Out",
+        "desc": "共模電壓參考輸出，兩腳內部短接在一起"
+      }
+    ],
+    "specs": [
+      {
+        "k": "解析度/取樣率",
+        "v": "16-bit，1.5GSPS 雙通道，單核心（non-interleaved）ADC 架構"
+      },
+      {
+        "k": "雜訊效能",
+        "v": "雜訊頻譜密度 −163.7dBFS/Hz（內部平均模式最佳 −166.2dBFS/Hz）；熱雜訊 75.6dBFS；雜訊指數 14.4dB"
+      },
+      {
+        "k": "Aperture jitter",
+        "v": "40fs"
+      },
+      {
+        "k": "類比輸入",
+        "v": "緩衝輸入，滿刻度 1.44Vpp (4.1dBm)；可程式內部端接 50/100/200Ω；全功率輸入頻寬(-3dB) 1.8GHz；IN0 + IN1/2/3 任選一路"
+      },
+      {
+        "k": "相位雜訊",
+        "v": "超低近端剩餘相位雜訊 −140dBc/Hz @10kHz offset（1GHz 載波）"
+      },
+      {
+        "k": "頻譜效能（fIN=1GHz, −1dBFS）",
+        "v": "SNRflat 72.1dBFS；HD2,3 68dBc；Non-HD2,3 93dBFS"
+      },
+      {
+        "k": "數位訊號處理",
+        "v": "192-tap/ch 可程式 FIR 等化濾波器；12-bit fractional delay filter；最多 8 組 DDC（/2,/3,/4,/5~/32768 複數輸出 decimation）；48-bit NCO 相位連續跳頻，跳頻時間 <1μs"
+      },
+      {
+        "k": "序列介面",
+        "v": "JESD204B/C，最高 lane rate 24.75Gbps；碼元錯誤率(CER) 1E-15 errors/sample"
+      },
+      {
+        "k": "功耗",
+        "v": "1.5W/channel @1.5GSPS，隨取樣率可調降"
+      },
+      {
+        "k": "封裝",
+        "v": "289-ball FCBGA (FCCSP)，17×17 球陣列，13.8×13.8mm"
+      }
+    ],
+    "secondSource": [
+      "封裝＋pinout 相容（289-ball FCBGA 17×17，13.8×13.8mm）",
+      "功能相同（16-bit 雙通道 1.5GSPS RF 取樣 ADC，JESD204B/C）",
+      "NSD/SNR 同級或更佳（−163.7dBFS/Hz 附近）",
+      "DDC/FIR/NCO 數位訊號處理功能相容",
+      "JESD204B/C lane rate 涵蓋（≥24.75Gbps）",
+      "SPI/GPIO 控制介面相容",
+      "電源軌相容（AVDD12/AVDD18/AVDDCLK12/AVDDCLK18/DVDD09）"
+    ],
+    "dropIn": []
   }
 ];
