@@ -44277,5 +44277,1068 @@ window.IC_DATA = [
     ],
     "secondSource": [],
     "dropIn": []
+  },
+  {
+    "part": "F29P329SM-Q1",
+    "mfr": "Texas Instruments",
+    "category": "mcu",
+    "subcategory": "C2000 車規即時控制 MCU（F29 三核）",
+    "package": "144-pin RFS TQFP（散熱增強）",
+    "whatIs": "C2000™ F29 系列車規即時控制微控制器（AEC-Q100）：200MHz 三核架構，4MB CPU 可映射 flash（ECC）＋256KB 資料專用 flash，整合高精度 ADC、PGA、DAC、比較器與豐富通訊，供車用電源/馬達/電動車電控等功能安全即時控制。",
+    "func": "以 200MHz C29 核心執行即時控制迴路，內建 ADC/PGA/DAC/CMP 類比前端；提供大量多工 GPIO（詳細訊號指派見 Pin Attributes 表；F29P32x 部分腳訊號不可用）、SPI×5（≤50MHz，可 pin-boot）、UART、I2C×2、PMBus、CAN 等；JTAG（TCK/TMS/TDI/TDO）。X1/X2 接晶振。",
+    "usedIn": "車用（AEC-Q100）動力電子、牽引逆變器、車載充電器（OBC）、DC-DC、馬達/伺服控制等功能安全即時控制系統。",
+    "desc": "C2000 F29 車規即時控制 MCU，200MHz，4MB flash（ECC），內建 ADC/PGA/DAC，144-RFS TQFP（散熱增強）。",
+    "datasheet": "TI SPRSP93D",
+    "pins": [
+      {
+        "num": "1",
+        "name": "GPIO15",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO15（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "2",
+        "name": "GPIO16",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO16（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "3",
+        "name": "VDDIO",
+        "side": "L",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "4",
+        "name": "GPIO17",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO17（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "5",
+        "name": "GPIO19",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO19（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "6",
+        "name": "VDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "核心電源"
+      },
+      {
+        "num": "7",
+        "name": "GPIO34",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO34（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "8",
+        "name": "VDD",
+        "side": "L",
+        "type": "Power",
+        "desc": "核心電源"
+      },
+      {
+        "num": "9",
+        "name": "VDDIO",
+        "side": "L",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "10",
+        "name": "GPIO18",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO18（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "11",
+        "name": "GPIO22",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO22（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "12",
+        "name": "GPIO235",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO235（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：B11"
+      },
+      {
+        "num": "13",
+        "name": "GPIO234",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO234（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：B10"
+      },
+      {
+        "num": "14",
+        "name": "GPIO233",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO233（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：B9"
+      },
+      {
+        "num": "15",
+        "name": "GPIO232",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO232（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：B8"
+      },
+      {
+        "num": "16",
+        "name": "GPIO226",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO226（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：A8"
+      },
+      {
+        "num": "17",
+        "name": "GPIO225",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO225（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：A7/E25"
+      },
+      {
+        "num": "18",
+        "name": "GPIO224",
+        "side": "L",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO224（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：A6/E24"
+      },
+      {
+        "num": "19",
+        "name": "VDDA",
+        "side": "L",
+        "type": "Power",
+        "desc": "類比電源"
+      },
+      {
+        "num": "20",
+        "name": "VSSA",
+        "side": "L",
+        "type": "Ground",
+        "desc": "類比地"
+      },
+      {
+        "num": "21",
+        "name": "B5/D31",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（B5/D31）"
+      },
+      {
+        "num": "22",
+        "name": "B4/D30",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（B4/D30）"
+      },
+      {
+        "num": "23",
+        "name": "A5/D29",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（A5/D29）"
+      },
+      {
+        "num": "24",
+        "name": "A4/D28",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（A4/D28）"
+      },
+      {
+        "num": "25",
+        "name": "B3/D27",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（B3/D27）"
+      },
+      {
+        "num": "26",
+        "name": "B2/D26",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（B2/D26）"
+      },
+      {
+        "num": "27",
+        "name": "A3/D25",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（A3/D25）"
+      },
+      {
+        "num": "28",
+        "name": "A2/D24",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（A2/D24）"
+      },
+      {
+        "num": "29",
+        "name": "VREFLOAB",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 參考電壓（下限，AB 群組）"
+      },
+      {
+        "num": "30",
+        "name": "VREFHIAB",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 參考電壓（上限，AB 群組）"
+      },
+      {
+        "num": "31",
+        "name": "A15/B15/C15/D15/E15",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（A15/B15/C15/D15/E15）"
+      },
+      {
+        "num": "32",
+        "name": "A14/B14/C14/D14/E14",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（A14/B14/C14/D14/E14）"
+      },
+      {
+        "num": "33",
+        "name": "B1/C27",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（B1/C27）"
+      },
+      {
+        "num": "34",
+        "name": "VDAC",
+        "side": "L",
+        "type": "Analog Out",
+        "desc": "DAC 相關類比腳；ADC 通道/封裝球位：B0/C26"
+      },
+      {
+        "num": "35",
+        "name": "A1/C25",
+        "side": "L",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（A1/C25）"
+      },
+      {
+        "num": "36",
+        "name": "DACA_OUT",
+        "side": "L",
+        "type": "Analog Out",
+        "desc": "緩衝 DAC 輸出；ADC 通道/封裝球位：A0/C24"
+      },
+      {
+        "num": "37",
+        "name": "C0/E28",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（C0/E28）"
+      },
+      {
+        "num": "38",
+        "name": "C1/E29",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（C1/E29）"
+      },
+      {
+        "num": "39",
+        "name": "D0/B24",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（D0/B24）"
+      },
+      {
+        "num": "40",
+        "name": "D1/B25",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（D1/B25）"
+      },
+      {
+        "num": "41",
+        "name": "DACB_OUT",
+        "side": "B",
+        "type": "Analog Out",
+        "desc": "緩衝 DAC 輸出；ADC 通道/封裝球位：E0/A24"
+      },
+      {
+        "num": "42",
+        "name": "E1/A25",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（E1/A25）"
+      },
+      {
+        "num": "43",
+        "name": "C2/E30",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（C2/E30）"
+      },
+      {
+        "num": "44",
+        "name": "C3/E31",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（C3/E31）"
+      },
+      {
+        "num": "45",
+        "name": "VREFLOCDE",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 參考電壓（下限，CDE 群組）"
+      },
+      {
+        "num": "46",
+        "name": "VREFHICDE",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 參考電壓（上限，CDE 群組）"
+      },
+      {
+        "num": "47",
+        "name": "C4",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（C4）"
+      },
+      {
+        "num": "48",
+        "name": "C5",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（C5）"
+      },
+      {
+        "num": "49",
+        "name": "D2/B26",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（D2/B26）"
+      },
+      {
+        "num": "50",
+        "name": "D3/B27",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（D3/B27）"
+      },
+      {
+        "num": "51",
+        "name": "E2/A26",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（E2/A26）"
+      },
+      {
+        "num": "52",
+        "name": "E3/A27",
+        "side": "B",
+        "type": "Analog In",
+        "desc": "ADC 類比輸入通道（E3/A27）"
+      },
+      {
+        "num": "53",
+        "name": "VSSA",
+        "side": "B",
+        "type": "Ground",
+        "desc": "類比地"
+      },
+      {
+        "num": "54",
+        "name": "VDDA",
+        "side": "B",
+        "type": "Power",
+        "desc": "類比電源"
+      },
+      {
+        "num": "55",
+        "name": "GPIO241",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO241（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：D5/B29"
+      },
+      {
+        "num": "56",
+        "name": "GPIO246",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO246（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：E4/A28"
+      },
+      {
+        "num": "57",
+        "name": "GPIO247",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO247（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：E5/A29"
+      },
+      {
+        "num": "58",
+        "name": "GPIO238",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO238（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：C8"
+      },
+      {
+        "num": "59",
+        "name": "GPIO239",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO239（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：C9"
+      },
+      {
+        "num": "60",
+        "name": "GPIO242",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO242（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：D6/B30"
+      },
+      {
+        "num": "61",
+        "name": "GPIO243",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO243（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：D7/B31"
+      },
+      {
+        "num": "62",
+        "name": "GPIO248",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO248（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：E6/A30"
+      },
+      {
+        "num": "63",
+        "name": "GPIO249",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO249（多工功能見 Pin Attributes 表）；ADC 通道/封裝球位：E7/A31"
+      },
+      {
+        "num": "64",
+        "name": "GPIO222",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO222（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "65",
+        "name": "GPIO223",
+        "side": "B",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO223（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "66",
+        "name": "VDDIO",
+        "side": "B",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "67",
+        "name": "VDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "核心電源"
+      },
+      {
+        "num": "68",
+        "name": "VDDIO",
+        "side": "B",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "69",
+        "name": "TMS",
+        "side": "B",
+        "type": "Input",
+        "desc": "JTAG 測試模式選擇"
+      },
+      {
+        "num": "70",
+        "name": "TCK",
+        "side": "B",
+        "type": "Input",
+        "desc": "JTAG 測試時脈"
+      },
+      {
+        "num": "71",
+        "name": "VDD",
+        "side": "B",
+        "type": "Power",
+        "desc": "核心電源"
+      },
+      {
+        "num": "72",
+        "name": "VDDIO",
+        "side": "B",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "73",
+        "name": "GPIO41",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO41（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "74",
+        "name": "GPIO219",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO219（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "75",
+        "name": "GPIO49",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO49（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "76",
+        "name": "GPIO50",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO50（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "77",
+        "name": "GPIO51",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO51（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "78",
+        "name": "GPIO52",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO52（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "79",
+        "name": "GPIO53",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO53（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "80",
+        "name": "GPIO54",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO54（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "81",
+        "name": "VDDIO",
+        "side": "R",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "82",
+        "name": "GPIO56",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO56（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "83",
+        "name": "VDDIO",
+        "side": "R",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "84",
+        "name": "GPIO57",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO57（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "85",
+        "name": "GPIO58",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO58（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "86",
+        "name": "GPIO59",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO59（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "87",
+        "name": "VDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "核心電源"
+      },
+      {
+        "num": "88",
+        "name": "GPIO60",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO60（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "89",
+        "name": "GPIO61",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO61（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "90",
+        "name": "GPIO62",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO62（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "91",
+        "name": "GPIO63",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO63（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "92",
+        "name": "GPIO64",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO64（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "93",
+        "name": "GPIO65",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO65（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "94",
+        "name": "GPIO66",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO66（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "95",
+        "name": "VDDIO",
+        "side": "R",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "96",
+        "name": "GPIO32",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO32（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "97",
+        "name": "GPIO127",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO127（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "98",
+        "name": "VDD",
+        "side": "R",
+        "type": "Power",
+        "desc": "核心電源"
+      },
+      {
+        "num": "99",
+        "name": "VDDIO",
+        "side": "R",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "100",
+        "name": "X2",
+        "side": "R",
+        "type": "I/O",
+        "desc": "晶振腳 X2（複用 GPIO221）"
+      },
+      {
+        "num": "101",
+        "name": "VSSOSC",
+        "side": "R",
+        "type": "Ground",
+        "desc": "振盪器地"
+      },
+      {
+        "num": "102",
+        "name": "X1",
+        "side": "R",
+        "type": "I/O",
+        "desc": "晶振腳 X1（複用 GPIO220）"
+      },
+      {
+        "num": "103",
+        "name": "{XRS}",
+        "side": "R",
+        "type": "Input",
+        "desc": "晶片重置腳（active-low，原文 XRSn）"
+      },
+      {
+        "num": "104",
+        "name": "GPIO38",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO38（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "105",
+        "name": "GPIO103",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO103（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "106",
+        "name": "VDDIO",
+        "side": "R",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "107",
+        "name": "GPIO42",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO42（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "108",
+        "name": "GPIO43",
+        "side": "R",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO43（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "109",
+        "name": "GPIO68",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO68（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "110",
+        "name": "GPIO70",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO70（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "111",
+        "name": "GPIO71",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO71（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "112",
+        "name": "VDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "核心電源"
+      },
+      {
+        "num": "113",
+        "name": "VDDIO",
+        "side": "T",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "114",
+        "name": "GPIO72",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO72（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "115",
+        "name": "GPIO76",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO76（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "116",
+        "name": "GPIO77",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO77（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "117",
+        "name": "GPIO78",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO78（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "118",
+        "name": "VDDIO",
+        "side": "T",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "119",
+        "name": "GPIO84",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO84（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "120",
+        "name": "GPIO30",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO30（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "121",
+        "name": "GPIO29",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO29（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "122",
+        "name": "VDDIO",
+        "side": "T",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "123",
+        "name": "VDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "核心電源"
+      },
+      {
+        "num": "124",
+        "name": "GPIO26",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO26（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "125",
+        "name": "GPIO25",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO25（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "126",
+        "name": "GPIO24",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO24（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "127",
+        "name": "GPIO23",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO23（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "128",
+        "name": "GPIO00",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO00（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "129",
+        "name": "GPIO01",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO01（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "130",
+        "name": "GPIO02",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO02（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "131",
+        "name": "GPIO03",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO03（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "132",
+        "name": "GPIO04",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO04（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "133",
+        "name": "GPIO05",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO05（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "134",
+        "name": "GPIO06",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO06（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "135",
+        "name": "GPIO07",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO07（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "136",
+        "name": "VDDIO",
+        "side": "T",
+        "type": "Power",
+        "desc": "I/O 電源"
+      },
+      {
+        "num": "137",
+        "name": "VDD",
+        "side": "T",
+        "type": "Power",
+        "desc": "核心電源"
+      },
+      {
+        "num": "138",
+        "name": "GPIO08",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO08（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "139",
+        "name": "GPIO09",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO09（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "140",
+        "name": "GPIO10",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO10（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "141",
+        "name": "GPIO11",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO11（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "142",
+        "name": "GPIO12",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO12（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "143",
+        "name": "GPIO13",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO13（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "144",
+        "name": "GPIO14",
+        "side": "T",
+        "type": "I/O",
+        "desc": "通用輸入輸出 GPIO14（多工功能見 Pin Attributes 表）"
+      },
+      {
+        "num": "145",
+        "name": "VSS (EP)",
+        "side": "B",
+        "type": "Ground",
+        "desc": "外露散熱焊盤（圖 5-7 中央標示 VSS，Thermally Enhanced QFP）；接 VSS/接地平面",
+        "ep": true
+      }
+    ],
+    "thermalPad": "外露焊盤=VSS（圖 5-7 144-RFS TQFP 中央標示 VSS，Thermally Enhanced）；接板上接地平面",
+    "specs": [
+      {
+        "k": "CPU",
+        "v": "200MHz C2000 F29（三核架構）"
+      },
+      {
+        "k": "記憶體",
+        "v": "4MB CPU 可映射 flash（ECC）＋256KB 資料專用 flash（ECC）"
+      },
+      {
+        "k": "類比",
+        "v": "高精度 ADC、PGA、DAC、比較器 CMP"
+      },
+      {
+        "k": "通訊",
+        "v": "SPI×5（≤50MHz，pin-boot）、UART、I2C×2、PMBus、CAN"
+      },
+      {
+        "k": "車規",
+        "v": "AEC-Q100（-Q1）"
+      },
+      {
+        "k": "除錯",
+        "v": "JTAG（TCK/TMS/TDI/TDO）"
+      },
+      {
+        "k": "封裝",
+        "v": "144-pin RFS TQFP（散熱增強）；另有 256-ZEX nFBGA、176-PTS TQFP"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];
