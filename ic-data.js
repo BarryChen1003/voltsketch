@@ -49831,5 +49831,2103 @@ window.IC_DATA = [
     ],
     "secondSource": [],
     "dropIn": []
+  },
+  {
+    "part": "AM2611-Q1",
+    "mfr": "Texas Instruments",
+    "category": "mcu",
+    "subcategory": "Sitara Arm Cortex-R5F 車用即時控制 MCU",
+    "package": "293-ball nFBGA (ZNC) 15×15mm",
+    "whatIs": "Sitara AM261x 系列車用微控制器：單/雙核心 Arm Cortex-R5F，內含即時控制外設（EtherCAT/PROFINET 等工業乙太網、CAN-FD、多路 ADC/PWM），面向馬達控制、數位電源與功能安全應用。",
+    "func": "以 Cortex-R5F 即時核心執行控制迴路，整合 ADC（多組 AINx）、ePWM、eCAP、SDFM、FSI、CAN-FD、MCAN、SPI/UART/I2C、GPMC、MMC/SD 與工業乙太網 MAC；IOMUX 多工每球可選多種訊號。",
+    "usedIn": "伺服/馬達驅動、車用區域控制器、數位電源轉換、工業自動化 PLC/IO 模組、功能安全（ASIL）即時控制節點。",
+    "desc": "AM2611-Q1 為 AM261x Sitara MCU 車規版，293-ball nFBGA (ZNC 封裝)。本條目 pinout 取 ZNC 封裝：signal 球主名取自 datasheet Figure（ZNC Pin Diagram，座標解析 293 球），並經 Table 5-1 Pin Attributes（find_tables 結構化抽取的 159 個 IOMUX signal 球）交叉驗證 name↔ball 一致（0 mismatch）；electrically 連接與 mux 模式詳見 datasheet Pin Attributes 表。IOMUX 球 desc 附主要 mux 功能清單。",
+    "datasheet": "TI SPRSPA7C",
+    "pins": [
+      {
+        "num": "A1",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "A2",
+        "name": "GPIO49",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM3_A, PR1_PRU0_GPIO15, GPMC0_A13, GPIO49, EPWM3_A"
+      },
+      {
+        "num": "A3",
+        "name": "GPIO47",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM2_A, PR1_PRU0_GPIO3, GPMC0_A1, GPIO47, EPWM2_A"
+      },
+      {
+        "num": "A4",
+        "name": "GPIO46",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM1_B, PR1_PRU0_GPIO4, GPMC0_A2, GPIO46, EPWM4_B"
+      },
+      {
+        "num": "A5",
+        "name": "GPIO45",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM1_A, PR1_PRU0_GPIO6, GPMC0_A4, GPIO45, EPWM1_A"
+      },
+      {
+        "num": "A6",
+        "name": "GPIO44",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM0_B, PR1_PRU0_GPIO8, GPMC0_A6, GPIO44, EPWM0_B"
+      },
+      {
+        "num": "A7",
+        "name": "TDO",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: TDO"
+      },
+      {
+        "num": "A8",
+        "name": "GPIO27",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: UART0_RXD, LIN0_RXD, GPIO27, XBAROUT4"
+      },
+      {
+        "num": "A9",
+        "name": "GPIO26",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: UART0_CTSn, I2C2_SDA, SPI3_D1, SPI0_CS1, PR1_PRU0_GPIO7, UART3_TXD, GPIO26, XBAROUT10"
+      },
+      {
+        "num": "A10",
+        "name": "GPIO21",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: LIN2_RXD, UART2_RXD, SPI2_D0, USB0_DRVVBUS, OSPI1_RESET_OUT1, OSPI0_RESET_OUT1, GPIO21, GPMC0_CSn0"
+      },
+      {
+        "num": "A11",
+        "name": "GPIO19",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: LIN1_RXD, OSPI0_ECC_FAIL, SPI2_CS0, PR1_PRU1_GPIO6, OSPI1_ECC_FAIL, UART1_RXD, GPMC0_AD6, GPIO19, OSPI0_RESET_OUT1, XBAROUT5"
+      },
+      {
+        "num": "A12",
+        "name": "GPIO12",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: SPI0_CLK, PR1_PRU0_GPIO9, MMC0_CMD, UART3_TXD, FSITX0_CLK, GPMC0_A7, GPIO12, ADC_EXTCH_XBAROUT1, XBAROUT1, SOP2"
+      },
+      {
+        "num": "A13",
+        "name": "GPIO135",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: I2C0_SCL, GPIO135, SDFM1_CLK3, UART1_RTSn, SPI0_CS1, LIN0_RXD, UART3_RXD, GPIO136, SDFM1_D2, UART2_RTSn"
+      },
+      {
+        "num": "A14",
+        "name": "GPIO132",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: I2C2_SDA, PR1_PRU0_GPIO20, UART4_TXD, PR1_IEP0_EDIO_DATA_IN_OUT30, GPMC0_A15, GPIO132, EQEP0_STROBE, SDFM1_CLK1, ADC_EXTCH_XBAROUT2"
+      },
+      {
+        "num": "A15",
+        "name": "GPIO131",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: SPI2_CS0, PR1_PRU0_GPIO19, UART4_CTSn, PR1_IEP0_EDIO_DATA_IN_OUT31, I2C1_SCL, MCAN1_TX, GPMC0_CSn0, GPIO131, EQEP0_B, SDFM1_D0"
+      },
+      {
+        "num": "A16",
+        "name": "GPIO127",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: UART2_CTSn, PR1_MDIO0_MDC, SPI3_CS1, UART5_RXD, GPMC0_BE0n_CLE, GPIO127, SDFM0_D2, ADC_EXTCH_XBAROUT0, SPI2_D1, PR1_PRU1_GPIO14"
+      },
+      {
+        "num": "A17",
+        "name": "GPIO126",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: UART1_CTSn, PR1_MDIO0_MDIO, SPI2_CS1, PR1_IEP0_EDC_SYNC_OUT1, UART5_CTSn, UART5_TXD, GPMC0_CLKLB, GPIO126, SDFM0_CLK2, SDFM1_D1"
+      },
+      {
+        "num": "A18",
+        "name": "GPIO114",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO15, RMII1_TX_EN, RGMII1_TX_CTL, MII1_TX_EN, GPIO114, TRC_DATA11"
+      },
+      {
+        "num": "A19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "B1",
+        "name": "GPIO51",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM4_A, PR1_PRU0_GPIO12, GPMC0_A10, GPIO51, EPWM4_A"
+      },
+      {
+        "num": "B2",
+        "name": "GPIO50",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM3_B, PR1_PRU0_GPIO11, GPMC0_A9, GPIO50, EPWM6_A"
+      },
+      {
+        "num": "B3",
+        "name": "GPIO52",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM4_B, PR1_PRU0_GPIO13, GPMC0_A11, GPIO52, EPWM1_B"
+      },
+      {
+        "num": "B4",
+        "name": "GPIO48",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM2_B, PR1_PRU0_GPIO16, PR1_PRU0_GPIO7, GPMC0_A14, GPIO48, EPWM2_B"
+      },
+      {
+        "num": "B5",
+        "name": "GPIO43",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM0_A, PR1_PRU0_GPIO5, GPMC0_A3, GPIO43, EPWM0_A"
+      },
+      {
+        "num": "B6",
+        "name": "TCK",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: TCK"
+      },
+      {
+        "num": "B7",
+        "name": "TMS",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: TMS"
+      },
+      {
+        "num": "B8",
+        "name": "GPIO28",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: UART0_TXD, LIN0_TXD, GPIO28, XBAROUT5"
+      },
+      {
+        "num": "B9",
+        "name": "GPIO22",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: LIN2_TXD, UART2_TXD, SPI2_D1, GPIO22, GPMC0_ADVn_ALE, I2C1_SCL, SPI3_CS0, PR1_PRU0_GPIO17, GPMC0_WEn, GPIO23"
+      },
+      {
+        "num": "B10",
+        "name": "GPIO20",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: LIN1_TXD, OSPI0_RESET_OUT0, SPI2_CLK, PR1_PRU1_GPIO8, OSPI1_RESET_OUT0, UART1_TXD, GPMC0_AD8, GPIO20, XBAROUT6, EPWM6_A"
+      },
+      {
+        "num": "B11",
+        "name": "GPIO14",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: SPI0_D1, PR1_PRU0_GPIO1, MMC0_D1, UART3_RTSn, FSITX0_DATA1, GPMC0_BE1n, GPIO14, ADC_EXTCH_XBAROUT3, XBAROUT3"
+      },
+      {
+        "num": "B12",
+        "name": "GPIO13",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: SPI0_D0, PR1_PRU0_GPIO0, MMC0_D0, UART3_CTSn, FSITX0_DATA0, GPMC0_A16, GPIO13, ADC_EXTCH_XBAROUT2, XBAROUT2, SOP3"
+      },
+      {
+        "num": "B13",
+        "name": "GPIO134",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: I2C0_SDA, GPIO134, SDFM1_CLK2"
+      },
+      {
+        "num": "B14",
+        "name": "GPIO133",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: I2C2_SCL, PR1_PRU1_GPIO7, UART4_RXD, GPMC0_AD7, GPIO133, EQEP0_INDEX, SDFM1_D1, ADC_EXTCH_XBAROUT3"
+      },
+      {
+        "num": "B15",
+        "name": "GPIO130",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: SPI2_D0, PR1_PRU1_GPIO18, UART4_RTSn, PR1_IEP0_EDC_SYNC_OUT0, I2C1_SDA, MCAN1_RX, GPMC0_OEn_REn, GPIO130, EQEP0_A, SDFM1_CLK0"
+      },
+      {
+        "num": "B16",
+        "name": "GPIO119",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO19, UART3_RXD, PR0_IEP0_EDC_SYNC_OUT0, GPMC0_A19, GPIO119, TRC_CLK, EQEP1_A, XBAROUT13"
+      },
+      {
+        "num": "B17",
+        "name": "GPIO120",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO18, UART3_TXD, PR0_IEP0_EDIO_DATA_IN_OUT31, GPMC0_A17, GPIO120, TRC_CTL, EQEP1_B, XBAROUT14"
+      },
+      {
+        "num": "B18",
+        "name": "GPIO113",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO16, RGMII1_TXC, MII1_TXCLK, GPIO113, TRC_DATA10"
+      },
+      {
+        "num": "B19",
+        "name": "GPIO117",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO13, RGMII1_TD2, MII1_TXD2, GPIO117, TRC_DATA14, XBAROUT11"
+      },
+      {
+        "num": "C1",
+        "name": "GPIO54",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM5_B, PR1_PRU1_GPIO5, OSPI0_RESET_OUT0, GPMC0_AD5, GPIO54, EPWM8_B"
+      },
+      {
+        "num": "C2",
+        "name": "GPIO53",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM5_A, PR1_PRU0_GPIO14, GPMC0_A12, GPIO53, EPWM5_A"
+      },
+      {
+        "num": "C3",
+        "name": "WARMRSTn",
+        "side": "L",
+        "type": "input",
+        "desc": "IOMUX 訊號球；mux: WARMRSTn"
+      },
+      {
+        "num": "C5",
+        "name": "SAFETY_ERRORn",
+        "side": "L",
+        "type": "input",
+        "desc": "IOMUX 訊號球；mux: SAFETY_ERRORn"
+      },
+      {
+        "num": "C7",
+        "name": "TDI",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: TDI"
+      },
+      {
+        "num": "C9",
+        "name": "GPIO25",
+        "side": "T",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: UART0_RTSn, I2C2_SCL, SPI3_D0, PR1_PRU1_GPIO19, PR1_PRU0_GPIO17, UART3_RXD, GPMC0_WAIT1, GPIO25, XBAROUT9"
+      },
+      {
+        "num": "C11",
+        "name": "VDDAR2",
+        "side": "T",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDAR2"
+      },
+      {
+        "num": "C13",
+        "name": "GPIO11",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: SPI0_CS0, PR1_PRU0_GPIO2, MMC0_CLK, UART3_RXD, GPMC0_A0, GPIO11, ADC_EXTCH_XBAROUT0, XBAROUT0"
+      },
+      {
+        "num": "C15",
+        "name": "VDDSHV_A",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDSHV_A 電源球"
+      },
+      {
+        "num": "C17",
+        "name": "GPIO118",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO14, RGMII1_TD3, MII1_TXD3, GPIO118, TRC_DATA15, XBAROUT12"
+      },
+      {
+        "num": "C18",
+        "name": "GPIO116",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO12, RMII1_TXD1, RGMII1_TD1, MII1_TXD1, GPIO116, TRC_DATA13"
+      },
+      {
+        "num": "C19",
+        "name": "GPIO106",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO8, GPIO106, TRC_DATA3"
+      },
+      {
+        "num": "D1",
+        "name": "GPIO58",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM7_B, PR1_PRU1_GPIO3, OSPI1_D1, OSPI0_D1, GPMC0_AD3, GPIO58, EPWM5_B"
+      },
+      {
+        "num": "D2",
+        "name": "GPIO57",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM7_A, PR1_PRU1_GPIO4, OSPI0_CSn1, OSPI1_CSn1, GPMC0_AD4, GPIO57, EPWM7_A"
+      },
+      {
+        "num": "D4",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "D6",
+        "name": "VDDS18",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDS18 電源球"
+      },
+      {
+        "num": "D8",
+        "name": "VDDSHV_A",
+        "side": "T",
+        "type": "power",
+        "desc": "VDDSHV_A 電源球"
+      },
+      {
+        "num": "D10",
+        "name": "VDDS18",
+        "side": "T",
+        "type": "power",
+        "desc": "VDDS18 電源球"
+      },
+      {
+        "num": "D12",
+        "name": "VDDSHV_A",
+        "side": "T",
+        "type": "power",
+        "desc": "VDDSHV_A 電源球"
+      },
+      {
+        "num": "D14",
+        "name": "VDDS18",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDS18 電源球"
+      },
+      {
+        "num": "D16",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "D18",
+        "name": "GPIO115",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO11, RMII1_TXD0, RGMII1_TD0, MII1_TXD0, GPIO115, TRC_DATA12"
+      },
+      {
+        "num": "D19",
+        "name": "GPIO107",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO6, MCAN0_RX, RMII1_REF_CLK, RGMII1_RXC, MII1_RXCLK, GPIO107, TRC_DATA4"
+      },
+      {
+        "num": "E1",
+        "name": "GPIO59",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM8_A, PR1_PRU1_GPIO16, OSPI1_D0, MCAN0_RX, PR0_PRU1_GPIO7, OSPI0_D0, GPMC0_CSn1, GPIO59, UART4_TXD, EPWM8_A"
+      },
+      {
+        "num": "E2",
+        "name": "GPIO56",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM6_B, PR1_PRU1_GPIO6, UART2_RTSn, GPMC0_A20, GPIO56, EPWM6_B"
+      },
+      {
+        "num": "E3",
+        "name": "GPIO55",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM6_A, PR1_PRU1_GPIO8, CLKOUT0, GPMC0_AD8, GPIO55, EPWM3_B"
+      },
+      {
+        "num": "E5",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "E6",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "E8",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "E10",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "E12",
+        "name": "VDD",
+        "side": "T",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "E14",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "E15",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "E17",
+        "name": "GPIO111",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO2, RGMII1_RD2, MII1_RXD2, GPIO111, TRC_DATA8"
+      },
+      {
+        "num": "E18",
+        "name": "GPIO103",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO5, RMII1_RX_ER, MII1_RX_ER, GPIO103, TRC_DATA0, ADC_EXTCH_XBAROUT6, PR0_PRU1_GPIO9, PR0_UART0_RXD, PR0_IEP0_EDIO_DATA_IN_OUT31, MII1_COL"
+      },
+      {
+        "num": "E19",
+        "name": "GPIO108",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO4, MCAN0_TX, RGMII1_RX_CTL, MII1_RXDV, GPIO108, TRC_DATA5"
+      },
+      {
+        "num": "F1",
+        "name": "GPIO60",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM8_B, PR1_PRU1_GPIO15, OSPI1_CLK, MCAN0_TX, OSPI0_CLK, GPMC0_AD15, GPIO60, UART4_RXD, EPWM9_B"
+      },
+      {
+        "num": "F2",
+        "name": "GPIO61",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM9_A, LIN1_TXD, OSPI0_RESET_OUT0, SPI2_CLK, UART1_TXD, OSPI1_RESET_OUT0, GPIO61, EPWM9_A"
+      },
+      {
+        "num": "F4",
+        "name": "VDDSHV_A",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDSHV_A 電源球"
+      },
+      {
+        "num": "F5",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "F6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "F7",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "F8",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "F9",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "F10",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "F11",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "F12",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "F13",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "F14",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "F15",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "F16",
+        "name": "VDDSHV_A",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDSHV_A 電源球"
+      },
+      {
+        "num": "F18",
+        "name": "GPIO110",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO1, MCAN1_TX, RMII1_RXD1, RGMII1_RD1, MII1_RXD1, GPIO110, TRC_DATA7"
+      },
+      {
+        "num": "F19",
+        "name": "GPIO112",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO3, RGMII1_RD3, MII1_RXD3, GPIO112, TRC_DATA9"
+      },
+      {
+        "num": "G1",
+        "name": "GPIO62",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EPWM9_B, LIN1_RXD, OSPI0_CSn0, UART1_RTSn, OSPI1_CSn0, GPIO62, LIN0_RXD, UART1_CTSn, I2C0_SDA, UART2_TXD"
+      },
+      {
+        "num": "G2",
+        "name": "GPIO67",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR1_PRU0_GPIO0, OSPI0_D5, UART3_CTSn, GPIO67"
+      },
+      {
+        "num": "G3",
+        "name": "VDDAR3",
+        "side": "L",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDAR3"
+      },
+      {
+        "num": "G6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "G7",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "G8",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "G9",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "G10",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "G11",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "G12",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "G13",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "G14",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "G17",
+        "name": "GPIO87",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO5, UART3_RTSn, RMII2_RX_ER, MII2_RX_ER, GPIO87, TRC_CTL, ADC_EXTCH_XBAROUT4, XBAROUT6, PR0_PRU0_GPIO9, PR1_PRU0_GPIO9"
+      },
+      {
+        "num": "G18",
+        "name": "GPIO109",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU1_GPIO0, MCAN1_RX, RMII1_RXD0, RGMII1_RD0, MII1_RXD0, GPIO109, TRC_DATA6"
+      },
+      {
+        "num": "G19",
+        "name": "GPIO90",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO8, I2C0_SDA, GPIO90"
+      },
+      {
+        "num": "H1",
+        "name": "GPIO68",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR1_PRU0_GPIO1, OSPI0_D7, UART1_DCDn, GPIO68"
+      },
+      {
+        "num": "H2",
+        "name": "GPIO69",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR1_PRU0_GPIO2, OSPI0_D3, UART1_RIn, GPIO69"
+      },
+      {
+        "num": "H4",
+        "name": "VDDS18",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDS18 電源球"
+      },
+      {
+        "num": "H5",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "H6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "H7",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "H8",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "H9",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "H10",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "H11",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "H12",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "H13",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "H14",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "H15",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "H16",
+        "name": "VDDS18",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDS18 電源球"
+      },
+      {
+        "num": "H18",
+        "name": "GPIO102",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO14, RGMII2_TD3, MII2_TXD3, GPIO102"
+      },
+      {
+        "num": "H19",
+        "name": "GPIO101",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO13, RGMII2_TD2, MII2_TXD2, GPIO101"
+      },
+      {
+        "num": "J1",
+        "name": "GPIO70",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR1_PRU0_GPIO9, OSPI0_D1, UART1_DTRn, UART3_CTSn, OSPI1_D1, OSPI0_ECC_FAIL, GPIO70"
+      },
+      {
+        "num": "J2",
+        "name": "GPIO9",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: MCAN1_RX, OSPI0_D6, OSPI0_DQS, LIN1_TXD, UART1_TXD, OSPI0_CLK, GPIO9"
+      },
+      {
+        "num": "J3",
+        "name": "GPIO138",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: CLKOUT0, LIN1_RXD, OSPI0_ECC_FAIL, UART1_RXD, SPI2_CS0, OSPI1_ECC_FAIL, USB0_DRVVBUS, GPIO138, SAFETY_ERRORn"
+      },
+      {
+        "num": "J6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "J7",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "J8",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "J9",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "J10",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "J11",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "J12",
+        "name": "VSS",
+        "side": "T",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "J13",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "J14",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "J17",
+        "name": "VNWA",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: VNWA"
+      },
+      {
+        "num": "J18",
+        "name": "GPIO89",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO10, UART3_CTSn, RMII2_CRS_DV, PR0_UART0_RTSn, MII2_CRS, GPIO89"
+      },
+      {
+        "num": "J19",
+        "name": "GPIO92",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO4, UART3_RXD, RGMII2_RX_CTL, MII2_RXDV, GPIO92, TRC_CLK, ADC_EXTCH_XBAROUT5, XBAROUT7"
+      },
+      {
+        "num": "K1",
+        "name": "GPIO10",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: MCAN1_TX, OSPI0_D7, OSPI0_CLK, UART1_DTRn, UART3_CTSn, OSPI1_CLK, GPIO10"
+      },
+      {
+        "num": "K2",
+        "name": "GPIO7",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: MCAN0_RX, OSPI0_D4, OSPI0_D2, OSPI0_DQS, GPIO7"
+      },
+      {
+        "num": "K4",
+        "name": "VDDSHV_D",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDSHV_D 電源球"
+      },
+      {
+        "num": "K5",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "K6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "K7",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "K8",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "K9",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "K10",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "K11",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "K12",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "K13",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "K14",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "K15",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "K16",
+        "name": "VDDSHV_A",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDSHV_A 電源球"
+      },
+      {
+        "num": "K18",
+        "name": "GPIO97",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO16, RGMII2_TXC, MII2_TXCLK, GPIO97"
+      },
+      {
+        "num": "K19",
+        "name": "GPIO95",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO2, PR1_PRU0_GPIO2, RGMII2_RD2, MII2_RXD2, GPIO95, TRC_DATA2, ADC_EXTCH_XBAROUT8, XBAROUT12"
+      },
+      {
+        "num": "L1",
+        "name": "GPIO8",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: MCAN0_TX, OSPI0_D5, OSPI0_D6, OSPI0_D2, GPIO8"
+      },
+      {
+        "num": "L2",
+        "name": "GPIO75",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: UART1_RXD, OSPI0_LBCLKO, LIN1_RXD, OSPI1_LBCLKO, GPMC0_CLK, GPIO75"
+      },
+      {
+        "num": "L3",
+        "name": "VDDS18",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDS18 電源球"
+      },
+      {
+        "num": "L6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "L7",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "L8",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "L9",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "L10",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "L11",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "L12",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "L13",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "L14",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "L17",
+        "name": "GPIO96",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO3, UART3_TXD, RGMII2_RD3, MII2_RXD3, GPIO96, TRC_DATA3, ADC_EXTCH_XBAROUT9, XBAROUT13"
+      },
+      {
+        "num": "L18",
+        "name": "GPIO91",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO6, I2C0_SCL, RMII2_REF_CLK, RGMII2_RXC, MII2_RXCLK, GPIO91"
+      },
+      {
+        "num": "L19",
+        "name": "GPIO94",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO1, PR1_PRU0_GPIO1, RMII2_RXD1, RGMII2_RD1, MII2_RXD1, GPIO94, TRC_DATA1, ADC_EXTCH_XBAROUT7, XBAROUT11"
+      },
+      {
+        "num": "M1",
+        "name": "GPIO76",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: UART1_TXD, OSPI0_DQS, OSPI0_D4, LIN1_TXD, GPIO76, MMC0_CLK, UART0_RXD, LIN0_RXD, MCAN0_RX, PR1_MDIO0_MDIO"
+      },
+      {
+        "num": "M2",
+        "name": "GPIO2",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: OSPI0_CLK, OSPI0_D0, UART3_CTSn, OSPI1_D0, GPIO2"
+      },
+      {
+        "num": "M4",
+        "name": "VDDSHV_D",
+        "side": "L",
+        "type": "power",
+        "desc": "VDDSHV_D 電源球"
+      },
+      {
+        "num": "M5",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "M6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "M7",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "M8",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "M9",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "M10",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "M11",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "M12",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "M13",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "M14",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "M15",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "M16",
+        "name": "VDDS18",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDS18 電源球"
+      },
+      {
+        "num": "M18",
+        "name": "GPIO93",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO0, PR1_PRU0_GPIO0, RMII2_RXD0, RGMII2_RD0, MII2_RXD0, GPIO93, TRC_DATA0, ADC_EXTCH_XBAROUT6, XBAROUT8"
+      },
+      {
+        "num": "M19",
+        "name": "GPIO98",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO15, RMII2_TX_EN, RGMII2_TX_CTL, MII2_TX_EN, GPIO98"
+      },
+      {
+        "num": "N1",
+        "name": "GPIO4",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: OSPI0_D1, EPWM9_B, PR1_PRU1_GPIO12, UART1_RIn, GPMC0_AD12, GPIO4, SOP1"
+      },
+      {
+        "num": "N2",
+        "name": "GPIO3",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: OSPI0_D0, EPWM9_A, PR1_PRU1_GPIO11, UART1_DCDn, GPMC0_AD11, GPIO3, SOP0"
+      },
+      {
+        "num": "N3",
+        "name": "VPP",
+        "side": "L",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VPP"
+      },
+      {
+        "num": "N6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "N7",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "N8",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "N9",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "N10",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "N11",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "N12",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "N13",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "N14",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "N17",
+        "name": "GPIO85",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_MDIO0_MDIO, LIN0_RXD, MCAN0_RX, GPIO85, XBAROUT14"
+      },
+      {
+        "num": "N18",
+        "name": "GPIO99",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO11, RMII2_TXD0, RGMII2_TD0, MII2_TXD0, GPIO99, NC"
+      },
+      {
+        "num": "N19",
+        "name": "GPIO100",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_PRU0_GPIO12, RMII2_TXD1, RGMII2_TD1, MII2_TXD1, GPIO100"
+      },
+      {
+        "num": "P1",
+        "name": "GPIO6",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: OSPI0_D3, SPI0_D1, OSPI0_D4, GPIO6"
+      },
+      {
+        "num": "P2",
+        "name": "GPIO5",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: OSPI0_D2, SPI0_D0, OSPI0_D6, GPIO5"
+      },
+      {
+        "num": "P4",
+        "name": "VDDSHV_B",
+        "side": "L",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDS33"
+      },
+      {
+        "num": "P5",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "P6",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "P7",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "P8",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "P9",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "P10",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "P11",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "P12",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "P13",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "P14",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "P15",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "P16",
+        "name": "VDDSHV_E",
+        "side": "R",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDS1833_FLASH1"
+      },
+      {
+        "num": "P18",
+        "name": "GPIO41",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: MDIO0_MDIO, MCAN1_RX, OSPI1_RESET_OUT0, GPIO41"
+      },
+      {
+        "num": "P19",
+        "name": "GPIO86",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR0_MDIO0_MDC, LIN0_TXD, MCAN0_TX, GPIO86, XBAROUT15"
+      },
+      {
+        "num": "R1",
+        "name": "GPIO0",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: OSPI0_CSn0, SPI0_CS0, UART3_RXD, OSPI0_D0, GPIO0"
+      },
+      {
+        "num": "R2",
+        "name": "GPIO1",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: OSPI0_CSn1, SPI0_CLK, UART3_TXD, UART2_RTSn, GPIO1, XBAROUT0"
+      },
+      {
+        "num": "R3",
+        "name": "VDDA33_USB",
+        "side": "L",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDA33_USB"
+      },
+      {
+        "num": "R5",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "R6",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "R8",
+        "name": "VSS",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "R10",
+        "name": "VSSA",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSSA 接地球"
+      },
+      {
+        "num": "R12",
+        "name": "VSSA",
+        "side": "B",
+        "type": "ground",
+        "desc": "VSSA 接地球"
+      },
+      {
+        "num": "R14",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "R15",
+        "name": "VDD",
+        "side": "R",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "R17",
+        "name": "GPIO39",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_TD2, RMII1_CRS_DV, MII1_TXD2, OSPI1_DQS, GPIO39, EQEP1_STROBE"
+      },
+      {
+        "num": "R18",
+        "name": "GPIO35",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_TXC, PR1_IEP0_EDIO_DATA_IN_OUT30, MII1_TXCLK, OSPI1_D5, UART4_RXD, GPIO35, EQEP0_INDEX"
+      },
+      {
+        "num": "R19",
+        "name": "GPIO42",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: MDIO0_MDC, MCAN1_TX, GPIO42"
+      },
+      {
+        "num": "T1",
+        "name": "GPIO121",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: EXT_REFCLK0, SAFETY_ERRORn, USB0_DRVVBUS, PR0_IEP0_EDIO_DATA_IN_OUT30, GPMC0_A18, GPIO121, EQEP1_INDEX, XBAROUT15, CLKOUT1, PR1_PRU0_GPIO7"
+      },
+      {
+        "num": "T2",
+        "name": "PORz",
+        "side": "L",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: PORz"
+      },
+      {
+        "num": "T4",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "T6",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "VDD 電源球"
+      },
+      {
+        "num": "T8",
+        "name": "VDD_TEMP",
+        "side": "B",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDD_TEMP"
+      },
+      {
+        "num": "T10",
+        "name": "VDDA33",
+        "side": "B",
+        "type": "power",
+        "desc": "VDDA33 電源球"
+      },
+      {
+        "num": "T12",
+        "name": "VDDA33",
+        "side": "B",
+        "type": "power",
+        "desc": "VDDA33 電源球"
+      },
+      {
+        "num": "T14",
+        "name": "VDDSHV_C",
+        "side": "R",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDS33"
+      },
+      {
+        "num": "T16",
+        "name": "VDDS18",
+        "side": "R",
+        "type": "power",
+        "desc": "VDDS18 電源球"
+      },
+      {
+        "num": "T18",
+        "name": "GPIO40",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_TD3, PR0_PRU0_GPIO7, MII1_TXD3, OSPI1_ECC_FAIL, UART4_TXD, PR0_IEP0_EDC_SYNC_OUT1, PR1_IEP0_EDC_SYNC_OUT1, GPIO40, EQEP1_INDEX"
+      },
+      {
+        "num": "T19",
+        "name": "GPIO36",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_TX_CTL, RMII1_TX_EN, MII1_TX_EN, OSPI1_D6, GPIO36, EQEP0_STROBE"
+      },
+      {
+        "num": "U1",
+        "name": "GPIO140",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: USB0_DM, UART5_TXD, GPIO140"
+      },
+      {
+        "num": "U2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "U3",
+        "name": "VDDA18_USB",
+        "side": "L",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDA18_USB"
+      },
+      {
+        "num": "U5",
+        "name": "VDDSHV_F",
+        "side": "L",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDS33, VDDS1833_FLASH0-SIP"
+      },
+      {
+        "num": "U7",
+        "name": "VDDA18_OSC_PLL",
+        "side": "L",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDA18_OSC_PLL"
+      },
+      {
+        "num": "U9",
+        "name": "VDDA18_LDO",
+        "side": "B",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDA18_LDO"
+      },
+      {
+        "num": "U11",
+        "name": "ADC0_AIN3",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC0_AIN3"
+      },
+      {
+        "num": "U13",
+        "name": "ADC0_AIN5",
+        "side": "R",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC0_AIN5"
+      },
+      {
+        "num": "U15",
+        "name": "ADC_CAL0",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: ADC_CAL0"
+      },
+      {
+        "num": "U17",
+        "name": "GPIO30",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_RX_CTL, RMII1_RX_ER, MII1_RXDV, OSPI1_D0, FSITX0_DATA0, GPIO30"
+      },
+      {
+        "num": "U18",
+        "name": "GPIO37",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_TD0, RMII1_TXD0, MII1_TXD0, OSPI1_D7, GPIO37, EQEP1_A"
+      },
+      {
+        "num": "U19",
+        "name": "GPIO38",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_TD1, RMII1_TXD1, MII1_TXD1, OSPI1_CSn0, GPIO38, EQEP1_B"
+      },
+      {
+        "num": "V1",
+        "name": "GPIO139",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: USB0_DP, UART5_RXD, GPIO139"
+      },
+      {
+        "num": "V2",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "V3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "V4",
+        "name": "VDDS18_LDO",
+        "side": "L",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VDDS18_LDO"
+      },
+      {
+        "num": "V5",
+        "name": "VSYS_MON",
+        "side": "L",
+        "type": "power",
+        "desc": "IOMUX 訊號球；mux: VSYS_MON"
+      },
+      {
+        "num": "V6",
+        "name": "ADC2_AIN2",
+        "side": "L",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC2_AIN2"
+      },
+      {
+        "num": "V7",
+        "name": "ADC2_AIN3",
+        "side": "L",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC2_AIN3"
+      },
+      {
+        "num": "V8",
+        "name": "ADC2_AIN5",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC2_AIN5"
+      },
+      {
+        "num": "V9",
+        "name": "ADC2_AIN1",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC2_AIN1"
+      },
+      {
+        "num": "V10",
+        "name": "ADC_VREFHI_G1",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC_VREFHI2"
+      },
+      {
+        "num": "V11",
+        "name": "ADC_VREFHI_G0",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC_VREFHI0"
+      },
+      {
+        "num": "V12",
+        "name": "ADC0_AIN1",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC0_AIN1"
+      },
+      {
+        "num": "V13",
+        "name": "ADC0_AIN2",
+        "side": "R",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC0_AIN2"
+      },
+      {
+        "num": "V14",
+        "name": "DAC_VREF0",
+        "side": "R",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: DAC_VREF0"
+      },
+      {
+        "num": "V15",
+        "name": "GPIO71",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR1_PRU1_GPIO0, UART1_DSRn, UART4_RTSn, GPMC0_AD0, GPIO71"
+      },
+      {
+        "num": "V16",
+        "name": "GPIO74",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR1_PRU1_GPIO9, MII1_CRS, UART5_RXD, GPMC0_AD9, GPIO74, ADC_EXTCH_XBAROUT5"
+      },
+      {
+        "num": "V17",
+        "name": "GPIO32",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_RD1, RMII1_RXD1, MII1_RXD1, OSPI1_D2, FSIRX0_CLK, GPIO32"
+      },
+      {
+        "num": "V18",
+        "name": "GPIO34",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_RD3, PR1_IEP0_EDIO_DATA_IN_OUT31, MII1_RXD3, OSPI1_D4, UART1_TXD, FSIRX0_DATA1, GPIO34, EQEP0_B, GPMC0_CSn3"
+      },
+      {
+        "num": "V19",
+        "name": "GPIO29",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_RXC, RMII1_REF_CLK, MII1_RXCLK, OSPI1_CLK, FSITX0_CLK, GPIO29"
+      },
+      {
+        "num": "W1",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      },
+      {
+        "num": "W2",
+        "name": "XTAL_XO",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: XTAL_XO"
+      },
+      {
+        "num": "W3",
+        "name": "XTAL_XI",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: XTAL_XI"
+      },
+      {
+        "num": "W4",
+        "name": "TEMPCAL",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: TEMPCAL"
+      },
+      {
+        "num": "W5",
+        "name": "ATESTV1",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: ATESTV1"
+      },
+      {
+        "num": "W6",
+        "name": "DAC_OUT",
+        "side": "L",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: DAC_OUT"
+      },
+      {
+        "num": "W7",
+        "name": "ADC2_AIN6",
+        "side": "L",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC2_AIN6"
+      },
+      {
+        "num": "W8",
+        "name": "ADC2_AIN0",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC2_AIN0"
+      },
+      {
+        "num": "W9",
+        "name": "ADC2_AIN4",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC2_AIN4"
+      },
+      {
+        "num": "W10",
+        "name": "ADC_VREFLO_G1",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC_VREFLO2"
+      },
+      {
+        "num": "W11",
+        "name": "ADC_VREFLO_G0",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC_VREFLO0"
+      },
+      {
+        "num": "W12",
+        "name": "ADC0_AIN0",
+        "side": "B",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC0_AIN0"
+      },
+      {
+        "num": "W13",
+        "name": "ADC0_AIN4",
+        "side": "R",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC0_AIN4"
+      },
+      {
+        "num": "W14",
+        "name": "ADC0_AIN6",
+        "side": "R",
+        "type": "analog",
+        "desc": "IOMUX 訊號球；mux: ADC0_AIN6, ADC1_AIN0, ADC1_AIN1, ADC1_AIN2, ADC1_AIN3, ADC1_AIN4, ADC1_AIN5, ADC1_AIN6"
+      },
+      {
+        "num": "W15",
+        "name": "GPIO72",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR1_PRU1_GPIO1, MII1_RX_ER, UART4_CTSn, GPMC0_AD1, GPIO72"
+      },
+      {
+        "num": "W16",
+        "name": "GPIO73",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: PR1_PRU1_GPIO2, MII1_COL, UART5_TXD, GPMC0_AD2, GPIO73, ADC_EXTCH_XBAROUT4"
+      },
+      {
+        "num": "W17",
+        "name": "GPIO31",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_RD0, RMII1_RXD0, MII1_RXD0, OSPI1_D1, FSITX0_DATA1, GPIO31"
+      },
+      {
+        "num": "W18",
+        "name": "GPIO33",
+        "side": "R",
+        "type": "io",
+        "desc": "IOMUX 訊號球；mux: RGMII1_RD2, PR1_IEP0_EDC_SYNC_OUT0, MII1_RXD2, OSPI1_D3, UART1_RXD, FSIRX0_DATA0, GPIO33, EQEP0_A, GPMC0_CSn2"
+      },
+      {
+        "num": "W19",
+        "name": "VSS",
+        "side": "R",
+        "type": "ground",
+        "desc": "VSS 接地球"
+      }
+    ],
+    "thermalPad": "293-ball nFBGA 球陣列，散熱經球與基板（大量 VSS 接地球），無獨立外露焊墊",
+    "specs": [
+      {
+        "k": "核心",
+        "v": "單/雙核 Arm Cortex-R5F（即時）"
+      },
+      {
+        "k": "封裝",
+        "v": "293-ball nFBGA (ZNC) 15×15mm"
+      },
+      {
+        "k": "類比",
+        "v": "多組 ADC（ADC0/1/2 AINx）、DAC_VREF、VREFHI/LO"
+      },
+      {
+        "k": "控制外設",
+        "v": "ePWM/eCAP/SDFM/FSI（即時控制）"
+      },
+      {
+        "k": "通訊",
+        "v": "CAN-FD/MCAN、工業乙太網、SPI/UART/I2C、MMC/SD、GPMC"
+      },
+      {
+        "k": "車規",
+        "v": "AM2611-Q1（AEC-Q100 系）"
+      },
+      {
+        "k": "文件",
+        "v": "SPRSPA7C（PRODUCTION DATA）"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];
