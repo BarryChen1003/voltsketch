@@ -206,6 +206,206 @@
         designNotes: ['고속 신호는 완전한 플레인 위에 배선', '90° 코너 회피, 45° 또는 원호 사용', '차동 쌍 등장 정합', '스터브(잔선) 최소화', '분할 플레인을 가로지를 때 리턴 커패시터 추가', '배선 길이 정합(DDR, USB 등)'],
         commonMistakes: ['90° 코너 사용', '차동 쌍 스큐 과다', '분할 플레인을 가로질러 배선', '리턴 경로 미고려', '스터브가 너무 길어 공진']
       }
+    },
+    'emi-filtering': {
+      en: {
+        principles: 'EMI filters suppress electromagnetic interference to keep circuits working. Common EMI filters include ferrite beads, LC filters and pi filters.',
+        keyFormulas: ['Impedance Z = R + jωL', 'Cutoff frequency fc = 1/(2π√(LC))', 'Insertion loss IL = 20*log(Vout/Vin)'],
+        designNotes: ['Ferrite bead selection: mind the impedance-vs-frequency characteristic', 'LC filter: choose the right cutoff frequency', 'Pi filter: good for wideband filtering', 'Grounding: low-impedance ground path', 'Component placement: close to the noise source'],
+        commonMistakes: ['Ignoring the impedance-vs-frequency characteristic', 'Wrong filter resonant frequency', 'Ground path too long', 'Poor component placement', 'Not accounting for temperature effects']
+      },
+      ja: {
+        principles: 'EMI フィルタは電磁妨害を抑え回路を正常動作させる。代表的な EMI フィルタにフェライトビーズ、LC フィルタ、π 型フィルタなどがある。',
+        keyFormulas: ['インピーダンス Z = R + jωL', 'カットオフ周波数 fc = 1/(2π√(LC))', '挿入損失 IL = 20*log(Vout/Vin)'],
+        designNotes: ['フェライトビーズ選択：インピーダンスの周波数特性に注意', 'LC フィルタ：適切なカットオフ周波数を選ぶ', 'π 型フィルタ：広帯域ろ波に適する', '接地設計：低インピーダンスの接地経路', '部品配置：雑音源の近くに'],
+        commonMistakes: ['インピーダンスの周波数特性を考慮しない', 'フィルタの共振周波数が不適切', '接地経路が長すぎる', '部品配置が不適切', '温度効果を考慮しない']
+      },
+      ko: {
+        principles: 'EMI 필터는 전자기 간섭을 억제해 회로가 정상 동작하게 한다. 대표적 EMI 필터로 페라이트 비드, LC 필터, π형 필터 등이 있다.',
+        keyFormulas: ['임피던스 Z = R + jωL', '차단 주파수 fc = 1/(2π√(LC))', '삽입 손실 IL = 20*log(Vout/Vin)'],
+        designNotes: ['페라이트 비드 선택: 임피던스의 주파수 특성 주의', 'LC 필터: 적절한 차단 주파수 선택', 'π형 필터: 광대역 여파에 적합', '접지 설계: 저임피던스 접지 경로', '부품 배치: 잡음원 가까이'],
+        commonMistakes: ['임피던스의 주파수 특성 미고려', '필터 공진 주파수 부적절', '접지 경로 과다', '부품 배치 부적절', '온도 효과 미고려']
+      }
+    },
+    'usb-design': {
+      en: {
+        principles: 'USB design requires attention to differential-impedance matching, ESD protection, power design and signal integrity. USB 2.0 differential impedance is 90Ω; USB 3.0 SuperSpeed is also 90Ω.',
+        keyFormulas: ['Differential impedance: Zdiff = 90Ω (USB 2.0)', 'Data rate: 12Mbps (Full Speed), 480Mbps (High Speed)', 'Common-mode voltage: 0-3.3V'],
+        designNotes: ['Control differential impedance: 90Ω ±10%', 'Length-match D+ and D-', 'Add ESD protection components', 'Add filter capacitors on VBUS', 'Watch impedance discontinuity at the connector'],
+        commonMistakes: ['Impedance mismatch', 'D+ and D- unequal length', 'No ESD protection', 'Insufficient VBUS filtering', 'Routing across a plane split']
+      },
+      ja: {
+        principles: 'USB 設計は差動インピーダンス整合、ESD 保護、電源設計、信号品質を考慮する必要がある。USB 2.0 の差動インピーダンスは 90Ω、USB 3.0 SuperSpeed も 90Ω。',
+        keyFormulas: ['差動インピーダンス：Zdiff = 90Ω（USB 2.0）', 'データレート：12Mbps（Full Speed）、480Mbps（High Speed）', '同相電圧：0-3.3V'],
+        designNotes: ['差動インピーダンス制御：90Ω ±10%', 'D+ と D- を等長整合', 'ESD 保護部品を追加', 'VBUS にろ波コンデンサを追加', 'コネクタでのインピーダンス不連続に注意'],
+        commonMistakes: ['インピーダンス不整合', 'D+ と D- の長さが不等', 'ESD 保護なし', 'VBUS ろ波不足', '分割プレーンを跨ぐ配線']
+      },
+      ko: {
+        principles: 'USB 설계는 차동 임피던스 정합, ESD 보호, 전원 설계, 신호 무결성을 고려해야 한다. USB 2.0 차동 임피던스는 90Ω, USB 3.0 SuperSpeed도 90Ω.',
+        keyFormulas: ['차동 임피던스: Zdiff = 90Ω (USB 2.0)', '데이터율: 12Mbps (Full Speed), 480Mbps (High Speed)', '공통 모드 전압: 0-3.3V'],
+        designNotes: ['차동 임피던스 제어: 90Ω ±10%', 'D+와 D- 등장 정합', 'ESD 보호 부품 추가', 'VBUS에 여파 커패시터 추가', '커넥터에서 임피던스 불연속 주의'],
+        commonMistakes: ['임피던스 불일치', 'D+와 D- 길이 불균등', 'ESD 보호 없음', 'VBUS 여파 부족', '분할 플레인을 가로지르는 배선']
+      }
+    },
+    'spi-design': {
+      en: {
+        principles: 'SPI (Serial Peripheral Interface) is a high-speed, full-duplex serial protocol. It uses four lines: MOSI, MISO, SCK, CS.',
+        keyFormulas: ['Clock frequency: up to 50MHz (standard SPI)', 'Data rate: equals the clock frequency', 'Transfer mode: CPOL and CPHA'],
+        designNotes: ['Keep the SCK clock trace short', 'Add a pull-up resistor on the CS line', 'With multiple slaves, mind CS drive strength', 'For high-speed SPI, consider impedance matching', 'Length-match the signal lines'],
+        commonMistakes: ['SCK trace too long causing timing problems', 'No pull-up resistor', 'Insufficient CS drive strength', 'Ignoring signal integrity', 'Miswiring (MOSI/MISO crossed)']
+      },
+      ja: {
+        principles: 'SPI（Serial Peripheral Interface）は高速・全二重のシリアル通信プロトコル。MOSI、MISO、SCK、CS の 4 本の線を使う。',
+        keyFormulas: ['クロック周波数：最大 50MHz（標準 SPI）', 'データレート：クロック周波数と同じ', '転送モード：CPOL と CPHA'],
+        designNotes: ['クロック線 SCK の配線を短く', 'CS 線にプルアップ抵抗を追加', '複数スレーブ時は CS の駆動能力に注意', '高速 SPI ではインピーダンス整合を考慮', '信号線の長さを整合'],
+        commonMistakes: ['SCK 配線が長すぎタイミング問題', 'プルアップ抵抗なし', 'CS 駆動能力不足', '信号品質を考慮しない', '誤配線（MOSI/MISO 交差）']
+      },
+      ko: {
+        principles: 'SPI(Serial Peripheral Interface)는 고속·전이중 직렬 통신 프로토콜이다. MOSI, MISO, SCK, CS 네 선을 사용한다.',
+        keyFormulas: ['클록 주파수: 최대 50MHz(표준 SPI)', '데이터율: 클록 주파수와 동일', '전송 모드: CPOL과 CPHA'],
+        designNotes: ['클록 선 SCK 배선을 짧게', 'CS 선에 풀업 저항 추가', '다중 슬레이브 시 CS 구동 능력 주의', '고속 SPI는 임피던스 정합 고려', '신호선 길이 정합'],
+        commonMistakes: ['SCK 배선이 너무 길어 타이밍 문제', '풀업 저항 없음', 'CS 구동 능력 부족', '신호 무결성 미고려', '오배선(MOSI/MISO 교차)']
+      }
+    },
+    'op-amp-basics': {
+      en: {
+        principles: 'Two ideal op-amp rules: virtual short (the + and - inputs sit at the same potential) and virtual open (no current flows into either input). Every op-amp circuit analysis starts from these two rules.',
+        keyFormulas: ['Inverting gain A_V = -Rf / Rin', 'Non-inverting gain A_V = 1 + Rf / Rin', 'Difference amp Vout = (Rf/R1)(V2-V1)', 'GBW = Gain x Bandwidth', 'SR ≥ 2π*f*Vp'],
+        designNotes: ['Add a compensation resistor Rb = R1 ∥ Rf on the + input (balances bias current)', 'Usable bandwidth ≈ GBW / closed-loop gain', 'A single-supply op-amp needs a VCC/2 virtual ground', '0.1μF decoupling capacitor close to the supply pin'],
+        commonMistakes: ['Using a general-purpose op-amp as a comparator (use a dedicated comparator IC)', 'Insufficient GBW giving inadequate bandwidth', 'Insufficient slew rate causing distortion', 'A differentiator without band-limiting oscillating']
+      },
+      ja: {
+        principles: '理想オペアンプの二大原則：バーチャルショート（＋端子と－端子が同電位）とバーチャルオープン（両入力端子に流れ込む電流はゼロ）。すべてのオペアンプ回路解析はこの 2 原則から始まる。',
+        keyFormulas: ['反転増幅 A_V = -Rf / Rin', '非反転増幅 A_V = 1 + Rf / Rin', '差動増幅 Vout = (Rf/R1)(V2-V1)', 'GBW = 利得 x 帯域幅', 'SR ≥ 2π*f*Vp'],
+        designNotes: ['＋端子に補償抵抗 Rb = R1 ∥ Rf を接続（バイアス電流を平衡）', '実用帯域幅 ≈ GBW / 閉ループ利得', '単電源オペアンプは VCC/2 の仮想グランドが必要', '0.1μF デカップリングコンデンサを電源ピンの近くに'],
+        commonMistakes: ['汎用オペアンプをコンパレータに使う（専用コンパレータ IC を使うべき）', 'GBW 不足で帯域幅が足りない', 'スルーレート不足で歪む', '微分器に帯域制限がなく発振']
+      },
+      ko: {
+        principles: '이상적 op-amp의 두 원칙: 가상 단락(+단자와 -단자가 같은 전위)과 가상 개방(두 입력 단자로 흘러드는 전류가 0). 모든 op-amp 회로 해석은 이 두 원칙에서 출발한다.',
+        keyFormulas: ['반전 증폭 A_V = -Rf / Rin', '비반전 증폭 A_V = 1 + Rf / Rin', '차동 증폭 Vout = (Rf/R1)(V2-V1)', 'GBW = 이득 x 대역폭', 'SR ≥ 2π*f*Vp'],
+        designNotes: ['+단자에 보상 저항 Rb = R1 ∥ Rf 연결(바이어스 전류 평형)', '실용 대역폭 ≈ GBW / 폐루프 이득', '단일 전원 op-amp는 VCC/2 가상 접지 필요', '0.1μF 디커플링 커패시터를 전원 핀 가까이'],
+        commonMistakes: ['범용 op-amp를 비교기로 사용(전용 비교기 IC를 써야 함)', 'GBW 부족으로 대역폭 미달', '슬루레이트 부족으로 왜곡', '미분기에 대역 제한이 없어 발진']
+      }
+    },
+    'mosfet-switching': {
+      en: {
+        principles: 'When a MOSFET is used as a switch, ensure Vgs > Vth for full turn-on. Losses include conduction loss (I^2*Rds_on) and switching loss (½*V*I*(tr+tf)*f).',
+        keyFormulas: ['P_cond = I^2_drain x Rds_on', 'P_switch = ½ x Vds x Id x (tr + tf) x f', 'Vgs_th = 2-4V (logic level)', 'Rds_on ∝ 1/(Vgs - Vth)'],
+        designNotes: ['Choose a logic-level MOSFET (Vgs_th < 3V) to drive directly from an MCU', 'A gate resistor controls switching speed and EMI', 'Synchronous rectification instead of a Schottky diode improves efficiency', 'Mind the loss during the Miller plateau'],
+        commonMistakes: ['Insufficient gate drive voltage making Rds_on too high', 'Ignoring body-diode reverse recovery', 'Paralleled MOSFETs not sharing current', 'Inadequate thermal design causing thermal runaway']
+      },
+      ja: {
+        principles: 'MOSFET をスイッチとして使うとき、完全導通のため Vgs > Vth を確保する。損失には導通損失（I^2*Rds_on）とスイッチング損失（½*V*I*(tr+tf)*f）がある。',
+        keyFormulas: ['P_cond = I^2_drain x Rds_on', 'P_switch = ½ x Vds x Id x (tr + tf) x f', 'Vgs_th = 2-4V（ロジックレベル）', 'Rds_on ∝ 1/(Vgs - Vth)'],
+        designNotes: ['ロジックレベル MOSFET（Vgs_th < 3V）を選べば MCU で直接駆動可能', 'ゲート抵抗でスイッチング速度と EMI を制御', 'ショットキーダイオードの代わりに同期整流で効率向上', 'ミラープラトー期間の損失に注意'],
+        commonMistakes: ['ゲート駆動電圧不足で Rds_on が高すぎる', 'ボディダイオードの逆回復を考慮しない', '並列 MOSFET が均流しない', '放熱設計不足で熱暴走']
+      },
+      ko: {
+        principles: 'MOSFET을 스위치로 쓸 때 완전 도통을 위해 Vgs > Vth를 확보한다. 손실에는 도통 손실(I^2*Rds_on)과 스위칭 손실(½*V*I*(tr+tf)*f)이 있다.',
+        keyFormulas: ['P_cond = I^2_drain x Rds_on', 'P_switch = ½ x Vds x Id x (tr + tf) x f', 'Vgs_th = 2-4V(로직 레벨)', 'Rds_on ∝ 1/(Vgs - Vth)'],
+        designNotes: ['로직 레벨 MOSFET(Vgs_th < 3V)을 선택하면 MCU로 직접 구동 가능', '게이트 저항으로 스위칭 속도와 EMI 제어', '쇼트키 다이오드 대신 동기 정류로 효율 향상', '밀러 플래토 구간의 손실 주의'],
+        commonMistakes: ['게이트 구동 전압 부족으로 Rds_on 과다', '보디 다이오드 역회복 미고려', '병렬 MOSFET 전류 불균형', '방열 설계 부족으로 열폭주']
+      }
+    },
+    'adc-dac-basics': {
+      en: {
+        principles: 'An ADC converts an analog signal to digital; key parameters are resolution (bits), sample rate, SNR and ENOB. A DAC does the reverse. Common architectures are SAR, delta-sigma, pipeline and flash.',
+        keyFormulas: ['SNR = 6.02N + 1.76 dB (ideal N-bit ADC)', 'ENOB = (SINAD - 1.76) / 6.02', 'Sample rate fs ≥ 2 x fmax (Nyquist)', 'LSB = Vref / 2^N'],
+        designNotes: ['SAR ADC: medium speed (~1MSPS), medium resolution (12-18 bit)', 'Delta-sigma ADC: high resolution (16-24 bit), low speed', 'Reference quality directly affects ADC accuracy', 'Separate digital and analog supplies, single-point ground'],
+        commonMistakes: ['Not accounting for sample rate causing aliasing', 'Reference noise degrading accuracy', 'Digital return path disturbing the analog signal', 'No anti-aliasing filter']
+      },
+      ja: {
+        principles: 'ADC はアナログ信号をデジタルに変換する。主要パラメータは分解能（ビット数）、サンプリングレート、SNR、ENOB。DAC は逆変換を行う。代表的なアーキテクチャに SAR、デルタシグマ、パイプライン、フラッシュがある。',
+        keyFormulas: ['SNR = 6.02N + 1.76 dB（理想 N ビット ADC）', 'ENOB = (SINAD - 1.76) / 6.02', 'サンプリングレート fs ≥ 2 x fmax（ナイキスト）', 'LSB = Vref / 2^N'],
+        designNotes: ['SAR ADC：中速（~1MSPS）、中分解能（12-18 bit）', 'デルタシグマ ADC：高分解能（16-24 bit）、低速', '参照電源の品質が ADC 精度を直接左右', 'デジタルとアナログ電源を分離、一点接地'],
+        commonMistakes: ['サンプリングレートを考慮せずエイリアシング', '参照電源雑音が精度を低下', 'デジタルリターン経路がアナログ信号を妨害', 'アンチエイリアシングフィルタなし']
+      },
+      ko: {
+        principles: 'ADC는 아날로그 신호를 디지털로 변환한다. 주요 파라미터는 분해능(비트 수), 샘플링 레이트, SNR, ENOB. DAC는 역변환을 한다. 대표적 아키텍처로 SAR, 델타시그마, 파이프라인, 플래시가 있다.',
+        keyFormulas: ['SNR = 6.02N + 1.76 dB(이상적 N비트 ADC)', 'ENOB = (SINAD - 1.76) / 6.02', '샘플링 레이트 fs ≥ 2 x fmax(나이퀴스트)', 'LSB = Vref / 2^N'],
+        designNotes: ['SAR ADC: 중속(~1MSPS), 중분해능(12-18 bit)', '델타시그마 ADC: 고분해능(16-24 bit), 저속', '기준 전원 품질이 ADC 정확도를 직접 좌우', '디지털과 아날로그 전원 분리, 단일점 접지'],
+        commonMistakes: ['샘플링 레이트 미고려로 에일리어싱', '기준 전원 잡음이 정확도 저하', '디지털 리턴 경로가 아날로그 신호 방해', '안티에일리어싱 필터 없음']
+      }
+    },
+    'esd-protection': {
+      en: {
+        principles: 'An ESD event can produce a transient of thousands of volts. TVS diodes, ESD protection ICs and varistors shunt the energy to ground to protect the downstream circuit.',
+        keyFormulas: ['V_clamp = V_breakdown + I_pp x R_dyn', 'ESD energy E = ½ x C x V^2 (HBM: C=100pF)', 'Response time < 1ns (TVS)', 'Capacitive load < 1pF (high-speed signal)'],
+        designNotes: ['Place the TVS diode at the connector entry', 'Keep the protection trace short and wide to lower parasitic inductance', 'For USB/HDMI and other high-speed interfaces choose low-capacitance ESD', 'System-level ESD must consider IEC 61000-4-2'],
+        commonMistakes: ['ESD protection component too far from the connector', 'Ground path too long, reducing protection', "Not accounting for the protection device's capacitance on high-speed signals", 'Doing only device-level, not system-level ESD']
+      },
+      ja: {
+        principles: 'ESD 事象は数千ボルトの過渡電圧を生じうる。TVS ダイオード、ESD 保護 IC、バリスタなどでエネルギーを接地へ逃がし後段回路を保護する。',
+        keyFormulas: ['V_clamp = V_breakdown + I_pp x R_dyn', 'ESD エネルギー E = ½ x C x V^2（HBM：C=100pF）', '応答時間 < 1ns（TVS）', '容量負荷 < 1pF（高速信号）'],
+        designNotes: ['TVS ダイオードをコネクタ入口に配置', '保護配線を短く太くし寄生インダクタンスを低減', 'USB/HDMI 等の高速インタフェースには低容量 ESD を選ぶ', 'システムレベル ESD は IEC 61000-4-2 を考慮'],
+        commonMistakes: ['ESD 保護部品がコネクタから遠すぎる', '接地経路が長く保護効果が低下', '保護素子の容量が高速信号に与える影響を考慮しない', 'デバイスレベルのみでシステムレベル ESD をしない']
+      },
+      ko: {
+        principles: 'ESD 사건은 수천 볼트의 과도 전압을 일으킬 수 있다. TVS 다이오드, ESD 보호 IC, 배리스터 등으로 에너지를 접지로 흘려보내 후단 회로를 보호한다.',
+        keyFormulas: ['V_clamp = V_breakdown + I_pp x R_dyn', 'ESD 에너지 E = ½ x C x V^2 (HBM: C=100pF)', '응답 시간 < 1ns (TVS)', '용량성 부하 < 1pF (고속 신호)'],
+        designNotes: ['TVS 다이오드를 커넥터 입구에 배치', '보호 배선을 짧고 넓게 해 기생 인덕턴스 저감', 'USB/HDMI 등 고속 인터페이스는 저용량 ESD 선택', '시스템 레벨 ESD는 IEC 61000-4-2 고려'],
+        commonMistakes: ['ESD 보호 부품이 커넥터에서 너무 멂', '접지 경로가 길어 보호 효과 저하', '보호 소자의 용량이 고속 신호에 주는 영향 미고려', '소자 레벨만 하고 시스템 레벨 ESD 미실시']
+      }
+    },
+    'measurement-basics': {
+      en: {
+        principles: 'Measurement is the key step for verifying a design. An oscilloscope shows time-domain waveforms, a spectrum analyzer shows frequency-domain behavior, a multimeter measures DC parameters, and an LCR bridge measures passive components.',
+        keyFormulas: ['Rise time tr(10%-90%) ≈ 0.35 / bandwidth', 'Sample rate ≥ 10 x highest signal frequency', 'Resolution = V_range / 2^bits', 'CMRR = 20log(Vcm/Vout)'],
+        designNotes: ['Keep the scope probe ground lead short to reduce loop area', 'Use a differential probe for floating signals', 'For digital signals choose a probe with adequate bandwidth', "Mind the instrument input impedance's effect on the circuit"],
+        commonMistakes: ['Long probe ground lead injecting noise', "Measurement changing the circuit's operating state", 'Wrong trigger setting making the waveform unstable', 'Uncalibrated instrument causing measurement error']
+      },
+      ja: {
+        principles: '測定は設計検証の重要ステップ。オシロスコープは時間領域波形、スペクトラムアナライザは周波数領域特性、マルチメータは DC パラメータ、LCR ブリッジは受動部品を測定する。',
+        keyFormulas: ['立ち上がり時間 tr(10%-90%) ≈ 0.35 / 帯域幅', 'サンプリングレート ≥ 10 x 信号最高周波数', '分解能 = V_range / 2^bits', '同相除去比 CMRR = 20log(Vcm/Vout)'],
+        designNotes: ['オシロプローブの接地リードを短くしループ面積を低減', '浮遊信号には差動プローブを使う', 'デジタル信号には十分な帯域のプローブを選ぶ', '測定器の入力インピーダンスが回路に与える影響に注意'],
+        commonMistakes: ['プローブ接地リードが長く雑音を導入', '測定が被測定回路の動作状態を変える', 'トリガ設定が不適切で波形が不安定', '校正していない測定器で測定誤差']
+      },
+      ko: {
+        principles: '측정은 설계 검증의 핵심 단계다. 오실로스코프는 시간 영역 파형, 스펙트럼 분석기는 주파수 영역 특성, 멀티미터는 DC 파라미터, LCR 브리지는 수동 부품을 측정한다.',
+        keyFormulas: ['상승 시간 tr(10%-90%) ≈ 0.35 / 대역폭', '샘플링 레이트 ≥ 10 x 신호 최고 주파수', '분해능 = V_range / 2^bits', '동상 제거비 CMRR = 20log(Vcm/Vout)'],
+        designNotes: ['오실로 프로브 접지 리드를 짧게 해 루프 면적 저감', '플로팅 신호에는 차동 프로브 사용', '디지털 신호에는 충분한 대역의 프로브 선택', '측정기 입력 임피던스가 회로에 주는 영향 주의'],
+        commonMistakes: ['프로브 접지 리드가 길어 잡음 유입', '측정이 피측정 회로의 동작 상태를 바꿈', '트리거 설정 부적절로 파형 불안정', '교정하지 않은 측정기로 측정 오차']
+      }
+    },
+    'embedded-power-design': {
+      en: {
+        principles: 'Embedded systems usually need several supplies: core voltage (1.0-1.2V), I/O voltage (3.3V), analog voltage (2.5V), etc. Power sequencing, transient response and low-power design are key.',
+        keyFormulas: ['P_total = Σ(P_core + P_io + P_static)', 'Power-up time difference Δt > 10ms (typical)', 'Bypass capacitor C ≥ ΔI x Δt / ΔV', 'Sleep current < 10μA (RTC mode)'],
+        designNotes: ['Multiple supplies need sequencing (core before I/O)', 'Use a PMIC or multi-channel PMIC to simplify the design', 'The core supply PDN needs low-impedance design', 'Low-power design: turn off unused power domains'],
+        commonMistakes: ['Wrong sequencing causing latch-up', 'Insufficient power transient response resetting the MCU', 'Not accounting for load current variation causing voltage droop', 'Analog and digital supplies not isolated']
+      },
+      ja: {
+        principles: '組込みシステムは通常複数の電源が必要：コア電圧（1.0-1.2V）、I/O 電圧（3.3V）、アナログ電圧（2.5V）など。電源投入順序、過渡応答、低消費電力設計が鍵。',
+        keyFormulas: ['P_total = Σ(P_core + P_io + P_static)', '投入時間差 Δt > 10ms（典型）', 'バイパスコンデンサ C ≥ ΔI x Δt / ΔV', 'スリープ電流 < 10μA（RTC モード）'],
+        designNotes: ['複数電源は投入順序の制御が必要（コアの後に I/O）', 'PMIC や多チャネル PMIC で設計を簡素化', 'コア電源の PDN は低インピーダンス設計が必要', '低消費電力設計：未使用の電源ドメインを切る'],
+        commonMistakes: ['投入順序誤りでラッチアップ', '電源過渡応答不足で MCU がリセット', '負荷電流変動を考慮せず電圧降下', 'アナログとデジタル電源が未分離']
+      },
+      ko: {
+        principles: '임베디드 시스템은 보통 여러 전원이 필요하다: 코어 전압(1.0-1.2V), I/O 전압(3.3V), 아날로그 전압(2.5V) 등. 전원 시퀀싱, 과도 응답, 저전력 설계가 핵심.',
+        keyFormulas: ['P_total = Σ(P_core + P_io + P_static)', '인가 시간차 Δt > 10ms(전형)', '바이패스 커패시터 C ≥ ΔI x Δt / ΔV', '슬립 전류 < 10μA(RTC 모드)'],
+        designNotes: ['다중 전원은 시퀀싱 제어 필요(코어 다음 I/O)', 'PMIC나 다채널 PMIC로 설계 간소화', '코어 전원 PDN은 저임피던스 설계 필요', '저전력 설계: 미사용 전원 도메인 차단'],
+        commonMistakes: ['시퀀싱 오류로 래치업', '전원 과도 응답 부족으로 MCU 리셋', '부하 전류 변동 미고려로 전압 강하', '아날로그와 디지털 전원 미분리']
+      }
+    },
+    'boost-converter': {
+      en: {
+        principles: 'A boost converter steps up voltage by storing and releasing energy in an inductor. When the switch is on, the inductor stores energy; when it turns off, the inductor voltage adds to the input and feeds the load through a diode. The output is always higher than the input.',
+        keyFormulas: ['Vout = Vin / (1 - D)', 'D = 1 - Vin/Vout', 'IL = Iout / (1 - D)', 'Duty cycle D = Ton / T'],
+        designNotes: ['Choose a suitable inductor (saturation current > 1.3x peak current)', 'Keep the input capacitor close to the IC to reduce input ripple', 'Choose a low-Vf Schottky diode', "Ensure the output voltage does not exceed the IC's maximum rating", 'Minimize the switching loop area in PCB layout'],
+        commonMistakes: ['Insufficient inductor saturation current lowering efficiency', 'Output capacitor ESR too high causing excessive ripple', 'Diode reverse-recovery time hurting efficiency', 'Poor PCB layout causing EMI problems', 'Not accounting for DCM at light load']
+      },
+      ja: {
+        principles: 'Boost コンバータはインダクタにエネルギーを蓄放電して昇圧する。スイッチオンでインダクタが蓄積、オフでインダクタ電圧が入力に加算されダイオード経由で負荷へ供給。出力は常に入力より高い。',
+        keyFormulas: ['Vout = Vin / (1 - D)', 'D = 1 - Vin/Vout', 'IL = Iout / (1 - D)', 'デューティ比 D = Ton / T'],
+        designNotes: ['適切なインダクタを選ぶ（飽和電流 > ピーク電流の 1.3 倍）', '入力コンデンサを IC の近くに置き入力リップルを低減', '低 Vf のショットキーダイオードを選ぶ', '出力電圧が IC の最大定格を超えないようにする', 'PCB レイアウトでスイッチングループ面積を最小化'],
+        commonMistakes: ['インダクタ飽和電流不足で効率低下', '出力コンデンサの ESR が高くリップル過大', 'ダイオードの逆回復時間が効率を損なう', 'PCB レイアウト不良で EMI 問題', '軽負荷時の DCM モードを考慮しない']
+      },
+      ko: {
+        principles: 'Boost 컨버터는 인덕터에 에너지를 저장·방출해 승압한다. 스위치 온에서 인덕터가 저장, 오프에서 인덕터 전압이 입력에 더해져 다이오드를 통해 부하에 공급. 출력은 항상 입력보다 높다.',
+        keyFormulas: ['Vout = Vin / (1 - D)', 'D = 1 - Vin/Vout', 'IL = Iout / (1 - D)', '듀티비 D = Ton / T'],
+        designNotes: ['적합한 인덕터 선택(포화 전류 > 피크 전류의 1.3배)', '입력 커패시터를 IC 가까이 두어 입력 리플 저감', '저 Vf 쇼트키 다이오드 선택', '출력 전압이 IC 최대 정격을 넘지 않게 함', 'PCB 레이아웃에서 스위칭 루프 면적 최소화'],
+        commonMistakes: ['인덕터 포화 전류 부족으로 효율 저하', '출력 커패시터 ESR 과다로 리플 과대', '다이오드 역회복 시간이 효율 저하', 'PCB 레이아웃 불량으로 EMI 문제', '경부하 시 DCM 모드 미고려']
+      }
     }
   };
   var M = window.KNOWLEDGE_I18N = window.KNOWLEDGE_I18N || {};
