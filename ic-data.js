@@ -53438,5 +53438,763 @@ window.IC_DATA = [
         "note": "同 AWRL6843/6844 家族、同 207-ball FCCSP 封裝；差異為 3 發射通道（AWRL6844 為 4 通道，第 4 發射天線埠 TX4=A9 於 AWRL6843 未使用）。非電氣完全等價，通道數不同。"
       }
     ]
+  },
+  {
+    "part": "IWRL6432AOP",
+    "mfr": "Texas Instruments",
+    "category": "rf",
+    "subcategory": "60GHz FMCW 工業雷達單晶片 SoC（天線整合封裝 AoP）",
+    "package": "101-ball BGA (AMY0101A) 10.9×6.7mm, 0.5mm pitch",
+    "whatIs": "IWRL6432AOP 系 TI 57–63.5GHz 單晶片工業毫米波雷達感測器，將 3 接收/2 發射天線整合於封裝上（Antennas-On-Package, AoP），免外接天線。整合 FMCW 收發器（PLL、發射器、接收器、基頻、ADC）、Arm Cortex-M4F（160MHz）與 HWA 1.2 雷達硬體加速器（80MHz）。",
+    "func": "以 FMCW 於 57–63.5GHz（6.5GHz 連續頻寬）發射/接收毫米波，典型量測距離達 20m；分數 N PLL 產生線性 chirp，接收訊號經 5MHz IF 頻寬類比鏈與 ADC 取樣，由 HWA（FFT/log-mag/CFAR）就地處理。支援 BOM 最佳化/功耗最佳化模式；主機介面含 QSPI、UART、I2C、SPI、GPADC、GPIO；OSC_CLK_OUT 供時脈輸出。",
+    "usedIn": "存在/移動偵測、人流計數、手勢感測、樓宇自動化、智慧家庭、工業安全區域監控、液位量測等低功耗工業雷達應用。",
+    "desc": "IWRL6432AOP 為 AoP（天線整合封裝）版本，天線內建於封裝上、101-ball BGA（AMY0101A，矩形雙側球陣列，中間為天線區）。本條目 pinout 取自 datasheet Figure 6-1 Pin Diagram（Top View，座標解析 101 球，col1–5 左側/col6–10 右側）並經 Table 6-1 Pin Attributes 交叉驗證 name↔ball 一致（101 球全數涵蓋、0 mismatch）。QSPI[3] 為 B3/B4 雙球、OSC_CLK_OUT 為 A8/B8 雙球（Pin Attributes 合併列多球訊號，已逐球列入）。signal 球 desc 附 IOMUX 多工功能。",
+    "datasheet": "TI SWRS323B",
+    "pins": [
+      {
+        "num": "A1",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地球"
+      },
+      {
+        "num": "A2",
+        "name": "VPP",
+        "side": "L",
+        "type": "power",
+        "desc": "一次性可編程 (eFuse) 電源"
+      },
+      {
+        "num": "A3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地球"
+      },
+      {
+        "num": "A4",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地球"
+      },
+      {
+        "num": "A5",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地球"
+      },
+      {
+        "num": "A6",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "A7",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "A8",
+        "name": "OSC_CLK_OUT",
+        "side": "R",
+        "type": "output",
+        "desc": "參考振盪時脈輸出"
+      },
+      {
+        "num": "A9",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "A10",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "B1",
+        "name": "VIOIN_18",
+        "side": "L",
+        "type": "power",
+        "desc": "IO 電源輸入"
+      },
+      {
+        "num": "B2",
+        "name": "VPP",
+        "side": "L",
+        "type": "power",
+        "desc": "一次性可編程 (eFuse) 電源"
+      },
+      {
+        "num": "B3",
+        "name": "QSPI[3]",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: QSPI[3] / I2C_SDA / SYNC_IN / MDO_D2"
+      },
+      {
+        "num": "B4",
+        "name": "QSPI[3]",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: QSPI[3] / I2C_SDA / SYNC_IN / MDO_D2"
+      },
+      {
+        "num": "B7",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "B8",
+        "name": "OSC_CLK_OUT",
+        "side": "R",
+        "type": "output",
+        "desc": "參考振盪時脈輸出"
+      },
+      {
+        "num": "B9",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "B10",
+        "name": "CLKM",
+        "side": "R",
+        "type": "analog",
+        "desc": "CLKM"
+      },
+      {
+        "num": "C1",
+        "name": "VIOIN",
+        "side": "L",
+        "type": "power",
+        "desc": "IO 電源輸入"
+      },
+      {
+        "num": "C2",
+        "name": "QSPI[0]",
+        "side": "L",
+        "type": "io",
+        "desc": "MUX: QSPI[0] / SPIB_MOSI / MDO_D0"
+      },
+      {
+        "num": "C3",
+        "name": "QSPI[1]",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: QSPI[1] / SPIB_MISO / RTC_CLK_IN / MDO_D3"
+      },
+      {
+        "num": "C4",
+        "name": "QSPI[2]",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: QSPI[2] / I2C_SCL / WU_REQIN / MDO_D1"
+      },
+      {
+        "num": "C7",
+        "name": "VDDA_10RF",
+        "side": "R",
+        "type": "power",
+        "desc": "RF 類比電源"
+      },
+      {
+        "num": "C8",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "C9",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "C10",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "D2",
+        "name": "QSPI_CLK",
+        "side": "L",
+        "type": "io",
+        "desc": "MUX: QSPI_CLK / SPIB_CLK / MDO_CLK"
+      },
+      {
+        "num": "D3",
+        "name": "QSPI_CS",
+        "side": "L",
+        "type": "output",
+        "desc": "MUX: QSPI_CS / SPIB_CS0_N / MDO_FRM_CLK"
+      },
+      {
+        "num": "D7",
+        "name": "VIOIN_18CLK",
+        "side": "R",
+        "type": "power",
+        "desc": "IO 電源輸入"
+      },
+      {
+        "num": "D8",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "D9",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "D10",
+        "name": "CLKP",
+        "side": "R",
+        "type": "analog",
+        "desc": "CLKP"
+      },
+      {
+        "num": "E1",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地球"
+      },
+      {
+        "num": "E2",
+        "name": "TDO",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: SOP[0] / TDO / MDO_FRM_CLK"
+      },
+      {
+        "num": "E3",
+        "name": "SPIA_MOSI",
+        "side": "L",
+        "type": "io",
+        "desc": "MUX: SPIA_MOSI / GPIO_0 / EPWMB / SPIB_MOSI / MDO_D1"
+      },
+      {
+        "num": "E4",
+        "name": "SPIA_MISO",
+        "side": "L",
+        "type": "io",
+        "desc": "MUX: SPIA_MISO / GPIO_1 / EPWMA / SPIB_MISO / MDO_D2"
+      },
+      {
+        "num": "E7",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "E8",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "E9",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "E10",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "F1",
+        "name": "SPIA_CLK",
+        "side": "L",
+        "type": "io",
+        "desc": "MUX: SPIA_CLK / EPWMB / I2C_SCL / SPIB_CLK / MDO_CLK"
+      },
+      {
+        "num": "F2",
+        "name": "TDI",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: TDI / EPWMA / SPIB_CS0_N / SIGNAL_NAME(3)"
+      },
+      {
+        "num": "F3",
+        "name": "TCK",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: TCK / EPWMB / SPIB_CS1_N / SPIB_MOSI / MDO_D0"
+      },
+      {
+        "num": "F4",
+        "name": "SPIA_CS0_N",
+        "side": "L",
+        "type": "io",
+        "desc": "MUX: SPIA_CS0_N / EPWMA / I2C_SDA / SPIB_CS0_N / MDO_D3"
+      },
+      {
+        "num": "F7",
+        "name": "VOUT_14SYNTH",
+        "side": "R",
+        "type": "power",
+        "desc": "VOUT_14SYNTH"
+      },
+      {
+        "num": "F8",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "F9",
+        "name": "VDDA_18VCO",
+        "side": "R",
+        "type": "power",
+        "desc": "VCO 類比電源"
+      },
+      {
+        "num": "F10",
+        "name": "VDDA_18VCO",
+        "side": "R",
+        "type": "power",
+        "desc": "VCO 類比電源"
+      },
+      {
+        "num": "G2",
+        "name": "RS232_RX",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: RS232_RX / I2C_SDA / UARTB_RX / LIN_RX / MDO_D2 / SPIB_MISO / SIGNAL_NAME(3)"
+      },
+      {
+        "num": "G3",
+        "name": "TMS",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: TMS / WARM_RESET_OUT / SPIA_CS1_N / SYNC_IN / SPIB_MISO / SPIB_CLK / RTC_CLK_IN / EPWM_SYNC_IN / EPWM_SYNC_OUT"
+      },
+      {
+        "num": "G8",
+        "name": "VOUT_14APLL",
+        "side": "R",
+        "type": "power",
+        "desc": "VOUT_14APLL"
+      },
+      {
+        "num": "G9",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "G10",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "H1",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地球"
+      },
+      {
+        "num": "H2",
+        "name": "GPIO_2",
+        "side": "L",
+        "type": "io",
+        "desc": "MUX: GPIO_2 / LIN_RX / WARM_RESET_OUT / I2C_SDA / SPIA_CS1_N / WU_REQIN / RTC_CLK_IN / MDO_D0"
+      },
+      {
+        "num": "H3",
+        "name": "PMIC_CLKOUT",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: SOP[1] / PMIC_CLKOUT / LIN_TX / SPIA_CS1_N / MDO_FRM_CLK"
+      },
+      {
+        "num": "H4",
+        "name": "RS232_TX",
+        "side": "L",
+        "type": "output",
+        "desc": "MUX: RS232_TX / I2C_SCL / UARTB_TX / LIN_TX / EPWM_SYNC_IN / MDO_D1 / SPIB_CS1_N"
+      },
+      {
+        "num": "H7",
+        "name": "VIN_18PM",
+        "side": "R",
+        "type": "power",
+        "desc": "電源管理輸入"
+      },
+      {
+        "num": "H8",
+        "name": "VIN_18PM",
+        "side": "R",
+        "type": "power",
+        "desc": "電源管理輸入"
+      },
+      {
+        "num": "H9",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "H10",
+        "name": "VBGAP",
+        "side": "R",
+        "type": "analog",
+        "desc": "MUX: VBGAP / SIGNAL_NAME(3)"
+      },
+      {
+        "num": "J1",
+        "name": "VIOIN",
+        "side": "L",
+        "type": "power",
+        "desc": "IO 電源輸入"
+      },
+      {
+        "num": "J2",
+        "name": "GPIO_5",
+        "side": "L",
+        "type": "io",
+        "desc": "MUX: GPIO_5 / SYNC_IN / LIN_RX / EPWMB / EPWM_SYNC_IN / MDO_D3"
+      },
+      {
+        "num": "J3",
+        "name": "UARTA_RX",
+        "side": "L",
+        "type": "input",
+        "desc": "MUX: UARTA_RX / GPIO_3 / LIN_RX / CAN_FD_RX / SYNC_IN / UARTB_RX / I2C_SDA / MDO_D1"
+      },
+      {
+        "num": "J4",
+        "name": "NERROR_OUT",
+        "side": "L",
+        "type": "output",
+        "desc": "MUX: NERROR_OUT / GPIO_4 / SYNC_IN / SPIB_CS0_N / WU_REQIN / RTC_CLK_IN / MCU_CLKOUT / MDO_D3"
+      },
+      {
+        "num": "J7",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "J8",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "J9",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "J10",
+        "name": "VSSA",
+        "side": "R",
+        "type": "ground",
+        "desc": "類比接地球"
+      },
+      {
+        "num": "K2",
+        "name": "VDD",
+        "side": "L",
+        "type": "power",
+        "desc": "電源球"
+      },
+      {
+        "num": "K3",
+        "name": "UARTA_TX",
+        "side": "L",
+        "type": "output",
+        "desc": "MUX: UARTA_TX / LIN_TX / CAN_FD_TX / SPIB_MOSI / WU_REQIN / UARTB_TX / I2C_SCL / MDO_D2"
+      },
+      {
+        "num": "K7",
+        "name": "VDDA_10RF",
+        "side": "R",
+        "type": "power",
+        "desc": "RF 類比電源"
+      },
+      {
+        "num": "K8",
+        "name": "VDDA_10RF",
+        "side": "R",
+        "type": "power",
+        "desc": "RF 類比電源"
+      },
+      {
+        "num": "K9",
+        "name": "VDDA_10RF",
+        "side": "R",
+        "type": "power",
+        "desc": "RF 類比電源"
+      },
+      {
+        "num": "K10",
+        "name": "VDDA_10RF",
+        "side": "R",
+        "type": "power",
+        "desc": "RF 類比電源"
+      },
+      {
+        "num": "L1",
+        "name": "VIOIN_18",
+        "side": "L",
+        "type": "power",
+        "desc": "IO 電源輸入"
+      },
+      {
+        "num": "L2",
+        "name": "VIOIN_18",
+        "side": "L",
+        "type": "power",
+        "desc": "IO 電源輸入"
+      },
+      {
+        "num": "L3",
+        "name": "HOST_CLK_REQ",
+        "side": "L",
+        "type": "output",
+        "desc": "MUX: HOST_CLK_REQ / GPIO_7 / MCU_CLKOUT / LIN_TX / WU_REQIN / SPIB_MISO / I2C_SCL / MDO_D3 / MDO_FRM_CLK"
+      },
+      {
+        "num": "L4",
+        "name": "UARTA_RTS",
+        "side": "L",
+        "type": "output",
+        "desc": "MUX: UARTA_RTS / GPIO_6 / LIN_TX / SPIB_CLK / WU_REQIN / EPWMA / RTC_CLK_IN / MDO_CLK"
+      },
+      {
+        "num": "L7",
+        "name": "VDDA_12RF",
+        "side": "R",
+        "type": "power",
+        "desc": "RF 類比電源"
+      },
+      {
+        "num": "L8",
+        "name": "VDDA_12RF",
+        "side": "R",
+        "type": "power",
+        "desc": "RF 類比電源"
+      },
+      {
+        "num": "L9",
+        "name": "VDDA_12RF",
+        "side": "R",
+        "type": "power",
+        "desc": "RF 類比電源"
+      },
+      {
+        "num": "L10",
+        "name": "VDDA_12RF",
+        "side": "R",
+        "type": "power",
+        "desc": "RF 類比電源"
+      },
+      {
+        "num": "M1",
+        "name": "VDD_SRAM",
+        "side": "L",
+        "type": "power",
+        "desc": "電源球"
+      },
+      {
+        "num": "M2",
+        "name": "VNWA",
+        "side": "L",
+        "type": "power",
+        "desc": "N-well 偏壓"
+      },
+      {
+        "num": "M3",
+        "name": "NRESET",
+        "side": "L",
+        "type": "analog",
+        "desc": "NRESET"
+      },
+      {
+        "num": "M4",
+        "name": "NRESET",
+        "side": "L",
+        "type": "analog",
+        "desc": "NRESET"
+      },
+      {
+        "num": "M7",
+        "name": "VDDA_18BB",
+        "side": "R",
+        "type": "power",
+        "desc": "基頻類比電源"
+      },
+      {
+        "num": "M8",
+        "name": "VDDA_18BB",
+        "side": "R",
+        "type": "power",
+        "desc": "基頻類比電源"
+      },
+      {
+        "num": "M9",
+        "name": "VDDA_18BB",
+        "side": "R",
+        "type": "power",
+        "desc": "基頻類比電源"
+      },
+      {
+        "num": "M10",
+        "name": "GPADC1",
+        "side": "R",
+        "type": "analog",
+        "desc": "GPADC1"
+      },
+      {
+        "num": "N1",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地球"
+      },
+      {
+        "num": "N2",
+        "name": "VNWA",
+        "side": "L",
+        "type": "power",
+        "desc": "N-well 偏壓"
+      },
+      {
+        "num": "N3",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地球"
+      },
+      {
+        "num": "N4",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地球"
+      },
+      {
+        "num": "N5",
+        "name": "VSS",
+        "side": "L",
+        "type": "ground",
+        "desc": "接地球"
+      },
+      {
+        "num": "N6",
+        "name": "VDDA_18BB",
+        "side": "R",
+        "type": "power",
+        "desc": "基頻類比電源"
+      },
+      {
+        "num": "N7",
+        "name": "VDDA_18BB",
+        "side": "R",
+        "type": "power",
+        "desc": "基頻類比電源"
+      },
+      {
+        "num": "N8",
+        "name": "VDDA_18BB",
+        "side": "R",
+        "type": "power",
+        "desc": "基頻類比電源"
+      },
+      {
+        "num": "N9",
+        "name": "VDDA_18BB",
+        "side": "R",
+        "type": "power",
+        "desc": "基頻類比電源"
+      },
+      {
+        "num": "N10",
+        "name": "VDDA_18BB",
+        "side": "R",
+        "type": "power",
+        "desc": "基頻類比電源"
+      }
+    ],
+    "thermalPad": "101-ball BGA（AoP）為球陣列封裝，物理上無獨立 exposed pad；散熱與接地經 VSS/VSSA 球達成。天線整合於封裝頂面。",
+    "specs": [
+      {
+        "k": "頻段",
+        "v": "57–63.5GHz FMCW，6.5GHz 連續頻寬"
+      },
+      {
+        "k": "收發通道",
+        "v": "3×RX / 2×TX（天線整合於封裝 AoP）"
+      },
+      {
+        "k": "處理核心",
+        "v": "Arm Cortex-M4F 160MHz + HWA 1.2（80MHz）"
+      },
+      {
+        "k": "IF 頻寬",
+        "v": "5MHz，real-only Rx"
+      },
+      {
+        "k": "量測距離",
+        "v": "典型達 20m"
+      },
+      {
+        "k": "封裝",
+        "v": "101-ball BGA (AMY0101A) 10.9×6.7mm，0.5mm pitch"
+      },
+      {
+        "k": "介面",
+        "v": "QSPI / UART / SPI / I2C / GPADC / GPIO / OSC_CLK_OUT"
+      },
+      {
+        "k": "文件",
+        "v": "SWRS323B"
+      }
+    ],
+    "secondSource": [],
+    "dropIn": []
   }
 ];
