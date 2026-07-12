@@ -4555,3 +4555,771 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 7: entries 90-104 */
+(function () {
+  var T = {
+    'AMC0206M05': {
+      en: {
+        subcategory: 'Isolated ΔΣ modulator (±50mV input)',
+        whatIs: 'Isolated Delta-Sigma modulator: measures a small ±50mV analog signal on the high-voltage side (suited to low-drop shunt current sensing), converts it into a bitstream (DOUT) sent across the isolation barrier to the low-voltage side. Same pinout as AMC0206M25, ±50mV range.',
+        func: 'High-side INP/INN differential input (±50mV) is ΔΣ-modulated into a DOUT bitstream across isolation; CLKIN external clock. AVDD/AGND high side, DVDD/DGND low side. The ±50mV range cuts shunt-resistor power loss.',
+        usedIn: 'Motor/inverter phase-current isolated measurement (small shunt, low loss), isolated current sensing, power feedback.',
+        desc: 'Isolated ΔΣ modulator, ±50mV input, external clock CLKIN, bitstream DOUT (wide-body SOIC-8).',
+        specs: [
+          { k: 'Function', v: 'Isolated ΔΣ modulator' },
+          { k: 'Input range', v: '±50mV (differential)' },
+          { k: 'Clock', v: 'CLKIN external clock input' },
+          { k: 'Output', v: 'DOUT bitstream (needs external sinc filter)' },
+          { k: 'Supply', v: 'AVDD (high side) + DVDD (low side)' },
+          { k: 'Package', v: 'wide-body SOIC-8 (isolated)' }
+        ],
+        dropIn: [
+          { note: 'Same pinout; AMC0306M05 is the reinforced-isolation version' },
+          { note: 'Same pinout; ±250mV input range (not ±50mV)' }
+        ]
+      },
+      ja: {
+        subcategory: '絶縁 ΔΣ モジュレータ（±50mV 入力）',
+        whatIs: '絶縁 Delta-Sigma モジュレータ：高圧側で ±50mV の小アナログ信号を計測（低ドロップシャント電流計測向き）し、ビットストリーム（DOUT）に変換して絶縁バリア越しに低圧側へ。AMC0206M25 とピン互換・±50mV レンジ。',
+        func: '高圧側 INP/INN 差動入力（±50mV）を ΔΣ 変調し DOUT ビットストリームで絶縁越しに出力；CLKIN 外部クロック。AVDD/AGND 高圧側、DVDD/DGND 低圧側。±50mV レンジでシャント抵抗の損失を低減。',
+        usedIn: 'モータ/インバータ相電流絶縁計測（小シャント・低損失）、絶縁電流検出、電源帰還。',
+        desc: '絶縁 ΔΣ モジュレータ。±50mV 入力・外部クロック CLKIN・ビットストリーム DOUT（SOIC-8 ワイドボディ）。',
+        specs: [
+          { k: '機能', v: '絶縁 ΔΣ モジュレータ' },
+          { k: '入力範囲', v: '±50mV（差動）' },
+          { k: 'クロック', v: 'CLKIN 外部クロック入力' },
+          { k: '出力', v: 'DOUT ビットストリーム（外部 sinc フィルタ必要）' },
+          { k: '電源', v: 'AVDD（高圧側）＋DVDD（低圧側）' },
+          { k: 'パッケージ', v: 'SOIC-8 ワイドボディ（絶縁）' }
+        ],
+        dropIn: [
+          { note: '同ピン配置；AMC0306M05 は強化絶縁（reinforced）版' },
+          { note: '同ピン配置；入力範囲 ±250mV（±50mV ではない）' }
+        ]
+      },
+      ko: {
+        subcategory: '절연 ΔΣ 모듈레이터(±50mV 입력)',
+        whatIs: '절연 Delta-Sigma 모듈레이터: 고압 측에서 ±50mV 소 아날로그 신호를 계측(저강하 션트 전류 계측용)해 비트스트림(DOUT)으로 변환, 절연 배리어 너머 저압 측으로. AMC0206M25와 핀 호환·±50mV 범위.',
+        func: '고압 측 INP/INN 차동 입력(±50mV)을 ΔΣ 변조해 DOUT 비트스트림으로 절연 너머 출력; CLKIN 외부 클록. AVDD/AGND 고압 측, DVDD/DGND 저압 측. ±50mV 범위로 션트 저항 손실 저감.',
+        usedIn: '모터/인버터 상전류 절연 계측(소 션트·저손실), 절연 전류 검출, 전원 피드백.',
+        desc: '절연 ΔΣ 모듈레이터. ±50mV 입력·외부 클록 CLKIN·비트스트림 DOUT(SOIC-8 와이드바디).',
+        specs: [
+          { k: '기능', v: '절연 ΔΣ 모듈레이터' },
+          { k: '입력 범위', v: '±50mV(차동)' },
+          { k: '클록', v: 'CLKIN 외부 클록 입력' },
+          { k: '출력', v: 'DOUT 비트스트림(외부 sinc 필터 필요)' },
+          { k: '전원', v: 'AVDD(고압 측) + DVDD(저압 측)' },
+          { k: '패키지', v: 'SOIC-8 와이드바디(절연)' }
+        ],
+        dropIn: [
+          { note: '동일 핀 배치; AMC0306M05는 강화 절연(reinforced)판' },
+          { note: '동일 핀 배치; 입력 범위 ±250mV(±50mV 아님)' }
+        ]
+      }
+    },
+    'AMC0306M05': {
+      en: {
+        subcategory: 'Isolated ΔΣ modulator (±50mV, reinforced isolation)',
+        whatIs: 'Isolated Delta-Sigma modulator (reinforced isolation): ±50mV input, external clock, bitstream output. Same pinout as AMC0206M05 with reinforced isolation grade (higher working voltage / stricter safety).',
+        func: 'Same as AMC0206M05: high-side ±50mV differential input ΔΣ-modulated into DOUT across isolation, CLKIN external clock. Reinforced isolation suits higher-voltage/safety requirements.',
+        usedIn: 'High-voltage motor/inverter phase-current isolated measurement, current sensing needing reinforced isolation, power feedback.',
+        desc: 'Reinforced-isolation ΔΣ modulator, ±50mV, external clock CLKIN, bitstream DOUT (wide-body SOIC-8).',
+        specs: [
+          { k: 'Function', v: 'Isolated ΔΣ modulator (reinforced isolation)' },
+          { k: 'Input range', v: '±50mV' },
+          { k: 'Isolation', v: 'reinforced' },
+          { k: 'Clock', v: 'CLKIN external' },
+          { k: 'Output', v: 'DOUT bitstream' },
+          { k: 'Supply', v: 'AVDD (high side) + DVDD (low side)' },
+          { k: 'Package', v: 'wide-body SOIC-8 (isolated)' }
+        ],
+        dropIn: [{ note: 'Same pinout; AMC0206M05 is the basic-isolation version' }]
+      },
+      ja: {
+        subcategory: '絶縁 ΔΣ モジュレータ（±50mV・強化絶縁）',
+        whatIs: '絶縁 Delta-Sigma モジュレータ（強化絶縁 reinforced）：±50mV 入力・外部クロック・ビットストリーム出力。AMC0206M05 とピン互換、絶縁等級が強化型（より高い動作電圧/厳しい安規）。',
+        func: 'AMC0206M05 と同じ：高圧側 ±50mV 差動入力を ΔΣ 変調し DOUT を絶縁越しに出力、CLKIN 外部クロック。強化絶縁で高圧/安規要求に対応。',
+        usedIn: '高圧モータ/インバータ相電流絶縁計測、強化絶縁が必要な電流検出、電源帰還。',
+        desc: '強化絶縁 ΔΣ モジュレータ。±50mV・外部クロック CLKIN・ビットストリーム DOUT（SOIC-8 ワイドボディ）。',
+        specs: [
+          { k: '機能', v: '絶縁 ΔΣ モジュレータ（強化絶縁）' },
+          { k: '入力範囲', v: '±50mV' },
+          { k: '絶縁', v: 'reinforced（強化型）' },
+          { k: 'クロック', v: 'CLKIN 外部' },
+          { k: '出力', v: 'DOUT ビットストリーム' },
+          { k: '電源', v: 'AVDD（高圧側）＋DVDD（低圧側）' },
+          { k: 'パッケージ', v: 'SOIC-8 ワイドボディ（絶縁）' }
+        ],
+        dropIn: [{ note: '同ピン配置；AMC0206M05 は基本絶縁（basic）版' }]
+      },
+      ko: {
+        subcategory: '절연 ΔΣ 모듈레이터(±50mV·강화 절연)',
+        whatIs: '절연 Delta-Sigma 모듈레이터(강화 절연 reinforced): ±50mV 입력·외부 클록·비트스트림 출력. AMC0206M05와 핀 호환, 절연 등급이 강화형(더 높은 동작 전압/엄격한 안전 규격).',
+        func: 'AMC0206M05와 동일: 고압 측 ±50mV 차동 입력을 ΔΣ 변조해 DOUT을 절연 너머 출력, CLKIN 외부 클록. 강화 절연으로 고압/안전 규격 요구 대응.',
+        usedIn: '고압 모터/인버터 상전류 절연 계측, 강화 절연이 필요한 전류 검출, 전원 피드백.',
+        desc: '강화 절연 ΔΣ 모듈레이터. ±50mV·외부 클록 CLKIN·비트스트림 DOUT(SOIC-8 와이드바디).',
+        specs: [
+          { k: '기능', v: '절연 ΔΣ 모듈레이터(강화 절연)' },
+          { k: '입력 범위', v: '±50mV' },
+          { k: '절연', v: 'reinforced(강화형)' },
+          { k: '클록', v: 'CLKIN 외부' },
+          { k: '출력', v: 'DOUT 비트스트림' },
+          { k: '전원', v: 'AVDD(고압 측) + DVDD(저압 측)' },
+          { k: '패키지', v: 'SOIC-8 와이드바디(절연)' }
+        ],
+        dropIn: [{ note: '동일 핀 배치; AMC0206M05는 기본 절연(basic)판' }]
+      }
+    },
+    'TPS562246B': {
+      en: {
+        subcategory: 'Synchronous buck converter (integrated MOSFETs)',
+        whatIs: 'Synchronous buck (step-down) DC-DC converter: integrates high- and low-side NFETs to step a higher input voltage down to a stable lower output. Few external parts, fixed frequency, with enable and feedback.',
+        func: 'VIN in → internal high/low-side FETs switch the SW node → external inductor/caps filter to a stable output; FB feedback divider sets the output voltage; EN high enables; BST powers the high-side gate-drive bootstrap. For on-board point-of-load power.',
+        usedIn: 'On-board point-of-load (POL) power, SoC/FPGA/DDR rails, consumer/industrial step-down supplies.',
+        desc: 'Synchronous buck converter (integrated MOSFETs), fixed frequency, EN enable, FB-adjustable output (SOT-23-6).',
+        specs: [
+          { k: 'Function', v: 'Synchronous buck converter (integrated MOSFETs)' },
+          { k: 'Feedback', v: 'FB external divider, adjustable output' },
+          { k: 'Enable', v: 'EN (active-high)' },
+          { k: 'Bootstrap', v: 'BST (0.1µF to SW)' },
+          { k: 'Package', v: 'SOT-23-6' }
+        ],
+        dropIn: [
+          { note: 'Same family, same pinout (verify frequency/compensation differences)' },
+          { note: 'Same family, same pinout (different current/frequency specs)' }
+        ]
+      },
+      ja: {
+        subcategory: '同期整流降圧コンバータ（MOSFET 統合）',
+        whatIs: '同期整流降圧（buck）DC-DC コンバータ：ハイ/ローサイド NFET を統合し、高い入力電圧を安定した低出力へ降圧。外付け部品が少なく、固定周波数、イネーブルと帰還付。',
+        func: 'VIN 入力→内部ハイ/ローサイド FET が SW ノードをスイッチ→外付けインダクタ/コンデンサで安定出力に濾波；FB 帰還分圧で出力電圧設定；EN ハイで有効；BST がハイサイドゲート駆動のブートストラップに供給。基板上のポイントオブロード電源に。',
+        usedIn: '基板上ポイントオブロード（POL）電源、SoC/FPGA/DDR レール、民生/産業の降圧電源。',
+        desc: '同期整流降圧コンバータ（MOSFET 統合）。固定周波数・EN イネーブル・FB 可変出力（SOT-23-6）。',
+        specs: [
+          { k: '機能', v: '同期整流降圧コンバータ（MOSFET 統合）' },
+          { k: '帰還', v: 'FB 外部分圧で出力可変' },
+          { k: 'イネーブル', v: 'EN（ハイ有効）' },
+          { k: 'ブートストラップ', v: 'BST（0.1µF を SW へ）' },
+          { k: 'パッケージ', v: 'SOT-23-6' }
+        ],
+        dropIn: [
+          { note: '同シリーズ同ピン配置（周波数/補償の差異を確認）' },
+          { note: '同シリーズ同ピン配置（電流/周波数仕様が異なる）' }
+        ]
+      },
+      ko: {
+        subcategory: '동기 벅 컨버터(MOSFET 통합)',
+        whatIs: '동기 벅(강압) DC-DC 컨버터: 하이/로우사이드 NFET을 통합해 높은 입력 전압을 안정된 낮은 출력으로 강압. 외부 부품이 적고 고정 주파수, 인에이블과 피드백 포함.',
+        func: 'VIN 입력 → 내부 하이/로우사이드 FET이 SW 노드를 스위칭 → 외부 인덕터/커패시터로 안정 출력 필터링; FB 피드백 분압으로 출력 전압 설정; EN 하이로 활성; BST가 하이사이드 게이트 구동 부트스트랩에 공급. 보드 상 포인트 오브 로드 전원용.',
+        usedIn: '보드 상 포인트 오브 로드(POL) 전원, SoC/FPGA/DDR 레일, 소비자/산업 강압 전원.',
+        desc: '동기 벅 컨버터(MOSFET 통합). 고정 주파수·EN 인에이블·FB 가변 출력(SOT-23-6).',
+        specs: [
+          { k: '기능', v: '동기 벅 컨버터(MOSFET 통합)' },
+          { k: '피드백', v: 'FB 외부 분압으로 출력 가변' },
+          { k: '인에이블', v: 'EN(하이 유효)' },
+          { k: '부트스트랩', v: 'BST(0.1µF를 SW로)' },
+          { k: '패키지', v: 'SOT-23-6' }
+        ],
+        dropIn: [
+          { note: '동일 시리즈 동일 핀 배치(주파수/보상 차이 확인)' },
+          { note: '동일 시리즈 동일 핀 배치(전류/주파수 사양 다름)' }
+        ]
+      }
+    },
+    'LMG1020-Q1': {
+      en: {
+        subcategory: 'Low-side GaN/MOSFET gate driver (ultra-fast)',
+        whatIs: 'Ultra-fast low-side gate driver: amplifies a logic-level input (IN+/IN–) into a high-current gate-drive output (OUTH/OUTL) to switch a GaN FET or MOSFET quickly. Separate pull-up/pull-down outputs allow independent switching-speed tuning. Tiny WCSP.',
+        func: 'IN+/IN– differential logic input → separate OUTH (pull-up) / OUTL (pull-down) outputs drive the FET gate; separate outputs allow individual series resistors to set rise/fall speed. Ultra-short propagation delay, suited to high-frequency (MHz) GaN applications.',
+        usedIn: 'GaN FET high-frequency driving, LiDAR laser driving, high-frequency DC-DC, wireless charging, class-E amplifiers.',
+        desc: 'Ultra-fast low-side GaN/MOSFET gate driver, separate pull-up/pull-down outputs, tiny WCSP (DSBGA-6).',
+        specs: [
+          { k: 'Function', v: 'Low-side ultra-fast gate driver (GaN/MOSFET)' },
+          { k: 'Input', v: 'IN+/IN– logic level' },
+          { k: 'Output', v: 'separate OUTH/OUTL (independent speed setting)' },
+          { k: 'Speed', v: 'ultra-short propagation delay (MHz-class GaN)' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'DSBGA-6 (WCSP); balls A1/A2/B1/B2/C1/C2' }
+        ]
+      },
+      ja: {
+        subcategory: 'ローサイド GaN/MOSFET ゲートドライバ（超高速）',
+        whatIs: '超高速ローサイドゲートドライバ：ロジックレベル入力（IN+/IN–）を大電流ゲート駆動出力（OUTH/OUTL）に増幅し、GaN FET や MOSFET を高速スイッチ。プル/プルダウン出力が分離され、スイッチ速度を個別調整可。極小 WCSP。',
+        func: 'IN+/IN– 差動ロジック入力→分離した OUTH（プルアップ）/OUTL（プルダウン）出力が FET ゲートを駆動；分離出力で各々直列抵抗を入れ立上り/立下り速度を個別設定。超短伝搬遅延で高周波（MHz）GaN 用途に好適。',
+        usedIn: 'GaN FET 高周波駆動、LiDAR レーザ駆動、高周波 DC-DC、ワイヤレス充電、E 級増幅。',
+        desc: '超高速ローサイド GaN/MOSFET ゲートドライバ。分離プル/プルダウン出力・極小 WCSP（DSBGA-6）。',
+        specs: [
+          { k: '機能', v: 'ローサイド超高速ゲートドライバ（GaN/MOSFET）' },
+          { k: '入力', v: 'IN+/IN– ロジックレベル' },
+          { k: '出力', v: '分離 OUTH/OUTL（スイッチ速度を個別設定）' },
+          { k: '速度', v: '超短伝搬遅延（MHz 級 GaN）' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'DSBGA-6 (WCSP)；ボール A1/A2/B1/B2/C1/C2' }
+        ]
+      },
+      ko: {
+        subcategory: '로우사이드 GaN/MOSFET 게이트 드라이버(초고속)',
+        whatIs: '초고속 로우사이드 게이트 드라이버: 로직 레벨 입력(IN+/IN–)을 대전류 게이트 구동 출력(OUTH/OUTL)으로 증폭해 GaN FET나 MOSFET을 빠르게 스위칭. 분리된 풀업/풀다운 출력으로 스위칭 속도 개별 조정 가능. 초소형 WCSP.',
+        func: 'IN+/IN– 차동 로직 입력 → 분리된 OUTH(풀업)/OUTL(풀다운) 출력이 FET 게이트 구동; 분리 출력으로 각각 직렬 저항을 넣어 상승/하강 속도 개별 설정. 초단 전파 지연으로 고주파(MHz) GaN 용도에 적합.',
+        usedIn: 'GaN FET 고주파 구동, LiDAR 레이저 구동, 고주파 DC-DC, 무선 충전, E급 증폭.',
+        desc: '초고속 로우사이드 GaN/MOSFET 게이트 드라이버. 분리 풀업/풀다운 출력·초소형 WCSP(DSBGA-6).',
+        specs: [
+          { k: '기능', v: '로우사이드 초고속 게이트 드라이버(GaN/MOSFET)' },
+          { k: '입력', v: 'IN+/IN– 로직 레벨' },
+          { k: '출력', v: '분리 OUTH/OUTL(스위칭 속도 개별 설정)' },
+          { k: '속도', v: '초단 전파 지연(MHz급 GaN)' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'DSBGA-6 (WCSP); 볼 A1/A2/B1/B2/C1/C2' }
+        ]
+      }
+    },
+    'UCC57142-Q1': {
+      en: {
+        subcategory: 'Single-channel gate driver (with enable/fault + overcurrent protection)',
+        whatIs: 'Single-channel gate driver: amplifies a control signal (IN) into a high-current gate-drive output (OUT) to drive a power FET/IGBT, with enable/fault reporting (EN/FLT) and current-sense (OCP) overcurrent protection.',
+        func: 'IN→OUT gate drive; EN/FLT dual-function pin (enable + fault report); OCP current-sense input for overcurrent protection; VDD bias, COM ground. For half-bridge/single-switch power drive.',
+        usedIn: 'Power MOSFET/IGBT driving, power conversion, motor-drive stages, power protection.',
+        desc: 'Single-channel gate driver, with EN/FLT + OCP overcurrent protection (SOT-23-6).',
+        specs: [
+          { k: 'Function', v: 'Single-channel gate driver (with overcurrent protection)' },
+          { k: 'Protection', v: 'OCP current sense' },
+          { k: 'Control', v: 'IN input + EN/FLT enable/fault' },
+          { k: 'Supply', v: 'VDD bias' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT-23-6' }
+        ],
+        dropIn: [{ note: 'Same family, same pinout (higher drive-current version)' }]
+      },
+      ja: {
+        subcategory: '1 チャネルゲートドライバ（イネーブル/故障＋過電流保護付）',
+        whatIs: '1 チャネルゲートドライバ：制御信号（IN）を大電流ゲート駆動出力（OUT）に増幅しパワー FET/IGBT を駆動、イネーブル/故障報告（EN/FLT）と電流検出（OCP）過電流保護を含む。',
+        func: 'IN→OUT ゲート駆動；EN/FLT 兼用ピン（イネーブル＋故障報告）；OCP 電流検出入力で過電流保護；VDD バイアス、COM 接地。ハーフブリッジ/シングルスイッチのパワー駆動に。',
+        usedIn: 'パワー MOSFET/IGBT 駆動、電源変換、モータ駆動段、電源保護。',
+        desc: '1 チャネルゲートドライバ。EN/FLT＋OCP 過電流保護付（SOT-23-6）。',
+        specs: [
+          { k: '機能', v: '1 チャネルゲートドライバ（過電流保護付）' },
+          { k: '保護', v: 'OCP 電流検出' },
+          { k: '制御', v: 'IN 入力＋EN/FLT イネーブル/故障' },
+          { k: '電源', v: 'VDD バイアス' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT-23-6' }
+        ],
+        dropIn: [{ note: '同シリーズ同ピン配置（駆動電流が大きい版）' }]
+      },
+      ko: {
+        subcategory: '단일 채널 게이트 드라이버(인에이블/고장+과전류 보호)',
+        whatIs: '단일 채널 게이트 드라이버: 제어 신호(IN)를 대전류 게이트 구동 출력(OUT)으로 증폭해 전력 FET/IGBT를 구동, 인에이블/고장 보고(EN/FLT)와 전류 감지(OCP) 과전류 보호 포함.',
+        func: 'IN→OUT 게이트 구동; EN/FLT 겸용 핀(인에이블+고장 보고); OCP 전류 감지 입력으로 과전류 보호; VDD 바이어스, COM 접지. 하프 브리지/단일 스위치 전력 구동용.',
+        usedIn: '전력 MOSFET/IGBT 구동, 전력 변환, 모터 구동단, 전원 보호.',
+        desc: '단일 채널 게이트 드라이버. EN/FLT+OCP 과전류 보호(SOT-23-6).',
+        specs: [
+          { k: '기능', v: '단일 채널 게이트 드라이버(과전류 보호 포함)' },
+          { k: '보호', v: 'OCP 전류 감지' },
+          { k: '제어', v: 'IN 입력 + EN/FLT 인에이블/고장' },
+          { k: '전원', v: 'VDD 바이어스' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT-23-6' }
+        ],
+        dropIn: [{ note: '동일 시리즈 동일 핀 배치(구동 전류가 큰 버전)' }]
+      }
+    },
+    'TRF1218': {
+      en: {
+        subcategory: 'Single-ended-to-differential RF amplifier (near DC – 25GHz)',
+        whatIs: 'Wideband single-ended-to-differential RF amplifier: amplifies a single-ended RF signal (INP) and converts it to a differential output (OUTP/OUTM), with bandwidth from near DC to 25GHz. For differential driving of high-speed ADC/DAC or signal-chain amplification.',
+        func: 'INP single-ended input (INM AC-coupled) is amplified and converted to a differential OUTP/OUTM output; PD powers down (0=enabled, 1=off, supports 1.8/3.3V logic); VDD 5V. Very wide bandwidth suits high-speed data-converter front ends.',
+        usedIn: 'High-speed ADC/DAC differential driving, wideband RF/microwave signal chains, test & measurement, optical communication.',
+        desc: 'Near-DC to 25GHz single-ended-to-differential RF amplifier, differential output, PD shutdown, 5V (12-pin with thermal pad).',
+        specs: [
+          { k: 'Function', v: 'Single-ended-to-differential RF amplifier' },
+          { k: 'Bandwidth', v: 'near DC – 25 GHz' },
+          { k: 'Output', v: 'differential OUTP/OUTM' },
+          { k: 'Shutdown', v: 'PD (0=enabled, 1=off)' },
+          { k: 'Supply', v: '5V' },
+          { k: 'Package', v: '12-pin, EP to GND' }
+        ]
+      },
+      ja: {
+        subcategory: 'シングルエンド→差動 RF アンプ（ほぼ DC ~ 25GHz）',
+        whatIs: '広帯域シングルエンド→差動 RF アンプ：シングルエンド RF 信号（INP）を増幅し差動出力（OUTP/OUTM）に変換、帯域はほぼ DC から 25GHz。高速 ADC/DAC の差動駆動や信号チェーン増幅に。',
+        func: 'INP シングルエンド入力（INM は AC 結合コンデンサ）を増幅し差動 OUTP/OUTM 出力に変換；PD 電源遮断（0=有効、1=遮断、1.8/3.3V ロジック対応）；VDD 5V。超広帯域で高速データコンバータのフロントエンドに好適。',
+        usedIn: '高速 ADC/DAC 差動駆動、広帯域 RF/マイクロ波信号チェーン、テスト&計測、光通信。',
+        desc: 'ほぼ DC~25GHz シングルエンド→差動 RF アンプ。差動出力・PD 遮断・5V（12-pin サーマルパッド付）。',
+        specs: [
+          { k: '機能', v: 'シングルエンド→差動 RF アンプ' },
+          { k: '帯域', v: 'ほぼ DC ~ 25 GHz' },
+          { k: '出力', v: '差動 OUTP/OUTM' },
+          { k: '遮断', v: 'PD（0=有効、1=遮断）' },
+          { k: '電源', v: '5V' },
+          { k: 'パッケージ', v: '12-pin、EP は GND' }
+        ]
+      },
+      ko: {
+        subcategory: '싱글엔드→차동 RF 앰프(거의 DC ~ 25GHz)',
+        whatIs: '광대역 싱글엔드→차동 RF 앰프: 싱글엔드 RF 신호(INP)를 증폭해 차동 출력(OUTP/OUTM)으로 변환, 대역은 거의 DC부터 25GHz. 고속 ADC/DAC 차동 구동이나 신호 체인 증폭용.',
+        func: 'INP 싱글엔드 입력(INM은 AC 결합 커패시터)을 증폭해 차동 OUTP/OUTM 출력으로 변환; PD 전원 차단(0=활성, 1=차단, 1.8/3.3V 로직 지원); VDD 5V. 초광대역으로 고속 데이터 컨버터 프론트엔드에 적합.',
+        usedIn: '고속 ADC/DAC 차동 구동, 광대역 RF/마이크로파 신호 체인, 테스트&계측, 광통신.',
+        desc: '거의 DC~25GHz 싱글엔드→차동 RF 앰프. 차동 출력·PD 차단·5V(12-pin 서멀 패드 포함).',
+        specs: [
+          { k: '기능', v: '싱글엔드→차동 RF 앰프' },
+          { k: '대역', v: '거의 DC ~ 25 GHz' },
+          { k: '출력', v: '차동 OUTP/OUTM' },
+          { k: '차단', v: 'PD(0=활성, 1=차단)' },
+          { k: '전원', v: '5V' },
+          { k: '패키지', v: '12-pin, EP는 GND' }
+        ]
+      }
+    },
+    'DAC60516W': {
+      en: {
+        subcategory: '16-channel 12-bit DAC (SPI/I2C, buffered voltage output)',
+        whatIs: '16-channel 12-bit digital-to-analog converter (DAC): one chip simultaneously outputs 16 independent buffered voltages (OUT0–OUT15), written over SPI or I2C. LDAC for synchronous update, external/internal reference. Tiny WCSP ball-grid package.',
+        func: 'The host writes each channel’s code over SPI (SDI/SDO/SCLK) or I2C (SDA/SCL + A0/A1 address) → 16 buffered voltage outputs; LDAC (active-low) synchronously updates all channels; VREF sets full scale; VIO is the digital-interface voltage; RESET resets. For multi-channel analog control/bias.',
+        usedIn: 'Multi-channel analog bias/control, optical-module/laser bias, programmable voltage sources, sensor calibration, multi-channel actuation.',
+        desc: '16-channel 12-bit buffered-voltage-output DAC, SPI/I2C, LDAC sync, external/internal reference (WCSP ball grid).',
+        specs: [
+          { k: 'Function', v: '16-channel 12-bit voltage-output DAC' },
+          { k: 'Channels', v: '16 (OUT0–OUT15, buffered output)' },
+          { k: 'Interface', v: 'SPI or I2C (A0/A1 address)' },
+          { k: 'Sync', v: 'LDAC (active-low synchronous update)' },
+          { k: 'Reference', v: 'VREF (external/internal)' },
+          { k: 'Supply', v: 'AVDD + VIO (digital interface)' },
+          { k: 'Package', v: 'DSBGA (WCSP) ball grid' }
+        ]
+      },
+      ja: {
+        subcategory: '16 チャネル 12-bit DAC（SPI/I2C・バッファ電圧出力）',
+        whatIs: '16 チャネル 12 ビット D/A コンバータ（DAC）：1 チップで 16 系統の独立バッファ電圧（OUT0~OUT15）を同時出力、SPI か I2C で書き込み。LDAC で同期更新、外部/内部基準。極小 WCSP ボールグリッドパッケージ。',
+        func: 'ホストが SPI（SDI/SDO/SCLK）または I2C（SDA/SCL + A0/A1 アドレス）で各チャネルのコード値を書込み→16 系統のバッファ電圧出力；LDAC（active-low）で全チャネル同期更新；VREF でフルスケール設定；VIO デジタルインタフェース電圧；RESET リセット。多系統アナログ制御/バイアスに。',
+        usedIn: '多系統アナログバイアス/制御、光モジュール/レーザバイアス、プログラマブル電圧源、センサ校正、多チャネル駆動。',
+        desc: '16 チャネル 12-bit バッファ電圧出力 DAC。SPI/I2C・LDAC 同期・外/内部基準（WCSP ボールグリッド）。',
+        specs: [
+          { k: '機能', v: '16 チャネル 12-bit 電圧出力 DAC' },
+          { k: 'チャネル', v: '16（OUT0~OUT15、バッファ出力）' },
+          { k: 'インタフェース', v: 'SPI または I2C（A0/A1 アドレス）' },
+          { k: '同期', v: 'LDAC（active-low 同期更新）' },
+          { k: '基準', v: 'VREF（外部/内部）' },
+          { k: '電源', v: 'AVDD + VIO（デジタルインタフェース）' },
+          { k: 'パッケージ', v: 'DSBGA (WCSP) ボールグリッド' }
+        ]
+      },
+      ko: {
+        subcategory: '16채널 12-bit DAC(SPI/I2C·버퍼 전압 출력)',
+        whatIs: '16채널 12비트 D/A 변환기(DAC): 한 칩으로 16계통 독립 버퍼 전압(OUT0~OUT15)을 동시 출력, SPI나 I2C로 기록. LDAC로 동기 업데이트, 외부/내부 기준. 초소형 WCSP 볼 그리드 패키지.',
+        func: '호스트가 SPI(SDI/SDO/SCLK) 또는 I2C(SDA/SCL + A0/A1 주소)로 각 채널 코드값을 기록 → 16계통 버퍼 전압 출력; LDAC(active-low)로 전 채널 동기 업데이트; VREF로 풀스케일 설정; VIO 디지털 인터페이스 전압; RESET 리셋. 다계통 아날로그 제어/바이어스용.',
+        usedIn: '다계통 아날로그 바이어스/제어, 광모듈/레이저 바이어스, 프로그래머블 전압원, 센서 교정, 다채널 구동.',
+        desc: '16채널 12-bit 버퍼 전압 출력 DAC. SPI/I2C·LDAC 동기·외/내부 기준(WCSP 볼 그리드).',
+        specs: [
+          { k: '기능', v: '16채널 12-bit 전압 출력 DAC' },
+          { k: '채널', v: '16(OUT0~OUT15, 버퍼 출력)' },
+          { k: '인터페이스', v: 'SPI 또는 I2C(A0/A1 주소)' },
+          { k: '동기', v: 'LDAC(active-low 동기 업데이트)' },
+          { k: '기준', v: 'VREF(외부/내부)' },
+          { k: '전원', v: 'AVDD + VIO(디지털 인터페이스)' },
+          { k: '패키지', v: 'DSBGA (WCSP) 볼 그리드' }
+        ]
+      }
+    },
+    'TRF2001': {
+      en: {
+        subcategory: 'ISM/Wi-SUN RF front-end module (PA+LNA+T/R switch)',
+        whatIs: '860–930MHz ISM-band RF front-end module (FEM): integrates a power amplifier (PA), low-noise amplifier (LNA) and transmit/receive switch. On transmit it amplifies the PA signal to the antenna; on receive it low-noise-amplifies the antenna signal. For Sub-GHz/Wi-SUN radio.',
+        func: 'Transmit: PA_IN → internal PA → TX_FLT → (external TX filter) → ANT; receive: ANT → RX_FLT → (external RX filter) → LNA_IN → LNA; TR switches TX/RX, CEN chip enable, CTR selects the TX/RX path, CIB internal bias control; VDET power-detect output. VCC/VCC_PA supplies.',
+        usedIn: 'Wi-SUN/Sub-GHz smart meters, IoT radio, 868/915MHz ISM transceiver front ends, multi-protocol radio.',
+        desc: '860–930MHz ISM/Wi-SUN RF front-end module, integrated PA+LNA+T/R switch, power detect (QFN-28).',
+        specs: [
+          { k: 'Function', v: 'ISM/Wi-SUN RF front-end module (PA+LNA+T/R)' },
+          { k: 'Band', v: '860 – 930 MHz' },
+          { k: 'Integration', v: 'PA + LNA + T/R switch + power detect (VDET)' },
+          { k: 'Control', v: 'CEN/TR/CTR/CIB digital control' },
+          { k: 'Supply', v: 'VCC + VCC_PA' },
+          { k: 'Package', v: 'QFN-28, EP to GND' }
+        ],
+        dropIn: [{ note: 'Same QFN-28 family; the TRF2001P exposes LNA_OUT (pin3) and has no TX_FLT/TR — different topology, verify' }]
+      },
+      ja: {
+        subcategory: 'ISM/Wi-SUN RF フロントエンドモジュール（PA+LNA+T/R スイッチ）',
+        whatIs: '860~930MHz ISM 帯 RF フロントエンドモジュール（FEM）：パワーアンプ（PA）、低雑音アンプ（LNA）、送受切替（T/R スイッチ）を統合。送信時は PA 信号をアンテナへ増幅、受信時はアンテナ信号を低雑音増幅。Sub-GHz/Wi-SUN 無線に。',
+        func: '送信：PA_IN→内部 PA→TX_FLT→（外部 TX フィルタ）→ANT；受信：ANT→RX_FLT→（外部 RX フィルタ）→LNA_IN→LNA；TR で送受切替、CEN チップイネーブル、CTR で送受経路選択、CIB 内部バイアス制御；VDET 電力検出出力。VCC/VCC_PA 供給。',
+        usedIn: 'Wi-SUN/Sub-GHz スマートメータ、IoT 無線、868/915MHz ISM 送受信フロントエンド、マルチプロトコル無線。',
+        desc: '860~930MHz ISM/Wi-SUN RF フロントエンドモジュール。PA+LNA+T/R スイッチ統合・電力検出（QFN-28）。',
+        specs: [
+          { k: '機能', v: 'ISM/Wi-SUN RF フロントエンドモジュール（PA+LNA+T/R）' },
+          { k: '帯域', v: '860 ~ 930 MHz' },
+          { k: '統合', v: 'PA + LNA + 送受スイッチ + 電力検出(VDET)' },
+          { k: '制御', v: 'CEN/TR/CTR/CIB デジタル制御' },
+          { k: '電源', v: 'VCC + VCC_PA' },
+          { k: 'パッケージ', v: 'QFN-28、EP は GND' }
+        ],
+        dropIn: [{ note: '同 QFN-28 シリーズ；TRF2001P は LNA_OUT(pin3) を引出し、TX_FLT/TR なし、トポロジが異なる、要確認' }]
+      },
+      ko: {
+        subcategory: 'ISM/Wi-SUN RF 프론트엔드 모듈(PA+LNA+T/R 스위치)',
+        whatIs: '860~930MHz ISM 대역 RF 프론트엔드 모듈(FEM): 전력 증폭기(PA), 저잡음 증폭기(LNA), 송수신 전환(T/R 스위치)을 통합. 송신 시 PA 신호를 안테나로 증폭, 수신 시 안테나 신호를 저잡음 증폭. Sub-GHz/Wi-SUN 무선용.',
+        func: '송신: PA_IN → 내부 PA → TX_FLT → (외부 TX 필터) → ANT; 수신: ANT → RX_FLT → (외부 RX 필터) → LNA_IN → LNA; TR로 송수신 전환, CEN 칩 인에이블, CTR로 송수신 경로 선택, CIB 내부 바이어스 제어; VDET 전력 검출 출력. VCC/VCC_PA 공급.',
+        usedIn: 'Wi-SUN/Sub-GHz 스마트 미터, IoT 무선, 868/915MHz ISM 송수신 프론트엔드, 다중 프로토콜 무선.',
+        desc: '860~930MHz ISM/Wi-SUN RF 프론트엔드 모듈. PA+LNA+T/R 스위치 통합·전력 검출(QFN-28).',
+        specs: [
+          { k: '기능', v: 'ISM/Wi-SUN RF 프론트엔드 모듈(PA+LNA+T/R)' },
+          { k: '대역', v: '860 ~ 930 MHz' },
+          { k: '통합', v: 'PA + LNA + 송수신 스위치 + 전력 검출(VDET)' },
+          { k: '제어', v: 'CEN/TR/CTR/CIB 디지털 제어' },
+          { k: '전원', v: 'VCC + VCC_PA' },
+          { k: '패키지', v: 'QFN-28, EP는 GND' }
+        ],
+        dropIn: [{ note: '동일 QFN-28 시리즈; TRF2001P는 LNA_OUT(pin3)을 인출, TX_FLT/TR 없음, 토폴로지 다름, 확인 필요' }]
+      }
+    },
+    'TRF2001P': {
+      en: {
+        subcategory: 'ISM/Wi-SUN RF front-end module (PA+LNA, LNA output exposed)',
+        whatIs: '820–1054MHz ISM-band RF front-end module (FEM) variant: integrates a PA and LNA, and exposes the LNA output (LNA_OUT) for external processing (unlike the TRF2001’s integrated T/R path). For Sub-GHz/Wi-SUN radio.',
+        func: 'Transmit: PA_IN → internal PA → ANT; receive: ANT → LNA_IN → LNA → LNA_OUT (exposed); CEN enable, CTR selects the path, CIB bias; VDET power detect; RX_FLT receive-filter node. VCC/VCC_PA supplies. Same package as the TRF2001 but different topology.',
+        usedIn: 'Wi-SUN/Sub-GHz smart meters, IoT radio, transceiver front ends needing an external LNA-output processing path.',
+        desc: '820–1054MHz ISM/Wi-SUN RF front-end module, PA+LNA, LNA_OUT exposed, power detect (QFN-28).',
+        specs: [
+          { k: 'Function', v: 'ISM/Wi-SUN RF front-end module (PA+LNA, LNA output exposed)' },
+          { k: 'Band', v: '820 – 1054 MHz' },
+          { k: 'Integration', v: 'PA + LNA + power detect (VDET); LNA_OUT exposed' },
+          { k: 'Control', v: 'CEN/CTR/CIB digital control' },
+          { k: 'Supply', v: 'VCC + VCC_PA' },
+          { k: 'Package', v: 'QFN-28, EP to GND' }
+        ],
+        dropIn: [{ note: 'Same QFN-28 family; the TRF2001 is the integrated-T/R-path (TX_FLT/TR) version, different topology, verify' }]
+      },
+      ja: {
+        subcategory: 'ISM/Wi-SUN RF フロントエンドモジュール（PA+LNA、LNA 出力引出し）',
+        whatIs: '820~1054MHz ISM 帯 RF フロントエンドモジュール（FEM）変種：PA と LNA を統合し、LNA 出力（LNA_OUT）を引出して外部処理に供する（TRF2001 の統合 T/R 経路と異なる）。Sub-GHz/Wi-SUN 無線に。',
+        func: '送信：PA_IN→内部 PA→ANT；受信：ANT→LNA_IN→LNA→LNA_OUT（引出し）；CEN イネーブル、CTR 経路選択、CIB バイアス；VDET 電力検出；RX_FLT 受信フィルタノード。VCC/VCC_PA 供給。TRF2001 と同パッケージ・トポロジ違い。',
+        usedIn: 'Wi-SUN/Sub-GHz スマートメータ、IoT 無線、外部 LNA 出力処理が必要な送受信フロントエンド。',
+        desc: '820~1054MHz ISM/Wi-SUN RF フロントエンドモジュール。PA+LNA・LNA_OUT 引出し・電力検出（QFN-28）。',
+        specs: [
+          { k: '機能', v: 'ISM/Wi-SUN RF フロントエンドモジュール（PA+LNA、LNA 出力引出し）' },
+          { k: '帯域', v: '820 ~ 1054 MHz' },
+          { k: '統合', v: 'PA + LNA + 電力検出(VDET)；LNA_OUT 引出し' },
+          { k: '制御', v: 'CEN/CTR/CIB デジタル制御' },
+          { k: '電源', v: 'VCC + VCC_PA' },
+          { k: 'パッケージ', v: 'QFN-28、EP は GND' }
+        ],
+        dropIn: [{ note: '同 QFN-28 シリーズ；TRF2001 は統合 T/R 経路(TX_FLT/TR)版、トポロジが異なる、要確認' }]
+      },
+      ko: {
+        subcategory: 'ISM/Wi-SUN RF 프론트엔드 모듈(PA+LNA, LNA 출력 인출)',
+        whatIs: '820~1054MHz ISM 대역 RF 프론트엔드 모듈(FEM) 변형: PA와 LNA를 통합하고 LNA 출력(LNA_OUT)을 인출해 외부 처리에 공급(TRF2001의 통합 T/R 경로와 다름). Sub-GHz/Wi-SUN 무선용.',
+        func: '송신: PA_IN → 내부 PA → ANT; 수신: ANT → LNA_IN → LNA → LNA_OUT(인출); CEN 인에이블, CTR 경로 선택, CIB 바이어스; VDET 전력 검출; RX_FLT 수신 필터 노드. VCC/VCC_PA 공급. TRF2001과 같은 패키지·토폴로지 다름.',
+        usedIn: 'Wi-SUN/Sub-GHz 스마트 미터, IoT 무선, 외부 LNA 출력 처리가 필요한 송수신 프론트엔드.',
+        desc: '820~1054MHz ISM/Wi-SUN RF 프론트엔드 모듈. PA+LNA·LNA_OUT 인출·전력 검출(QFN-28).',
+        specs: [
+          { k: '기능', v: 'ISM/Wi-SUN RF 프론트엔드 모듈(PA+LNA, LNA 출력 인출)' },
+          { k: '대역', v: '820 ~ 1054 MHz' },
+          { k: '통합', v: 'PA + LNA + 전력 검출(VDET); LNA_OUT 인출' },
+          { k: '제어', v: 'CEN/CTR/CIB 디지털 제어' },
+          { k: '전원', v: 'VCC + VCC_PA' },
+          { k: '패키지', v: 'QFN-28, EP는 GND' }
+        ],
+        dropIn: [{ note: '동일 QFN-28 시리즈; TRF2001은 통합 T/R 경로(TX_FLT/TR)판, 토폴로지 다름, 확인 필요' }]
+      }
+    },
+    'DRV7167': {
+      en: {
+        subcategory: 'GaN half-bridge gate driver + power stage (programmable slew rate)',
+        whatIs: 'Integrated GaN half-bridge power stage: contains high/low-side GaN FETs + gate drivers, converting PWM control signals into a half-bridge switching output (OUT). Programmable slew rate controls EMI; supports PWM or independent-input (IIM) control modes. For motor/power switching.',
+        func: 'PWM mode: ENIN/HI enables, PWM/LI sends the PWM; RDLR/RDLF/RDHR/RDHF resistors set the high/low-side FET switching slew rate; OUT is the half-bridge switch node (to HS); VM high-side drain input, PGND low-side source; GVDD 5V supply; EN/FLT enable+fault; BOOT high-side bootstrap. Can report zero-voltage switching (ZVD).',
+        usedIn: 'Motor-drive half-bridges, synchronous rectification, DC-DC power stages, supplies needing efficient GaN switching.',
+        desc: 'GaN half-bridge gate driver + power stage, programmable slew rate, PWM/IIM dual mode, ZVD detect (QFN).',
+        specs: [
+          { k: 'Function', v: 'GaN half-bridge gate driver + power stage' },
+          { k: 'Control modes', v: 'PWM or IIM (independent high/low-side inputs)' },
+          { k: 'Programmable slew', v: 'RDLR/RDLF/RDHR/RDHF resistors set slew rate (EMI control)' },
+          { k: 'Reporting', v: 'ZVD zero-voltage-switching detect, EN/FLT fault' },
+          { k: 'Supply', v: 'VM power + GVDD 5V drive + BOOT bootstrap' },
+          { k: 'Package', v: 'QFN with thermal pad (PGND/OUT high-current pads)' }
+        ]
+      },
+      ja: {
+        subcategory: 'GaN ハーフブリッジゲート駆動＋パワーステージ（プログラマブルスルーレート）',
+        whatIs: '統合 GaN ハーフブリッジパワーステージ：ハイ/ローサイド GaN FET＋ゲート駆動を内蔵し、PWM 制御信号をハーフブリッジスイッチ出力（OUT）に変換。プログラマブルスルーレートで EMI 制御、PWM / 独立入力（IIM）2 モードに対応。モータ/電源スイッチに。',
+        func: 'PWM モード：ENIN/HI イネーブル、PWM/LI で PWM 送出；RDLR/RDLF/RDHR/RDHF 抵抗でハイ/ローサイド FET のスイッチスルーレート設定；OUT はハーフブリッジスイッチノード（HS 接続）；VM ハイサイドドレイン入力、PGND ローサイドソース；GVDD 5V 供給；EN/FLT イネーブル＋故障；BOOT ハイサイドブートストラップ。ゼロ電圧スイッチング（ZVD）報告可。',
+        usedIn: 'モータ駆動ハーフブリッジ、同期整流、DC-DC パワーステージ、高効率 GaN スイッチが必要な電源。',
+        desc: 'GaN ハーフブリッジゲート駆動＋パワーステージ。プログラマブルスルーレート・PWM/IIM 両モード・ZVD 検出（QFN）。',
+        specs: [
+          { k: '機能', v: 'GaN ハーフブリッジゲート駆動＋パワーステージ' },
+          { k: '制御モード', v: 'PWM または IIM（独立ハイ/ローサイド入力）' },
+          { k: 'プログラマブルスルー', v: 'RDLR/RDLF/RDHR/RDHF 抵抗でスルーレート設定（EMI 制御）' },
+          { k: '報告', v: 'ZVD ゼロ電圧スイッチング検出、EN/FLT 故障' },
+          { k: '電源', v: 'VM パワー＋GVDD 5V 駆動＋BOOT ブートストラップ' },
+          { k: 'パッケージ', v: 'QFN サーマルパッド付（PGND/OUT 大電流パッド）' }
+        ]
+      },
+      ko: {
+        subcategory: 'GaN 하프 브리지 게이트 구동+전력단(프로그래머블 슬루율)',
+        whatIs: '통합 GaN 하프 브리지 전력단: 하이/로우사이드 GaN FET+게이트 구동을 내장해 PWM 제어 신호를 하프 브리지 스위칭 출력(OUT)으로 변환. 프로그래머블 슬루율로 EMI 제어, PWM / 독립 입력(IIM) 2모드 지원. 모터/전원 스위칭용.',
+        func: 'PWM 모드: ENIN/HI 인에이블, PWM/LI로 PWM 송출; RDLR/RDLF/RDHR/RDHF 저항으로 하이/로우사이드 FET 스위칭 슬루율 설정; OUT은 하프 브리지 스위치 노드(HS 연결); VM 하이사이드 드레인 입력, PGND 로우사이드 소스; GVDD 5V 공급; EN/FLT 인에이블+고장; BOOT 하이사이드 부트스트랩. 영전압 스위칭(ZVD) 보고 가능.',
+        usedIn: '모터 구동 하프 브리지, 동기 정류, DC-DC 전력단, 고효율 GaN 스위칭이 필요한 전원.',
+        desc: 'GaN 하프 브리지 게이트 구동+전력단. 프로그래머블 슬루율·PWM/IIM 양 모드·ZVD 감지(QFN).',
+        specs: [
+          { k: '기능', v: 'GaN 하프 브리지 게이트 구동+전력단' },
+          { k: '제어 모드', v: 'PWM 또는 IIM(독립 하이/로우사이드 입력)' },
+          { k: '프로그래머블 슬루', v: 'RDLR/RDLF/RDHR/RDHF 저항으로 슬루율 설정(EMI 제어)' },
+          { k: '보고', v: 'ZVD 영전압 스위칭 감지, EN/FLT 고장' },
+          { k: '전원', v: 'VM 전력 + GVDD 5V 구동 + BOOT 부트스트랩' },
+          { k: '패키지', v: 'QFN 서멀 패드 포함(PGND/OUT 대전류 패드)' }
+        ]
+      }
+    },
+    'LMG2652H': {
+      en: {
+        subcategory: '650V GaN power half-bridge (integrated driver + current sense)',
+        whatIs: '650V / 140mΩ GaN power half-bridge module: integrates high/low-side GaN FETs, gate drivers, bootstrap FET and high-side level shift. Few parts, saves board area. Includes a low-side current-sense emulation (CS) that replaces an external sense resistor.',
+        func: 'INH/INL (referenced to AGND) or GDH (referenced to SW) drive the high/low-side gates; DH high-side drain (to VIN), SW half-bridge switch node, SL low-side source (to power ground); RDRVH/RDRVL resistors set switching slew rate for EMI; CS outputs a scaled replica of the low-side current (for the controller); BST bootstrap, AUX internal driver supply, EN enable.',
+        usedIn: 'High-voltage DC-DC, totem-pole PFC, motor inverters, server/industrial power half-bridges, GaN high-efficiency power.',
+        desc: '650V 140mΩ GaN power half-bridge, integrated driver/bootstrap/level-shift + current-sense emulation, programmable slew rate (QFN 6×8mm).',
+        specs: [
+          { k: 'Function', v: '650V GaN power half-bridge (integrated driver)' },
+          { k: 'Voltage/RDS', v: '650V / 140mΩ' },
+          { k: 'Integration', v: 'high/low-side GaN FET + gate driver + bootstrap FET + level shift' },
+          { k: 'Current sense', v: 'CS emulation output (replaces external sense resistor)' },
+          { k: 'Programmable slew', v: 'RDRVH/RDRVL set slew rate (EMI/ringing control)' },
+          { k: 'Control', v: 'INH/INL (AGND-referenced) or GDH (SW-referenced)' },
+          { k: 'Package', v: 'QFN 6×8mm (SL/SW are thermal pads)' }
+        ]
+      },
+      ja: {
+        subcategory: '650V GaN パワーハーフブリッジ（統合ドライバ＋電流検出）',
+        whatIs: '650V / 140mΩ GaN パワーハーフブリッジモジュール：ハイ/ローサイド GaN FET、ゲート駆動、ブートストラップ FET、ハイサイドレベルシフトを統合。部品が少なく基板面積を節約。外部センス抵抗を置き換えるローサイド電流検出エミュレーション（CS）を内蔵。',
+        func: 'INH/INL（AGND 基準）または GDH（SW 基準）でハイ/ローサイドゲートを駆動；DH ハイサイドドレイン（VIN 接続）、SW ハーフブリッジスイッチノード、SL ローサイドソース（パワー接地）；RDRVH/RDRVL 抵抗でスイッチスルーレートを設定し EMI 制御；CS がローサイド電流のスケール複製を出力（コントローラ用）；BST ブートストラップ、AUX 内部ドライバ供給、EN イネーブル。',
+        usedIn: '高圧 DC-DC、トーテムポール PFC、モータインバータ、サーバ/産業電源ハーフブリッジ、GaN 高効率電源。',
+        desc: '650V 140mΩ GaN パワーハーフブリッジ。統合ドライバ/ブートストラップ/レベルシフト＋電流検出エミュレーション・プログラマブルスルーレート（QFN 6×8mm）。',
+        specs: [
+          { k: '機能', v: '650V GaN パワーハーフブリッジ（統合ドライバ）' },
+          { k: '耐圧/導通', v: '650V / 140mΩ' },
+          { k: '統合', v: 'ハイ/ローサイド GaN FET + ゲート駆動 + ブートストラップ FET + レベルシフト' },
+          { k: '電流検出', v: 'CS エミュレーション出力（外部センス抵抗を置換）' },
+          { k: 'プログラマブルスルー', v: 'RDRVH/RDRVL でスルーレート設定（EMI/リンギング制御）' },
+          { k: '制御', v: 'INH/INL（AGND 基準）または GDH（SW 基準）' },
+          { k: 'パッケージ', v: 'QFN 6×8mm（SL/SW がサーマルパッド）' }
+        ]
+      },
+      ko: {
+        subcategory: '650V GaN 전력 하프 브리지(통합 드라이버+전류 감지)',
+        whatIs: '650V / 140mΩ GaN 전력 하프 브리지 모듈: 하이/로우사이드 GaN FET, 게이트 구동, 부트스트랩 FET, 하이사이드 레벨 시프트를 통합. 부품이 적고 보드 면적 절약. 외부 감지 저항을 대체하는 로우사이드 전류 감지 에뮬레이션(CS) 내장.',
+        func: 'INH/INL(AGND 기준) 또는 GDH(SW 기준)로 하이/로우사이드 게이트 구동; DH 하이사이드 드레인(VIN 연결), SW 하프 브리지 스위치 노드, SL 로우사이드 소스(전력 접지); RDRVH/RDRVL 저항으로 스위칭 슬루율 설정해 EMI 제어; CS가 로우사이드 전류의 스케일 복제를 출력(컨트롤러용); BST 부트스트랩, AUX 내부 드라이버 공급, EN 인에이블.',
+        usedIn: '고압 DC-DC, 토템폴 PFC, 모터 인버터, 서버/산업 전원 하프 브리지, GaN 고효율 전원.',
+        desc: '650V 140mΩ GaN 전력 하프 브리지. 통합 드라이버/부트스트랩/레벨 시프트+전류 감지 에뮬레이션·프로그래머블 슬루율(QFN 6×8mm).',
+        specs: [
+          { k: '기능', v: '650V GaN 전력 하프 브리지(통합 드라이버)' },
+          { k: '내압/도통', v: '650V / 140mΩ' },
+          { k: '통합', v: '하이/로우사이드 GaN FET + 게이트 구동 + 부트스트랩 FET + 레벨 시프트' },
+          { k: '전류 감지', v: 'CS 에뮬레이션 출력(외부 감지 저항 대체)' },
+          { k: '프로그래머블 슬루', v: 'RDRVH/RDRVL로 슬루율 설정(EMI/링잉 제어)' },
+          { k: '제어', v: 'INH/INL(AGND 기준) 또는 GDH(SW 기준)' },
+          { k: '패키지', v: 'QFN 6×8mm(SL/SW가 서멀 패드)' }
+        ]
+      }
+    },
+    'UC1825B-SP': {
+      en: {
+        subcategory: 'High-speed PWM controller (radiation-hardened, dual output)',
+        whatIs: 'High-speed pulse-width-modulation (PWM) controller (radiation-hardened Class-V): generates PWM drive signals to control a switching supply’s switch, with an error amplifier, oscillator, current limit, soft-start and dual totem-pole outputs. For isolated/non-isolated DC-DC power control.',
+        func: 'The error amplifier (INV/NI/EAOUT) compares feedback with the reference → compensation; the oscillator (RT/CT set frequency, CLK output); RAMP feeds the PWM comparator (voltage-mode feedforward or peak-current-mode slope compensation); SS soft-start doubles as max-duty clamp; ILIM/SD current limit + shutdown; dual outputs OUTA/OUTB totem-pole drive FETs; VREF reference output, VC output-stage supply, VCC supply.',
+        usedIn: 'Space/satellite power, isolated DC-DC, push-pull/half-bridge/full-bridge/forward converter PWM control, radiation-hardened power.',
+        desc: 'Radiation-hardened high-speed PWM controller, error amp/oscillator/current limit/soft-start + dual totem-pole outputs (CFP-16).',
+        specs: [
+          { k: 'Function', v: 'High-speed PWM controller (dual output)' },
+          { k: 'Control modes', v: 'voltage mode / peak-current mode' },
+          { k: 'Integration', v: 'error amplifier + oscillator + current limit + soft-start' },
+          { k: 'Output', v: 'dual totem-pole OUTA/OUTB (high current)' },
+          { k: 'Radiation', v: 'Class-V (rad-hard, space-grade)' },
+          { k: 'Package', v: 'CFP-16' }
+        ]
+      },
+      ja: {
+        subcategory: '高速 PWM コントローラ（耐放射線・デュアル出力）',
+        whatIs: '高速パルス幅変調（PWM）コントローラ（耐放射線 Class-V）：PWM 駆動信号を生成しスイッチング電源のスイッチを制御、誤差アンプ・発振器・電流制限・ソフトスタート・デュアルトーテムポール出力を含む。絶縁/非絶縁 DC-DC 電源制御に。',
+        func: '誤差アンプ（INV/NI/EAOUT）が帰還と基準を比較→補償；発振器（RT/CT で周波数設定、CLK 出力）；RAMP が PWM コンパレータへ（電圧モードフィードフォワードまたはピーク電流モードのスロープ補償）；SS ソフトスタート兼最大デューティクランプ；ILIM/SD 電流制限＋遮断；デュアル出力 OUTA/OUTB トーテムポールで FET 駆動；VREF 基準出力、VC 出力段供給、VCC 供給。',
+        usedIn: '宇宙/衛星電源、絶縁 DC-DC、プッシュプル/ハーフブリッジ/フルブリッジ/フォワードコンバータの PWM 制御、耐放射線電源。',
+        desc: '耐放射線高速 PWM コントローラ。誤差アンプ/発振器/電流制限/ソフトスタート＋デュアルトーテムポール出力（CFP-16）。',
+        specs: [
+          { k: '機能', v: '高速 PWM コントローラ（デュアル出力）' },
+          { k: '制御モード', v: '電圧モード / ピーク電流モード' },
+          { k: '統合', v: '誤差アンプ + 発振器 + 電流制限 + ソフトスタート' },
+          { k: '出力', v: 'デュアルトーテムポール OUTA/OUTB（大電流）' },
+          { k: '耐放射線', v: 'Class-V（rad-hard・宇宙級）' },
+          { k: 'パッケージ', v: 'CFP-16' }
+        ]
+      },
+      ko: {
+        subcategory: '고속 PWM 컨트롤러(내방사선·듀얼 출력)',
+        whatIs: '고속 펄스 폭 변조(PWM) 컨트롤러(내방사선 Class-V): PWM 구동 신호를 생성해 스위칭 전원의 스위치를 제어, 오차 증폭기·발진기·전류 제한·소프트 스타트·듀얼 토템폴 출력 포함. 절연/비절연 DC-DC 전원 제어용.',
+        func: '오차 증폭기(INV/NI/EAOUT)가 피드백과 기준을 비교 → 보상; 발진기(RT/CT로 주파수 설정, CLK 출력); RAMP가 PWM 비교기로(전압 모드 피드포워드 또는 피크 전류 모드 슬로프 보상); SS 소프트 스타트 겸 최대 듀티 클램프; ILIM/SD 전류 제한+차단; 듀얼 출력 OUTA/OUTB 토템폴로 FET 구동; VREF 기준 출력, VC 출력단 공급, VCC 공급.',
+        usedIn: '우주/위성 전원, 절연 DC-DC, 푸시풀/하프 브리지/풀 브리지/포워드 컨버터 PWM 제어, 내방사선 전원.',
+        desc: '내방사선 고속 PWM 컨트롤러. 오차 증폭기/발진기/전류 제한/소프트 스타트+듀얼 토템폴 출력(CFP-16).',
+        specs: [
+          { k: '기능', v: '고속 PWM 컨트롤러(듀얼 출력)' },
+          { k: '제어 모드', v: '전압 모드 / 피크 전류 모드' },
+          { k: '통합', v: '오차 증폭기 + 발진기 + 전류 제한 + 소프트 스타트' },
+          { k: '출력', v: '듀얼 토템폴 OUTA/OUTB(대전류)' },
+          { k: '내방사선', v: 'Class-V(rad-hard·우주급)' },
+          { k: '패키지', v: 'CFP-16' }
+        ]
+      }
+    },
+    'UCG28846': {
+      en: {
+        subcategory: 'Self-biased high-frequency quasi-resonant GaN flyback converter',
+        whatIs: 'GaN-integrated high-frequency quasi-resonant (QR) flyback controller: built-in high-voltage GaN power switch (HEMT) + controller + HV startup, self-biased (no auxiliary winding/VCC needed). For compact high-efficiency AC/DC power (chargers/adapters).',
+        func: 'The HV pin does high-voltage startup, AC-line sensing and X-capacitor discharge; SW is the built-in GaN HEMT drain, doubling as valley-switching/protection sense; FB takes optocoupler feedback for regulation; TR resistor sets the transformer turns ratio, IPS sets peak current and SW slew rate, FCL sets frequency clamp/fault behavior, CFX compensation; FLT connects an NTC for external over-temperature protection. Quasi-resonant valley switching lowers switching loss.',
+        usedIn: 'USB-PD chargers/adapters, compact AC/DC power, appliance standby power, auxiliary supplies.',
+        desc: 'Self-biased high-frequency quasi-resonant GaN flyback converter (integrated GaN switch), HV startup, optocoupler feedback, settable turns ratio/peak current (QFN-10).',
+        specs: [
+          { k: 'Function', v: 'Self-biased quasi-resonant GaN flyback converter' },
+          { k: 'Integration', v: 'high-voltage GaN HEMT power switch + controller + HV startup' },
+          { k: 'Bias', v: 'self-biased (no auxiliary winding/external VCC)' },
+          { k: 'Switching', v: 'quasi-resonant valley switching (low loss)' },
+          { k: 'Settings', v: 'TR turns ratio / IPS peak current / FCL frequency / CFX compensation' },
+          { k: 'Protection', v: 'FLT external over-temperature (NTC)' },
+          { k: 'Package', v: 'QFN-10 / SOIC' }
+        ],
+        dropIn: [{ note: 'Same family, same pinout (different power/current tier)' }]
+      },
+      ja: {
+        subcategory: '自己バイアス高周波準共振 GaN フライバックコンバータ',
+        whatIs: 'GaN 統合の高周波準共振（QR）フライバックコントローラ：高圧 GaN パワースイッチ（HEMT）＋コントローラ＋HV 起動を内蔵、自己バイアス（補助巻線/VCC 不要）。小型高効率 AC/DC 電源（充電器/アダプタ）に。',
+        func: 'HV ピンで高圧起動・AC ライン検出・X コンデンサ放電；SW は内蔵 GaN HEMT のドレイン兼谷底スイッチング/保護検出；FB でフォトカプラ帰還により安定化；TR 抵抗でトランス巻数比、IPS でピーク電流と SW スルーレート、FCL で周波数クランプ/故障動作、CFX 補償を設定；FLT に NTC 接続で外部過温保護。準共振谷底スイッチングでスイッチ損失を低減。',
+        usedIn: 'USB-PD 充電器/アダプタ、小型 AC/DC 電源、家電待機電源、補助電源。',
+        desc: '自己バイアス高周波準共振 GaN フライバックコンバータ（GaN スイッチ統合）。HV 起動・フォトカプラ帰還・巻数比/ピーク電流設定可（QFN-10）。',
+        specs: [
+          { k: '機能', v: '自己バイアス準共振 GaN フライバックコンバータ' },
+          { k: '統合', v: '高圧 GaN HEMT パワースイッチ + コントローラ + HV 起動' },
+          { k: 'バイアス', v: '自己バイアス（補助巻線/外部 VCC 不要）' },
+          { k: 'スイッチング', v: '準共振谷底スイッチング（低損失）' },
+          { k: '設定', v: 'TR 巻数比 / IPS ピーク電流 / FCL 周波数 / CFX 補償' },
+          { k: '保護', v: 'FLT 外部過温（NTC）' },
+          { k: 'パッケージ', v: 'QFN-10 / SOIC' }
+        ],
+        dropIn: [{ note: '同シリーズ同ピン配置（電力/電流ティアが異なる）' }]
+      },
+      ko: {
+        subcategory: '자기 바이어스 고주파 준공진 GaN 플라이백 컨버터',
+        whatIs: 'GaN 통합 고주파 준공진(QR) 플라이백 컨트롤러: 고압 GaN 전력 스위치(HEMT)+컨트롤러+HV 시동을 내장, 자기 바이어스(보조 권선/VCC 불필요). 소형 고효율 AC/DC 전원(충전기/어댑터)용.',
+        func: 'HV 핀으로 고압 시동·AC 라인 감지·X 커패시터 방전; SW는 내장 GaN HEMT 드레인 겸 밸리 스위칭/보호 감지; FB로 포토커플러 피드백으로 안정화; TR 저항으로 트랜스 권선비, IPS로 피크 전류와 SW 슬루율, FCL로 주파수 클램프/고장 동작, CFX 보상 설정; FLT에 NTC 연결로 외부 과열 보호. 준공진 밸리 스위칭으로 스위칭 손실 저감.',
+        usedIn: 'USB-PD 충전기/어댑터, 소형 AC/DC 전원, 가전 대기 전원, 보조 전원.',
+        desc: '자기 바이어스 고주파 준공진 GaN 플라이백 컨버터(GaN 스위치 통합). HV 시동·포토커플러 피드백·권선비/피크 전류 설정 가능(QFN-10).',
+        specs: [
+          { k: '기능', v: '자기 바이어스 준공진 GaN 플라이백 컨버터' },
+          { k: '통합', v: '고압 GaN HEMT 전력 스위치 + 컨트롤러 + HV 시동' },
+          { k: '바이어스', v: '자기 바이어스(보조 권선/외부 VCC 불필요)' },
+          { k: '스위칭', v: '준공진 밸리 스위칭(저손실)' },
+          { k: '설정', v: 'TR 권선비 / IPS 피크 전류 / FCL 주파수 / CFX 보상' },
+          { k: '보호', v: 'FLT 외부 과열(NTC)' },
+          { k: '패키지', v: 'QFN-10 / SOIC' }
+        ],
+        dropIn: [{ note: '동일 시리즈 동일 핀 배치(전력/전류 등급 다름)' }]
+      }
+    },
+    'CDCLVP111-SEP': {
+      en: {
+        subcategory: 'LVPECL 1:10 differential clock fanout (2:1 input mux, radiation-tolerant)',
+        whatIs: 'LVECL/LVPECL differential clock fanout buffer: selects one of 2 differential clock inputs (CLK0/CLK1) and replicates it into 10 low-skew differential clock outputs (Q0–Q9, each with a complement). Radiation-tolerant (SEP), space-grade.',
+        func: 'CLK_SEL selects the CLK0 or CLK1 differential input → internally buffered and replicated into 10 pairs of differential LVPECL outputs (Qn/nQn), low skew, low jitter; VBB is the reference-voltage output for single-ended-input operation; VCC multi-pin supply, VEE ground/negative supply (ECL mode). For high-speed differential clock-tree distribution.',
+        usedIn: 'Space/aerospace high-speed clock distribution, SerDes/ADC/DAC differential reference clocks, communication-backplane clock trees.',
+        desc: 'Radiation-tolerant LVPECL 1:10 differential clock fanout (2:1 input mux), low skew, complementary outputs (QFN-32).',
+        specs: [
+          { k: 'Function', v: 'LVPECL 1:10 differential clock fanout (2:1 input mux)' },
+          { k: 'Inputs', v: '2 differential CLK0/CLK1 (CLK_SEL selects)' },
+          { k: 'Outputs', v: '10 pairs differential LVECL/LVPECL (Qn/nQn, low skew)' },
+          { k: 'Reference', v: 'VBB (for single-ended input)' },
+          { k: 'Radiation', v: 'SEP (space-grade)' },
+          { k: 'Supply', v: 'VCC ×5 + VEE' },
+          { k: 'Package', v: 'QFN-32 (DAP floating)' }
+        ]
+      },
+      ja: {
+        subcategory: 'LVPECL 1:10 差動クロックファンアウト（2:1 入力 mux・耐放射線）',
+        whatIs: 'LVECL/LVPECL 差動クロックファンアウトバッファ：2 組の差動クロック入力（CLK0/CLK1）から 1 系統を選び、10 系統の低スキュー差動クロック出力（Q0~Q9、各々相補付）に複製。耐放射線（SEP）・宇宙級。',
+        func: 'CLK_SEL で CLK0 か CLK1 差動入力を選択→内部バッファし 10 対の差動 LVPECL 出力（Qn/nQn）に複製、低スキュー・低ジッタ；VBB はシングルエンド入力動作用の参照電圧出力；VCC 複数ピン供給、VEE 接地/負供給（ECL モード）。高速差動クロックツリー分配に。',
+        usedIn: '宇宙/航空宇宙の高速クロック分配、SerDes/ADC/DAC 差動参照クロック、通信バックプレーンのクロックツリー。',
+        desc: '耐放射線 LVPECL 1:10 差動クロックファンアウト（2:1 入力 mux）。低スキュー・相補出力（QFN-32）。',
+        specs: [
+          { k: '機能', v: 'LVPECL 1:10 差動クロックファンアウト（2:1 入力 mux）' },
+          { k: '入力', v: '2 組差動 CLK0/CLK1（CLK_SEL 選択）' },
+          { k: '出力', v: '10 対差動 LVECL/LVPECL（Qn/nQn、低スキュー）' },
+          { k: '参照', v: 'VBB（シングルエンド入力用）' },
+          { k: '耐放射線', v: 'SEP（宇宙級）' },
+          { k: '電源', v: 'VCC ×5 + VEE' },
+          { k: 'パッケージ', v: 'QFN-32（DAP 浮き）' }
+        ]
+      },
+      ko: {
+        subcategory: 'LVPECL 1:10 차동 클록 팬아웃(2:1 입력 mux·내방사선)',
+        whatIs: 'LVECL/LVPECL 차동 클록 팬아웃 버퍼: 2조의 차동 클록 입력(CLK0/CLK1)에서 1계통을 선택해 10계통 저스큐 차동 클록 출력(Q0~Q9, 각각 상보 포함)으로 복제. 내방사선(SEP)·우주급.',
+        func: 'CLK_SEL로 CLK0 또는 CLK1 차동 입력 선택 → 내부 버퍼해 10쌍 차동 LVPECL 출력(Qn/nQn)으로 복제, 저스큐·저지터; VBB는 싱글엔드 입력 동작용 참조 전압 출력; VCC 다중 핀 공급, VEE 접지/음 공급(ECL 모드). 고속 차동 클록 트리 분배용.',
+        usedIn: '우주/항공우주 고속 클록 분배, SerDes/ADC/DAC 차동 참조 클록, 통신 백플레인 클록 트리.',
+        desc: '내방사선 LVPECL 1:10 차동 클록 팬아웃(2:1 입력 mux). 저스큐·상보 출력(QFN-32).',
+        specs: [
+          { k: '기능', v: 'LVPECL 1:10 차동 클록 팬아웃(2:1 입력 mux)' },
+          { k: '입력', v: '2조 차동 CLK0/CLK1(CLK_SEL 선택)' },
+          { k: '출력', v: '10쌍 차동 LVECL/LVPECL(Qn/nQn, 저스큐)' },
+          { k: '참조', v: 'VBB(싱글엔드 입력용)' },
+          { k: '내방사선', v: 'SEP(우주급)' },
+          { k: '전원', v: 'VCC ×5 + VEE' },
+          { k: '패키지', v: 'QFN-32(DAP 플로팅)' }
+        ]
+      }
+    },
+    'TAS2320': {
+      en: {
+        subcategory: 'Class-D smart speaker amplifier (digital audio I2S/TDM)',
+        whatIs: 'Class-D smart speaker power amplifier: receives digital audio (I2S/TDM) and drives a speaker (OUT_P/OUT_N) with an efficient Class-D power stage. Includes I2C control, multiple configurable SEL pins (address/interface) and internal regulators. Suited to portable/automotive speakers.',
+        func: 'Digital audio comes in via FSYNC/SBCLK/SDIN, SDOUT returns (I/V sense data); the Class-D bridged output OUT_P/OUT_N drives the speaker; I2C (SEL pins multiplex SDA/SCL/address) controls it; SDZ shutdown, IRQZ interrupt (open-drain); PVDD/VBAT power supply, IOVDD digital, DREG/GREG internal regulator outputs.',
+        usedIn: 'Phone/tablet/laptop speakers, portable Bluetooth audio, automotive speakers, smart speakers.',
+        desc: 'Class-D smart speaker amplifier, I2S/TDM digital audio, I2C control, I/V sense, internal regulators (QFN-26).',
+        specs: [
+          { k: 'Function', v: 'Class-D smart speaker amplifier (with I/V sense)' },
+          { k: 'Digital audio', v: 'I2S / TDM (FSYNC/SBCLK/SDIN/SDOUT)' },
+          { k: 'Control', v: 'I2C (SEL pins multiplex SDA/SCL/address)' },
+          { k: 'Output', v: 'Class-D bridged OUT_P/OUT_N' },
+          { k: 'Supply', v: 'PVDD/VBAT power + IOVDD digital + internal DREG/GREG' },
+          { k: 'Protection/interrupt', v: 'SDZ shutdown, IRQZ interrupt (open-drain)' },
+          { k: 'Package', v: 'QFN-26' }
+        ],
+        dropIn: [{ note: 'Same smart-speaker-amplifier family; verify package/pinout and functional differences' }]
+      },
+      ja: {
+        subcategory: 'Class-D スマートスピーカアンプ（デジタルオーディオ I2S/TDM）',
+        whatIs: 'Class-D スマートスピーカパワーアンプ：デジタルオーディオ（I2S/TDM）を受け、高効率 Class-D パワーステージでスピーカ（OUT_P/OUT_N）を駆動。I2C 制御・複数の設定可能な SEL ピン（アドレス/インタフェース）・内部レギュレータを含む。ポータブル/車載スピーカ向け。',
+        func: 'デジタルオーディオが FSYNC/SBCLK/SDIN で入り、SDOUT が返す（I/V センスデータ）；Class-D ブリッジ出力 OUT_P/OUT_N がスピーカを駆動；I2C（SEL ピンが SDA/SCL/アドレスを兼用）で制御；SDZ 遮断、IRQZ 割込み（オープンドレイン）；PVDD/VBAT パワー供給、IOVDD デジタル、DREG/GREG 内部レギュレータ出力。',
+        usedIn: 'スマホ/タブレット/ノート PC スピーカ、ポータブル Bluetooth オーディオ、車載スピーカ、スマートスピーカ。',
+        desc: 'Class-D スマートスピーカアンプ。I2S/TDM デジタルオーディオ・I2C 制御・I/V センス・内部レギュレータ（QFN-26）。',
+        specs: [
+          { k: '機能', v: 'Class-D スマートスピーカアンプ（I/V センス付）' },
+          { k: 'デジタルオーディオ', v: 'I2S / TDM（FSYNC/SBCLK/SDIN/SDOUT）' },
+          { k: '制御', v: 'I2C（SEL ピンが SDA/SCL/アドレス兼用）' },
+          { k: '出力', v: 'Class-D ブリッジ OUT_P/OUT_N' },
+          { k: '電源', v: 'PVDD/VBAT パワー + IOVDD デジタル + 内部 DREG/GREG' },
+          { k: '保護/割込み', v: 'SDZ 遮断、IRQZ 割込み(オープンドレイン)' },
+          { k: 'パッケージ', v: 'QFN-26' }
+        ],
+        dropIn: [{ note: '同スマートスピーカアンプシリーズ；パッケージ/ピン配置と機能差を確認' }]
+      },
+      ko: {
+        subcategory: 'Class-D 스마트 스피커 앰프(디지털 오디오 I2S/TDM)',
+        whatIs: 'Class-D 스마트 스피커 전력 증폭기: 디지털 오디오(I2S/TDM)를 받아 고효율 Class-D 전력단으로 스피커(OUT_P/OUT_N)를 구동. I2C 제어·복수의 설정 가능한 SEL 핀(주소/인터페이스)·내부 레귤레이터 포함. 휴대/차량 스피커용.',
+        func: '디지털 오디오가 FSYNC/SBCLK/SDIN으로 들어오고 SDOUT이 반환(I/V 감지 데이터); Class-D 브리지 출력 OUT_P/OUT_N이 스피커 구동; I2C(SEL 핀이 SDA/SCL/주소 겸용)로 제어; SDZ 차단, IRQZ 인터럽트(오픈 드레인); PVDD/VBAT 전력 공급, IOVDD 디지털, DREG/GREG 내부 레귤레이터 출력.',
+        usedIn: '폰/태블릿/노트북 스피커, 휴대 블루투스 오디오, 차량 스피커, 스마트 스피커.',
+        desc: 'Class-D 스마트 스피커 앰프. I2S/TDM 디지털 오디오·I2C 제어·I/V 감지·내부 레귤레이터(QFN-26).',
+        specs: [
+          { k: '기능', v: 'Class-D 스마트 스피커 앰프(I/V 감지 포함)' },
+          { k: '디지털 오디오', v: 'I2S / TDM(FSYNC/SBCLK/SDIN/SDOUT)' },
+          { k: '제어', v: 'I2C(SEL 핀이 SDA/SCL/주소 겸용)' },
+          { k: '출력', v: 'Class-D 브리지 OUT_P/OUT_N' },
+          { k: '전원', v: 'PVDD/VBAT 전력 + IOVDD 디지털 + 내부 DREG/GREG' },
+          { k: '보호/인터럽트', v: 'SDZ 차단, IRQZ 인터럽트(오픈 드레인)' },
+          { k: '패키지', v: 'QFN-26' }
+        ],
+        dropIn: [{ note: '동일 스마트 스피커 앰프 시리즈; 패키지/핀 배치와 기능 차이 확인' }]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
