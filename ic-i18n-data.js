@@ -5323,3 +5323,553 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 8: entries 105-119 */
+(function () {
+  var T = {
+    'KSZ9031RNX': {
+      en: {
+        whatIs: 'Gigabit Ethernet physical-layer transceiver (PHY): converts the MAC’s digital data into analog signals on twisted pair (10/100/1000BASE-T), with built-in Auto-MDIX and an RGMII interface to the MAC.',
+        func: 'Integrates the analog transceiver front end (DSP, ADC/DAC, line equalization) and the digital MAC interface (RGMII), providing 10/100/1000BASE-T full/half duplex, Auto-Negotiation, Auto-MDIX and multiple LED status outputs, and lets the MAC read/write registers over SMI (MDC/MDIO) for status monitoring and tuning (e.g. RGMII timing skew). At power-up/reset, resistor pull-up/down on specific pins latches configuration (PHY address, mode), simplifying the design with no extra EEPROM.',
+        usedIn: 'Industrial/embedded Gigabit Ethernet ports, external PHY for SoCs with an RGMII interface (i.MX6/8, STM32MP1, etc.); the open-source OpenRex board (i.MX6 SOM) uses this part for its on-board GbE.',
+        desc: '48-QFN Gigabit Ethernet PHY, RGMII interface to the MAC, supporting 10/100/1000BASE-T, Auto-MDIX and programmable LEDs; PHY address and mode set by power-up strap pins.',
+        thermalPad: 'PADDLE GROUND (exposed pad on the die bottom), must be grounded (P_GND to ground).',
+        specs: [
+          { k: 'Interface', v: 'RGMII (to MAC)' },
+          { k: 'Speed', v: '10/100/1000BASE-T, Auto-Negotiation, Auto-MDIX' },
+          { k: 'Package', v: '48-QFN 7×7mm' },
+          { k: 'Analog supply AVDDH', v: '3.3V or 2.5V (2.5V commercial-temp only)' },
+          { k: 'Analog supply AVDDL', v: '1.2V' },
+          { k: 'Digital I/O supply DVDDH', v: '3.3V / 2.5V / 1.8V selectable' },
+          { k: 'Digital core supply DVDDL', v: '1.2V' },
+          { k: 'Management interface', v: 'SMI (MDC/MDIO)' }
+        ]
+      },
+      ja: {
+        subcategory: 'イーサネット PHY',
+        whatIs: 'Gigabit イーサネット物理層トランシーバ（PHY）：MAC のデジタルデータをツイストペア上のアナログ信号（10/100/1000BASE-T）に変換、Auto-MDIX 内蔵、RGMII インタフェースで MAC に接続。',
+        func: 'アナログ送受信フロントエンド（DSP、ADC/DAC、線路等化）とデジタル MAC インタフェース（RGMII）を統合し、10/100/1000BASE-T の全/半二重、Auto-Negotiation、Auto-MDIX、複数 LED 状態出力を提供、SMI（MDC/MDIO）で MAC がレジスタを読み書きし状態監視やパラメータ調整（RGMII タイミングスキュー等）を行う。電源投入/リセット時に特定ピンの抵抗プル/プルダウンで設定（PHY アドレス、モード）をラッチし、追加 EEPROM 不要でシステム設計を簡素化。',
+        usedIn: '産業/組込み Gigabit イーサポート、RGMII インタフェースの SoC 用外付け PHY（i.MX6/8、STM32MP1 等）；オープンソースの OpenRex ボード（i.MX6 SOM）は本品をオンボード GbE に採用。',
+        desc: '48-QFN Gigabit イーサネット PHY。RGMII で MAC 接続、10/100/1000BASE-T・Auto-MDIX・プログラマブル LED 対応；PHY アドレスとモードは電源投入時の strap ピンで決定。',
+        thermalPad: 'PADDLE GROUND（ダイ底面の露出パッド）、接地必須（P_GND を接地へ）。',
+        specs: [
+          { k: 'インタフェース', v: 'RGMII（MAC 側）' },
+          { k: '速度', v: '10/100/1000BASE-T、Auto-Negotiation、Auto-MDIX' },
+          { k: 'パッケージ', v: '48-QFN 7×7mm' },
+          { k: 'アナログ電源 AVDDH', v: '3.3V または 2.5V（2.5V は商用温度のみ）' },
+          { k: 'アナログ電源 AVDDL', v: '1.2V' },
+          { k: 'デジタル I/O 電源 DVDDH', v: '3.3V / 2.5V / 1.8V 選択可' },
+          { k: 'デジタルコア電源 DVDDL', v: '1.2V' },
+          { k: '管理インタフェース', v: 'SMI（MDC/MDIO）' }
+        ]
+      },
+      ko: {
+        subcategory: '이더넷 PHY',
+        whatIs: 'Gigabit 이더넷 물리 계층 트랜시버(PHY): MAC의 디지털 데이터를 트위스트 페어상의 아날로그 신호(10/100/1000BASE-T)로 변환, Auto-MDIX 내장, RGMII 인터페이스로 MAC 연결.',
+        func: '아날로그 송수신 프론트엔드(DSP, ADC/DAC, 라인 등화)와 디지털 MAC 인터페이스(RGMII)를 통합해 10/100/1000BASE-T 전/반이중, Auto-Negotiation, Auto-MDIX, 다중 LED 상태 출력을 제공하고, SMI(MDC/MDIO)로 MAC이 레지스터를 읽고 써 상태 감시와 파라미터 조정(RGMII 타이밍 스큐 등)을 함. 전원 인가/리셋 시 특정 핀의 저항 풀업/다운으로 설정(PHY 주소, 모드)을 래치해 추가 EEPROM 없이 시스템 설계 간소화.',
+        usedIn: '산업/임베디드 Gigabit 이더넷 포트, RGMII 인터페이스 SoC용 외장 PHY(i.MX6/8, STM32MP1 등); 오픈소스 OpenRex 보드(i.MX6 SOM)가 본 부품을 온보드 GbE에 채용.',
+        desc: '48-QFN Gigabit 이더넷 PHY. RGMII로 MAC 연결, 10/100/1000BASE-T·Auto-MDIX·프로그래머블 LED 지원; PHY 주소와 모드는 전원 인가 시 strap 핀으로 결정.',
+        thermalPad: 'PADDLE GROUND(다이 바닥의 노출 패드), 접지 필수(P_GND를 접지로).',
+        specs: [
+          { k: '인터페이스', v: 'RGMII(MAC 측)' },
+          { k: '속도', v: '10/100/1000BASE-T, Auto-Negotiation, Auto-MDIX' },
+          { k: '패키지', v: '48-QFN 7×7mm' },
+          { k: '아날로그 전원 AVDDH', v: '3.3V 또는 2.5V(2.5V는 상용 온도만)' },
+          { k: '아날로그 전원 AVDDL', v: '1.2V' },
+          { k: '디지털 I/O 전원 DVDDH', v: '3.3V / 2.5V / 1.8V 선택 가능' },
+          { k: '디지털 코어 전원 DVDDL', v: '1.2V' },
+          { k: '관리 인터페이스', v: 'SMI(MDC/MDIO)' }
+        ]
+      }
+    },
+    'LAN8710A': {
+      en: {
+        whatIs: '10/100 Ethernet physical-layer transceiver (PHY): converts the MAC’s digital data into analog signals on twisted pair (10BASE-T/100BASE-TX), with an MII or RMII interface to the MAC and built-in HP Auto-MDIX.',
+        func: 'Integrates the analog transceiver front end (DSP, clock recovery, equalization, 4B/5B coding, MLT-3/NRZI) and the digital MAC interface (MII or RMII, selected by the RMIISEL strap), providing Auto-Negotiation, HP Auto-MDIX, programmable LEDs and an interrupt output, with SMI (MDC/MDIO) register access for the MAC. At power-up/reset, resistor pull-up/down on specific pins latches configuration (PHY address, mode, MII/RMII select, internal-regulator on/off).',
+        usedIn: 'Small embedded 10/100 Ethernet ports, external PHY for MCUs/SoCs (RMII is common on STM32, ESP32, etc.); the open-source Olimex ESP32-POE2 board uses this part for its RMII PoE Ethernet port.',
+        desc: '32-QFN 10/100 Ethernet PHY, MII/RMII interface to the MAC (strap-selected), with Auto-Negotiation, HP Auto-MDIX and programmable LEDs; PHY address and mode set by power-up strap pins.',
+        thermalPad: 'Exposed pad (VSS, die bottom), must connect to the ground plane through a via array.',
+        specs: [
+          { k: 'Interface', v: 'MII or RMII (selected by RMIISEL strap)' },
+          { k: 'Speed', v: '10BASE-T / 100BASE-TX, Auto-Negotiation, HP Auto-MDIX' },
+          { k: 'Package', v: '32-QFN/SQFN' },
+          { k: 'I/O supply VDDIO', v: '+1.6V ~ +3.6V variable' },
+          { k: 'Digital core supply VDDCR', v: '+1.2V (from internal regulator, or REGOFF strap for external supply)' },
+          { k: 'Analog port supply VDD1A/VDD2A', v: '+3.3V' },
+          { k: 'Management interface', v: 'SMI (MDC/MDIO)' }
+        ]
+      },
+      ja: {
+        subcategory: 'イーサネット PHY',
+        whatIs: '10/100 イーサネット物理層トランシーバ（PHY）：MAC のデジタルデータをツイストペア上のアナログ信号（10BASE-T/100BASE-TX）に変換、MII または RMII インタフェースで MAC 接続、HP Auto-MDIX 内蔵。',
+        func: 'アナログ送受信フロントエンド（DSP、クロック回復、等化、4B/5B 符号化、MLT-3/NRZI 変換）とデジタル MAC インタフェース（MII か RMII、RMIISEL strap で選択）を統合し、Auto-Negotiation、HP Auto-MDIX、プログラマブル LED、割込み出力を提供、SMI（MDC/MDIO）で MAC がレジスタを読み書き。電源投入/リセット時に特定ピンの抵抗プル/プルダウンで設定（PHY アドレス、動作モード、MII/RMII 選択、内蔵レギュレータ ON/OFF）をラッチ。',
+        usedIn: '小型組込み 10/100 イーサポート、MCU/SoC 用外付け PHY（RMII は STM32、ESP32 等で一般的）；オープンソースの Olimex ESP32-POE2 ボードは本品を RMII PoE イーサポートに採用。',
+        desc: '32-QFN 10/100 イーサネット PHY。MII/RMII で MAC 接続（strap 選択）、Auto-Negotiation・HP Auto-MDIX・プログラマブル LED 対応；PHY アドレスとモードは電源投入時 strap ピンで決定。',
+        thermalPad: '露出パッド（VSS、ダイ底面）、ビアアレイで接地プレーンに接続必須。',
+        specs: [
+          { k: 'インタフェース', v: 'MII または RMII（RMIISEL strap で選択）' },
+          { k: '速度', v: '10BASE-T / 100BASE-TX、Auto-Negotiation、HP Auto-MDIX' },
+          { k: 'パッケージ', v: '32-QFN/SQFN' },
+          { k: 'I/O 電源 VDDIO', v: '+1.6V ~ +3.6V 可変' },
+          { k: 'デジタルコア電源 VDDCR', v: '+1.2V（内蔵レギュレータ供給、または REGOFF strap で外部供給）' },
+          { k: 'アナログポート電源 VDD1A/VDD2A', v: '+3.3V' },
+          { k: '管理インタフェース', v: 'SMI（MDC/MDIO）' }
+        ]
+      },
+      ko: {
+        subcategory: '이더넷 PHY',
+        whatIs: '10/100 이더넷 물리 계층 트랜시버(PHY): MAC의 디지털 데이터를 트위스트 페어상의 아날로그 신호(10BASE-T/100BASE-TX)로 변환, MII 또는 RMII 인터페이스로 MAC 연결, HP Auto-MDIX 내장.',
+        func: '아날로그 송수신 프론트엔드(DSP, 클록 복원, 등화, 4B/5B 코딩, MLT-3/NRZI 변환)와 디지털 MAC 인터페이스(MII 또는 RMII, RMIISEL strap로 선택)를 통합해 Auto-Negotiation, HP Auto-MDIX, 프로그래머블 LED, 인터럽트 출력을 제공하고, SMI(MDC/MDIO)로 MAC이 레지스터를 읽고 씀. 전원 인가/리셋 시 특정 핀의 저항 풀업/다운으로 설정(PHY 주소, 동작 모드, MII/RMII 선택, 내장 레귤레이터 ON/OFF)을 래치.',
+        usedIn: '소형 임베디드 10/100 이더넷 포트, MCU/SoC용 외장 PHY(RMII는 STM32, ESP32 등에서 일반적); 오픈소스 Olimex ESP32-POE2 보드가 본 부품을 RMII PoE 이더넷 포트에 채용.',
+        desc: '32-QFN 10/100 이더넷 PHY. MII/RMII로 MAC 연결(strap 선택), Auto-Negotiation·HP Auto-MDIX·프로그래머블 LED 지원; PHY 주소와 모드는 전원 인가 시 strap 핀으로 결정.',
+        thermalPad: '노출 패드(VSS, 다이 바닥), 비아 어레이로 접지 플레인에 연결 필수.',
+        specs: [
+          { k: '인터페이스', v: 'MII 또는 RMII(RMIISEL strap로 선택)' },
+          { k: '속도', v: '10BASE-T / 100BASE-TX, Auto-Negotiation, HP Auto-MDIX' },
+          { k: '패키지', v: '32-QFN/SQFN' },
+          { k: 'I/O 전원 VDDIO', v: '+1.6V ~ +3.6V 가변' },
+          { k: '디지털 코어 전원 VDDCR', v: '+1.2V(내장 레귤레이터 공급, 또는 REGOFF strap로 외부 공급)' },
+          { k: '아날로그 포트 전원 VDD1A/VDD2A', v: '+3.3V' },
+          { k: '관리 인터페이스', v: 'SMI(MDC/MDIO)' }
+        ]
+      }
+    },
+    'W25Q128JV': {
+      en: {
+        subcategory: 'Serial Flash memory (SPI / Dual SPI / Quad SPI NOR Flash)',
+        whatIs: 'Serial NOR Flash memory: provides 128M-bit (16MB) of non-volatile storage over an SPI, Dual SPI or Quad SPI interface, for an MCU/SoC to hold boot code, firmware or data that survives power loss.',
+        func: 'Internally a NOR Flash memory array, communicating with the host via {CS}, CLK and DI/DO (IO0–IO3 in Quad mode); supports standard/dual/quad SPI read-write commands, 256-byte page programming and sector/block/chip erase. The Status Register block-protect bits plus the {WP} pin provide hardware write protection; once the Status Register-2 QE bit enables Quad SPI, {WP} becomes IO2 and {HOLD}/{RESET} becomes IO3.',
+        usedIn: 'The SPI flash commonly used on open-source designs like the Raspberry Pi Pico and many ESP32 dev boards (holding the boot image/firmware); also widely used in routers, industrial boards, cameras and other embedded systems needing external high-capacity non-volatile storage.',
+        desc: '128M-bit (16MB) 3V-series SPI NOR Flash supporting standard/dual/quad SPI, SOIC-8 208-mil package, Industrial/Industrial-Plus grade.',
+        specs: [
+          { k: 'Capacity', v: '128M-bit (16MB)' },
+          { k: 'Interface', v: 'Standard SPI / Dual SPI / Quad SPI' },
+          { k: 'Supply voltage', v: 'see datasheet (cover marks it a 3V series; the captured page lacks the full voltage-range table)' },
+          { k: 'Package', v: 'SOIC-8 208-mil (Package Code S); also available in WSON, SOIC-16, TFBGA, WLCSP' },
+          { k: 'Grade', v: 'Industrial / Industrial Plus Grade' },
+          { k: 'Quad Enable', v: 'Controlled by the Status Register-2 QE bit; when QE=1, {WP} becomes IO2 and {HOLD}/{RESET} becomes IO3' },
+          { k: 'Document revision', v: 'Revision F, released 2018-03-27' }
+        ]
+      },
+      ja: {
+        subcategory: 'シリアル Flash メモリ（SPI / Dual SPI / Quad SPI NOR Flash）',
+        whatIs: 'シリアル NOR Flash メモリ：SPI、Dual SPI または Quad SPI インタフェースで 128M-bit（16MB）の不揮発性ストレージを提供、MCU/SoC の起動コード・ファームウェア・データを電源断後も保持。',
+        func: '内部は NOR Flash メモリアレイで、{CS}、CLK、DI/DO（Quad モードでは IO0–IO3）でホストと通信；標準/デュアル/クアッド SPI 読み書き命令、256B ページ書込み、セクタ/ブロック/全体消去に対応。Status Register のブロックプロテクトビットと {WP} ピンでハードウェア書込み保護；Status Register-2 の QE ビットで Quad SPI を有効にすると {WP} は IO2、{HOLD}/{RESET} は IO3 に変わる。',
+        usedIn: 'Raspberry Pi Pico や多くの ESP32 開発ボードなどオープンソース設計で一般的な SPI flash（起動イメージ/ファームウェア格納）；ルータ、産業ボード、カメラ等、外付け大容量不揮発ストレージが必要な組込みシステムでも広く使用。',
+        desc: '128M-bit（16MB）3V シリーズ SPI NOR Flash、標準/デュアル/クアッド SPI 対応、SOIC-8 208-mil パッケージ、Industrial/Industrial Plus グレード。',
+        specs: [
+          { k: '容量', v: '128M-bit（16MB）' },
+          { k: 'インタフェース', v: '標準 SPI / Dual SPI / Quad SPI' },
+          { k: '電源電圧', v: 'datasheet 参照（表紙は 3V シリーズ表記、抽出ページに完全な電圧範囲表なし）' },
+          { k: 'パッケージ', v: 'SOIC-8 208-mil（Package Code S）；WSON、SOIC-16、TFBGA、WLCSP 等の選択肢もあり' },
+          { k: 'グレード', v: 'Industrial / Industrial Plus Grade' },
+          { k: 'Quad Enable', v: 'Status Register-2 の QE ビットで制御；QE=1 で {WP} は IO2、{HOLD}/{RESET} は IO3 に' },
+          { k: 'ドキュメント版', v: 'Revision F、発行日 2018-03-27' }
+        ]
+      },
+      ko: {
+        subcategory: '시리얼 Flash 메모리(SPI / Dual SPI / Quad SPI NOR Flash)',
+        whatIs: '시리얼 NOR Flash 메모리: SPI, Dual SPI 또는 Quad SPI 인터페이스로 128M-bit(16MB) 비휘발성 저장 공간을 제공, MCU/SoC의 부팅 코드·펌웨어·데이터를 전원 차단 후에도 보존.',
+        func: '내부는 NOR Flash 메모리 어레이로 {CS}, CLK, DI/DO(Quad 모드에서 IO0–IO3)로 호스트와 통신; 표준/듀얼/쿼드 SPI 읽기·쓰기 명령, 256B 페이지 쓰기, 섹터/블록/전체 소거 지원. Status Register 블록 보호 비트와 {WP} 핀으로 하드웨어 쓰기 보호; Status Register-2의 QE 비트로 Quad SPI를 활성화하면 {WP}는 IO2, {HOLD}/{RESET}은 IO3으로 바뀜.',
+        usedIn: 'Raspberry Pi Pico와 여러 ESP32 개발 보드 등 오픈소스 설계에서 흔히 쓰는 SPI flash(부팅 이미지/펌웨어 저장); 라우터, 산업 보드, 카메라 등 외장 대용량 비휘발성 저장이 필요한 임베디드 시스템에서도 널리 사용.',
+        desc: '128M-bit(16MB) 3V 시리즈 SPI NOR Flash, 표준/듀얼/쿼드 SPI 지원, SOIC-8 208-mil 패키지, Industrial/Industrial Plus 등급.',
+        specs: [
+          { k: '용량', v: '128M-bit(16MB)' },
+          { k: '인터페이스', v: '표준 SPI / Dual SPI / Quad SPI' },
+          { k: '공급 전압', v: 'datasheet 참조(표지는 3V 시리즈 표기, 추출 페이지에 완전한 전압 범위 표 없음)' },
+          { k: '패키지', v: 'SOIC-8 208-mil(Package Code S); WSON, SOIC-16, TFBGA, WLCSP 등 선택지도 있음' },
+          { k: '등급', v: 'Industrial / Industrial Plus Grade' },
+          { k: 'Quad Enable', v: 'Status Register-2의 QE 비트로 제어; QE=1이면 {WP}는 IO2, {HOLD}/{RESET}은 IO3으로' },
+          { k: '문서 버전', v: 'Revision F, 발행일 2018-03-27' }
+        ]
+      }
+    },
+    'RT6150': {
+      en: {
+        subcategory: 'DC/DC converter (current-mode Buck-Boost)',
+        whatIs: 'Current-mode Buck-Boost step-down/step-up DC/DC converter: holds a regulated output whether the input is above, below or equal to the output, ideal for portable products powered by one Li-ion cell or several alkaline/NiMH cells.',
+        func: 'Built-in two N-MOSFET and two P-MOSFET switches, fixed 1MHz switching frequency; automatically and smoothly transitions between Buck, Boost and Buck-Boost modes per the VIN/VOUT relationship. Pulling PS low enters power-save mode (PSM, ~60µA quiescent), high gives fixed-frequency switching; EN controls on/off (VOUT disconnects from VIN when off); FB can set the output voltage (1.8V–5.5V) via an external divider (fixed-output versions tie FB to VOUT).',
+        usedIn: 'The buck-boost converter used on the official Raspberry Pi Pico board, converting USB 5V or battery input to a stable on-board rail; also used in single-Li-ion portable devices and handheld instruments needing wide-input regulation.',
+        desc: '1MHz current-mode Buck-Boost converter, 1.8–5.5V input, WDFN-10L package (3×3mm or 2.5×2.5mm depending on part).',
+        thermalPad: 'Exposed Pad (datasheet pin 11) is power ground; solder to a large PCB copper area and ground it for heat dissipation.',
+        specs: [
+          { k: 'Topology', v: 'Buck-Boost (synchronous rectification, up to ~90% efficiency)' },
+          { k: 'Input voltage range', v: '1.8V ~ 5.5V' },
+          { k: 'Output voltage', v: 'fixed 3.3V (RT6150B-33) or adjustable 1.8V~5.5V (FB divider)' },
+          { k: 'Switching frequency', v: 'fixed 1MHz' },
+          { k: 'Max continuous output current', v: 'see datasheet (rated ~800mA; actual depends on VIN/VOUT)' },
+          { k: 'PSM quiescent current', v: '~60µA' },
+          { k: 'Shutdown current', v: '< 1µA' },
+          { k: 'Package', v: 'WDFN-10L 3×3mm (RT6150A) / WDFN-10L 2.5×2.5mm (RT6150B)' }
+        ]
+      },
+      ja: {
+        subcategory: 'DC/DC コンバータ（電流モード Buck-Boost）',
+        whatIs: '電流モード Buck-Boost 降昇圧 DC/DC コンバータ：入力が出力より高い/低い/等しいいずれでも安定化出力を維持、単一リチウム電池や複数のアルカリ/ニッケル水素電池駆動のポータブル製品に好適。',
+        func: '2 個の N-MOSFET と 2 個の P-MOSFET スイッチを内蔵、固定 1MHz スイッチング；VIN と VOUT の関係に応じ Buck、Boost、Buck-Boost モード間を自動でスムーズに切替。PS をローで省電力モード（PSM、静止電流約 60µA）、ハイで固定周波数スイッチング；EN で ON/OFF 制御（OFF 時 VOUT は VIN から切離）；FB は外付け分圧で出力電圧（1.8V–5.5V）を調整（固定出力版は FB を VOUT に接続）。',
+        usedIn: 'Raspberry Pi Pico 公式ボード採用の buck-boost 電源コンバータで、USB 5V やバッテリ入力を安定したオンボード電源に変換；単一リチウム電池ポータブル機器や携帯計測器等、広入力レンジの安定化が必要な用途にも。',
+        desc: '1MHz 電流モード Buck-Boost コンバータ、入力 1.8–5.5V、WDFN-10L パッケージ（3×3mm または 2.5×2.5mm、型番による）。',
+        thermalPad: 'Exposed Pad（datasheet ピン 11）はパワーグランド、放熱のため大面積 PCB 銅箔に半田付けし接地。',
+        specs: [
+          { k: 'トポロジ', v: 'Buck-Boost（同期整流、効率最高約 90%）' },
+          { k: '入力電圧範囲', v: '1.8V ~ 5.5V' },
+          { k: '出力電圧', v: '固定 3.3V（RT6150B-33）または可変 1.8V~5.5V（FB 分圧）' },
+          { k: 'スイッチング周波数', v: '固定 1MHz' },
+          { k: '最大連続出力電流', v: 'datasheet 参照（定格約 800mA、実際は VIN/VOUT 条件次第）' },
+          { k: 'PSM 静止電流', v: '約 60µA' },
+          { k: 'シャットダウン電流', v: '< 1µA' },
+          { k: 'パッケージ', v: 'WDFN-10L 3×3mm（RT6150A）／WDFN-10L 2.5×2.5mm（RT6150B）' }
+        ]
+      },
+      ko: {
+        subcategory: 'DC/DC 컨버터(전류 모드 Buck-Boost)',
+        whatIs: '전류 모드 Buck-Boost 강압/승압 DC/DC 컨버터: 입력이 출력보다 높거나 낮거나 같아도 안정화 출력을 유지, 단일 리튬 전지나 다수 알칼리/니켈수소 전지 구동 휴대 제품에 적합.',
+        func: '2개 N-MOSFET와 2개 P-MOSFET 스위치 내장, 고정 1MHz 스위칭; VIN과 VOUT 관계에 따라 Buck, Boost, Buck-Boost 모드 간을 자동으로 매끄럽게 전환. PS를 로우로 절전 모드(PSM, 정지 전류 약 60µA), 하이로 고정 주파수 스위칭; EN으로 ON/OFF 제어(OFF 시 VOUT은 VIN에서 분리); FB는 외부 분압으로 출력 전압(1.8V–5.5V) 조정(고정 출력판은 FB를 VOUT에 연결).',
+        usedIn: 'Raspberry Pi Pico 공식 보드에 채용된 buck-boost 전원 컨버터로 USB 5V나 배터리 입력을 안정된 온보드 전원으로 변환; 단일 리튬 전지 휴대 기기나 휴대 계측기 등 넓은 입력 범위 안정화가 필요한 용도에도.',
+        desc: '1MHz 전류 모드 Buck-Boost 컨버터, 입력 1.8–5.5V, WDFN-10L 패키지(3×3mm 또는 2.5×2.5mm, 부품에 따라).',
+        thermalPad: 'Exposed Pad(datasheet 핀 11)는 파워 그라운드, 방열을 위해 대면적 PCB 동박에 납땜하고 접지.',
+        specs: [
+          { k: '토폴로지', v: 'Buck-Boost(동기 정류, 효율 최대 약 90%)' },
+          { k: '입력 전압 범위', v: '1.8V ~ 5.5V' },
+          { k: '출력 전압', v: '고정 3.3V(RT6150B-33) 또는 가변 1.8V~5.5V(FB 분압)' },
+          { k: '스위칭 주파수', v: '고정 1MHz' },
+          { k: '최대 연속 출력 전류', v: 'datasheet 참조(정격 약 800mA, 실제는 VIN/VOUT 조건에 따라)' },
+          { k: 'PSM 정지 전류', v: '약 60µA' },
+          { k: '셧다운 전류', v: '< 1µA' },
+          { k: '패키지', v: 'WDFN-10L 3×3mm(RT6150A) / WDFN-10L 2.5×2.5mm(RT6150B)' }
+        ]
+      }
+    },
+    'AXP209': {
+      en: {
+        subcategory: 'Power management IC (PMIC, Li-ion charging + multi-rail DCDC/LDO)',
+        whatIs: 'Single Li-ion-cell power-system management IC (PMIC): integrates a USB/AC-compatible PWM charger, two Buck DC-DCs, five LDOs, a multi-channel 12-bit ADC and four configurable GPIOs, letting the application processor control and monitor the whole power system over a TWSI (I2C-like) interface.',
+        func: 'An Intelligent Power Select (IPS) circuit safely distributes power among the external AC source, Li-ion battery and system load, still running from the external source when no battery is present; built-in OVP/UVP, OTP (over-temperature) and OCP (over-current) protection; a multi-channel 12-bit ADC measures battery voltage/current, external input voltage/current and die temperature, with a built-in coulomb counter for the fuel gauge to estimate remaining charge; the host enables/disables each rail, sets output voltages and reads measurements via TWSI register access.',
+        usedIn: 'Open-source single-board computers built around Allwinner A10/A20 SoCs such as the Olimex A20-OLinuXino-Lime and Cubieboard, serving as the companion PMIC that supplies the core/memory/peripheral rails and manages Li-ion charge/discharge.',
+        desc: 'Single-cell power-management IC integrating Li-ion charging, two Bucks, five LDOs, a multi-channel 12-bit ADC and four GPIOs, 48-pin QFN (6×6mm), TWSI control interface.',
+        thermalPad: 'Exposed Pad (datasheet pin-table pin 49) must connect to system ground.',
+        specs: [
+          { k: 'Power rails', v: '2 Buck DC-DC + 5 LDO (per-rail voltage/current limits in the full datasheet table)' },
+          { k: 'ADC', v: 'multi-channel 12-bit ADC, measuring battery V/I, ACIN, VBUS, die temperature, GPIO, etc.' },
+          { k: 'Control interface', v: 'TWSI (Two Wire Serial Interface, I2C-like)' },
+          { k: 'GPIO', v: '4 configurable GPIOs' },
+          { k: 'Protection', v: 'OVP/UVP, OTP (over-temp), OCP (over-current)' },
+          { k: 'Package', v: '48-pin QFN, 6mm × 6mm (with ground Exposed Pad)' }
+        ]
+      },
+      ja: {
+        subcategory: '電源管理 IC（PMIC、リチウム電池充電 + 多レール DCDC/LDO）',
+        whatIs: '単一リチウム電池電源システム管理 IC（PMIC）：USB/AC 対応 PWM 充電器、2 系統 Buck DC-DC、5 系統 LDO、多チャネル 12-bit ADC、4 個の設定可能 GPIO を統合し、TWSI（I2C 類似）インタフェースでアプリケーションプロセッサが電源システム全体を制御・監視。',
+        func: 'Intelligent Power Select（IPS）回路が外部 AC 電源・リチウム電池・システム負荷間で電力を安全配分、電池がなくても外部電源で単独動作可；OVP/UVP、OTP（過温）、OCP（過電流）保護内蔵；多チャネル 12-bit ADC で電池電圧/電流、外部入力電圧/電流、チップ温度を測定し、内蔵クーロンカウンタで燃料計（Fuel Gauge）が残量を推定；ホストが TWSI レジスタ経由で各電源レールの有効/無効、出力電圧設定、測定データ読み出しを行う。',
+        usedIn: 'Olimex A20-OLinuXino-Lime、Cubieboard 等の全志（Allwinner）A10/A20 系 SoC を核とするオープンソース単板コンピュータで、コア/メモリ/周辺の各電源を供給しリチウム電池の充放電を管理する付属 PMIC として。',
+        desc: 'リチウム電池充電、2 系統 Buck、5 系統 LDO、多チャネル 12-bit ADC、4 個 GPIO を統合した単セル電源管理 IC、48-pin QFN（6×6mm）、TWSI 制御インタフェース。',
+        thermalPad: 'Exposed Pad（datasheet ピン表の 49 ピン）はシステムグランドに接続必須。',
+        specs: [
+          { k: '電源レール', v: '2 系統 Buck DC-DC + 5 系統 LDO（各レール電圧/電流上限は datasheet 完全表参照）' },
+          { k: 'ADC', v: '多チャネル 12-bit ADC、電池 V/I、ACIN、VBUS、チップ温度、GPIO 等を測定' },
+          { k: '制御インタフェース', v: 'TWSI（Two Wire Serial Interface、I2C 類似）' },
+          { k: 'GPIO', v: '4 個の設定可能 GPIO' },
+          { k: '保護', v: 'OVP/UVP、OTP（過温）、OCP（過電流）' },
+          { k: 'パッケージ', v: '48-pin QFN、6mm × 6mm（接地 Exposed Pad 付）' }
+        ]
+      },
+      ko: {
+        subcategory: '전원 관리 IC(PMIC, 리튬 전지 충전 + 다중 레일 DCDC/LDO)',
+        whatIs: '단일 리튬 전지 전원 시스템 관리 IC(PMIC): USB/AC 호환 PWM 충전기, 2계통 Buck DC-DC, 5계통 LDO, 다채널 12-bit ADC, 4개의 설정 가능 GPIO를 통합하고 TWSI(I2C 유사) 인터페이스로 애플리케이션 프로세서가 전원 시스템 전체를 제어·감시.',
+        func: 'Intelligent Power Select(IPS) 회로가 외부 AC 전원·리튬 전지·시스템 부하 간에 전력을 안전 분배, 전지가 없어도 외부 전원으로 단독 동작 가능; OVP/UVP, OTP(과열), OCP(과전류) 보호 내장; 다채널 12-bit ADC로 전지 전압/전류, 외부 입력 전압/전류, 칩 온도를 측정하고 내장 쿨롱 카운터로 연료 게이지(Fuel Gauge)가 잔량 추정; 호스트가 TWSI 레지스터로 각 전원 레일 활성/비활성, 출력 전압 설정, 측정 데이터 읽기를 수행.',
+        usedIn: 'Olimex A20-OLinuXino-Lime, Cubieboard 등 Allwinner A10/A20 계열 SoC를 핵심으로 하는 오픈소스 단일 보드 컴퓨터에서 코어/메모리/주변 각 전원을 공급하고 리튬 전지 충방전을 관리하는 부속 PMIC로.',
+        desc: '리튬 전지 충전, 2계통 Buck, 5계통 LDO, 다채널 12-bit ADC, 4개 GPIO를 통합한 단일 셀 전원 관리 IC, 48-pin QFN(6×6mm), TWSI 제어 인터페이스.',
+        thermalPad: 'Exposed Pad(datasheet 핀 표의 49번 핀)는 시스템 접지에 연결 필수.',
+        specs: [
+          { k: '전원 레일', v: '2계통 Buck DC-DC + 5계통 LDO(각 레일 전압/전류 상한은 datasheet 전체 표 참조)' },
+          { k: 'ADC', v: '다채널 12-bit ADC, 전지 V/I, ACIN, VBUS, 칩 온도, GPIO 등 측정' },
+          { k: '제어 인터페이스', v: 'TWSI(Two Wire Serial Interface, I2C 유사)' },
+          { k: 'GPIO', v: '4개의 설정 가능 GPIO' },
+          { k: '보호', v: 'OVP/UVP, OTP(과열), OCP(과전류)' },
+          { k: '패키지', v: '48-pin QFN, 6mm × 6mm(접지 Exposed Pad 포함)' }
+        ]
+      }
+    },
+    'UCC21711-Q1': {
+      en: {
+        subcategory: 'Isolated gate driver (single-channel, SiC/IGBT, with isolated analog sensing)',
+        whatIs: 'Isolated single-channel gate driver: passes the controller-side low-voltage PWM logic signal across galvanic isolation to the high-voltage side to drive a SiC MOSFET or IGBT gate, and reports faults such as overcurrent or short-circuit back to the controller.',
+        func: 'Uses SiO2 capacitive isolation to separate input and output sides, supporting 1.5kVRMS working voltage, 5.7kVRMS (single-channel) reinforced isolation, 12.8kVPK surge immunity, isolation lifetime >40 years and CMTI ≥150V/ns. The output stage provides ±10A source/sink drive; the separate OUTH/OUTL outputs allow individual switching-speed tuning via external resistors. A built-in OC (overcurrent) detection input supports SenseFET, DESAT or shunt-resistor sensing; on fault it reports via {FLT} (open-collector, active-low) and performs a 400mA soft turn-off to protect the power device. It also integrates a 4A active Miller clamp (CLMPI) against dv/dt false turn-on, and an isolated analog-to-PWM converter (AIN→APWM) for isolated measurement of temperature (NTC/PTC/thermal diode) or high-voltage DC-Link/phase voltage without an extra isolation amplifier. RST/EN serves as both output enable/disable and DESAT fault reset. VDD-COM UVLO drives a power-good flag on RDY.',
+        usedIn: 'EV traction inverters, on-board chargers (OBC) and charging piles, HEV/EV DC/DC converters and other SiC/IGBT high-voltage switching drive applications.',
+        desc: 'SOIC-16 (DW), automotive (AEC-Q100) 5.7kVRMS single-channel reinforced isolated gate driver, ±10A source/sink, OC overcurrent detection (pin2) + isolated analog PWM sensing output (APWM) + 4A active Miller clamp. Same pin positions as the sibling UCC21751-Q1, but its pin2 is DESAT (not OC) with a VDD-floating trigger reference — different function, so the two are not directly interchangeable.',
+        thermalPad: 'see datasheet (the dump did not record exposed-pad/EP information).',
+        specs: [
+          { k: 'Isolation rating', v: '5.7kVRMS (single-channel reinforced), 12.8kVPK surge, 1.5kVRMS working voltage' },
+          { k: 'Switch device', v: 'SiC MOSFET / IGBT, up to 2121Vpk' },
+          { k: 'Drive voltage (VDD-VEE)', v: 'max 33V (recommended VDD-COM 13~33V)' },
+          { k: 'Drive current', v: '±10A (source/sink), separate OUTH/OUTL outputs' },
+          { k: 'CMTI', v: '≥150V/ns (min)' },
+          { k: 'Overcurrent response', v: '270ns (OC, typ)' },
+          { k: 'Active Miller clamp', v: '4A (CLMPI)' },
+          { k: 'Soft turn-off current', v: '400mA' },
+          { k: 'VCC supply', v: '3.0~5.5V' },
+          { k: 'RST/EN min reset pulse', v: '1000ns (recommended operating, min)' },
+          { k: 'Propagation delay / part skew', v: '130ns (max) / 30ns (max)' },
+          { k: 'Junction temperature', v: '-40°C~150°C (ambient -40°C~125°C)' },
+          { k: 'Package', v: 'SOIC-16 (DW), creepage/clearance >8mm' },
+          { k: 'Qualification', v: 'AEC-Q100 grade 1; UL1577 component recognition (planned)' }
+        ]
+      },
+      ja: {
+        subcategory: '絶縁ゲートドライバ（1 チャネル、SiC/IGBT、絶縁アナログセンシング付）',
+        whatIs: '絶縁 1 チャネルゲートドライバ：コントローラ側の低圧 PWM 論理信号を電気的絶縁を跨いで高圧側へ伝送し、SiC MOSFET または IGBT のゲートを駆動、過電流・短絡等の故障状態をコントローラに報告。',
+        func: 'SiO2 容量絶縁技術で入力/出力側を分離、1.5kVRMS 動作電圧、5.7kVRMS（1 チャネル）強化絶縁耐圧、12.8kVPK サージ免疫、絶縁寿命 >40 年、CMTI ≥150V/ns に対応。出力段は ±10A source/sink 駆動能力、OUTH/OUTL 分離出力で外付け抵抗により開閉速度を個別調整可。OC（過電流）検出入力を内蔵し SenseFET、DESAT、シャント抵抗など複数の検出方式に対応；故障検出時は {FLT}（オープンコレクタ、ロー動作）で報告し、400mA でソフトターンオフ保護。さらに 4A アクティブミラークランプ（CLMPI）で dv/dt 誤導通を防止、絶縁アナログ-PWM 変換器（AIN→APWM）で温度（NTC/PTC/熱ダイオード）や高圧 DC-Link/相電圧の絶縁測定を追加絶縁アンプなしで実現。RST/EN は出力イネーブル/遮断と DESAT 故障リセットを兼用。VDD-COM 側 UVLO 保護が RDY ピンに電源良好フラグを出力。',
+        usedIn: '電気自動車の牽引インバータ、車載充電器（OBC）と充電スタンド、HEV/EV 用 DC/DC コンバータ等の SiC/IGBT 高圧スイッチ駆動用途。',
+        desc: 'SOIC-16（DW）、車載（AEC-Q100）5.7kVRMS 1 チャネル強化絶縁ゲートドライバ、±10A source/sink、OC 過電流検出（pin2）+絶縁アナログ PWM センシング出力（APWM）+4A アクティブミラークランプ。同シリーズ UCC21751-Q1 とピン位置は同じだが pin2 が DESAT（OC でない）・トリガ基準が VDD 追従で機能が異なり、直接互換不可。',
+        thermalPad: 'datasheet 参照（dump に露出パッド/EP 情報の記載なし）。',
+        specs: [
+          { k: '絶縁耐圧', v: '5.7kVRMS（1 チャネル強化絶縁）、12.8kVPK サージ、動作電圧 1.5kVRMS' },
+          { k: '対応スイッチ素子', v: 'SiC MOSFET / IGBT、最高 2121Vpk' },
+          { k: '駆動電圧（VDD-VEE）', v: '最大 33V（推奨 VDD-COM 13~33V）' },
+          { k: '駆動電流', v: '±10A（source/sink）、分離 OUTH/OUTL 出力' },
+          { k: 'CMTI', v: '≥150V/ns（min）' },
+          { k: '過電流保護応答', v: '270ns（OC、典型）' },
+          { k: 'アクティブミラークランプ', v: '4A（CLMPI）' },
+          { k: 'ソフトターンオフ電流', v: '400mA' },
+          { k: 'VCC 供給', v: '3.0~5.5V' },
+          { k: 'RST/EN リセット最短パルス', v: '1000ns（推奨動作条件、min）' },
+          { k: '伝搬遅延/part skew', v: '130ns（max）/ 30ns（max）' },
+          { k: '動作接合温度', v: '-40°C~150°C（周囲温度 -40°C~125°C）' },
+          { k: 'パッケージ', v: 'SOIC-16（DW）、沿面/空間距離 >8mm' },
+          { k: '認証', v: 'AEC-Q100 温度グレード1；UL1577 素子認証（計画中）' }
+        ]
+      },
+      ko: {
+        subcategory: '절연 게이트 드라이버(단일 채널, SiC/IGBT, 절연 아날로그 센싱 포함)',
+        whatIs: '절연 단일 채널 게이트 드라이버: 컨트롤러 측 저압 PWM 논리 신호를 전기 절연을 넘어 고압 측으로 전송해 SiC MOSFET 또는 IGBT 게이트를 구동하고, 과전류·단락 등 고장 상태를 컨트롤러에 보고.',
+        func: 'SiO2 용량 절연 기술로 입력/출력 측을 분리, 1.5kVRMS 동작 전압, 5.7kVRMS(단일 채널) 강화 절연 내압, 12.8kVPK 서지 면역, 절연 수명 >40년, CMTI ≥150V/ns 지원. 출력단은 ±10A source/sink 구동 능력, OUTH/OUTL 분리 출력으로 외부 저항을 통해 개폐 속도 개별 조정 가능. OC(과전류) 감지 입력을 내장해 SenseFET, DESAT, 션트 저항 등 여러 감지 방식 지원; 고장 감지 시 {FLT}(오픈 컬렉터, 로우 동작)로 보고하고 400mA로 소프트 턴오프 보호. 또한 4A 액티브 밀러 클램프(CLMPI)로 dv/dt 오도통 방지, 절연 아날로그-PWM 변환기(AIN→APWM)로 온도(NTC/PTC/열 다이오드)나 고압 DC-Link/상전압의 절연 측정을 추가 절연 앰프 없이 구현. RST/EN은 출력 인에이블/차단과 DESAT 고장 리셋을 겸용. VDD-COM 측 UVLO 보호가 RDY 핀에 전원 양호 플래그 출력.',
+        usedIn: '전기차 견인 인버터, 차량 탑재 충전기(OBC)와 충전 스탠드, HEV/EV용 DC/DC 컨버터 등 SiC/IGBT 고압 스위치 구동 용도.',
+        desc: 'SOIC-16(DW), 차량용(AEC-Q100) 5.7kVRMS 단일 채널 강화 절연 게이트 드라이버, ±10A source/sink, OC 과전류 감지(pin2)+절연 아날로그 PWM 센싱 출력(APWM)+4A 액티브 밀러 클램프. 동일 시리즈 UCC21751-Q1과 핀 위치는 같으나 pin2가 DESAT(OC 아님)·트리거 기준이 VDD 추종으로 기능이 달라 직접 호환 불가.',
+        thermalPad: 'datasheet 참조(dump에 노출 패드/EP 정보 기재 없음).',
+        specs: [
+          { k: '절연 내압', v: '5.7kVRMS(단일 채널 강화 절연), 12.8kVPK 서지, 동작 전압 1.5kVRMS' },
+          { k: '적용 스위치 소자', v: 'SiC MOSFET / IGBT, 최고 2121Vpk' },
+          { k: '구동 전압(VDD-VEE)', v: '최대 33V(권장 VDD-COM 13~33V)' },
+          { k: '구동 전류', v: '±10A(source/sink), 분리 OUTH/OUTL 출력' },
+          { k: 'CMTI', v: '≥150V/ns(min)' },
+          { k: '과전류 보호 응답', v: '270ns(OC, 전형)' },
+          { k: '액티브 밀러 클램프', v: '4A(CLMPI)' },
+          { k: '소프트 턴오프 전류', v: '400mA' },
+          { k: 'VCC 공급', v: '3.0~5.5V' },
+          { k: 'RST/EN 리셋 최소 펄스', v: '1000ns(권장 동작 조건, min)' },
+          { k: '전파 지연/part skew', v: '130ns(max) / 30ns(max)' },
+          { k: '동작 접합 온도', v: '-40°C~150°C(주위 온도 -40°C~125°C)' },
+          { k: '패키지', v: 'SOIC-16(DW), 연면/공간 거리 >8mm' },
+          { k: '인증', v: 'AEC-Q100 온도 등급1; UL1577 소자 인증(계획 중)' }
+        ]
+      }
+    },
+    'UCC21751-Q1': {
+      en: {
+        subcategory: 'Isolated gate driver (single-channel, SiC/IGBT, with isolated analog sensing)',
+        whatIs: 'Isolated single-channel gate driver: passes the controller-side low-voltage PWM logic signal across galvanic isolation to the high-voltage side to drive a SiC MOSFET or IGBT gate, reporting short-circuit/overcurrent faults via DESAT (desaturation) detection.',
+        func: 'Uses SiO2 capacitive isolation to separate input and output sides, supporting 1.5kVRMS working voltage, 5.7kVRMS (single-channel) reinforced isolation, 12.8kVPK surge immunity, isolation lifetime >40 years and CMTI ≥150V/ns. The output stage provides ±10A source/sink drive; separate OUTH/OUTL outputs allow individual switching-speed tuning. A built-in DESAT (desaturation current protection) input has a VDD-floating reference (COM-0.3V~VDD+0.3V), supporting short-circuit protection for SiC/IGBT up to 2121V DC working voltage; on fault it reports via {FLT} (open-collector, active-low) and performs a 400mA soft turn-off. It also integrates a 4A active Miller clamp (CLMPI) against dv/dt false turn-on, and an isolated analog-to-PWM converter (AIN→APWM) for isolated temperature or high-voltage DC-Link/phase-voltage measurement. RST/EN serves as both output enable/disable and DESAT fault reset; per the datasheet recommended operating conditions the minimum reset pulse is 800ns. VDD-COM UVLO drives a power-good flag on RDY.',
+        usedIn: 'EV traction inverters, on-board chargers (OBC) and charging piles, HEV/EV DC/DC converters and other SiC/IGBT high-voltage switching drive applications.',
+        desc: 'SOIC-16 (DW), automotive (AEC-Q100) 5.7kVRMS single-channel reinforced isolated gate driver, ±10A source/sink, DESAT desaturation protection (pin2, VDD-floating reference) + isolated analog PWM sensing output (APWM) + 4A active Miller clamp. Same pin positions as the sibling UCC21711-Q1, but its pin2 is OC (not DESAT) with a fixed COM-referenced -0.3~6V trigger — different function, so the two are not directly interchangeable.',
+        thermalPad: 'see datasheet (the dump did not record exposed-pad/EP information).',
+        specs: [
+          { k: 'Isolation rating', v: '5.7kVRMS (single-channel reinforced), 12.8kVPK surge, 1.5kVRMS working voltage' },
+          { k: 'Switch device', v: 'SiC MOSFET / IGBT, up to 2121V DC working voltage' },
+          { k: 'Drive voltage (VDD-VEE)', v: 'max 33V (recommended VDD-COM 13~33V)' },
+          { k: 'Drive current', v: '±10A (source/sink), separate OUTH/OUTL outputs' },
+          { k: 'CMTI', v: '≥150V/ns (min)' },
+          { k: 'DESAT response', v: '200ns (typ)' },
+          { k: 'Active Miller clamp', v: '4A (CLMPI)' },
+          { k: 'Soft turn-off current', v: '400mA' },
+          { k: 'VCC supply', v: '3.0~5.5V' },
+          { k: 'RST/EN min reset pulse', v: '800ns (recommended operating, min)' },
+          { k: 'Propagation delay / part skew', v: '130ns (max) / 30ns (max)' },
+          { k: 'Junction temperature', v: '-40°C~150°C (ambient -40°C~125°C)' },
+          { k: 'Package', v: 'SOIC-16 (DW), creepage/clearance >8mm' },
+          { k: 'Qualification', v: 'AEC-Q100 grade 1; UL1577 component recognition (planned)' }
+        ]
+      },
+      ja: {
+        subcategory: '絶縁ゲートドライバ（1 チャネル、SiC/IGBT、絶縁アナログセンシング付）',
+        whatIs: '絶縁 1 チャネルゲートドライバ：コントローラ側の低圧 PWM 論理信号を電気的絶縁を跨いで高圧側へ伝送し、SiC MOSFET または IGBT のゲートを駆動、DESAT（脱飽和）検出で短絡/過電流故障を報告。',
+        func: 'SiO2 容量絶縁技術で入力/出力側を分離、1.5kVRMS 動作電圧、5.7kVRMS（1 チャネル）強化絶縁耐圧、12.8kVPK サージ免疫、絶縁寿命 >40 年、CMTI ≥150V/ns。出力段は ±10A source/sink、OUTH/OUTL 分離出力で開閉速度を個別調整可。DESAT（脱飽和電流保護）検出入力は基準が VDD 追従（COM-0.3V~VDD+0.3V）で、最高 2121V DC 動作電圧の SiC/IGBT 短絡保護に対応；故障時は {FLT}（オープンコレクタ、ロー動作）で報告し 400mA ソフトターンオフ。さらに 4A アクティブミラークランプ（CLMPI）、絶縁アナログ-PWM 変換器（AIN→APWM）で温度や高圧 DC-Link/相電圧の絶縁測定。RST/EN は出力イネーブル/遮断と DESAT 故障リセットを兼用、datasheet 推奨動作条件でリセット最短パルスは 800ns。VDD-COM 側 UVLO が RDY に電源良好フラグを出力。',
+        usedIn: '電気自動車の牽引インバータ、車載充電器（OBC）と充電スタンド、HEV/EV 用 DC/DC コンバータ等の SiC/IGBT 高圧スイッチ駆動用途。',
+        desc: 'SOIC-16（DW）、車載（AEC-Q100）5.7kVRMS 1 チャネル強化絶縁ゲートドライバ、±10A source/sink、DESAT 脱飽和保護（pin2、基準 VDD 追従）+絶縁アナログ PWM センシング出力（APWM）+4A アクティブミラークランプ。同シリーズ UCC21711-Q1 とピン位置は同じだが pin2 が OC（DESAT でない）・トリガ基準が COM 参照固定 -0.3~6V で機能が異なり、直接互換不可。',
+        thermalPad: 'datasheet 参照（dump に露出パッド/EP 情報の記載なし）。',
+        specs: [
+          { k: '絶縁耐圧', v: '5.7kVRMS（1 チャネル強化絶縁）、12.8kVPK サージ、動作電圧 1.5kVRMS' },
+          { k: '対応スイッチ素子', v: 'SiC MOSFET / IGBT、最高 2121V DC 動作電圧' },
+          { k: '駆動電圧（VDD-VEE）', v: '最大 33V（推奨 VDD-COM 13~33V）' },
+          { k: '駆動電流', v: '±10A（source/sink）、分離 OUTH/OUTL 出力' },
+          { k: 'CMTI', v: '≥150V/ns（min）' },
+          { k: 'DESAT 保護応答', v: '200ns（典型）' },
+          { k: 'アクティブミラークランプ', v: '4A（CLMPI）' },
+          { k: 'ソフトターンオフ電流', v: '400mA' },
+          { k: 'VCC 供給', v: '3.0~5.5V' },
+          { k: 'RST/EN リセット最短パルス', v: '800ns（推奨動作条件、min）' },
+          { k: '伝搬遅延/part skew', v: '130ns（max）/ 30ns（max）' },
+          { k: '動作接合温度', v: '-40°C~150°C（周囲温度 -40°C~125°C）' },
+          { k: 'パッケージ', v: 'SOIC-16（DW）、沿面/空間距離 >8mm' },
+          { k: '認証', v: 'AEC-Q100 温度グレード1；UL1577 素子認証（計画中）' }
+        ]
+      },
+      ko: {
+        subcategory: '절연 게이트 드라이버(단일 채널, SiC/IGBT, 절연 아날로그 센싱 포함)',
+        whatIs: '절연 단일 채널 게이트 드라이버: 컨트롤러 측 저압 PWM 논리 신호를 전기 절연을 넘어 고압 측으로 전송해 SiC MOSFET 또는 IGBT 게이트를 구동, DESAT(탈포화) 감지로 단락/과전류 고장을 보고.',
+        func: 'SiO2 용량 절연 기술로 입력/출력 측을 분리, 1.5kVRMS 동작 전압, 5.7kVRMS(단일 채널) 강화 절연 내압, 12.8kVPK 서지 면역, 절연 수명 >40년, CMTI ≥150V/ns. 출력단은 ±10A source/sink, OUTH/OUTL 분리 출력으로 개폐 속도 개별 조정 가능. DESAT(탈포화 전류 보호) 감지 입력은 기준이 VDD 추종(COM-0.3V~VDD+0.3V)으로 최고 2121V DC 동작 전압의 SiC/IGBT 단락 보호 지원; 고장 시 {FLT}(오픈 컬렉터, 로우 동작)로 보고하고 400mA 소프트 턴오프. 또한 4A 액티브 밀러 클램프(CLMPI), 절연 아날로그-PWM 변환기(AIN→APWM)로 온도나 고압 DC-Link/상전압의 절연 측정. RST/EN은 출력 인에이블/차단과 DESAT 고장 리셋 겸용, datasheet 권장 동작 조건에서 리셋 최소 펄스는 800ns. VDD-COM 측 UVLO가 RDY에 전원 양호 플래그 출력.',
+        usedIn: '전기차 견인 인버터, 차량 탑재 충전기(OBC)와 충전 스탠드, HEV/EV용 DC/DC 컨버터 등 SiC/IGBT 고압 스위치 구동 용도.',
+        desc: 'SOIC-16(DW), 차량용(AEC-Q100) 5.7kVRMS 단일 채널 강화 절연 게이트 드라이버, ±10A source/sink, DESAT 탈포화 보호(pin2, 기준 VDD 추종)+절연 아날로그 PWM 센싱 출력(APWM)+4A 액티브 밀러 클램프. 동일 시리즈 UCC21711-Q1과 핀 위치는 같으나 pin2가 OC(DESAT 아님)·트리거 기준이 COM 참조 고정 -0.3~6V로 기능이 달라 직접 호환 불가.',
+        thermalPad: 'datasheet 참조(dump에 노출 패드/EP 정보 기재 없음).',
+        specs: [
+          { k: '절연 내압', v: '5.7kVRMS(단일 채널 강화 절연), 12.8kVPK 서지, 동작 전압 1.5kVRMS' },
+          { k: '적용 스위치 소자', v: 'SiC MOSFET / IGBT, 최고 2121V DC 동작 전압' },
+          { k: '구동 전압(VDD-VEE)', v: '최대 33V(권장 VDD-COM 13~33V)' },
+          { k: '구동 전류', v: '±10A(source/sink), 분리 OUTH/OUTL 출력' },
+          { k: 'CMTI', v: '≥150V/ns(min)' },
+          { k: 'DESAT 보호 응답', v: '200ns(전형)' },
+          { k: '액티브 밀러 클램프', v: '4A(CLMPI)' },
+          { k: '소프트 턴오프 전류', v: '400mA' },
+          { k: 'VCC 공급', v: '3.0~5.5V' },
+          { k: 'RST/EN 리셋 최소 펄스', v: '800ns(권장 동작 조건, min)' },
+          { k: '전파 지연/part skew', v: '130ns(max) / 30ns(max)' },
+          { k: '동작 접합 온도', v: '-40°C~150°C(주위 온도 -40°C~125°C)' },
+          { k: '패키지', v: 'SOIC-16(DW), 연면/공간 거리 >8mm' },
+          { k: '인증', v: 'AEC-Q100 온도 등급1; UL1577 소자 인증(계획 중)' }
+        ]
+      }
+    },
+    'TPS7H4010-SEP': {
+      en: {
+        subcategory: 'Space-grade synchronous buck converter (Rad-Hard)',
+        whatIs: 'Radiation-tolerant space-grade synchronous step-down DC converter: converts a 3.5V–32V input into an adjustable output at up to 6A output current, for satellite/space-payload board power.',
+        func: 'A peak current-mode-controlled synchronous buck with built-in high-/low-side power MOSFETs (RDS(on) 53mΩ/31mΩ typ), switching frequency 350kHz–2.2MHz (set by one RT resistor, 500kHz default when floating) and external clock sync (SYNC/MODE). Internal compensation cuts external part count; SS/TRK sets soft-start time or rail tracking; FB sets output voltage via a divider; PGOOD is an open-collector power-good flag; EN is a precision enable for resistor-divider-programmable system UVLO; cycle-by-cycle current limit plus hiccup-mode short-circuit protection and thermal shutdown. BIAS can tie to VOUT or an external 3.3V/5V rail for higher efficiency. Radiation: SEL/SEB/SEGR immune to LET=43MeV-cm²/mg, SET/SEFI characterized to the same LET, TID 20krad(Si) per wafer lot (characterized to 30krad(Si)); Space Enhanced Plastic with gold wire and NiPdAu lead finish, low-outgassing mold compound, single fab/assembly/test site.',
+        usedIn: 'Satellite point-of-load power (FPGAs, MCUs, data converters, ASICs), communication payloads, command & data handling, optical/radar imaging payloads, laser-communication payloads, navigation and science-instrument payloads.',
+        desc: '30-pin WQFN (RNP), radiation-tolerant (20krad(Si)) space-grade 3.5–32V input, 6A synchronous buck, peak current-mode control, switching 350kHz–2.2MHz adjustable and externally syncable, with soft-start/tracking, precision-enable UVLO programming, cycle-by-cycle limit and hiccup short-circuit protection. SW(1-5), PVIN(20-22), PGND(23-26), NC(12-15,27-30) are merged pins.',
+        thermalPad: 'DAP (Die Attach Pad) low-impedance connection to AGND is the main heat path; solder to PCB ground copper with thermal vias to spread heat to other layers.',
+        specs: [
+          { k: 'Input voltage', v: '3.5V ~ 32V' },
+          { k: 'Max output current', v: '6A' },
+          { k: 'Control', v: 'peak current-mode, internal compensation' },
+          { k: 'Switching frequency', v: '350kHz ~ 2.2MHz adjustable (RT), 500kHz default when floating, external clock syncable' },
+          { k: 'High-side MOSFET RDS(on)', v: '53mΩ (typ)' },
+          { k: 'Low-side MOSFET RDS(on)', v: '31mΩ (typ)' },
+          { k: 'Min on/off time', v: 'tON-MIN 60ns (typ) / tOFF-MIN 70ns (typ)' },
+          { k: 'Protection', v: 'cycle-by-cycle limit, hiccup short-circuit, thermal shutdown, precision-EN UVLO programming' },
+          { k: 'Soft-start', v: 'internal fixed slope, or SS/TRK external cap extension, 2µA charge current' },
+          { k: 'Radiation (SEL/SEB/SEGR)', v: 'immune to LET=43MeV-cm²/mg' },
+          { k: 'Radiation (TID)', v: '20krad(Si) per wafer lot, characterized to 30krad(Si)' },
+          { k: 'Package', v: '30-WQFN (RNP) 6×4×0.8mm, mass ~57.2mg (±10%)' }
+        ]
+      },
+      ja: {
+        subcategory: '宇宙級同期整流降圧コンバータ（Rad-Hard）',
+        whatIs: '耐放射線宇宙級同期整流降圧 DC コンバータ：3.5V–32V 入力を可変出力に変換、最大出力電流 6A、衛星/宇宙ペイロード基板電源用。',
+        func: 'ピーク電流モード制御の同期整流降圧で、ハイ/ローサイドパワー MOSFET（RDS(on) 53mΩ/31mΩ 典型）内蔵、スイッチング周波数 350kHz–2.2MHz（RT 抵抗 1 個で設定、浮き時 500kHz）、外部クロック同期（SYNC/MODE）対応。内部補償で外付け部品削減；SS/TRK でソフトスタート時間や電源レール追従を設定；FB は分圧で出力電圧設定；PGOOD はオープンコレクタ電源良好フラグ；EN は精密イネーブルで抵抗分圧によるシステム UVLO プログラム可；サイクル毎電流制限＋ヒカップモード短絡保護、過熱シャットダウン。BIAS は VOUT か外部 3.3V/5V レールに接続し効率向上。放射線：SEL/SEB/SEGR は LET=43MeV-cm²/mg まで免疫、SET/SEFI 同 LET 特性化、TID ウェハロット毎 20krad(Si) 保証（30krad(Si) 特性化）；Space Enhanced Plastic（金線・NiPdAu 端子処理、低アウトガスモールド材、単一の製造/組立/試験拠点）。',
+        usedIn: '衛星の負荷点電源（FPGA、マイコン、データコンバータ、ASIC）、通信ペイロード、指令・データ処理、光学/レーダ撮像ペイロード、レーザ通信ペイロード、航法・科学探査ペイロード等の宇宙用途。',
+        desc: '30-pin WQFN（RNP）、耐放射線（20krad(Si)）宇宙級 3.5–32V 入力・6A 同期整流降圧コンバータ、ピーク電流モード制御、スイッチング 350kHz–2.2MHz 可変で外部同期可、ソフトスタート/追従・精密イネーブル UVLO プログラム・サイクル毎制限とヒカップ式短絡保護内蔵。SW(1-5)、PVIN(20-22)、PGND(23-26)、NC(12-15,27-30) は多ピン合併。',
+        thermalPad: 'DAP（Die Attach Pad）を AGND へ低インピーダンス接続、主要な放熱経路；PCB 接地銅箔に半田付けし放熱ビア併用で他層へ放熱。',
+        specs: [
+          { k: '入力電圧', v: '3.5V ~ 32V' },
+          { k: '最大出力電流', v: '6A' },
+          { k: '制御方式', v: 'ピーク電流モード、内部補償' },
+          { k: 'スイッチング周波数', v: '350kHz ~ 2.2MHz 可変（RT 設定）、浮き時 500kHz、外部クロック同期可' },
+          { k: 'ハイサイド MOSFET RDS(on)', v: '53mΩ（典型）' },
+          { k: 'ローサイド MOSFET RDS(on)', v: '31mΩ（典型）' },
+          { k: '最小オン/オフ時間', v: 'tON-MIN 60ns（典型）/ tOFF-MIN 70ns（典型）' },
+          { k: '保護機能', v: 'サイクル毎制限、ヒカップ短絡保護、過熱シャットダウン、精密 EN UVLO プログラム' },
+          { k: 'ソフトスタート', v: '内部固定スロープ、または SS/TRK 外付けコンデンサで延長、2µA 充電電流' },
+          { k: '耐放射線（SEL/SEB/SEGR）', v: 'LET=43MeV-cm²/mg まで免疫' },
+          { k: '耐放射線（TID）', v: 'ウェハロット毎 20krad(Si) 保証、30krad(Si) 特性化' },
+          { k: 'パッケージ', v: '30-WQFN（RNP）6×4×0.8mm、質量約 57.2mg（±10%）' }
+        ]
+      },
+      ko: {
+        subcategory: '우주급 동기 벅 컨버터(Rad-Hard)',
+        whatIs: '내방사선 우주급 동기 강압 DC 컨버터: 3.5V–32V 입력을 가변 출력으로 변환, 최대 출력 전류 6A, 위성/우주 페이로드 보드 전원용.',
+        func: '피크 전류 모드 제어 동기 벅으로 하이/로우사이드 파워 MOSFET(RDS(on) 53mΩ/31mΩ 전형) 내장, 스위칭 주파수 350kHz–2.2MHz(RT 저항 1개로 설정, 플로팅 시 500kHz), 외부 클록 동기(SYNC/MODE) 지원. 내부 보상으로 외부 부품 절감; SS/TRK로 소프트 스타트 시간이나 전원 레일 추종 설정; FB는 분압으로 출력 전압 설정; PGOOD는 오픈 컬렉터 전원 양호 플래그; EN은 정밀 인에이블로 저항 분압에 의한 시스템 UVLO 프로그램 가능; 사이클별 전류 제한+히컵 모드 단락 보호, 과열 셧다운. BIAS는 VOUT나 외부 3.3V/5V 레일에 연결해 효율 향상. 방사선: SEL/SEB/SEGR은 LET=43MeV-cm²/mg까지 면역, SET/SEFI 동일 LET 특성화, TID 웨이퍼 로트별 20krad(Si) 보증(30krad(Si) 특성화); Space Enhanced Plastic(금선·NiPdAu 단자 처리, 저 아웃가스 몰드재, 단일 제조/조립/시험 거점).',
+        usedIn: '위성 부하점 전원(FPGA, MCU, 데이터 컨버터, ASIC), 통신 페이로드, 지령·데이터 처리, 광학/레이더 이미징 페이로드, 레이저 통신 페이로드, 항법·과학 탐사 페이로드 등 우주 용도.',
+        desc: '30-pin WQFN(RNP), 내방사선(20krad(Si)) 우주급 3.5–32V 입력·6A 동기 벅 컨버터, 피크 전류 모드 제어, 스위칭 350kHz–2.2MHz 가변에 외부 동기 가능, 소프트 스타트/추종·정밀 인에이블 UVLO 프로그램·사이클별 제한과 히컵식 단락 보호 내장. SW(1-5), PVIN(20-22), PGND(23-26), NC(12-15,27-30)는 다중 핀 병합.',
+        thermalPad: 'DAP(Die Attach Pad)를 AGND에 저임피던스 연결, 주요 방열 경로; PCB 접지 동박에 납땜하고 방열 비아를 병용해 다른 층으로 방열.',
+        specs: [
+          { k: '입력 전압', v: '3.5V ~ 32V' },
+          { k: '최대 출력 전류', v: '6A' },
+          { k: '제어 방식', v: '피크 전류 모드, 내부 보상' },
+          { k: '스위칭 주파수', v: '350kHz ~ 2.2MHz 가변(RT 설정), 플로팅 시 500kHz, 외부 클록 동기 가능' },
+          { k: '하이사이드 MOSFET RDS(on)', v: '53mΩ(전형)' },
+          { k: '로우사이드 MOSFET RDS(on)', v: '31mΩ(전형)' },
+          { k: '최소 온/오프 시간', v: 'tON-MIN 60ns(전형) / tOFF-MIN 70ns(전형)' },
+          { k: '보호 기능', v: '사이클별 제한, 히컵 단락 보호, 과열 셧다운, 정밀 EN UVLO 프로그램' },
+          { k: '소프트 스타트', v: '내부 고정 슬로프, 또는 SS/TRK 외부 커패시터로 연장, 2µA 충전 전류' },
+          { k: '내방사선(SEL/SEB/SEGR)', v: 'LET=43MeV-cm²/mg까지 면역' },
+          { k: '내방사선(TID)', v: '웨이퍼 로트별 20krad(Si) 보증, 30krad(Si) 특성화' },
+          { k: '패키지', v: '30-WQFN(RNP) 6×4×0.8mm, 질량 약 57.2mg(±10%)' }
+        ]
+      }
+    },
+    'TPS25730A': {
+      en: {
+        subcategory: 'USB Type-C / USB PD controller (Sink-Only, with external power-path gate drive)',
+        whatIs: 'USB Type-C and USB Power Delivery (PD) controller: integrates the PD protocol engine and power-path protection, letting a system use USB-C PD to replace a traditional barrel jack, as a standalone sink-only PD receiver controller.',
+        func: 'The TPS25730A is a highly integrated, standalone USB Type-C/PD controller optimized for sink-only applications, replacing a barrel-jack power interface. It has a built-in Type-C Rd detect and sink state machine, PD policy engine and physical layer, compliant with PD3.2. All PD parameters are fully configured via resistor-divider pin strapping on ADCIN1–ADCIN4, needing no external EEPROM, MCU or firmware. It integrates power-path management with over-voltage and reverse-current protection (RCP, via VSYS/GATE_VSYS), and 6 configurable GPIO functions (SINK_EN, DBG_ACC, CAP_MIS, PLUG_EVENT, PLUG_FLIP, FAULT_IN). A built-in 3.3V LDO (LDO_3V3) for dead-battery cases can be powered from VIN_3V3 or VBUS, plus a 1.5V core LDO (LDO_1V5). An I2C target (I2Ct_SCL/I2Ct_SDA) lets an external MCU read status or override settings. This entry is the 32-VQFN (RSM) TPS25730AS version, driving external N-channel MOSFETs via GATE_VBUS/GATE_VSYS for the power path (external FETs required); a 38-WQFN (REF) TPS25730AD version has integrated switch pins (PPHV/VBUS_IN/DRAIN, no external FET), and the two versions differ in pin count and names — not interchangeable.',
+        usedIn: 'The USB-C PD receiving port of consumer electronics such as power tools, power banks, retail-automation and payment devices, and wireless speakers/headsets, replacing a traditional barrel-jack supply.',
+        desc: '32-VQFN (RSM) 4×4mm, the sink-only USB-C PD controller variant (S version) of the TPS25730A, driving external N-channel MOSFETs via GATE_VBUS/GATE_VSYS for the power path. The 38-WQFN (D version, TPS25730AD) differs in pin count (38) and names (integrated FET, with PPHV/VBUS_IN/DRAIN); the two package pinouts are incompatible and not directly interchangeable.',
+        thermalPad: 'Exposed Thermal Pad marked to GND; solder to PCB ground copper with thermal vias for heat dissipation.',
+        specs: [
+          { k: 'PD compliance', v: 'USB PD3.2 (sink-only application)' },
+          { k: 'Integration', v: 'Type-C Rd/sink state machine, PD policy engine, physical layer, 6 configurable GPIO, I2C target' },
+          { k: 'Configuration', v: 'resistor-divider pin strapping (ADCIN1–4), no EEPROM/external MCU/firmware' },
+          { k: 'Power path', v: 'S version (32-VQFN, this entry) drives external N-channel MOSFETs via GATE_VBUS/GATE_VSYS; D version (38-WQFN) has an integrated switch (PPHV/VBUS_IN/DRAIN)' },
+          { k: 'Protection', v: 'integrated over-voltage protection, reverse-current protection (RCP, via VSYS/GATE_VSYS)' },
+          { k: 'Built-in LDO', v: '3.3V (LDO_3V3, dead-battery support) / 1.5V core (LDO_1V5)' },
+          { k: 'Supply source', v: 'VIN_3V3 or VBUS' },
+          { k: 'VBUS input range', v: '5V~20V' },
+          { k: 'Comms interface', v: 'I2C target (I2Ct_SCL/I2Ct_SDA) for external MCU read/config' },
+          { k: 'Temperature range', v: 'industrial temperature range supported' },
+          { k: 'Package', v: '32-VQFN (RSM) 4×4mm (S version, this entry); also 38-WQFN (REF) 4×6mm (D version)' }
+        ]
+      },
+      ja: {
+        subcategory: 'USB Type-C / USB PD コントローラ（Sink-Only、外部電源経路ゲート駆動付）',
+        whatIs: 'USB Type-C と USB Power Delivery（PD）コントローラ：PD プロトコルエンジンと電源経路保護を統合し、USB-C PD で従来のバレルジャック電源を置き換え可能な、受電（sink-only）専用の独立 PD 受電コントローラ。',
+        func: 'TPS25730A は高集積・独立動作の USB Type-C/PD コントローラで、受電（sink only）用途に最適化されバレルジャック供給インタフェースを置換。Type-C Rd 検出と sink ステートマシン、USB PD ポリシーエンジン、物理層を内蔵し PD3.2 規格に準拠。ADCIN1–ADCIN4 等の抵抗分圧ピンストラップで PD パラメータを完全設定でき、外部 EEPROM・外部マイコン・ファームウェア開発が不要。電源経路管理を統合し、過電圧保護と逆電流保護（RCP、VSYS/GATE_VSYS で実装）、6 組の設定可能 GPIO 機能（SINK_EN、DBG_ACC、CAP_MIS、PLUG_EVENT、PLUG_FLIP、FAULT_IN）を提供。デッドバッテリ用の 3.3V LDO（LDO_3V3）は VIN_3V3 か VBUS から供給可、1.5V コア LDO（LDO_1V5）も内蔵。I2C target（I2Ct_SCL/I2Ct_SDA）で外部マイコンが状態読み出しや設定上書き可。本条目は 32-VQFN（RSM）の TPS25730AS 版で、GATE_VBUS/GATE_VSYS で外部 N 型 MOSFET を駆動し電源経路を構成（外付け FET 必要）；同シリーズの 38-WQFN（REF）TPS25730AD 版は統合スイッチピン（PPHV/VBUS_IN/DRAIN、外付け FET 不要）を内蔵、両版はピン数・名称とも異なり互換不可。',
+        usedIn: '電動工具、モバイルバッテリ、リテールオートメーション・決済機器、ワイヤレススピーカ/ヘッドセット等の消費電子の USB-C PD 受電ポートで、従来のバレルジャック供給を置換。',
+        desc: '32-VQFN（RSM）4×4mm、TPS25730A の sink-only USB-C PD コントローラ変種（S 版）で、GATE_VBUS/GATE_VSYS で外部 N 型 MOSFET を駆動し電源経路を構成。同シリーズ 38-WQFN（D 版、TPS25730AD）はピン数（38）・名称とも異なり（統合 FET、PPHV/VBUS_IN/DRAIN 付）、両パッケージの pinout は非互換で直接互換不可。',
+        thermalPad: '露出サーマルパッド（Thermal Pad）は GND 接続表記；PCB 接地銅箔に半田付けし放熱ビア併用で放熱。',
+        specs: [
+          { k: 'PD 互換性', v: 'USB PD3.2（sink-only 用途）' },
+          { k: '統合機能', v: 'Type-C Rd/sink ステートマシン、PD ポリシーエンジン、物理層、6 組の設定可能 GPIO、I2C target' },
+          { k: '設定方式', v: '抵抗分圧ピンストラップ（ADCIN1–4）、EEPROM/外部マイコン/ファームウェア不要' },
+          { k: '電源経路', v: 'S 版（32-VQFN、本条目）は GATE_VBUS/GATE_VSYS で外部 N 型 MOSFET 駆動；D 版（38-WQFN）は統合スイッチ（PPHV/VBUS_IN/DRAIN）内蔵' },
+          { k: '保護機能', v: '統合過電圧保護、逆電流保護（RCP、VSYS/GATE_VSYS 経由）' },
+          { k: '内蔵 LDO', v: '3.3V（LDO_3V3、デッドバッテリ対応）/ 1.5V コア（LDO_1V5）' },
+          { k: '供給源', v: 'VIN_3V3 または VBUS' },
+          { k: 'VBUS 入力範囲', v: '5V~20V' },
+          { k: '通信インタフェース', v: 'I2C target（I2Ct_SCL/I2Ct_SDA）で外部マイコン読み出し/設定' },
+          { k: '温度範囲', v: '産業温度範囲対応' },
+          { k: 'パッケージ', v: '32-VQFN（RSM）4×4mm（S 版、本条目）；別に 38-WQFN（REF）4×6mm（D 版）' }
+        ]
+      },
+      ko: {
+        subcategory: 'USB Type-C / USB PD 컨트롤러(Sink-Only, 외부 전원 경로 게이트 구동 포함)',
+        whatIs: 'USB Type-C와 USB Power Delivery(PD) 컨트롤러: PD 프로토콜 엔진과 전원 경로 보호를 통합해 USB-C PD로 기존 배럴 잭 전원을 대체할 수 있는, 수전(sink-only) 전용 독립 PD 수전 컨트롤러.',
+        func: 'TPS25730A는 고집적·독립 동작 USB Type-C/PD 컨트롤러로 수전(sink only) 용도에 최적화되어 배럴 잭 공급 인터페이스를 대체. Type-C Rd 감지와 sink 상태 기계, USB PD 정책 엔진, 물리 계층을 내장해 PD3.2 규격 준수. ADCIN1–ADCIN4 등의 저항 분압 핀 스트랩으로 PD 파라미터를 완전 설정할 수 있어 외부 EEPROM·외부 마이컴·펌웨어 개발이 불필요. 전원 경로 관리를 통합해 과전압 보호와 역전류 보호(RCP, VSYS/GATE_VSYS로 구현), 6조의 설정 가능 GPIO 기능(SINK_EN, DBG_ACC, CAP_MIS, PLUG_EVENT, PLUG_FLIP, FAULT_IN)을 제공. 데드 배터리용 3.3V LDO(LDO_3V3)는 VIN_3V3나 VBUS에서 공급 가능, 1.5V 코어 LDO(LDO_1V5)도 내장. I2C target(I2Ct_SCL/I2Ct_SDA)으로 외부 마이컴이 상태 읽기나 설정 덮어쓰기 가능. 본 항목은 32-VQFN(RSM) TPS25730AS 판으로 GATE_VBUS/GATE_VSYS로 외부 N형 MOSFET을 구동해 전원 경로 구성(외장 FET 필요); 동일 시리즈 38-WQFN(REF) TPS25730AD 판은 통합 스위치 핀(PPHV/VBUS_IN/DRAIN, 외장 FET 불필요) 내장, 두 판은 핀 수·이름 모두 달라 호환 불가.',
+        usedIn: '전동 공구, 보조 배터리, 리테일 자동화·결제 기기, 무선 스피커/헤드셋 등 소비 전자의 USB-C PD 수전 포트에서 기존 배럴 잭 공급을 대체.',
+        desc: '32-VQFN(RSM) 4×4mm, TPS25730A의 sink-only USB-C PD 컨트롤러 변형(S 판)으로 GATE_VBUS/GATE_VSYS로 외부 N형 MOSFET을 구동해 전원 경로 구성. 동일 시리즈 38-WQFN(D 판, TPS25730AD)은 핀 수(38)·이름 모두 다름(통합 FET, PPHV/VBUS_IN/DRAIN 포함), 두 패키지 pinout은 비호환으로 직접 호환 불가.',
+        thermalPad: '노출 서멀 패드(Thermal Pad)는 GND 연결 표기; PCB 접지 동박에 납땜하고 방열 비아를 병용해 방열.',
+        specs: [
+          { k: 'PD 호환성', v: 'USB PD3.2(sink-only 용도)' },
+          { k: '통합 기능', v: 'Type-C Rd/sink 상태 기계, PD 정책 엔진, 물리 계층, 6조 설정 가능 GPIO, I2C target' },
+          { k: '설정 방식', v: '저항 분압 핀 스트랩(ADCIN1–4), EEPROM/외부 마이컴/펌웨어 불필요' },
+          { k: '전원 경로', v: 'S 판(32-VQFN, 본 항목)은 GATE_VBUS/GATE_VSYS로 외부 N형 MOSFET 구동; D 판(38-WQFN)은 통합 스위치(PPHV/VBUS_IN/DRAIN) 내장' },
+          { k: '보호 기능', v: '통합 과전압 보호, 역전류 보호(RCP, VSYS/GATE_VSYS 경유)' },
+          { k: '내장 LDO', v: '3.3V(LDO_3V3, 데드 배터리 지원) / 1.5V 코어(LDO_1V5)' },
+          { k: '공급원', v: 'VIN_3V3 또는 VBUS' },
+          { k: 'VBUS 입력 범위', v: '5V~20V' },
+          { k: '통신 인터페이스', v: 'I2C target(I2Ct_SCL/I2Ct_SDA)으로 외부 마이컴 읽기/설정' },
+          { k: '온도 범위', v: '산업 온도 범위 지원' },
+          { k: '패키지', v: '32-VQFN(RSM) 4×4mm(S 판, 본 항목); 별도 38-WQFN(REF) 4×6mm(D 판)' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
