@@ -377,7 +377,12 @@ const app = {
     this.bindEvents();
     this.loadFromStorage();
     this.render();
-    this.handleAddICParam();   // 從 IC 元件庫「+」帶 ?addIC= 過來時自動放置
+    // ?addIC= 自動放置：延後執行，讓 sheets.js（多頁）先 load 目前頁再放，
+    // 否則 sheets.js boot() 會用存檔頁覆寫 state.components 把剛放的 IC 洗掉。
+    // sheets.js boot() 會在 load() 後主動呼叫 handleAddICParam（決定性）；
+    // 這個 setTimeout 只是「沒載入 sheets.js」時的後備。handleAddICParam 具冪等性
+    // （放置後刪除網址參數），重複呼叫安全。
+    setTimeout(() => this.handleAddICParam(), 500);
     this.initAuth();
   },
 

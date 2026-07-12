@@ -96,6 +96,9 @@
   function boot() {
     if (typeof app === 'undefined' || !document.querySelector('.topbar') || !app.state) { setTimeout(boot, 300); return; }
     load(); renderBar();
+    // load() 已用存檔頁覆寫 state.components；此時才處理 ?addIC=，
+    // 讓從 IC 元件庫「+ 放到線路圖」帶來的 IC 疊在目前頁上（否則會被 load() 洗掉）。
+    try { if (typeof app.handleAddICParam === 'function') app.handleAddICParam(); } catch (e) { }
     setInterval(saveCur, 4000);
     window.addEventListener('beforeunload', saveCur);
   }
