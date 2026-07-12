@@ -5873,3 +5873,259 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 9 (part A): entries 114-119 (TPS7H5001~5004-SP, TPS25751A, TPS25752A) */
+(function () {
+  // ---- shared text for TPS7H5001~5004-SP family ----
+  var pwmSub = { en: 'Space-grade flyback/push-pull PWM controller (Rad-Hard, QMLV)', ja: '宇宙級フライバック/プッシュプル PWM コントローラ（Rad-Hard, QMLV）', ko: '우주급 플라이백/푸시풀 PWM 컨트롤러(Rad-Hard, QMLV)' };
+  var pwmWhat = {
+    en: 'TI space-grade (QMLV) flyback/push-pull pulse-width-modulation (PWM) controller, using peak current-mode control with slope compensation, 4V–14V input; switching frequency is set by an RT resistor with SYNC external-clock sync. The TPS7H5001-SP/5002-SP/5003-SP/5004-SP are same-family output-topology variants sharing one datasheet (SLVSF07F).',
+    ja: 'TI 宇宙級（QMLV）フライバック/プッシュプル パルス幅変調（PWM）コントローラで、ピーク電流モード制御＋スロープ補償、入力 4V~14V；スイッチング周波数は RT 抵抗で設定し SYNC 外部クロック同期に対応。TPS7H5001-SP/5002-SP/5003-SP/5004-SP は同シリーズの出力形態違い変種で、同一 datasheet（SLVSF07F）を共有。',
+    ko: 'TI 우주급(QMLV) 플라이백/푸시풀 펄스 폭 변조(PWM) 컨트롤러로, 피크 전류 모드 제어+슬로프 보상, 입력 4V~14V; 스위칭 주파수는 RT 저항으로 설정하고 SYNC 외부 클록 동기 지원. TPS7H5001-SP/5002-SP/5003-SP/5004-SP는 동일 시리즈의 출력 형태 변종으로 동일 datasheet(SLVSF07F)를 공유.'
+  };
+  var pwmFunc = {
+    en: 'An internal error amplifier (VSENSE inverting input, COMP output) drives a peak current-mode PWM comparator (CS_ILIM current sense, with a 150mV offset relative to COMP/2, RSC sets slope compensation); HICC sets the cycle-by-cycle current-limit delay and hiccup short-circuit protection time (tie to AVSS to disable hiccup); FAULT is an independent fault-protection input (tie to AVSS to disable); SS sets soft-start time via an external cap and can also do rail tracking/sequencing; REFCAP is a 1.2V internal reference (needs 470nF); VLDO is the internal-regulator output (needs at least 1µF); EN can program input UVLO via a resistor divider; DCL sets the maximum duty-cycle limit, with per-variant behavior (see the DCL pin note).',
+    ja: '内部誤差アンプ（VSENSE 反転入力、COMP 出力）がピーク電流モード PWM コンパレータ（CS_ILIM 電流検出、COMP/2 に対し 150mV オフセット、RSC でスロープ補償設定）を駆動；HICC はサイクル毎電流制限遅延とヒカップ式短絡保護時間を設定（AVSS 接続でヒカップ無効）；FAULT は独立故障保護入力（AVSS 接続で無効）；SS は外付けコンデンサでソフトスタート時間を設定し、電源レール追従/シーケンスにも使用可；REFCAP は 1.2V 内部基準（470nF 必要）；VLDO は内部レギュレータ出力（最低 1µF 必要）；EN は抵抗分圧で入力 UVLO をプログラム可；DCL は最大デューティ制限を設定し変種毎に動作が異なる（DCL ピン説明参照）。',
+    ko: '내부 오차 앰프(VSENSE 반전 입력, COMP 출력)가 피크 전류 모드 PWM 비교기(CS_ILIM 전류 감지, COMP/2 대비 150mV 오프셋, RSC로 슬로프 보상 설정)를 구동; HICC는 사이클별 전류 제한 지연과 히컵식 단락 보호 시간을 설정(AVSS 연결 시 히컵 비활성); FAULT는 독립 고장 보호 입력(AVSS 연결 시 비활성); SS는 외장 커패시터로 소프트 스타트 시간을 설정하며 전원 레일 추종/시퀀싱에도 사용 가능; REFCAP는 1.2V 내부 기준(470nF 필요); VLDO는 내부 레귤레이터 출력(최소 1µF 필요); EN은 저항 분압으로 입력 UVLO 프로그램 가능; DCL은 최대 듀티 제한을 설정하며 변종마다 동작이 다름(DCL 핀 설명 참조).'
+  };
+  var pwmUsed = {
+    en: 'Isolated or non-isolated flyback/forward/push-pull DC-DC converters on satellite/space-payload boards, providing secondary power for command & data handling, communication, optical/radar imaging, navigation and science-instrument payloads.',
+    ja: '衛星/宇宙ペイロード基板上の絶縁または非絶縁のフライバック/フォワード/プッシュプル型 DC-DC コンバータで、指令・データ処理、通信、光学/レーダ撮像、航法・科学探査ペイロード等の宇宙用途の二次電源に使用。',
+    ko: '위성/우주 페이로드 보드상의 절연 또는 비절연 플라이백/포워드/푸시풀 DC-DC 컨버터로, 지령·데이터 처리, 통신, 광학/레이더 이미징, 항법·과학 탐사 페이로드 등 우주 용도의 2차 전원에 사용.'
+  };
+  // shared spec rows (differ only in 輸出型態 / 工作週期限制)
+  function pwmSpecs(lang, outType, dcl) {
+    var S = {
+      en: [
+        { k: 'Output topology', v: outType },
+        { k: 'Input voltage', v: '4V ~ 14V (VIN)' },
+        { k: 'Control', v: 'peak current-mode, RSC external resistor sets slope compensation' },
+        { k: 'Switching frequency setting', v: 'RT resistor; when RT floats, SYNC can input a 200kHz~4MHz external clock (2× the switching frequency)' },
+        { k: 'Duty-cycle limit (DCL)', v: dcl },
+        { k: 'Overcurrent protection', v: 'CS_ILIM > 1.05V triggers cycle-by-cycle protection; sense waveform has a 150mV offset relative to COMP/2' },
+        { k: 'Short-circuit protection', v: 'HICC pin cap sets delay/hiccup time; tie to AVSS to disable hiccup' },
+        { k: 'Fault protection', v: 'FAULT independent input; stops switching above the rising threshold; tie to AVSS to disable' },
+        { k: 'Internal reference', v: 'REFCAP 1.2V, needs 470nF' },
+        { k: 'Internal regulator', v: 'VLDO output, needs at least 1µF' },
+        { k: 'Soft-start/tracking', v: 'SS external cap sets soft-start time, usable for tracking/sequencing' },
+        { k: 'Package', v: '24-TSSOP (PW); also a 22-pin CFP ceramic flat-pack version (pin numbering differs from TSSOP, see datasheet Table 6-1)' },
+        { k: 'Radiation (TID/SEL/SEB/SEGR)', v: 'see datasheet' }
+      ],
+      ja: [
+        { k: '出力形態', v: outType },
+        { k: '入力電圧', v: '4V ~ 14V (VIN)' },
+        { k: '制御方式', v: 'ピーク電流モード、RSC 外付け抵抗でスロープ補償設定' },
+        { k: 'スイッチング周波数設定', v: 'RT 抵抗設定；RT 浮き時は SYNC で 200kHz~4MHz 外部クロック入力可（スイッチング周波数の 2 倍）' },
+        { k: 'デューティ制限(DCL)', v: dcl },
+        { k: '過電流保護', v: 'CS_ILIM > 1.05V でサイクル毎過電流保護、検出波形は COMP/2 に対し 150mV オフセット' },
+        { k: '短絡保護', v: 'HICC ピンのコンデンサで遅延/ヒカップ時間を設定、AVSS 接続でヒカップ無効' },
+        { k: '故障保護', v: 'FAULT 独立故障入力、立上りしきい値超過で切替停止、AVSS 接続で無効' },
+        { k: '内部基準', v: 'REFCAP 1.2V、470nF 必要' },
+        { k: '内部レギュレータ', v: 'VLDO 出力、最低 1µF 必要' },
+        { k: 'ソフトスタート/追従', v: 'SS 外付けコンデンサでソフトスタート時間を設定、tracking/sequencing に使用可' },
+        { k: 'パッケージ', v: '24-TSSOP(PW)；別に 22-pin CFP セラミック扁平パッケージ版（ピン番号は TSSOP と異なる、datasheet Table 6-1 参照）' },
+        { k: '耐放射線等級(TID/SEL/SEB/SEGR)', v: 'datasheet 参照' }
+      ],
+      ko: [
+        { k: '출력 형태', v: outType },
+        { k: '입력 전압', v: '4V ~ 14V (VIN)' },
+        { k: '제어 방식', v: '피크 전류 모드, RSC 외장 저항으로 슬로프 보상 설정' },
+        { k: '스위칭 주파수 설정', v: 'RT 저항 설정; RT 플로팅 시 SYNC로 200kHz~4MHz 외부 클록 입력 가능(스위칭 주파수의 2배)' },
+        { k: '듀티 제한(DCL)', v: dcl },
+        { k: '과전류 보호', v: 'CS_ILIM > 1.05V로 사이클별 과전류 보호, 감지 파형은 COMP/2 대비 150mV 오프셋' },
+        { k: '단락 보호', v: 'HICC 핀 커패시터로 지연/히컵 시간 설정, AVSS 연결 시 히컵 비활성' },
+        { k: '고장 보호', v: 'FAULT 독립 고장 입력, 상승 문턱 초과 시 스위칭 정지, AVSS 연결 시 비활성' },
+        { k: '내부 기준', v: 'REFCAP 1.2V, 470nF 필요' },
+        { k: '내부 레귤레이터', v: 'VLDO 출력, 최소 1µF 필요' },
+        { k: '소프트 스타트/추종', v: 'SS 외장 커패시터로 소프트 스타트 시간 설정, tracking/sequencing에 사용 가능' },
+        { k: '패키지', v: '24-TSSOP(PW); 별도 22-pin CFP 세라믹 편평 패키지판(핀 번호는 TSSOP와 다름, datasheet Table 6-1 참조)' },
+        { k: '내방사선 등급(TID/SEL/SEB/SEGR)', v: 'datasheet 참조' }
+      ]
+    };
+    return S[lang];
+  }
+  function pwmEntry(descEn, descJa, descKo, outEn, outJa, outKo, dclEn, dclJa, dclKo) {
+    return {
+      en: { subcategory: pwmSub.en, whatIs: pwmWhat.en, func: pwmFunc.en, usedIn: pwmUsed.en, desc: descEn, specs: pwmSpecs('en', outEn, dclEn) },
+      ja: { subcategory: pwmSub.ja, whatIs: pwmWhat.ja, func: pwmFunc.ja, usedIn: pwmUsed.ja, desc: descJa, specs: pwmSpecs('ja', outJa, dclJa) },
+      ko: { subcategory: pwmSub.ko, whatIs: pwmWhat.ko, func: pwmFunc.ko, usedIn: pwmUsed.ko, desc: descKo, specs: pwmSpecs('ko', outKo, dclKo) }
+    };
+  }
+
+  var T = {
+    'TPS7H5001-SP': pwmEntry(
+      '24-TSSOP (PW), space-grade (QMLV) peak current-mode flyback/push-pull PWM controller. Dual main-switch outputs (OUTA/OUTB) + dual synchronous-rectifier drives (SRA/SRB); with DCL=AVSS, OUTA/OUTB switch in push-pull. TSSOP NC pins: 12, 13; the 22-pin CFP pin numbering differs from TSSOP (tightly numbered, no TSSOP NC pins), see datasheet Table 6-1. Within the family, variants differ only in output topology and whether PS/SP/LEB pins exist; they are not pin-to-pin compatible — select per your topology (dual output? synchronous rectification?).',
+      '24-TSSOP(PW)、宇宙級(QMLV)ピーク電流モード フライバック/プッシュプル PWM コントローラ。デュアル主スイッチ出力(OUTA/OUTB)+デュアル同期整流駆動(SRA/SRB)、DCL=AVSS で OUTA/OUTB はプッシュプル動作。TSSOP NC ピン：12, 13；22-pin CFP はピン番号が TSSOP と異なる(緊密番号、TSSOP の NC ピンなし)、datasheet Table 6-1 参照。同シリーズは出力形態と PS/SP/LEB ピンの有無のみ異なり pin-to-pin 非互換、回路トポロジ(デュアル出力/同期整流の要否)で選定。',
+      '24-TSSOP(PW), 우주급(QMLV) 피크 전류 모드 플라이백/푸시풀 PWM 컨트롤러. 듀얼 주 스위치 출력(OUTA/OUTB)+듀얼 동기 정류 구동(SRA/SRB), DCL=AVSS 시 OUTA/OUTB는 푸시풀 동작. TSSOP NC 핀: 12, 13; 22-pin CFP는 핀 번호가 TSSOP와 다름(긴밀 번호, TSSOP의 NC 핀 없음), datasheet Table 6-1 참조. 동일 시리즈는 출력 형태와 PS/SP/LEB 핀 유무만 다르며 pin-to-pin 비호환, 회로 토폴로지(듀얼 출력/동기 정류 필요 여부)로 선정.',
+      'Dual main-switch outputs (OUTA/OUTB) + dual synchronous-rectifier drives (SRA/SRB); with DCL=AVSS, OUTA/OUTB switch in push-pull',
+      'デュアル主スイッチ出力(OUTA/OUTB)+デュアル同期整流駆動(SRA/SRB)、DCL=AVSS で OUTA/OUTB はプッシュプル動作',
+      '듀얼 주 스위치 출력(OUTA/OUTB)+듀얼 동기 정류 구동(SRA/SRB), DCL=AVSS 시 OUTA/OUTB는 푸시풀 동작',
+      'AVSS = 50% duty limit, floating = 75%, VLDO = 100%.',
+      'AVSS 接続で 50%、浮き時 75%、VLDO 接続で 100% のデューティ制限。',
+      'AVSS 연결 시 50%, 플로팅 시 75%, VLDO 연결 시 100% 듀티 제한.'
+    ),
+    'TPS7H5002-SP': pwmEntry(
+      '24-TSSOP (PW), space-grade (QMLV) peak current-mode flyback/push-pull PWM controller. Single main-switch output (OUTA) + single synchronous-rectifier drive (SRA), suited to single-ended (flyback/forward) topologies with synchronous rectification. TSSOP NC pins: 11, 12, 13, 14; the 22-pin CFP pin numbering differs from TSSOP, see datasheet Table 6-1. Family variants differ only in output topology and PS/SP/LEB pins; not pin-to-pin compatible — select per topology.',
+      '24-TSSOP(PW)、宇宙級(QMLV)ピーク電流モード フライバック/プッシュプル PWM コントローラ。単主スイッチ出力(OUTA)+単同期整流駆動(SRA)、シングルエンド(フライバック/フォワード)トポロジ＋同期整流に好適。TSSOP NC ピン：11, 12, 13, 14；22-pin CFP はピン番号が TSSOP と異なる、datasheet Table 6-1 参照。同シリーズは出力形態と PS/SP/LEB ピンの有無のみ異なり pin-to-pin 非互換、トポロジで選定。',
+      '24-TSSOP(PW), 우주급(QMLV) 피크 전류 모드 플라이백/푸시풀 PWM 컨트롤러. 단일 주 스위치 출력(OUTA)+단일 동기 정류 구동(SRA), 싱글엔드(플라이백/포워드) 토폴로지+동기 정류에 적합. TSSOP NC 핀: 11, 12, 13, 14; 22-pin CFP는 핀 번호가 TSSOP와 다름, datasheet Table 6-1 참조. 동일 시리즈는 출력 형태와 PS/SP/LEB 핀 유무만 다르며 pin-to-pin 비호환, 토폴로지로 선정.',
+      'Single main-switch output (OUTA) + single synchronous-rectifier drive (SRA), suited to single-ended (flyback/forward) with synchronous rectification',
+      '単主スイッチ出力(OUTA)+単同期整流駆動(SRA)、シングルエンド(フライバック/フォワード)＋同期整流に好適',
+      '단일 주 스위치 출력(OUTA)+단일 동기 정류 구동(SRA), 싱글엔드(플라이백/포워드)+동기 정류에 적합',
+      'Floating or tied to VLDO for a max duty of 75% or 100% respectively.',
+      '浮きまたは VLDO 接続で、最大デューティ 75% または 100%。',
+      '플로팅 또는 VLDO 연결로 최대 듀티 75% 또는 100%.'
+    ),
+    'TPS7H5003-SP': pwmEntry(
+      '24-TSSOP (PW), space-grade (QMLV) peak current-mode flyback/push-pull PWM controller. Single main-switch output (OUTA), no synchronous-rectifier drive, no PS/SP dead-time setting, no LEB — the most stripped-down version of the family. TSSOP NC pins: 2, 3, 4, 11, 12, 13, 14; the 22-pin CFP pin numbering differs from TSSOP, see datasheet Table 6-1. Family variants differ only in output topology and PS/SP/LEB pins; not pin-to-pin compatible — select per topology.',
+      '24-TSSOP(PW)、宇宙級(QMLV)ピーク電流モード フライバック/プッシュプル PWM コントローラ。単主スイッチ出力(OUTA)、同期整流駆動なし・PS/SP デッドタイム設定なし・LEB なしで、シリーズ中最も機能を絞った版。TSSOP NC ピン：2, 3, 4, 11, 12, 13, 14；22-pin CFP はピン番号が TSSOP と異なる、datasheet Table 6-1 参照。同シリーズは出力形態と PS/SP/LEB ピンの有無のみ異なり pin-to-pin 非互換、トポロジで選定。',
+      '24-TSSOP(PW), 우주급(QMLV) 피크 전류 모드 플라이백/푸시풀 PWM 컨트롤러. 단일 주 스위치 출력(OUTA), 동기 정류 구동 없음·PS/SP 데드타임 설정 없음·LEB 없음으로 시리즈 중 가장 기능을 줄인 판. TSSOP NC 핀: 2, 3, 4, 11, 12, 13, 14; 22-pin CFP는 핀 번호가 TSSOP와 다름, datasheet Table 6-1 참조. 동일 시리즈는 출력 형태와 PS/SP/LEB 핀 유무만 다르며 pin-to-pin 비호환, 토폴로지로 선정.',
+      'Single main-switch output (OUTA), no synchronous-rectifier drive, no PS/SP dead-time setting, no LEB — the most stripped-down version of the family',
+      '単主スイッチ出力(OUTA)、同期整流駆動なし・PS/SP デッドタイム設定なし・LEB なしで、シリーズ中最も機能を絞った版',
+      '단일 주 스위치 출력(OUTA), 동기 정류 구동 없음·PS/SP 데드타임 설정 없음·LEB 없음으로 시리즈 중 가장 기능을 줄인 판',
+      'Floating or tied to VLDO for a max duty of 75% or 100% respectively.',
+      '浮きまたは VLDO 接続で、最大デューティ 75% または 100%。',
+      '플로팅 또는 VLDO 연결로 최대 듀티 75% 또는 100%.'
+    ),
+    'TPS7H5004-SP': pwmEntry(
+      '24-TSSOP (PW), space-grade (QMLV) peak current-mode flyback/push-pull PWM controller. Dual main-switch outputs (OUTA/OUTB), no synchronous-rectifier drive; DCL must tie to AVSS, fixed at a 50% duty limit. TSSOP NC pins: 2, 3, 12, 13, 14, 15; the 22-pin CFP pin numbering differs from TSSOP, see datasheet Table 6-1. Family variants differ only in output topology and PS/SP/LEB pins; not pin-to-pin compatible — select per topology.',
+      '24-TSSOP(PW)、宇宙級(QMLV)ピーク電流モード フライバック/プッシュプル PWM コントローラ。デュアル主スイッチ出力(OUTA/OUTB)、同期整流駆動なし、DCL は AVSS 接続で 50% デューティ制限固定。TSSOP NC ピン：2, 3, 12, 13, 14, 15；22-pin CFP はピン番号が TSSOP と異なる、datasheet Table 6-1 参照。同シリーズは出力形態と PS/SP/LEB ピンの有無のみ異なり pin-to-pin 非互換、トポロジで選定。',
+      '24-TSSOP(PW), 우주급(QMLV) 피크 전류 모드 플라이백/푸시풀 PWM 컨트롤러. 듀얼 주 스위치 출력(OUTA/OUTB), 동기 정류 구동 없음, DCL은 AVSS 연결로 50% 듀티 제한 고정. TSSOP NC 핀: 2, 3, 12, 13, 14, 15; 22-pin CFP는 핀 번호가 TSSOP와 다름, datasheet Table 6-1 참조. 동일 시리즈는 출력 형태와 PS/SP/LEB 핀 유무만 다르며 pin-to-pin 비호환, 토폴로지로 선정.',
+      'Dual main-switch outputs (OUTA/OUTB), no synchronous-rectifier drive; DCL must tie to AVSS, fixed at a 50% duty limit',
+      'デュアル主スイッチ出力(OUTA/OUTB)、同期整流駆動なし、DCL は AVSS 接続で 50% デューティ制限固定',
+      '듀얼 주 스위치 출력(OUTA/OUTB), 동기 정류 구동 없음, DCL은 AVSS 연결로 50% 듀티 제한 고정',
+      'This pin must tie to AVSS for a 50% max duty limit.',
+      'このピンは AVSS 接続で 50% 最大デューティ制限。',
+      '이 핀은 AVSS 연결로 50% 최대 듀티 제한.'
+    ),
+    'TPS25751A': {
+      en: {
+        subcategory: 'USB Type-C / USB PD controller (external power-path MOSFET gate drive, 32-QFN S version)',
+        whatIs: 'USB Type-C and USB Power Delivery (PD) controller: integrates the PD protocol engine and power-path protection, with rich GPIO and dual I2C (target/controller) interfaces for system monitoring and expansion of the PD port.',
+        func: 'The TPS25751A is a highly integrated USB Type-C/PD controller configured via resistor-divider pin strapping on ADCIN1/ADCIN2. It offers multiple general-purpose GPIOs (GPIO0–GPIO7, GPIO11, some shared with LD1/LD2 liquid detect and USB_P/USB_N BC1.2). It has dual I2C: I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ as I2C target for an external MCU to read/override settings, and I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ as I2C controller for this device to master other I2C peripherals. Built-in 3.3V LDO (LDO_3V3) and 1.5V core LDO (LDO_1V5). This entry is the 32-QFN TPS25751AS version, driving external N-channel MOSFETs via GATE_VBUS/GATE_VSYS for the power path (external FETs required) with reverse-current protection (RCP) via VSYS/GATE_VSYS; a 38-QFN TPS25751AD version has integrated switch pins (PPHV/VBUS_IN/DRAIN, no external FET), and the two differ in pin count (32 vs 38) and names — not interchangeable. Exact PD spec version and sink-only/dual-role support are in the datasheet (TI SLVSJG7).',
+        usedIn: 'USB-C PD receiving applications needing rich GPIO and dual-I2C expansion, e.g. PD port controllers for laptops and monitors; actual application range in the datasheet.',
+        desc: '32-QFN, the S version of the TPS25751A, driving external N-channel MOSFETs via GATE_VBUS/GATE_VSYS for the power path. The 38-QFN (D version, TPS25751AD) differs in pin count (38) and names (integrated FET, with PPHV/VBUS_IN/DRAIN); the two package pinouts are incompatible, not directly interchangeable. Its pin numbering and names are, pin by pin, identical to the same-family TPS25752A (32-QFN), but their actual PD spec (e.g. EPR/PPS support version) may differ — still confirm via each datasheet feature table.',
+        thermalPad: 'Exposed Thermal Pad; Figure 5-2 (S package, 32-QFN) marks it to GND; solder to PCB ground copper with thermal vias for dissipation.',
+        specs: [
+          { k: 'Package version', v: 'S version (32-QFN, this entry) drives external N-channel MOSFETs via GATE_VBUS/GATE_VSYS; D version (38-QFN) has an integrated switch (PPHV/VBUS_IN/DRAIN)' },
+          { k: 'Configuration', v: 'resistor-divider pin strapping (ADCIN1/ADCIN2)' },
+          { k: 'GPIO count', v: '12 (GPIO0–GPIO7, GPIO11, some shared with LD1/LD2, USB_P/USB_N)' },
+          { k: 'Comms interface', v: 'I2C target (I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ) + I2C controller (I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ)' },
+          { k: 'Built-in LDO', v: '3.3V (LDO_3V3) / 1.5V core (LDO_1V5)' },
+          { k: 'VBUS input range (abs max)', v: '-0.3V~28V' },
+          { k: 'CC1/CC2 input range (abs max)', v: '-0.5V~26V' },
+          { k: 'Junction temperature', v: '-40°C~175°C' },
+          { k: 'Package', v: 'S version 32-QFN (this entry); D version 38-QFN; exact package code/size in datasheet' }
+        ],
+        dropIn: [{ note: '32-QFN pin numbers and names are identical pin-by-pin (pin-to-pin); but the PD spec version may differ — confirm system-level compatibility via datasheet.' }]
+      },
+      ja: {
+        subcategory: 'USB Type-C / USB PD コントローラ（外部電源経路 MOSFET ゲート駆動、32-QFN S 版）',
+        whatIs: 'USB Type-C と USB Power Delivery（PD）コントローラ：PD プロトコルエンジンと電源経路保護を統合し、豊富な GPIO と デュアル I2C（target/controller）インタフェースを提供、システムによる PD ポート状態の監視・拡張に使用。',
+        func: 'TPS25751A は高集積 USB Type-C/PD コントローラで、ADCIN1/ADCIN2 の抵抗分圧ピンストラップで PD パラメータを設定。汎用 GPIO（GPIO0~GPIO7、GPIO11、一部は LD1/LD2 液体検出、USB_P/USB_N BC1.2 と共用）を複数提供。デュアル I2C：I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ は I2C target で外部マイコンが読み出し/設定上書き、I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ は I2C controller で本装置がマスタとして他の I2C 周辺にアクセス可。3.3V LDO（LDO_3V3）と 1.5V コア LDO（LDO_1V5）内蔵。本条目は 32-QFN の TPS25751AS 版で、GATE_VBUS/GATE_VSYS で外部 N 型 MOSFET を駆動し電源経路を構成（外付け FET 必要）、VSYS/GATE_VSYS で逆電流保護（RCP）を実装；38-QFN の TPS25751AD 版は統合スイッチピン（PPHV/VBUS_IN/DRAIN、外付け FET 不要）内蔵、両版はピン数（32 対 38）・名称とも異なり互換不可。正確な PD 規格版、sink-only/dual-role 対応は datasheet（TI SLVSJG7）参照。',
+        usedIn: '豊富な GPIO とデュアル I2C 拡張が必要な USB-C PD 受電用途、例えばノート PC やモニタの PD ポートコントローラ；実際の適用範囲は datasheet 参照。',
+        desc: '32-QFN、TPS25751A の S 版で、GATE_VBUS/GATE_VSYS で外部 N 型 MOSFET を駆動し電源経路を構成。38-QFN（D 版、TPS25751AD）はピン数（38）・名称とも異なり（統合 FET、PPHV/VBUS_IN/DRAIN 付）、両パッケージの pinout は非互換で直接互換不可。同封裝ファミリの TPS25752A（32-QFN）とピン番号・名称が 1 ピンずつ完全一致だが、実際の PD 規格（EPR/PPS 対応版等）は異なる可能性があり、各 datasheet 機能表で確認。',
+        thermalPad: '露出サーマルパッド、Figure 5-2（S パッケージ、32-QFN）は GND 接続表記；PCB 接地銅箔に半田付けし放熱ビア併用で放熱。',
+        specs: [
+          { k: 'パッケージ版', v: 'S 版（32-QFN、本条目）は GATE_VBUS/GATE_VSYS で外部 N 型 MOSFET 駆動；D 版（38-QFN）は統合スイッチ（PPHV/VBUS_IN/DRAIN）内蔵' },
+          { k: '設定方式', v: '抵抗分圧ピンストラップ（ADCIN1/ADCIN2）' },
+          { k: 'GPIO 数', v: '12 組（GPIO0~GPIO7、GPIO11、一部は LD1/LD2、USB_P/USB_N と共用）' },
+          { k: '通信インタフェース', v: 'I2C target（I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ）+ I2C controller（I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ）' },
+          { k: '内蔵 LDO', v: '3.3V（LDO_3V3）/ 1.5V コア（LDO_1V5）' },
+          { k: 'VBUS 入力範囲（絶対最大）', v: '-0.3V~28V' },
+          { k: 'CC1/CC2 入力範囲（絶対最大）', v: '-0.5V~26V' },
+          { k: '動作接合温度', v: '-40°C~175°C' },
+          { k: 'パッケージ', v: 'S 版 32-QFN（本条目）；D 版 38-QFN；正確なパッケージコード/寸法は datasheet 参照' }
+        ],
+        dropIn: [{ note: '32-QFN のピン番号・名称は 1 ピンずつ完全一致（pin-to-pin）；ただし PD 規格版が異なる可能性、システムレベル互換性は datasheet で別途確認。' }]
+      },
+      ko: {
+        subcategory: 'USB Type-C / USB PD 컨트롤러(외부 전원 경로 MOSFET 게이트 구동, 32-QFN S 판)',
+        whatIs: 'USB Type-C와 USB Power Delivery(PD) 컨트롤러: PD 프로토콜 엔진과 전원 경로 보호를 통합하고 풍부한 GPIO와 듀얼 I2C(target/controller) 인터페이스를 제공, 시스템의 PD 포트 상태 감시·확장에 사용.',
+        func: 'TPS25751A는 고집적 USB Type-C/PD 컨트롤러로 ADCIN1/ADCIN2의 저항 분압 핀 스트랩으로 PD 파라미터를 설정. 범용 GPIO(GPIO0~GPIO7, GPIO11, 일부는 LD1/LD2 액체 감지, USB_P/USB_N BC1.2와 공용)를 여러 개 제공. 듀얼 I2C: I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ는 I2C target으로 외부 마이컴이 읽기/설정 덮어쓰기, I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ는 I2C controller로 본 장치가 마스터로서 다른 I2C 주변에 접근 가능. 3.3V LDO(LDO_3V3)와 1.5V 코어 LDO(LDO_1V5) 내장. 본 항목은 32-QFN TPS25751AS 판으로 GATE_VBUS/GATE_VSYS로 외부 N형 MOSFET을 구동해 전원 경로 구성(외장 FET 필요), VSYS/GATE_VSYS로 역전류 보호(RCP) 구현; 38-QFN TPS25751AD 판은 통합 스위치 핀(PPHV/VBUS_IN/DRAIN, 외장 FET 불필요) 내장, 두 판은 핀 수(32 대 38)·이름 모두 달라 호환 불가. 정확한 PD 규격 버전, sink-only/dual-role 지원은 datasheet(TI SLVSJG7) 참조.',
+        usedIn: '풍부한 GPIO와 듀얼 I2C 확장이 필요한 USB-C PD 수전 용도, 예를 들어 노트북·모니터의 PD 포트 컨트롤러; 실제 적용 범위는 datasheet 참조.',
+        desc: '32-QFN, TPS25751A의 S 판으로 GATE_VBUS/GATE_VSYS로 외부 N형 MOSFET을 구동해 전원 경로 구성. 38-QFN(D 판, TPS25751AD)은 핀 수(38)·이름 모두 다름(통합 FET, PPHV/VBUS_IN/DRAIN 포함), 두 패키지 pinout은 비호환으로 직접 호환 불가. 동일 패키지 패밀리 TPS25752A(32-QFN)와 핀 번호·이름이 핀 단위로 완전 일치하나, 실제 PD 규격(EPR/PPS 지원 버전 등)은 다를 수 있어 각 datasheet 기능 표로 확인.',
+        thermalPad: '노출 서멀 패드, Figure 5-2(S 패키지, 32-QFN)는 GND 연결 표기; PCB 접지 동박에 납땜하고 방열 비아를 병용해 방열.',
+        specs: [
+          { k: '패키지 버전', v: 'S 판(32-QFN, 본 항목)은 GATE_VBUS/GATE_VSYS로 외부 N형 MOSFET 구동; D 판(38-QFN)은 통합 스위치(PPHV/VBUS_IN/DRAIN) 내장' },
+          { k: '설정 방식', v: '저항 분압 핀 스트랩(ADCIN1/ADCIN2)' },
+          { k: 'GPIO 수', v: '12조(GPIO0~GPIO7, GPIO11, 일부는 LD1/LD2, USB_P/USB_N과 공용)' },
+          { k: '통신 인터페이스', v: 'I2C target(I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ) + I2C controller(I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ)' },
+          { k: '내장 LDO', v: '3.3V(LDO_3V3) / 1.5V 코어(LDO_1V5)' },
+          { k: 'VBUS 입력 범위(절대 최대)', v: '-0.3V~28V' },
+          { k: 'CC1/CC2 입력 범위(절대 최대)', v: '-0.5V~26V' },
+          { k: '동작 접합 온도', v: '-40°C~175°C' },
+          { k: '패키지', v: 'S 판 32-QFN(본 항목); D 판 38-QFN; 정확한 패키지 코드/치수는 datasheet 참조' }
+        ],
+        dropIn: [{ note: '32-QFN 핀 번호·이름은 핀 단위로 완전 일치(pin-to-pin); 단 PD 규격 버전이 다를 수 있어 시스템 레벨 호환성은 datasheet로 별도 확인.' }]
+      }
+    },
+    'TPS25752A': {
+      en: {
+        subcategory: 'USB Type-C / USB PD controller (external power-path MOSFET gate drive, 32-QFN RSM)',
+        whatIs: 'USB Type-C and USB PD controller: integrates the PD protocol engine and power-path protection, with rich GPIO and dual I2C (target/controller) interfaces.',
+        func: 'The TPS25752A is a 32-QFN (RSM) single-package USB Type-C/PD controller; its pin strapping (ADCIN1/ADCIN2), GPIO (GPIO0–GPIO7, GPIO11), dual I2C interfaces and power-path architecture (GATE_VBUS/GATE_VSYS driving external N-channel MOSFETs) are, pin by pin, identical to the same-package-family TPS25751A (S version). VSYS (pin 19) is marked in the datasheet only as the system-side high-voltage sense node, without the explicit reverse-current-protection (RCP) text of the TPS25751A — refer to the datasheet for functional details. Exact supported PD spec version, current/power capability, etc. are in the datasheet (TI SLVSJH0).',
+        usedIn: 'USB-C PD receiving applications needing external N-channel MOSFETs for the power path with rich GPIO/I2C expansion, e.g. laptops, monitors, power banks; actual application range in the datasheet.',
+        desc: '32-QFN (RSM). Pin by pin, its pin numbers and names are identical to the same-package-family TPS25751A (S version); but their actual PD spec (EPR/PPS support version, etc.) may differ — still confirm via each datasheet feature table.',
+        thermalPad: 'Exposed Thermal Pad; per the same-package-family (RSM) TPS25730A/TPS25751AS convention, marked to GND; the captured page lacks a Pin Configuration figure — use the datasheet Figure for the final design.',
+        specs: [
+          { k: 'Package', v: '32-QFN (RSM) 4.00mm × 4.00mm' },
+          { k: 'Configuration', v: 'resistor-divider pin strapping (ADCIN1/ADCIN2)' },
+          { k: 'GPIO count', v: '12 (GPIO0–GPIO7, GPIO11, some shared with LD1/LD2, USB_P/USB_N)' },
+          { k: 'Comms interface', v: 'I2C target (I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ) + I2C controller (I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ)' },
+          { k: 'Built-in LDO', v: '3.3V (LDO_3V3) / 1.5V core (LDO_1V5)' },
+          { k: 'VIN_3V3 recommended input', v: '3.0V~3.6V' },
+          { k: 'PP5V recommended input', v: '4.9V~5.5V' },
+          { k: 'VBUS recommended input', v: '4V~22V (short all VBUS pins together)' },
+          { k: 'VBUS output current', v: 'max 3A (from PP5V)' },
+          { k: 'Junction temperature (recommended)', v: '-40°C~125°C' },
+          { k: 'Thermal resistance (32-QFN RSM)', v: 'RθJA 30.5°C/W; RθJC(top) 24.5°C/W; RθJB 9.8°C/W (see datasheet §5.5)' }
+        ],
+        dropIn: [{ note: '32-QFN pin numbers and names are identical pin-by-pin (pin-to-pin, S version); but the PD spec version may differ — confirm system-level compatibility via datasheet.' }]
+      },
+      ja: {
+        subcategory: 'USB Type-C / USB PD コントローラ（外部電源経路 MOSFET ゲート駆動、32-QFN RSM）',
+        whatIs: 'USB Type-C と USB PD コントローラ：PD プロトコルエンジンと電源経路保護を統合し、豊富な GPIO と デュアル I2C（target/controller）インタフェースを提供。',
+        func: 'TPS25752A は 32-QFN（RSM）単一パッケージ版の USB Type-C/PD コントローラで、ピンストラップ（ADCIN1/ADCIN2）、GPIO（GPIO0~GPIO7、GPIO11）、デュアル I2C インタフェース、電源経路アーキテクチャ（GATE_VBUS/GATE_VSYS で外部 N 型 MOSFET を駆動）が同封裝ファミリの TPS25751A（S 版）と 1 ピンずつ一致。VSYS（ピン19）は datasheet ではシステム側高圧センスノードとのみ表記され、TPS25751A のような逆電流保護（RCP）機構の説明文はなく、機能詳細は datasheet に従う。正確な対応 PD 規格版、電流/電力能力等は datasheet（TI SLVSJH0）参照。',
+        usedIn: '外部 N 型 MOSFET で電源経路を構成し豊富な GPIO/I2C 拡張が必要な USB-C PD 受電用途、例えばノート PC、モニタ、モバイルバッテリ；実際の適用範囲は datasheet 参照。',
+        desc: '32-QFN（RSM）。1 ピンずつ照合し、ピン番号・名称が同封裝ファミリの TPS25751A（S 版）と完全一致；ただし実際の PD 規格（EPR/PPS 対応版等）は異なる可能性があり、各 datasheet 機能表で確認。',
+        thermalPad: '露出サーマルパッド、同封裝ファミリ（RSM）の TPS25730A/TPS25751AS 慣例に倣い GND 接続表記；抽出ページに Pin Configuration 図なし、正式設計は datasheet Figure に従う。',
+        specs: [
+          { k: 'パッケージ', v: '32-QFN（RSM）4.00mm × 4.00mm' },
+          { k: '設定方式', v: '抵抗分圧ピンストラップ（ADCIN1/ADCIN2）' },
+          { k: 'GPIO 数', v: '12 組（GPIO0~GPIO7、GPIO11、一部は LD1/LD2、USB_P/USB_N と共用）' },
+          { k: '通信インタフェース', v: 'I2C target（I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ）+ I2C controller（I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ）' },
+          { k: '内蔵 LDO', v: '3.3V（LDO_3V3）/ 1.5V コア（LDO_1V5）' },
+          { k: 'VIN_3V3 推奨入力範囲', v: '3.0V~3.6V' },
+          { k: 'PP5V 推奨入力範囲', v: '4.9V~5.5V' },
+          { k: 'VBUS 推奨入力範囲', v: '4V~22V（全 VBUS ピン短絡必要）' },
+          { k: 'VBUS 出力電流', v: '最大 3A（PP5V から）' },
+          { k: '動作接合温度（推奨）', v: '-40°C~125°C' },
+          { k: '熱抵抗（32-QFN RSM）', v: 'RθJA 30.5°C/W；RθJC(top) 24.5°C/W；RθJB 9.8°C/W（datasheet 5.5 節参照）' }
+        ],
+        dropIn: [{ note: '32-QFN のピン番号・名称は 1 ピンずつ完全一致（pin-to-pin、S 版）；ただし PD 規格版が異なる可能性、システムレベル互換性は datasheet で別途確認。' }]
+      },
+      ko: {
+        subcategory: 'USB Type-C / USB PD 컨트롤러(외부 전원 경로 MOSFET 게이트 구동, 32-QFN RSM)',
+        whatIs: 'USB Type-C와 USB PD 컨트롤러: PD 프로토콜 엔진과 전원 경로 보호를 통합하고 풍부한 GPIO와 듀얼 I2C(target/controller) 인터페이스를 제공.',
+        func: 'TPS25752A는 32-QFN(RSM) 단일 패키지판 USB Type-C/PD 컨트롤러로, 핀 스트랩(ADCIN1/ADCIN2), GPIO(GPIO0~GPIO7, GPIO11), 듀얼 I2C 인터페이스, 전원 경로 아키텍처(GATE_VBUS/GATE_VSYS로 외부 N형 MOSFET 구동)가 동일 패키지 패밀리 TPS25751A(S 판)와 핀 단위로 일치. VSYS(핀19)는 datasheet에서 시스템 측 고압 센스 노드로만 표기되고 TPS25751A 같은 역전류 보호(RCP) 기구 설명문은 없으며 기능 세부는 datasheet에 따름. 정확한 지원 PD 규격 버전, 전류/전력 능력 등은 datasheet(TI SLVSJH0) 참조.',
+        usedIn: '외부 N형 MOSFET으로 전원 경로를 구성하고 풍부한 GPIO/I2C 확장이 필요한 USB-C PD 수전 용도, 예를 들어 노트북, 모니터, 보조 배터리; 실제 적용 범위는 datasheet 참조.',
+        desc: '32-QFN(RSM). 핀 단위로 대조해 핀 번호·이름이 동일 패키지 패밀리 TPS25751A(S 판)와 완전 일치; 단 실제 PD 규격(EPR/PPS 지원 버전 등)은 다를 수 있어 각 datasheet 기능 표로 확인.',
+        thermalPad: '노출 서멀 패드, 동일 패키지 패밀리(RSM) TPS25730A/TPS25751AS 관례에 따라 GND 연결 표기; 추출 페이지에 Pin Configuration 그림 없음, 정식 설계는 datasheet Figure에 따름.',
+        specs: [
+          { k: '패키지', v: '32-QFN(RSM) 4.00mm × 4.00mm' },
+          { k: '설정 방식', v: '저항 분압 핀 스트랩(ADCIN1/ADCIN2)' },
+          { k: 'GPIO 수', v: '12조(GPIO0~GPIO7, GPIO11, 일부는 LD1/LD2, USB_P/USB_N과 공용)' },
+          { k: '통신 인터페이스', v: 'I2C target(I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ) + I2C controller(I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ)' },
+          { k: '내장 LDO', v: '3.3V(LDO_3V3) / 1.5V 코어(LDO_1V5)' },
+          { k: 'VIN_3V3 권장 입력 범위', v: '3.0V~3.6V' },
+          { k: 'PP5V 권장 입력 범위', v: '4.9V~5.5V' },
+          { k: 'VBUS 권장 입력 범위', v: '4V~22V(모든 VBUS 핀 단락 필요)' },
+          { k: 'VBUS 출력 전류', v: '최대 3A(PP5V에서)' },
+          { k: '동작 접합 온도(권장)', v: '-40°C~125°C' },
+          { k: '열저항(32-QFN RSM)', v: 'RθJA 30.5°C/W; RθJC(top) 24.5°C/W; RθJB 9.8°C/W(datasheet 5.5절 참조)' }
+        ],
+        dropIn: [{ note: '32-QFN 핀 번호·이름은 핀 단위로 완전 일치(pin-to-pin, S 판); 단 PD 규격 버전이 다를 수 있어 시스템 레벨 호환성은 datasheet로 별도 확인.' }]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
