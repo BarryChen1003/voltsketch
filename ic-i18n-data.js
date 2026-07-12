@@ -3832,3 +3832,726 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 6: entries 75-89 */
+(function () {
+  var T = {
+    'TDEL3G510': {
+      en: {
+        subcategory: 'Triple high-speed signal buffer (3Gbps class)',
+        whatIs: 'Triple-channel high-speed single-ended signal buffer: 3 independent channels buffer nA input to nY output, for high-speed signal reconditioning/driving/isolation. Small DRL-8 package.',
+        func: 'Each channel nA→nY reconditions the signal (isolates the load, boosts drive, resquares edges), 3 channels independent. Suited to high-speed clock/data distribution and shaping.',
+        usedIn: 'High-speed clock/data buffered distribution, signal reconditioning, load isolation, on-board high-speed signal driving.',
+        desc: 'Triple high-speed signal buffer (3Gbps class), 3 independent inputs/outputs (SOT DRL-8).',
+        specs: [
+          { k: 'Function', v: 'Triple high-speed signal buffer' },
+          { k: 'Data rate', v: '3Gbps class (per datasheet)' },
+          { k: 'Channels', v: '3 (each nA→nY independent)' },
+          { k: 'Package', v: 'SOT (DRL-8)' }
+        ]
+      },
+      ja: {
+        subcategory: '3 チャネル高速信号バッファ（3Gbps 級）',
+        whatIs: '3 チャネル高速シングルエンド信号バッファ：3 個の独立チャネルが nA 入力を nY 出力へバッファし、高速信号の再整形/駆動/絶縁に。小型 DRL-8 パッケージ。',
+        func: '各チャネル nA→nY で信号を再整形（負荷絶縁・駆動増強・エッジ再整形）、3 チャネル独立。高速クロック/データの分配と整形に好適。',
+        usedIn: '高速クロック/データのバッファ分配、信号再整形、負荷絶縁、基板内高速信号駆動。',
+        desc: '3 チャネル高速信号バッファ（3Gbps 級）。3 チャネル独立入出力（SOT DRL-8）。',
+        specs: [
+          { k: '機能', v: '3 チャネル高速信号バッファ' },
+          { k: 'データレート', v: '3Gbps 級（datasheet 参照）' },
+          { k: 'チャネル', v: '3（各 nA→nY 独立）' },
+          { k: 'パッケージ', v: 'SOT (DRL-8)' }
+        ]
+      },
+      ko: {
+        subcategory: '3채널 고속 신호 버퍼(3Gbps급)',
+        whatIs: '3채널 고속 싱글엔드 신호 버퍼: 3개 독립 채널이 nA 입력을 nY 출력으로 버퍼, 고속 신호 재정형/구동/절연용. 소형 DRL-8 패키지.',
+        func: '각 채널 nA→nY로 신호 재정형(부하 절연·구동 증강·에지 재정형), 3채널 독립. 고속 클록/데이터 분배와 정형에 적합.',
+        usedIn: '고속 클록/데이터 버퍼 분배, 신호 재정형, 부하 절연, 보드 내 고속 신호 구동.',
+        desc: '3채널 고속 신호 버퍼(3Gbps급). 3채널 독립 입출력(SOT DRL-8).',
+        specs: [
+          { k: '기능', v: '3채널 고속 신호 버퍼' },
+          { k: '데이터 속도', v: '3Gbps급(datasheet 참조)' },
+          { k: '채널', v: '3(각 nA→nY 독립)' },
+          { k: '패키지', v: 'SOT (DRL-8)' }
+        ]
+      }
+    },
+    'DP83TD530-Q1': {
+      en: {
+        subcategory: '10BASE-T1S single-pair Ethernet PHY (automotive)',
+        whatIs: '10BASE-T1S single-pair Ethernet (SPE) physical layer (PHY): carries single-ended data over a single twisted pair (TRD_P/TRD_M) at 10Mbps Ethernet. 3-pin interface (TX/RX/ED) + MDIO management. Tiny 8-pin, automotive.',
+        func: 'TRD_P/TRD_M is the single-pair twisted bus (10BASE-T1S/T1L); TX sends data, RX receives data / doubles as MDC, ED does energy detect / doubles as MDIO; in config mode RX/ED become the MDC/MDIO management interface. AVDD3V3 main supply, VDDIO can be 1.8/2.5/3.3V.',
+        usedIn: 'Automotive zonal networks, 10BASE-T1S multidrop bus, automotive sensor/actuator Ethernet, industrial SPE.',
+        desc: 'Automotive 10BASE-T1S single-pair Ethernet PHY, single-pair TRD bus, 3-pin interface + MDIO, dual supply rails (8-pin).',
+        specs: [
+          { k: 'Function', v: '10BASE-T1S single-pair Ethernet PHY' },
+          { k: 'Bus', v: 'TRD_P/TRD_M single twisted pair (10Mbps)' },
+          { k: 'Interface', v: '3-pin (TX/RX/ED) + MDIO management (RX/ED multiplexed)' },
+          { k: 'Supply', v: 'AVDD3V3 (3.3V) + VDDIO (1.8/2.5/3.3V)' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: '8-pin' }
+        ]
+      },
+      ja: {
+        subcategory: '10BASE-T1S シングルペアイーサネット PHY（車載）',
+        whatIs: '10BASE-T1S シングルペアイーサネット（SPE）物理層（PHY）：シングルエンドデータを 1 対のツイストペア（TRD_P/TRD_M）で 10Mbps イーサ伝送。3 ピンインタフェース（TX/RX/ED）＋MDIO 管理。極小 8 ピン・車載。',
+        func: 'TRD_P/TRD_M は 1 対ツイストバス（10BASE-T1S/T1L）；TX がデータ送信、RX がデータ受信/MDC 兼用、ED がエネルギー検出/MDIO 兼用；設定モードで RX/ED が MDC/MDIO 管理インタフェースに。AVDD3V3 主電源、VDDIO は 1.8/2.5/3.3V。',
+        usedIn: '車載ゾーンネットワーク、10BASE-T1S マルチドロップバス、車載センサ/アクチュエータイーサ、産業 SPE。',
+        desc: '車載 10BASE-T1S シングルペアイーサ PHY。シングルペアバス TRD・3 ピンインタフェース＋MDIO・両電源レール（8-pin）。',
+        specs: [
+          { k: '機能', v: '10BASE-T1S シングルペアイーサ PHY' },
+          { k: 'バス', v: 'TRD_P/TRD_M 1 対ツイスト（10Mbps）' },
+          { k: 'インタフェース', v: '3 ピン(TX/RX/ED) + MDIO 管理（RX/ED 兼用）' },
+          { k: '電源', v: 'AVDD3V3 (3.3V) + VDDIO (1.8/2.5/3.3V)' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: '8-pin' }
+        ]
+      },
+      ko: {
+        subcategory: '10BASE-T1S 단일 쌍 이더넷 PHY(차량용)',
+        whatIs: '10BASE-T1S 단일 쌍 이더넷(SPE) 물리 계층(PHY): 싱글엔드 데이터를 한 쌍의 트위스트 페어(TRD_P/TRD_M)로 10Mbps 이더 전송. 3핀 인터페이스(TX/RX/ED) + MDIO 관리. 초소형 8핀·차량용.',
+        func: 'TRD_P/TRD_M는 한 쌍 트위스트 버스(10BASE-T1S/T1L); TX가 데이터 송신, RX가 데이터 수신/MDC 겸용, ED가 에너지 감지/MDIO 겸용; 설정 모드에서 RX/ED가 MDC/MDIO 관리 인터페이스로. AVDD3V3 주전원, VDDIO는 1.8/2.5/3.3V.',
+        usedIn: '차량 존 네트워크, 10BASE-T1S 멀티드롭 버스, 차량 센서/액추에이터 이더, 산업 SPE.',
+        desc: '차량용 10BASE-T1S 단일 쌍 이더 PHY. 단일 쌍 버스 TRD·3핀 인터페이스+MDIO·이중 전원 레일(8-pin).',
+        specs: [
+          { k: '기능', v: '10BASE-T1S 단일 쌍 이더 PHY' },
+          { k: '버스', v: 'TRD_P/TRD_M 한 쌍 트위스트(10Mbps)' },
+          { k: '인터페이스', v: '3핀(TX/RX/ED) + MDIO 관리(RX/ED 겸용)' },
+          { k: '전원', v: 'AVDD3V3 (3.3V) + VDDIO (1.8/2.5/3.3V)' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: '8-pin' }
+        ]
+      }
+    },
+    'LMK1C1102A': {
+      en: {
+        subcategory: 'LVCMOS clock fanout buffer (1:2)',
+        whatIs: 'LVCMOS clock fanout buffer (1 in, 2 out): replicates one clock into 2 low-skew outputs to synchronize multiple chips. Includes a global output enable (1G).',
+        func: 'CLKIN single-ended clock input (internal 300kΩ pull-down) → buffered and replicated to Y0/Y1 LVCMOS outputs; 1G high enables, low disables outputs. Low skew, low jitter for clock distribution. 1.8/2.5/3.3V.',
+        usedIn: 'Clock-tree distribution, multi-chip synchronous clocking, shared MCU/FPGA/ADC clock, on-board clock fanout.',
+        desc: 'LVCMOS 1:2 clock fanout buffer, global output enable, low skew, 1.8–3.3V (WSON/TSSOP-8).',
+        specs: [
+          { k: 'Function', v: 'LVCMOS clock fanout buffer (1:2)' },
+          { k: 'Outputs', v: '2 (Y0/Y1)' },
+          { k: 'Enable', v: 'global 1G (active-high)' },
+          { k: 'Supply', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'Package', v: 'WSON-8 (DQF) / TSSOP-8 (PW)' }
+        ],
+        dropIn: [{ note: 'Automotive version, same 8-pin pinout' }]
+      },
+      ja: {
+        subcategory: 'LVCMOS クロックファンアウトバッファ（1:2）',
+        whatIs: 'LVCMOS クロックファンアウトバッファ（1 入力 2 出力）：1 系統のクロックを 2 系統の低スキュー出力に複製し複数チップを同期。グローバル出力イネーブル（1G）内蔵。',
+        func: 'CLKIN シングルエンドクロック入力（内部 300kΩ プルダウン）→バッファし Y0/Y1 LVCMOS 出力に複製；1G ハイで有効、ローで出力オフ。低スキュー・低ジッタでクロック分配。1.8/2.5/3.3V。',
+        usedIn: 'クロックツリー分配、複数チップ同期クロック、MCU/FPGA/ADC 共通クロック、基板内クロックファンアウト。',
+        desc: 'LVCMOS 1:2 クロックファンアウトバッファ。グローバル出力イネーブル・低スキュー・1.8~3.3V（WSON/TSSOP-8）。',
+        specs: [
+          { k: '機能', v: 'LVCMOS クロックファンアウトバッファ（1:2）' },
+          { k: '出力数', v: '2（Y0/Y1）' },
+          { k: 'イネーブル', v: 'グローバル 1G（ハイ有効）' },
+          { k: '電源', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'パッケージ', v: 'WSON-8 (DQF) / TSSOP-8 (PW)' }
+        ],
+        dropIn: [{ note: '車載版・同 8-pin ピン配置同一' }]
+      },
+      ko: {
+        subcategory: 'LVCMOS 클록 팬아웃 버퍼(1:2)',
+        whatIs: 'LVCMOS 클록 팬아웃 버퍼(1입력 2출력): 한 계통의 클록을 2계통 저스큐 출력으로 복제해 여러 칩을 동기. 글로벌 출력 인에이블(1G) 내장.',
+        func: 'CLKIN 싱글엔드 클록 입력(내부 300kΩ 풀다운) → 버퍼해 Y0/Y1 LVCMOS 출력으로 복제; 1G 하이로 활성, 로우로 출력 끔. 저스큐·저지터로 클록 분배. 1.8/2.5/3.3V.',
+        usedIn: '클록 트리 분배, 다중 칩 동기 클록, MCU/FPGA/ADC 공통 클록, 보드 내 클록 팬아웃.',
+        desc: 'LVCMOS 1:2 클록 팬아웃 버퍼. 글로벌 출력 인에이블·저스큐·1.8~3.3V(WSON/TSSOP-8).',
+        specs: [
+          { k: '기능', v: 'LVCMOS 클록 팬아웃 버퍼(1:2)' },
+          { k: '출력 수', v: '2(Y0/Y1)' },
+          { k: '인에이블', v: '글로벌 1G(하이 유효)' },
+          { k: '전원', v: '1.8 / 2.5 / 3.3 V' },
+          { k: '패키지', v: 'WSON-8 (DQF) / TSSOP-8 (PW)' }
+        ],
+        dropIn: [{ note: '차량용 버전·동일 8-pin 핀 배치' }]
+      }
+    },
+    'LMK1C1102-Q1': {
+      en: {
+        subcategory: 'LVCMOS clock fanout buffer (1:2, automotive)',
+        whatIs: 'LVCMOS 1:2 clock fanout buffer (automotive Q1): 1-in, 2-out low-skew clock. Same pinout as LMK1C1102A plus automotive qualification.',
+        func: 'Same as the 1102A: CLKIN→Y0/Y1, 1G enable. AEC-Q100 automotive.',
+        usedIn: 'Automotive clock distribution, multi-chip synchronization, ADAS/telematics clock fanout.',
+        desc: 'Automotive LVCMOS 1:2 clock fanout buffer (same pinout as 1102A, WSON/TSSOP-8).',
+        specs: [
+          { k: 'Function', v: 'LVCMOS clock fanout (1:2, automotive)' },
+          { k: 'Outputs', v: '2' },
+          { k: 'Enable', v: 'global 1G' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100 (Q1)' },
+          { k: 'Supply', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'Package', v: 'WSON-8 / TSSOP-8' }
+        ],
+        dropIn: [{ note: 'Non-automotive version, same 8-pin pinout' }]
+      },
+      ja: {
+        subcategory: 'LVCMOS クロックファンアウトバッファ（1:2・車載）',
+        whatIs: 'LVCMOS 1:2 クロックファンアウトバッファ（車載 Q1）：1 入力 2 出力の低スキュークロック。LMK1C1102A とピン互換＋車載認証。',
+        func: '1102A と同じ：CLKIN→Y0/Y1、1G イネーブル。車載 AEC-Q100。',
+        usedIn: '車載クロック分配、複数チップ同期、ADAS/テレマティクスのクロックファンアウト。',
+        desc: '車載 LVCMOS 1:2 クロックファンアウトバッファ（1102A とピン互換、WSON/TSSOP-8）。',
+        specs: [
+          { k: '機能', v: 'LVCMOS クロックファンアウト（1:2・車載）' },
+          { k: '出力数', v: '2' },
+          { k: 'イネーブル', v: 'グローバル 1G' },
+          { k: '認証', v: '車載 AEC-Q100 (Q1)' },
+          { k: '電源', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'パッケージ', v: 'WSON-8 / TSSOP-8' }
+        ],
+        dropIn: [{ note: '非車載版・同 8-pin ピン配置同一' }]
+      },
+      ko: {
+        subcategory: 'LVCMOS 클록 팬아웃 버퍼(1:2·차량용)',
+        whatIs: 'LVCMOS 1:2 클록 팬아웃 버퍼(차량용 Q1): 1입력 2출력 저스큐 클록. LMK1C1102A와 핀 호환+차량 인증.',
+        func: '1102A와 동일: CLKIN→Y0/Y1, 1G 인에이블. 차량용 AEC-Q100.',
+        usedIn: '차량 클록 분배, 다중 칩 동기, ADAS/텔레매틱스 클록 팬아웃.',
+        desc: '차량용 LVCMOS 1:2 클록 팬아웃 버퍼(1102A와 핀 호환, WSON/TSSOP-8).',
+        specs: [
+          { k: '기능', v: 'LVCMOS 클록 팬아웃(1:2·차량용)' },
+          { k: '출력 수', v: '2' },
+          { k: '인에이블', v: '글로벌 1G' },
+          { k: '인증', v: '차량용 AEC-Q100 (Q1)' },
+          { k: '전원', v: '1.8 / 2.5 / 3.3 V' },
+          { k: '패키지', v: 'WSON-8 / TSSOP-8' }
+        ],
+        dropIn: [{ note: '비차량용 버전·동일 8-pin 핀 배치' }]
+      }
+    },
+    'LMK1C1103A': {
+      en: {
+        subcategory: 'LVCMOS clock fanout buffer (1:3)',
+        whatIs: 'LVCMOS clock fanout buffer (1 in, 3 out): replicates one clock into 3 low-skew outputs. Includes a global output enable.',
+        func: 'CLKIN → Y0/Y1/Y2 three LVCMOS outputs; 1G enable. Low-skew, low-jitter clock distribution. 1.8/2.5/3.3V.',
+        usedIn: 'Clock-tree distribution, multi-chip synchronization, on-board clock fanout.',
+        desc: 'LVCMOS 1:3 clock fanout buffer, global enable, low skew, 1.8–3.3V (TSSOP/WSON-8).',
+        specs: [
+          { k: 'Function', v: 'LVCMOS clock fanout (1:3)' },
+          { k: 'Outputs', v: '3 (Y0/Y1/Y2)' },
+          { k: 'Enable', v: 'global 1G (active-high)' },
+          { k: 'Supply', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'Package', v: 'TSSOP-8 (PW) / WSON-8 (DQF)' }
+        ]
+      },
+      ja: {
+        subcategory: 'LVCMOS クロックファンアウトバッファ（1:3）',
+        whatIs: 'LVCMOS クロックファンアウトバッファ（1 入力 3 出力）：1 系統のクロックを 3 系統の低スキュー出力に複製。グローバル出力イネーブル内蔵。',
+        func: 'CLKIN → Y0/Y1/Y2 の 3 系統 LVCMOS 出力；1G イネーブル。低スキュー・低ジッタのクロック分配。1.8/2.5/3.3V。',
+        usedIn: 'クロックツリー分配、複数チップ同期、基板内クロックファンアウト。',
+        desc: 'LVCMOS 1:3 クロックファンアウトバッファ。グローバルイネーブル・低スキュー・1.8~3.3V（TSSOP/WSON-8）。',
+        specs: [
+          { k: '機能', v: 'LVCMOS クロックファンアウト（1:3）' },
+          { k: '出力数', v: '3（Y0/Y1/Y2）' },
+          { k: 'イネーブル', v: 'グローバル 1G（ハイ有効）' },
+          { k: '電源', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'パッケージ', v: 'TSSOP-8 (PW) / WSON-8 (DQF)' }
+        ]
+      },
+      ko: {
+        subcategory: 'LVCMOS 클록 팬아웃 버퍼(1:3)',
+        whatIs: 'LVCMOS 클록 팬아웃 버퍼(1입력 3출력): 한 계통의 클록을 3계통 저스큐 출력으로 복제. 글로벌 출력 인에이블 내장.',
+        func: 'CLKIN → Y0/Y1/Y2 3계통 LVCMOS 출력; 1G 인에이블. 저스큐·저지터 클록 분배. 1.8/2.5/3.3V.',
+        usedIn: '클록 트리 분배, 다중 칩 동기, 보드 내 클록 팬아웃.',
+        desc: 'LVCMOS 1:3 클록 팬아웃 버퍼. 글로벌 인에이블·저스큐·1.8~3.3V(TSSOP/WSON-8).',
+        specs: [
+          { k: '기능', v: 'LVCMOS 클록 팬아웃(1:3)' },
+          { k: '출력 수', v: '3(Y0/Y1/Y2)' },
+          { k: '인에이블', v: '글로벌 1G(하이 유효)' },
+          { k: '전원', v: '1.8 / 2.5 / 3.3 V' },
+          { k: '패키지', v: 'TSSOP-8 (PW) / WSON-8 (DQF)' }
+        ]
+      }
+    },
+    'LMK1C1104A': {
+      en: {
+        subcategory: 'LVCMOS clock fanout buffer (1:4)',
+        whatIs: 'LVCMOS clock fanout buffer (1 in, 4 out): replicates one clock into 4 low-skew outputs. Includes a global output enable.',
+        func: 'CLKIN → Y0/Y1/Y2/Y3 four LVCMOS outputs; 1G enable. Low-skew, low-jitter clock distribution. 1.8/2.5/3.3V.',
+        usedIn: 'Clock-tree distribution, multi-chip synchronization, shared MCU/FPGA/ADC clock, on-board clock fanout.',
+        desc: 'LVCMOS 1:4 clock fanout buffer, global enable, low skew, 1.8–3.3V (WSON/TSSOP-8).',
+        specs: [
+          { k: 'Function', v: 'LVCMOS clock fanout (1:4)' },
+          { k: 'Outputs', v: '4 (Y0–Y3)' },
+          { k: 'Enable', v: 'global 1G (active-high)' },
+          { k: 'Supply', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'Package', v: 'WSON-8 (DQF) / TSSOP-8 (PW)' }
+        ],
+        dropIn: [{ note: 'Automotive version, same 8-pin pinout' }]
+      },
+      ja: {
+        subcategory: 'LVCMOS クロックファンアウトバッファ（1:4）',
+        whatIs: 'LVCMOS クロックファンアウトバッファ（1 入力 4 出力）：1 系統のクロックを 4 系統の低スキュー出力に複製。グローバル出力イネーブル内蔵。',
+        func: 'CLKIN → Y0/Y1/Y2/Y3 の 4 系統 LVCMOS 出力；1G イネーブル。低スキュー・低ジッタのクロック分配。1.8/2.5/3.3V。',
+        usedIn: 'クロックツリー分配、複数チップ同期、MCU/FPGA/ADC 共通クロック、基板内クロックファンアウト。',
+        desc: 'LVCMOS 1:4 クロックファンアウトバッファ。グローバルイネーブル・低スキュー・1.8~3.3V（WSON/TSSOP-8）。',
+        specs: [
+          { k: '機能', v: 'LVCMOS クロックファンアウト（1:4）' },
+          { k: '出力数', v: '4（Y0~Y3）' },
+          { k: 'イネーブル', v: 'グローバル 1G（ハイ有効）' },
+          { k: '電源', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'パッケージ', v: 'WSON-8 (DQF) / TSSOP-8 (PW)' }
+        ],
+        dropIn: [{ note: '車載版・同 8-pin ピン配置同一' }]
+      },
+      ko: {
+        subcategory: 'LVCMOS 클록 팬아웃 버퍼(1:4)',
+        whatIs: 'LVCMOS 클록 팬아웃 버퍼(1입력 4출력): 한 계통의 클록을 4계통 저스큐 출력으로 복제. 글로벌 출력 인에이블 내장.',
+        func: 'CLKIN → Y0/Y1/Y2/Y3 4계통 LVCMOS 출력; 1G 인에이블. 저스큐·저지터 클록 분배. 1.8/2.5/3.3V.',
+        usedIn: '클록 트리 분배, 다중 칩 동기, MCU/FPGA/ADC 공통 클록, 보드 내 클록 팬아웃.',
+        desc: 'LVCMOS 1:4 클록 팬아웃 버퍼. 글로벌 인에이블·저스큐·1.8~3.3V(WSON/TSSOP-8).',
+        specs: [
+          { k: '기능', v: 'LVCMOS 클록 팬아웃(1:4)' },
+          { k: '출력 수', v: '4(Y0~Y3)' },
+          { k: '인에이블', v: '글로벌 1G(하이 유효)' },
+          { k: '전원', v: '1.8 / 2.5 / 3.3 V' },
+          { k: '패키지', v: 'WSON-8 (DQF) / TSSOP-8 (PW)' }
+        ],
+        dropIn: [{ note: '차량용 버전·동일 8-pin 핀 배치' }]
+      }
+    },
+    'LMK1C1104-Q1': {
+      en: {
+        subcategory: 'LVCMOS clock fanout buffer (1:4, automotive)',
+        whatIs: 'LVCMOS 1:4 clock fanout buffer (automotive Q1): 1-in, 4-out low-skew clock. Same pinout as LMK1C1104A plus automotive qualification.',
+        func: 'Same as the 1104A: CLKIN→Y0–Y3, 1G enable. AEC-Q100 automotive.',
+        usedIn: 'Automotive clock distribution, multi-chip synchronization, ADAS/telematics clock fanout.',
+        desc: 'Automotive LVCMOS 1:4 clock fanout buffer (same pinout as 1104A, WSON/TSSOP-8).',
+        specs: [
+          { k: 'Function', v: 'LVCMOS clock fanout (1:4, automotive)' },
+          { k: 'Outputs', v: '4' },
+          { k: 'Enable', v: 'global 1G' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100 (Q1)' },
+          { k: 'Supply', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'Package', v: 'WSON-8 / TSSOP-8' }
+        ],
+        dropIn: [{ note: 'Non-automotive version, same 8-pin pinout' }]
+      },
+      ja: {
+        subcategory: 'LVCMOS クロックファンアウトバッファ（1:4・車載）',
+        whatIs: 'LVCMOS 1:4 クロックファンアウトバッファ（車載 Q1）：1 入力 4 出力の低スキュークロック。LMK1C1104A とピン互換＋車載認証。',
+        func: '1104A と同じ：CLKIN→Y0~Y3、1G イネーブル。車載 AEC-Q100。',
+        usedIn: '車載クロック分配、複数チップ同期、ADAS/テレマティクスのクロックファンアウト。',
+        desc: '車載 LVCMOS 1:4 クロックファンアウトバッファ（1104A とピン互換、WSON/TSSOP-8）。',
+        specs: [
+          { k: '機能', v: 'LVCMOS クロックファンアウト（1:4・車載）' },
+          { k: '出力数', v: '4' },
+          { k: 'イネーブル', v: 'グローバル 1G' },
+          { k: '認証', v: '車載 AEC-Q100 (Q1)' },
+          { k: '電源', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'パッケージ', v: 'WSON-8 / TSSOP-8' }
+        ],
+        dropIn: [{ note: '非車載版・同 8-pin ピン配置同一' }]
+      },
+      ko: {
+        subcategory: 'LVCMOS 클록 팬아웃 버퍼(1:4·차량용)',
+        whatIs: 'LVCMOS 1:4 클록 팬아웃 버퍼(차량용 Q1): 1입력 4출력 저스큐 클록. LMK1C1104A와 핀 호환+차량 인증.',
+        func: '1104A와 동일: CLKIN→Y0~Y3, 1G 인에이블. 차량용 AEC-Q100.',
+        usedIn: '차량 클록 분배, 다중 칩 동기, ADAS/텔레매틱스 클록 팬아웃.',
+        desc: '차량용 LVCMOS 1:4 클록 팬아웃 버퍼(1104A와 핀 호환, WSON/TSSOP-8).',
+        specs: [
+          { k: '기능', v: 'LVCMOS 클록 팬아웃(1:4·차량용)' },
+          { k: '출력 수', v: '4' },
+          { k: '인에이블', v: '글로벌 1G' },
+          { k: '인증', v: '차량용 AEC-Q100 (Q1)' },
+          { k: '전원', v: '1.8 / 2.5 / 3.3 V' },
+          { k: '패키지', v: 'WSON-8 / TSSOP-8' }
+        ],
+        dropIn: [{ note: '비차량용 버전·동일 8-pin 핀 배치' }]
+      }
+    },
+    'LMK1C1106-Q1': {
+      en: {
+        subcategory: 'LVCMOS clock fanout buffer (1:6, automotive)',
+        whatIs: 'LVCMOS clock fanout buffer (1 in, 6 out, automotive): replicates one clock into 6 low-skew outputs. Includes a global output enable.',
+        func: 'CLKIN → Y0–Y5 six LVCMOS outputs; 1G enable. Low-skew, low-jitter clock distribution. 1.8/2.5/3.3V, AEC-Q100. (Pinout has dual VDD/GND; verify NC positions against the datasheet figure.)',
+        usedIn: 'Automotive clock-tree distribution, multi-chip synchronization, ADAS/telematics/instrument-cluster clock fanout.',
+        desc: 'Automotive LVCMOS 1:6 clock fanout buffer, global enable, low skew, 1.8–3.3V (TSSOP-14).',
+        specs: [
+          { k: 'Function', v: 'LVCMOS clock fanout (1:6, automotive)' },
+          { k: 'Outputs', v: '6 (Y0–Y5)' },
+          { k: 'Enable', v: 'global 1G' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100 (Q1)' },
+          { k: 'Supply', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'Package', v: 'TSSOP-14 (PW)' }
+        ]
+      },
+      ja: {
+        subcategory: 'LVCMOS クロックファンアウトバッファ（1:6・車載）',
+        whatIs: 'LVCMOS クロックファンアウトバッファ（1 入力 6 出力・車載）：1 系統のクロックを 6 系統の低スキュー出力に複製。グローバル出力イネーブル内蔵。',
+        func: 'CLKIN → Y0~Y5 の 6 系統 LVCMOS 出力；1G イネーブル。低スキュー・低ジッタのクロック分配。1.8/2.5/3.3V・車載 AEC-Q100。（ピンに VDD/GND 複数、NC 位置は datasheet 図で確認）',
+        usedIn: '車載クロックツリー分配、複数チップ同期、ADAS/テレマティクス/メータのクロックファンアウト。',
+        desc: '車載 LVCMOS 1:6 クロックファンアウトバッファ。グローバルイネーブル・低スキュー・1.8~3.3V（TSSOP-14）。',
+        specs: [
+          { k: '機能', v: 'LVCMOS クロックファンアウト（1:6・車載）' },
+          { k: '出力数', v: '6（Y0~Y5）' },
+          { k: 'イネーブル', v: 'グローバル 1G' },
+          { k: '認証', v: '車載 AEC-Q100 (Q1)' },
+          { k: '電源', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'パッケージ', v: 'TSSOP-14 (PW)' }
+        ]
+      },
+      ko: {
+        subcategory: 'LVCMOS 클록 팬아웃 버퍼(1:6·차량용)',
+        whatIs: 'LVCMOS 클록 팬아웃 버퍼(1입력 6출력·차량용): 한 계통의 클록을 6계통 저스큐 출력으로 복제. 글로벌 출력 인에이블 내장.',
+        func: 'CLKIN → Y0~Y5 6계통 LVCMOS 출력; 1G 인에이블. 저스큐·저지터 클록 분배. 1.8/2.5/3.3V·차량용 AEC-Q100. (핀에 VDD/GND 다수, NC 위치는 datasheet 그림으로 확인)',
+        usedIn: '차량 클록 트리 분배, 다중 칩 동기, ADAS/텔레매틱스/계기 클록 팬아웃.',
+        desc: '차량용 LVCMOS 1:6 클록 팬아웃 버퍼. 글로벌 인에이블·저스큐·1.8~3.3V(TSSOP-14).',
+        specs: [
+          { k: '기능', v: 'LVCMOS 클록 팬아웃(1:6·차량용)' },
+          { k: '출력 수', v: '6(Y0~Y5)' },
+          { k: '인에이블', v: '글로벌 1G' },
+          { k: '인증', v: '차량용 AEC-Q100 (Q1)' },
+          { k: '전원', v: '1.8 / 2.5 / 3.3 V' },
+          { k: '패키지', v: 'TSSOP-14 (PW)' }
+        ]
+      }
+    },
+    'LMK1C1108-Q1': {
+      en: {
+        subcategory: 'LVCMOS clock fanout buffer (1:8, automotive)',
+        whatIs: 'LVCMOS clock fanout buffer (1 in, 8 out, automotive): replicates one clock into 8 low-skew outputs. Includes a global output enable.',
+        func: 'CLKIN → Y0–Y7 eight LVCMOS outputs; 1G enable. Low-skew, low-jitter clock distribution. 1.8/2.5/3.3V, AEC-Q100. (Pinout has dual VDD/GND; verify NC positions against the datasheet figure.)',
+        usedIn: 'Automotive large-fanout clock trees, multi-chip synchronization, ADAS/telematics/instrument-cluster clock distribution.',
+        desc: 'Automotive LVCMOS 1:8 clock fanout buffer, global enable, low skew, 1.8–3.3V (TSSOP-16).',
+        specs: [
+          { k: 'Function', v: 'LVCMOS clock fanout (1:8, automotive)' },
+          { k: 'Outputs', v: '8 (Y0–Y7)' },
+          { k: 'Enable', v: 'global 1G' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100 (Q1)' },
+          { k: 'Supply', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'Package', v: 'TSSOP-16 (PW)' }
+        ]
+      },
+      ja: {
+        subcategory: 'LVCMOS クロックファンアウトバッファ（1:8・車載）',
+        whatIs: 'LVCMOS クロックファンアウトバッファ（1 入力 8 出力・車載）：1 系統のクロックを 8 系統の低スキュー出力に複製。グローバル出力イネーブル内蔵。',
+        func: 'CLKIN → Y0~Y7 の 8 系統 LVCMOS 出力；1G イネーブル。低スキュー・低ジッタのクロック分配。1.8/2.5/3.3V・車載 AEC-Q100。（ピンに VDD/GND 複数、NC 位置は datasheet 図で確認）',
+        usedIn: '車載大ファンアウトクロックツリー、複数チップ同期、ADAS/テレマティクス/メータのクロック分配。',
+        desc: '車載 LVCMOS 1:8 クロックファンアウトバッファ。グローバルイネーブル・低スキュー・1.8~3.3V（TSSOP-16）。',
+        specs: [
+          { k: '機能', v: 'LVCMOS クロックファンアウト（1:8・車載）' },
+          { k: '出力数', v: '8（Y0~Y7）' },
+          { k: 'イネーブル', v: 'グローバル 1G' },
+          { k: '認証', v: '車載 AEC-Q100 (Q1)' },
+          { k: '電源', v: '1.8 / 2.5 / 3.3 V' },
+          { k: 'パッケージ', v: 'TSSOP-16 (PW)' }
+        ]
+      },
+      ko: {
+        subcategory: 'LVCMOS 클록 팬아웃 버퍼(1:8·차량용)',
+        whatIs: 'LVCMOS 클록 팬아웃 버퍼(1입력 8출력·차량용): 한 계통의 클록을 8계통 저스큐 출력으로 복제. 글로벌 출력 인에이블 내장.',
+        func: 'CLKIN → Y0~Y7 8계통 LVCMOS 출력; 1G 인에이블. 저스큐·저지터 클록 분배. 1.8/2.5/3.3V·차량용 AEC-Q100. (핀에 VDD/GND 다수, NC 위치는 datasheet 그림으로 확인)',
+        usedIn: '차량 대형 팬아웃 클록 트리, 다중 칩 동기, ADAS/텔레매틱스/계기 클록 분배.',
+        desc: '차량용 LVCMOS 1:8 클록 팬아웃 버퍼. 글로벌 인에이블·저스큐·1.8~3.3V(TSSOP-16).',
+        specs: [
+          { k: '기능', v: 'LVCMOS 클록 팬아웃(1:8·차량용)' },
+          { k: '출력 수', v: '8(Y0~Y7)' },
+          { k: '인에이블', v: '글로벌 1G' },
+          { k: '인증', v: '차량용 AEC-Q100 (Q1)' },
+          { k: '전원', v: '1.8 / 2.5 / 3.3 V' },
+          { k: '패키지', v: 'TSSOP-16 (PW)' }
+        ]
+      }
+    },
+    'TLC3555': {
+      en: {
+        subcategory: 'High-speed CMOS timer (555-type)',
+        whatIs: 'High-speed CMOS 555 timer: an external RC sets the delay/oscillation period, for monostable (one-shot) or astable (oscillator) operation. 1.5–18V wide supply, low-power CMOS.',
+        func: 'TRIG (< 1/2 CONT) triggers OUT high and opens DISCH; THRES (> CONT) drives OUT low and pulls DISCH low to discharge; CONT sets the comparator threshold (default 2/3 VDD); RESET (active-low) forces OUT/DISCH low. For delay, PWM, oscillation, pulse generation.',
+        usedIn: 'Delay/timing, PWM generation, oscillators, pulse generation, trigger/monostable.',
+        desc: 'High-speed CMOS 555 timer, 1.5–18V, monostable/astable, low power (SOT-23-8 / VSSOP-8).',
+        specs: [
+          { k: 'Function', v: 'High-speed CMOS 555 timer' },
+          { k: 'Modes', v: 'monostable / astable (RC timing)' },
+          { k: 'Supply', v: '1.5 – 18 V' },
+          { k: 'Reset', v: 'RESET (active-low)' },
+          { k: 'Process', v: 'CMOS (low power)' },
+          { k: 'Package', v: 'SOT-23-8 / VSSOP-8' }
+        ]
+      },
+      ja: {
+        subcategory: '高速 CMOS タイマ（555 型）',
+        whatIs: '高速 CMOS 版 555 タイマ：外付け RC で遅延/発振周期を決め、単安定（ワンショット）または非安定（発振器）動作。1.5~18V 広電源・CMOS 低消費電力。',
+        func: 'TRIG（< 1/2 CONT）で OUT ハイ・DISCH 開；THRES（> CONT）で OUT ロー・DISCH をローに引き放電；CONT で比較しきい値を設定（既定 2/3 VDD）；RESET（active-low）で OUT/DISCH を強制ロー。遅延・PWM・発振・パルス生成に。',
+        usedIn: '遅延/計時、PWM 生成、発振器、パルス生成、トリガ/単安定。',
+        desc: '高速 CMOS 555 タイマ。1.5~18V・単安定/非安定・低消費電力（SOT-23-8 / VSSOP-8）。',
+        specs: [
+          { k: '機能', v: '高速 CMOS 555 タイマ' },
+          { k: 'モード', v: '単安定 / 非安定（RC 計時）' },
+          { k: '電源', v: '1.5 ~ 18 V' },
+          { k: 'リセット', v: 'RESET（active-low）' },
+          { k: 'プロセス', v: 'CMOS（低消費電力）' },
+          { k: 'パッケージ', v: 'SOT-23-8 / VSSOP-8' }
+        ]
+      },
+      ko: {
+        subcategory: '고속 CMOS 타이머(555형)',
+        whatIs: '고속 CMOS판 555 타이머: 외장 RC로 지연/발진 주기를 정해 모노스테이블(원샷) 또는 비안정(발진기) 동작. 1.5~18V 광전원·CMOS 저전력.',
+        func: 'TRIG(< 1/2 CONT)로 OUT 하이·DISCH 개방; THRES(> CONT)로 OUT 로우·DISCH를 로우로 당겨 방전; CONT로 비교기 문턱 설정(기본 2/3 VDD); RESET(active-low)으로 OUT/DISCH 강제 로우. 지연·PWM·발진·펄스 생성용.',
+        usedIn: '지연/계시, PWM 생성, 발진기, 펄스 생성, 트리거/모노스테이블.',
+        desc: '고속 CMOS 555 타이머. 1.5~18V·모노스테이블/비안정·저전력(SOT-23-8 / VSSOP-8).',
+        specs: [
+          { k: '기능', v: '고속 CMOS 555 타이머' },
+          { k: '모드', v: '모노스테이블 / 비안정(RC 계시)' },
+          { k: '전원', v: '1.5 ~ 18 V' },
+          { k: '리셋', v: 'RESET(active-low)' },
+          { k: '공정', v: 'CMOS(저전력)' },
+          { k: '패키지', v: 'SOT-23-8 / VSSOP-8' }
+        ]
+      }
+    },
+    'LMK6B': {
+      en: {
+        subcategory: 'Programmable differential oscillator (BAW)',
+        whatIs: 'Programmable differential clock oscillator: a built-in BAW resonator outputs a programmable-frequency differential clock (OUT_P/OUT_N); the frequency is set by the ordered part number (OPN), and the FSEL pin further selects FOUT / FOUT/2 / FOUT/4.',
+        func: 'OE/ST controls output enable/standby; FSEL selects the output divider (low=/4, floating=×1, high=/2); OUT_P/OUT_N is the differential clock output. Replaces a quartz oscillator with low jitter and no external crystal.',
+        usedIn: 'High-speed SerDes/Ethernet/PCIe reference clocks, communication/data-center clock sources, quartz-oscillator replacement.',
+        desc: 'Programmable BAW differential oscillator, OPN-set frequency + FSEL divider, low jitter (6-pin).',
+        specs: [
+          { k: 'Function', v: 'Programmable differential oscillator (BAW)' },
+          { k: 'Frequency', v: 'OPN-set + FSEL divider (×1 / /2 / /4)' },
+          { k: 'Output', v: 'differential OUT_P/OUT_N (low jitter)' },
+          { k: 'Control', v: 'OE/ST enable/standby' },
+          { k: 'Package', v: '6-pin' }
+        ]
+      },
+      ja: {
+        subcategory: 'プログラマブル差動発振器（BAW）',
+        whatIs: 'プログラマブル差動クロック発振器：BAW 共振器を内蔵し、プログラマブル周波数の差動クロック（OUT_P/OUT_N）を出力、周波数は注文型番（OPN）で設定、FSEL ピンで FOUT / FOUT/2 / FOUT/4 を選択可。',
+        func: 'OE/ST で出力イネーブル/スタンバイ制御；FSEL で出力分周を選択（ロー=/4、浮き=×1、ハイ=/2）；OUT_P/OUT_N が差動クロック出力。水晶発振器を置き換え、低ジッタで外付け水晶不要。',
+        usedIn: '高速 SerDes/イーサ/PCIe 参照クロック、通信/データセンタのクロック源、水晶発振器の置換。',
+        desc: 'プログラマブル BAW 差動発振器。OPN で周波数設定＋FSEL 分周・低ジッタ（6-pin）。',
+        specs: [
+          { k: '機能', v: 'プログラマブル差動発振器（BAW）' },
+          { k: '周波数', v: 'OPN 設定＋FSEL 分周（×1 / /2 / /4）' },
+          { k: '出力', v: '差動 OUT_P/OUT_N（低ジッタ）' },
+          { k: '制御', v: 'OE/ST イネーブル/スタンバイ' },
+          { k: 'パッケージ', v: '6-pin' }
+        ]
+      },
+      ko: {
+        subcategory: '프로그래머블 차동 발진기(BAW)',
+        whatIs: '프로그래머블 차동 클록 발진기: BAW 공진기를 내장해 프로그래머블 주파수의 차동 클록(OUT_P/OUT_N)을 출력, 주파수는 주문 부품 번호(OPN)로 설정하고 FSEL 핀으로 FOUT / FOUT/2 / FOUT/4 선택 가능.',
+        func: 'OE/ST로 출력 인에이블/대기 제어; FSEL로 출력 분주 선택(로우=/4, 플로팅=×1, 하이=/2); OUT_P/OUT_N이 차동 클록 출력. 수정 발진기를 대체, 저지터·외장 수정 불필요.',
+        usedIn: '고속 SerDes/이더/PCIe 참조 클록, 통신/데이터 센터 클록 소스, 수정 발진기 대체.',
+        desc: '프로그래머블 BAW 차동 발진기. OPN으로 주파수 설정+FSEL 분주·저지터(6-pin).',
+        specs: [
+          { k: '기능', v: '프로그래머블 차동 발진기(BAW)' },
+          { k: '주파수', v: 'OPN 설정+FSEL 분주(×1 / /2 / /4)' },
+          { k: '출력', v: '차동 OUT_P/OUT_N(저지터)' },
+          { k: '제어', v: 'OE/ST 인에이블/대기' },
+          { k: '패키지', v: '6-pin' }
+        ]
+      }
+    },
+    'CDC6C-Q1': {
+      en: {
+        subcategory: 'Single LVCMOS clock oscillator (automotive)',
+        whatIs: 'Single LVCMOS clock oscillator (automotive): outputs a fixed/ordered-frequency LVCMOS clock, with an output enable/standby pin. Tiny 4-pin, replaces a quartz oscillator.',
+        func: 'OE/ST controls output enable or standby; CLK outputs the LVCMOS clock. Low jitter, AEC-Q100 automotive, as a reference clock source.',
+        usedIn: 'Automotive MCU/SoC reference clock, communication clock source, quartz-oscillator replacement.',
+        desc: 'Automotive single LVCMOS clock oscillator, with output enable/standby (4-pin).',
+        specs: [
+          { k: 'Function', v: 'Single LVCMOS clock oscillator (automotive)' },
+          { k: 'Output', v: 'CLK (LVCMOS)' },
+          { k: 'Control', v: 'OE/ST enable/standby' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: '4-pin' }
+        ]
+      },
+      ja: {
+        subcategory: '1 出力 LVCMOS クロック発振器（車載）',
+        whatIs: '1 出力 LVCMOS クロック発振器（車載）：固定/注文周波数の LVCMOS クロックを出力、出力イネーブル/スタンバイピン付。極小 4 ピン・水晶発振器を置換。',
+        func: 'OE/ST で出力イネーブルまたはスタンバイ制御；CLK が LVCMOS クロックを出力。低ジッタ・車載 AEC-Q100、参照クロック源として。',
+        usedIn: '車載 MCU/SoC 参照クロック、通信クロック源、水晶発振器の置換。',
+        desc: '車載 1 出力 LVCMOS クロック発振器。出力イネーブル/スタンバイ付（4-pin）。',
+        specs: [
+          { k: '機能', v: '1 出力 LVCMOS クロック発振器（車載）' },
+          { k: '出力', v: 'CLK（LVCMOS）' },
+          { k: '制御', v: 'OE/ST イネーブル/スタンバイ' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: '4-pin' }
+        ]
+      },
+      ko: {
+        subcategory: '단일 LVCMOS 클록 발진기(차량용)',
+        whatIs: '단일 LVCMOS 클록 발진기(차량용): 고정/주문 주파수의 LVCMOS 클록을 출력, 출력 인에이블/대기 핀 포함. 초소형 4핀·수정 발진기 대체.',
+        func: 'OE/ST로 출력 인에이블 또는 대기 제어; CLK가 LVCMOS 클록 출력. 저지터·차량용 AEC-Q100, 참조 클록 소스로.',
+        usedIn: '차량 MCU/SoC 참조 클록, 통신 클록 소스, 수정 발진기 대체.',
+        desc: '차량용 단일 LVCMOS 클록 발진기. 출력 인에이블/대기 포함(4-pin).',
+        specs: [
+          { k: '기능', v: '단일 LVCMOS 클록 발진기(차량용)' },
+          { k: '출력', v: 'CLK(LVCMOS)' },
+          { k: '제어', v: 'OE/ST 인에이블/대기' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: '4-pin' }
+        ]
+      }
+    },
+    'LMK3H2104': {
+      en: {
+        subcategory: 'Clock generator (4 differential outputs, HCSL/LVDS/LVCMOS)',
+        whatIs: 'Clock generator: from a differential input or internal reference it produces 4 differential clock outputs (OUT0–3), each supporting LP-HCSL/LVDS/LVCMOS levels. Includes I2C/OTP configuration, GPIO, reference outputs. A clock source for multi-chip systems.',
+        func: 'IN0_P/N differential input (or GPI) → internally generates 4 differential clocks OUT0–3; REF_1 LVCMOS reference output; OTP_SEL/SCL/SDA do OTP-page select or I2C configuration (determined by pin 23); GPIO/GPI general IO; each output has its own VDDO to set the level.',
+        usedIn: 'Multi-chip system clock distribution, PCIe/Ethernet/SerDes reference clocks, FPGA/processor clock trees, data-center/communication.',
+        desc: 'Clock generator, 4 differential outputs (HCSL/LVDS/LVCMOS), I2C/OTP config, multiple VDDO (VQFN-24).',
+        specs: [
+          { k: 'Function', v: 'Clock generator (4 differential outputs)' },
+          { k: 'Output levels', v: 'LP-HCSL (85/100Ω) / LVDS / LVCMOS' },
+          { k: 'Config', v: 'I2C or OTP (pin 23 at power-up decides)' },
+          { k: 'Reference', v: 'REF_0/REF_1 outputs' },
+          { k: 'Supply', v: 'VDDD/VDDA/VDD_REF + per-output VDDO_x (1.8–3.3V)' },
+          { k: 'Package', v: 'VQFN-24 (RGE), EP to GND' }
+        ],
+        dropIn: [{ note: 'Same family; the LMK3H2108 is the 8-output version (different pin count/package, not pin-to-pin)' }]
+      },
+      ja: {
+        subcategory: 'クロックジェネレータ（4 差動出力・HCSL/LVDS/LVCMOS）',
+        whatIs: 'クロックジェネレータ：差動入力または内部基準から 4 系統の差動クロック出力（OUT0~3）を生成、各々 LP-HCSL/LVDS/LVCMOS レベルに対応。I2C/OTP 設定・GPIO・参照出力を含む。マルチチップシステムのクロック源。',
+        func: 'IN0_P/N 差動入力（または GPI）→内部で 4 系統の差動クロック OUT0~3 を生成；REF_1 LVCMOS 参照出力；OTP_SEL/SCL/SDA で OTP ページ選択または I2C 設定（pin23 で決定）；GPIO/GPI 汎用 IO；各出力独立 VDDO でレベル設定。',
+        usedIn: 'マルチチップシステムのクロック分配、PCIe/イーサ/SerDes 参照クロック、FPGA/プロセッサのクロックツリー、データセンタ/通信。',
+        desc: 'クロックジェネレータ。4 差動出力（HCSL/LVDS/LVCMOS）・I2C/OTP 設定・複数 VDDO（VQFN-24）。',
+        specs: [
+          { k: '機能', v: 'クロックジェネレータ（4 差動出力）' },
+          { k: '出力レベル', v: 'LP-HCSL(85/100Ω) / LVDS / LVCMOS' },
+          { k: '設定', v: 'I2C または OTP（pin23 が起動時に決定）' },
+          { k: '参照', v: 'REF_0/REF_1 出力' },
+          { k: '電源', v: 'VDDD/VDDA/VDD_REF ＋各出力 VDDO_x（1.8~3.3V）' },
+          { k: 'パッケージ', v: 'VQFN-24 (RGE)、EP は GND' }
+        ],
+        dropIn: [{ note: '同シリーズ；LMK3H2108 は 8 出力版（ピン数/パッケージ異なり pin-to-pin ではない）' }]
+      },
+      ko: {
+        subcategory: '클록 발생기(4 차동 출력·HCSL/LVDS/LVCMOS)',
+        whatIs: '클록 발생기: 차동 입력이나 내부 기준에서 4계통 차동 클록 출력(OUT0~3)을 생성, 각각 LP-HCSL/LVDS/LVCMOS 레벨 지원. I2C/OTP 설정·GPIO·참조 출력 포함. 다중 칩 시스템의 클록 소스.',
+        func: 'IN0_P/N 차동 입력(또는 GPI) → 내부에서 4계통 차동 클록 OUT0~3 생성; REF_1 LVCMOS 참조 출력; OTP_SEL/SCL/SDA로 OTP 페이지 선택 또는 I2C 설정(pin23이 결정); GPIO/GPI 범용 IO; 각 출력 독립 VDDO로 레벨 설정.',
+        usedIn: '다중 칩 시스템 클록 분배, PCIe/이더/SerDes 참조 클록, FPGA/프로세서 클록 트리, 데이터 센터/통신.',
+        desc: '클록 발생기. 4 차동 출력(HCSL/LVDS/LVCMOS)·I2C/OTP 설정·다중 VDDO(VQFN-24).',
+        specs: [
+          { k: '기능', v: '클록 발생기(4 차동 출력)' },
+          { k: '출력 레벨', v: 'LP-HCSL(85/100Ω) / LVDS / LVCMOS' },
+          { k: '설정', v: 'I2C 또는 OTP(pin23이 전원 인가 시 결정)' },
+          { k: '참조', v: 'REF_0/REF_1 출력' },
+          { k: '전원', v: 'VDDD/VDDA/VDD_REF + 각 출력 VDDO_x(1.8~3.3V)' },
+          { k: '패키지', v: 'VQFN-24 (RGE), EP는 GND' }
+        ],
+        dropIn: [{ note: '동일 시리즈; LMK3H2108은 8출력판(핀 수/패키지 다르며 pin-to-pin 아님)' }]
+      }
+    },
+    'TPS7B7802-Q1': {
+      en: {
+        subcategory: 'Dual LDO regulator (I2C diagnostics, high-voltage automotive)',
+        whatIs: 'Dual high-voltage LDO linear regulator (automotive): two independent LDOs (OUT1/OUT2) each regulate their output from a high-voltage input (IN1/IN2), with an I2C interface for configuration and diagnostics and a fault output (NERR). For automotive power rails that need monitoring.',
+        func: 'Each INx→OUTx regulates linearly, output voltage preset or set by an FBx resistor divider; EN enables; I2C (SCL/SDA + ADRR0–2 address) reads diagnostics/sets config; NERR (open-drain, active-low) flags faults; RDY indicates I2C ready; VCC is the internal 1.8V control-circuit output.',
+        usedIn: 'Automotive sensor/MCU power rails, dual supplies needing diagnostic monitoring, body electronics, instrument clusters.',
+        desc: 'Automotive dual high-voltage LDO, I2C diagnostics/config, NERR fault output, settable output voltage (VQFN-20).',
+        specs: [
+          { k: 'Function', v: 'Dual high-voltage LDO (with I2C diagnostics)' },
+          { k: 'Channels', v: '2 (OUT1/OUT2 independent)' },
+          { k: 'Output setting', v: 'preset or FBx external divider' },
+          { k: 'Interface', v: 'I2C (SCL/SDA + ADRR0–2 address)' },
+          { k: 'Diagnostics', v: 'NERR fault (open-drain) + RDY ready' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'VQFN-20, EP to GND' }
+        ]
+      },
+      ja: {
+        subcategory: '2 出力 LDO レギュレータ（I2C 診断・高圧車載）',
+        whatIs: '2 出力高圧 LDO リニアレギュレータ（車載）：2 個の独立 LDO（OUT1/OUT2）が各々高圧入力（IN1/IN2）から安定化出力、I2C インタフェースで設定と診断、故障出力（NERR）付。監視が必要な車載電源レールに好適。',
+        func: '各 INx→OUTx をリニア安定化、出力電圧は既定または FBx 抵抗分圧で設定；EN イネーブル；I2C（SCL/SDA + ADRR0~2 アドレス）で診断読み出し/設定；NERR（オープンドレイン active-low）で故障通知；RDY で I2C 準備完了指示；VCC は内部 1.8V 制御回路出力。',
+        usedIn: '車載センサ/MCU 電源レール、診断監視が必要な 2 電源、ボディ電子、メータ。',
+        desc: '車載 2 出力高圧 LDO。I2C 診断/設定・NERR 故障出力・出力電圧設定可（VQFN-20）。',
+        specs: [
+          { k: '機能', v: '2 出力高圧 LDO（I2C 診断付）' },
+          { k: 'チャネル', v: '2（OUT1/OUT2 独立）' },
+          { k: '出力設定', v: '既定または FBx 外部分圧' },
+          { k: 'インタフェース', v: 'I2C（SCL/SDA + ADRR0~2 アドレス）' },
+          { k: '診断', v: 'NERR 故障（オープンドレイン）＋RDY 準備完了' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'VQFN-20、EP は GND' }
+        ]
+      },
+      ko: {
+        subcategory: '2출력 LDO 레귤레이터(I2C 진단·고압 차량용)',
+        whatIs: '2출력 고압 LDO 선형 레귤레이터(차량용): 2개 독립 LDO(OUT1/OUT2)가 각각 고압 입력(IN1/IN2)에서 안정화 출력, I2C 인터페이스로 설정·진단, 고장 출력(NERR) 포함. 감시가 필요한 차량 전원 레일에 적합.',
+        func: '각 INx→OUTx를 선형 안정화, 출력 전압은 기본값 또는 FBx 저항 분압으로 설정; EN 인에이블; I2C(SCL/SDA + ADRR0~2 주소)로 진단 읽기/설정; NERR(오픈 드레인 active-low)로 고장 통지; RDY로 I2C 준비 표시; VCC는 내부 1.8V 제어 회로 출력.',
+        usedIn: '차량 센서/MCU 전원 레일, 진단 감시가 필요한 이중 전원, 바디 전자, 계기.',
+        desc: '차량용 2출력 고압 LDO. I2C 진단/설정·NERR 고장 출력·출력 전압 설정 가능(VQFN-20).',
+        specs: [
+          { k: '기능', v: '2출력 고압 LDO(I2C 진단 포함)' },
+          { k: '채널', v: '2(OUT1/OUT2 독립)' },
+          { k: '출력 설정', v: '기본값 또는 FBx 외부 분압' },
+          { k: '인터페이스', v: 'I2C(SCL/SDA + ADRR0~2 주소)' },
+          { k: '진단', v: 'NERR 고장(오픈 드레인) + RDY 준비' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'VQFN-20, EP는 GND' }
+        ]
+      }
+    },
+    'ADS122C14': {
+      en: {
+        subcategory: 'Precision ADC (Delta-Sigma, I2C, 24-bit)',
+        whatIs: 'Precision analog-to-digital converter (ADC): 24-bit, I2C, up to 8 inputs. Same package/pinout as the 16-bit ADS112C14, a higher-resolution version.',
+        func: 'Digitizes tiny sensor signals at high resolution; integrates PGA, programmable reference, dual current sources and a temperature sensor. Delta-Sigma architecture (oversampling + noise shaping), ideal for slow-but-accurate measurements (temperature, bridges, pressure). 24-bit beats the ADS112C14’s 16-bit.',
+        usedIn: 'Industrial sensor front ends (RTD/thermocouple, pressure/strain bridges, flow), PLC/DCS analog inputs, thermostats, patient monitoring.',
+        desc: '24-bit, 8-channel ΔΣ ADC with PGA, programmable reference, dual current sources, temperature sensor and I2C; same pinout as ADS112C14 (WQFN-16 RTE).',
+        specs: [
+          { k: 'Resolution', v: '24-bit' },
+          { k: 'Architecture', v: 'Delta-Sigma (ΔΣ)' },
+          { k: 'Channels', v: '8-input MUX; differential/single-ended' },
+          { k: 'Max sample rate', v: '64 kSPS' },
+          { k: 'PGA gain', v: '0.5 – 256' },
+          { k: 'Analog supply AVDD', v: '1.74 – 3.6 V' },
+          { k: 'Digital supply DVDD', v: '1.65 – 3.6 V' },
+          { k: 'Interface', v: 'I2C (Sm/Fm/Fm+), address pins A0/A1' },
+          { k: 'Integrated', v: 'temp sensor, dual current sources, 4× GPIO, CRC' },
+          { k: 'Package', v: 'WQFN-16 (RTE) 3.0×3.0mm' }
+        ],
+        dropIn: [{ note: 'Same RTE WQFN-16, identical pinout (16-bit version)' }]
+      },
+      ja: {
+        subcategory: '高精度 ADC（Delta-Sigma、I2C、24-bit）',
+        whatIs: '高精度 A/D コンバータ（ADC）：24 ビット・I2C・最大 8 入力。16-bit の ADS112C14 と同パッケージ・ピン配置の高分解能版。',
+        func: 'センサの微小アナログ信号を高分解能でデジタル化。PGA・プログラマブル基準・デュアル電流源・温度センサ内蔵。Delta-Sigma 構成（オーバーサンプリング＋ノイズシェーピング）で「低速だが高精度」の計測（温度・ブリッジ・圧力）に最適。24-bit は ADS112C14 の 16-bit を上回る。',
+        usedIn: '産業用センサフロントエンド（RTD/熱電対、圧力/ひずみブリッジ、流量）、PLC/DCS アナログ入力、温度調節器、患者モニタ。',
+        desc: '24-bit・8ch ΔΣ ADC。PGA・プログラマブル基準・デュアル電流源・温度センサ・I2C 内蔵；ADS112C14 とピン互換（WQFN-16 RTE）。',
+        specs: [
+          { k: '分解能', v: '24-bit' },
+          { k: 'アーキテクチャ', v: 'Delta-Sigma (ΔΣ)' },
+          { k: 'チャネル', v: '8 入力 MUX；差動/シングルエンド' },
+          { k: '最大サンプルレート', v: '64 kSPS' },
+          { k: 'PGA ゲイン', v: '0.5 ~ 256' },
+          { k: 'アナログ電源 AVDD', v: '1.74 ~ 3.6 V' },
+          { k: 'デジタル電源 DVDD', v: '1.65 ~ 3.6 V' },
+          { k: 'インタフェース', v: 'I2C（Sm/Fm/Fm+）、アドレスピン A0/A1' },
+          { k: '内蔵機能', v: '温度センサ、デュアル電流源、4× GPIO、CRC' },
+          { k: 'パッケージ', v: 'WQFN-16 (RTE) 3.0×3.0mm' }
+        ],
+        dropIn: [{ note: '同一 RTE WQFN-16・ピン配置完全互換（16-bit 版）' }]
+      },
+      ko: {
+        subcategory: '정밀 ADC(Delta-Sigma, I2C, 24-bit)',
+        whatIs: '정밀 아날로그-디지털 변환기(ADC): 24비트·I2C·최대 8입력. 16-bit ADS112C14와 같은 패키지·핀 배치의 고분해능판.',
+        func: '센서의 미소 아날로그 신호를 고분해능으로 디지털화. PGA·프로그래머블 기준·듀얼 전류원·온도 센서 내장. Delta-Sigma 구조(오버샘플링+노이즈 셰이핑)로 "느리지만 정확한" 계측(온도·브리지·압력)에 최적. 24-bit는 ADS112C14의 16-bit를 능가.',
+        usedIn: '산업 센서 프론트엔드(RTD/열전대, 압력/스트레인 브리지, 유량), PLC/DCS 아날로그 입력, 온도조절기, 환자 모니터링.',
+        desc: '24-bit·8채널 ΔΣ ADC. PGA·프로그래머블 기준·듀얼 전류원·온도 센서·I2C 내장; ADS112C14와 핀 호환(WQFN-16 RTE).',
+        specs: [
+          { k: '분해능', v: '24-bit' },
+          { k: '아키텍처', v: 'Delta-Sigma (ΔΣ)' },
+          { k: '채널', v: '8입력 MUX; 차동/싱글엔드' },
+          { k: '최대 샘플링', v: '64 kSPS' },
+          { k: 'PGA 이득', v: '0.5 ~ 256' },
+          { k: '아날로그 전원 AVDD', v: '1.74 ~ 3.6 V' },
+          { k: '디지털 전원 DVDD', v: '1.65 ~ 3.6 V' },
+          { k: '인터페이스', v: 'I2C(Sm/Fm/Fm+), 주소 핀 A0/A1' },
+          { k: '내장 기능', v: '온도 센서, 듀얼 전류원, 4× GPIO, CRC' },
+          { k: '패키지', v: 'WQFN-16 (RTE) 3.0×3.0mm' }
+        ],
+        dropIn: [{ note: '동일 RTE WQFN-16·핀 배치 완전 호환(16-bit 버전)' }]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
