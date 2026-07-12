@@ -826,3 +826,840 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 2: entries 15-29 */
+(function () {
+  var T = {
+    'ADS9316': {
+      en: {
+        subcategory: 'Dual simultaneous-sampling SAR ADC (18-bit)',
+        whatIs: 'Dual-channel simultaneous-sampling 18-bit SAR ADC: two ADCs sample two signals at the exact same instant (phase-aligned), 2 bits more resolution than the ADS9326. Same pinout as ADS9326/9317.',
+        func: 'Measures two signals simultaneously and time-aligned (current/voltage, two phase currents) at 18-bit resolution; fast SAR conversion, multi-lane SPI output (D0–D3). CONVST-triggered, CS-selected, internal reference and common-mode output.',
+        usedIn: 'High-resolution synchronized current/voltage sampling for motor/servo control, three-phase power measurement, power analyzers.',
+        desc: 'Dual-channel, simultaneous-sampling, 18-bit SAR ADC (VQFN-22), multi-lane SPI (same pinout as ADS9326/9317).',
+        specs: [
+          { k: 'Function', v: 'Dual simultaneous-sampling SAR ADC' },
+          { k: 'Resolution', v: '18-bit' },
+          { k: 'Architecture', v: 'SAR (successive approximation)' },
+          { k: 'Channels', v: '2 (A/B, simultaneous)' },
+          { k: 'Interface', v: 'SPI (multi-lane D0–D3, CONVST/CS)' },
+          { k: 'Reference', v: 'internal reference + buffer' },
+          { k: 'Analog supply', v: '5V or 3.3V' },
+          { k: 'Package', v: 'VQFN-22 (with EP)' }
+        ],
+        dropIn: [{ note: 'Same VQFN-22, identical pinout, both 18-bit (verify throughput/accuracy specs match)' }]
+      },
+      ja: {
+        subcategory: '2ch 同時サンプリング SAR ADC（18-bit）',
+        whatIs: '2 チャネル同時サンプリング 18-bit SAR ADC：2 個の ADC が 2 系統の信号を同一瞬間にサンプリング（位相整列）、ADS9326 より 2 ビット高分解能。ADS9326/9317 とピン互換。',
+        func: '2 系統の信号を同時・時間整列で計測（電流/電圧、2 相電流）、18-bit 高分解能；SAR で高速変換、SPI マルチレーン出力（D0~D3）。CONVST トリガ・CS 選択・内部基準とコモンモード出力内蔵。',
+        usedIn: '高分解能モータ/サーボの電流電圧同期サンプリング、三相電力計測、パワーアナライザ。',
+        desc: '2ch 同時サンプリング・18-bit SAR ADC（VQFN-22）。SPI マルチレーン出力（ADS9326/9317 とピン互換）。',
+        specs: [
+          { k: '機能', v: '2ch 同時サンプリング SAR ADC' },
+          { k: '分解能', v: '18-bit' },
+          { k: 'アーキテクチャ', v: 'SAR（逐次比較）' },
+          { k: 'チャネル', v: '2（A/B、同時サンプリング）' },
+          { k: 'インタフェース', v: 'SPI（マルチレーン D0~D3、CONVST/CS）' },
+          { k: '基準', v: '内部基準＋バッファ' },
+          { k: 'アナログ電源', v: '5V または 3.3V' },
+          { k: 'パッケージ', v: 'VQFN-22（EP 付）' }
+        ],
+        dropIn: [{ note: '同一 VQFN-22・ピン配置完全互換・共に 18-bit（throughput/精度仕様の適合を確認）' }]
+      },
+      ko: {
+        subcategory: '2채널 동시 샘플링 SAR ADC(18-bit)',
+        whatIs: '2채널 동시 샘플링 18-bit SAR ADC: 두 ADC가 두 신호를 같은 순간에 샘플링(위상 정렬), ADS9326보다 2비트 높은 분해능. ADS9326/9317과 핀 호환.',
+        func: '두 신호를 동시·시간 정렬로 계측(전류/전압, 2상 전류), 18-bit 고분해능; SAR 고속 변환, SPI 멀티레인 출력(D0~D3). CONVST 트리거·CS 선택·내부 기준과 공통 모드 출력 내장.',
+        usedIn: '고분해능 모터/서보 전류·전압 동기 샘플링, 3상 전력 계측, 전력 분석기.',
+        desc: '2채널 동시 샘플링·18-bit SAR ADC(VQFN-22). SPI 멀티레인 출력(ADS9326/9317과 핀 호환).',
+        specs: [
+          { k: '기능', v: '2채널 동시 샘플링 SAR ADC' },
+          { k: '분해능', v: '18-bit' },
+          { k: '아키텍처', v: 'SAR(축차 비교)' },
+          { k: '채널', v: '2(A/B, 동시 샘플링)' },
+          { k: '인터페이스', v: 'SPI(멀티레인 D0~D3, CONVST/CS)' },
+          { k: '기준', v: '내부 기준+버퍼' },
+          { k: '아날로그 전원', v: '5V 또는 3.3V' },
+          { k: '패키지', v: 'VQFN-22(EP 포함)' }
+        ],
+        dropIn: [{ note: '동일 VQFN-22·핀 배치 완전 호환·모두 18-bit(throughput/정확도 사양 적합 확인)' }]
+      }
+    },
+    'ADS9317': {
+      en: {
+        subcategory: 'Dual simultaneous-sampling SAR ADC (18-bit)',
+        whatIs: 'Dual-channel simultaneous-sampling 18-bit SAR ADC: two ADCs sample two signals at the same instant. Same pinout as ADS9316/9326 (ADS931x family).',
+        func: 'Simultaneous, time-aligned measurement of two signals at 18-bit resolution; fast SAR, multi-lane SPI output. Same pinout as ADS9316 with slightly different specs (per datasheet).',
+        usedIn: 'High-resolution motor/servo synchronized sampling, three-phase power measurement, power analysis.',
+        desc: 'Dual-channel, simultaneous-sampling, 18-bit SAR ADC (VQFN-22, same pinout as ADS9316/9326).',
+        specs: [
+          { k: 'Function', v: 'Dual simultaneous-sampling SAR ADC' },
+          { k: 'Resolution', v: '18-bit' },
+          { k: 'Architecture', v: 'SAR' },
+          { k: 'Channels', v: '2 (simultaneous)' },
+          { k: 'Interface', v: 'SPI (multi-lane D0–D3, CONVST/CS)' },
+          { k: 'Analog supply', v: '5V or 3.3V' },
+          { k: 'Package', v: 'VQFN-22 (with EP)' }
+        ],
+        dropIn: [{ note: 'Same VQFN-22, identical pinout, both 18-bit (verify throughput/accuracy specs match)' }]
+      },
+      ja: {
+        subcategory: '2ch 同時サンプリング SAR ADC（18-bit）',
+        whatIs: '2 チャネル同時サンプリング 18-bit SAR ADC：2 個の ADC が 2 系統の信号を同一瞬間にサンプリング。ADS9316/9326 とピン互換（ADS931x シリーズ）。',
+        func: '2 系統信号の同時・時間整列計測、18-bit 高分解能；SAR 高速・SPI マルチレーン出力。ADS9316 とピン互換・仕様が僅かに異なる（datasheet 参照）。',
+        usedIn: '高分解能モータ/サーボ同期サンプリング、三相電力計測、電力分析。',
+        desc: '2ch 同時サンプリング・18-bit SAR ADC（VQFN-22、ADS9316/9326 とピン互換）。',
+        specs: [
+          { k: '機能', v: '2ch 同時サンプリング SAR ADC' },
+          { k: '分解能', v: '18-bit' },
+          { k: 'アーキテクチャ', v: 'SAR' },
+          { k: 'チャネル', v: '2（同時サンプリング）' },
+          { k: 'インタフェース', v: 'SPI（マルチレーン D0~D3、CONVST/CS）' },
+          { k: 'アナログ電源', v: '5V または 3.3V' },
+          { k: 'パッケージ', v: 'VQFN-22（EP 付）' }
+        ],
+        dropIn: [{ note: '同一 VQFN-22・ピン配置完全互換・共に 18-bit（throughput/精度仕様の適合を確認）' }]
+      },
+      ko: {
+        subcategory: '2채널 동시 샘플링 SAR ADC(18-bit)',
+        whatIs: '2채널 동시 샘플링 18-bit SAR ADC: 두 ADC가 두 신호를 같은 순간에 샘플링. ADS9316/9326과 핀 호환(ADS931x 시리즈).',
+        func: '두 신호의 동시·시간 정렬 계측, 18-bit 고분해능; SAR 고속·SPI 멀티레인 출력. ADS9316과 핀 호환·사양 약간 상이(datasheet 참조).',
+        usedIn: '고분해능 모터/서보 동기 샘플링, 3상 전력 계측, 전력 분석.',
+        desc: '2채널 동시 샘플링·18-bit SAR ADC(VQFN-22, ADS9316/9326과 핀 호환).',
+        specs: [
+          { k: '기능', v: '2채널 동시 샘플링 SAR ADC' },
+          { k: '분해능', v: '18-bit' },
+          { k: '아키텍처', v: 'SAR' },
+          { k: '채널', v: '2(동시 샘플링)' },
+          { k: '인터페이스', v: 'SPI(멀티레인 D0~D3, CONVST/CS)' },
+          { k: '아날로그 전원', v: '5V 또는 3.3V' },
+          { k: '패키지', v: 'VQFN-22(EP 포함)' }
+        ],
+        dropIn: [{ note: '동일 VQFN-22·핀 배치 완전 호환·모두 18-bit(throughput/정확도 사양 적합 확인)' }]
+      }
+    },
+    'THS6222': {
+      en: {
+        subcategory: 'Dual differential line driver (8–32V, HPLC)',
+        whatIs: 'Dual-channel differential line driver: amplifies a signal into a differential output to drive transmission lines (e.g. HPLC power-line communication); 8–32V supply with built-in common-mode buffer. A high-voltage, high-current output amplifier — not a small-signal op-amp.',
+        func: 'Drives long transmission/power lines: two differential amplifiers (D1/D2) output large-swing differential signals into the line impedance; adjustable bias current (IADJ + BIAS-1/2 modes) trades performance for power; VCM sets the output common-mode level.',
+        usedIn: 'Power-line communication (HPLC/PLC/G3-PLC) line driving, xDSL, long-distance differential signal driving.',
+        desc: 'Dual-channel 8–32V differential line driver with common-mode buffer and adjustable bias (VQFN-16).',
+        specs: [
+          { k: 'Function', v: 'Dual differential line driver (with CM buffer)' },
+          { k: 'Channels', v: '2 (D1 / D2)' },
+          { k: 'Supply range', v: '8 – 32 V (VS+ / VS−)' },
+          { k: 'Bias', v: 'adjustable (IADJ + BIAS-1/2 modes, power-save/shutdown)' },
+          { k: 'Common mode', v: 'VCM buffered output' },
+          { k: 'EP', v: 'exposed pad ties to VS− (not GND)' },
+          { k: 'Applications', v: 'HPLC / power-line comm line driving, xDSL' },
+          { k: 'Package', v: 'VQFN-16 (RGT)' }
+        ]
+      },
+      ja: {
+        subcategory: '2ch 差動ラインドライバ（8~32V・HPLC）',
+        whatIs: '2 チャネル差動ラインドライバ：信号を差動出力へ増幅し「伝送線を駆動」（電力線通信 HPLC 等）。高電圧電源 8~32V、コモンモードバッファ内蔵。高圧・大電流出力のアンプで、一般の小信号オペアンプではない。',
+        func: '長い伝送線/電力線の駆動：2 組の差動アンプ（D1/D2）が大振幅差動信号で線路インピーダンスを駆動；バイアス電流可変（IADJ＋BIAS-1/2 モード）で性能と消費電力をトレードオフ；VCM で出力コモンモード電位を設定。',
+        usedIn: '電力線通信（HPLC/PLC/G3-PLC）ラインドライブ、xDSL、長距離差動信号駆動。',
+        desc: '2ch・8~32V 電源の差動ラインドライバ。コモンモードバッファ・可変バイアス内蔵（VQFN-16）。',
+        specs: [
+          { k: '機能', v: '2ch 差動ラインドライバ（CM バッファ付）' },
+          { k: 'チャネル', v: '2（D1 / D2）' },
+          { k: '電源範囲', v: '8 ~ 32 V（VS+ / VS−）' },
+          { k: 'バイアス', v: '可変（IADJ＋BIAS-1/2 モード、省電力/遮断可）' },
+          { k: 'コモンモード', v: 'VCM バッファ出力' },
+          { k: 'EP', v: '露出パッドは VS− 接続（GND ではない）' },
+          { k: '用途', v: 'HPLC / 電力線通信ラインドライブ、xDSL' },
+          { k: 'パッケージ', v: 'VQFN-16 (RGT)' }
+        ]
+      },
+      ko: {
+        subcategory: '2채널 차동 라인 드라이버(8~32V·HPLC)',
+        whatIs: '2채널 차동 라인 드라이버: 신호를 차동 출력으로 증폭해 "전송선을 구동"(전력선 통신 HPLC 등). 고전압 전원 8~32V, 공통 모드 버퍼 내장. 고압·대전류 출력 앰프이며 일반 소신호 op-amp가 아님.',
+        func: '긴 전송선/전력선 구동: 두 조의 차동 앰프(D1/D2)가 대진폭 차동 신호로 선로 임피던스를 구동; 바이어스 전류 가변(IADJ+BIAS-1/2 모드)으로 성능과 소비 전력 트레이드오프; VCM으로 출력 공통 모드 전위 설정.',
+        usedIn: '전력선 통신(HPLC/PLC/G3-PLC) 라인 구동, xDSL, 장거리 차동 신호 구동.',
+        desc: '2채널·8~32V 전원 차동 라인 드라이버. 공통 모드 버퍼·가변 바이어스 내장(VQFN-16).',
+        specs: [
+          { k: '기능', v: '2채널 차동 라인 드라이버(CM 버퍼 포함)' },
+          { k: '채널', v: '2(D1 / D2)' },
+          { k: '전원 범위', v: '8 ~ 32 V(VS+ / VS−)' },
+          { k: '바이어스', v: '가변(IADJ+BIAS-1/2 모드, 절전/차단 가능)' },
+          { k: '공통 모드', v: 'VCM 버퍼 출력' },
+          { k: 'EP', v: '노출 패드는 VS− 접속(GND 아님)' },
+          { k: '용도', v: 'HPLC / 전력선 통신 라인 구동, xDSL' },
+          { k: '패키지', v: 'VQFN-16 (RGT)' }
+        ]
+      }
+    },
+    'TPS61290': {
+      en: {
+        subcategory: 'Synchronous boost converter (5.5V, 11A, I2C, with bypass)',
+        whatIs: 'Synchronous boost converter: steps a lower input voltage up to a higher output; built-in high/low-side power MOSFETs (synchronous rectification, high efficiency), I2C-configurable, with a bypass mode. High current (11A switch current).',
+        func: 'Battery/low-voltage source → boosted supply; synchronous rectification cuts losses; I2C dynamically sets output voltage and mode; bypass passes the input straight through when boosting is not needed. BGA 16 balls — VIN/VOUT/SW/GND use 3 balls each to share the high current.',
+        usedIn: 'Boost for battery-powered devices (phones/wearables/IoT), RF power-amplifier supply, systems needing I2C dynamic voltage scaling.',
+        desc: '5.5V, 11A synchronous boost converter, I2C control, bypass mode (BGA-16).',
+        specs: [
+          { k: 'Function', v: 'Synchronous boost converter with bypass mode' },
+          { k: 'Input', v: 'up to 5.5 V' },
+          { k: 'Switch current', v: '11 A' },
+          { k: 'Rectification', v: 'synchronous (built-in high/low-side MOSFETs)' },
+          { k: 'Control', v: 'I2C (output voltage/mode); EN enable' },
+          { k: 'Bypass', v: 'straight-through when boost not needed' },
+          { k: 'Package', v: 'BGA-16 (4×4; VIN/VOUT/SW/GND 3 balls each)' }
+        ]
+      },
+      ja: {
+        subcategory: '同期整流昇圧コンバータ（5.5V・11A・I2C・バイパス付）',
+        whatIs: '同期整流昇圧（boost）コンバータ：低い入力電圧を高い出力電圧へ昇圧。ハイ/ローサイド パワー MOSFET 内蔵（同期整流・高効率）、I2C 設定可、バイパスモード付。大電流（スイッチ電流 11A）。',
+        func: 'バッテリ/低圧源→昇圧供給；同期整流で損失低減；I2C で出力電圧とモードを動的設定；昇圧不要時はバイパス直通で省電力。BGA 16 ボール、VIN/VOUT/SW/GND 各 3 ボールで大電流を分担。',
+        usedIn: 'バッテリ機器の昇圧（スマホ/ウェアラブル/IoT）、RF パワーアンプ電源、I2C 動的電圧調整が必要なシステム。',
+        desc: '5.5V・11A 同期整流昇圧コンバータ。I2C 制御・バイパスモード付（BGA-16）。',
+        specs: [
+          { k: '機能', v: '同期整流昇圧コンバータ・バイパスモード付' },
+          { k: '入力', v: '最大 5.5 V' },
+          { k: 'スイッチ電流', v: '11 A' },
+          { k: '整流', v: '同期（ハイ/ローサイド MOSFET 内蔵）' },
+          { k: '制御', v: 'I2C（出力電圧/モード可変）；EN イネーブル' },
+          { k: 'バイパス', v: '昇圧不要時は直通で省電力' },
+          { k: 'パッケージ', v: 'BGA-16（4×4；VIN/VOUT/SW/GND 各 3 ボール）' }
+        ]
+      },
+      ko: {
+        subcategory: '동기 부스트 컨버터(5.5V·11A·I2C·바이패스 포함)',
+        whatIs: '동기 부스트(boost) 컨버터: 낮은 입력 전압을 높은 출력으로 승압. 하이/로우사이드 파워 MOSFET 내장(동기 정류·고효율), I2C 설정 가능, 바이패스 모드 포함. 대전류(스위치 전류 11A).',
+        func: '배터리/저압원 → 승압 공급; 동기 정류로 손실 저감; I2C로 출력 전압·모드 동적 설정; 승압 불필요 시 바이패스 직통으로 절전. BGA 16볼, VIN/VOUT/SW/GND 각 3볼로 대전류 분담.',
+        usedIn: '배터리 기기 승압(휴대폰/웨어러블/IoT), RF 파워앰프 전원, I2C 동적 전압 조정이 필요한 시스템.',
+        desc: '5.5V·11A 동기 부스트 컨버터. I2C 제어·바이패스 모드(BGA-16).',
+        specs: [
+          { k: '기능', v: '동기 부스트 컨버터·바이패스 모드 포함' },
+          { k: '입력', v: '최대 5.5 V' },
+          { k: '스위치 전류', v: '11 A' },
+          { k: '정류', v: '동기(하이/로우사이드 MOSFET 내장)' },
+          { k: '제어', v: 'I2C(출력 전압/모드 가변); EN 인에이블' },
+          { k: '바이패스', v: '승압 불필요 시 직통으로 절전' },
+          { k: '패키지', v: 'BGA-16(4×4; VIN/VOUT/SW/GND 각 3볼)' }
+        ]
+      }
+    },
+    'TPS61129-Q1': {
+      en: {
+        subcategory: 'Boost converter (5.5V, 3.5A Isw, automotive, spread-spectrum + clock sync)',
+        whatIs: 'Boost converter: steps a lower input up to a higher output, automotive (Q1); includes spread-spectrum modulation (lower EMI) and external clock synchronization. FB feedback sets the output voltage (or fixed-5V version).',
+        func: 'Low-voltage source → boosted supply; FB divider sets output voltage; SSEN enables spread spectrum to smear the switching spectrum and cut EMI peaks; SYNC/MODE selects forced PWM or auto PFM, or syncs to an external clock; PG signals power-good. Automotive.',
+        usedIn: 'Automotive boost supplies, EMI-sensitive/clock-synced power, sensor/display/RF supplies.',
+        desc: '5.5V, 3.5A-switch-current automotive boost converter with spread spectrum and clock sync, adjustable output (VQFN-11).',
+        specs: [
+          { k: 'Function', v: 'Boost converter (automotive)' },
+          { k: 'Input', v: 'up to 5.5 V' },
+          { k: 'Switch current', v: '3.5 A (Isw)' },
+          { k: 'Output setting', v: 'FB divider adjustable (or fixed-5V version)' },
+          { k: 'EMI', v: 'spread-spectrum modulation (SSEN)' },
+          { k: 'Modes', v: 'forced PWM / auto PFM; external clock sync' },
+          { k: 'Indicator', v: 'PG power good (open-drain)' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100 (Q1)' },
+          { k: 'Package', v: 'VQFN-11' }
+        ]
+      },
+      ja: {
+        subcategory: '昇圧コンバータ（5.5V・3.5A Isw・車載・スペクトラム拡散＋クロック同期）',
+        whatIs: '昇圧（boost）コンバータ：低い入力を高い出力へ昇圧、車載（Q1）；スペクトラム拡散変調（EMI 低減）と外部クロック同期機能付。FB 帰還で出力電圧可変（固定 5V 版もあり）。',
+        func: '低圧源→昇圧供給；FB 分圧で出力電圧設定；SSEN でスペクトラム拡散を有効化しスイッチングスペクトルを分散、EMI ピークを低減；SYNC/MODE で強制 PWM か自動 PFM を選択、外部クロック同期も可；PG で電源準備完了を通知。車載。',
+        usedIn: '車載電子の昇圧電源、EMI 敏感/クロック同期が必要な電源、センサ/ディスプレイ/RF 供給。',
+        desc: '5.5V・スイッチ電流 3.5A の車載昇圧コンバータ。スペクトラム拡散・クロック同期・可変出力（VQFN-11）。',
+        specs: [
+          { k: '機能', v: '昇圧コンバータ（車載）' },
+          { k: '入力', v: '最大 5.5 V' },
+          { k: 'スイッチ電流', v: '3.5 A (Isw)' },
+          { k: '出力設定', v: 'FB 分圧可変（固定 5V 版もあり）' },
+          { k: 'EMI', v: 'スペクトラム拡散変調（SSEN）' },
+          { k: 'モード', v: '強制 PWM / 自動 PFM；外部クロック同期可' },
+          { k: '通知', v: 'PG 電源準備完了（オープンドレイン）' },
+          { k: '認証', v: '車載 AEC-Q100 (Q1)' },
+          { k: 'パッケージ', v: 'VQFN-11' }
+        ]
+      },
+      ko: {
+        subcategory: '부스트 컨버터(5.5V·3.5A Isw·차량용·확산 스펙트럼+클록 동기)',
+        whatIs: '부스트(boost) 컨버터: 낮은 입력을 높은 출력으로 승압, 차량용(Q1); 확산 스펙트럼 변조(EMI 저감)와 외부 클록 동기 기능 포함. FB 피드백으로 출력 전압 가변(고정 5V판도 있음).',
+        func: '저압원 → 승압 공급; FB 분압으로 출력 전압 설정; SSEN으로 확산 스펙트럼을 켜 스위칭 스펙트럼을 분산, EMI 피크 저감; SYNC/MODE로 강제 PWM 또는 자동 PFM 선택, 외부 클록 동기도 가능; PG로 전원 준비 표시. 차량용.',
+        usedIn: '차량 전자 승압 전원, EMI 민감/클록 동기 필요 전원, 센서/디스플레이/RF 공급.',
+        desc: '5.5V·스위치 전류 3.5A 차량용 부스트 컨버터. 확산 스펙트럼·클록 동기·가변 출력(VQFN-11).',
+        specs: [
+          { k: '기능', v: '부스트 컨버터(차량용)' },
+          { k: '입력', v: '최대 5.5 V' },
+          { k: '스위치 전류', v: '3.5 A (Isw)' },
+          { k: '출력 설정', v: 'FB 분압 가변(고정 5V판도 있음)' },
+          { k: 'EMI', v: '확산 스펙트럼 변조(SSEN)' },
+          { k: '모드', v: '강제 PWM / 자동 PFM; 외부 클록 동기 가능' },
+          { k: '표시', v: 'PG 전원 준비(오픈 드레인)' },
+          { k: '인증', v: '차량용 AEC-Q100 (Q1)' },
+          { k: '패키지', v: 'VQFN-11' }
+        ]
+      }
+    },
+    'UCC34141-Q1': {
+      en: {
+        subcategory: 'Integrated isolated bias supply (12Vin → 25Vout, automotive)',
+        whatIs: 'Integrated isolated bias supply: from a 12V primary input it generates positive and negative bias rails (VDD and VEE, ~25V total) on the secondary side across electrical isolation, for gate drivers and similar loads; dual-loop regulation and an internal buck-boost. Automotive (Q1), high power density, 1.5W.',
+        func: 'Provides the isolated positive/negative bias (e.g. +15V / −4V) that IGBT/SiC/GaN gate drivers need. 12V in on the primary (VIN/GNDP); on the secondary, VDD−COM and COM−VEE are each regulated via their own feedback (FBVDD/FBVEE); BSW connects an inductor for the buck-boost negative rail; ENA enables (UVLO-settable), PG signals power good. Primary and secondary are galvanically isolated.',
+        usedIn: 'Isolated ± bias for IGBT/SiC/GaN gate drivers, gate supplies in motor drives/inverters/on-board chargers, isolated supplies needing ± rails.',
+        desc: '1.5W, 12Vin→25Vout integrated isolated bias supply generating ± bias for gate drivers (16-SSOP (DHA), automotive). (Package per datasheet Figure 5-1 "DHA Package, 16-Pin SSOP"; its thermal table says DHA (SOIC) — figure taken as authoritative. Original library QFN-16 misprint fixed 2026-07-10.)',
+        specs: [
+          { k: 'Function', v: 'Integrated isolated bias supply (± rails)' },
+          { k: 'Input', v: '12 V (VIN)' },
+          { k: 'Output', v: '~25 V (VDD and VEE, each feedback-settable)' },
+          { k: 'Power', v: '1.5 W' },
+          { k: 'Isolation', v: 'primary-secondary galvanic isolation' },
+          { k: 'Topology', v: 'internal buck-boost (BSW + inductor for the negative rail)' },
+          { k: 'Feedback', v: 'FBVDD sets VDD−COM, FBVEE sets COM−VEE (2–8V)' },
+          { k: 'Status/enable', v: 'PG power good, ENA (UVLO-settable)' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100 (Q1)' },
+          { k: 'Package', v: 'QFN-16' }
+        ]
+      },
+      ja: {
+        subcategory: '統合絶縁バイアス電源（12Vin→25Vout・車載）',
+        whatIs: '統合絶縁バイアス電源：一次側 12V 入力から、電気的絶縁を跨いで二次側に正負バイアス電圧（VDD と VEE、合計約 25V）を生成しゲートドライバ等へ供給；2 系統帰還レギュレーションと内部 buck-boost を内蔵。車載（Q1）・高電力密度・1.5W。',
+        func: 'IGBT/SiC/GaN ゲートドライバに必要な絶縁「正負バイアス」（例：+15V / −4V）を供給。一次 12V 入力（VIN/GNDP）、二次は VDD−COM と COM−VEE の 2 系統を各々帰還（FBVDD/FBVEE）で設定；BSW にインダクタを接続し buck-boost で負レールを生成；ENA イネーブル（UVLO 設定可）・PG 準備完了通知。一次-二次は電気的絶縁。',
+        usedIn: 'IGBT/SiC/GaN ゲートドライバの絶縁正負バイアス、モータドライブ/インバータ/車載充電器のゲート電源、± バイアスが必要な絶縁供給。',
+        desc: '1.5W・12Vin→25Vout の統合絶縁バイアス電源。二次側に正負バイアスを生成しゲートドライバへ（16-SSOP(DHA)、車載）。（パッケージは datasheet Figure 5-1「DHA Package, 16-Pin SSOP」準拠；熱抵抗表は DHA (SOIC) 表記で矛盾、図を優先。旧登録の QFN-16 誤記は 2026-07-10 修正済）',
+        specs: [
+          { k: '機能', v: '統合絶縁バイアス電源（正負バイアス生成）' },
+          { k: '入力', v: '12 V（VIN）' },
+          { k: '出力', v: '約 25 V（VDD と VEE の 2 系統、各々帰還設定可）' },
+          { k: '電力', v: '1.5 W' },
+          { k: '絶縁', v: '一次-二次 電気的絶縁' },
+          { k: 'トポロジ', v: '内部 buck-boost（BSW＋インダクタで負レール生成）' },
+          { k: '帰還', v: 'FBVDD で VDD−COM、FBVEE で COM−VEE (2~8V)' },
+          { k: '通知/イネーブル', v: 'PG 準備完了、ENA（UVLO 設定可）' },
+          { k: '認証', v: '車載 AEC-Q100 (Q1)' },
+          { k: 'パッケージ', v: 'QFN-16' }
+        ]
+      },
+      ko: {
+        subcategory: '통합 절연 바이어스 전원(12Vin→25Vout·차량용)',
+        whatIs: '통합 절연 바이어스 전원: 1차 측 12V 입력에서 전기 절연을 넘어 2차 측에 양·음 바이어스 전압(VDD와 VEE, 합계 약 25V)을 생성해 게이트 드라이버 등에 공급; 2계통 피드백 안정화와 내부 buck-boost 내장. 차량용(Q1)·고전력밀도·1.5W.',
+        func: 'IGBT/SiC/GaN 게이트 드라이버에 필요한 절연 "양·음 바이어스"(예: +15V / −4V) 공급. 1차 12V 입력(VIN/GNDP), 2차는 VDD−COM과 COM−VEE 두 계통을 각각 피드백(FBVDD/FBVEE)으로 설정; BSW에 인덕터를 연결해 buck-boost로 음 레일 생성; ENA 인에이블(UVLO 설정 가능)·PG 준비 표시. 1차-2차 전기 절연.',
+        usedIn: 'IGBT/SiC/GaN 게이트 드라이버의 절연 양·음 바이어스, 모터 드라이브/인버터/차량 탑재 충전기 게이트 전원, ± 바이어스가 필요한 절연 공급.',
+        desc: '1.5W·12Vin→25Vout 통합 절연 바이어스 전원. 2차 측에 양·음 바이어스 생성, 게이트 드라이버용(16-SSOP(DHA), 차량용). (패키지는 datasheet Figure 5-1 "DHA Package, 16-Pin SSOP" 기준; 열저항 표는 DHA (SOIC) 표기로 모순, 그림 우선. 구 등록 QFN-16 오기는 2026-07-10 수정됨)',
+        specs: [
+          { k: '기능', v: '통합 절연 바이어스 전원(양·음 바이어스 생성)' },
+          { k: '입력', v: '12 V(VIN)' },
+          { k: '출력', v: '약 25 V(VDD와 VEE 2계통, 각각 피드백 설정)' },
+          { k: '전력', v: '1.5 W' },
+          { k: '절연', v: '1차-2차 전기 절연' },
+          { k: '토폴로지', v: '내부 buck-boost(BSW+인덕터로 음 레일 생성)' },
+          { k: '피드백', v: 'FBVDD로 VDD−COM, FBVEE로 COM−VEE (2~8V)' },
+          { k: '표시/인에이블', v: 'PG 준비, ENA(UVLO 설정 가능)' },
+          { k: '인증', v: '차량용 AEC-Q100 (Q1)' },
+          { k: '패키지', v: 'QFN-16' }
+        ]
+      }
+    },
+    'TMAG6184': {
+      en: {
+        subcategory: 'AMR 360° angle sensor (amplified analog SIN/COS output)',
+        whatIs: 'High-precision 360° angle sensor: senses the angle of a rotating magnet via anisotropic magnetoresistance (AMR), outputting amplified differential SIN/COS analog signals plus digital quadrant bits (Q0/Q1); the absolute angle is computed externally with atan2.',
+        func: 'Contactless absolute-angle measurement (0–360°) of a rotating magnet: differential SIN_P/N, COS_P/N feed an ADC for arctangent angle computation; open-drain Q0/Q1 give a fast coarse quadrant. Immune to dust/oil, reliable.',
+        usedIn: 'BLDC rotor position/FOC commutation, steering-angle sensing, throttle/pedal position, rotary knobs.',
+        desc: 'High-precision AMR 360° angle sensor, amplified differential SIN/COS analog + quadrant digital outputs (SOIC-8).',
+        specs: [
+          { k: 'Function', v: 'AMR 360° absolute angle sensor' },
+          { k: 'Principle', v: 'anisotropic magnetoresistance (AMR)' },
+          { k: 'Output', v: 'amplified differential SIN/COS analog + Q0/Q1 quadrant (open-drain)' },
+          { k: 'Range', v: '0 – 360°' },
+          { k: 'Supply', v: 'single VCC' },
+          { k: 'Highlights', v: 'contactless, dust/oil immune' },
+          { k: 'Package', v: 'SOIC-8' }
+        ]
+      },
+      ja: {
+        subcategory: 'AMR 360° 角度センサ（増幅アナログ SIN/COS 出力）',
+        whatIs: '高精度 360° 角度センサ：異方性磁気抵抗（AMR）で回転磁石の角度を検出し、増幅済みの「差動 SIN/COS アナログ信号」とデジタル象限ビット（Q0/Q1）を出力、外部で atan2 により絶対角を算出。',
+        func: '回転磁石の絶対角（0~360°）を非接触計測：差動 SIN_P/N、COS_P/N を ADC に入れ逆正接で角度算出；Q0/Q1 オープンドレインで高速に象限を粗判定。粉塵/油汚れに強く高信頼。',
+        usedIn: 'ブラシレスモータ（BLDC）ロータ位置/FOC 転流、ステアリング角検出、スロットル/ペダル位置、ロータリノブ。',
+        desc: '高精度 AMR 360° 角度センサ。増幅差動 SIN/COS アナログ＋象限デジタル出力（SOIC-8）。',
+        specs: [
+          { k: '機能', v: 'AMR 360° 絶対角度センサ' },
+          { k: '検出原理', v: '異方性磁気抵抗 (AMR)' },
+          { k: '出力', v: '増幅差動 SIN/COS アナログ＋Q0/Q1 象限デジタル（オープンドレイン）' },
+          { k: '計測範囲', v: '0 ~ 360°' },
+          { k: '電源', v: '単一 VCC' },
+          { k: '特長', v: '非接触、粉塵/油汚れ耐性' },
+          { k: 'パッケージ', v: 'SOIC-8' }
+        ]
+      },
+      ko: {
+        subcategory: 'AMR 360° 각도 센서(증폭 아날로그 SIN/COS 출력)',
+        whatIs: '고정밀 360° 각도 센서: 이방성 자기저항(AMR)으로 회전 자석의 각도를 감지, 증폭된 "차동 SIN/COS 아날로그 신호"와 디지털 사분면 비트(Q0/Q1)를 출력, 외부에서 atan2로 절대각 계산.',
+        func: '회전 자석의 절대각(0~360°)을 비접촉 계측: 차동 SIN_P/N, COS_P/N을 ADC에 넣어 아크탄젠트로 각도 산출; Q0/Q1 오픈 드레인으로 빠른 사분면 대략 판정. 먼지/유분에 강하고 신뢰성 높음.',
+        usedIn: '브러시리스 모터(BLDC) 로터 위치/FOC 전환, 조향각 감지, 스로틀/페달 위치, 로터리 노브.',
+        desc: '고정밀 AMR 360° 각도 센서. 증폭 차동 SIN/COS 아날로그+사분면 디지털 출력(SOIC-8).',
+        specs: [
+          { k: '기능', v: 'AMR 360° 절대 각도 센서' },
+          { k: '감지 원리', v: '이방성 자기저항(AMR)' },
+          { k: '출력', v: '증폭 차동 SIN/COS 아날로그+Q0/Q1 사분면 디지털(오픈 드레인)' },
+          { k: '계측 범위', v: '0 ~ 360°' },
+          { k: '전원', v: '단일 VCC' },
+          { k: '특징', v: '비접촉, 먼지/유분 내성' },
+          { k: '패키지', v: 'SOIC-8' }
+        ]
+      }
+    },
+    'TMP4719': {
+      en: {
+        subcategory: '3-channel temperature sensor (2 remote + 1 local, SMBus)',
+        whatIs: "High-accuracy 3-channel temperature sensor: measures 'remote hot spots' (CPU/GPU/power-device junctions) via the temperature dependence of an external transistor/diode VBE — 2 remote channels plus 1 local, reported over SMBus. 1.2V-logic compatible.",
+        func: 'Measures 3 temperatures (2 external diode/BJT remotes + on-chip local); on over-temperature, open-drain T_CRIT / ALERT outputs trigger interrupts or shutdown protection; SMBus (SCL/SDA) reads temperatures and sets thresholds. High accuracy.',
+        usedIn: 'CPU/GPU/FPGA/SoC hot-spot sensing and thermal management, server/power-module monitoring, system over-temperature protection.',
+        desc: 'High-accuracy 3-channel (2 remote + 1 local) temperature sensor, SMBus, T_CRIT/ALERT protection outputs (VSSOP/WSON-10).',
+        specs: [
+          { k: 'Function', v: '3-channel temperature sensing (2 remote + 1 local)' },
+          { k: 'Remote method', v: 'VBE of external diode/BJT' },
+          { k: 'Interface', v: 'SMBus (SCL/SDA), 1.2V-logic compatible' },
+          { k: 'Protection outputs', v: 'ALERT + T_CRIT (open-drain, need pull-ups)' },
+          { k: 'Supply', v: 'single VDD (0.1µF decoupling)' },
+          { k: 'Package', v: 'VSSOP-10 / WSON-10' }
+        ],
+        dropIn: [{ note: 'Automotive version, same VSSOP/WSON-10 pinout' }]
+      },
+      ja: {
+        subcategory: '3ch 温度センサ（リモート 2＋ローカル 1・SMBus）',
+        whatIs: '高精度 3 チャネル温度センサ：外付けトランジスタ/ダイオードの VBE 温度依存性で「リモート熱点」（CPU/GPU/パワー素子の接合部）を計測——リモート 2＋ローカル 1、SMBus で報告。1.2V ロジック対応。',
+        func: '3 点の温度を計測（外付け diode/BJT リモート 2＋チップローカル 1）；過熱時は T_CRIT / ALERT オープンドレイン出力で割り込みや遮断保護をトリガ；SMBus（SCL/SDA）で温度読み出しとしきい値設定。高精度。',
+        usedIn: 'CPU/GPU/FPGA/SoC 熱点計測と熱管理、サーバ/パワーモジュール温度監視、システム過熱保護。',
+        desc: '高精度 3ch（リモート 2＋ローカル 1）温度センサ。SMBus・T_CRIT/ALERT 保護出力（VSSOP/WSON-10）。',
+        specs: [
+          { k: '機能', v: '3ch 温度計測（リモート 2＋ローカル 1）' },
+          { k: 'リモート計測', v: '外付け diode/BJT の VBE 法' },
+          { k: 'インタフェース', v: 'SMBus（SCL/SDA）、1.2V ロジック対応' },
+          { k: '保護出力', v: 'ALERT＋T_CRIT（オープンドレイン、プルアップ必須）' },
+          { k: '電源', v: '単一 VDD（0.1µF デカップリング）' },
+          { k: 'パッケージ', v: 'VSSOP-10 / WSON-10' }
+        ],
+        dropIn: [{ note: '車載版・同 VSSOP/WSON-10 ピン配置同一' }]
+      },
+      ko: {
+        subcategory: '3채널 온도 센서(원격 2+로컬 1·SMBus)',
+        whatIs: '고정밀 3채널 온도 센서: 외장 트랜지스터/다이오드의 VBE 온도 의존성으로 "원격 핫스팟"(CPU/GPU/전력 소자 접합부)을 계측 - 원격 2+로컬 1, SMBus로 보고. 1.2V 로직 호환.',
+        func: '3점 온도 계측(외장 diode/BJT 원격 2+칩 로컬 1); 과열 시 T_CRIT / ALERT 오픈 드레인 출력으로 인터럽트나 차단 보호 트리거; SMBus(SCL/SDA)로 온도 읽기와 문턱 설정. 고정밀.',
+        usedIn: 'CPU/GPU/FPGA/SoC 핫스팟 계측과 열 관리, 서버/전력 모듈 온도 감시, 시스템 과열 보호.',
+        desc: '고정밀 3채널(원격 2+로컬 1) 온도 센서. SMBus·T_CRIT/ALERT 보호 출력(VSSOP/WSON-10).',
+        specs: [
+          { k: '기능', v: '3채널 온도 계측(원격 2+로컬 1)' },
+          { k: '원격 계측', v: '외장 diode/BJT의 VBE 법' },
+          { k: '인터페이스', v: 'SMBus(SCL/SDA), 1.2V 로직 호환' },
+          { k: '보호 출력', v: 'ALERT + T_CRIT(오픈 드레인, 풀업 필수)' },
+          { k: '전원', v: '단일 VDD(0.1µF 디커플링)' },
+          { k: '패키지', v: 'VSSOP-10 / WSON-10' }
+        ],
+        dropIn: [{ note: '차량용 버전·동일 VSSOP/WSON-10 핀 배치' }]
+      }
+    },
+    'TMP4719-Q1': {
+      en: {
+        subcategory: '3-channel temperature sensor (2 remote + 1 local, SMBus, automotive)',
+        whatIs: 'High-accuracy 3-channel temperature sensor (automotive Q1): measures 2 remote (external diode/BJT) + 1 local temperature, reported over SMBus. Same pinout as TMP4719 plus automotive qualification.',
+        func: 'Same as TMP4719: 3-point temperature sensing, T_CRIT/ALERT over-temp protection, SMBus reads and thresholds. AEC-Q100 qualified.',
+        usedIn: 'Automotive SoC/power-module hot-spot sensing and thermal management, in-vehicle over-temperature protection.',
+        desc: 'Automotive high-accuracy 3-channel temperature sensor, SMBus, T_CRIT/ALERT (same pinout as TMP4719, VSSOP/WSON-10).',
+        specs: [
+          { k: 'Function', v: '3-channel temperature sensing (2 remote + 1 local)' },
+          { k: 'Interface', v: 'SMBus (SCL/SDA)' },
+          { k: 'Protection outputs', v: 'ALERT + T_CRIT (open-drain)' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100 (Q1)' },
+          { k: 'Supply', v: 'single VDD' },
+          { k: 'Package', v: 'VSSOP-10 / WSON-10' }
+        ],
+        dropIn: [{ note: 'Same VSSOP/WSON-10 pinout (non-automotive version)' }]
+      },
+      ja: {
+        subcategory: '3ch 温度センサ（リモート 2＋ローカル 1・SMBus・車載）',
+        whatIs: '高精度 3 チャネル温度センサ（車載 Q1）：リモート 2（外付け diode/BJT）＋ローカル 1 の温度を計測し SMBus で報告。TMP4719 とピン互換＋車載認証。',
+        func: 'TMP4719 と同じ：3 点計測、T_CRIT/ALERT 過熱保護、SMBus 読み出し/しきい値設定。車載 AEC-Q100。',
+        usedIn: '車載 SoC/パワーモジュールの熱点計測と熱管理、車載過熱保護。',
+        desc: '車載高精度 3ch 温度センサ。SMBus・T_CRIT/ALERT（TMP4719 とピン互換、VSSOP/WSON-10）。',
+        specs: [
+          { k: '機能', v: '3ch 温度計測（リモート 2＋ローカル 1）' },
+          { k: 'インタフェース', v: 'SMBus（SCL/SDA）' },
+          { k: '保護出力', v: 'ALERT＋T_CRIT（オープンドレイン）' },
+          { k: '認証', v: '車載 AEC-Q100 (Q1)' },
+          { k: '電源', v: '単一 VDD' },
+          { k: 'パッケージ', v: 'VSSOP-10 / WSON-10' }
+        ],
+        dropIn: [{ note: '同 VSSOP/WSON-10 ピン配置同一（非車載版）' }]
+      },
+      ko: {
+        subcategory: '3채널 온도 센서(원격 2+로컬 1·SMBus·차량용)',
+        whatIs: '고정밀 3채널 온도 센서(차량용 Q1): 원격 2(외장 diode/BJT)+로컬 1 온도를 계측, SMBus로 보고. TMP4719와 핀 호환+차량 인증.',
+        func: 'TMP4719와 동일: 3점 계측, T_CRIT/ALERT 과열 보호, SMBus 읽기/문턱 설정. 차량용 AEC-Q100.',
+        usedIn: '차량 SoC/전력 모듈 핫스팟 계측과 열 관리, 차량 내 과열 보호.',
+        desc: '차량용 고정밀 3채널 온도 센서. SMBus·T_CRIT/ALERT(TMP4719와 핀 호환, VSSOP/WSON-10).',
+        specs: [
+          { k: '기능', v: '3채널 온도 계측(원격 2+로컬 1)' },
+          { k: '인터페이스', v: 'SMBus(SCL/SDA)' },
+          { k: '보호 출력', v: 'ALERT + T_CRIT(오픈 드레인)' },
+          { k: '인증', v: '차량용 AEC-Q100 (Q1)' },
+          { k: '전원', v: '단일 VDD' },
+          { k: '패키지', v: 'VSSOP-10 / WSON-10' }
+        ],
+        dropIn: [{ note: '동일 VSSOP/WSON-10 핀 배치(비차량용 버전)' }]
+      }
+    },
+    'MUX808-Q1': {
+      en: {
+        subcategory: 'Single 8:1 analog multiplexer (100V, automotive)',
+        whatIs: 'High-voltage analog multiplexer (8-to-1): routes one of 8 analog/digital signals to a single common terminal D (bidirectional — usable as mux or demux). Up to 100V supply, 1.8V logic control, automotive.',
+        func: 'Address lines A0/A1/A2 select which of S1–S8 connects to D; EN high enables (low turns all off, high-impedance). Bidirectional signal path, break-before-make to avoid shorts; fail-safe logic (logic pins tolerate up to 48V above supply without damage), latch-up immune, low crosstalk −110dB. A solid-state replacement for mechanical switches/relays.',
+        usedIn: 'Body control modules (BCM), LIDAR, zone control (ZCU), HEV/EV battery management (BMS), ADAS, EV charging, automotive telematics/infotainment.',
+        desc: 'Automotive 100V single 8:1 analog mux, flat RON, latch-up immune, 1.8V logic, break-before-make (TSSOP/WQFN-16).',
+        specs: [
+          { k: 'Function', v: 'Single 8:1 analog multiplexer (bidirectional)' },
+          { k: 'Address lines', v: 'A0/A1/A2 (3-bit select) + EN' },
+          { k: 'Single supply', v: '10 – 100 V' },
+          { k: 'Dual supply', v: '±10 – ±50 V (asymmetric allowed)' },
+          { k: 'RON', v: 'flat RON (value per datasheet)' },
+          { k: 'Crosstalk', v: '−110 dB' },
+          { k: 'Logic level', v: '1.8V compatible; logic pins have built-in pull-downs' },
+          { k: 'Fail-safe logic', v: 'logic pins tolerate up to 48V above supply' },
+          { k: 'Switching', v: 'break-before-make, latch-up immune, bidirectional' },
+          { k: 'Qualification', v: 'AEC-Q100 grade 1 (−40–125°C)' },
+          { k: 'Package', v: 'TSSOP-16 (PW) / WQFN-16 (RUM, thermal pad to GND/VSS recommended)' }
+        ],
+        dropIn: [{ note: 'Same PW TSSOP-16 pinout (single 8:1); but the 708 is the 44V/±22V, RON 4Ω lower-voltage version — verify supply and specs' }]
+      },
+      ja: {
+        subcategory: '1 回路 8:1 アナログマルチプレクサ（100V・車載）',
+        whatIs: '高圧アナログマルチプレクサ（8 選 1）：8 系統のアナログ/デジタル信号のうち 1 系統を共通端子 D へ選択接続（双方向、mux/demux 両用）。最大 100V 電源・1.8V ロジック制御・車載。',
+        func: 'アドレス線 A0/A1/A2 で S1~S8 のどれを D に接続するか選択；EN ハイで有効（ローで全オフ・ハイインピーダンス）。双方向信号経路・ブレークビフォアメーク（短絡防止）；フェイルセーフロジック（ロジックピンは電源より 48V 高くても破損しない）・ラッチアップ免疫・低クロストーク −110dB。機械スイッチ/リレーの固体置換。',
+        usedIn: 'ボディ制御モジュール（BCM）、LIDAR、ゾーン制御（ZCU）、HEV/EV バッテリ管理（BMS）、ADAS、EV 充電、車載テレマティクス/インフォテインメント。',
+        desc: '車載 100V 1 回路 8:1 アナログ mux。フラット RON・ラッチアップ免疫・1.8V ロジック・ブレークビフォアメーク（TSSOP/WQFN-16）。',
+        specs: [
+          { k: '機能', v: '1 回路 8:1 アナログマルチプレクサ（双方向）' },
+          { k: 'アドレス線', v: 'A0/A1/A2（3 ビット選択）＋EN' },
+          { k: '単電源範囲', v: '10 ~ 100 V' },
+          { k: '両電源範囲', v: '±10 ~ ±50 V（非対称可）' },
+          { k: 'RON', v: 'フラット RON（値は datasheet 参照）' },
+          { k: 'クロストーク', v: '−110 dB' },
+          { k: 'ロジックレベル', v: '1.8V 対応；ロジックピンに内蔵プルダウン' },
+          { k: 'フェイルセーフロジック', v: 'ロジック電圧は電源＋48V まで許容' },
+          { k: 'スイッチ動作', v: 'ブレークビフォアメーク・ラッチアップ免疫・双方向' },
+          { k: '認証', v: '車載 AEC-Q100 grade 1（−40~125°C）' },
+          { k: 'パッケージ', v: 'TSSOP-16 (PW) / WQFN-16 (RUM、サーマルパッドは GND/VSS 推奨)' }
+        ],
+        dropIn: [{ note: '同 PW TSSOP-16 ピン配置同一（1 回路 8:1）；ただし 708 は 44V/±22V・RON 4Ω の低圧版、電源と仕様の適合を確認' }]
+      },
+      ko: {
+        subcategory: '단일 8:1 아날로그 멀티플렉서(100V·차량용)',
+        whatIs: '고압 아날로그 멀티플렉서(8선 1): 8계통 아날로그/디지털 신호 중 1계통을 공용 단자 D로 선택 연결(양방향, mux/demux 겸용). 최대 100V 전원·1.8V 로직 제어·차량용.',
+        func: '주소선 A0/A1/A2로 S1~S8 중 어느 것을 D에 연결할지 선택; EN 하이로 활성(로우면 전부 오프·고임피던스). 양방향 신호 경로·브레이크 비포 메이크(단락 방지); 페일세이프 로직(로직 핀은 전원보다 48V 높아도 손상 없음)·래치업 면역·저 누화 −110dB. 기계 스위치/릴레이의 고체 대체.',
+        usedIn: '바디 제어 모듈(BCM), LIDAR, 존 제어(ZCU), HEV/EV 배터리 관리(BMS), ADAS, EV 충전, 차량 텔레매틱스/인포테인먼트.',
+        desc: '차량용 100V 단일 8:1 아날로그 mux. 플랫 RON·래치업 면역·1.8V 로직·브레이크 비포 메이크(TSSOP/WQFN-16).',
+        specs: [
+          { k: '기능', v: '단일 8:1 아날로그 멀티플렉서(양방향)' },
+          { k: '주소선', v: 'A0/A1/A2(3비트 선택) + EN' },
+          { k: '단일 전원', v: '10 ~ 100 V' },
+          { k: '이중 전원', v: '±10 ~ ±50 V(비대칭 가능)' },
+          { k: 'RON', v: '플랫 RON(값은 datasheet 참조)' },
+          { k: '누화', v: '−110 dB' },
+          { k: '로직 레벨', v: '1.8V 호환; 로직 핀 내장 풀다운' },
+          { k: '페일세이프 로직', v: '로직 전압은 전원+48V까지 허용' },
+          { k: '스위칭', v: '브레이크 비포 메이크·래치업 면역·양방향' },
+          { k: '인증', v: '차량용 AEC-Q100 grade 1(−40~125°C)' },
+          { k: '패키지', v: 'TSSOP-16 (PW) / WQFN-16 (RUM, 서멀 패드 GND/VSS 권장)' }
+        ],
+        dropIn: [{ note: '동일 PW TSSOP-16 핀 배치(단일 8:1); 단 708은 44V/±22V·RON 4Ω 저압판, 전원과 사양 적합 확인' }]
+      }
+    },
+    'MUX708-Q1': {
+      en: {
+        subcategory: 'Single 8:1 analog multiplexer (44V, low RON, automotive)',
+        whatIs: 'Automotive analog multiplexer (8-to-1): routes one of 8 signals to the common terminal D (bidirectional). 44V supply, low 4Ω on-resistance, 1.8V logic control. Same pinout as MUX808-Q1 (lower-voltage version).',
+        func: 'A0/A1/A2 select which of S1–S8 connects to D; EN high enables (low turns all off, Hi-Z). Low 4Ω RON, low 3pC charge injection, bidirectional, break-before-make, latch-up immune, fail-safe logic, rail-to-rail. High current: 400mA (WQFN) / 300mA (TSSOP).',
+        usedIn: 'Body control modules (BCM), LIDAR, zone control (ZCU), HEV/EV BMS, ADAS, analog/digital mux-demux, EV charging, telematics/infotainment.',
+        desc: 'Automotive 44V single 8:1 analog mux, low 4Ω RON, low 3pC charge injection, 1.8V logic, break-before-make (TSSOP/WQFN-16).',
+        specs: [
+          { k: 'Function', v: 'Single 8:1 analog multiplexer (bidirectional)' },
+          { k: 'Address lines', v: 'A0/A1/A2 (3-bit select) + EN' },
+          { k: 'Single supply', v: '4.5 – 44 V' },
+          { k: 'Dual supply', v: '±4.5 – ±22 V' },
+          { k: 'RON', v: '4 Ω (low)' },
+          { k: 'Charge injection', v: '3 pC' },
+          { k: 'High current', v: '400mA (WQFN max) / 300mA (TSSOP max)' },
+          { k: 'Logic level', v: '1.8V compatible; logic pins have built-in pull-downs' },
+          { k: 'Switching', v: 'break-before-make, latch-up immune, rail-to-rail, bidirectional, fail-safe logic' },
+          { k: 'Qualification', v: 'AEC-Q100 grade 1 (−40–125°C)' },
+          { k: 'Package', v: 'TSSOP-16 (PW) / WQFN-16 (RUM, thermal pad to GND/VSS recommended)' }
+        ],
+        dropIn: [{ note: 'Same PW TSSOP-16 pinout (single 8:1); the 808 is the 100V/±50V high-voltage version (upgrade path — verify RON/current specs)' }]
+      },
+      ja: {
+        subcategory: '1 回路 8:1 アナログマルチプレクサ（44V・低 RON・車載）',
+        whatIs: '車載アナログマルチプレクサ（8 選 1）：8 系統の信号から 1 系統を共通端子 D へ（双方向）。44V 電源・低オン抵抗 4Ω・1.8V ロジック制御。MUX808-Q1 とピン互換（低圧版）。',
+        func: 'A0/A1/A2 で S1~S8 の 1 系統を D へ接続；EN ハイで有効（ローで全オフ・ハイインピーダンス）。低 RON 4Ω・低電荷注入 3pC・双方向・ブレークビフォアメーク・ラッチアップ免疫・フェイルセーフロジック・レールツーレール。大電流対応 400mA(WQFN)/300mA(TSSOP)。',
+        usedIn: 'ボディ制御モジュール（BCM）、LIDAR、ゾーン制御（ZCU）、HEV/EV バッテリ管理（BMS）、ADAS、アナログ/デジタル mux-demux、EV 充電、車載テレマティクス/インフォテインメント。',
+        desc: '車載 44V 1 回路 8:1 アナログ mux。低 RON 4Ω・低電荷注入 3pC・1.8V ロジック・ブレークビフォアメーク（TSSOP/WQFN-16）。',
+        specs: [
+          { k: '機能', v: '1 回路 8:1 アナログマルチプレクサ（双方向）' },
+          { k: 'アドレス線', v: 'A0/A1/A2（3 ビット選択）＋EN' },
+          { k: '単電源範囲', v: '4.5 ~ 44 V' },
+          { k: '両電源範囲', v: '±4.5 ~ ±22 V' },
+          { k: 'RON', v: '4 Ω（低）' },
+          { k: '電荷注入', v: '3 pC' },
+          { k: '大電流', v: '400mA(WQFN max) / 300mA(TSSOP max)' },
+          { k: 'ロジックレベル', v: '1.8V 対応；ロジックピンに内蔵プルダウン' },
+          { k: 'スイッチ動作', v: 'ブレークビフォアメーク・ラッチアップ免疫・レールツーレール・双方向・フェイルセーフロジック' },
+          { k: '認証', v: '車載 AEC-Q100 grade 1（−40~125°C）' },
+          { k: 'パッケージ', v: 'TSSOP-16 (PW) / WQFN-16 (RUM、サーマルパッドは GND/VSS 推奨)' }
+        ],
+        dropIn: [{ note: '同 PW TSSOP-16 ピン配置同一（1 回路 8:1）；808 は 100V/±50V 高圧版（アップグレード用、RON/電流仕様を確認）' }]
+      },
+      ko: {
+        subcategory: '단일 8:1 아날로그 멀티플렉서(44V·저 RON·차량용)',
+        whatIs: '차량용 아날로그 멀티플렉서(8선 1): 8계통 신호 중 1계통을 공용 단자 D로(양방향). 44V 전원·낮은 온저항 4Ω·1.8V 로직 제어. MUX808-Q1과 핀 호환(저압판).',
+        func: 'A0/A1/A2로 S1~S8 중 1계통을 D에 연결; EN 하이로 활성(로우면 전부 오프·Hi-Z). 저 RON 4Ω·저 전하 주입 3pC·양방향·브레이크 비포 메이크·래치업 면역·페일세이프 로직·레일투레일. 대전류 400mA(WQFN)/300mA(TSSOP).',
+        usedIn: '바디 제어 모듈(BCM), LIDAR, 존 제어(ZCU), HEV/EV BMS, ADAS, 아날로그/디지털 mux-demux, EV 충전, 텔레매틱스/인포테인먼트.',
+        desc: '차량용 44V 단일 8:1 아날로그 mux. 저 RON 4Ω·저 전하 주입 3pC·1.8V 로직·브레이크 비포 메이크(TSSOP/WQFN-16).',
+        specs: [
+          { k: '기능', v: '단일 8:1 아날로그 멀티플렉서(양방향)' },
+          { k: '주소선', v: 'A0/A1/A2(3비트 선택) + EN' },
+          { k: '단일 전원', v: '4.5 ~ 44 V' },
+          { k: '이중 전원', v: '±4.5 ~ ±22 V' },
+          { k: 'RON', v: '4 Ω(낮음)' },
+          { k: '전하 주입', v: '3 pC' },
+          { k: '대전류', v: '400mA(WQFN max) / 300mA(TSSOP max)' },
+          { k: '로직 레벨', v: '1.8V 호환; 로직 핀 내장 풀다운' },
+          { k: '스위칭', v: '브레이크 비포 메이크·래치업 면역·레일투레일·양방향·페일세이프 로직' },
+          { k: '인증', v: '차량용 AEC-Q100 grade 1(−40~125°C)' },
+          { k: '패키지', v: 'TSSOP-16 (PW) / WQFN-16 (RUM, 서멀 패드 GND/VSS 권장)' }
+        ],
+        dropIn: [{ note: '동일 PW TSSOP-16 핀 배치(단일 8:1); 808은 100V/±50V 고압판(업그레이드용, RON/전류 사양 확인)' }]
+      }
+    },
+    'MUX809-Q1': {
+      en: {
+        subcategory: 'Dual 4:1 differential analog multiplexer (100V, automotive)',
+        whatIs: 'High-voltage differential analog multiplexer (dual 4-to-1): two banks of 4 signals each route one channel to DA / DB, both banks sharing the same address lines — suited to differential/two-wire signal selection. Up to 100V, 1.8V logic, automotive.',
+        func: 'A0/A1 simultaneously select the same-numbered channel in bank A (S1A–S4A→DA) and bank B (S1B–S4B→DB); EN high enables (low = all off, Hi-Z). Bidirectional, break-before-make, latch-up immune, fail-safe logic, low crosstalk. Same family/package as MUX808-Q1 but configured as dual 4:1 (different pin names/assignments — not pin-to-pin).',
+        usedIn: 'Differential signal muxing, BCM, LIDAR, ZCU, HEV/EV BMS, ADAS, EV charging, telematics/infotainment.',
+        desc: 'Automotive 100V dual 4:1 differential analog mux, flat RON, latch-up immune, 1.8V logic, break-before-make (TSSOP/WQFN-16).',
+        specs: [
+          { k: 'Function', v: 'Dual 4:1 differential analog multiplexer (bidirectional)' },
+          { k: 'Address lines', v: 'A0/A1 (2-bit select, shared by both banks) + EN' },
+          { k: 'Single supply', v: '10 – 100 V' },
+          { k: 'Dual supply', v: '±10 – ±50 V (asymmetric allowed)' },
+          { k: 'RON', v: 'flat RON (value per datasheet)' },
+          { k: 'Crosstalk', v: '−110 dB' },
+          { k: 'Logic level', v: '1.8V compatible; logic pins have built-in pull-downs' },
+          { k: 'Fail-safe logic', v: 'logic pins tolerate up to 48V above supply' },
+          { k: 'Switching', v: 'break-before-make, latch-up immune, bidirectional' },
+          { k: 'Qualification', v: 'AEC-Q100 grade 1 (−40–125°C)' },
+          { k: 'Package', v: 'TSSOP-16 (PW) / WQFN-16 (RUM, thermal pad to GND/VSS recommended)' }
+        ]
+      },
+      ja: {
+        subcategory: '2 回路 4:1 差動アナログマルチプレクサ（100V・車載）',
+        whatIs: '高圧差動アナログマルチプレクサ（デュアル 4 選 1）：各 4 系統の 2 バンクからそれぞれ 1 系統を DA / DB へ選択、両バンクは同一アドレス線を共有→差動/2 線信号の選択に好適。最大 100V・1.8V ロジック・車載。',
+        func: 'A0/A1 で A バンク（S1A~S4A→DA）と B バンク（S1B~S4B→DB）の同番号チャネルを同時選択；EN ハイで有効（ローで全オフ・ハイインピーダンス）。双方向・ブレークビフォアメーク・ラッチアップ免疫・フェイルセーフロジック・低クロストーク。MUX808-Q1 と同シリーズ・同パッケージだが構成はデュアル 4:1（ピン名/割当が異なり pin-to-pin ではない）。',
+        usedIn: '差動信号の多重化、BCM、LIDAR、ZCU、HEV/EV BMS、ADAS、EV 充電、車載テレマティクス/インフォテインメント。',
+        desc: '車載 100V 2 回路 4:1 差動アナログ mux。フラット RON・ラッチアップ免疫・1.8V ロジック・ブレークビフォアメーク（TSSOP/WQFN-16）。',
+        specs: [
+          { k: '機能', v: '2 回路 4:1 差動アナログマルチプレクサ（双方向）' },
+          { k: 'アドレス線', v: 'A0/A1（2 ビット選択、両バンク共有）＋EN' },
+          { k: '単電源範囲', v: '10 ~ 100 V' },
+          { k: '両電源範囲', v: '±10 ~ ±50 V（非対称可）' },
+          { k: 'RON', v: 'フラット RON（値は datasheet 参照）' },
+          { k: 'クロストーク', v: '−110 dB' },
+          { k: 'ロジックレベル', v: '1.8V 対応；ロジックピンに内蔵プルダウン' },
+          { k: 'フェイルセーフロジック', v: 'ロジック電圧は電源＋48V まで許容' },
+          { k: 'スイッチ動作', v: 'ブレークビフォアメーク・ラッチアップ免疫・双方向' },
+          { k: '認証', v: '車載 AEC-Q100 grade 1（−40~125°C）' },
+          { k: 'パッケージ', v: 'TSSOP-16 (PW) / WQFN-16 (RUM、サーマルパッドは GND/VSS 推奨)' }
+        ]
+      },
+      ko: {
+        subcategory: '듀얼 4:1 차동 아날로그 멀티플렉서(100V·차량용)',
+        whatIs: '고압 차동 아날로그 멀티플렉서(듀얼 4선 1): 각 4계통 2뱅크에서 각각 1계통을 DA / DB로 선택, 두 뱅크는 같은 주소선을 공유 → 차동/2선 신호 선택에 적합. 최대 100V·1.8V 로직·차량용.',
+        func: 'A0/A1로 A뱅크(S1A~S4A→DA)와 B뱅크(S1B~S4B→DB)의 같은 번호 채널을 동시 선택; EN 하이로 활성(로우면 전부 오프·Hi-Z). 양방향·브레이크 비포 메이크·래치업 면역·페일세이프 로직·저 누화. MUX808-Q1과 같은 시리즈·패키지지만 구성이 듀얼 4:1(핀 이름/배치가 달라 pin-to-pin 아님).',
+        usedIn: '차동 신호 다중화, BCM, LIDAR, ZCU, HEV/EV BMS, ADAS, EV 충전, 텔레매틱스/인포테인먼트.',
+        desc: '차량용 100V 듀얼 4:1 차동 아날로그 mux. 플랫 RON·래치업 면역·1.8V 로직·브레이크 비포 메이크(TSSOP/WQFN-16).',
+        specs: [
+          { k: '기능', v: '듀얼 4:1 차동 아날로그 멀티플렉서(양방향)' },
+          { k: '주소선', v: 'A0/A1(2비트 선택, 두 뱅크 공유) + EN' },
+          { k: '단일 전원', v: '10 ~ 100 V' },
+          { k: '이중 전원', v: '±10 ~ ±50 V(비대칭 가능)' },
+          { k: 'RON', v: '플랫 RON(값은 datasheet 참조)' },
+          { k: '누화', v: '−110 dB' },
+          { k: '로직 레벨', v: '1.8V 호환; 로직 핀 내장 풀다운' },
+          { k: '페일세이프 로직', v: '로직 전압은 전원+48V까지 허용' },
+          { k: '스위칭', v: '브레이크 비포 메이크·래치업 면역·양방향' },
+          { k: '인증', v: '차량용 AEC-Q100 grade 1(−40~125°C)' },
+          { k: '패키지', v: 'TSSOP-16 (PW) / WQFN-16 (RUM, 서멀 패드 GND/VSS 권장)' }
+        ]
+      }
+    },
+    'SN74CBTLV3126-Q1': {
+      en: {
+        subcategory: 'Quad FET bus switch (low voltage, automotive)',
+        whatIs: "Quad FET bus switch: 4 independent low-resistance FET channels, each with its own OE controlling whether A↔B conducts. When on, it is a near-zero-drop pass-through (not a logic gate — just an electronic switch), passing bus signals bidirectionally.",
+        func: 'Each channel has 1A/1B terminals and an independent OE (active-high): OE high connects A↔B (low RON), OE low disconnects (Hi-Z). No logic, no amplification — purely connect/disconnect for buses or signal isolation. Low-voltage ≤5V, automotive.',
+        usedIn: 'Bus isolation/sharing (memory, SPI/I2C multi-master switching), signal muxing, hot-plug isolation, low-voltage signal routing.',
+        desc: 'Automotive quad FET bus switch, independent OE (active-high), low RON, bidirectional pass-through (TSSOP/SOT-14).',
+        specs: [
+          { k: 'Function', v: 'Quad FET bus switch (bidirectional pass-through, not a logic gate)' },
+          { k: 'Enable', v: 'independent OE per channel, active-high' },
+          { k: 'Channels', v: '4 (1A/1B – 4A/4B)' },
+          { k: 'Conduction', v: 'low-RON FET pass-through, near-zero drop' },
+          { k: 'Supply', v: 'low voltage (CBTLV family, ≤5V; range per datasheet)' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'TSSOP-14 (PW) / SOT-14 (DYY); thermal pad solder-optional — float or tie to GND' }
+        ]
+      },
+      ja: {
+        subcategory: '4 回路 FET バススイッチ（低電圧・車載）',
+        whatIs: '4 回路 FET バススイッチ：4 個の独立した低抵抗 FET チャネル、各々 OE で A↔B の導通を制御。導通時はほぼゼロ電圧降下の直通（論理ゲートではなく「電子スイッチ」）、バス信号を双方向に伝達。',
+        func: '各チャネルに 1A/1B 両端と独立 OE（ハイで導通）：OE ハイで A↔B 直通（低 RON）、ローで遮断（ハイインピーダンス）。論理演算も増幅もせず「接続/切断」だけを担い、バスや信号の絶縁に使う。低電圧 5V 以下・車載。',
+        usedIn: 'バス絶縁/共有（メモリ、SPI/I2C マルチマスタ切替）、信号多重化、ホットプラグ絶縁、低電圧の信号ルーティング。',
+        desc: '車載 4 回路 FET バススイッチ。独立 OE（ハイ有効）・低 RON・双方向直通（TSSOP/SOT-14）。',
+        specs: [
+          { k: '機能', v: '4 回路 FET バススイッチ（双方向直通、論理ゲートではない）' },
+          { k: 'イネーブル', v: 'チャネル毎独立 OE、ハイで導通' },
+          { k: 'チャネル数', v: '4（1A/1B ~ 4A/4B）' },
+          { k: '導通方式', v: '低 RON FET 直通・ほぼゼロ電圧降下' },
+          { k: '電源', v: '低電圧（CBTLV シリーズ、≤5V；実範囲は datasheet 参照）' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'TSSOP-14 (PW) / SOT-14 (DYY)；サーマルパッドは半田不要——浮きか GND 接続' }
+        ]
+      },
+      ko: {
+        subcategory: '4채널 FET 버스 스위치(저전압·차량용)',
+        whatIs: '4채널 FET 버스 스위치: 4개의 독립 저저항 FET 채널, 각각 OE로 A↔B 도통을 제어. 도통 시 거의 제로 전압 강하 직통(논리 게이트가 아닌 "전자 스위치"), 버스 신호를 양방향 전달.',
+        func: '각 채널에 1A/1B 양단과 독립 OE(하이로 도통): OE 하이면 A↔B 직통(저 RON), 로우면 차단(Hi-Z). 논리 연산도 증폭도 없이 "연결/차단"만 담당, 버스나 신호 절연에 사용. 저전압 5V 이하·차량용.',
+        usedIn: '버스 절연/공유(메모리, SPI/I2C 멀티마스터 전환), 신호 다중화, 핫플러그 절연, 저전압 신호 라우팅.',
+        desc: '차량용 4채널 FET 버스 스위치. 독립 OE(하이 유효)·저 RON·양방향 직통(TSSOP/SOT-14).',
+        specs: [
+          { k: '기능', v: '4채널 FET 버스 스위치(양방향 직통, 논리 게이트 아님)' },
+          { k: '인에이블', v: '채널별 독립 OE, 하이로 도통' },
+          { k: '채널 수', v: '4(1A/1B ~ 4A/4B)' },
+          { k: '도통 방식', v: '저 RON FET 직통·거의 제로 전압 강하' },
+          { k: '전원', v: '저전압(CBTLV 시리즈, ≤5V; 실제 범위는 datasheet 참조)' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'TSSOP-14 (PW) / SOT-14 (DYY); 서멀 패드 납땜 불필요 - 플로팅 또는 GND 접속' }
+        ]
+      }
+    },
+    'TXB0606': {
+      en: {
+        subcategory: '6-bit bidirectional level shifter (auto direction)',
+        whatIs: 'Six-bit bidirectional level shifter: passes 6 digital signals bidirectionally between two voltage domains (port A / port B), auto-detecting direction with no direction-control pin. Level translation for fast interfaces (QSPI/OSPI/eSPI).',
+        func: 'Each Ax↔Bx pair auto-detects signal direction and translates levels (port A 0.9–2V, port B 1.65–3.6V; VCCA may be <, =, or > VCCB). OE low puts all outputs in tri-state; if either VCC is grounded everything goes Hi-Z (VCC isolation). Schmitt-trigger inputs for noise immunity; no direction-control signal needed.',
+        usedIn: 'SPI/QSPI/OSPI/eSPI level shifting between MCU and peripherals, 1.8V↔3.3V bridging, sensor/memory high-speed data-line translation.',
+        desc: '6-bit auto-direction bidirectional level shifter, port A 0.9–2V / port B 1.65–3.6V, >130Mbps, Schmitt inputs, OE tri-state (WQFN/SOT-16).',
+        specs: [
+          { k: 'Function', v: '6-bit bidirectional level shift (auto direction, no direction pin)' },
+          { k: 'Port A voltage', v: '0.9 – 2 V' },
+          { k: 'Port B voltage', v: '1.65 – 3.6 V (VCCA may be <, =, > VCCB)' },
+          { k: 'Data rate', v: '>130Mbps (15pF) / >100Mbps (100pF) @1.8V↔3.3V' },
+          { k: 'Fast interfaces', v: 'QSPI / OSPI / eSPI' },
+          { k: 'Inputs', v: 'Schmitt trigger (slow/noisy tolerant)' },
+          { k: 'OE', v: 'low = all tri-state; referenced to VCCA' },
+          { k: 'VCC isolation', v: 'either VCC grounded → all Hi-Z' },
+          { k: 'Protection', v: 'I_OFF partial power-down; latch-up >100mA (JESD78 II); ESD HBM 2kV/CDM 1kV' },
+          { k: 'Package', v: 'WQFN-16 (RGY/BQB) / SOT-16 (DYY/PW); exposed pad to secondary GND or open' }
+        ]
+      },
+      ja: {
+        subcategory: '6 ビット双方向レベルシフタ（自動方向）',
+        whatIs: '6 ビット双方向レベルシフタ：2 つの電圧ドメイン（A ポート / B ポート）間で 6 本のデジタル信号を双方向伝達、方向を自動検出し方向制御ピン不要。高速インタフェース（QSPI/OSPI/eSPI）のレベル変換用。',
+        func: '各 Ax↔Bx ペアが信号方向を自動判別してレベル変換（A ポート 0.9~2V、B ポート 1.65~3.6V、VCCA は VCCB より <、=、> いずれも可）。OE ローで全出力トライステート；どちらかの VCC が接地なら全ピン Hi-Z（VCC アイソレーション）。シュミットトリガ入力で耐ノイズ；方向制御信号不要。',
+        usedIn: 'MCU と周辺間の SPI/QSPI/OSPI/eSPI レベル変換、1.8V↔3.3V ブリッジ、センサ/メモリ高速データ線の電圧変換。',
+        desc: '6 ビット自動双方向レベルシフタ。A ポート 0.9~2V / B ポート 1.65~3.6V、>130Mbps、シュミット入力、OE トライステート（WQFN/SOT-16）。',
+        specs: [
+          { k: '機能', v: '6 ビット双方向レベル変換（自動方向、方向ピン不要）' },
+          { k: 'A ポート電圧', v: '0.9 ~ 2 V' },
+          { k: 'B ポート電圧', v: '1.65 ~ 3.6 V（VCCA は <、=、> VCCB いずれも可）' },
+          { k: 'データレート', v: '>130Mbps(15pF) / >100Mbps(100pF) @1.8V↔3.3V' },
+          { k: '高速インタフェース', v: 'QSPI / OSPI / eSPI' },
+          { k: '入力', v: 'シュミットトリガ（低速/ノイズ耐性）' },
+          { k: 'OE', v: 'ローで全トライステート；VCCA 基準' },
+          { k: 'VCC アイソレーション', v: 'どちらかの VCC 接地→全 Hi-Z' },
+          { k: '保護', v: 'I_OFF 部分パワーダウン；ラッチアップ >100mA(JESD78 II)；ESD HBM 2kV/CDM 1kV' },
+          { k: 'パッケージ', v: 'WQFN-16 (RGY/BQB) / SOT-16 (DYY/PW)；露出パッドは二次接地か開放' }
+        ]
+      },
+      ko: {
+        subcategory: '6비트 양방향 레벨 시프터(자동 방향)',
+        whatIs: '6비트 양방향 레벨 시프터: 두 전압 도메인(A 포트 / B 포트) 사이에서 6개 디지털 신호를 양방향 전달, 방향 자동 감지로 방향 제어 핀 불필요. 고속 인터페이스(QSPI/OSPI/eSPI) 레벨 변환용.',
+        func: '각 Ax↔Bx 쌍이 신호 방향을 자동 판별해 레벨 변환(A 포트 0.9~2V, B 포트 1.65~3.6V, VCCA는 VCCB보다 <, =, > 모두 가능). OE 로우면 전체 출력 트라이스테이트; 어느 한 VCC가 접지되면 전부 Hi-Z(VCC 아이솔레이션). 슈미트 트리거 입력으로 잡음 내성; 방향 제어 신호 불필요.',
+        usedIn: 'MCU와 주변 장치 간 SPI/QSPI/OSPI/eSPI 레벨 변환, 1.8V↔3.3V 브리징, 센서/메모리 고속 데이터선 전압 변환.',
+        desc: '6비트 자동 양방향 레벨 시프터. A 포트 0.9~2V / B 포트 1.65~3.6V, >130Mbps, 슈미트 입력, OE 트라이스테이트(WQFN/SOT-16).',
+        specs: [
+          { k: '기능', v: '6비트 양방향 레벨 변환(자동 방향, 방향 핀 불필요)' },
+          { k: 'A 포트 전압', v: '0.9 ~ 2 V' },
+          { k: 'B 포트 전압', v: '1.65 ~ 3.6 V(VCCA는 <, =, > VCCB 모두 가능)' },
+          { k: '데이터 속도', v: '>130Mbps(15pF) / >100Mbps(100pF) @1.8V↔3.3V' },
+          { k: '고속 인터페이스', v: 'QSPI / OSPI / eSPI' },
+          { k: '입력', v: '슈미트 트리거(저속/잡음 내성)' },
+          { k: 'OE', v: '로우면 전체 트라이스테이트; VCCA 기준' },
+          { k: 'VCC 아이솔레이션', v: '어느 한 VCC 접지 → 전부 Hi-Z' },
+          { k: '보호', v: 'I_OFF 부분 전원 차단; 래치업 >100mA(JESD78 II); ESD HBM 2kV/CDM 1kV' },
+          { k: '패키지', v: 'WQFN-16 (RGY/BQB) / SOT-16 (DYY/PW); 노출 패드는 2차 접지 또는 개방' }
+        ]
+      }
+    },
+    'TMUX2819': {
+      en: {
+        subcategory: '2:1 single-channel analog switch (±5.5V beyond-supply, power-off protection)',
+        whatIs: '2-to-1 single-channel analog switch: routes SA or SB to the common terminal D; SEL selects, EN enables. Ultra-low 0.16Ω on-resistance, signals may exceed the supply rails (±5.5V beyond-supply), and power-off protection keeps pins Hi-Z with no leakage when VDD=0.',
+        func: 'SEL decides whether SA or SB connects to D; EN high enables, low disconnects all (Hi-Z). Power-off protection: with VDD removed all switches stay OFF, signal pins neither conduct nor back-feed — protecting downstream circuits. 1.2V/1.8V logic compatible. Solid-state replacement for mechanical switches.',
+        usedIn: 'Signal switching in battery-powered/hot-swap systems, sensor muxing, audio/video routing, signal isolation needing power-off protection.',
+        desc: '±5.5V beyond-supply 2:1 single-channel analog switch, 0.16Ω Ron, power-off protection, 1.2V logic (WSON-8).',
+        specs: [
+          { k: 'Function', v: '2:1 single-channel analog switch (bidirectional)' },
+          { k: 'Ron', v: '0.16 Ω (ultra-low)' },
+          { k: 'Signal range', v: '±5.5V beyond-supply (may exceed rails)' },
+          { k: 'Power-off protection', v: 'yes (Hi-Z at VDD=0, no back-feed)' },
+          { k: 'Logic level', v: '1.2V / 1.8V compatible' },
+          { k: 'Supply', v: 'single VDD (see datasheet)' },
+          { k: 'Package', v: 'WSON-8 (DSG), EP to GND' }
+        ],
+        dropIn: [{ note: 'Same DSG WSON-8 pinout (2:1 1ch); TMUX4819 is the ±15V beyond-supply high-voltage version' }]
+      },
+      ja: {
+        subcategory: '2:1 1ch アナログスイッチ（±5.5V Beyond-Supply・電源断保護）',
+        whatIs: '2 選 1 の 1 チャネルアナログスイッチ：SA / SB のどちらかを共通端子 D へ接続、SEL で選択・EN でイネーブル。0.16Ω 超低オン抵抗・信号が電源レールを超えられる（±5.5V beyond-supply）・電源断保護（VDD=0 でピンは Hi-Z・無漏洩）。',
+        func: 'SEL で SA か SB を D へ接続；EN ハイで有効、ローで全遮断（Hi-Z）。電源断保護：VDD 喪失時も全スイッチ OFF、信号ピンは導通も逆流もせず下流を保護。1.2V/1.8V ロジック対応。機械スイッチの固体置換。',
+        usedIn: 'バッテリ駆動/ホットスワップ系の信号切替、センサ多重化、オーディオ/ビデオ選択、電源断保護が必要な信号絶縁。',
+        desc: '±5.5V beyond-supply 2:1 1ch アナログスイッチ。0.16Ω Ron・電源断保護・1.2V ロジック（WSON-8）。',
+        specs: [
+          { k: '機能', v: '2:1 1ch アナログスイッチ（双方向）' },
+          { k: 'Ron', v: '0.16 Ω（超低）' },
+          { k: '信号範囲', v: '±5.5V beyond-supply（電源レール超え可）' },
+          { k: '電源断保護', v: 'あり（VDD=0 で Hi-Z・逆流なし）' },
+          { k: 'ロジックレベル', v: '1.2V / 1.8V 対応' },
+          { k: '電源', v: '単一 VDD（datasheet 参照）' },
+          { k: 'パッケージ', v: 'WSON-8 (DSG)、EP は GND 接続' }
+        ],
+        dropIn: [{ note: '同 DSG WSON-8 ピン配置同一（2:1 1ch）；TMUX4819 は ±15V beyond-supply の高圧版' }]
+      },
+      ko: {
+        subcategory: '2:1 단일 채널 아날로그 스위치(±5.5V Beyond-Supply·전원 차단 보호)',
+        whatIs: '2선 1 단일 채널 아날로그 스위치: SA / SB 중 하나를 공용 단자 D에 연결, SEL로 선택·EN으로 인에이블. 0.16Ω 초저 온저항·신호가 전원 레일을 초과 가능(±5.5V beyond-supply)·전원 차단 보호(VDD=0 시 핀 Hi-Z·무누설).',
+        func: 'SEL로 SA 또는 SB를 D에 연결; EN 하이로 활성, 로우면 전부 차단(Hi-Z). 전원 차단 보호: VDD 상실 시에도 전체 스위치 OFF, 신호 핀은 도통도 역류도 없이 하류 보호. 1.2V/1.8V 로직 호환. 기계 스위치의 고체 대체.',
+        usedIn: '배터리 구동/핫스왑 시스템의 신호 전환, 센서 다중화, 오디오/비디오 라우팅, 전원 차단 보호가 필요한 신호 절연.',
+        desc: '±5.5V beyond-supply 2:1 단일 채널 아날로그 스위치. 0.16Ω Ron·전원 차단 보호·1.2V 로직(WSON-8).',
+        specs: [
+          { k: '기능', v: '2:1 단일 채널 아날로그 스위치(양방향)' },
+          { k: 'Ron', v: '0.16 Ω(초저)' },
+          { k: '신호 범위', v: '±5.5V beyond-supply(레일 초과 가능)' },
+          { k: '전원 차단 보호', v: '있음(VDD=0 시 Hi-Z·역류 없음)' },
+          { k: '로직 레벨', v: '1.2V / 1.8V 호환' },
+          { k: '전원', v: '단일 VDD(datasheet 참조)' },
+          { k: '패키지', v: 'WSON-8 (DSG), EP는 GND 접속' }
+        ],
+        dropIn: [{ note: '동일 DSG WSON-8 핀 배치(2:1 1ch); TMUX4819는 ±15V beyond-supply 고압판' }]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
