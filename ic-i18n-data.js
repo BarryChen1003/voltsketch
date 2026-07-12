@@ -1659,6 +1659,744 @@
         ],
         dropIn: [{ note: '동일 DSG WSON-8 핀 배치(2:1 1ch); TMUX4819는 ±15V beyond-supply 고압판' }]
       }
+    },
+    'TMUX2821': {
+      en: {
+        subcategory: '1:1 Dual-Channel Analog Switch (±5.5V Beyond-Supply, Powered-Off Protection)',
+        whatIs: 'Dual independent SPST analog switch: two separate S-D channels (S1-D1 controlled by SEL1, S2-D2 by SEL2) switch independently. 0.16Ω Ron, beyond-supply, powered-off protection.',
+        func: 'SEL1 controls S1-D1, SEL2 controls S2-D2, the two channels fully independent. Powered-off protection: with VDD=0 all switches are OFF with no back-current. 1.2V/1.8V logic. Same package as TMUX2819 (different configuration, different pin names).',
+        usedIn: 'Dual signal switching, sensor/power path switching, hot-swap isolation, signal routing needing independent on/off.',
+        desc: '±5.5V beyond-supply 1:1 dual-channel analog switch, 0.16Ω Ron, powered-off protection, 1.2V logic (WSON-8).',
+        specs: [
+          { k: 'Function', v: '1:1 dual-channel analog switch (two independent SPST)' },
+          { k: 'Ron', v: '0.16 Ω (ultra-low)' },
+          { k: 'Signal range', v: '±5.5V beyond-supply' },
+          { k: 'Powered-off protection', v: 'Yes' },
+          { k: 'Logic level', v: '1.2V / 1.8V compatible' },
+          { k: 'Package', v: 'WSON-8 (DSG), EP to GND' }
+        ]
+      },
+      ja: {
+        subcategory: '1:1 デュアルチャネルアナログスイッチ（±5.5V Beyond-Supply、電源オフ保護）',
+        whatIs: '2 つの独立した SPST アナログスイッチ：それぞれの S-D チャネル（S1-D1 は SEL1、S2-D2 は SEL2 で制御）が独立にオンオフ。0.16Ω Ron、beyond-supply、電源オフ保護。',
+        func: 'SEL1 が S1-D1、SEL2 が S2-D2 を制御し、2 チャネルは完全に独立。電源オフ保護：VDD=0 時に全 OFF で逆流なし。1.2V/1.8V ロジック。TMUX2819 と同一パッケージ（構成が異なりピン名も異なる）。',
+        usedIn: '2 系統の信号切替、センサ/電源経路の切替、ホットスワップ絶縁、独立オンオフが必要な信号ルーティング。',
+        desc: '±5.5V beyond-supply 1:1 デュアルチャネルアナログスイッチ、0.16Ω Ron、電源オフ保護、1.2V ロジック（WSON-8）。',
+        specs: [
+          { k: '機能', v: '1:1 デュアルチャネルアナログスイッチ（2 独立 SPST）' },
+          { k: 'Ron', v: '0.16 Ω（超低）' },
+          { k: '信号範囲', v: '±5.5V beyond-supply' },
+          { k: '電源オフ保護', v: 'あり' },
+          { k: 'ロジックレベル', v: '1.2V / 1.8V 互換' },
+          { k: 'パッケージ', v: 'WSON-8 (DSG)、EP は GND 接続' }
+        ]
+      },
+      ko: {
+        subcategory: '1:1 듀얼 채널 아날로그 스위치(±5.5V Beyond-Supply, 전원 오프 보호)',
+        whatIs: '2개의 독립 SPST 아날로그 스위치: 각각의 S-D 채널(S1-D1은 SEL1, S2-D2는 SEL2로 제어)이 독립적으로 온오프. 0.16Ω Ron, beyond-supply, 전원 오프 보호.',
+        func: 'SEL1이 S1-D1, SEL2가 S2-D2를 제어하며 두 채널은 완전히 독립. 전원 오프 보호: VDD=0일 때 전부 OFF, 역류 없음. 1.2V/1.8V 로직. TMUX2819와 동일 패키지(구성이 다르고 핀 이름도 다름).',
+        usedIn: '2계통 신호 스위칭, 센서/전원 경로 전환, 핫스왑 절연, 독립 온오프가 필요한 신호 라우팅.',
+        desc: '±5.5V beyond-supply 1:1 듀얼 채널 아날로그 스위치, 0.16Ω Ron, 전원 오프 보호, 1.2V 로직(WSON-8).',
+        specs: [
+          { k: '기능', v: '1:1 듀얼 채널 아날로그 스위치(2 독립 SPST)' },
+          { k: 'Ron', v: '0.16 Ω(초저)' },
+          { k: '신호 범위', v: '±5.5V beyond-supply' },
+          { k: '전원 오프 보호', v: '있음' },
+          { k: '로직 레벨', v: '1.2V / 1.8V 호환' },
+          { k: '패키지', v: 'WSON-8 (DSG), EP는 GND 접속' }
+        ]
+      }
+    },
+    'TMUX182-SEP': {
+      en: {
+        subcategory: 'Single 8:1 Analog Multiplexer (15V, Radiation-Tolerant SEP)',
+        whatIs: 'Radiation-tolerant analog multiplexer (8-to-1): one of eight S0-S7 lines connects to the common D, selected by address A0/A1/A2, enabled by EN. 15V supply, 1.8V logic, aerospace-grade single-event protection (SEP).',
+        func: 'A[2:0] selects one of S0-S7 to D; EN is active-low (high disconnects all, low conducts per address). Radiation-tolerant (SEP), bidirectional, suited to space/high-reliability environments.',
+        usedIn: 'Satellite/space-payload analog multiplexing, radiation-tolerant measurement front ends, aerospace sensor signal routing.',
+        desc: 'Radiation-tolerant 15V single 8:1 analog multiplexer, A[2:0] address, EN active-low, 1.8V logic (SOT-23-16).',
+        specs: [
+          { k: 'Function', v: 'Single 8:1 analog multiplexer (bidirectional)' },
+          { k: 'Address lines', v: 'A0/A1/A2 (3-bit selects 8) + EN (active-low)' },
+          { k: 'Supply', v: '15V (single) / dual supply (VSS see datasheet)' },
+          { k: 'Logic level', v: '1.8V compatible' },
+          { k: 'Radiation tolerance', v: 'SEP (single-event protection, aerospace-grade)' },
+          { k: 'Package', v: 'SOT-23-THIN-16 (DYY)' }
+        ]
+      },
+      ja: {
+        subcategory: '1 系統 8:1 アナログマルチプレクサ（15V、耐放射線 SEP）',
+        whatIs: '耐放射線アナログマルチプレクサ（8-to-1）：S0-S7 の 8 系統から 1 つを共通端 D に接続、A0/A1/A2 アドレスで選択、EN で有効化。15V 電源、1.8V ロジック、航空宇宙グレードの単一事象防護（SEP）。',
+        func: 'A[2:0] が S0-S7 の 1 つを D に選択；EN は active-low（ハイで全遮断、ローでアドレスに従い導通）。耐放射線（SEP）、双方向信号、宇宙/高信頼性環境向け。',
+        usedIn: '衛星/宇宙ペイロードのアナログ多重化、耐放射線計測フロントエンド、航空宇宙センサの信号選択。',
+        desc: '耐放射線 15V 1 系統 8:1 アナログマルチプレクサ、A[2:0] アドレス、EN active-low、1.8V ロジック（SOT-23-16）。',
+        specs: [
+          { k: '機能', v: '1 系統 8:1 アナログマルチプレクサ（双方向）' },
+          { k: 'アドレス線', v: 'A0/A1/A2（3 ビットで 8 選択）+ EN（active-low）' },
+          { k: '電源', v: '15V（単）/ 両電源（VSS はデータシート参照）' },
+          { k: 'ロジックレベル', v: '1.8V 互換' },
+          { k: '耐放射線', v: 'SEP（単一事象防護、航空宇宙グレード）' },
+          { k: 'パッケージ', v: 'SOT-23-THIN-16 (DYY)' }
+        ]
+      },
+      ko: {
+        subcategory: '1계통 8:1 아날로그 멀티플렉서(15V, 내방사선 SEP)',
+        whatIs: '내방사선 아날로그 멀티플렉서(8-to-1): S0-S7 8계통 중 하나를 공통단 D에 연결, A0/A1/A2 주소로 선택, EN으로 활성화. 15V 전원, 1.8V 로직, 항공우주급 단일 사건 보호(SEP).',
+        func: 'A[2:0]가 S0-S7 중 하나를 D에 선택; EN은 active-low(하이면 전부 차단, 로우면 주소에 따라 도통). 내방사선(SEP), 양방향 신호, 우주/고신뢰성 환경용.',
+        usedIn: '위성/우주 페이로드 아날로그 멀티플렉싱, 내방사선 계측 프런트엔드, 항공우주 센서 신호 라우팅.',
+        desc: '내방사선 15V 1계통 8:1 아날로그 멀티플렉서, A[2:0] 주소, EN active-low, 1.8V 로직(SOT-23-16).',
+        specs: [
+          { k: '기능', v: '1계통 8:1 아날로그 멀티플렉서(양방향)' },
+          { k: '주소선', v: 'A0/A1/A2(3비트로 8 선택) + EN(active-low)' },
+          { k: '전원', v: '15V(단일) / 양전원(VSS는 datasheet 참조)' },
+          { k: '로직 레벨', v: '1.8V 호환' },
+          { k: '내방사선', v: 'SEP(단일 사건 보호, 항공우주급)' },
+          { k: '패키지', v: 'SOT-23-THIN-16 (DYY)' }
+        ]
+      }
+    },
+    'TMUX4819': {
+      en: {
+        subcategory: '2:1 Single-Channel Analog Switch (±15V Beyond-Supply, Powered-Off Protection)',
+        whatIs: '2-to-1 single-channel analog switch (high-voltage version): SA/SB selected to D, SEL selects the path, EN enables. 0.16Ω Ron, ±15V beyond-supply, powered-off protection. Same pinout as TMUX2819 (high-voltage version).',
+        func: 'SEL selects SA or SB to D; EN active-high. ±15V beyond-supply suits larger signal swings. Powered-off protection, 1.2V/1.8V logic.',
+        usedIn: 'Larger-swing analog signal switching, industrial sensor multiplexing, audio path selection, signal routing needing powered-off protection and high-voltage headroom.',
+        desc: '±15V beyond-supply 2:1 single-channel analog switch, 0.16Ω Ron, powered-off protection, 1.2V logic (WSON-8).',
+        specs: [
+          { k: 'Function', v: '2:1 single-channel analog switch (bidirectional)' },
+          { k: 'Ron', v: '0.16 Ω' },
+          { k: 'Signal range', v: '±15V beyond-supply' },
+          { k: 'Powered-off protection', v: 'Yes' },
+          { k: 'Logic level', v: '1.2V / 1.8V compatible' },
+          { k: 'Package', v: 'WSON-8 (DSG), EP to GND' }
+        ],
+        dropIn: [{ note: 'Same DSG WSON-8 pinout (2:1 1ch); TMUX2819 is the ±5.5V low-voltage version' }]
+      },
+      ja: {
+        subcategory: '2:1 シングルチャネルアナログスイッチ（±15V Beyond-Supply、電源オフ保護）',
+        whatIs: '2-to-1 シングルチャネルアナログスイッチ（高電圧版）：SA/SB のいずれかを D に接続、SEL で経路選択、EN で有効化。0.16Ω Ron、±15V beyond-supply、電源オフ保護。TMUX2819 と同一ピン配置（高電圧版）。',
+        func: 'SEL が SA または SB を D に選択；EN はハイ有効。±15V beyond-supply でより大きな信号振幅に対応。電源オフ保護、1.2V/1.8V ロジック。',
+        usedIn: '大振幅アナログ信号の切替、産業用センサの多重化、オーディオ経路選択、電源オフ保護と高電圧マージンが必要な信号ルーティング。',
+        desc: '±15V beyond-supply 2:1 シングルチャネルアナログスイッチ、0.16Ω Ron、電源オフ保護、1.2V ロジック（WSON-8）。',
+        specs: [
+          { k: '機能', v: '2:1 シングルチャネルアナログスイッチ（双方向）' },
+          { k: 'Ron', v: '0.16 Ω' },
+          { k: '信号範囲', v: '±15V beyond-supply' },
+          { k: '電源オフ保護', v: 'あり' },
+          { k: 'ロジックレベル', v: '1.2V / 1.8V 互換' },
+          { k: 'パッケージ', v: 'WSON-8 (DSG)、EP は GND 接続' }
+        ],
+        dropIn: [{ note: '同一 DSG WSON-8 ピン配置（2:1 1ch）；TMUX2819 は ±5.5V 低電圧版' }]
+      },
+      ko: {
+        subcategory: '2:1 싱글 채널 아날로그 스위치(±15V Beyond-Supply, 전원 오프 보호)',
+        whatIs: '2-to-1 싱글 채널 아날로그 스위치(고전압판): SA/SB 중 하나를 D에 연결, SEL로 경로 선택, EN으로 활성화. 0.16Ω Ron, ±15V beyond-supply, 전원 오프 보호. TMUX2819와 동일 핀 배치(고전압판).',
+        func: 'SEL이 SA 또는 SB를 D에 선택; EN은 하이 유효. ±15V beyond-supply로 더 큰 신호 스윙 대응. 전원 오프 보호, 1.2V/1.8V 로직.',
+        usedIn: '대진폭 아날로그 신호 전환, 산업용 센서 멀티플렉싱, 오디오 경로 선택, 전원 오프 보호와 고전압 마진이 필요한 신호 라우팅.',
+        desc: '±15V beyond-supply 2:1 싱글 채널 아날로그 스위치, 0.16Ω Ron, 전원 오프 보호, 1.2V 로직(WSON-8).',
+        specs: [
+          { k: '기능', v: '2:1 싱글 채널 아날로그 스위치(양방향)' },
+          { k: 'Ron', v: '0.16 Ω' },
+          { k: '신호 범위', v: '±15V beyond-supply' },
+          { k: '전원 오프 보호', v: '있음' },
+          { k: '로직 레벨', v: '1.2V / 1.8V 호환' },
+          { k: '패키지', v: 'WSON-8 (DSG), EP는 GND 접속' }
+        ],
+        dropIn: [{ note: '동일 DSG WSON-8 핀 배치(2:1 1ch); TMUX2819는 ±5.5V 저전압판' }]
+      }
+    },
+    'PCA9306H': {
+      en: {
+        subcategory: 'Bidirectional I2C/SMBus Voltage Level Translator (2-channel)',
+        whatIs: 'Dual-channel bidirectional I2C/SMBus level translator: translates between the low-side (VREF1) SCL1/SDA1 and high-side (VREF2) SCL2/SDA2 with open-drain compatibility. Passive FET-switch based, bidirectional, no direction control needed.',
+        func: 'A FET channel bridges each I2C line, with VREF1/VREF2 setting the two-side levels; EN enables. Open-drain/pull-up compatible, automatically bidirectional. Low side minimum 1.0V, high side up to 5.5V. No amplification or buffering - level bridging only.',
+        usedIn: '1.8V-to-3.3V/5V I2C/SMBus bridging, sensor/EEPROM interface voltage translation, connecting an MCU to high-voltage I2C peripherals.',
+        desc: 'Dual-channel bidirectional I2C/SMBus level translator, VREF sets both-side levels, EN enable, open-drain compatible (X2SON-8).',
+        specs: [
+          { k: 'Function', v: 'Dual-channel bidirectional I2C/SMBus level translation (passive FET)' },
+          { k: 'Low side', v: 'VREF1 minimum 1.0V (see datasheet)' },
+          { k: 'High side', v: 'VREF2 up to 5.5V' },
+          { k: 'Direction', v: 'Auto-bidirectional, open-drain compatible, no direction pin' },
+          { k: 'Enable', v: 'EN' },
+          { k: 'Package', v: 'X2SON-8 (DQE)' }
+        ]
+      },
+      ja: {
+        subcategory: '双方向 I2C/SMBus 電圧レベル変換器（2 チャネル）',
+        whatIs: '2 チャネル双方向 I2C/SMBus レベル変換器：低電圧側（VREF1）の SCL1/SDA1 と高電圧側（VREF2）の SCL2/SDA2 の間をオープンドレイン互換で電圧変換。パッシブ FET スイッチ方式、双方向、方向制御不要。',
+        func: '各 I2C 線を 1 つの FET チャネルで橋渡しし、VREF1/VREF2 で両側のレベルを設定；EN で有効化。オープンドレイン/プルアップ互換、自動双方向。低電圧側は最小 1.0V、高電圧側は最大 5.5V。増幅もバッファもせず、レベル橋渡しのみ。',
+        usedIn: '1.8V-3.3V/5V I2C/SMBus の橋渡し、センサ/EEPROM インタフェースの電圧変換、MCU と高電圧周辺の I2C 接続。',
+        desc: '2 チャネル双方向 I2C/SMBus レベル変換器、VREF が両側レベルを設定、EN で有効化、オープンドレイン互換（X2SON-8）。',
+        specs: [
+          { k: '機能', v: '2 チャネル双方向 I2C/SMBus レベル変換（パッシブ FET）' },
+          { k: '低電圧側', v: 'VREF1 最小 1.0V（データシート参照）' },
+          { k: '高電圧側', v: 'VREF2 最大 5.5V' },
+          { k: '方向', v: '自動双方向、オープンドレイン互換、方向ピン不要' },
+          { k: '有効化', v: 'EN' },
+          { k: 'パッケージ', v: 'X2SON-8 (DQE)' }
+        ]
+      },
+      ko: {
+        subcategory: '양방향 I2C/SMBus 전압 레벨 변환기(2채널)',
+        whatIs: '2채널 양방향 I2C/SMBus 레벨 변환기: 저전압 측(VREF1)의 SCL1/SDA1과 고전압 측(VREF2)의 SCL2/SDA2 사이를 오픈드레인 호환으로 전압 변환. 패시브 FET 스위치 방식, 양방향, 방향 제어 불필요.',
+        func: '각 I2C 선을 하나의 FET 채널로 브리징하고, VREF1/VREF2로 양측 레벨을 설정; EN으로 활성화. 오픈드레인/풀업 호환, 자동 양방향. 저전압 측 최소 1.0V, 고전압 측 최대 5.5V. 증폭도 버퍼도 없이 레벨 브리징만.',
+        usedIn: '1.8V-3.3V/5V I2C/SMBus 브리징, 센서/EEPROM 인터페이스 전압 변환, MCU와 고전압 주변장치 I2C 연결.',
+        desc: '2채널 양방향 I2C/SMBus 레벨 변환기, VREF가 양측 레벨 설정, EN 활성화, 오픈드레인 호환(X2SON-8).',
+        specs: [
+          { k: '기능', v: '2채널 양방향 I2C/SMBus 레벨 변환(패시브 FET)' },
+          { k: '저전압 측', v: 'VREF1 최소 1.0V(datasheet 참조)' },
+          { k: '고전압 측', v: 'VREF2 최대 5.5V' },
+          { k: '방향', v: '자동 양방향, 오픈드레인 호환, 방향 핀 불필요' },
+          { k: '활성화', v: 'EN' },
+          { k: '패키지', v: 'X2SON-8 (DQE)' }
+        ]
+      }
+    },
+    'TCA9617B': {
+      en: {
+        subcategory: 'I2C/SMBus Buffer/Repeater (Level Translation, FM+)',
+        whatIs: 'I2C bus buffer/repeater: A-side and B-side are separate I2C buses, buffered/isolated with level translation between them (A side 0.8-5.5V, B side 2.2-5.5V). Isolates capacitive loading, extends the bus, translates levels.',
+        func: 'Actively buffers (not straight-through) between A-side SCLA/SDAA and B-side SCLB/SDAB: isolates each side capacitance, each pulls up to its own VCC for level translation; EN active-high. Supports FM+ (1MHz). Solves I2C capacitive overload and multi-board interconnect.',
+        usedIn: 'Long-distance/multi-card I2C bus extension, backplane I2C, bridging different-voltage I2C domains, isolating large capacitive loads.',
+        desc: 'I2C/SMBus buffer/repeater, A/B two-side buffer isolation + level translation, FM+ (1MHz), EN enable (VSSOP-8).',
+        specs: [
+          { k: 'Function', v: 'I2C/SMBus buffer/repeater (active buffer + level translation)' },
+          { k: 'A-side supply', v: '0.8 ~ 5.5 V' },
+          { k: 'B-side supply', v: '2.2 ~ 5.5 V (device main supply)' },
+          { k: 'Speed', v: 'FM+ (up to 1MHz)' },
+          { k: 'Enable', v: 'EN (active-high, internal weak pull-up to VCCB)' },
+          { k: 'Package', v: 'VSSOP-8 (DGK)' }
+        ]
+      },
+      ja: {
+        subcategory: 'I2C/SMBus バッファ/リピータ（レベル変換、FM+）',
+        whatIs: 'I2C バスバッファ/リピータ：A 側と B 側はそれぞれ独立した I2C バスで、その間をバッファ絶縁しレベル変換（A 側 0.8-5.5V、B 側 2.2-5.5V）。容量負荷を絶縁、バスを延長、レベルを変換。',
+        func: 'A 側 SCLA/SDAA と B 側 SCLB/SDAB の間をアクティブにバッファ（直通ではない）：両側の容量を絶縁し、それぞれ自 VCC へプルアップしてレベル変換；EN はハイ有効。FM+（1MHz）対応。I2C の容量過負荷と複数基板の相互接続を解決。',
+        usedIn: '長距離/複数カードの I2C バス延長、バックプレーン I2C、異なる電圧の I2C ドメイン橋渡し、大容量負荷の絶縁。',
+        desc: 'I2C/SMBus バッファ/リピータ、A/B 両側バッファ絶縁＋レベル変換、FM+(1MHz)、EN で有効化（VSSOP-8）。',
+        specs: [
+          { k: '機能', v: 'I2C/SMBus バッファ/リピータ（アクティブバッファ＋レベル変換）' },
+          { k: 'A 側電源', v: '0.8 ~ 5.5 V' },
+          { k: 'B 側電源', v: '2.2 ~ 5.5 V（デバイス主電源）' },
+          { k: '速度', v: 'FM+（最大 1MHz）' },
+          { k: '有効化', v: 'EN（ハイ、内部弱プルアップ VCCB へ）' },
+          { k: 'パッケージ', v: 'VSSOP-8 (DGK)' }
+        ]
+      },
+      ko: {
+        subcategory: 'I2C/SMBus 버퍼/리피터(레벨 변환, FM+)',
+        whatIs: 'I2C 버스 버퍼/리피터: A 측과 B 측은 각각 독립 I2C 버스로, 그 사이를 버퍼 절연하고 레벨 변환(A 측 0.8-5.5V, B 측 2.2-5.5V). 용량 부하 절연, 버스 연장, 레벨 변환.',
+        func: 'A 측 SCLA/SDAA와 B 측 SCLB/SDAB 사이를 능동 버퍼(직통 아님): 양측 용량을 절연하고 각각 자기 VCC로 풀업해 레벨 변환; EN 하이 유효. FM+(1MHz) 지원. I2C 용량 과부하와 다중 보드 상호 연결을 해결.',
+        usedIn: '장거리/다중 카드 I2C 버스 연장, 백플레인 I2C, 다른 전압 I2C 도메인 브리징, 대용량 부하 절연.',
+        desc: 'I2C/SMBus 버퍼/리피터, A/B 양측 버퍼 절연+레벨 변환, FM+(1MHz), EN 활성화(VSSOP-8).',
+        specs: [
+          { k: '기능', v: 'I2C/SMBus 버퍼/리피터(능동 버퍼+레벨 변환)' },
+          { k: 'A 측 전원', v: '0.8 ~ 5.5 V' },
+          { k: 'B 측 전원', v: '2.2 ~ 5.5 V(장치 주 전원)' },
+          { k: '속도', v: 'FM+(최대 1MHz)' },
+          { k: '활성화', v: 'EN(하이, 내부 약 풀업 VCCB로)' },
+          { k: '패키지', v: 'VSSOP-8 (DGK)' }
+        ]
+      }
+    },
+    'ADG601_602': {
+      en: {
+        subcategory: 'Single SPST Analog Switch (Low Ron)',
+        whatIs: 'Single-pole single-throw (SPST) analog switch: one S-D channel switched by the IN logic. ADG601 normally-open (NO), ADG602 normally-closed (NC). Low on-resistance, dual supply.',
+        func: 'IN controls S-D (ADG601 conducts on IN high, ADG602 inverted). Bidirectional, low Ron, low charge injection. A single solid-state switch, replacing a relay or one channel of an analog-switch array.',
+        usedIn: 'Signal sample/hold, gain switching, sensor path on/off, automatic test equipment, audio muting.',
+        desc: 'Single SPST analog switch (ADG601 NO / ADG602 NC), low Ron, dual supply (SOT-23-6 / MSOP-8).',
+        specs: [
+          { k: 'Function', v: 'Single SPST analog switch (ADG601=NO / ADG602=NC)' },
+          { k: 'Ron', v: 'Low (value see datasheet)' },
+          { k: 'Control', v: 'IN single logic pin' },
+          { k: 'Supply', v: 'Dual supply VDD/VSS (VSS=GND for single supply)' },
+          { k: 'Pin count', v: '6 (SOT-23) / 8 (MSOP, with NC)' },
+          { k: 'Package', v: 'SOT-23-6 (RJ) / MSOP-8 (RM)' }
+        ],
+        dropIn: [{ note: 'Same package; ADG602 is normally-closed (NC), ADG601 is normally-open (NO), opposite polarity - verify' }]
+      },
+      ja: {
+        subcategory: 'シングル SPST アナログスイッチ（低 Ron）',
+        whatIs: '単極単投（SPST）アナログスイッチ：1 系統の S-D チャネルを IN ロジックでオンオフ。ADG601 はノーマリオープン（NO）、ADG602 はノーマリクローズ（NC）。低オン抵抗、両電源。',
+        func: 'IN が S-D を制御（ADG601 は IN ハイで導通、ADG602 は反転）。双方向信号、低 Ron、低電荷注入。単一の固体スイッチで、リレーやアナログスイッチアレイの 1 系統を置換。',
+        usedIn: '信号サンプル/ホールド、ゲイン切替、センサ経路のオンオフ、自動試験装置、オーディオミュート。',
+        desc: 'シングル SPST アナログスイッチ（ADG601 NO / ADG602 NC）、低 Ron、両電源（SOT-23-6 / MSOP-8）。',
+        specs: [
+          { k: '機能', v: 'シングル SPST アナログスイッチ（ADG601=NO / ADG602=NC）' },
+          { k: 'Ron', v: '低（値はデータシート参照）' },
+          { k: '制御', v: 'IN 単一ロジックピン' },
+          { k: '電源', v: '両電源 VDD/VSS（単電源時は VSS=GND）' },
+          { k: 'ピン数', v: '6 (SOT-23) / 8 (MSOP、NC 含む)' },
+          { k: 'パッケージ', v: 'SOT-23-6 (RJ) / MSOP-8 (RM)' }
+        ],
+        dropIn: [{ note: '同一パッケージ；ADG602 はノーマリクローズ（NC）、ADG601 はノーマリオープン（NO）、極性が逆なので要確認' }]
+      },
+      ko: {
+        subcategory: '싱글 SPST 아날로그 스위치(저 Ron)',
+        whatIs: '단극 단투(SPST) 아날로그 스위치: 1계통 S-D 채널을 IN 로직으로 온오프. ADG601은 노멀리 오픈(NO), ADG602는 노멀리 클로즈(NC). 저 온저항, 양전원.',
+        func: 'IN이 S-D를 제어(ADG601은 IN 하이에서 도통, ADG602는 반전). 양방향 신호, 저 Ron, 저 전하 주입. 단일 솔리드 스테이트 스위치로 릴레이나 아날로그 스위치 어레이의 1계통을 대체.',
+        usedIn: '신호 샘플/홀드, 이득 전환, 센서 경로 온오프, 자동 시험 장비, 오디오 뮤트.',
+        desc: '싱글 SPST 아날로그 스위치(ADG601 NO / ADG602 NC), 저 Ron, 양전원(SOT-23-6 / MSOP-8).',
+        specs: [
+          { k: '기능', v: '싱글 SPST 아날로그 스위치(ADG601=NO / ADG602=NC)' },
+          { k: 'Ron', v: '낮음(값은 datasheet 참조)' },
+          { k: '제어', v: 'IN 단일 로직 핀' },
+          { k: '전원', v: '양전원 VDD/VSS(단일 전원 시 VSS=GND)' },
+          { k: '핀 수', v: '6 (SOT-23) / 8 (MSOP, NC 포함)' },
+          { k: '패키지', v: 'SOT-23-6 (RJ) / MSOP-8 (RM)' }
+        ],
+        dropIn: [{ note: '동일 패키지; ADG602는 노멀리 클로즈(NC), ADG601은 노멀리 오픈(NO), 극성 반대라 확인 필요' }]
+      }
+    },
+    'TCA9847': {
+      en: {
+        subcategory: '8-Channel I2C Multiplexer (Ultra-Low-Voltage, 1MHz)',
+        whatIs: '8-channel I2C multiplexer: one upstream I2C (SCL/SDA) switches to one of eight downstream channels (SC0/SD0-SC7/SD7). Resolves downstream I2C address conflicts, isolates each channel capacitance. Ultra-low-voltage, 1MHz.',
+        func: 'The host writes the control register over the upstream SCL/SDA to select one downstream channel; only one connects at a time (multiplexer, not switch). Each downstream can use a different pull-up voltage - also does level translation. A0/A1 set the device address; RESET (active-low) resets. VDD1 logic, VDD2 core.',
+        usedIn: 'Multiple same-address I2C devices sharing a bus (multiple identical sensors/EEPROMs), I2C channel isolation and level translation, I2C expansion in servers/modular systems.',
+        desc: '8-channel ultra-low-voltage I2C multiplexer, 1 upstream to 8 downstream, each channel independent level, 1MHz, RESET (TSSOP/VQFN-24).',
+        specs: [
+          { k: 'Function', v: '8-channel I2C multiplexer (1 upstream to 1 of 8 downstream)' },
+          { k: 'Channels', v: '8 (SC0/SD0 ~ SC7/SD7)' },
+          { k: 'Level translation', v: 'Each downstream can have an independent pull-up voltage (VDPUx)' },
+          { k: 'Address', v: 'A0/A1 (programmable)' },
+          { k: 'Speed', v: 'Up to 1MHz (Fm+)' },
+          { k: 'Reset', v: 'RESET (active-low)' },
+          { k: 'Supply', v: 'VDD1 logic + VDD2 core (ultra-low-voltage)' },
+          { k: 'Package', v: 'TSSOP-24 (PW) / VQFN-24 (RGE)' }
+        ],
+        dropIn: [{ note: 'Same 24-pin pinout; TCA9848 is a switch (can connect multiple channels at once), TCA9847 is a multiplexer (only one at a time) - different behavior, verify' }]
+      },
+      ja: {
+        subcategory: '8 チャネル I2C マルチプレクサ（超低電圧、1MHz）',
+        whatIs: '8 チャネル I2C マルチプレクサ：1 つの上流 I2C（SCL/SDA）を 8 つの下流チャネル（SC0/SD0-SC7/SD7）の 1 つに切替。下流デバイスの I2C アドレス衝突を解決し、各チャネルの容量を絶縁。超低電圧、1MHz。',
+        func: 'ホストが上流 SCL/SDA 経由で制御レジスタに書き込み下流チャネルを 1 つ選択；同時に接続するのは 1 系統のみ（マルチプレクサ、スイッチではない）。各下流は異なるプルアップ電圧が可能→レベル変換も兼ねる。A0/A1 でデバイスアドレス設定；RESET（active-low）でリセット。VDD1 ロジック、VDD2 コア。',
+        usedIn: '同一アドレスの I2C デバイスを複数バス共有（同一センサ/EEPROM を複数組）、I2C チャネル絶縁とレベル変換、サーバ/モジュール式システムの I2C 拡張。',
+        desc: '8 チャネル超低電圧 I2C マルチプレクサ、上流 1 対下流 8、各チャネル独立レベル、1MHz、RESET（TSSOP/VQFN-24）。',
+        specs: [
+          { k: '機能', v: '8 チャネル I2C マルチプレクサ（上流 1 から下流 8 の 1 選択）' },
+          { k: 'チャネル', v: '8（SC0/SD0 ~ SC7/SD7）' },
+          { k: 'レベル変換', v: '各下流に独立プルアップ電圧が可能（VDPUx）' },
+          { k: 'アドレス', v: 'A0/A1（プログラマブル）' },
+          { k: '速度', v: '最大 1MHz（Fm+）' },
+          { k: 'リセット', v: 'RESET（active-low）' },
+          { k: '電源', v: 'VDD1 ロジック + VDD2 コア（超低電圧）' },
+          { k: 'パッケージ', v: 'TSSOP-24 (PW) / VQFN-24 (RGE)' }
+        ],
+        dropIn: [{ note: '同一 24 ピン配置；TCA9848 はスイッチ（複数系統を同時接続可）、TCA9847 はマルチプレクサ（1 系統のみ）、動作が異なるので要確認' }]
+      },
+      ko: {
+        subcategory: '8채널 I2C 멀티플렉서(초저전압, 1MHz)',
+        whatIs: '8채널 I2C 멀티플렉서: 하나의 상류 I2C(SCL/SDA)를 8개 하류 채널(SC0/SD0-SC7/SD7) 중 하나로 전환. 하류 장치의 I2C 주소 충돌을 해결하고 각 채널의 용량을 절연. 초저전압, 1MHz.',
+        func: '호스트가 상류 SCL/SDA를 통해 제어 레지스터에 기록해 하류 채널 하나를 선택; 동시에 연결되는 것은 1계통뿐(멀티플렉서, 스위치 아님). 각 하류는 다른 풀업 전압 가능→레벨 변환도 겸함. A0/A1로 장치 주소 설정; RESET(active-low)로 리셋. VDD1 로직, VDD2 코어.',
+        usedIn: '동일 주소 I2C 장치 다수의 버스 공유(동일 센서/EEPROM 여러 조), I2C 채널 절연과 레벨 변환, 서버/모듈식 시스템 I2C 확장.',
+        desc: '8채널 초저전압 I2C 멀티플렉서, 상류 1 대 하류 8, 각 채널 독립 레벨, 1MHz, RESET(TSSOP/VQFN-24).',
+        specs: [
+          { k: '기능', v: '8채널 I2C 멀티플렉서(상류 1에서 하류 8 중 1 선택)' },
+          { k: '채널', v: '8(SC0/SD0 ~ SC7/SD7)' },
+          { k: '레벨 변환', v: '각 하류에 독립 풀업 전압 가능(VDPUx)' },
+          { k: '주소', v: 'A0/A1(프로그래머블)' },
+          { k: '속도', v: '최대 1MHz(Fm+)' },
+          { k: '리셋', v: 'RESET(active-low)' },
+          { k: '전원', v: 'VDD1 로직 + VDD2 코어(초저전압)' },
+          { k: '패키지', v: 'TSSOP-24 (PW) / VQFN-24 (RGE)' }
+        ],
+        dropIn: [{ note: '동일 24핀 배치; TCA9848은 스위치(여러 계통 동시 연결 가능), TCA9847은 멀티플렉서(1계통만), 동작이 달라 확인 필요' }]
+      }
+    },
+    'TCA9848': {
+      en: {
+        subcategory: '8-Channel I2C Switch (Ultra-Low-Voltage, 1MHz)',
+        whatIs: '8-channel I2C switch: the upstream I2C (SCL/SDA) can connect one or more downstream channels (SC0/SD0-SC7/SD7) at the same time. Same pinout as TCA9847, the difference being it can open multiple channels at once (switch vs multiplexer).',
+        func: 'The host writes the register over I2C to select any combination of downstream channels (multiple at once, unlike the 9847 single). Each channel isolates capacitance and can have an independent pull-up voltage for level translation. A0/A1 address, RESET (active-low) reset.',
+        usedIn: 'Simultaneously broadcasting/isolating multiple I2C device groups, expanding same-address devices, I2C channel level translation, modular-system bus switching.',
+        desc: '8-channel ultra-low-voltage I2C switch (multiple channels at once), each channel independent level, 1MHz, RESET (TSSOP/VQFN-24).',
+        specs: [
+          { k: 'Function', v: '8-channel I2C switch (multiple channels at once)' },
+          { k: 'Channels', v: '8 (SC0/SD0 ~ SC7/SD7)' },
+          { k: 'Level translation', v: 'Each downstream can have an independent pull-up voltage (VDPUx)' },
+          { k: 'Address', v: 'A0/A1 (programmable)' },
+          { k: 'Speed', v: 'Up to 1MHz (Fm+)' },
+          { k: 'Reset', v: 'RESET (active-low)' },
+          { k: 'Supply', v: 'VDD1 logic + VDD2 core (ultra-low-voltage)' },
+          { k: 'Package', v: 'TSSOP-24 (PW) / VQFN-24 (RGE)' }
+        ],
+        dropIn: [{ note: 'Same 24-pin pinout; TCA9847 is a multiplexer (only one at a time), TCA9848 is a switch (multiple at once) - different behavior, verify' }]
+      },
+      ja: {
+        subcategory: '8 チャネル I2C スイッチ（超低電圧、1MHz）',
+        whatIs: '8 チャネル I2C スイッチ：上流 I2C（SCL/SDA）が 1 つまたは複数の下流チャネル（SC0/SD0-SC7/SD7）を同時に接続可能。TCA9847 と同一ピン配置で、複数系統を同時に開ける点が異なる（スイッチ対マルチプレクサ）。',
+        func: 'ホストが I2C でレジスタに書き込み任意の組み合わせの下流チャネルを選択（9847 の 1 系統と異なり複数同時可）。各チャネルは容量を絶縁し、独立プルアップ電圧でレベル変換可能。A0/A1 アドレス、RESET（active-low）リセット。',
+        usedIn: '複数の I2C デバイス群を同時にブロードキャスト/絶縁、同一アドレスデバイスの拡張、I2C チャネルのレベル変換、モジュール式システムのバス切替。',
+        desc: '8 チャネル超低電圧 I2C スイッチ（複数系統同時可）、各チャネル独立レベル、1MHz、RESET（TSSOP/VQFN-24）。',
+        specs: [
+          { k: '機能', v: '8 チャネル I2C スイッチ（複数系統同時可）' },
+          { k: 'チャネル', v: '8（SC0/SD0 ~ SC7/SD7）' },
+          { k: 'レベル変換', v: '各下流に独立プルアップ電圧が可能（VDPUx）' },
+          { k: 'アドレス', v: 'A0/A1（プログラマブル）' },
+          { k: '速度', v: '最大 1MHz（Fm+）' },
+          { k: 'リセット', v: 'RESET（active-low）' },
+          { k: '電源', v: 'VDD1 ロジック + VDD2 コア（超低電圧）' },
+          { k: 'パッケージ', v: 'TSSOP-24 (PW) / VQFN-24 (RGE)' }
+        ],
+        dropIn: [{ note: '同一 24 ピン配置；TCA9847 はマルチプレクサ（1 系統のみ）、TCA9848 はスイッチ（複数同時可）、動作が異なるので要確認' }]
+      },
+      ko: {
+        subcategory: '8채널 I2C 스위치(초저전압, 1MHz)',
+        whatIs: '8채널 I2C 스위치: 상류 I2C(SCL/SDA)가 하나 또는 여러 하류 채널(SC0/SD0-SC7/SD7)을 동시에 연결 가능. TCA9847과 동일 핀 배치이며, 여러 계통을 동시에 열 수 있는 점이 다름(스위치 대 멀티플렉서).',
+        func: '호스트가 I2C로 레지스터에 기록해 임의 조합의 하류 채널을 선택(9847의 1계통과 달리 여러 계통 동시 가능). 각 채널은 용량을 절연하고 독립 풀업 전압으로 레벨 변환 가능. A0/A1 주소, RESET(active-low) 리셋.',
+        usedIn: '여러 I2C 장치 그룹을 동시에 브로드캐스트/절연, 동일 주소 장치 확장, I2C 채널 레벨 변환, 모듈식 시스템 버스 전환.',
+        desc: '8채널 초저전압 I2C 스위치(여러 계통 동시 가능), 각 채널 독립 레벨, 1MHz, RESET(TSSOP/VQFN-24).',
+        specs: [
+          { k: '기능', v: '8채널 I2C 스위치(여러 계통 동시 가능)' },
+          { k: '채널', v: '8(SC0/SD0 ~ SC7/SD7)' },
+          { k: '레벨 변환', v: '각 하류에 독립 풀업 전압 가능(VDPUx)' },
+          { k: '주소', v: 'A0/A1(프로그래머블)' },
+          { k: '속도', v: '최대 1MHz(Fm+)' },
+          { k: '리셋', v: 'RESET(active-low)' },
+          { k: '전원', v: 'VDD1 로직 + VDD2 코어(초저전압)' },
+          { k: '패키지', v: 'TSSOP-24 (PW) / VQFN-24 (RGE)' }
+        ],
+        dropIn: [{ note: '동일 24핀 배치; TCA9847은 멀티플렉서(1계통만), TCA9848은 스위치(여러 계통 동시), 동작이 달라 확인 필요' }]
+      }
+    },
+    'HD3SS3220L': {
+      en: {
+        subcategory: 'USB Type-C DRP Port Controller + SuperSpeed Mux',
+        whatIs: 'USB Type-C dual-role-port (DRP) controller with a SuperSpeed mux: auto-detects the CC lines to determine orientation and role (DFP/UFP/DRP), and switches the USB3 SuperSpeed signals to the correct differential pair per plug orientation. I2C or GPIO control selectable.',
+        func: 'CC1/CC2 detect Type-C attach, current advertisement and orientation; the built-in SS mux switches TX/RX to TX1/RX1 or TX2/RX2 per orientation; DIR outputs the orientation; PORT/ADDR/CURRENT_MODE tri-state pins set mode and address; I2C (SCL/SDA) or GPIO control; ENn_CC/ENn_MUX enable. VBUS_DET detects UFP attach.',
+        usedIn: 'USB Type-C host/device/dual-role ports, laptop/tablet/phone Type-C interfaces, Type-C docks and adapters, SuperSpeed signal routing.',
+        desc: 'USB Type-C DRP port controller with SS mux, CC detection/orientation switching, I2C or GPIO control, DIR output (VQFN-30).',
+        specs: [
+          { k: 'Function', v: 'USB Type-C DRP port controller + SuperSpeed mux' },
+          { k: 'Role', v: 'DFP / UFP / DRP (PORT pin selects)' },
+          { k: 'CC detection', v: 'CC1/CC2 orientation, current advertisement, attach detection' },
+          { k: 'SS mux', v: 'Switches TX1/RX1 or TX2/RX2 per orientation' },
+          { k: 'Control', v: 'I2C (address 0x47/0x67) or GPIO mode (ADDR pin selects)' },
+          { k: 'Supply', v: 'VCC33 (3.3V) + VDD5 (5V)' },
+          { k: 'Orientation output', v: 'DIR (open-drain)' },
+          { k: 'VBUS detection', v: 'VBUS_DET 5~28V' },
+          { k: 'Package', v: 'VQFN-30 (RNH), thermal pad to GND' }
+        ],
+        dropIn: [{ note: 'Same RNH VQFN-30 pinout; HD3SS3220 INT_N/OUT3 (pin23) has OUT3 in GPIO mode, while on HD3SS3220L that pin is NC' }]
+      },
+      ja: {
+        subcategory: 'USB Type-C DRP ポートコントローラ + SuperSpeed Mux',
+        whatIs: 'USB Type-C デュアルロールポート（DRP）コントローラ、SuperSpeed マルチプレクサ内蔵：CC 線を自動検出して挿入方向と役割（DFP/UFP/DRP）を判定し、USB3 SuperSpeed 信号を挿入方向に応じて正しい差動ペアへ切替。I2C または GPIO 制御を選択可能。',
+        func: 'CC1/CC2 が Type-C の接続・電流広告・挿入方向を検出；内蔵 SS mux が挿入方向に応じて TX/RX を TX1/RX1 または TX2/RX2 に切替；DIR で挿入方向を出力；PORT/ADDR/CURRENT_MODE の 3 ステートピンでモードとアドレスを設定；I2C（SCL/SDA）または GPIO 制御；ENn_CC/ENn_MUX で有効化。VBUS_DET が UFP 接続を検出。',
+        usedIn: 'USB Type-C ホスト/デバイス/デュアルロールポート、ノート/タブレット/スマホの Type-C インタフェース、Type-C ドックやアダプタ、SuperSpeed 信号ルーティング。',
+        desc: 'USB Type-C DRP ポートコントローラ（SS mux 内蔵）、CC 検出/挿入方向切替、I2C または GPIO 制御、DIR 出力（VQFN-30）。',
+        specs: [
+          { k: '機能', v: 'USB Type-C DRP ポートコントローラ + SuperSpeed mux' },
+          { k: '役割', v: 'DFP / UFP / DRP（PORT ピンで選択）' },
+          { k: 'CC 検出', v: 'CC1/CC2 挿入方向、電流広告、接続検出' },
+          { k: 'SS mux', v: '挿入方向に応じ TX1/RX1 または TX2/RX2 に切替' },
+          { k: '制御', v: 'I2C（アドレス 0x47/0x67）または GPIO モード（ADDR ピンで選択）' },
+          { k: '電源', v: 'VCC33 (3.3V) + VDD5 (5V)' },
+          { k: '挿入方向出力', v: 'DIR（オープンドレイン）' },
+          { k: 'VBUS 検出', v: 'VBUS_DET 5~28V' },
+          { k: 'パッケージ', v: 'VQFN-30 (RNH)、サーマルパッドは GND 接続' }
+        ],
+        dropIn: [{ note: '同一 RNH VQFN-30 ピン配置；HD3SS3220 の INT_N/OUT3（pin23）は GPIO モードで OUT3 を持つが、HD3SS3220L では NC' }]
+      },
+      ko: {
+        subcategory: 'USB Type-C DRP 포트 컨트롤러 + SuperSpeed Mux',
+        whatIs: 'USB Type-C 듀얼 롤 포트(DRP) 컨트롤러, SuperSpeed 멀티플렉서 내장: CC 선을 자동 감지해 삽입 방향과 역할(DFP/UFP/DRP)을 판정하고, USB3 SuperSpeed 신호를 삽입 방향에 따라 올바른 차동 쌍으로 전환. I2C 또는 GPIO 제어 선택 가능.',
+        func: 'CC1/CC2가 Type-C 연결·전류 광고·삽입 방향을 감지; 내장 SS mux가 삽입 방향에 따라 TX/RX를 TX1/RX1 또는 TX2/RX2로 전환; DIR로 삽입 방향 출력; PORT/ADDR/CURRENT_MODE 3상태 핀으로 모드와 주소 설정; I2C(SCL/SDA) 또는 GPIO 제어; ENn_CC/ENn_MUX로 활성화. VBUS_DET가 UFP 연결 감지.',
+        usedIn: 'USB Type-C 호스트/장치/듀얼 롤 포트, 노트북/태블릿/스마트폰 Type-C 인터페이스, Type-C 도크와 어댑터, SuperSpeed 신호 라우팅.',
+        desc: 'USB Type-C DRP 포트 컨트롤러(SS mux 내장), CC 감지/삽입 방향 전환, I2C 또는 GPIO 제어, DIR 출력(VQFN-30).',
+        specs: [
+          { k: '기능', v: 'USB Type-C DRP 포트 컨트롤러 + SuperSpeed mux' },
+          { k: '역할', v: 'DFP / UFP / DRP(PORT 핀으로 선택)' },
+          { k: 'CC 감지', v: 'CC1/CC2 삽입 방향, 전류 광고, 연결 감지' },
+          { k: 'SS mux', v: '삽입 방향에 따라 TX1/RX1 또는 TX2/RX2 전환' },
+          { k: '제어', v: 'I2C(주소 0x47/0x67) 또는 GPIO 모드(ADDR 핀으로 선택)' },
+          { k: '전원', v: 'VCC33 (3.3V) + VDD5 (5V)' },
+          { k: '삽입 방향 출력', v: 'DIR(오픈드레인)' },
+          { k: 'VBUS 감지', v: 'VBUS_DET 5~28V' },
+          { k: '패키지', v: 'VQFN-30 (RNH), 서멀 패드는 GND 접속' }
+        ],
+        dropIn: [{ note: '동일 RNH VQFN-30 핀 배치; HD3SS3220의 INT_N/OUT3(pin23)은 GPIO 모드에서 OUT3을 가지나, HD3SS3220L에서는 NC' }]
+      }
+    },
+    'SN74LVC1G00B-Q1': {
+      en: {
+        subcategory: 'Single-Gate 2-Input NAND (Automotive)',
+        whatIs: 'A single 2-input NAND logic gate: Y = NOT(A AND B). LVC family, wide 1.65-5.5V supply, automotive AEC-Q100, for glue logic / signal inversion-combination.',
+        func: 'Y goes low only when both A and B are high, otherwise high. LVC CMOS, 5V-tolerant inputs, rail-to-rail output. The single-gate small package fits right next to the signal to save PCB.',
+        usedIn: 'Glue logic, enable/interrupt signal combination, clock gating, logic operations in level-compatible interfaces.',
+        desc: 'Automotive single-gate 2-input NAND, LVC, 1.65-5.5V, 5V-tolerant inputs (SOT-23-5/SC70-5).',
+        specs: [
+          { k: 'Function', v: 'Single-gate 2-input NAND (Y=NOT(A·B))' },
+          { k: 'Family', v: 'LVC (CMOS, 5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 ~ 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: 'Same SOT-23-5 pinout; but 1G02B is a NOR gate (different function, pinout-compatible only)' }]
+      },
+      ja: {
+        subcategory: 'シングルゲート 2 入力 NAND（車載）',
+        whatIs: '1 個の 2 入力 NAND 論理ゲート：Y = NOT(A AND B)。LVC ファミリ、1.65-5.5V の広い電源、車載 AEC-Q100、グルーロジック/信号反転の組み合わせ用。',
+        func: 'A、B が共にハイのときだけ Y がロー、それ以外はハイ。LVC CMOS、入力は 5V 耐性、レール・ツー・レール出力。シングルゲートの小型パッケージは信号のすぐ近くに置けて基板を節約。',
+        usedIn: 'グルーロジック、有効/割り込み信号の組み合わせ、クロックゲーティング、レベル互換インタフェースの論理演算。',
+        desc: '車載シングルゲート 2 入力 NAND、LVC、1.65-5.5V、5V 入力耐性（SOT-23-5/SC70-5）。',
+        specs: [
+          { k: '機能', v: 'シングルゲート 2 入力 NAND（Y=NOT(A·B)）' },
+          { k: 'ファミリ', v: 'LVC（CMOS、5V 入力耐性）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '同一 SOT-23-5 ピン配置；ただし 1G02B は NOR ゲート（機能が異なり、ピン配置のみ互換）' }]
+      },
+      ko: {
+        subcategory: '싱글 게이트 2입력 NAND(차량용)',
+        whatIs: '1개의 2입력 NAND 논리 게이트: Y = NOT(A AND B). LVC 계열, 1.65-5.5V 넓은 전원, 차량용 AEC-Q100, 글루 로직/신호 반전 조합용.',
+        func: 'A, B가 모두 하이일 때만 Y가 로우, 그 외에는 하이. LVC CMOS, 입력 5V 내성, 레일 투 레일 출력. 싱글 게이트 소형 패키지는 신호 바로 옆에 둘 수 있어 PCB 절약.',
+        usedIn: '글루 로직, 인에이블/인터럽트 신호 조합, 클록 게이팅, 레벨 호환 인터페이스의 논리 연산.',
+        desc: '차량용 싱글 게이트 2입력 NAND, LVC, 1.65-5.5V, 5V 입력 내성(SOT-23-5/SC70-5).',
+        specs: [
+          { k: '기능', v: '싱글 게이트 2입력 NAND(Y=NOT(A·B))' },
+          { k: '계열', v: 'LVC(CMOS, 5V 입력 내성)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '동일 SOT-23-5 핀 배치; 그러나 1G02B는 NOR 게이트(기능이 다르며 핀 배치만 호환)' }]
+      }
+    },
+    'SN74LVC1G02B-Q1': {
+      en: {
+        subcategory: 'Single-Gate 2-Input NOR (Automotive)',
+        whatIs: 'A single 2-input NOR logic gate: Y = NOT(A OR B). LVC, 1.65-5.5V, automotive. Same pinout as 1G00B (NOR vs NAND).',
+        func: 'Y goes high only when both A and B are low, otherwise low. LVC CMOS, 5V-tolerant inputs, rail-to-rail output.',
+        usedIn: 'Glue logic, signal merging/inversion, enable combination, clock gating.',
+        desc: 'Automotive single-gate 2-input NOR, LVC, 1.65-5.5V, 5V-tolerant inputs (SOT-23-5/SC70-5).',
+        specs: [
+          { k: 'Function', v: 'Single-gate 2-input NOR (Y=NOT(A+B))' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 ~ 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: 'Same SOT-23-5 pinout; 1G00B is a NAND gate (different function)' }]
+      },
+      ja: {
+        subcategory: 'シングルゲート 2 入力 NOR（車載）',
+        whatIs: '1 個の 2 入力 NOR 論理ゲート：Y = NOT(A OR B)。LVC、1.65-5.5V、車載。1G00B と同一ピン配置（NOR 対 NAND）。',
+        func: 'A、B が共にローのときだけ Y がハイ、それ以外はロー。LVC CMOS、5V 入力耐性、レール・ツー・レール出力。',
+        usedIn: 'グルーロジック、信号の合成/反転、有効化の組み合わせ、クロックゲーティング。',
+        desc: '車載シングルゲート 2 入力 NOR、LVC、1.65-5.5V、5V 入力耐性（SOT-23-5/SC70-5）。',
+        specs: [
+          { k: '機能', v: 'シングルゲート 2 入力 NOR（Y=NOT(A+B)）' },
+          { k: 'ファミリ', v: 'LVC（5V 入力耐性）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '同一 SOT-23-5 ピン配置；1G00B は NAND ゲート（機能が異なる）' }]
+      },
+      ko: {
+        subcategory: '싱글 게이트 2입력 NOR(차량용)',
+        whatIs: '1개의 2입력 NOR 논리 게이트: Y = NOT(A OR B). LVC, 1.65-5.5V, 차량용. 1G00B와 동일 핀 배치(NOR 대 NAND).',
+        func: 'A, B가 모두 로우일 때만 Y가 하이, 그 외에는 로우. LVC CMOS, 5V 입력 내성, 레일 투 레일 출력.',
+        usedIn: '글루 로직, 신호 병합/반전, 인에이블 조합, 클록 게이팅.',
+        desc: '차량용 싱글 게이트 2입력 NOR, LVC, 1.65-5.5V, 5V 입력 내성(SOT-23-5/SC70-5).',
+        specs: [
+          { k: '기능', v: '싱글 게이트 2입력 NOR(Y=NOT(A+B))' },
+          { k: '계열', v: 'LVC(5V 입력 내성)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '동일 SOT-23-5 핀 배치; 1G00B는 NAND 게이트(기능이 다름)' }]
+      }
+    },
+    'SN74LVC1G132B-Q1': {
+      en: {
+        subcategory: 'Single-Gate 2-Input NAND (Schmitt-Trigger, Automotive)',
+        whatIs: 'A single 2-input NAND gate with Schmitt-trigger (hysteresis) inputs: Y = NOT(A AND B). The hysteresis shapes slow/noisy signals into a clean square wave. LVC, automotive.',
+        func: 'Y goes low only when both A and B are high; Schmitt hysteresis on the inputs resists noise and accepts slow-rising signals. 1.65-5.5V, 5V-tolerant inputs.',
+        usedIn: 'Noisy-signal shaping + logic, button debouncing, slow-clock shaping, RC oscillation.',
+        desc: 'Automotive single-gate 2-input NAND (Schmitt inputs), LVC, 1.65-5.5V (SOT-23-5).',
+        specs: [
+          { k: 'Function', v: '2-input NAND + Schmitt inputs' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 ~ 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ]
+      },
+      ja: {
+        subcategory: 'シングルゲート 2 入力 NAND（シュミットトリガ、車載）',
+        whatIs: '1 個の 2 入力 NAND ゲート、入力にシュミットトリガ（ヒステリシス）付き：Y = NOT(A AND B)。ヒステリシスが遅い/雑音信号をきれいな方形波に整形。LVC、車載。',
+        func: 'A、B が共にハイのときだけ Y がロー；入力のシュミットヒステリシスが雑音に強く、緩やかに立ち上がる信号を受けられる。1.65-5.5V、5V 入力耐性。',
+        usedIn: '雑音信号の整形＋論理、ボタンのデバウンス、遅いクロックの整形、RC 発振。',
+        desc: '車載シングルゲート 2 入力 NAND（シュミット入力）、LVC、1.65-5.5V（SOT-23-5）。',
+        specs: [
+          { k: '機能', v: '2 入力 NAND + シュミット入力' },
+          { k: 'ファミリ', v: 'LVC（5V 入力耐性）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ]
+      },
+      ko: {
+        subcategory: '싱글 게이트 2입력 NAND(슈미트 트리거, 차량용)',
+        whatIs: '1개의 2입력 NAND 게이트, 입력에 슈미트 트리거(히스테리시스) 포함: Y = NOT(A AND B). 히스테리시스가 느린/잡음 신호를 깨끗한 구형파로 정형. LVC, 차량용.',
+        func: 'A, B가 모두 하이일 때만 Y가 로우; 입력 슈미트 히스테리시스가 잡음에 강하고 천천히 상승하는 신호를 받을 수 있음. 1.65-5.5V, 5V 입력 내성.',
+        usedIn: '잡음 신호 정형+논리, 버튼 디바운싱, 느린 클록 정형, RC 발진.',
+        desc: '차량용 싱글 게이트 2입력 NAND(슈미트 입력), LVC, 1.65-5.5V(SOT-23-5).',
+        specs: [
+          { k: '기능', v: '2입력 NAND + 슈미트 입력' },
+          { k: '계열', v: 'LVC(5V 입력 내성)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ]
+      }
+    },
+    'SN74LVC1G10B-Q1': {
+      en: {
+        subcategory: 'Single-Gate 3-Input NAND (Automotive)',
+        whatIs: 'A single 3-input NAND gate: Y = NOT(A AND B AND C). LVC, 1.65-5.5V, automotive.',
+        func: 'Y goes low only when A, B and C are all high. LVC CMOS, 5V-tolerant inputs, rail-to-rail output.',
+        usedIn: 'Three-condition glue logic, enable combination, address decoding.',
+        desc: 'Automotive single-gate 3-input NAND, LVC, 1.65-5.5V (SC70-6).',
+        specs: [
+          { k: 'Function', v: 'Single-gate 3-input NAND' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 ~ 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SC70-6 / X2SON-6' }
+        ],
+        dropIn: [{ note: 'Same SC70-6 pinout; 1G11B is a 3-input AND (different function)' }]
+      },
+      ja: {
+        subcategory: 'シングルゲート 3 入力 NAND（車載）',
+        whatIs: '1 個の 3 入力 NAND ゲート：Y = NOT(A AND B AND C)。LVC、1.65-5.5V、車載。',
+        func: 'A、B、C がすべてハイのときだけ Y がロー。LVC CMOS、5V 入力耐性、レール・ツー・レール出力。',
+        usedIn: '3 条件のグルーロジック、有効化の組み合わせ、アドレスデコード。',
+        desc: '車載シングルゲート 3 入力 NAND、LVC、1.65-5.5V（SC70-6）。',
+        specs: [
+          { k: '機能', v: 'シングルゲート 3 入力 NAND' },
+          { k: 'ファミリ', v: 'LVC（5V 入力耐性）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SC70-6 / X2SON-6' }
+        ],
+        dropIn: [{ note: '同一 SC70-6 ピン配置；1G11B は 3 入力 AND（機能が異なる）' }]
+      },
+      ko: {
+        subcategory: '싱글 게이트 3입력 NAND(차량용)',
+        whatIs: '1개의 3입력 NAND 게이트: Y = NOT(A AND B AND C). LVC, 1.65-5.5V, 차량용.',
+        func: 'A, B, C가 모두 하이일 때만 Y가 로우. LVC CMOS, 5V 입력 내성, 레일 투 레일 출력.',
+        usedIn: '3조건 글루 로직, 인에이블 조합, 주소 디코딩.',
+        desc: '차량용 싱글 게이트 3입력 NAND, LVC, 1.65-5.5V(SC70-6).',
+        specs: [
+          { k: '기능', v: '싱글 게이트 3입력 NAND' },
+          { k: '계열', v: 'LVC(5V 입력 내성)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SC70-6 / X2SON-6' }
+        ],
+        dropIn: [{ note: '동일 SC70-6 핀 배치; 1G11B는 3입력 AND(기능이 다름)' }]
+      }
+    },
+    'SN74LVC1G11B-Q1': {
+      en: {
+        subcategory: 'Single-Gate 3-Input AND (Automotive)',
+        whatIs: 'A single 3-input AND gate: Y = A AND B AND C. LVC, 1.65-5.5V, automotive. Same pinout as 1G10B (AND vs NAND).',
+        func: 'Y goes high only when A, B and C are all high. LVC CMOS, 5V-tolerant inputs, rail-to-rail output.',
+        usedIn: 'Three-condition glue logic, enable combination, address decoding.',
+        desc: 'Automotive single-gate 3-input AND, LVC, 1.65-5.5V (SC70-6).',
+        specs: [
+          { k: 'Function', v: 'Single-gate 3-input AND' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 ~ 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SC70-6 / X2SON-6' }
+        ],
+        dropIn: [{ note: 'Same SC70-6 pinout; 1G10B is a 3-input NAND (different function)' }]
+      },
+      ja: {
+        subcategory: 'シングルゲート 3 入力 AND（車載）',
+        whatIs: '1 個の 3 入力 AND ゲート：Y = A AND B AND C。LVC、1.65-5.5V、車載。1G10B と同一ピン配置（AND 対 NAND）。',
+        func: 'A、B、C がすべてハイのときだけ Y がハイ。LVC CMOS、5V 入力耐性、レール・ツー・レール出力。',
+        usedIn: '3 条件のグルーロジック、有効化の組み合わせ、アドレスデコード。',
+        desc: '車載シングルゲート 3 入力 AND、LVC、1.65-5.5V（SC70-6）。',
+        specs: [
+          { k: '機能', v: 'シングルゲート 3 入力 AND' },
+          { k: 'ファミリ', v: 'LVC（5V 入力耐性）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SC70-6 / X2SON-6' }
+        ],
+        dropIn: [{ note: '同一 SC70-6 ピン配置；1G10B は 3 入力 NAND（機能が異なる）' }]
+      },
+      ko: {
+        subcategory: '싱글 게이트 3입력 AND(차량용)',
+        whatIs: '1개의 3입력 AND 게이트: Y = A AND B AND C. LVC, 1.65-5.5V, 차량용. 1G10B와 동일 핀 배치(AND 대 NAND).',
+        func: 'A, B, C가 모두 하이일 때만 Y가 하이. LVC CMOS, 5V 입력 내성, 레일 투 레일 출력.',
+        usedIn: '3조건 글루 로직, 인에이블 조합, 주소 디코딩.',
+        desc: '차량용 싱글 게이트 3입력 AND, LVC, 1.65-5.5V(SC70-6).',
+        specs: [
+          { k: '기능', v: '싱글 게이트 3입력 AND' },
+          { k: '계열', v: 'LVC(5V 입력 내성)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SC70-6 / X2SON-6' }
+        ],
+        dropIn: [{ note: '동일 SC70-6 핀 배치; 1G10B는 3입력 NAND(기능이 다름)' }]
+      }
+    },
+    'SN74LVC1G14B-Q1': {
+      en: {
+        subcategory: 'Single-Gate Schmitt-Trigger Inverter (Automotive)',
+        whatIs: 'A single Schmitt-trigger inverter: Y = NOT A, with hysteresis inputs to shape noisy/slow signals. LVC, 1.65-5.5V, automotive.',
+        func: 'The Schmitt hysteresis shapes a slow-rising or noisy signal into a clean square wave, then inverts it. Common for RC delay/oscillation and signal shaping.',
+        usedIn: 'Signal shaping/debounce, slow-clock shaping, RC oscillator, reset delay.',
+        desc: 'Automotive single-gate Schmitt inverter, LVC, 1.65-5.5V (SOT-23-5).',
+        specs: [
+          { k: 'Function', v: 'Schmitt-trigger inverter (Y=NOT A)' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 ~ 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: 'Same SOT-23-5 pinout; 1G17B is a Schmitt buffer (non-inverting), different function' }]
+      },
+      ja: {
+        subcategory: 'シングルゲート シュミットトリガインバータ（車載）',
+        whatIs: '1 個のシュミットトリガインバータ：Y = NOT A、ヒステリシス入力で雑音/遅い信号を整形。LVC、1.65-5.5V、車載。',
+        func: '入力のシュミットヒステリシスが緩やかに立ち上がる/雑音信号をきれいな方形波に整形してから反転出力。RC 遅延/発振、信号整形によく使う。',
+        usedIn: '信号整形/デバウンス、遅いクロックの整形、RC 発振器、リセット遅延。',
+        desc: '車載シングルゲート シュミットインバータ、LVC、1.65-5.5V（SOT-23-5）。',
+        specs: [
+          { k: '機能', v: 'シュミットトリガインバータ（Y=NOT A）' },
+          { k: 'ファミリ', v: 'LVC（5V 入力耐性）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '同一 SOT-23-5 ピン配置；1G17B はシュミットバッファ（非反転）、機能が異なる' }]
+      },
+      ko: {
+        subcategory: '싱글 게이트 슈미트 트리거 인버터(차량용)',
+        whatIs: '1개의 슈미트 트리거 인버터: Y = NOT A, 히스테리시스 입력으로 잡음/느린 신호 정형. LVC, 1.65-5.5V, 차량용.',
+        func: '입력 슈미트 히스테리시스가 천천히 상승하거나 잡음이 섞인 신호를 깨끗한 구형파로 정형한 뒤 반전 출력. RC 지연/발진, 신호 정형에 자주 사용.',
+        usedIn: '신호 정형/디바운스, 느린 클록 정형, RC 발진기, 리셋 지연.',
+        desc: '차량용 싱글 게이트 슈미트 인버터, LVC, 1.65-5.5V(SOT-23-5).',
+        specs: [
+          { k: '기능', v: '슈미트 트리거 인버터(Y=NOT A)' },
+          { k: '계열', v: 'LVC(5V 입력 내성)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '동일 SOT-23-5 핀 배치; 1G17B는 슈미트 버퍼(비반전), 기능이 다름' }]
+      }
     }
   };
   Object.assign(window.IC_I18N, T);
