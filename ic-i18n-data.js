@@ -2401,3 +2401,687 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 4: entries 45-59 */
+(function () {
+  var T = {
+    'SN74LVC1G17B-Q1': {
+      en: {
+        subcategory: 'Single Schmitt-trigger buffer (automotive)',
+        whatIs: 'Single Schmitt-trigger buffer: Y = A (non-inverting), with input hysteresis for signal conditioning. LVC, 1.65–5.5V, automotive. Same pinout as the 1G14B (buffer vs inverter).',
+        func: 'Conditions the input via Schmitt hysteresis and outputs in phase — for signal shaping/buffer isolation and stronger drive.',
+        usedIn: 'Signal conditioning/buffering, slow clock shaping, line driving, reset delay.',
+        desc: 'Automotive single Schmitt buffer, LVC, 1.65–5.5V (SOT-23-5).',
+        specs: [
+          { k: 'Function', v: 'Schmitt-trigger buffer (Y=A)' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 – 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: 'Same SOT-23-5 pinout; the 1G14B is a Schmitt inverter — different function' }]
+      },
+      ja: {
+        subcategory: '1 ゲート シュミットトリガバッファ（車載）',
+        whatIs: '単体シュミットトリガバッファ：Y = A（非反転）、入力ヒステリシスで整形。LVC・1.65~5.5V・車載。1G14B とピン互換（バッファ vs 反転）。',
+        func: '入力シュミットヒステリシスで整形後、同相出力。信号整形/バッファ絶縁・駆動力増強に。',
+        usedIn: '信号整形/バッファ、低速クロック整形、ライン駆動、リセット遅延。',
+        desc: '車載 1 ゲート シュミットバッファ。LVC・1.65~5.5V（SOT-23-5）。',
+        specs: [
+          { k: '機能', v: 'シュミットトリガバッファ（Y=A）' },
+          { k: 'シリーズ', v: 'LVC（5V 入力耐圧）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '同 SOT-23-5 ピン配置；1G14B はシュミット反転器で機能が異なる' }]
+      },
+      ko: {
+        subcategory: '단일 게이트 슈미트 트리거 버퍼(차량용)',
+        whatIs: '단일 슈미트 트리거 버퍼: Y = A(비반전), 입력 히스테리시스로 정형. LVC·1.65~5.5V·차량용. 1G14B와 핀 호환(버퍼 vs 반전).',
+        func: '입력 슈미트 히스테리시스로 정형 후 동상 출력. 신호 정형/버퍼 절연·구동력 증강용.',
+        usedIn: '신호 정형/버퍼, 저속 클록 정형, 라인 구동, 리셋 지연.',
+        desc: '차량용 단일 게이트 슈미트 버퍼. LVC·1.65~5.5V(SOT-23-5).',
+        specs: [
+          { k: '기능', v: '슈미트 트리거 버퍼(Y=A)' },
+          { k: '시리즈', v: 'LVC(5V 입력 내압)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '동일 SOT-23-5 핀 배치; 1G14B는 슈미트 반전기로 기능 다름' }]
+      }
+    },
+    'SN74LVC1G125B-Q1': {
+      en: {
+        subcategory: 'Single tri-state buffer (OE active-low, automotive)',
+        whatIs: 'Single tri-state output buffer: Y=A when OE is low, Hi-Z when OE is high. For bus sharing/direction control. LVC, automotive.',
+        func: 'When OE (active-low) enables, A is buffered to Y; when disabled, Y goes tri-state (Hi-Z) to release the bus. 1.65–5.5V, 5V-tolerant inputs.',
+        usedIn: 'Bus sharing, tri-state signal driving, multi-device shared lines, direction control.',
+        desc: 'Automotive single tri-state buffer (OE active-low), LVC, 1.65–5.5V (SOT-23-5).',
+        specs: [
+          { k: 'Function', v: 'Tri-state buffer (OE active-low)' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 – 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: 'Same SOT-23-5 pinout; the 1G126B has an active-high OE (opposite polarity)' }]
+      },
+      ja: {
+        subcategory: '1 ゲート 3 ステートバッファ（OE active-low・車載）',
+        whatIs: '単体 3 ステート出力バッファ：OE ローで Y=A、OE ハイで Y ハイインピーダンス。バス共用/方向制御用。LVC・車載。',
+        func: 'OE（active-low）有効時 A を Y へバッファ；無効時 Y は 3 ステート（Hi-Z）でバスを解放。1.65~5.5V・5V 入力耐圧。',
+        usedIn: 'バス共用、3 ステート信号駆動、複数デバイス共線、方向制御。',
+        desc: '車載 1 ゲート 3 ステートバッファ（OE active-low）。LVC・1.65~5.5V（SOT-23-5）。',
+        specs: [
+          { k: '機能', v: '3 ステートバッファ（OE active-low）' },
+          { k: 'シリーズ', v: 'LVC（5V 入力耐圧）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '同 SOT-23-5 ピン配置；1G126B の OE は active-high（極性逆）' }]
+      },
+      ko: {
+        subcategory: '단일 게이트 3상태 버퍼(OE active-low·차량용)',
+        whatIs: '단일 3상태 출력 버퍼: OE 로우일 때 Y=A, OE 하이일 때 Y 고임피던스. 버스 공유/방향 제어용. LVC·차량용.',
+        func: 'OE(active-low) 활성 시 A를 Y로 버퍼; 비활성 시 Y는 3상태(Hi-Z)로 버스 개방. 1.65~5.5V·5V 입력 내압.',
+        usedIn: '버스 공유, 3상태 신호 구동, 다중 장치 공용선, 방향 제어.',
+        desc: '차량용 단일 게이트 3상태 버퍼(OE active-low). LVC·1.65~5.5V(SOT-23-5).',
+        specs: [
+          { k: '기능', v: '3상태 버퍼(OE active-low)' },
+          { k: '시리즈', v: 'LVC(5V 입력 내압)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '동일 SOT-23-5 핀 배치; 1G126B의 OE는 active-high(극성 반대)' }]
+      }
+    },
+    'SN74LVC1G126B-Q1': {
+      en: {
+        subcategory: 'Single tri-state buffer (OE active-high, automotive)',
+        whatIs: 'Single tri-state output buffer: Y=A when OE is high, Hi-Z when OE is low. Same pinout as the 1G125B (opposite OE polarity). LVC, automotive.',
+        func: 'When OE (active-high) enables, A is buffered to Y; when disabled, tri-state. 1.65–5.5V, 5V-tolerant inputs.',
+        usedIn: 'Bus sharing, tri-state driving, multi-device shared lines, direction control.',
+        desc: 'Automotive single tri-state buffer (OE active-high), LVC, 1.65–5.5V (SOT-23-5).',
+        specs: [
+          { k: 'Function', v: 'Tri-state buffer (OE active-high)' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 – 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: 'Same SOT-23-5 pinout; the 1G125B has an active-low OE (opposite polarity)' }]
+      },
+      ja: {
+        subcategory: '1 ゲート 3 ステートバッファ（OE active-high・車載）',
+        whatIs: '単体 3 ステート出力バッファ：OE ハイで Y=A、OE ローで Y ハイインピーダンス。1G125B とピン互換（OE 極性逆）。LVC・車載。',
+        func: 'OE（active-high）有効時 A を Y へバッファ；無効時 3 ステート。1.65~5.5V・5V 入力耐圧。',
+        usedIn: 'バス共用、3 ステート駆動、複数デバイス共線、方向制御。',
+        desc: '車載 1 ゲート 3 ステートバッファ（OE active-high）。LVC・1.65~5.5V（SOT-23-5）。',
+        specs: [
+          { k: '機能', v: '3 ステートバッファ（OE active-high）' },
+          { k: 'シリーズ', v: 'LVC（5V 入力耐圧）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '同 SOT-23-5 ピン配置；1G125B の OE は active-low（極性逆）' }]
+      },
+      ko: {
+        subcategory: '단일 게이트 3상태 버퍼(OE active-high·차량용)',
+        whatIs: '단일 3상태 출력 버퍼: OE 하이일 때 Y=A, OE 로우일 때 Y 고임피던스. 1G125B와 핀 호환(OE 극성 반대). LVC·차량용.',
+        func: 'OE(active-high) 활성 시 A를 Y로 버퍼; 비활성 시 3상태. 1.65~5.5V·5V 입력 내압.',
+        usedIn: '버스 공유, 3상태 구동, 다중 장치 공용선, 방향 제어.',
+        desc: '차량용 단일 게이트 3상태 버퍼(OE active-high). LVC·1.65~5.5V(SOT-23-5).',
+        specs: [
+          { k: '기능', v: '3상태 버퍼(OE active-high)' },
+          { k: '시리즈', v: 'LVC(5V 입력 내압)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ],
+        dropIn: [{ note: '동일 SOT-23-5 핀 배치; 1G125B의 OE는 active-low(극성 반대)' }]
+      }
+    },
+    'SN74LVC1G240B-Q1': {
+      en: {
+        subcategory: 'Single tri-state inverter (OE active-low, automotive)',
+        whatIs: 'Single tri-state inverting buffer: Y=NOT A when OE is low, Hi-Z when OE is high. LVC, automotive. For inversion + bus driving.',
+        func: 'When OE (active-low) enables, A is inverted and buffered to Y; when disabled, tri-state. 1.65–5.5V, 5V-tolerant inputs.',
+        usedIn: 'Inversion + bus driving, tri-state inverted signals, inverted clock distribution.',
+        desc: 'Automotive single tri-state inverter (OE active-low), LVC, 1.65–5.5V (SOT-23-5).',
+        specs: [
+          { k: 'Function', v: 'Tri-state inverter (OE active-low)' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 – 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ]
+      },
+      ja: {
+        subcategory: '1 ゲート 3 ステート反転器（OE active-low・車載）',
+        whatIs: '単体 3 ステート反転バッファ：OE ローで Y=NOT A、OE ハイで 3 ステート。LVC・車載。反転＋バス駆動用。',
+        func: 'OE（active-low）有効時 A を反転してバッファ；無効時 3 ステート。1.65~5.5V・5V 入力耐圧。',
+        usedIn: '反転＋バス駆動、3 ステート反転信号、反転クロック分配。',
+        desc: '車載 1 ゲート 3 ステート反転器（OE active-low）。LVC・1.65~5.5V（SOT-23-5）。',
+        specs: [
+          { k: '機能', v: '3 ステート反転器（OE active-low）' },
+          { k: 'シリーズ', v: 'LVC（5V 入力耐圧）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ]
+      },
+      ko: {
+        subcategory: '단일 게이트 3상태 반전기(OE active-low·차량용)',
+        whatIs: '단일 3상태 반전 버퍼: OE 로우일 때 Y=NOT A, OE 하이일 때 3상태. LVC·차량용. 반전+버스 구동용.',
+        func: 'OE(active-low) 활성 시 A를 반전해 버퍼; 비활성 시 3상태. 1.65~5.5V·5V 입력 내압.',
+        usedIn: '반전+버스 구동, 3상태 반전 신호, 반전 클록 분배.',
+        desc: '차량용 단일 게이트 3상태 반전기(OE active-low). LVC·1.65~5.5V(SOT-23-5).',
+        specs: [
+          { k: '기능', v: '3상태 반전기(OE active-low)' },
+          { k: '시리즈', v: 'LVC(5V 입력 내압)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT-23-5 / SC70-5 / X2SON-5' }
+        ]
+      }
+    },
+    'SN74LVC1G175B-Q1': {
+      en: {
+        subcategory: 'Single D flip-flop (async clear, automotive)',
+        whatIs: 'Single D flip-flop: the rising CLK edge latches D into Q; CLR asynchronously clears. LVC, automotive. For single-bit storage/division/synchronization.',
+        func: 'CLK rising edge samples D → Q; pulling CLR (active-low) low immediately clears Q to 0 regardless of clock. 1.65–5.5V, 5V-tolerant inputs.',
+        usedIn: 'Single-bit storage, divide-by-2, signal synchronization/metastability filtering, edge detection.',
+        desc: 'Automotive single D flip-flop (async CLR), LVC, 1.65–5.5V (SOT-23-6).',
+        specs: [
+          { k: 'Function', v: 'D flip-flop (rising CLK, async CLR)' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 – 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT-23-6 / SC70-6 / X2SON-6' }
+        ]
+      },
+      ja: {
+        subcategory: '1 個 D フリップフロップ（非同期クリア・車載）',
+        whatIs: '単体 D フリップフロップ：CLK 立上りで D を Q にラッチ、CLR で非同期クリア。LVC・車載。1 ビットの記憶/分周/同期用。',
+        func: 'CLK 正エッジで D をサンプル→Q；CLR（active-low）をローにするとクロックに関係なく即 Q を 0 クリア。1.65~5.5V・5V 入力耐圧。',
+        usedIn: '1 ビット記憶、÷2 分周、信号同期/メタステーブル除去、エッジ検出。',
+        desc: '車載 1 個 D フリップフロップ（非同期 CLR）。LVC・1.65~5.5V（SOT-23-6）。',
+        specs: [
+          { k: '機能', v: 'D フリップフロップ（CLK 正エッジ・非同期 CLR）' },
+          { k: 'シリーズ', v: 'LVC（5V 入力耐圧）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT-23-6 / SC70-6 / X2SON-6' }
+        ]
+      },
+      ko: {
+        subcategory: '단일 D 플립플롭(비동기 클리어·차량용)',
+        whatIs: '단일 D 플립플롭: CLK 상승 에지에서 D를 Q에 래치, CLR로 비동기 클리어. LVC·차량용. 1비트 저장/분주/동기용.',
+        func: 'CLK 상승 에지에서 D 샘플 → Q; CLR(active-low)을 로우로 하면 클록과 무관하게 즉시 Q를 0으로 클리어. 1.65~5.5V·5V 입력 내압.',
+        usedIn: '1비트 저장, ÷2 분주, 신호 동기/준안정 제거, 에지 검출.',
+        desc: '차량용 단일 D 플립플롭(비동기 CLR). LVC·1.65~5.5V(SOT-23-6).',
+        specs: [
+          { k: '기능', v: 'D 플립플롭(CLK 상승 에지·비동기 CLR)' },
+          { k: '시리즈', v: 'LVC(5V 입력 내압)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT-23-6 / SC70-6 / X2SON-6' }
+        ]
+      }
+    },
+    'SN74LVC14B': {
+      en: {
+        subcategory: 'Hex Schmitt-trigger inverter',
+        whatIs: 'Hex Schmitt-trigger inverter: 6 independent inverters, each with input hysteresis to reshape noisy/slow signals. LVC, 1.65–5.5V.',
+        func: 'Each channel nA→nY with Y=NOT A and Schmitt hysteresis on the input. Six independent channels — commonly used for multi-line signal conditioning/inversion and RC oscillators.',
+        usedIn: 'Multi-line signal conditioning/debounce, slow clock shaping, RC oscillators, reset delay.',
+        desc: 'Hex LVC Schmitt inverter, 1.65–5.5V, 5V-tolerant inputs (TSSOP/SOIC-14).',
+        specs: [
+          { k: 'Function', v: 'Hex Schmitt inverter' },
+          { k: 'Family', v: 'LVC (5V-tolerant inputs)' },
+          { k: 'Supply', v: '1.65 – 5.5 V' },
+          { k: 'Package', v: 'TSSOP-14 / SOIC-14' }
+        ]
+      },
+      ja: {
+        subcategory: '6 回路 シュミットトリガ反転器',
+        whatIs: '6 回路シュミットトリガ反転器：6 個の独立反転器、各入力にヒステリシスを持ちノイズ/低速信号を整形。LVC・1.65~5.5V。',
+        func: '各回路 nA→nY で Y=NOT A、入力シュミットヒステリシス。6 回路独立——多回線の信号整形/反転や RC 発振の定番。',
+        usedIn: '多回線の信号整形/デバウンス、低速クロック整形、RC 発振、リセット遅延。',
+        desc: '6 回路 LVC シュミット反転器。1.65~5.5V・5V 入力耐圧（TSSOP/SOIC-14）。',
+        specs: [
+          { k: '機能', v: '6 回路シュミット反転器' },
+          { k: 'シリーズ', v: 'LVC（5V 入力耐圧）' },
+          { k: '電源', v: '1.65 ~ 5.5 V' },
+          { k: 'パッケージ', v: 'TSSOP-14 / SOIC-14' }
+        ]
+      },
+      ko: {
+        subcategory: '6채널 슈미트 트리거 반전기',
+        whatIs: '6채널 슈미트 트리거 반전기: 6개 독립 반전기, 각 입력에 히스테리시스로 잡음/느린 신호 정형. LVC·1.65~5.5V.',
+        func: '각 채널 nA→nY로 Y=NOT A, 입력 슈미트 히스테리시스. 6채널 독립 - 다중 선 신호 정형/반전, RC 발진의 정석.',
+        usedIn: '다중 선 신호 정형/디바운스, 저속 클록 정형, RC 발진, 리셋 지연.',
+        desc: '6채널 LVC 슈미트 반전기. 1.65~5.5V·5V 입력 내압(TSSOP/SOIC-14).',
+        specs: [
+          { k: '기능', v: '6채널 슈미트 반전기' },
+          { k: '시리즈', v: 'LVC(5V 입력 내압)' },
+          { k: '전원', v: '1.65 ~ 5.5 V' },
+          { k: '패키지', v: 'TSSOP-14 / SOIC-14' }
+        ]
+      }
+    },
+    'SN74AC157-Q1': {
+      en: {
+        subcategory: 'Quad 2:1 data selector/multiplexer (automotive)',
+        whatIs: 'Quad 2:1 data selector (multiplexer): a single A/B select line simultaneously decides whether each of the 4 channels takes its A or B input onto Y. G (strobe) enables. AC family, automotive.',
+        func: 'When A/B is low each nY=nA, when high nY=nB; G (active-low strobe) high forces all Y outputs low. Switches a 4-bit source with one line. 2–5.5V.',
+        usedIn: 'Bus source switching, 4-bit data selection, address/data multiplexing, dual-source switching.',
+        desc: 'Automotive quad 2:1 data selector/multiplexer, shared select line + strobe, AC family (TSSOP/SOIC-16).',
+        specs: [
+          { k: 'Function', v: 'Quad 2:1 data selector/multiplexer' },
+          { k: 'Control', v: 'A/B select line + G strobe (active-low)' },
+          { k: 'Family', v: 'AC (CMOS)' },
+          { k: 'Supply', v: '2 – 5.5 V' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'TSSOP-16 / SOIC-16 (thermal pad to GND or floating)' }
+        ]
+      },
+      ja: {
+        subcategory: '4 回路 2:1 データセレクタ/マルチプレクサ（車載）',
+        whatIs: '4 回路 2:1 データセレクタ（マルチプレクサ）：1 本の A/B 選択線が同時に、4 回路それぞれ A か B の入力を Y へ取るか決定。G（ストローブ）でイネーブル。AC シリーズ・車載。',
+        func: 'A/B ローで各回路 nY=nA、ハイで nY=nB；G（active-low ストローブ）ハイで全 Y 出力ロー。1 本で 4 ビットのソースを切替。2~5.5V。',
+        usedIn: 'バスソース切替、4 ビットデータ選択、アドレス/データ多重化、2 ソース切替。',
+        desc: '車載 4 回路 2:1 データセレクタ/マルチプレクサ。共用選択線＋ストローブ・AC シリーズ（TSSOP/SOIC-16）。',
+        specs: [
+          { k: '機能', v: '4 回路 2:1 データセレクタ/マルチプレクサ' },
+          { k: '制御', v: 'A/B 選択線＋G ストローブ（active-low）' },
+          { k: 'シリーズ', v: 'AC（CMOS）' },
+          { k: '電源', v: '2 ~ 5.5 V' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'TSSOP-16 / SOIC-16（サーマルパッドは GND か浮き）' }
+        ]
+      },
+      ko: {
+        subcategory: '4채널 2:1 데이터 선택기/멀티플렉서(차량용)',
+        whatIs: '4채널 2:1 데이터 선택기(멀티플렉서): 하나의 A/B 선택선이 동시에 4채널 각각 A 또는 B 입력을 Y로 취할지 결정. G(스트로브)로 인에이블. AC 시리즈·차량용.',
+        func: 'A/B 로우면 각 채널 nY=nA, 하이면 nY=nB; G(active-low 스트로브) 하이면 전체 Y 출력 로우. 한 선으로 4비트 소스 전환. 2~5.5V.',
+        usedIn: '버스 소스 전환, 4비트 데이터 선택, 주소/데이터 다중화, 2소스 전환.',
+        desc: '차량용 4채널 2:1 데이터 선택기/멀티플렉서. 공용 선택선+스트로브·AC 시리즈(TSSOP/SOIC-16).',
+        specs: [
+          { k: '기능', v: '4채널 2:1 데이터 선택기/멀티플렉서' },
+          { k: '제어', v: 'A/B 선택선 + G 스트로브(active-low)' },
+          { k: '시리즈', v: 'AC(CMOS)' },
+          { k: '전원', v: '2 ~ 5.5 V' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'TSSOP-16 / SOIC-16(서멀 패드 GND 또는 플로팅)' }
+        ]
+      }
+    },
+    '74LVC4066-Q100': {
+      en: {
+        subcategory: 'Quad bilateral analog switch',
+        whatIs: 'Quad bidirectional analog/digital switch: 4 independent SPST switches, each with a control pin nE deciding whether nY↔nZ conducts. Bidirectional, passes analog or digital. LVC, automotive.',
+        func: 'Each channel: nE high conducts nY↔nZ, low disconnects; signals bidirectional, low Ron. For signal routing, sample-and-hold, signal gating. 1.2–3.6V (LVC).',
+        usedIn: 'Analog/digital signal routing, sample-and-hold, signal gating, sensor muxing.',
+        desc: 'Quad bilateral analog switch, independent E control per channel, bidirectional (SO14/TSSOP14).',
+        specs: [
+          { k: 'Function', v: 'Quad bilateral analog switch (4× SPST)' },
+          { k: 'Control', v: 'nE per channel (high conducts)' },
+          { k: 'Family', v: 'LVC (CMOS)' },
+          { k: 'Supply', v: '1.2 – 3.6 V (per datasheet)' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SO14 / TSSOP14 / DHVQFN14 (thermal pad not grounded, float or tie to GND)' }
+        ]
+      },
+      ja: {
+        subcategory: '4 回路双方向アナログスイッチ（Quad Bilateral Switch）',
+        whatIs: '4 回路双方向アナログ/デジタルスイッチ：4 個の独立 SPST スイッチ、各々制御ピン nE で nY↔nZ の導通を決定。双方向・アナログもデジタルも伝送。LVC・車載。',
+        func: '各回路 nE ハイで nY↔nZ 導通、ロー遮断；信号双方向・低 Ron。信号選路・サンプルホールド・信号ゲーティングに。1.2~3.6V（LVC）。',
+        usedIn: 'アナログ/デジタル信号選路、サンプルホールド、信号ゲーティング、センサ多重化。',
+        desc: '4 回路双方向アナログスイッチ。各回路独立 E 制御・双方向（SO14/TSSOP14）。',
+        specs: [
+          { k: '機能', v: '4 回路双方向アナログスイッチ（4× SPST）' },
+          { k: '制御', v: '各回路 nE（ハイで導通）' },
+          { k: 'シリーズ', v: 'LVC（CMOS）' },
+          { k: '電源', v: '1.2 ~ 3.6 V（datasheet 参照）' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SO14 / TSSOP14 / DHVQFN14（サーマルパッドは非接地、浮きか GND 接続）' }
+        ]
+      },
+      ko: {
+        subcategory: '4채널 양방향 아날로그 스위치(Quad Bilateral Switch)',
+        whatIs: '4채널 양방향 아날로그/디지털 스위치: 4개 독립 SPST 스위치, 각각 제어 핀 nE로 nY↔nZ 도통 결정. 양방향·아날로그나 디지털 전송. LVC·차량용.',
+        func: '각 채널 nE 하이면 nY↔nZ 도통, 로우면 차단; 신호 양방향·저 Ron. 신호 라우팅·샘플 홀드·신호 게이팅용. 1.2~3.6V(LVC).',
+        usedIn: '아날로그/디지털 신호 라우팅, 샘플 홀드, 신호 게이팅, 센서 다중화.',
+        desc: '4채널 양방향 아날로그 스위치. 각 채널 독립 E 제어·양방향(SO14/TSSOP14).',
+        specs: [
+          { k: '기능', v: '4채널 양방향 아날로그 스위치(4× SPST)' },
+          { k: '제어', v: '각 채널 nE(하이로 도통)' },
+          { k: '시리즈', v: 'LVC(CMOS)' },
+          { k: '전원', v: '1.2 ~ 3.6 V(datasheet 참조)' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SO14 / TSSOP14 / DHVQFN14(서멀 패드 비접지, 플로팅 또는 GND 접속)' }
+        ]
+      }
+    },
+    'TPUL1G113': {
+      en: {
+        subcategory: 'Single retriggerable pulse generator (monostable, RC timing)',
+        whatIs: 'Single retriggerable pulse generator (monostable / one-shot): after a trigger it outputs one pulse whose width is set by an external RC. Supports rising- and falling-edge triggers and asynchronous clear.',
+        func: 'After a trigger (rising or falling edge), Q outputs a fixed-width pulse whose width is set by external RC/C timing components; retriggerable (a new trigger extends the pulse); CLR (active-low) immediately ends the pulse. For delay, pulse shaping, watchdog.',
+        usedIn: 'Delay/pulse shaping, generating a fixed pulse from an edge, watchdog timing, debounce delay.',
+        desc: 'Single retriggerable pulse generator (monostable), RC timing, dual-edge trigger, async CLR (VSSOP-8).',
+        specs: [
+          { k: 'Function', v: 'Retriggerable monostable pulse generator' },
+          { k: 'Trigger', v: 'rising + falling edge (dual-edge)' },
+          { k: 'Timing', v: 'external RC (RC/C pins)' },
+          { k: 'Clear', v: 'CLR (active-low, asynchronous)' },
+          { k: 'Package', v: 'VSSOP-8 (DCU)' }
+        ]
+      },
+      ja: {
+        subcategory: '1 個 再トリガ可能パルス発生器（単安定・RC タイミング）',
+        whatIs: '単体再トリガ可能パルス発生器（単安定 / ワンショット）：トリガ後、外付け RC で幅が決まるパルスを 1 発出力。立上り・立下りエッジトリガと非同期クリアに対応。',
+        func: 'トリガ（立上り/立下り）後、Q が外付け RC/C タイミング素子で決まる固定幅パルスを出力；再トリガ可能（新トリガでパルス延長）；CLR（active-low）で即パルス終了。遅延・パルス整形・ウォッチドッグに。',
+        usedIn: '遅延/パルス整形、エッジから固定パルス生成、ウォッチドッグ計時、デバウンス遅延。',
+        desc: '単体再トリガ可能パルス発生器（単安定）。RC タイミング・両エッジトリガ・非同期 CLR（VSSOP-8）。',
+        specs: [
+          { k: '機能', v: '再トリガ可能単安定パルス発生器' },
+          { k: 'トリガ', v: '立上り＋立下り（両エッジ）' },
+          { k: 'タイミング', v: '外付け RC（RC/C ピン）' },
+          { k: 'クリア', v: 'CLR（active-low・非同期）' },
+          { k: 'パッケージ', v: 'VSSOP-8 (DCU)' }
+        ]
+      },
+      ko: {
+        subcategory: '단일 재트리거 가능 펄스 발생기(모노스테이블·RC 타이밍)',
+        whatIs: '단일 재트리거 가능 펄스 발생기(모노스테이블 / 원샷): 트리거 후 외장 RC로 폭이 정해지는 펄스를 1발 출력. 상승·하강 에지 트리거와 비동기 클리어 지원.',
+        func: '트리거(상승/하강 에지) 후 Q가 외장 RC/C 타이밍 소자로 정해지는 고정 폭 펄스 출력; 재트리거 가능(새 트리거로 펄스 연장); CLR(active-low)로 즉시 펄스 종료. 지연·펄스 정형·워치독용.',
+        usedIn: '지연/펄스 정형, 에지에서 고정 펄스 생성, 워치독 계시, 디바운스 지연.',
+        desc: '단일 재트리거 가능 펄스 발생기(모노스테이블). RC 타이밍·양 에지 트리거·비동기 CLR(VSSOP-8).',
+        specs: [
+          { k: '기능', v: '재트리거 가능 모노스테이블 펄스 발생기' },
+          { k: '트리거', v: '상승+하강 에지(양 에지)' },
+          { k: '타이밍', v: '외장 RC(RC/C 핀)' },
+          { k: '클리어', v: 'CLR(active-low·비동기)' },
+          { k: '패키지', v: 'VSSOP-8 (DCU)' }
+        ]
+      }
+    },
+    'TXG4122': {
+      en: {
+        subcategory: 'Bidirectional ground-level translator (±40V, I2C)',
+        whatIs: '±40V bidirectional ground-level translator: passes SCL/SDA between two I2C domains whose grounds differ by up to ±40V. Beyond just voltage levels, it bridges domains with different grounds too.',
+        func: 'Between side 1 (VCC1/GND1) and side 2 (VCC2/GND2) it bidirectionally translates I2C SCL/SDA, tolerating up to ±40V ground difference. Open-drain compatible, automatically bidirectional. Solves I2C communication between subsystems at different ground potentials.',
+        usedIn: 'I2C bridging between subsystems at different ground potentials, battery-pack/power-domain communication, I2C inside motors/inverters, level shifting ahead of ground-loop isolation.',
+        desc: '±40V bidirectional ground-level translator (I2C), independent VCC/GND per side, open-drain compatible (WSON/SOT-23/SOIC-8).',
+        specs: [
+          { k: 'Function', v: 'Bidirectional ground-level translator (I2C SCL/SDA)' },
+          { k: 'Ground difference', v: '±40V (grounds may differ by ±40V)' },
+          { k: 'Interface', v: 'I2C (open-drain compatible, auto bidirectional)' },
+          { k: 'Supply', v: 'independent VCC1/VCC2 per side' },
+          { k: 'Package', v: 'WSON-8 (DSG) / SOT-23-8 (DDF) / SOIC-8 (D)' }
+        ]
+      },
+      ja: {
+        subcategory: '双方向グランドレベルトランスレータ（±40V・I2C）',
+        whatIs: '±40V 双方向グランドレベルトランスレータ：グランド電位差が ±40V に達する 2 つの I2C ドメイン間で SCL/SDA を伝達。電圧レベルだけでなく「グランド」が異なる場合もブリッジ可。',
+        func: '側 1（VCC1/GND1）と側 2（VCC2/GND2）の間で I2C の SCL/SDA を双方向変換し、両側グランドの ±40V 差を許容。オープンドレイン互換・自動双方向。異なるグランド電位のサブシステム間の I2C 通信を解決。',
+        usedIn: '異なるグランド電位のサブシステム間 I2C ブリッジ、バッテリパック/電源ドメイン間通信、モータ/インバータ内 I2C、グランドループ絶縁前のレベル変換。',
+        desc: '±40V 双方向グランドレベルトランスレータ（I2C）。両側 VCC/GND 独立・オープンドレイン互換（WSON/SOT-23/SOIC-8）。',
+        specs: [
+          { k: '機能', v: '双方向グランドレベルトランスレータ（I2C SCL/SDA）' },
+          { k: 'グランド電位差', v: '±40V（両側 GND が ±40V 差可）' },
+          { k: 'インタフェース', v: 'I2C（オープンドレイン互換・自動双方向）' },
+          { k: '電源', v: '両側独立 VCC1/VCC2' },
+          { k: 'パッケージ', v: 'WSON-8 (DSG) / SOT-23-8 (DDF) / SOIC-8 (D)' }
+        ]
+      },
+      ko: {
+        subcategory: '양방향 접지 레벨 변환기(±40V·I2C)',
+        whatIs: '±40V 양방향 접지 레벨 변환기: 접지 전위차가 ±40V에 이르는 두 I2C 도메인 사이에서 SCL/SDA 전달. 전압 레벨뿐 아니라 "접지"가 다른 경우도 브리지 가능.',
+        func: '측 1(VCC1/GND1)과 측 2(VCC2/GND2) 사이에서 I2C의 SCL/SDA를 양방향 변환하고 양측 접지의 ±40V 차이를 허용. 오픈 드레인 호환·자동 양방향. 서로 다른 접지 전위 서브시스템 간 I2C 통신 해결.',
+        usedIn: '서로 다른 접지 전위 서브시스템 간 I2C 브리징, 배터리 팩/전원 도메인 간 통신, 모터/인버터 내 I2C, 접지 루프 절연 전 레벨 변환.',
+        desc: '±40V 양방향 접지 레벨 변환기(I2C). 양측 VCC/GND 독립·오픈 드레인 호환(WSON/SOT-23/SOIC-8).',
+        specs: [
+          { k: '기능', v: '양방향 접지 레벨 변환기(I2C SCL/SDA)' },
+          { k: '접지 전위차', v: '±40V(양측 GND가 ±40V 차이 가능)' },
+          { k: '인터페이스', v: 'I2C(오픈 드레인 호환·자동 양방향)' },
+          { k: '전원', v: '양측 독립 VCC1/VCC2' },
+          { k: '패키지', v: 'WSON-8 (DSG) / SOT-23-8 (DDF) / SOIC-8 (D)' }
+        ]
+      }
+    },
+    'SN74CBTLV3245A-Q1': {
+      en: {
+        subcategory: 'Octal FET bus switch (low voltage, automotive)',
+        whatIs: 'Octal FET bus switch: 8 independent channels, A↔B all controlled on/off by a single OE, with low-resistance near-zero-drop pass-through when on. Bidirectional, automotive. For whole-bus isolation/sharing.',
+        func: 'When OE (active-low) is low all 8 A↔B pass through (low Ron); when high all disconnect (Hi-Z). No logic, no amplification — on/off/isolation for the whole 8-bit bus. Low voltage ≤3.6V.',
+        usedIn: '8-bit bus isolation/sharing, memory/address-bus switching, hot-plug isolation, signal routing.',
+        desc: 'Automotive octal FET bus switch, single OE (active-low), low Ron, bidirectional pass-through (TSSOP/VQFN-20).',
+        specs: [
+          { k: 'Function', v: 'Octal FET bus switch (bidirectional pass-through)' },
+          { k: 'Enable', v: 'single OE (active-low, controls all 8)' },
+          { k: 'Channels', v: '8 (A1/B1 – A8/B8)' },
+          { k: 'Conduction', v: 'low-Ron FET pass-through, near-zero drop' },
+          { k: 'Supply', v: 'low voltage ≤3.6V (per datasheet)' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'TSSOP-20 (DGV) / VQFN-20 (RKS)' }
+        ]
+      },
+      ja: {
+        subcategory: '8 ビット FET バススイッチ（低電圧・車載）',
+        whatIs: '8 ビット（オクタル）FET バススイッチ：8 本の独立チャネル、A↔B を単一 OE で同時に開閉、導通時は低抵抗ほぼゼロ電圧降下の直通。双方向・車載。バス一括の絶縁/共用に。',
+        func: 'OE（active-low）ローで 8 回路 A↔B 全直通（低 Ron）、ハイで全遮断（ハイインピーダンス）。論理も増幅もせず、8 ビットバス一括の通断/絶縁。低電圧 ≤3.6V。',
+        usedIn: '8 ビットバス絶縁/共用、メモリ/アドレスバス切替、ホットプラグ絶縁、信号ルーティング。',
+        desc: '車載 8 ビット FET バススイッチ。単一 OE（active-low）・低 Ron・双方向直通（TSSOP/VQFN-20）。',
+        specs: [
+          { k: '機能', v: '8 ビット FET バススイッチ（双方向直通）' },
+          { k: 'イネーブル', v: '単一 OE（active-low、8 回路一括制御）' },
+          { k: 'チャネル', v: '8（A1/B1 ~ A8/B8）' },
+          { k: '導通方式', v: '低 Ron FET 直通・ほぼゼロ電圧降下' },
+          { k: '電源', v: '低電圧 ≤3.6V（datasheet 参照）' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'TSSOP-20 (DGV) / VQFN-20 (RKS)' }
+        ]
+      },
+      ko: {
+        subcategory: '8비트 FET 버스 스위치(저전압·차량용)',
+        whatIs: '8비트(옥탈) FET 버스 스위치: 8개 독립 채널, A↔B를 단일 OE로 동시 개폐, 도통 시 저저항 거의 제로 전압 강하 직통. 양방향·차량용. 버스 일괄 절연/공유용.',
+        func: 'OE(active-low) 로우면 8채널 A↔B 전부 직통(저 Ron), 하이면 전부 차단(Hi-Z). 논리도 증폭도 없이 8비트 버스 일괄 통차단/절연. 저전압 ≤3.6V.',
+        usedIn: '8비트 버스 절연/공유, 메모리/주소 버스 전환, 핫플러그 절연, 신호 라우팅.',
+        desc: '차량용 8비트 FET 버스 스위치. 단일 OE(active-low)·저 Ron·양방향 직통(TSSOP/VQFN-20).',
+        specs: [
+          { k: '기능', v: '8비트 FET 버스 스위치(양방향 직통)' },
+          { k: '인에이블', v: '단일 OE(active-low, 8채널 일괄 제어)' },
+          { k: '채널', v: '8(A1/B1 ~ A8/B8)' },
+          { k: '도통 방식', v: '저 Ron FET 직통·거의 제로 전압 강하' },
+          { k: '전원', v: '저전압 ≤3.6V(datasheet 참조)' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'TSSOP-20 (DGV) / VQFN-20 (RKS)' }
+        ]
+      }
+    },
+    'SN74CBTLV3257-Q1': {
+      en: {
+        subcategory: 'Quad 1-of-2 FET mux/demux (low voltage, automotive)',
+        whatIs: 'Quad 1-of-2 FET mux/demux: each of 4 channels has one common terminal nA and two branches nB1/nB2, with a single S selecting whether nA connects to nB1 or nB2. Bidirectional, low Ron, automotive.',
+        func: 'When S is low each nA↔nB1, when high nA↔nB2; OE (active-low) enables. Bidirectional pass-through (not logic) — usable as a mux (select 1) or demux (1-to-many). Low voltage ≤3.6V.',
+        usedIn: '4-bit signal 1-of-2 routing, bus switching, dual-path selection, memory/interface switching.',
+        desc: 'Automotive quad 1-of-2 FET mux/demux, single S select + OE (active-low), bidirectional (TSSOP/SOIC-16).',
+        specs: [
+          { k: 'Function', v: 'Quad 1-of-2 FET mux/demux (bidirectional)' },
+          { k: 'Control', v: 'single S select + OE (active-low)' },
+          { k: 'Channels', v: '4 (each 1 common A + 2 branches B1/B2)' },
+          { k: 'Conduction', v: 'low-Ron FET pass-through' },
+          { k: 'Supply', v: 'low voltage ≤3.6V (per datasheet)' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'TSSOP-16 / SOIC-16' }
+        ]
+      },
+      ja: {
+        subcategory: '4 ビット 1-of-2 FET マルチ/デマルチプレクサ（低電圧・車載）',
+        whatIs: '4 ビット 1-of-2 FET マルチ/デマルチプレクサ：4 回路それぞれに共通端子 nA と 2 分岐 nB1/nB2 を持ち、単一 S で nA を nB1 か nB2 へ接続。双方向・低 Ron・車載。',
+        func: 'S ロー時各回路 nA↔nB1、ハイ時 nA↔nB2；OE（active-low）イネーブル。双方向直通（論理でない）、mux（1 選択）か demux（1 対多）として使用可。低電圧 ≤3.6V。',
+        usedIn: '4 ビット信号の 2 択ルーティング、バス切替、2 経路選択、メモリ/インタフェース切替。',
+        desc: '車載 4 ビット 1-of-2 FET マルチ/デマルチプレクサ。単一 S 選択＋OE（active-low）・双方向（TSSOP/SOIC-16）。',
+        specs: [
+          { k: '機能', v: '4 ビット 1-of-2 FET マルチ/デマルチプレクサ（双方向）' },
+          { k: '制御', v: '単一 S 選択＋OE（active-low）' },
+          { k: 'チャネル', v: '4（各 共通 A 1＋分岐 B1/B2 2）' },
+          { k: '導通方式', v: '低 Ron FET 直通' },
+          { k: '電源', v: '低電圧 ≤3.6V（datasheet 参照）' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'TSSOP-16 / SOIC-16' }
+        ]
+      },
+      ko: {
+        subcategory: '4비트 1-of-2 FET 먹스/디먹스(저전압·차량용)',
+        whatIs: '4비트 1-of-2 FET 먹스/디먹스: 4채널 각각에 공용 단자 nA와 2분기 nB1/nB2가 있고 단일 S로 nA를 nB1 또는 nB2에 연결. 양방향·저 Ron·차량용.',
+        func: 'S 로우면 각 채널 nA↔nB1, 하이면 nA↔nB2; OE(active-low) 인에이블. 양방향 직통(논리 아님), 먹스(1선택)나 디먹스(1대다)로 사용 가능. 저전압 ≤3.6V.',
+        usedIn: '4비트 신호 2택 라우팅, 버스 전환, 2경로 선택, 메모리/인터페이스 전환.',
+        desc: '차량용 4비트 1-of-2 FET 먹스/디먹스. 단일 S 선택+OE(active-low)·양방향(TSSOP/SOIC-16).',
+        specs: [
+          { k: '기능', v: '4비트 1-of-2 FET 먹스/디먹스(양방향)' },
+          { k: '제어', v: '단일 S 선택 + OE(active-low)' },
+          { k: '채널', v: '4(각 공용 A 1 + 분기 B1/B2 2)' },
+          { k: '도통 방식', v: '저 Ron FET 직통' },
+          { k: '전원', v: '저전압 ≤3.6V(datasheet 참조)' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'TSSOP-16 / SOIC-16' }
+        ]
+      }
+    },
+    'SN54SC1G08-SEP': {
+      en: {
+        subcategory: 'Single 2-input AND gate (radiation-tolerant SEP)',
+        whatIs: 'Single 2-input AND gate (radiation-tolerant SEP): Y = A AND B. SC family, single-event tolerant, space-grade.',
+        func: 'Y goes high only when A and B are both high. Radiation-tolerant (SEP), wide supply — for space/high-reliability use.',
+        usedIn: 'Space/aerospace glue logic, radiation-tolerant enable combining, high-reliability system logic.',
+        desc: 'Radiation-tolerant single 2-input AND (SEP), SC family (SOT-23-5/SC70-5).',
+        specs: [
+          { k: 'Function', v: 'Single 2-input AND (Y=A·B)' },
+          { k: 'Family', v: 'SC (radiation-tolerant)' },
+          { k: 'Radiation', v: 'SEP (single-event protection, space-grade)' },
+          { k: 'Package', v: 'SOT-23-5 / SC70-5' }
+        ]
+      },
+      ja: {
+        subcategory: '1 ゲート 2 入力 AND（耐放射線 SEP）',
+        whatIs: '単体 2 入力 AND ゲート（耐放射線 SEP）：Y = A AND B。SC シリーズ・シングルイベント耐性・宇宙級。',
+        func: 'A・B とも高のとき Y のみ高。耐放射線（SEP）・広電源、宇宙/高信頼向け。',
+        usedIn: '宇宙/航空宇宙グルーロジック、耐放射線イネーブル合成、高信頼システム論理。',
+        desc: '耐放射線 1 ゲート 2 入力 AND（SEP）。SC シリーズ（SOT-23-5/SC70-5）。',
+        specs: [
+          { k: '機能', v: '1 ゲート 2 入力 AND（Y=A·B）' },
+          { k: 'シリーズ', v: 'SC（耐放射線）' },
+          { k: '耐放射線', v: 'SEP（シングルイベント防護・宇宙級）' },
+          { k: 'パッケージ', v: 'SOT-23-5 / SC70-5' }
+        ]
+      },
+      ko: {
+        subcategory: '단일 게이트 2입력 AND(내방사선 SEP)',
+        whatIs: '단일 2입력 AND 게이트(내방사선 SEP): Y = A AND B. SC 시리즈·단일 이벤트 내성·우주급.',
+        func: 'A·B 모두 하이일 때만 Y가 하이. 내방사선(SEP)·광전원, 우주/고신뢰용.',
+        usedIn: '우주/항공우주 글루 로직, 내방사선 인에이블 조합, 고신뢰 시스템 논리.',
+        desc: '내방사선 단일 게이트 2입력 AND(SEP). SC 시리즈(SOT-23-5/SC70-5).',
+        specs: [
+          { k: '기능', v: '단일 게이트 2입력 AND(Y=A·B)' },
+          { k: '시리즈', v: 'SC(내방사선)' },
+          { k: '내방사선', v: 'SEP(단일 이벤트 보호·우주급)' },
+          { k: '패키지', v: 'SOT-23-5 / SC70-5' }
+        ]
+      }
+    },
+    'SN54SC1G125-SEP': {
+      en: {
+        subcategory: 'Single tri-state bus buffer (OE active-low, radiation-tolerant SEP)',
+        whatIs: 'Single tri-state bus buffer (radiation-tolerant SEP): Y=A when OE is low, tri-state when high. SC family, single-event tolerant, space-grade.',
+        func: 'OE (active-low) enables buffering A to Y; disabled goes tri-state to release the bus. Radiation-tolerant, wide supply.',
+        usedIn: 'Space/aerospace bus sharing, tri-state driving, radiation-tolerant signal buffering.',
+        desc: 'Radiation-tolerant single tri-state buffer (OE active-low, SEP), SC family (SOT-23-5/SC70-5).',
+        specs: [
+          { k: 'Function', v: 'Tri-state bus buffer (OE active-low)' },
+          { k: 'Family', v: 'SC (radiation-tolerant)' },
+          { k: 'Radiation', v: 'SEP (single-event protection, space-grade)' },
+          { k: 'Package', v: 'SOT-23-5 / SC70-5' }
+        ]
+      },
+      ja: {
+        subcategory: '1 ゲート 3 ステートバスバッファ（OE active-low・耐放射線 SEP）',
+        whatIs: '単体 3 ステートバスバッファ（耐放射線 SEP）：OE ローで Y=A、ハイで 3 ステート。SC シリーズ・シングルイベント耐性・宇宙級。',
+        func: 'OE（active-low）有効で A を Y へバッファ、無効で 3 ステートしバスを解放。耐放射線・広電源。',
+        usedIn: '宇宙/航空宇宙バス共用、3 ステート駆動、耐放射線信号バッファ。',
+        desc: '耐放射線 1 ゲート 3 ステートバッファ（OE active-low・SEP）。SC シリーズ（SOT-23-5/SC70-5）。',
+        specs: [
+          { k: '機能', v: '3 ステートバスバッファ（OE active-low）' },
+          { k: 'シリーズ', v: 'SC（耐放射線）' },
+          { k: '耐放射線', v: 'SEP（シングルイベント防護・宇宙級）' },
+          { k: 'パッケージ', v: 'SOT-23-5 / SC70-5' }
+        ]
+      },
+      ko: {
+        subcategory: '단일 게이트 3상태 버스 버퍼(OE active-low·내방사선 SEP)',
+        whatIs: '단일 3상태 버스 버퍼(내방사선 SEP): OE 로우일 때 Y=A, 하이일 때 3상태. SC 시리즈·단일 이벤트 내성·우주급.',
+        func: 'OE(active-low) 활성으로 A를 Y로 버퍼, 비활성으로 3상태화해 버스 개방. 내방사선·광전원.',
+        usedIn: '우주/항공우주 버스 공유, 3상태 구동, 내방사선 신호 버퍼.',
+        desc: '내방사선 단일 게이트 3상태 버퍼(OE active-low·SEP). SC 시리즈(SOT-23-5/SC70-5).',
+        specs: [
+          { k: '기능', v: '3상태 버스 버퍼(OE active-low)' },
+          { k: '시리즈', v: 'SC(내방사선)' },
+          { k: '내방사선', v: 'SEP(단일 이벤트 보호·우주급)' },
+          { k: '패키지', v: 'SOT-23-5 / SC70-5' }
+        ]
+      }
+    },
+    'SN55LVRA4-SEP': {
+      en: {
+        subcategory: 'Quad high-speed differential (LVDS) receiver (radiation-tolerant SEP)',
+        whatIs: 'Quad high-speed differential (LVDS) receiver: converts 4 pairs of LVDS differential inputs (nA/nB) into single-ended LVTTL outputs (nY). Two enable pins (one active-high, one active-low). Radiation-tolerant SEP, space-grade.',
+        func: 'Each channel compares nA (non-inverting) and nB (inverting) differential voltages → nY LVTTL output; two enables, G (pin4, active-high) and G (pin12, active-low), jointly control output enable. Radiation-tolerant — for space high-speed data links.',
+        usedIn: 'Space/aerospace LVDS high-speed data reception, backplane differential links, sensor differential-signal reception.',
+        desc: 'Radiation-tolerant quad LVDS receiver (→LVTTL), dual enable, SEP (SOIC-16).',
+        specs: [
+          { k: 'Function', v: 'Quad LVDS receiver (→LVTTL)' },
+          { k: 'Enable', v: 'dual enable G (active-high, pin4) + G (active-low, pin12)' },
+          { k: 'Family', v: 'LVRA (radiation-tolerant)' },
+          { k: 'Radiation', v: 'SEP (single-event protection, space-grade)' },
+          { k: 'Package', v: 'SOIC-16 / CFP-16' }
+        ]
+      },
+      ja: {
+        subcategory: '4 チャネル高速差動（LVDS）レシーバ（耐放射線 SEP）',
+        whatIs: '4 チャネル高速差動（LVDS）レシーバ：4 対の LVDS 差動入力（nA/nB）を LVTTL シングルエンド出力（nY）へ変換。2 つのイネーブルピン（1 つハイ有効、1 つロー有効）。耐放射線 SEP・宇宙級。',
+        func: '各回路が nA（非反転）・nB（反転）の差動電圧を比較→nY に LVTTL 出力；2 つのイネーブル G（pin4 ハイ有効）と G（pin12 ロー有効）が共同で出力イネーブルを制御。耐放射線・宇宙の高速データリンク向け。',
+        usedIn: '宇宙/航空宇宙 LVDS 高速データ受信、バックプレーン差動リンク、センサ差動信号受信。',
+        desc: '耐放射線 4 チャネル LVDS レシーバ（→LVTTL）。デュアルイネーブル・SEP（SOIC-16）。',
+        specs: [
+          { k: '機能', v: '4 チャネル LVDS レシーバ（→LVTTL）' },
+          { k: 'イネーブル', v: 'デュアルイネーブル G（ハイ有効,pin4）＋G（ロー有効,pin12）' },
+          { k: 'シリーズ', v: 'LVRA（耐放射線）' },
+          { k: '耐放射線', v: 'SEP（シングルイベント防護・宇宙級）' },
+          { k: 'パッケージ', v: 'SOIC-16 / CFP-16' }
+        ]
+      },
+      ko: {
+        subcategory: '4채널 고속 차동(LVDS) 수신기(내방사선 SEP)',
+        whatIs: '4채널 고속 차동(LVDS) 수신기: 4쌍의 LVDS 차동 입력(nA/nB)을 LVTTL 싱글엔드 출력(nY)으로 변환. 2개 인에이블 핀(하나는 하이 유효, 하나는 로우 유효). 내방사선 SEP·우주급.',
+        func: '각 채널이 nA(비반전)·nB(반전) 차동 전압을 비교 → nY에 LVTTL 출력; 두 인에이블 G(pin4 하이 유효)와 G(pin12 로우 유효)가 공동으로 출력 인에이블 제어. 내방사선·우주 고속 데이터 링크용.',
+        usedIn: '우주/항공우주 LVDS 고속 데이터 수신, 백플레인 차동 링크, 센서 차동 신호 수신.',
+        desc: '내방사선 4채널 LVDS 수신기(→LVTTL). 듀얼 인에이블·SEP(SOIC-16).',
+        specs: [
+          { k: '기능', v: '4채널 LVDS 수신기(→LVTTL)' },
+          { k: '인에이블', v: '듀얼 인에이블 G(하이 유효,pin4) + G(로우 유효,pin12)' },
+          { k: '시리즈', v: 'LVRA(내방사선)' },
+          { k: '내방사선', v: 'SEP(단일 이벤트 보호·우주급)' },
+          { k: '패키지', v: 'SOIC-16 / CFP-16' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
