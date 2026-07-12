@@ -3085,3 +3085,750 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 5: entries 60-74 */
+(function () {
+  var T = {
+    'ISOTMP35R': {
+      en: {
+        subcategory: 'Isolated analog temperature sensor (5kVRMS reinforced isolation)',
+        whatIs: 'Isolated analog temperature sensor: measures temperature on the high-voltage side and carries it as an analog voltage (VOUT) to the low-voltage side across a 5kVRMS reinforced isolation barrier. ±2.0°C accuracy, no external isolator needed.',
+        func: 'The high-side TSENSE pins (multiple tied together, placed close to the heat source) sense temperature; the value crosses the isolation barrier to the low side and becomes an analog VOUT (0.1–2.0V, ~10mV/°C). VDD powers the low side. For power-device/high-voltage-bus temperature sensing that also needs galvanic isolation.',
+        usedIn: 'Power-module/IGBT/SiC junction temperature, motor/inverter high-side temperature, power-bus temperature, industrial sensing needing reinforced isolation.',
+        desc: '5kVRMS reinforced-isolation analog temperature sensor, ±2.0°C, VOUT analog output, TSENSE against the heat source (Wide-body DFP-12).',
+        specs: [
+          { k: 'Function', v: 'Isolated analog temperature sensor' },
+          { k: 'Isolation', v: '5kVRMS reinforced' },
+          { k: 'Accuracy', v: '±2.0°C' },
+          { k: 'Output', v: 'VOUT analog 0.1–2.0V (500mV offset at 0°C)' },
+          { k: 'Sense pins', v: 'TSENSE ×6 tied together (against heat source)' },
+          { k: 'Supply', v: 'single VDD (low side)' },
+          { k: 'Package', v: 'Wide-body DFP-12' }
+        ],
+        dropIn: [{ note: 'Automotive version, same DFP-12 pinout (±2.5°C accuracy)' }]
+      },
+      ja: {
+        subcategory: '絶縁アナログ温度センサ（5kVRMS 強化絶縁）',
+        whatIs: '絶縁アナログ温度センサ：高圧側で温度を計測し、5kVRMS 強化絶縁バリアを跨いでアナログ電圧（VOUT）として低圧側へ伝送。±2.0°C 精度・外付け絶縁器不要。',
+        func: '高圧側 TSENSE ピン（複数並列・熱源に近接）で温度を検出し、絶縁バリアを跨いで低圧側へ伝え VOUT アナログ電圧（0.1~2.0V、~10mV/°C）に変換。VDD は低圧側供給。パワー素子/高圧バスの温度計測で電気的絶縁も必要な場合に。',
+        usedIn: 'パワーモジュール/IGBT/SiC 接合部温度、モータ/インバータ高圧側温度、電源バス温度、強化絶縁が必要な産業計測。',
+        desc: '5kVRMS 強化絶縁アナログ温度センサ。±2.0°C・VOUT アナログ出力・TSENSE を熱源に接近（Wide-body DFP-12）。',
+        specs: [
+          { k: '機能', v: '絶縁アナログ温度センサ' },
+          { k: '絶縁', v: '5kVRMS 強化（reinforced）' },
+          { k: '精度', v: '±2.0°C' },
+          { k: '出力', v: 'VOUT アナログ 0.1~2.0V（0°C オフセット 500mV）' },
+          { k: '検出ピン', v: 'TSENSE ×6 並列（熱源に近接）' },
+          { k: '電源', v: '単一 VDD（低圧側）' },
+          { k: 'パッケージ', v: 'Wide-body DFP-12' }
+        ],
+        dropIn: [{ note: '車載版・同 DFP-12 ピン配置同一（精度 ±2.5°C）' }]
+      },
+      ko: {
+        subcategory: '절연 아날로그 온도 센서(5kVRMS 강화 절연)',
+        whatIs: '절연 아날로그 온도 센서: 고압 측에서 온도를 계측하고 5kVRMS 강화 절연 배리어를 넘어 아날로그 전압(VOUT)으로 저압 측에 전송. ±2.0°C 정확도·외장 절연기 불필요.',
+        func: '고압 측 TSENSE 핀(여러 개 병렬·열원에 근접)으로 온도 감지, 절연 배리어를 넘어 저압 측에 전달해 VOUT 아날로그 전압(0.1~2.0V, ~10mV/°C)으로 변환. VDD는 저압 측 공급. 전력 소자/고압 버스 온도 계측에 전기 절연도 필요한 경우에.',
+        usedIn: '전력 모듈/IGBT/SiC 접합부 온도, 모터/인버터 고압 측 온도, 전원 버스 온도, 강화 절연이 필요한 산업 계측.',
+        desc: '5kVRMS 강화 절연 아날로그 온도 센서. ±2.0°C·VOUT 아날로그 출력·TSENSE를 열원에 근접(Wide-body DFP-12).',
+        specs: [
+          { k: '기능', v: '절연 아날로그 온도 센서' },
+          { k: '절연', v: '5kVRMS 강화(reinforced)' },
+          { k: '정확도', v: '±2.0°C' },
+          { k: '출력', v: 'VOUT 아날로그 0.1~2.0V(0°C 오프셋 500mV)' },
+          { k: '감지 핀', v: 'TSENSE ×6 병렬(열원에 근접)' },
+          { k: '전원', v: '단일 VDD(저압 측)' },
+          { k: '패키지', v: 'Wide-body DFP-12' }
+        ],
+        dropIn: [{ note: '차량용 버전·동일 DFP-12 핀 배치(정확도 ±2.5°C)' }]
+      }
+    },
+    'ISOTMP35R-Q1': {
+      en: {
+        subcategory: 'Isolated analog temperature sensor (5kVRMS reinforced isolation, automotive)',
+        whatIs: 'Isolated analog temperature sensor (automotive Q1): ±2.5°C, 5kVRMS reinforced isolation; senses temperature on the high side and sends analog VOUT across the barrier to the low side. Same pinout as ISOTMP35R plus automotive qualification.',
+        func: 'Same as ISOTMP35R: TSENSE high-side sensing, VOUT analog output across isolation. AEC-Q100 automotive.',
+        usedIn: 'Automotive power-module/SiC/IGBT junction temperature, EV inverter high-side temperature, in-vehicle high-voltage-bus temperature.',
+        desc: 'Automotive 5kVRMS reinforced-isolation analog temperature sensor, ±2.5°C, VOUT analog (same pinout as ISOTMP35R, DFP-12).',
+        specs: [
+          { k: 'Function', v: 'Isolated analog temperature sensor (automotive)' },
+          { k: 'Isolation', v: '5kVRMS reinforced' },
+          { k: 'Accuracy', v: '±2.5°C' },
+          { k: 'Output', v: 'VOUT analog' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100 (Q1)' },
+          { k: 'Sense pins', v: 'TSENSE ×6 tied together' },
+          { k: 'Package', v: 'Wide-body DFP-12' }
+        ],
+        dropIn: [{ note: 'Non-automotive version, same DFP-12 pinout (±2.0°C accuracy)' }]
+      },
+      ja: {
+        subcategory: '絶縁アナログ温度センサ（5kVRMS 強化絶縁・車載）',
+        whatIs: '絶縁アナログ温度センサ（車載 Q1）：±2.5°C・5kVRMS 強化絶縁、高圧側で計測し VOUT アナログをバリア越しに低圧側へ。ISOTMP35R とピン互換＋車載認証。',
+        func: 'ISOTMP35R と同じ：TSENSE 高圧側検出、絶縁を跨ぐ VOUT アナログ出力。車載 AEC-Q100。',
+        usedIn: '車載パワーモジュール/SiC/IGBT 接合部温度、EV インバータ高圧側温度、車載高圧バス温度。',
+        desc: '車載 5kVRMS 強化絶縁アナログ温度センサ。±2.5°C・VOUT アナログ（ISOTMP35R とピン互換、DFP-12）。',
+        specs: [
+          { k: '機能', v: '絶縁アナログ温度センサ（車載）' },
+          { k: '絶縁', v: '5kVRMS 強化' },
+          { k: '精度', v: '±2.5°C' },
+          { k: '出力', v: 'VOUT アナログ' },
+          { k: '認証', v: '車載 AEC-Q100 (Q1)' },
+          { k: '検出ピン', v: 'TSENSE ×6 並列' },
+          { k: 'パッケージ', v: 'Wide-body DFP-12' }
+        ],
+        dropIn: [{ note: '非車載版・同 DFP-12 ピン配置同一（精度 ±2.0°C）' }]
+      },
+      ko: {
+        subcategory: '절연 아날로그 온도 센서(5kVRMS 강화 절연·차량용)',
+        whatIs: '절연 아날로그 온도 센서(차량용 Q1): ±2.5°C·5kVRMS 강화 절연, 고압 측에서 계측해 VOUT 아날로그를 배리어 너머 저압 측으로. ISOTMP35R과 핀 호환+차량 인증.',
+        func: 'ISOTMP35R과 동일: TSENSE 고압 측 감지, 절연을 넘는 VOUT 아날로그 출력. 차량용 AEC-Q100.',
+        usedIn: '차량 전력 모듈/SiC/IGBT 접합부 온도, EV 인버터 고압 측 온도, 차량 고압 버스 온도.',
+        desc: '차량용 5kVRMS 강화 절연 아날로그 온도 센서. ±2.5°C·VOUT 아날로그(ISOTMP35R과 핀 호환, DFP-12).',
+        specs: [
+          { k: '기능', v: '절연 아날로그 온도 센서(차량용)' },
+          { k: '절연', v: '5kVRMS 강화' },
+          { k: '정확도', v: '±2.5°C' },
+          { k: '출력', v: 'VOUT 아날로그' },
+          { k: '인증', v: '차량용 AEC-Q100 (Q1)' },
+          { k: '감지 핀', v: 'TSENSE ×6 병렬' },
+          { k: '패키지', v: 'Wide-body DFP-12' }
+        ],
+        dropIn: [{ note: '비차량용 버전·동일 DFP-12 핀 배치(정확도 ±2.0°C)' }]
+      }
+    },
+    'LM50HV': {
+      en: {
+        subcategory: 'Analog Celsius temperature sensor (10mV/°C)',
+        whatIs: 'Industry-standard analog Celsius temperature sensor: output voltage is linearly proportional to Celsius temperature (10mV/°C) with a negative-temperature offset; a single 3-pin part measures −40 to 125°C with no calibration.',
+        func: 'VO = 10mV/°C × T + 500mV offset (measures negative temperatures without a negative supply). Single-supply, low power, connects directly to an ADC. The HV version tolerates a higher supply.',
+        usedIn: 'Electronics ambient/board temperature monitoring, battery temperature, appliance/HVAC sensing, over-temperature protection front end.',
+        desc: 'Analog Celsius temperature sensor 10mV/°C, single-supply, offset for negative temperatures (SOT-23-3 / TO-92).',
+        specs: [
+          { k: 'Function', v: 'Analog Celsius temperature sensor' },
+          { k: 'Slope', v: '10 mV/°C' },
+          { k: 'Offset', v: '500mV @ 0°C (measures negative temps)' },
+          { k: 'Supply', v: 'single supply (HV version higher)' },
+          { k: 'Package', v: 'SOT-23-3 / TO-92' }
+        ],
+        dropIn: [{ note: 'Automotive version, same SOT-23-3 pinout' }]
+      },
+      ja: {
+        subcategory: 'アナログ摂氏温度センサ（10mV/°C）',
+        whatIs: '業界標準アナログ摂氏温度センサ：出力電圧が摂氏温度に線形比例（10mV/°C）、負温オフセット付き、3 ピン単体で校正不要に −40~125°C を計測。',
+        func: 'VO = 10mV/°C × T + 500mV オフセット（負電源なしで負温計測可）。単電源・低消費電力で ADC に直結。HV 版はより高い電源に対応。',
+        usedIn: '電子機器の環境/基板温度監視、電池温度、家電/HVAC 計測、過熱保護フロントエンド。',
+        desc: 'アナログ摂氏温度センサ 10mV/°C。単電源・オフセット付で負温計測可（SOT-23-3 / TO-92）。',
+        specs: [
+          { k: '機能', v: 'アナログ摂氏温度センサ' },
+          { k: '傾き', v: '10 mV/°C' },
+          { k: 'オフセット', v: '500mV @ 0°C（負温計測可）' },
+          { k: '電源', v: '単電源（HV 版はより高い）' },
+          { k: 'パッケージ', v: 'SOT-23-3 / TO-92' }
+        ],
+        dropIn: [{ note: '車載版・同 SOT-23-3 ピン配置同一' }]
+      },
+      ko: {
+        subcategory: '아날로그 섭씨 온도 센서(10mV/°C)',
+        whatIs: '업계 표준 아날로그 섭씨 온도 센서: 출력 전압이 섭씨 온도에 선형 비례(10mV/°C), 음온 오프셋 포함, 3핀 단일로 교정 없이 −40~125°C 계측.',
+        func: 'VO = 10mV/°C × T + 500mV 오프셋(음전원 없이 음온 계측 가능). 단일 전원·저전력으로 ADC에 직결. HV판은 더 높은 전원 대응.',
+        usedIn: '전자기기 환경/보드 온도 감시, 배터리 온도, 가전/HVAC 계측, 과열 보호 프론트엔드.',
+        desc: '아날로그 섭씨 온도 센서 10mV/°C. 단일 전원·오프셋 포함으로 음온 계측 가능(SOT-23-3 / TO-92).',
+        specs: [
+          { k: '기능', v: '아날로그 섭씨 온도 센서' },
+          { k: '기울기', v: '10 mV/°C' },
+          { k: '오프셋', v: '500mV @ 0°C(음온 계측 가능)' },
+          { k: '전원', v: '단일 전원(HV판은 더 높음)' },
+          { k: '패키지', v: 'SOT-23-3 / TO-92' }
+        ],
+        dropIn: [{ note: '차량용 버전·동일 SOT-23-3 핀 배치' }]
+      }
+    },
+    'LM50HV-Q1': {
+      en: {
+        subcategory: 'Analog Celsius temperature sensor (10mV/°C, automotive)',
+        whatIs: 'Industry-standard analog Celsius temperature sensor (automotive Grade 0/1): 10mV/°C linear output with offset for negative temperatures. Same pinout as LM50HV plus automotive qualification.',
+        func: 'Same as LM50HV: VO = 10mV/°C × T + 500mV offset, single-supply, connects directly to an ADC. AEC-Q100 automotive.',
+        usedIn: 'Automotive ambient/board temperature monitoring, battery/powertrain temperature, in-vehicle over-temperature protection.',
+        desc: 'Automotive analog Celsius temperature sensor 10mV/°C, single-supply, with offset (same pinout as LM50HV, SOT-23-3).',
+        specs: [
+          { k: 'Function', v: 'Analog Celsius temperature sensor (automotive)' },
+          { k: 'Slope', v: '10 mV/°C' },
+          { k: 'Offset', v: '500mV @ 0°C' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100 (Grade 0/1)' },
+          { k: 'Package', v: 'SOT-23-3' }
+        ],
+        dropIn: [{ note: 'Non-automotive version, same SOT-23-3 pinout' }]
+      },
+      ja: {
+        subcategory: 'アナログ摂氏温度センサ（10mV/°C・車載）',
+        whatIs: '業界標準アナログ摂氏温度センサ（車載 Grade 0/1）：10mV/°C 線形出力、負温オフセット付。LM50HV とピン互換＋車載認証。',
+        func: 'LM50HV と同じ：VO = 10mV/°C × T + 500mV オフセット、単電源で ADC に直結。車載 AEC-Q100。',
+        usedIn: '車載環境/基板温度監視、電池/パワートレイン温度、車載過熱保護。',
+        desc: '車載アナログ摂氏温度センサ 10mV/°C。単電源・オフセット付（LM50HV とピン互換、SOT-23-3）。',
+        specs: [
+          { k: '機能', v: 'アナログ摂氏温度センサ（車載）' },
+          { k: '傾き', v: '10 mV/°C' },
+          { k: 'オフセット', v: '500mV @ 0°C' },
+          { k: '認証', v: '車載 AEC-Q100（Grade 0/1）' },
+          { k: 'パッケージ', v: 'SOT-23-3' }
+        ],
+        dropIn: [{ note: '非車載版・同 SOT-23-3 ピン配置同一' }]
+      },
+      ko: {
+        subcategory: '아날로그 섭씨 온도 센서(10mV/°C·차량용)',
+        whatIs: '업계 표준 아날로그 섭씨 온도 센서(차량용 Grade 0/1): 10mV/°C 선형 출력, 음온 오프셋 포함. LM50HV와 핀 호환+차량 인증.',
+        func: 'LM50HV와 동일: VO = 10mV/°C × T + 500mV 오프셋, 단일 전원으로 ADC 직결. 차량용 AEC-Q100.',
+        usedIn: '차량 환경/보드 온도 감시, 배터리/파워트레인 온도, 차량 과열 보호.',
+        desc: '차량용 아날로그 섭씨 온도 센서 10mV/°C. 단일 전원·오프셋 포함(LM50HV와 핀 호환, SOT-23-3).',
+        specs: [
+          { k: '기능', v: '아날로그 섭씨 온도 센서(차량용)' },
+          { k: '기울기', v: '10 mV/°C' },
+          { k: '오프셋', v: '500mV @ 0°C' },
+          { k: '인증', v: '차량용 AEC-Q100(Grade 0/1)' },
+          { k: '패키지', v: 'SOT-23-3' }
+        ],
+        dropIn: [{ note: '비차량용 버전·동일 SOT-23-3 핀 배치' }]
+      }
+    },
+    'TMAG5134': {
+      en: {
+        subcategory: 'High-sensitivity in-plane Hall switch (with flux concentrator)',
+        whatIs: 'High-sensitivity in-plane Hall-effect magnetic switch: detects magnetic fields parallel to the package surface and toggles a digital output above threshold. A built-in flux concentrator boosts sensitivity. For position/proximity/switch detection.',
+        func: 'Senses in-plane flux density: turns on above B_OP, off below B_RP (with hysteresis). The SOT-23 version is an omnipolar single output OUT (responds to both polarities); the X1LGA version has OUT1 (positive field) / OUT2 (negative field) dual-unipolar outputs. Low power.',
+        usedIn: 'BLDC motor commutation/position, knob/gear-position detection, lid switch/proximity detection, flow meters, safety interlocks.',
+        desc: 'High-sensitivity in-plane Hall switch (with flux concentrator), omnipolar or dual-unipolar output, low power (SOT-23-3 / X1LGA-4).',
+        specs: [
+          { k: 'Function', v: 'In-plane Hall magnetic switch (with flux concentrator)' },
+          { k: 'Output', v: 'SOT-23: omnipolar OUT; X1LGA: OUT1(pos)/OUT2(neg) dual-unipolar' },
+          { k: 'Sensitivity', v: 'high sensitivity (thresholds per datasheet)' },
+          { k: 'Power', v: 'low power' },
+          { k: 'Package', v: 'SOT-23-3 / X1LGA-4' }
+        ]
+      },
+      ja: {
+        subcategory: '高感度面内ホールスイッチ（磁束集中器付）',
+        whatIs: '高感度「面内（in-plane）」ホール効果磁気スイッチ：パッケージ表面に平行な磁界を検出し、しきい値超えでデジタル出力を反転。磁束集中器内蔵で感度向上。位置/近接/スイッチ検出に。',
+        func: '面内の磁束密度を検出、B_OP 超えでオン・B_RP 未満でオフ（ヒステリシス付）。SOT-23 版はオムニポーラ単出力 OUT（正負磁界とも反応）；X1LGA 版は OUT1（正磁界）/OUT2（負磁界）のデュアルユニポーラ出力。低消費電力。',
+        usedIn: 'ブラシレスモータ転流/位置、ノブ/ギヤ位置検出、蓋スイッチ/近接検出、流量計、安全インターロック。',
+        desc: '高感度面内ホールスイッチ（磁束集中器付）。オムニポーラまたはデュアルユニポーラ出力・低消費電力（SOT-23-3 / X1LGA-4）。',
+        specs: [
+          { k: '機能', v: '面内（in-plane）ホール磁気スイッチ（磁束集中器付）' },
+          { k: '出力', v: 'SOT-23：オムニポーラ OUT；X1LGA：OUT1(正)/OUT2(負) デュアルユニポーラ' },
+          { k: '感度', v: '高感度（しきい値は datasheet 参照）' },
+          { k: '消費電力', v: '低消費電力' },
+          { k: 'パッケージ', v: 'SOT-23-3 / X1LGA-4' }
+        ]
+      },
+      ko: {
+        subcategory: '고감도 평면 홀 스위치(자속 집중기 포함)',
+        whatIs: '고감도 "평면(in-plane)" 홀 효과 자기 스위치: 패키지 표면에 평행한 자기장을 감지, 문턱 초과 시 디지털 출력 반전. 자속 집중기 내장으로 감도 향상. 위치/근접/스위치 감지용.',
+        func: '평면 자속 밀도를 감지, B_OP 초과 시 온·B_RP 미만 시 오프(히스테리시스 포함). SOT-23판은 옴니폴라 단일 출력 OUT(양·음 자기장 모두 반응); X1LGA판은 OUT1(양 자기장)/OUT2(음 자기장) 듀얼 유니폴라 출력. 저전력.',
+        usedIn: '브러시리스 모터 전환/위치, 노브/기어 위치 감지, 뚜껑 스위치/근접 감지, 유량계, 안전 인터록.',
+        desc: '고감도 평면 홀 스위치(자속 집중기 포함). 옴니폴라 또는 듀얼 유니폴라 출력·저전력(SOT-23-3 / X1LGA-4).',
+        specs: [
+          { k: '기능', v: '평면(in-plane) 홀 자기 스위치(자속 집중기 포함)' },
+          { k: '출력', v: 'SOT-23: 옴니폴라 OUT; X1LGA: OUT1(양)/OUT2(음) 듀얼 유니폴라' },
+          { k: '감도', v: '고감도(문턱값은 datasheet 참조)' },
+          { k: '전력', v: '저전력' },
+          { k: '패키지', v: 'SOT-23-3 / X1LGA-4' }
+        ]
+      }
+    },
+    'TMAG5230': {
+      en: {
+        subcategory: 'Low-power Z-axis Hall switch (WCSP)',
+        whatIs: 'Low-power Z-axis (perpendicular-to-package) Hall-effect magnetic switch: detects fields perpendicular to the package and toggles the output above threshold. Tiny WCSP package, low power, for proximity/switch detection.',
+        func: 'Senses Z-axis flux density: on above B_OP, off below B_RP (hysteresis). Omnipolar version has single output OUT; dual-unipolar version has OUT1(positive)/OUT2(negative). Low power, suited to battery products.',
+        usedIn: 'Portable/wearable lid switches, proximity detection, buttons/knobs, magnetic sensing in battery products.',
+        desc: 'Low-power Z-axis Hall magnetic switch, omnipolar or dual-unipolar output, tiny WCSP (DSBGA-4).',
+        specs: [
+          { k: 'Function', v: 'Z-axis Hall magnetic switch (low power)' },
+          { k: 'Output', v: 'Omnipolar OUT; or Dual-Unipolar OUT1(pos)/OUT2(neg)' },
+          { k: 'Sense axis', v: 'Z-axis (perpendicular to package)' },
+          { k: 'Power', v: 'low power (battery-friendly)' },
+          { k: 'Package', v: 'DSBGA-4 (WCSP); balls A1/A2/B1/B2' }
+        ]
+      },
+      ja: {
+        subcategory: '低消費電力 Z 軸ホールスイッチ（WCSP）',
+        whatIs: '低消費電力「Z 軸（パッケージ面に垂直）」ホール効果磁気スイッチ：パッケージに垂直な磁界を検出し、しきい値超えで出力を反転。極小 WCSP・低消費電力、近接/スイッチ検出に。',
+        func: 'Z 軸磁束密度を検出、B_OP 超えでオン・B_RP 未満でオフ（ヒステリシス）。オムニポーラ版は単出力 OUT；デュアルユニポーラ版は OUT1(正)/OUT2(負)。低消費電力でバッテリ製品向け。',
+        usedIn: 'ポータブル/ウェアラブルの蓋スイッチ、近接検出、ボタン/ノブ、バッテリ製品の磁気検出。',
+        desc: '低消費電力 Z 軸ホール磁気スイッチ。オムニポーラまたはデュアルユニポーラ出力・極小 WCSP（DSBGA-4）。',
+        specs: [
+          { k: '機能', v: 'Z 軸ホール磁気スイッチ（低消費電力）' },
+          { k: '出力', v: 'オムニポーラ OUT；またはデュアルユニポーラ OUT1(正)/OUT2(負)' },
+          { k: '検出軸', v: 'Z 軸（パッケージ面に垂直）' },
+          { k: '消費電力', v: '低消費電力（バッテリ向き）' },
+          { k: 'パッケージ', v: 'DSBGA-4 (WCSP)；ボール A1/A2/B1/B2' }
+        ]
+      },
+      ko: {
+        subcategory: '저전력 Z축 홀 스위치(WCSP)',
+        whatIs: '저전력 "Z축(패키지면에 수직)" 홀 효과 자기 스위치: 패키지에 수직인 자기장을 감지, 문턱 초과 시 출력 반전. 초소형 WCSP·저전력, 근접/스위치 감지용.',
+        func: 'Z축 자속 밀도를 감지, B_OP 초과 시 온·B_RP 미만 시 오프(히스테리시스). 옴니폴라판은 단일 출력 OUT; 듀얼 유니폴라판은 OUT1(양)/OUT2(음). 저전력으로 배터리 제품용.',
+        usedIn: '휴대/웨어러블 뚜껑 스위치, 근접 감지, 버튼/노브, 배터리 제품 자기 감지.',
+        desc: '저전력 Z축 홀 자기 스위치. 옴니폴라 또는 듀얼 유니폴라 출력·초소형 WCSP(DSBGA-4).',
+        specs: [
+          { k: '기능', v: 'Z축 홀 자기 스위치(저전력)' },
+          { k: '출력', v: '옴니폴라 OUT; 또는 듀얼 유니폴라 OUT1(양)/OUT2(음)' },
+          { k: '감지 축', v: 'Z축(패키지면에 수직)' },
+          { k: '전력', v: '저전력(배터리 친화)' },
+          { k: '패키지', v: 'DSBGA-4 (WCSP); 볼 A1/A2/B1/B2' }
+        ]
+      }
+    },
+    'AMC0206M25': {
+      en: {
+        subcategory: 'Isolated ΔΣ modulator (±250mV input)',
+        whatIs: 'Isolated Delta-Sigma modulator: measures a small ±250mV analog signal on the high-voltage side, converts it into a bitstream (DOUT) sent across the isolation barrier to the low-voltage side, decoded by a sinc filter in the MCU/FPGA. For isolated current/voltage measurement.',
+        func: 'High-side INP/INN differential input (±250mV, for shunt-based current sensing) is ΔΣ-modulated into a 1-bit stream DOUT across the capacitive isolation barrier; CLKIN provides the modulation clock. AVDD/AGND on the high side, DVDD/DGND on the low side.',
+        usedIn: 'Motor/inverter phase-current isolated measurement (shunt), isolated voltage measurement, solar/UPS current sensing, power feedback.',
+        desc: 'Isolated ΔΣ modulator, ±250mV input, external CLKIN clock, bitstream DOUT (wide-body SOIC-8).',
+        specs: [
+          { k: 'Function', v: 'Isolated ΔΣ modulator' },
+          { k: 'Input range', v: '±250mV (differential)' },
+          { k: 'Clock', v: 'CLKIN external clock input' },
+          { k: 'Output', v: 'DOUT bitstream (needs external sinc filter)' },
+          { k: 'Supply', v: 'AVDD (high side) + DVDD (low side)' },
+          { k: 'Package', v: 'wide-body SOIC-8 (isolated)' }
+        ],
+        dropIn: [
+          { note: 'Automotive version, same SOIC-8 pinout' },
+          { note: 'Same pinout; ±50mV input range (not ±250mV) — verify the range' }
+        ]
+      },
+      ja: {
+        subcategory: '絶縁 ΔΣ モジュレータ（±250mV 入力）',
+        whatIs: '絶縁 Delta-Sigma モジュレータ：高圧側で ±250mV の小アナログ信号を計測し、ビットストリーム（DOUT）に変換して絶縁バリア越しに低圧側へ送り、MCU/FPGA の sinc フィルタで復元。絶縁式の電流/電圧計測に。',
+        func: '高圧側 INP/INN 差動入力（±250mV、シャント抵抗で電流計測）を内部で ΔΣ 変調し 1-bit データストリーム DOUT にして容量性絶縁バリアを跨ぐ；CLKIN が変調クロックを供給。AVDD/AGND 高圧側、DVDD/DGND 低圧側。',
+        usedIn: 'モータ/インバータ相電流絶縁計測（シャント）、絶縁電圧計測、太陽光/UPS 電流検出、電源帰還。',
+        desc: '絶縁 ΔΣ モジュレータ。±250mV 入力・外部クロック CLKIN・ビットストリーム DOUT（SOIC-8 ワイドボディ）。',
+        specs: [
+          { k: '機能', v: '絶縁 ΔΣ モジュレータ' },
+          { k: '入力範囲', v: '±250mV（差動）' },
+          { k: 'クロック', v: 'CLKIN 外部クロック入力' },
+          { k: '出力', v: 'DOUT ビットストリーム（外部 sinc フィルタ必要）' },
+          { k: '電源', v: 'AVDD（高圧側）＋DVDD（低圧側）' },
+          { k: 'パッケージ', v: 'SOIC-8 ワイドボディ（絶縁）' }
+        ],
+        dropIn: [
+          { note: '車載版・同 SOIC-8 ピン配置同一' },
+          { note: '同ピン配置；入力範囲 ±50mV（±250mV ではない）、量程を確認' }
+        ]
+      },
+      ko: {
+        subcategory: '절연 ΔΣ 모듈레이터(±250mV 입력)',
+        whatIs: '절연 Delta-Sigma 모듈레이터: 고압 측에서 ±250mV 소 아날로그 신호를 계측해 비트스트림(DOUT)으로 변환, 절연 배리어 너머 저압 측으로 보내고 MCU/FPGA의 sinc 필터로 복원. 절연식 전류/전압 계측용.',
+        func: '고압 측 INP/INN 차동 입력(±250mV, 션트 저항으로 전류 계측)을 내부에서 ΔΣ 변조해 1-bit 데이터 스트림 DOUT으로 만들어 용량성 절연 배리어를 넘음; CLKIN이 변조 클록 공급. AVDD/AGND 고압 측, DVDD/DGND 저압 측.',
+        usedIn: '모터/인버터 상전류 절연 계측(션트), 절연 전압 계측, 태양광/UPS 전류 검출, 전원 피드백.',
+        desc: '절연 ΔΣ 모듈레이터. ±250mV 입력·외부 클록 CLKIN·비트스트림 DOUT(SOIC-8 와이드바디).',
+        specs: [
+          { k: '기능', v: '절연 ΔΣ 모듈레이터' },
+          { k: '입력 범위', v: '±250mV(차동)' },
+          { k: '클록', v: 'CLKIN 외부 클록 입력' },
+          { k: '출력', v: 'DOUT 비트스트림(외부 sinc 필터 필요)' },
+          { k: '전원', v: 'AVDD(고압 측) + DVDD(저압 측)' },
+          { k: '패키지', v: 'SOIC-8 와이드바디(절연)' }
+        ],
+        dropIn: [
+          { note: '차량용 버전·동일 SOIC-8 핀 배치' },
+          { note: '동일 핀 배치; 입력 범위 ±50mV(±250mV 아님), 측정 범위 확인' }
+        ]
+      }
+    },
+    'AMC0206M25-Q1': {
+      en: {
+        subcategory: 'Isolated ΔΣ modulator (±250mV input, automotive)',
+        whatIs: 'Isolated ΔΣ modulator (automotive Q1): ±250mV input, external clock, bitstream output. Same pinout as AMC0206M25 plus automotive qualification.',
+        func: 'Same as AMC0206M25: high-side ±250mV differential input ΔΣ-modulated into a DOUT bitstream across isolation, CLKIN external clock. AEC-Q100 automotive.',
+        usedIn: 'Automotive motor/inverter phase-current isolated measurement, EV power feedback, in-vehicle isolated voltage/current sensing.',
+        desc: 'Automotive isolated ΔΣ modulator, ±250mV, CLKIN, DOUT bitstream (same pinout as AMC0206M25, wide-body SOIC-8).',
+        specs: [
+          { k: 'Function', v: 'Isolated ΔΣ modulator (automotive)' },
+          { k: 'Input range', v: '±250mV' },
+          { k: 'Clock', v: 'CLKIN external' },
+          { k: 'Output', v: 'DOUT bitstream' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100 (Q1)' },
+          { k: 'Package', v: 'wide-body SOIC-8 (isolated)' }
+        ],
+        dropIn: [{ note: 'Non-automotive version, same SOIC-8 pinout' }]
+      },
+      ja: {
+        subcategory: '絶縁 ΔΣ モジュレータ（±250mV 入力・車載）',
+        whatIs: '絶縁 ΔΣ モジュレータ（車載 Q1）：±250mV 入力・外部クロック・ビットストリーム出力。AMC0206M25 とピン互換＋車載認証。',
+        func: 'AMC0206M25 と同じ：高圧側 ±250mV 差動入力を ΔΣ 変調し DOUT ビットストリームで絶縁越しに出力、CLKIN 外部クロック。車載 AEC-Q100。',
+        usedIn: '車載モータ/インバータ相電流絶縁計測、EV 電源帰還、車載絶縁電圧/電流検出。',
+        desc: '車載絶縁 ΔΣ モジュレータ。±250mV・CLKIN・DOUT ビットストリーム（AMC0206M25 とピン互換、SOIC-8 ワイドボディ）。',
+        specs: [
+          { k: '機能', v: '絶縁 ΔΣ モジュレータ（車載）' },
+          { k: '入力範囲', v: '±250mV' },
+          { k: 'クロック', v: 'CLKIN 外部' },
+          { k: '出力', v: 'DOUT ビットストリーム' },
+          { k: '認証', v: '車載 AEC-Q100 (Q1)' },
+          { k: 'パッケージ', v: 'SOIC-8 ワイドボディ（絶縁）' }
+        ],
+        dropIn: [{ note: '非車載版・同 SOIC-8 ピン配置同一' }]
+      },
+      ko: {
+        subcategory: '절연 ΔΣ 모듈레이터(±250mV 입력·차량용)',
+        whatIs: '절연 ΔΣ 모듈레이터(차량용 Q1): ±250mV 입력·외부 클록·비트스트림 출력. AMC0206M25와 핀 호환+차량 인증.',
+        func: 'AMC0206M25와 동일: 고압 측 ±250mV 차동 입력을 ΔΣ 변조해 DOUT 비트스트림으로 절연 너머 출력, CLKIN 외부 클록. 차량용 AEC-Q100.',
+        usedIn: '차량 모터/인버터 상전류 절연 계측, EV 전원 피드백, 차량 절연 전압/전류 검출.',
+        desc: '차량용 절연 ΔΣ 모듈레이터. ±250mV·CLKIN·DOUT 비트스트림(AMC0206M25와 핀 호환, SOIC-8 와이드바디).',
+        specs: [
+          { k: '기능', v: '절연 ΔΣ 모듈레이터(차량용)' },
+          { k: '입력 범위', v: '±250mV' },
+          { k: '클록', v: 'CLKIN 외부' },
+          { k: '출력', v: 'DOUT 비트스트림' },
+          { k: '인증', v: '차량용 AEC-Q100 (Q1)' },
+          { k: '패키지', v: 'SOIC-8 와이드바디(절연)' }
+        ],
+        dropIn: [{ note: '비차량용 버전·동일 SOIC-8 핀 배치' }]
+      }
+    },
+    'AMC0303M2510': {
+      en: {
+        subcategory: 'Isolated ΔΣ modulator (±250mV, internal clock CLKOUT)',
+        whatIs: 'Isolated Delta-Sigma modulator: ±250mV input, built-in oscillator that drives the clock out on CLKOUT (no external clock needed). Measures a small high-side signal and sends the bitstream across isolation.',
+        func: 'High-side INP/INN ±250mV differential input is ΔΣ-modulated into DOUT; an internal clock is output on CLKOUT for downstream sync (unlike the M25’s external CLKIN). AVDD/AGND high side, DVDD/DGND low side.',
+        usedIn: 'Motor/inverter phase-current isolated measurement, isolated voltage measurement, power feedback, isolated front ends needing an internal clock.',
+        desc: 'Isolated ΔΣ modulator, ±250mV, internal-clock CLKOUT output, bitstream DOUT (wide-body SOIC-8).',
+        specs: [
+          { k: 'Function', v: 'Isolated ΔΣ modulator (internal clock)' },
+          { k: 'Input range', v: '±250mV' },
+          { k: 'Clock', v: 'CLKOUT internal clock output' },
+          { k: 'Output', v: 'DOUT bitstream' },
+          { k: 'Supply', v: 'AVDD (high side) + DVDD (low side)' },
+          { k: 'Package', v: 'wide-body SOIC-8 (isolated)' }
+        ],
+        dropIn: [{ note: 'Same pinout; ±50mV input range (not ±250mV) — verify the range' }]
+      },
+      ja: {
+        subcategory: '絶縁 ΔΣ モジュレータ（±250mV・内部クロック CLKOUT）',
+        whatIs: '絶縁 Delta-Sigma モジュレータ：±250mV 入力、内蔵発振器を持ち CLKOUT からクロックを出力（外部クロック不要）。高圧側の小信号を計測しビットストリームで絶縁越しに送出。',
+        func: '高圧側 INP/INN ±250mV 差動入力を ΔΣ 変調し DOUT に；内部でクロックを生成し CLKOUT から出力して下流同期に供給（M25 の CLKIN 外部クロックと異なる）。AVDD/AGND 高圧側、DVDD/DGND 低圧側。',
+        usedIn: 'モータ/インバータ相電流絶縁計測、絶縁電圧計測、電源帰還、内部クロックが必要な絶縁フロントエンド。',
+        desc: '絶縁 ΔΣ モジュレータ。±250mV・内部クロック CLKOUT 出力・ビットストリーム DOUT（SOIC-8 ワイドボディ）。',
+        specs: [
+          { k: '機能', v: '絶縁 ΔΣ モジュレータ（内部クロック）' },
+          { k: '入力範囲', v: '±250mV' },
+          { k: 'クロック', v: 'CLKOUT 内部クロック出力' },
+          { k: '出力', v: 'DOUT ビットストリーム' },
+          { k: '電源', v: 'AVDD（高圧側）＋DVDD（低圧側）' },
+          { k: 'パッケージ', v: 'SOIC-8 ワイドボディ（絶縁）' }
+        ],
+        dropIn: [{ note: '同ピン配置；入力範囲 ±50mV（±250mV ではない）、量程を確認' }]
+      },
+      ko: {
+        subcategory: '절연 ΔΣ 모듈레이터(±250mV·내부 클록 CLKOUT)',
+        whatIs: '절연 Delta-Sigma 모듈레이터: ±250mV 입력, 내장 발진기를 갖고 CLKOUT으로 클록 출력(외부 클록 불필요). 고압 측 소신호를 계측해 비트스트림으로 절연 너머 송출.',
+        func: '고압 측 INP/INN ±250mV 차동 입력을 ΔΣ 변조해 DOUT으로; 내부에서 클록을 생성해 CLKOUT으로 출력해 하류 동기에 공급(M25의 CLKIN 외부 클록과 다름). AVDD/AGND 고압 측, DVDD/DGND 저압 측.',
+        usedIn: '모터/인버터 상전류 절연 계측, 절연 전압 계측, 전원 피드백, 내부 클록이 필요한 절연 프론트엔드.',
+        desc: '절연 ΔΣ 모듈레이터. ±250mV·내부 클록 CLKOUT 출력·비트스트림 DOUT(SOIC-8 와이드바디).',
+        specs: [
+          { k: '기능', v: '절연 ΔΣ 모듈레이터(내부 클록)' },
+          { k: '입력 범위', v: '±250mV' },
+          { k: '클록', v: 'CLKOUT 내부 클록 출력' },
+          { k: '출력', v: 'DOUT 비트스트림' },
+          { k: '전원', v: 'AVDD(고압 측) + DVDD(저압 측)' },
+          { k: '패키지', v: 'SOIC-8 와이드바디(절연)' }
+        ],
+        dropIn: [{ note: '동일 핀 배치; 입력 범위 ±50mV(±250mV 아님), 측정 범위 확인' }]
+      }
+    },
+    'ISOS510-SP': {
+      en: {
+        subcategory: 'Current-driven analog isolator (optocoupler-style, radiation-hardened)',
+        whatIs: 'Current-driven analog isolator (solid-state optocoupler replacement): current through the input diode (AN/CAT) controls the output transistor (COL/EM) across the isolation barrier, passing analog/digital signals. Radiation-hardened (SP), space-grade.',
+        func: 'Current flows through the input diode AN→CAT, crosses the isolation, and controls conduction of the output transistor (collector COL / emitter EM); the current transfer ratio (CTR) sets the gain. Equivalent to an optocoupler but radiation-hardened with no LED aging.',
+        usedIn: 'Space/aerospace signal isolation, isolated feedback, relay replacement, radiation-hardened digital/analog isolation.',
+        desc: 'Radiation-hardened current-driven analog isolator (optocoupler-style), diode input / transistor output (4-pin).',
+        specs: [
+          { k: 'Function', v: 'Current-driven analog isolator (optocoupler-style)' },
+          { k: 'Input', v: 'diode AN/CAT' },
+          { k: 'Output', v: 'transistor COL/EM' },
+          { k: 'Radiation', v: 'SP (rad-hard, space-grade)' },
+          { k: 'CTR', v: 'current transfer ratio (value per datasheet)' },
+          { k: 'Package', v: '4-pin' }
+        ]
+      },
+      ja: {
+        subcategory: '電流駆動アナログアイソレータ（フォトカプラ式・耐放射線）',
+        whatIs: '電流駆動アナログアイソレータ（固体フォトカプラ代替）：入力ダイオード（AN/CAT）に電流を流すと、絶縁バリアを跨いで出力トランジスタ（COL/EM）の導通を制御し、アナログ/デジタル信号を伝達。耐放射線（SP）・宇宙級。',
+        func: '入力ダイオード AN→CAT に電流を流すと絶縁を跨いで出力トランジスタ（コレクタ COL / エミッタ EM）へ伝わり導通を制御、電流伝達比（CTR）が利得を決める。フォトカプラ相当だが耐放射線・LED 劣化なし。',
+        usedIn: '宇宙/航空宇宙の信号絶縁、絶縁帰還、リレー代替、耐放射線デジタル/アナログ絶縁。',
+        desc: '耐放射線電流駆動アナログアイソレータ（フォトカプラ式）。ダイオード入力 / トランジスタ出力（4-pin）。',
+        specs: [
+          { k: '機能', v: '電流駆動アナログアイソレータ（フォトカプラ式）' },
+          { k: '入力', v: 'ダイオード AN/CAT' },
+          { k: '出力', v: 'トランジスタ COL/EM' },
+          { k: '耐放射線', v: 'SP（rad-hard・宇宙級）' },
+          { k: 'CTR', v: '電流伝達比（値は datasheet 参照）' },
+          { k: 'パッケージ', v: '4-pin' }
+        ]
+      },
+      ko: {
+        subcategory: '전류 구동 아날로그 절연기(포토커플러식·내방사선)',
+        whatIs: '전류 구동 아날로그 절연기(고체 포토커플러 대체): 입력 다이오드(AN/CAT)에 전류를 흘리면 절연 배리어를 넘어 출력 트랜지스터(COL/EM) 도통을 제어, 아날로그/디지털 신호 전달. 내방사선(SP)·우주급.',
+        func: '입력 다이오드 AN→CAT에 전류를 흘리면 절연을 넘어 출력 트랜지스터(컬렉터 COL / 이미터 EM)에 전달돼 도통 제어, 전류 전달비(CTR)가 이득 결정. 포토커플러 상당이나 내방사선·LED 열화 없음.',
+        usedIn: '우주/항공우주 신호 절연, 절연 피드백, 릴레이 대체, 내방사선 디지털/아날로그 절연.',
+        desc: '내방사선 전류 구동 아날로그 절연기(포토커플러식). 다이오드 입력 / 트랜지스터 출력(4-pin).',
+        specs: [
+          { k: '기능', v: '전류 구동 아날로그 절연기(포토커플러식)' },
+          { k: '입력', v: '다이오드 AN/CAT' },
+          { k: '출력', v: '트랜지스터 COL/EM' },
+          { k: '내방사선', v: 'SP(rad-hard·우주급)' },
+          { k: 'CTR', v: '전류 전달비(값은 datasheet 참조)' },
+          { k: '패키지', v: '4-pin' }
+        ]
+      }
+    },
+    'LMH32401': {
+      en: {
+        subcategory: '450MHz programmable-gain transimpedance amplifier (TIA, differential output)',
+        whatIs: 'High-speed transimpedance amplifier (TIA): converts the tiny current from a photodiode (APD/PD) into a voltage, with programmable gain (2kΩ/20kΩ), differential output, and 450MHz bandwidth. Includes ambient-light cancellation (ALC). For LIDAR/optical-receiver front ends.',
+        func: 'IN takes the photodiode current → internal transimpedance converts it to a differential voltage OUT+/OUT–; the GAIN pin selects 2kΩ or 20kΩ; IDC_EN enables the ambient-light (DC) cancellation loop; EN low is normal, high is shutdown. VDD1 powers the TIA stage, VDD2 the differential stage.',
+        usedIn: 'LIDAR optical-receiver front end, laser ranging, optical-communication receivers, APD/PD signal amplification.',
+        desc: '450MHz programmable-gain transimpedance amplifier (TIA), differential output, ambient-light cancellation, 2k/20kΩ gain (VQFN-16).',
+        specs: [
+          { k: 'Function', v: 'Programmable-gain transimpedance amplifier (TIA, differential output)' },
+          { k: 'Bandwidth', v: '450 MHz' },
+          { k: 'Gain', v: '2kΩ / 20kΩ (GAIN pin selects)' },
+          { k: 'Ambient-light cancel', v: 'ALC loop (IDC_EN controlled)' },
+          { k: 'Supply', v: 'VDD1 (TIA) + VDD2 (differential stage)' },
+          { k: 'Package', v: 'VQFN-16 (RGT), EP to GND' }
+        ],
+        dropIn: [{ note: 'Same function (TIA) but the LMH32404 is a quad multiplexed version (28-pin, not pin-to-pin)' }]
+      },
+      ja: {
+        subcategory: '450MHz プログラマブルゲイン トランスインピーダンスアンプ（TIA・差動出力）',
+        whatIs: '高速トランスインピーダンスアンプ（TIA）：フォトダイオード（APD/PD）の微小電流を電圧に変換、プログラマブルゲイン（2kΩ/20kΩ）・差動出力・450MHz 帯域。環境光除去（ALC）内蔵。LIDAR/光受信フロントエンドに。',
+        func: 'IN にフォトダイオード電流 → 内部トランスインピーダンスで差動電圧 OUT+/OUT– に変換；GAIN ピンで 2kΩ か 20kΩ を選択；IDC_EN で環境光（DC）除去ループを有効化；EN ローで通常・ハイでシャットダウン。VDD1 が TIA 段、VDD2 が差動段を供給。',
+        usedIn: 'LIDAR 光受信フロントエンド、レーザ測距、光通信受信、APD/PD 信号増幅。',
+        desc: '450MHz プログラマブルゲイン TIA。差動出力・環境光除去・2k/20kΩ ゲイン（VQFN-16）。',
+        specs: [
+          { k: '機能', v: 'プログラマブルゲイン TIA（差動出力）' },
+          { k: '帯域', v: '450 MHz' },
+          { k: 'ゲイン', v: '2kΩ / 20kΩ（GAIN ピン切替）' },
+          { k: '環境光除去', v: 'ALC ループ（IDC_EN 制御）' },
+          { k: '電源', v: 'VDD1（TIA）＋VDD2（差動段）' },
+          { k: 'パッケージ', v: 'VQFN-16 (RGT)、EP は GND' }
+        ],
+        dropIn: [{ note: '機能同一（TIA）だが LMH32404 は 4 チャネル多重版（28-pin、pin-to-pin ではない）' }]
+      },
+      ko: {
+        subcategory: '450MHz 프로그래머블 이득 트랜스임피던스 앰프(TIA·차동 출력)',
+        whatIs: '고속 트랜스임피던스 앰프(TIA): 포토다이오드(APD/PD)의 미소 전류를 전압으로 변환, 프로그래머블 이득(2kΩ/20kΩ)·차동 출력·450MHz 대역. 주변광 제거(ALC) 내장. LIDAR/광수신 프론트엔드용.',
+        func: 'IN에 포토다이오드 전류 → 내부 트랜스임피던스로 차동 전압 OUT+/OUT–로 변환; GAIN 핀으로 2kΩ 또는 20kΩ 선택; IDC_EN으로 주변광(DC) 제거 루프 활성화; EN 로우면 정상·하이면 셧다운. VDD1이 TIA단, VDD2가 차동단 공급.',
+        usedIn: 'LIDAR 광수신 프론트엔드, 레이저 측거, 광통신 수신, APD/PD 신호 증폭.',
+        desc: '450MHz 프로그래머블 이득 TIA. 차동 출력·주변광 제거·2k/20kΩ 이득(VQFN-16).',
+        specs: [
+          { k: '기능', v: '프로그래머블 이득 TIA(차동 출력)' },
+          { k: '대역', v: '450 MHz' },
+          { k: '이득', v: '2kΩ / 20kΩ(GAIN 핀 전환)' },
+          { k: '주변광 제거', v: 'ALC 루프(IDC_EN 제어)' },
+          { k: '전원', v: 'VDD1(TIA) + VDD2(차동단)' },
+          { k: '패키지', v: 'VQFN-16 (RGT), EP는 GND' }
+        ],
+        dropIn: [{ note: '기능 동일(TIA)이나 LMH32404는 4채널 멀티플렉스판(28-pin, pin-to-pin 아님)' }]
+      }
+    },
+    'LMH32404': {
+      en: {
+        subcategory: 'Quad multiplexed transimpedance amplifier (TIA, differential output)',
+        whatIs: 'Quad transimpedance amplifier (TIA): 4 channels each convert a photodiode current to a differential voltage, with an integrated output switch to multiplex the selected channels (M1–M4). Each channel has 100mA clamping and ambient-light cancellation. For multi-channel LIDAR reception.',
+        func: '4 inputs IN1–IN4 each transimpedance-amplify to OUT1±–OUT4±; M1–M4 select which channels are enabled (output switch closed); IDC_EN controls ambient-light cancellation; EN enables; VOCM sets output common mode. Each channel has 100mA clamping for fast overload recovery. VDD1 powers the TIA stage, VDD2 the differential stage.',
+        usedIn: 'Multi-channel LIDAR receive arrays, laser ranging, multi-path optical detection, APD/PD array front ends.',
+        desc: 'Quad multiplexed transimpedance amplifier (TIA), differential output, per-channel 100mA clamp + ambient-light cancellation (VQFN-28).',
+        specs: [
+          { k: 'Function', v: 'Quad multiplexed transimpedance amplifier (TIA)' },
+          { k: 'Channels', v: '4 (IN1–IN4 / OUT1±–OUT4±)' },
+          { k: 'Channel select', v: 'M1–M4 (high = enable output switch)' },
+          { k: 'Protection', v: 'per-channel 100mA clamp (fast overload recovery)' },
+          { k: 'Ambient-light cancel', v: 'ALC loop (IDC_EN controlled)' },
+          { k: 'Supply', v: 'VDD1 (TIA) + VDD2 (differential stage)' },
+          { k: 'Package', v: 'VQFN-28, EP to GND' }
+        ]
+      },
+      ja: {
+        subcategory: '4 チャネル多重トランスインピーダンスアンプ（TIA・差動出力）',
+        whatIs: '4 チャネルトランスインピーダンスアンプ（TIA）：4 路それぞれフォトダイオード電流を差動電圧に変換、出力側に統合スイッチを持ちチャネルを多重選択（M1~M4）。各路 100mA クランプと環境光除去付。多チャネル LIDAR 受信に。',
+        func: '4 入力 IN1~IN4 を各々トランスインピーダンス増幅し OUT1±~OUT4± へ；M1~M4 でどのチャネルを有効化（出力スイッチ閉）か選択；IDC_EN で環境光除去を制御；EN イネーブル；VOCM で出力コモンモード設定。各路 100mA クランプで高速過負荷回復。VDD1 が TIA 段、VDD2 が差動段。',
+        usedIn: '多チャネル LIDAR 受信アレイ、レーザ測距、多経路光検出、APD/PD アレイフロントエンド。',
+        desc: '4 チャネル多重トランスインピーダンスアンプ（TIA）。差動出力・各路 100mA クランプ＋環境光除去（VQFN-28）。',
+        specs: [
+          { k: '機能', v: '4 チャネル多重トランスインピーダンスアンプ（TIA）' },
+          { k: 'チャネル', v: '4（IN1~IN4 / OUT1±~OUT4±）' },
+          { k: 'チャネル選択', v: 'M1~M4（ハイ＝出力スイッチ有効）' },
+          { k: '保護', v: '各路 100mA クランプ（高速過負荷回復）' },
+          { k: '環境光除去', v: 'ALC ループ（IDC_EN 制御）' },
+          { k: '電源', v: 'VDD1（TIA）＋VDD2（差動段）' },
+          { k: 'パッケージ', v: 'VQFN-28、EP は GND' }
+        ]
+      },
+      ko: {
+        subcategory: '4채널 멀티플렉스 트랜스임피던스 앰프(TIA·차동 출력)',
+        whatIs: '4채널 트랜스임피던스 앰프(TIA): 4채널 각각 포토다이오드 전류를 차동 전압으로 변환, 출력 측 통합 스위치로 채널 멀티플렉스 선택(M1~M4). 각 채널 100mA 클램프와 주변광 제거 포함. 다채널 LIDAR 수신용.',
+        func: '4입력 IN1~IN4를 각각 트랜스임피던스 증폭해 OUT1±~OUT4±로; M1~M4로 어느 채널을 활성화(출력 스위치 닫힘)할지 선택; IDC_EN으로 주변광 제거 제어; EN 인에이블; VOCM으로 출력 공통 모드 설정. 각 채널 100mA 클램프로 고속 과부하 회복. VDD1이 TIA단, VDD2가 차동단.',
+        usedIn: '다채널 LIDAR 수신 어레이, 레이저 측거, 다경로 광검출, APD/PD 어레이 프론트엔드.',
+        desc: '4채널 멀티플렉스 트랜스임피던스 앰프(TIA). 차동 출력·각 채널 100mA 클램프+주변광 제거(VQFN-28).',
+        specs: [
+          { k: '기능', v: '4채널 멀티플렉스 트랜스임피던스 앰프(TIA)' },
+          { k: '채널', v: '4(IN1~IN4 / OUT1±~OUT4±)' },
+          { k: '채널 선택', v: 'M1~M4(하이=출력 스위치 활성)' },
+          { k: '보호', v: '각 채널 100mA 클램프(고속 과부하 회복)' },
+          { k: '주변광 제거', v: 'ALC 루프(IDC_EN 제어)' },
+          { k: '전원', v: 'VDD1(TIA) + VDD2(차동단)' },
+          { k: '패키지', v: 'VQFN-28, EP는 GND' }
+        ]
+      }
+    },
+    'THS4541-DIE': {
+      en: {
+        subcategory: 'Fully differential amplifier (FDA, negative-rail input/rail-to-rail output, bare die)',
+        whatIs: 'Fully differential amplifier (FDA) bare die: converts single-ended or differential input to a differential output, with negative-rail input, rail-to-rail output, precision low noise. Commonly drives ADCs differentially. This is the bare-die version for hybrid circuits / multi-chip modules.',
+        func: 'IN+/IN– differential input is amplified by the FDA to OUT+/OUT–; Vocm sets the output common mode (aligned to the ADC common mode); PD shuts down (low=off, high=normal); Vs+/Vs– dual supplies. Negative-rail input measures below ground; rail-to-rail output gives large swing.',
+        usedIn: 'High-speed ADC differential driving, single-ended to differential, anti-alias filter driving, precision signal chains (bare die for MCM/SiP).',
+        desc: 'Fully differential amplifier (FDA) bare die, negative-rail input / rail-to-rail output, Vocm common-mode set, PD shutdown.',
+        specs: [
+          { k: 'Function', v: 'Fully differential amplifier (FDA) bare die' },
+          { k: 'Input', v: 'negative-rail input (measures below ground)' },
+          { k: 'Output', v: 'rail-to-rail differential output' },
+          { k: 'Common mode', v: 'Vocm sets output common mode' },
+          { k: 'Shutdown', v: 'PD (high = normal)' },
+          { k: 'Form', v: 'bare die (die/PAD), for MCM/SiP' }
+        ]
+      },
+      ja: {
+        subcategory: '全差動アンプ（FDA・負レール入力/レールツーレール出力・ベアダイ）',
+        whatIs: '全差動アンプ（FDA）ベアダイ：シングルエンドまたは差動入力を差動出力に変換、負レール入力・レールツーレール出力・精密低ノイズ。ADC の差動駆動によく使う。これはハイブリッド回路/マルチチップモジュール向けのベアダイ版。',
+        func: 'IN+/IN– 差動入力を FDA で OUT+/OUT– に増幅；Vocm で出力コモンモードを設定（ADC のコモンモードに合わせる）；PD でシャットダウン（ロー＝オフ・ハイ＝通常）；Vs+/Vs– 両電源。負レール入力でグランド以下も計測でき、レールツーレール出力で大振幅。',
+        usedIn: '高速 ADC 差動駆動、シングルエンド→差動、アンチエイリアスフィルタ駆動、精密信号チェーン（ベアダイは MCM/SiP 用）。',
+        desc: '全差動アンプ（FDA）ベアダイ。負レール入力 / レールツーレール出力・Vocm 共モード設定・PD シャットダウン。',
+        specs: [
+          { k: '機能', v: '全差動アンプ（FDA）ベアダイ' },
+          { k: '入力', v: '負レール入力（グランド以下も計測可）' },
+          { k: '出力', v: 'レールツーレール差動出力' },
+          { k: 'コモンモード', v: 'Vocm で出力コモンモード設定' },
+          { k: 'シャットダウン', v: 'PD（ハイ＝通常）' },
+          { k: '形態', v: 'ベアダイ（die/PAD）、MCM/SiP 用' }
+        ]
+      },
+      ko: {
+        subcategory: '완전 차동 앰프(FDA·음레일 입력/레일투레일 출력·베어 다이)',
+        whatIs: '완전 차동 앰프(FDA) 베어 다이: 싱글엔드 또는 차동 입력을 차동 출력으로 변환, 음레일 입력·레일투레일 출력·정밀 저잡음. ADC 차동 구동에 흔히 사용. 이것은 하이브리드 회로/멀티칩 모듈용 베어 다이판.',
+        func: 'IN+/IN– 차동 입력을 FDA로 OUT+/OUT–로 증폭; Vocm으로 출력 공통 모드 설정(ADC 공통 모드에 맞춤); PD로 셧다운(로우=오프·하이=정상); Vs+/Vs– 이중 전원. 음레일 입력으로 접지 이하도 계측 가능, 레일투레일 출력으로 큰 진폭.',
+        usedIn: '고속 ADC 차동 구동, 싱글엔드→차동, 안티에일리어스 필터 구동, 정밀 신호 체인(베어 다이는 MCM/SiP용).',
+        desc: '완전 차동 앰프(FDA) 베어 다이. 음레일 입력 / 레일투레일 출력·Vocm 공통 모드 설정·PD 셧다운.',
+        specs: [
+          { k: '기능', v: '완전 차동 앰프(FDA) 베어 다이' },
+          { k: '입력', v: '음레일 입력(접지 이하도 계측 가능)' },
+          { k: '출력', v: '레일투레일 차동 출력' },
+          { k: '공통 모드', v: 'Vocm으로 출력 공통 모드 설정' },
+          { k: '셧다운', v: 'PD(하이=정상)' },
+          { k: '형태', v: '베어 다이(die/PAD), MCM/SiP용' }
+        ]
+      }
+    },
+    'TCAN4572-Q1': {
+      en: {
+        subcategory: 'CAN FD transceiver + SPI system basis chip (automotive)',
+        whatIs: 'A CAN FD (flexible data rate) transceiver integrated with an SPI interface as a system basis chip: converts the MCU’s digital signals to CAN bus differential signals (CANH/CANL), and provides configuration/diagnostics, wake-up and standby management over SPI. Automotive.',
+        func: 'The MCU configures and reads status over SPI (SCLK/SDI/SDO/nCS); CANH/CANL transmit/receive CAN FD; nWKRQ (wake request) and nINT (interrupt) are open-drain; OSC1/OSC2 connect a crystal; VCC powers the CAN transceiver (5V), VIO the digital interface, VDD a wide range (can be battery); RST resets, FLTR filters the internal regulator.',
+        usedIn: 'Automotive CAN FD nodes, zone control/gateways, CAN transceivers needing SPI management and wake, industrial CAN.',
+        desc: 'Automotive CAN FD transceiver + SPI system basis chip, wake/interrupt (open-drain), crystal, multiple supply rails (SOT-16).',
+        specs: [
+          { k: 'Function', v: 'CAN FD transceiver + SPI system basis chip' },
+          { k: 'Interface', v: 'SPI (SCLK/SDI/SDO/nCS) config/diagnostics' },
+          { k: 'Bus', v: 'CANH/CANL (CAN FD flexible data rate)' },
+          { k: 'Management', v: 'wake nWKRQ / interrupt nINT (open-drain)' },
+          { k: 'Supply', v: 'VDD (wide battery range) + VCC (5V CAN) + VIO (digital)' },
+          { k: 'Qualification', v: 'Automotive AEC-Q100' },
+          { k: 'Package', v: 'SOT (DYY-16)' }
+        ]
+      },
+      ja: {
+        subcategory: 'CAN FD トランシーバ＋SPI システムベーシスチップ（車載）',
+        whatIs: 'CAN FD（フレキシブルデータレート）トランシーバに SPI インタフェースを統合したシステムベーシスチップ：MCU のデジタル信号を CAN バス差動信号（CANH/CANL）に変換し、SPI で設定/診断・ウェイクアップ・スタンバイ管理を提供。車載。',
+        func: 'MCU が SPI（SCLK/SDI/SDO/nCS）で設定と状態読み出し；CANH/CANL で CAN FD 送受信；nWKRQ（ウェイク要求）と nINT（割込み）はオープンドレイン；OSC1/OSC2 に水晶接続；VCC が CAN トランシーバ（5V）、VIO がデジタルインタフェース、VDD は広範囲（電池接続可）；RST リセット、FLTR 内部レギュレータ濾波。',
+        usedIn: '車載 CAN FD ノード、ゾーン制御/ゲートウェイ、SPI 管理とウェイクが必要な CAN トランシーバ、産業 CAN。',
+        desc: '車載 CAN FD トランシーバ＋SPI システムベーシスチップ。ウェイク/割込み（オープンドレイン）・水晶・複数電源レール（SOT-16）。',
+        specs: [
+          { k: '機能', v: 'CAN FD トランシーバ＋SPI システムベーシスチップ' },
+          { k: 'インタフェース', v: 'SPI（SCLK/SDI/SDO/nCS）設定/診断' },
+          { k: 'バス', v: 'CANH/CANL（CAN FD フレキシブルデータレート）' },
+          { k: '管理', v: 'ウェイク nWKRQ / 割込み nINT（オープンドレイン）' },
+          { k: '電源', v: 'VDD（電池広範囲）＋VCC（5V CAN）＋VIO（デジタル）' },
+          { k: '認証', v: '車載 AEC-Q100' },
+          { k: 'パッケージ', v: 'SOT (DYY-16)' }
+        ]
+      },
+      ko: {
+        subcategory: 'CAN FD 트랜시버 + SPI 시스템 베이시스 칩(차량용)',
+        whatIs: 'CAN FD(유연 데이터율) 트랜시버에 SPI 인터페이스를 통합한 시스템 베이시스 칩: MCU의 디지털 신호를 CAN 버스 차동 신호(CANH/CANL)로 변환하고 SPI로 설정/진단·웨이크업·대기 관리 제공. 차량용.',
+        func: 'MCU가 SPI(SCLK/SDI/SDO/nCS)로 설정과 상태 읽기; CANH/CANL로 CAN FD 송수신; nWKRQ(웨이크 요청)와 nINT(인터럽트)는 오픈 드레인; OSC1/OSC2에 수정 연결; VCC가 CAN 트랜시버(5V), VIO가 디지털 인터페이스, VDD는 광범위(배터리 연결 가능); RST 리셋, FLTR 내부 레귤레이터 필터링.',
+        usedIn: '차량 CAN FD 노드, 존 제어/게이트웨이, SPI 관리와 웨이크가 필요한 CAN 트랜시버, 산업 CAN.',
+        desc: '차량용 CAN FD 트랜시버 + SPI 시스템 베이시스 칩. 웨이크/인터럽트(오픈 드레인)·수정·다중 전원 레일(SOT-16).',
+        specs: [
+          { k: '기능', v: 'CAN FD 트랜시버 + SPI 시스템 베이시스 칩' },
+          { k: '인터페이스', v: 'SPI(SCLK/SDI/SDO/nCS) 설정/진단' },
+          { k: '버스', v: 'CANH/CANL(CAN FD 유연 데이터율)' },
+          { k: '관리', v: '웨이크 nWKRQ / 인터럽트 nINT(오픈 드레인)' },
+          { k: '전원', v: 'VDD(배터리 광범위) + VCC(5V CAN) + VIO(디지털)' },
+          { k: '인증', v: '차량용 AEC-Q100' },
+          { k: '패키지', v: 'SOT (DYY-16)' }
+        ]
+      }
+    },
+    'THVD9491-SP': {
+      en: {
+        subcategory: 'RS-485 transceiver (±40V fault protection, radiation-hardened)',
+        whatIs: 'Radiation-hardened RS-485 transceiver: converts single-ended logic signals to an RS-485 differential bus (driver Y/Z, receiver A/B), with ±40V bus fault protection and selectable slew rate. 3–5.5V bus supply, independent VIO logic supply. Space-grade rad-hard.',
+        func: 'D → driver differential output Y/Z; A/B differential → receiver R output; DE enables the driver, RE (active-low) enables the receiver; SLR selects slew rate (low=50Mbps, high=20Mbps); VIO sets the logic level, VCC powers the bus. ±40V fault protection resists bus shorts/miswiring.',
+        usedIn: 'Space/aerospace RS-485/RS-422 communication, radiation-hardened industrial buses, long-distance differential data links.',
+        desc: 'Radiation-hardened ±40V fault-protected RS-485 transceiver, selectable slew rate, independent VIO, 3–5.5V (SOIC-14).',
+        specs: [
+          { k: 'Function', v: 'RS-485 transceiver (full Y/Z/A/B)' },
+          { k: 'Fault protection', v: '±40V bus fault protection' },
+          { k: 'Slew rate', v: 'SLR selects 50Mbps / 20Mbps' },
+          { k: 'Logic supply', v: 'VIO 1.65–5.5V (independent)' },
+          { k: 'Bus supply', v: 'VCC 3–5.5V' },
+          { k: 'Radiation', v: 'SP (rad-hard, space-grade)' },
+          { k: 'Package', v: 'SOIC-14 (D)' }
+        ]
+      },
+      ja: {
+        subcategory: 'RS-485 トランシーバ（±40V 故障保護・耐放射線）',
+        whatIs: '耐放射線 RS-485 トランシーバ：シングルエンドロジック信号を RS-485 差動バス（ドライバ Y/Z、レシーバ A/B）に変換、±40V バス故障保護・スルーレート選択可。3~5.5V バス電源、独立 VIO ロジック電源。宇宙級 rad-hard。',
+        func: 'D→ドライバ差動出力 Y/Z；A/B 差動→レシーバ R 出力；DE でドライバ、RE（active-low）でレシーバをイネーブル；SLR でスルーレート選択（ロー=50Mbps、ハイ=20Mbps）；VIO でロジックレベル、VCC でバス供給。±40V 故障保護でバス短絡/誤配線に耐える。',
+        usedIn: '宇宙/航空宇宙 RS-485/RS-422 通信、耐放射線産業バス、長距離差動データリンク。',
+        desc: '耐放射線 ±40V 故障保護 RS-485 トランシーバ。スルーレート選択・独立 VIO・3~5.5V（SOIC-14）。',
+        specs: [
+          { k: '機能', v: 'RS-485 トランシーバ（フル Y/Z/A/B）' },
+          { k: '故障保護', v: '±40V バス故障保護' },
+          { k: 'スルーレート', v: 'SLR で 50Mbps / 20Mbps 選択' },
+          { k: 'ロジック電源', v: 'VIO 1.65~5.5V（独立）' },
+          { k: 'バス電源', v: 'VCC 3~5.5V' },
+          { k: '耐放射線', v: 'SP（rad-hard・宇宙級）' },
+          { k: 'パッケージ', v: 'SOIC-14 (D)' }
+        ]
+      },
+      ko: {
+        subcategory: 'RS-485 트랜시버(±40V 고장 보호·내방사선)',
+        whatIs: '내방사선 RS-485 트랜시버: 싱글엔드 로직 신호를 RS-485 차동 버스(드라이버 Y/Z, 수신기 A/B)로 변환, ±40V 버스 고장 보호·슬루율 선택 가능. 3~5.5V 버스 전원, 독립 VIO 로직 전원. 우주급 rad-hard.',
+        func: 'D→드라이버 차동 출력 Y/Z; A/B 차동→수신기 R 출력; DE로 드라이버, RE(active-low)로 수신기 인에이블; SLR로 슬루율 선택(로우=50Mbps, 하이=20Mbps); VIO로 로직 레벨, VCC로 버스 공급. ±40V 고장 보호로 버스 단락/오배선에 견딤.',
+        usedIn: '우주/항공우주 RS-485/RS-422 통신, 내방사선 산업 버스, 장거리 차동 데이터 링크.',
+        desc: '내방사선 ±40V 고장 보호 RS-485 트랜시버. 슬루율 선택·독립 VIO·3~5.5V(SOIC-14).',
+        specs: [
+          { k: '기능', v: 'RS-485 트랜시버(풀 Y/Z/A/B)' },
+          { k: '고장 보호', v: '±40V 버스 고장 보호' },
+          { k: '슬루율', v: 'SLR로 50Mbps / 20Mbps 선택' },
+          { k: '로직 전원', v: 'VIO 1.65~5.5V(독립)' },
+          { k: '버스 전원', v: 'VCC 3~5.5V' },
+          { k: '내방사선', v: 'SP(rad-hard·우주급)' },
+          { k: '패키지', v: 'SOIC-14 (D)' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
