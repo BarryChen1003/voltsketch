@@ -56,6 +56,8 @@
 
   <script src="./ic-symbol.js"></script>
   <script src="./ic-data.js?v=42"></script>
+  <script src="./ic-i18n.js?v=2026-07-12a"></script>
+  <script src="./ic-i18n-data.js?v=2026-07-12a"></script>
   <script>
     const esc = s => String(s == null ? '' : s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
     // {…} → 上劃線（active-low）
@@ -72,25 +74,27 @@
         <td style="font-family:ui-monospace,monospace">${nameHTML(p.name)}</td>
         <td style="color:${typeColor(p.type || '')};white-space:nowrap">${esc(p.type || '')}</td>
         <td style="color:#334155">${esc(p.desc || '')}</td></tr>`).join('');
-      return `<div class="pintab"><h4>接腳定義（Pin Functions）</h4>
-        <table><thead><tr><th>腳</th><th>名稱</th><th>類型</th><th>功能</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+      return `<div class="pintab"><h4>${esc(ui('pinDef'))}</h4>
+        <table><thead><tr><th>${esc(ui('pin'))}</th><th>${esc(ui('name'))}</th><th>${esc(ui('type'))}</th><th>${esc(ui('fn'))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     }
 
+    const ui = k => (window.icUI ? icUI(k) : k);
     function introBlock(ic) {
       const row = (label, val) => val ? `<div style="display:grid;grid-template-columns:64px 1fr;gap:8px;margin:3px 0"><div style="color:#64748b;font-weight:600">${label}</div><div style="color:#0f172a">${esc(val)}</div></div>` : '';
       if (!ic.whatIs && !ic.func && !ic.usedIn) return `<p style="color:#475569;font-size:13px;margin:8px 0 14px">${esc(ic.desc || '')}</p>`;
       return `<div style="background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;padding:12px 14px;margin:10px 0 16px;font-size:13px">
-        ${row('是什麼', ic.whatIs)}${row('功用', ic.func)}${row('用在哪', ic.usedIn)}</div>`;
+        ${row(esc(ui('whatIs')), ic.whatIs)}${row(esc(ui('func')), ic.func)}${row(esc(ui('usedIn')), ic.usedIn)}</div>`;
     }
     function secondSourceBlock(ic) {
       const drop = (ic.dropIn || []).map(d => `<li><b style="color:#15803d">${esc(d.part)}</b> — ${esc(d.note || '')}</li>`).join('');
       const crit = (ic.secondSource || []).map(s => `<li>${esc(s)}</li>`).join('');
       let h = '';
-      h += `<div class="sec"><h4 style="color:#15803d">可直接替換（pin-to-pin 相容）</h4>${drop ? `<ul>${drop}</ul>` : '<p style="color:#64748b;font-size:13px;margin:4px 0">尚無</p>'}</div>`;
-      if (crit) h += `<div class="sec"><h4>替換必須符合的條件</h4><ul>${crit}</ul></div>`;
+      h += `<div class="sec"><h4 style="color:#15803d">${esc(ui('dropIn'))}</h4>${drop ? `<ul>${drop}</ul>` : `<p style="color:#64748b;font-size:13px;margin:4px 0">${esc(ui('none'))}</p>`}</div>`;
+      if (crit) h += `<div class="sec"><h4>${esc(ui('critTitle'))}</h4><ul>${crit}</ul></div>`;
       return h;
     }
     function renderCard(ic) {
+      if (window.icLocalized) ic = icLocalized(ic);
       const sym = ICSymbol.render(ic);
       const specs = (ic.specs || []).map(s => `<div class="spec-row"><div class="k">${esc(s.k)}</div><div class="v">${esc(s.v)}</div></div>`).join('');
       return `<div class="ic-card">
@@ -105,14 +109,16 @@
         <div class="ic-body">
           <div class="symbol-box">${sym.svg}</div>
           <div>
-            <div class="spec-box"><h3>重點規格</h3>${specs}</div>
+            <div class="spec-box"><h3>${esc(ui('specs'))}</h3>${specs}</div>
             ${secondSourceBlock(ic)}
           </div>
         </div>
         ${pinTable(ic)}
       </div>`;
     }
-    document.getElementById('list').innerHTML = (window.IC_DATA || []).map(renderCard).join('');
+    function renderAll() { document.getElementById('list').innerHTML = (window.IC_DATA || []).map(renderCard).join(''); }
+    renderAll();
+    document.addEventListener('vs-lang-change', renderAll);
   </script>
 </body>
 </html>
