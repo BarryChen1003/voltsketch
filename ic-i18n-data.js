@@ -6129,3 +6129,398 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 10: entries 120-128 */
+(function () {
+  // shared text for TPS7H4012-SP / TPS7H4013-SP (only max output current differs)
+  var h4sub = { en: 'Space-grade synchronous buck converter (Rad-Hard)', ja: '宇宙級同期整流降圧コンバータ（Rad-Hard）', ko: '우주급 동기 벅 컨버터(Rad-Hard)' };
+  function h4func(lang) {
+    return {
+      en: 'An external-frequency, external-compensation synchronous buck. EN enables the device (its turn-on level is programmable via a VIN-to-GND divider); RT sets the switching frequency (100kHz~1MHz) with an external resistor to GND, and may float or use a resistor as the fallback frequency on clock loss when an external clock is used; SYNC1 accepts an external clock input, 180° out of phase with another device (tie to ground when unused to avoid noise coupling). VIN powers the control circuit and PVIN the output stage — both must be externally shorted to the same voltage; LDOCAP is the internal linear-regulator (nominal AVDD=5V) output-cap pin, needing 1µF. SW is the switch node, optionally with a Schottky diode to PGND to improve noise/efficiency. PWRGD is an open-collector power-good flag (asserted within ±5% of nominal, deasserted above 8% or on fault). RSC sets slope compensation with a resistor to GND; SS_TR with an external cap slows soft-start and enables rail tracking/sequencing; VSNS+ is the feedback pin (nominal 0.6V); COMP is the OTA error-amp output needing an external RC compensation network; REFCAP is the bandgap-reference cap pin (nominal VBG=1.2V, needs 470nF) and must not connect to other circuitry. Radiation (SP grade): TID 100krad(Si) RLAT, DSEE (destructive single-event effects) immune to 75MeV-cm²/mg; offered in QMLV-RHA (20-pin CFP HLC) and QMLP-RHA (44-pin HTSSOP DDW) grades.',
+      ja: '外部周波数・外部補償方式の同期整流降圧コンバータ。EN で素子をイネーブル（VIN-GND 分圧でオン電圧をプログラム可）；RT は GND への外付け抵抗でスイッチング周波数（100kHz~1MHz）を設定、外部クロック使用時は浮きまたは抵抗でクロック喪失時のフォールバック周波数に；SYNC1 は外部クロック入力を受け付け、他素子と 180° 位相同期（未使用時は雑音結合防止のため接地推奨）。VIN が制御回路、PVIN が出力段電力を供給し、両者を外部で同電圧に短絡必須；LDOCAP は内部リニアレギュレータ（公称 AVDD=5V）の出力コンデンサピンで 1µF 必要。SW はスイッチノード、任意で PGND へショットキーダイオードを接続し雑音/効率改善可。PWRGD はオープンコレクタ電源良好フラグ（公称 ±5% 内で asserted、8% 超過や故障で deasserted）。RSC は GND への抵抗でスロープ補償設定；SS_TR は外付けコンデンサでソフトスタートを遅延し、電源追従/シーケンスに使用可；VSNS+ は帰還ピン（公称 0.6V）；COMP は OTA 誤差アンプ出力で外付け RC 補償網が必要；REFCAP はバンドギャップ基準コンデンサピン（公称 VBG=1.2V、470nF 必要）で他回路接続不可。耐放射線（SP グレード）：TID 100krad(Si) RLAT、DSEE（破壊的単一事象効果）は 75MeV-cm²/mg まで免疫；QMLV-RHA（20-pin CFP HLC）と QMLP-RHA（44-pin HTSSOP DDW）の 2 グレードを提供。',
+      ko: '외부 주파수·외부 보상 방식의 동기 벅 컨버터. EN으로 소자를 인에이블(VIN-GND 분압으로 온 전압 프로그램 가능); RT는 GND로의 외장 저항으로 스위칭 주파수(100kHz~1MHz)를 설정, 외부 클록 사용 시 플로팅 또는 저항으로 클록 상실 시 폴백 주파수로; SYNC1은 외부 클록 입력을 받아 다른 소자와 180° 위상 동기(미사용 시 잡음 결합 방지 위해 접지 권장). VIN이 제어 회로, PVIN이 출력단 전력을 공급하고 둘을 외부에서 동일 전압으로 단락 필수; LDOCAP은 내부 선형 레귤레이터(공칭 AVDD=5V) 출력 커패시터 핀으로 1µF 필요. SW는 스위치 노드, 선택적으로 PGND로 쇼트키 다이오드를 연결해 잡음/효율 개선 가능. PWRGD는 오픈 컬렉터 전원 양호 플래그(공칭 ±5% 이내에서 asserted, 8% 초과나 고장 시 deasserted). RSC는 GND로의 저항으로 슬로프 보상 설정; SS_TR은 외장 커패시터로 소프트 스타트를 지연하고 전원 추종/시퀀싱에 사용 가능; VSNS+는 피드백 핀(공칭 0.6V); COMP는 OTA 오차 앰프 출력으로 외장 RC 보상망 필요; REFCAP는 밴드갭 기준 커패시터 핀(공칭 VBG=1.2V, 470nF 필요)으로 다른 회로 연결 불가. 내방사선(SP 등급): TID 100krad(Si) RLAT, DSEE(파괴적 단일 이벤트 효과)는 75MeV-cm²/mg까지 면역; QMLV-RHA(20-pin CFP HLC)와 QMLP-RHA(44-pin HTSSOP DDW) 두 등급 제공.'
+    }[lang];
+  }
+  var h4used = {
+    en: 'Point-of-load power on satellite/space-payload boards, and space applications needing a radiation-tolerant buck converter for communication/navigation/science payloads.',
+    ja: '衛星/宇宙ペイロード基板上の負荷点電源、通信/航法/科学ペイロード等の耐放射線降圧コンバータを要する宇宙用途。',
+    ko: '위성/우주 페이로드 보드상의 부하점 전원, 통신/항법/과학 페이로드 등 내방사선 벅 컨버터가 필요한 우주 용도.'
+  };
+  function h4specs(lang, cur) {
+    var c = { en: cur.en, ja: cur.ja, ko: cur.ko };
+    return {
+      en: [
+        { k: 'Max output current (this part)', v: c.en },
+        { k: 'Input voltage (abs max VIN/PVIN)', v: '−0.3V ~ 16V' },
+        { k: 'Switching frequency', v: '100kHz ~ 1MHz (RT resistor, externally syncable)' },
+        { k: 'Feedback voltage (VSNS+)', v: 'nominal 0.6V' },
+        { k: 'Internal LDO output (AVDD)', v: 'nominal 5V (LDOCAP pin, needs 1µF)' },
+        { k: 'Reference voltage (REFCAP/VBG)', v: 'nominal 1.2V (needs 470nF)' },
+        { k: 'PWRGD threshold', v: 'asserted within ±5% (typ), deasserted above 8% (typ) or on fault' },
+        { k: 'ESD', v: 'HBM ±1000V, CDM ±500V' },
+        { k: 'Radiation (SP grade)', v: 'TID 100krad(Si) RLAT; DSEE immune to 75MeV-cm²/mg; QMLV-RHA (20-pin CFP HLC) or QMLP-RHA (44-pin HTSSOP DDW)' },
+        { k: 'Junction temperature', v: '−55°C ~ 150°C' },
+        { k: 'Package', v: '20-Pin CFP (HLC); also 44-Pin HTSSOP (DDW)' }
+      ],
+      ja: [
+        { k: '最大出力電流（本型番）', v: c.ja },
+        { k: '入力電圧（絶対最大定格 VIN/PVIN）', v: '−0.3V ~ 16V' },
+        { k: 'スイッチング周波数', v: '100kHz ~ 1MHz（RT 抵抗設定、外部同期可）' },
+        { k: '帰還電圧（VSNS+）', v: '公称 0.6V' },
+        { k: '内部 LDO 出力（AVDD）', v: '公称 5V（LDOCAP ピン、470nF ではなく 1µF 必要）' },
+        { k: '基準電圧（REFCAP/VBG）', v: '公称 1.2V（470nF 必要）' },
+        { k: 'PWRGD しきい値', v: '公称 ±5%（typ）内で asserted、8%（typ）超過や故障で deasserted' },
+        { k: 'ESD', v: 'HBM ±1000V、CDM ±500V' },
+        { k: '耐放射線（SP グレード）', v: 'TID 100krad(Si) RLAT；DSEE は 75MeV-cm²/mg まで免疫；QMLV-RHA（20-pin CFP HLC）または QMLP-RHA（44-pin HTSSOP DDW）' },
+        { k: '動作接合温度', v: '−55°C ~ 150°C' },
+        { k: 'パッケージ', v: '20-Pin CFP（HLC）；別に 44-Pin HTSSOP（DDW）' }
+      ],
+      ko: [
+        { k: '최대 출력 전류(본 부품)', v: c.ko },
+        { k: '입력 전압(절대 최대 정격 VIN/PVIN)', v: '−0.3V ~ 16V' },
+        { k: '스위칭 주파수', v: '100kHz ~ 1MHz(RT 저항 설정, 외부 동기 가능)' },
+        { k: '피드백 전압(VSNS+)', v: '공칭 0.6V' },
+        { k: '내부 LDO 출력(AVDD)', v: '공칭 5V(LDOCAP 핀, 1µF 필요)' },
+        { k: '기준 전압(REFCAP/VBG)', v: '공칭 1.2V(470nF 필요)' },
+        { k: 'PWRGD 문턱', v: '공칭 ±5%(typ) 이내에서 asserted, 8%(typ) 초과나 고장 시 deasserted' },
+        { k: 'ESD', v: 'HBM ±1000V, CDM ±500V' },
+        { k: '내방사선(SP 등급)', v: 'TID 100krad(Si) RLAT; DSEE는 75MeV-cm²/mg까지 면역; QMLV-RHA(20-pin CFP HLC) 또는 QMLP-RHA(44-pin HTSSOP DDW)' },
+        { k: '동작 접합 온도', v: '−55°C ~ 150°C' },
+        { k: '패키지', v: '20-Pin CFP(HLC); 별도 44-Pin HTSSOP(DDW)' }
+      ]
+    }[lang];
+  }
+  function tacCodec(mono) {
+    // TAC5111 mono / TAC5112 stereo share most, differ in channel description
+    return mono;
+  }
+
+  var T = {
+    'TPS26750A': {
+      en: {
+        subcategory: 'USB Type-C / USB PD controller (external load-switch power-path control, 32-QFN)',
+        whatIs: 'USB Type-C and USB PD controller: integrates the PD protocol engine and power-path protection, controls an external load switch for the power path via a POWER_PATH_EN signal, and offers rich GPIO and dual I2C (target/controller) interfaces.',
+        func: 'The TPS26750A is a 32-QFN USB Type-C/PD controller whose pin strapping (ADCIN1/ADCIN2), GPIO (GPIO0–GPIO7, GPIO11) and dual-I2C architecture are similar to the same-family TPS2575x series, but with a different power-path control method: this part drives an external load switch via a single POWER_PATH_EN output (not a logic-voltage-level output), replacing the TPS2575x GATE_VBUS/GATE_VSYS dual-MOSFET gate-drive architecture; the corresponding pins (19/20/21) are GND/POWER_PATH_EN/NC, differing from the VSYS/GATE_VSYS/GATE_VBUS at the same positions on the TPS25751A(S)/TPS25752A, while the other pins (1–18, 22–32) share names. Exact PD spec version and feature support are in the datasheet (TI SLVSJE4).',
+        usedIn: 'USB-C PD receiving applications building the power path from an external load switch, suited to systems needing a simplified power path (no dual-MOSFET gate drive); actual application range in the datasheet.',
+        desc: '32-QFN. Pins 1–18 and 22–32 share names with the same-package-family TPS25751A(S)/TPS25752A, but pins 19/20/21 are GND/POWER_PATH_EN/NC (the TPS2575x series has VSYS/GATE_VSYS/GATE_VBUS there) — a different power-path architecture (single load-switch enable vs. dual-MOSFET gate drive), so the overall pinout is not fully compatible and not directly interchangeable; select per power-path architecture.',
+        thermalPad: 'Exposed Thermal Pad, Figure 4-1 marks it to GND; solder to PCB ground copper with thermal vias for dissipation.',
+        specs: [
+          { k: 'Package', v: '32-QFN; package code and exact size in the datasheet (TI SLVSJE4)' },
+          { k: 'Configuration', v: 'resistor-divider pin strapping (ADCIN1/ADCIN2)' },
+          { k: 'Power-path control', v: 'single POWER_PATH_EN output driving an external load switch (not a logic voltage level), differing from the TPS2575x GATE_VBUS/GATE_VSYS dual-MOSFET architecture' },
+          { k: 'GPIO count', v: '12 (GPIO0–GPIO7, GPIO11, some shared with LD1/LD2, USB_P/USB_N)' },
+          { k: 'Comms interface', v: 'I2C target (I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ) + I2C controller (I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ)' },
+          { k: 'Built-in LDO', v: '3.3V (LDO_3V3) / 1.5V core (LDO_1V5)' },
+          { k: 'VBUS input range (abs max)', v: '-0.3V~28V' },
+          { k: 'CC1/CC2 input range (abs max)', v: '-0.5V~26V' },
+          { k: 'POWER_PATH_EN output range (abs max)', v: '-0.5V~12V (VVSYS=GND)' },
+          { k: 'Junction temperature', v: '-40°C~175°C' }
+        ]
+      },
+      ja: {
+        subcategory: 'USB Type-C / USB PD コントローラ（外部ロードスイッチ電源経路制御、32-QFN）',
+        whatIs: 'USB Type-C と USB PD コントローラ：PD プロトコルエンジンと電源経路保護を統合し、POWER_PATH_EN 信号で外部ロードスイッチを制御し電源経路を構成、豊富な GPIO と デュアル I2C（target/controller）インタフェースを提供。',
+        func: 'TPS26750A は 32-QFN の USB Type-C/PD コントローラで、ピンストラップ（ADCIN1/ADCIN2）、GPIO（GPIO0~GPIO7、GPIO11）、デュアル I2C 構成は同ファミリの TPS2575x シリーズと類似だが、電源経路制御方式が異なる：本品は単一 POWER_PATH_EN 出力で外部ロードスイッチを駆動（論理電圧レベル出力ではない）し、TPS2575x の GATE_VBUS/GATE_VSYS デュアル MOSFET ゲート駆動を置換；対応ピン（19/20/21）は GND/POWER_PATH_EN/NC で、TPS25751A(S)/TPS25752A の同位置 VSYS/GATE_VSYS/GATE_VBUS と異なり、他ピン（1~18、22~32）は名称同一。正確な PD 規格版・機能対応は datasheet（TI SLVSJE4）参照。',
+        usedIn: '外部ロードスイッチで電源経路を構成する USB-C PD 受電用途、電源経路設計の簡素化（デュアル MOSFET ゲート駆動不要）が必要なシステムに好適；実際の適用範囲は datasheet 参照。',
+        desc: '32-QFN。ピン 1~18、22~32 の名称は同封裝ファミリの TPS25751A(S)/TPS25752A と同じだが、ピン 19/20/21 は GND/POWER_PATH_EN/NC（TPS2575x は同位置に VSYS/GATE_VSYS/GATE_VBUS）で電源経路アーキテクチャが異なり（単一ロードスイッチイネーブル vs. デュアル MOSFET ゲート駆動）、全体 pinout は完全互換でなく直接互換不可、電源経路アーキテクチャで選定。',
+        thermalPad: '露出サーマルパッド、Figure 4-1 は GND 接続表記；PCB 接地銅箔に半田付けし放熱ビア併用で放熱。',
+        specs: [
+          { k: 'パッケージ', v: '32-QFN、パッケージコードと正確な寸法は datasheet（TI SLVSJE4）参照' },
+          { k: '設定方式', v: '抵抗分圧ピンストラップ（ADCIN1/ADCIN2）' },
+          { k: '電源経路制御', v: '単一 POWER_PATH_EN 出力で外部ロードスイッチを駆動（論理電圧レベルでない）、TPS2575x の GATE_VBUS/GATE_VSYS デュアル MOSFET と異なる' },
+          { k: 'GPIO 数', v: '12 組（GPIO0~GPIO7、GPIO11、一部は LD1/LD2、USB_P/USB_N と共用）' },
+          { k: '通信インタフェース', v: 'I2C target（I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ）+ I2C controller（I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ）' },
+          { k: '内蔵 LDO', v: '3.3V（LDO_3V3）/ 1.5V コア（LDO_1V5）' },
+          { k: 'VBUS 入力範囲（絶対最大）', v: '-0.3V~28V' },
+          { k: 'CC1/CC2 入力範囲（絶対最大）', v: '-0.5V~26V' },
+          { k: 'POWER_PATH_EN 出力範囲（絶対最大）', v: '-0.5V~12V（VVSYS=GND）' },
+          { k: '動作接合温度', v: '-40°C~175°C' }
+        ]
+      },
+      ko: {
+        subcategory: 'USB Type-C / USB PD 컨트롤러(외부 로드 스위치 전원 경로 제어, 32-QFN)',
+        whatIs: 'USB Type-C와 USB PD 컨트롤러: PD 프로토콜 엔진과 전원 경로 보호를 통합하고 POWER_PATH_EN 신호로 외부 로드 스위치를 제어해 전원 경로를 구성, 풍부한 GPIO와 듀얼 I2C(target/controller) 인터페이스 제공.',
+        func: 'TPS26750A는 32-QFN USB Type-C/PD 컨트롤러로 핀 스트랩(ADCIN1/ADCIN2), GPIO(GPIO0~GPIO7, GPIO11), 듀얼 I2C 구성이 동일 패밀리 TPS2575x 시리즈와 유사하나 전원 경로 제어 방식이 다름: 본 부품은 단일 POWER_PATH_EN 출력으로 외부 로드 스위치를 구동(논리 전압 레벨 출력 아님)해 TPS2575x의 GATE_VBUS/GATE_VSYS 듀얼 MOSFET 게이트 구동을 대체; 해당 핀(19/20/21)은 GND/POWER_PATH_EN/NC로 TPS25751A(S)/TPS25752A의 동일 위치 VSYS/GATE_VSYS/GATE_VBUS와 다르고 다른 핀(1~18, 22~32)은 이름 동일. 정확한 PD 규격 버전·기능 지원은 datasheet(TI SLVSJE4) 참조.',
+        usedIn: '외부 로드 스위치로 전원 경로를 구성하는 USB-C PD 수전 용도, 전원 경로 설계 간소화(듀얼 MOSFET 게이트 구동 불필요)가 필요한 시스템에 적합; 실제 적용 범위는 datasheet 참조.',
+        desc: '32-QFN. 핀 1~18, 22~32의 이름은 동일 패키지 패밀리 TPS25751A(S)/TPS25752A와 같으나 핀 19/20/21은 GND/POWER_PATH_EN/NC(TPS2575x는 동일 위치에 VSYS/GATE_VSYS/GATE_VBUS)로 전원 경로 아키텍처가 다르며(단일 로드 스위치 인에이블 vs. 듀얼 MOSFET 게이트 구동), 전체 pinout이 완전 호환은 아니어서 직접 호환 불가, 전원 경로 아키텍처로 선정.',
+        thermalPad: '노출 서멀 패드, Figure 4-1은 GND 연결 표기; PCB 접지 동박에 납땜하고 방열 비아를 병용해 방열.',
+        specs: [
+          { k: '패키지', v: '32-QFN, 패키지 코드와 정확한 치수는 datasheet(TI SLVSJE4) 참조' },
+          { k: '설정 방식', v: '저항 분압 핀 스트랩(ADCIN1/ADCIN2)' },
+          { k: '전원 경로 제어', v: '단일 POWER_PATH_EN 출력으로 외부 로드 스위치 구동(논리 전압 레벨 아님), TPS2575x의 GATE_VBUS/GATE_VSYS 듀얼 MOSFET과 다름' },
+          { k: 'GPIO 수', v: '12조(GPIO0~GPIO7, GPIO11, 일부는 LD1/LD2, USB_P/USB_N과 공용)' },
+          { k: '통신 인터페이스', v: 'I2C target(I2Ct_SCL/I2Ct_SDA/I2Ct_IRQ) + I2C controller(I2Cc_SCL/I2Cc_SDA/I2Cc_IRQ)' },
+          { k: '내장 LDO', v: '3.3V(LDO_3V3) / 1.5V 코어(LDO_1V5)' },
+          { k: 'VBUS 입력 범위(절대 최대)', v: '-0.3V~28V' },
+          { k: 'CC1/CC2 입력 범위(절대 최대)', v: '-0.5V~26V' },
+          { k: 'POWER_PATH_EN 출력 범위(절대 최대)', v: '-0.5V~12V(VVSYS=GND)' },
+          { k: '동작 접합 온도', v: '-40°C~175°C' }
+        ]
+      }
+    },
+    'TPS544B28': {
+      en: {
+        subcategory: 'Synchronous buck DC/DC converter (D-CAP+, PMBus digital interface, 19-WQFN-HR Hot-Rod)',
+        whatIs: 'Synchronous buck DC/DC converter: integrates high-/low-side power MOSFETs, supporting a PMBus digital interface and resistor-divider (pin-strap) analog configuration, for medium-to-high-current point-of-load (POL) power.',
+        func: 'The TPS544B28 is a D-CAP+ synchronous buck with up to 20A switch current (31A peak). MS1/MS2 do analog pin-strap via a resistor divider to AGND: MS1 sets switching frequency, valley current-limit threshold and soft-start time; MS2 sets output voltage, VOUT_SCALE_LOOP and internal/external feedback mode. VOS/FB and GOS form a differential remote-sense loop; in external-feedback mode a VOUT-to-GOS divider taps at FB to set the output voltage. PG is an open-collector power-good output. ADR sets the PMBus device address and fault-recovery (hiccup or latch-off) mode via a resistor divider to AGND, with PMBus over SDA/SCL. BST is the high-side gate-drive bootstrap supply pin, with a bootstrap cap to SW. An internal 3V LDO (VCC) powers internal circuits and gate drivers; an external 3.1V~4.5V bias can also be applied to cut losses. Detailed protection (overcurrent, thermal, etc.), efficiency and switching-architecture details are in the datasheet (TI SLVSHP8A).',
+        usedIn: 'Servers, networking gear, industrial power and other applications needing medium-to-high-current (up to 20A) POL step-down conversion with PMBus monitoring/config; actual application range in the datasheet.',
+        desc: '19-WQFN-HR (VAN) package, 3×3mm, 0.4mm pitch hot-rod pin layout (not a standard four-sided uniform QFN). This entry’s pin numbers were verified pin by pin against the datasheet Table 5-1 Pin Functions and are accurate. The side (L/B/R/T quadrant) is a best-effort approximation because the Figure 5-1 graphic text extraction order was scrambled — restored per pin-grouping regularity (single pins alternating with consecutive groups) and marked in each pin desc; use datasheet Figure 5-1 for the actual layout. An RBH package version also exists (3×3.5mm, 0.5mm pitch) with the same pin names/numbers per Figures 5-3/5-4, but the actual layout follows each package figure; the two packages must not be mixed.',
+        specs: [
+          { k: 'Control architecture', v: 'D-CAP+ synchronous buck, see datasheet' },
+          { k: 'Output current capability', v: '20A continuous, 31A peak inductor current (SW)' },
+          { k: 'Input voltage range (recommended)', v: 'internal LDO: 4V~16V; external bias (3.1V≤VVCC≤4.5V): 2.7V~16V' },
+          { k: 'Output voltage range', v: '0.4V~5.5V' },
+          { k: 'Configuration', v: 'resistor-divider pin-strap (MS1: frequency/current-limit/soft-start; MS2: output voltage/VOUT_SCALE_LOOP/feedback mode; ADR: PMBus address/fault-recovery mode)' },
+          { k: 'Comms interface', v: 'PMBus (SDA/SCL)' },
+          { k: 'Feedback', v: 'differential remote sense (VOS/FB + GOS), internal or external feedback selectable' },
+          { k: 'Package', v: '19-WQFN-HR (VAN) 3×3mm/0.4mm pitch (this entry); also RBH 3×3.5mm/0.5mm pitch' },
+          { k: 'Junction temperature', v: '-40°C~150°C' },
+          { k: 'ESD', v: 'HBM ±2000V, CDM ±500V (see datasheet §6.2)' }
+        ]
+      },
+      ja: {
+        subcategory: '同期整流降圧 DC/DC コンバータ（D-CAP+、PMBus デジタルインタフェース、19-WQFN-HR Hot-Rod）',
+        whatIs: '同期整流降圧（buck）DC/DC コンバータ：ハイ/ローサイドパワー MOSFET を統合し、PMBus デジタル通信インタフェースと抵抗分圧（ピンストラップ）アナログ設定に対応、中～大電流のポイントオブロード（POL）電源用途に好適。',
+        func: 'TPS544B28 は D-CAP+ 制御の同期整流降圧で、出力スイッチ電流能力は最大 20A（ピーク 31A）。MS1/MS2 は AGND への抵抗分圧でアナログピンストラップ設定：MS1 はスイッチング周波数・谷値電流制限しきい値・ソフトスタート時間；MS2 は出力電圧・VOUT_SCALE_LOOP・内部/外部帰還モードを設定。VOS/FB、GOS が差動リモートセンス（remote sense）ループを構成、外部帰還モードでは VOUT から GOS への分圧器を FB で分岐し出力電圧を設定。PG はオープンコレクタ電源良好出力。ADR は AGND への抵抗分圧で PMBus デバイスアドレスと故障回復（ヒカップまたはラッチオフ）モードを設定、SDA/SCL で PMBus 通信。BST はハイサイドゲート駆動のブートストラップ供給ピンで、ブートストラップコンデンサを SW ノードへ。内部 3V LDO（VCC）が内部回路とゲートドライバに供給、外部 3.1V~4.5V バイアス源で損失削減も可。詳細保護（過電流、過熱等）、効率、スイッチングアーキテクチャは datasheet（TI SLVSHP8A）参照。',
+        usedIn: 'サーバ、ネットワーク機器、産業電源等、中～大電流（最大 20A）POL 降圧変換と PMBus 監視/設定が必要な用途；実際の適用範囲は datasheet 参照。',
+        desc: '19-WQFN-HR（VAN）パッケージ、3mm×3mm、0.4mm pitch の hot-rod 特殊ピン配列（標準四辺均等 QFN でない）。本条目のピン番号は datasheet Table 5-1 Pin Functions 表と 1 ピンずつ核対し正確。side（L/B/R/T 象限）は Figure 5-1 図形文字の抽出順が乱れたため、ピングループの規則性（単ピンと連番グループの交錯）で可能な限り復元した概略推定で、各ピン desc に個別注記；正式レイアウトは datasheet Figure 5-1 に従う。別に RBH パッケージ版（3mm×3.5mm、0.5mm pitch）があり、ピン名/番号は Figure 5-3/5-4 と同じだが実際の配列は各封裝図に従い、両パッケージは混用不可。',
+        specs: [
+          { k: '制御アーキテクチャ', v: 'D-CAP+ 同期整流降圧（buck）、datasheet 参照' },
+          { k: '出力電流能力', v: '連続 20A、ピークインダクタ電流 31A（SW）' },
+          { k: '入力電圧範囲（推奨）', v: '内部 LDO 供給：4V~16V；外部バイアス（3.1V≤VVCC≤4.5V）：2.7V~16V' },
+          { k: '出力電圧範囲', v: '0.4V~5.5V' },
+          { k: '設定方式', v: '抵抗分圧ピンストラップ（MS1：周波数/電流制限/ソフトスタート；MS2：出力電圧/VOUT_SCALE_LOOP/帰還モード；ADR：PMBus アドレス/故障回復モード）' },
+          { k: '通信インタフェース', v: 'PMBus（SDA/SCL）' },
+          { k: '帰還方式', v: '差動リモートセンス（VOS/FB + GOS）、内部または外部帰還を設定可' },
+          { k: 'パッケージ', v: '19-WQFN-HR（VAN）3mm×3mm/0.4mm pitch（本条目）；別に RBH 3mm×3.5mm/0.5mm pitch' },
+          { k: '動作接合温度', v: '-40°C~150°C' },
+          { k: 'ESD', v: 'HBM ±2000V、CDM ±500V（datasheet 6.2 節参照）' }
+        ]
+      },
+      ko: {
+        subcategory: '동기 벅 DC/DC 컨버터(D-CAP+, PMBus 디지털 인터페이스, 19-WQFN-HR Hot-Rod)',
+        whatIs: '동기 벅 DC/DC 컨버터: 하이/로우사이드 파워 MOSFET을 통합하고 PMBus 디지털 통신 인터페이스와 저항 분압(핀 스트랩) 아날로그 설정을 지원, 중~대전류 포인트 오브 로드(POL) 전원 용도에 적합.',
+        func: 'TPS544B28은 D-CAP+ 제어 동기 벅으로 출력 스위치 전류 능력 최대 20A(피크 31A). MS1/MS2는 AGND로의 저항 분압으로 아날로그 핀 스트랩 설정: MS1은 스위칭 주파수·밸리 전류 제한 문턱·소프트 스타트 시간; MS2는 출력 전압·VOUT_SCALE_LOOP·내부/외부 피드백 모드 설정. VOS/FB, GOS가 차동 원격 감지(remote sense) 루프를 구성, 외부 피드백 모드에서는 VOUT에서 GOS로의 분압기를 FB에서 분기해 출력 전압 설정. PG는 오픈 컬렉터 전원 양호 출력. ADR은 AGND로의 저항 분압으로 PMBus 장치 주소와 고장 복구(히컵 또는 래치 오프) 모드를 설정, SDA/SCL로 PMBus 통신. BST는 하이사이드 게이트 구동의 부트스트랩 공급 핀으로 부트스트랩 커패시터를 SW 노드로. 내부 3V LDO(VCC)가 내부 회로와 게이트 드라이버에 공급, 외부 3.1V~4.5V 바이어스원으로 손실 저감도 가능. 상세 보호(과전류, 과열 등), 효율, 스위칭 아키텍처는 datasheet(TI SLVSHP8A) 참조.',
+        usedIn: '서버, 네트워크 장비, 산업 전원 등 중~대전류(최대 20A) POL 강압 변환과 PMBus 감시/설정이 필요한 용도; 실제 적용 범위는 datasheet 참조.',
+        desc: '19-WQFN-HR(VAN) 패키지, 3mm×3mm, 0.4mm pitch의 hot-rod 특수 핀 배열(표준 사변 균등 QFN 아님). 본 항목의 핀 번호는 datasheet Table 5-1 Pin Functions 표와 핀 단위로 대조해 정확. side(L/B/R/T 사분면)는 Figure 5-1 도형 문자 추출 순서가 흐트러져 핀 그룹 규칙성(단일 핀과 연번 그룹 교차)으로 최대한 복원한 대략 추정으로 각 핀 desc에 개별 주석; 정식 레이아웃은 datasheet Figure 5-1에 따름. 별도 RBH 패키지판(3mm×3.5mm, 0.5mm pitch)이 있고 핀 이름/번호는 Figure 5-3/5-4와 같으나 실제 배열은 각 패키지 그림에 따르며 두 패키지는 혼용 불가.',
+        specs: [
+          { k: '제어 아키텍처', v: 'D-CAP+ 동기 벅, datasheet 참조' },
+          { k: '출력 전류 능력', v: '연속 20A, 피크 인덕터 전류 31A(SW)' },
+          { k: '입력 전압 범위(권장)', v: '내부 LDO 공급: 4V~16V; 외부 바이어스(3.1V≤VVCC≤4.5V): 2.7V~16V' },
+          { k: '출력 전압 범위', v: '0.4V~5.5V' },
+          { k: '설정 방식', v: '저항 분압 핀 스트랩(MS1: 주파수/전류 제한/소프트 스타트; MS2: 출력 전압/VOUT_SCALE_LOOP/피드백 모드; ADR: PMBus 주소/고장 복구 모드)' },
+          { k: '통신 인터페이스', v: 'PMBus(SDA/SCL)' },
+          { k: '피드백 방식', v: '차동 원격 감지(VOS/FB + GOS), 내부 또는 외부 피드백 설정 가능' },
+          { k: '패키지', v: '19-WQFN-HR(VAN) 3mm×3mm/0.4mm pitch(본 항목); 별도 RBH 3mm×3.5mm/0.5mm pitch' },
+          { k: '동작 접합 온도', v: '-40°C~150°C' },
+          { k: 'ESD', v: 'HBM ±2000V, CDM ±500V(datasheet 6.2절 참조)' }
+        ]
+      }
+    },
+    'TPS7H4012-SP': {
+      en: { subcategory: h4sub.en, whatIs: 'Radiation-tolerant space-grade synchronous step-down DC converter: converts the input into an adjustable output at up to 6A output current (TPS7H4012 family), for satellite/space-payload board power. TPS7H4012 and TPS7H4013 are sibling parts within one datasheet with identical pinouts, differing only in maximum output current (4012=6A, 4013=3A).', func: h4func('en'), usedIn: h4used.en, desc: '20-Pin CFP (HLC), radiation-tolerant (TID 100krad(Si)) space-grade synchronous buck, up to 6A output current, externally adjustable switching frequency (100kHz~1MHz) with external clock sync, external compensation (COMP/REFCAP). Shares one datasheet and the same pinout with TPS7H4013-SP (only max output current differs: 4012=6A, 4013=3A); their electrical specs differ and they are not drop-in for each other. A 44-Pin HTSSOP (DDW) version also exists; each pin desc notes its HTSSOP-44 (DDW) pin number.', specs: h4specs('en', { en: '6A (TPS7H4012 family; sibling TPS7H4013 family is 3A)' }) },
+      ja: { subcategory: h4sub.ja, whatIs: '耐放射線宇宙級同期整流降圧 DC コンバータ：入力を可変出力に変換、最大出力電流 6A（TPS7H4012 ファミリ）、衛星/宇宙ペイロード基板電源用。TPS7H4012 と TPS7H4013 は同一 datasheet 内の姉妹型番で pinout 完全同一、最大出力電流のみ異なる（4012=6A、4013=3A）。', func: h4func('ja'), usedIn: h4used.ja, desc: '20-Pin CFP（HLC）、耐放射線（TID 100krad(Si)）宇宙級同期整流降圧、最大出力電流 6A、外部可変スイッチング周波数（100kHz~1MHz）で外部クロック同期可、外部補償（COMP/REFCAP）。TPS7H4013-SP と同一 datasheet・同 pinout を共有（最大出力電流のみ異なる：4012=6A、4013=3A）、両者は電気仕様が異なり相互 dropIn 不可。同シリーズに 44-Pin HTSSOP（DDW）版もあり；各ピン desc に対応 HTSSOP-44（DDW）ピン番号を注記。', specs: h4specs('ja', { ja: '6A（TPS7H4012 ファミリ；姉妹型番 TPS7H4013 ファミリは 3A）' }) },
+      ko: { subcategory: h4sub.ko, whatIs: '내방사선 우주급 동기 강압 DC 컨버터: 입력을 가변 출력으로 변환, 최대 출력 전류 6A(TPS7H4012 패밀리), 위성/우주 페이로드 보드 전원용. TPS7H4012와 TPS7H4013은 동일 datasheet 내 자매 부품으로 pinout 완전 동일, 최대 출력 전류만 다름(4012=6A, 4013=3A).', func: h4func('ko'), usedIn: h4used.ko, desc: '20-Pin CFP(HLC), 내방사선(TID 100krad(Si)) 우주급 동기 벅, 최대 출력 전류 6A, 외부 가변 스위칭 주파수(100kHz~1MHz)에 외부 클록 동기 가능, 외부 보상(COMP/REFCAP). TPS7H4013-SP와 동일 datasheet·동일 pinout 공유(최대 출력 전류만 다름: 4012=6A, 4013=3A), 둘은 전기 사양이 달라 상호 dropIn 불가. 동일 시리즈에 44-Pin HTSSOP(DDW) 판도 있음; 각 핀 desc에 대응 HTSSOP-44(DDW) 핀 번호 주석.', specs: h4specs('ko', { ko: '6A(TPS7H4012 패밀리; 자매 부품 TPS7H4013 패밀리는 3A)' }) }
+    },
+    'TPS7H4013-SP': {
+      en: { subcategory: h4sub.en, whatIs: 'Radiation-tolerant space-grade synchronous step-down DC converter: converts the input into an adjustable output at up to 3A output current (TPS7H4013 family), for satellite/space-payload board power. TPS7H4013 and TPS7H4012 are sibling parts within one datasheet with identical pinouts, differing only in maximum output current (4013=3A, 4012=6A).', func: h4func('en'), usedIn: h4used.en, desc: '20-Pin CFP (HLC), radiation-tolerant (TID 100krad(Si)) space-grade synchronous buck, up to 3A output current, externally adjustable switching frequency (100kHz~1MHz) with external clock sync, external compensation (COMP/REFCAP). Shares one datasheet and the same pinout with TPS7H4012-SP (only max output current differs: 4013=3A, 4012=6A); their electrical specs differ and they are not drop-in for each other. A 44-Pin HTSSOP (DDW) version also exists; each pin desc notes its HTSSOP-44 (DDW) pin number.', specs: h4specs('en', { en: '3A (TPS7H4013 family; sibling TPS7H4012 family is 6A)' }) },
+      ja: { subcategory: h4sub.ja, whatIs: '耐放射線宇宙級同期整流降圧 DC コンバータ：入力を可変出力に変換、最大出力電流 3A（TPS7H4013 ファミリ）、衛星/宇宙ペイロード基板電源用。TPS7H4013 と TPS7H4012 は同一 datasheet 内の姉妹型番で pinout 完全同一、最大出力電流のみ異なる（4013=3A、4012=6A）。', func: h4func('ja'), usedIn: h4used.ja, desc: '20-Pin CFP（HLC）、耐放射線（TID 100krad(Si)）宇宙級同期整流降圧、最大出力電流 3A、外部可変スイッチング周波数（100kHz~1MHz）で外部クロック同期可、外部補償（COMP/REFCAP）。TPS7H4012-SP と同一 datasheet・同 pinout を共有（最大出力電流のみ異なる：4013=3A、4012=6A）、両者は電気仕様が異なり相互 dropIn 不可。同シリーズに 44-Pin HTSSOP（DDW）版もあり；各ピン desc に対応 HTSSOP-44（DDW）ピン番号を注記。', specs: h4specs('ja', { ja: '3A（TPS7H4013 ファミリ；姉妹型番 TPS7H4012 ファミリは 6A）' }) },
+      ko: { subcategory: h4sub.ko, whatIs: '내방사선 우주급 동기 강압 DC 컨버터: 입력을 가변 출력으로 변환, 최대 출력 전류 3A(TPS7H4013 패밀리), 위성/우주 페이로드 보드 전원용. TPS7H4013과 TPS7H4012는 동일 datasheet 내 자매 부품으로 pinout 완전 동일, 최대 출력 전류만 다름(4013=3A, 4012=6A).', func: h4func('ko'), usedIn: h4used.ko, desc: '20-Pin CFP(HLC), 내방사선(TID 100krad(Si)) 우주급 동기 벅, 최대 출력 전류 3A, 외부 가변 스위칭 주파수(100kHz~1MHz)에 외부 클록 동기 가능, 외부 보상(COMP/REFCAP). TPS7H4012-SP와 동일 datasheet·동일 pinout 공유(최대 출력 전류만 다름: 4013=3A, 4012=6A), 둘은 전기 사양이 달라 상호 dropIn 불가. 동일 시리즈에 44-Pin HTSSOP(DDW) 판도 있음; 각 핀 desc에 대응 HTSSOP-44(DDW) 핀 번호 주석.', specs: h4specs('ko', { ko: '3A(TPS7H4013 패밀리; 자매 부품 TPS7H4012 패밀리는 6A)' }) }
+    },
+    'TAC5111-Q1': {
+      en: {
+        subcategory: 'Automotive audio codec (mono ADC + DAC)',
+        whatIs: 'Automotive-grade low-power mono audio codec: 105dB-dynamic-range ADC + 114dB-dynamic-range DAC, supporting differential/single-ended I/O, AEC-Q100 Grade 1 (−40~+125°C), for audio capture and playback in eCall, car head units, etc.',
+        func: 'The ADC supports line/microphone differential input (2VRMS full-scale) with AC/DC coupling and a built-in programmable mic bias (up to 3V); the DAC can be configured for line output or a headphone load (drives 16Ω to 62.5mW), supporting differential 2VRMS / single-ended 1VRMS. It integrates programmable channel gain, digital volume, a low-jitter PLL, HPF/biquad EQ and low-latency filter modes; sample rate 4kHz~768kHz with automatic clock/rate detection; audio interface TDM/I2S/LJ (16/20/24/32-bit) and I2C or SPI control; voice/ultrasonic activity detection, battery and thermal foldback protection.',
+        usedIn: 'Space-constrained automotive audio systems: emergency call (eCall), telematics control units, active noise cancellation (ANC), car head units.',
+        desc: 'Automotive mono audio codec: 105dB ADC + 114dB DAC, 4k~768kHz sampling, TDM/I2S/LJ, I2C/SPI control, AEC-Q100 Grade 1, 32-WQFN 5×5mm.',
+        thermalPad: 'Exposed pad = VSS (Figure 4-1 marks the center (VSS) Thermal Pad, table lists a Thermal Pad row), must be shorted to the board ground plane.',
+        specs: [
+          { k: 'ADC dynamic range', v: '105dB (line/mic differential input); THD+N −97dB' },
+          { k: 'DAC dynamic range', v: '114dB (differential line/headphone output); THD+N −96dB' },
+          { k: 'Sample rate', v: 'ADC/DAC both 4kHz ~ 768kHz' },
+          { k: 'Input/output', v: 'differential 2VRMS / single-ended 1VRMS; headphone drives 16Ω to 62.5mW' },
+          { k: 'Mic bias', v: 'programmable, up to 3V' },
+          { k: 'Audio interface', v: 'TDM / I2S / left-justified (16/20/24/32-bit), controller/target mode' },
+          { k: 'Control interface', v: 'I2C or SPI' },
+          { k: 'Supply', v: 'AVDD 1.8V/3.3V single supply; IOVDD 1.2V/1.8V/3.3V' },
+          { k: 'Low power', v: '1-channel record 5mW / playback 7mW (1.8V supply)' },
+          { k: 'Automotive', v: 'AEC-Q100 Grade 1 (−40°C ~ +125°C)' },
+          { k: 'Package', v: '32-WQFN (RTV) 5×5mm, 0.5mm pitch, EP=VSS' }
+        ],
+        dropIn: [{ note: 'Same package/pinout (32-WQFN, pin-by-pin same names/numbers); the 5112 is the stereo-ADC version with a different spec grade — confirm your channel requirements.' }]
+      },
+      ja: {
+        subcategory: '車載オーディオコーデック（モノ ADC + DAC）',
+        whatIs: '車載グレード低消費電力モノオーディオコーデック：105dB ダイナミックレンジ ADC + 114dB ダイナミックレンジ DAC、差動/シングルエンド入出力対応、AEC-Q100 Grade 1（−40~+125°C）、eCall や車載ヘッドユニット等のオーディオ収録・再生用。',
+        func: 'ADC はライン/マイク差動入力（2VRMS フルスケール）と AC/DC 結合に対応、プログラマブルマイクバイアス（最大 3V）内蔵；DAC はライン出力またはヘッドホン負荷（16Ω を 62.5mW まで駆動）に設定可、差動 2VRMS／シングルエンド 1VRMS 対応。プログラマブルチャネルゲイン、デジタルボリューム、低ジッタ PLL、HPF/バイクアッド EQ、低遅延フィルタモードを統合；サンプルレート 4kHz~768kHz、自動クロック/レート検出；オーディオインタフェース TDM/I2S/LJ（16/20/24/32-bit）、I2C または SPI 制御；音声/超音波アクティビティ検出、バッテリと熱フォールバック保護。',
+        usedIn: 'スペース制約のある車載オーディオシステム：緊急通報（eCall）、テレマティクス制御ユニット、アクティブノイズキャンセル（ANC）、車載ヘッドユニット。',
+        desc: '車載モノオーディオコーデック：105dB ADC + 114dB DAC、4k~768kHz サンプリング、TDM/I2S/LJ、I2C/SPI 制御、AEC-Q100 Grade 1、32-WQFN 5×5mm。',
+        thermalPad: '露出パッド=VSS（Figure 4-1 中央に (VSS) Thermal Pad 表記、表に Thermal Pad 列）、基板接地プレーンに短絡必須。',
+        specs: [
+          { k: 'ADC ダイナミックレンジ', v: '105dB（ライン/マイク差動入力）；THD+N −97dB' },
+          { k: 'DAC ダイナミックレンジ', v: '114dB（差動ライン/ヘッドホン出力）；THD+N −96dB' },
+          { k: 'サンプルレート', v: 'ADC/DAC とも 4kHz ~ 768kHz' },
+          { k: '入力/出力', v: '差動 2VRMS／シングルエンド 1VRMS；ヘッドホン 16Ω を 62.5mW まで駆動' },
+          { k: 'マイクバイアス', v: 'プログラマブル、最大 3V' },
+          { k: 'オーディオインタフェース', v: 'TDM / I2S / 左詰め（16/20/24/32-bit）、controller/target モード' },
+          { k: '制御インタフェース', v: 'I2C または SPI' },
+          { k: '電源', v: 'AVDD 1.8V/3.3V 単一電源；IOVDD 1.2V/1.8V/3.3V' },
+          { k: '低消費電力', v: '1 チャネル録音 5mW／再生 7mW（1.8V 供給）' },
+          { k: '車載', v: 'AEC-Q100 Grade 1（−40°C ~ +125°C）' },
+          { k: 'パッケージ', v: '32-WQFN (RTV) 5×5mm、0.5mm pitch、EP=VSS' }
+        ],
+        dropIn: [{ note: '同パッケージ同ピン配置（32-WQFN、1 ピンずつ同名同番）；5112 はステレオ ADC 版で仕様グレードが異なる、チャネル要件を確認。' }]
+      },
+      ko: {
+        subcategory: '차량용 오디오 코덱(모노 ADC + DAC)',
+        whatIs: '차량 등급 저전력 모노 오디오 코덱: 105dB 다이내믹 레인지 ADC + 114dB 다이내믹 레인지 DAC, 차동/싱글엔드 입출력 지원, AEC-Q100 Grade 1(−40~+125°C), eCall이나 차량 헤드유닛 등의 오디오 수록·재생용.',
+        func: 'ADC는 라인/마이크 차동 입력(2VRMS 풀스케일)과 AC/DC 결합을 지원, 프로그래머블 마이크 바이어스(최대 3V) 내장; DAC는 라인 출력이나 헤드폰 부하(16Ω를 62.5mW까지 구동)로 설정 가능, 차동 2VRMS/싱글엔드 1VRMS 지원. 프로그래머블 채널 이득, 디지털 볼륨, 저지터 PLL, HPF/바이쿼드 EQ, 저지연 필터 모드를 통합; 샘플링 4kHz~768kHz, 자동 클록/레이트 감지; 오디오 인터페이스 TDM/I2S/LJ(16/20/24/32-bit), I2C 또는 SPI 제어; 음성/초음파 활동 감지, 배터리와 열 폴백 보호.',
+        usedIn: '공간 제약이 있는 차량 오디오 시스템: 긴급 호출(eCall), 텔레매틱스 제어 유닛, 능동 소음 제거(ANC), 차량 헤드유닛.',
+        desc: '차량용 모노 오디오 코덱: 105dB ADC + 114dB DAC, 4k~768kHz 샘플링, TDM/I2S/LJ, I2C/SPI 제어, AEC-Q100 Grade 1, 32-WQFN 5×5mm.',
+        thermalPad: '노출 패드=VSS(Figure 4-1 중앙에 (VSS) Thermal Pad 표기, 표에 Thermal Pad 행), 보드 접지 플레인에 단락 필수.',
+        specs: [
+          { k: 'ADC 다이내믹 레인지', v: '105dB(라인/마이크 차동 입력); THD+N −97dB' },
+          { k: 'DAC 다이내믹 레인지', v: '114dB(차동 라인/헤드폰 출력); THD+N −96dB' },
+          { k: '샘플링', v: 'ADC/DAC 모두 4kHz ~ 768kHz' },
+          { k: '입력/출력', v: '차동 2VRMS / 싱글엔드 1VRMS; 헤드폰 16Ω를 62.5mW까지 구동' },
+          { k: '마이크 바이어스', v: '프로그래머블, 최대 3V' },
+          { k: '오디오 인터페이스', v: 'TDM / I2S / 좌측 정렬(16/20/24/32-bit), controller/target 모드' },
+          { k: '제어 인터페이스', v: 'I2C 또는 SPI' },
+          { k: '전원', v: 'AVDD 1.8V/3.3V 단일 전원; IOVDD 1.2V/1.8V/3.3V' },
+          { k: '저전력', v: '1채널 녹음 5mW / 재생 7mW(1.8V 공급)' },
+          { k: '차량', v: 'AEC-Q100 Grade 1(−40°C ~ +125°C)' },
+          { k: '패키지', v: '32-WQFN (RTV) 5×5mm, 0.5mm pitch, EP=VSS' }
+        ],
+        dropIn: [{ note: '동일 패키지 동일 핀 배치(32-WQFN, 핀 단위로 동일 이름·번호); 5112는 스테레오 ADC 판으로 사양 등급이 다름, 채널 요구사항 확인.' }]
+      }
+    },
+    'LMKDB1112': {
+      en: {
+        subcategory: 'PCIe LP-HCSL clock buffer (1:12)',
+        whatIs: 'Ultra-low-additive-jitter LP-HCSL clock buffer: fans one differential input out to 12 LP-HCSL differential outputs, supporting PCIe Gen 1~Gen 7 (CC and IR architectures, with SSC input), pin-compatible with the Intel DB1206.',
+        func: 'Each of the 12 LP-HCSL outputs has an independent OE# enable (with internal pull-up); an SBI (Side-Band Interface) allows high-speed batch output switching (SBI_EN sets the dual function of the OE2/4/7/10 pins); an SMBus interface (SADR0/1 three-level addressing) provides register control; LOS# is an open-drain output indicating loss of the input clock; fail-safe inputs, flexible power-up sequencing and automatic output disable; output impedance 85Ω/100Ω selectable, two slew-rate options (SLEWRATE_SEL).',
+        usedIn: 'PCIe clock-tree fanout in high-performance computing, server motherboards, NIC/SmartNICs and hardware accelerator cards (common at the front of AI-server PCIe retimers/switches).',
+        desc: 'PCIe Gen1~7 LP-HCSL 1:12 clock buffer, additive jitter 5fs (Gen5) / 2.1fs (Gen7) max, SMBus + SBI control, 1.8V/3.3V supply, 64-LGA 5×5mm (DB1206 pin-compatible).',
+        thermalPad: 'Central 4×4 GND land array (D4~G7, 16 points, both thermal and ground; the 64-pin count excludes this array), must connect to the board ground plane.',
+        specs: [
+          { k: 'Topology', v: '1 differential input → 12 LP-HCSL differential outputs' },
+          { k: 'PCIe support', v: 'Gen 1 ~ Gen 7 (CC/IR architectures, SSC input both OK); DB2000QL spec, DB1206 pin-compatible' },
+          { k: 'Additive jitter', v: '31fs max (12kHz-20MHz RMS @156.25MHz); PCIe Gen4 13fs / Gen5 5fs / Gen6 3fs / Gen7 2.1fs max' },
+          { k: 'Control', v: 'per-output OE# + SBI high-speed switching + SMBus (three-level address ×2)' },
+          { k: 'Output impedance', v: '85Ω or 100Ω' },
+          { k: 'Supply', v: '1.8V / 3.3V ±10% (VDDA + VDDCLK×5)' },
+          { k: 'Temperature', v: '−40°C ~ +105°C' },
+          { k: 'Package', v: '64-pin LGA (ZSF) 5×5mm + central 16-point GND array' }
+        ]
+      },
+      ja: {
+        subcategory: 'PCIe LP-HCSL クロックバッファ（1:12）',
+        whatIs: '超低付加ジッタ LP-HCSL クロックバッファ：1 系統の差動入力を 12 系統の LP-HCSL 差動出力にファンアウト、PCIe Gen 1~Gen 7（CC と IR アーキテクチャ、SSC 入力対応）に対応、Intel DB1206 とピン互換。',
+        func: '12 系統の LP-HCSL 出力は各々独立 OE# イネーブル（内蔵プルアップ）；SBI（Side-Band Interface）で高速一括出力切替（SBI_EN が OE2/4/7/10 ピンの二重機能を決定）；SMBus インタフェース（SADR0/1 三値アドレス）でレジスタ制御；LOS# はオープンドレイン出力で入力クロック喪失を指示；フェイルセーフ入力、柔軟な電源投入順序、自動出力停止；出力インピーダンス 85Ω/100Ω 選択可、スルーレート 2 段（SLEWRATE_SEL）。',
+        usedIn: '高性能計算、サーバマザーボード、NIC/SmartNIC、ハードウェアアクセラレータカード等の PCIe クロックツリーファンアウト（AI サーバの PCIe リタイマ/スイッチ前段で一般的）。',
+        desc: 'PCIe Gen1~7 LP-HCSL 1:12 クロックバッファ、付加ジッタ 5fs（Gen5）/2.1fs（Gen7）max、SMBus + SBI 制御、1.8V/3.3V 供給、64-LGA 5×5mm（DB1206 ピン互換）。',
+        thermalPad: '中央 4×4 GND land アレイ（D4~G7 の 16 点、放熱と接地兼用；64 ピン計数にこのアレイは含まず）、基板接地プレーンに接続必須。',
+        specs: [
+          { k: 'トポロジ', v: '1 系統差動入力 → 12 系統 LP-HCSL 差動出力' },
+          { k: 'PCIe 対応', v: 'Gen 1 ~ Gen 7（CC/IR アーキテクチャ、SSC 入力とも可）；DB2000QL 仕様、DB1206 ピン互換' },
+          { k: '付加ジッタ', v: '31fs max（12kHz-20MHz RMS @156.25MHz）；PCIe Gen4 13fs／Gen5 5fs／Gen6 3fs／Gen7 2.1fs max' },
+          { k: '制御', v: '系統毎 OE# ＋ SBI 高速切替 ＋ SMBus（三値アドレス×2）' },
+          { k: '出力インピーダンス', v: '85Ω または 100Ω' },
+          { k: '電源', v: '1.8V／3.3V ±10%（VDDA ＋ VDDCLK×5）' },
+          { k: '温度', v: '−40°C ~ +105°C' },
+          { k: 'パッケージ', v: '64-pin LGA (ZSF) 5×5mm ＋ 中央 16 点 GND アレイ' }
+        ]
+      },
+      ko: {
+        subcategory: 'PCIe LP-HCSL 클록 버퍼(1:12)',
+        whatIs: '초저 부가 지터 LP-HCSL 클록 버퍼: 1계통 차동 입력을 12계통 LP-HCSL 차동 출력으로 팬아웃, PCIe Gen 1~Gen 7(CC와 IR 아키텍처, SSC 입력 지원) 지원, Intel DB1206과 핀 호환.',
+        func: '12계통 LP-HCSL 출력은 각각 독립 OE# 인에이블(내장 풀업); SBI(Side-Band Interface)로 고속 일괄 출력 전환(SBI_EN이 OE2/4/7/10 핀의 이중 기능 결정); SMBus 인터페이스(SADR0/1 3값 주소)로 레지스터 제어; LOS#은 오픈 드레인 출력으로 입력 클록 상실 지시; 페일세이프 입력, 유연한 전원 인가 순서, 자동 출력 정지; 출력 임피던스 85Ω/100Ω 선택 가능, 슬루율 2단(SLEWRATE_SEL).',
+        usedIn: '고성능 컴퓨팅, 서버 메인보드, NIC/SmartNIC, 하드웨어 가속 카드 등의 PCIe 클록 트리 팬아웃(AI 서버 PCIe 리타이머/스위치 전단에서 일반적).',
+        desc: 'PCIe Gen1~7 LP-HCSL 1:12 클록 버퍼, 부가 지터 5fs(Gen5)/2.1fs(Gen7) max, SMBus + SBI 제어, 1.8V/3.3V 공급, 64-LGA 5×5mm(DB1206 핀 호환).',
+        thermalPad: '중앙 4×4 GND land 어레이(D4~G7의 16점, 방열과 접지 겸용; 64핀 계수에 이 어레이는 미포함), 보드 접지 플레인에 연결 필수.',
+        specs: [
+          { k: '토폴로지', v: '1계통 차동 입력 → 12계통 LP-HCSL 차동 출력' },
+          { k: 'PCIe 지원', v: 'Gen 1 ~ Gen 7(CC/IR 아키텍처, SSC 입력 모두 가능); DB2000QL 규격, DB1206 핀 호환' },
+          { k: '부가 지터', v: '31fs max(12kHz-20MHz RMS @156.25MHz); PCIe Gen4 13fs / Gen5 5fs / Gen6 3fs / Gen7 2.1fs max' },
+          { k: '제어', v: '계통별 OE# + SBI 고속 전환 + SMBus(3값 주소×2)' },
+          { k: '출력 임피던스', v: '85Ω 또는 100Ω' },
+          { k: '전원', v: '1.8V / 3.3V ±10%(VDDA + VDDCLK×5)' },
+          { k: '온도', v: '−40°C ~ +105°C' },
+          { k: '패키지', v: '64-pin LGA (ZSF) 5×5mm + 중앙 16점 GND 어레이' }
+        ]
+      }
+    },
+    'TAC5112-Q1': {
+      en: {
+        subcategory: 'Automotive audio codec (stereo ADC + DAC)',
+        whatIs: 'Automotive-grade low-power stereo audio codec: 105dB-dynamic-range stereo ADC + 114dB-dynamic-range stereo DAC (107dB in single-ended 4-channel mode), supporting differential/single-ended I/O, AEC-Q100 Grade 1 (−40~+125°C), for audio capture and playback in eCall, car head units, etc.',
+        func: 'The ADC supports line/mic differential input (2VRMS full-scale) with AC/DC coupling, configurable up to 4 record channels (2 analog+2 digital / 1 analog+3 digital / 4 digital), with a programmable mic bias (up to 3V); the DAC can be configured for stereo differential or 4-channel single-ended output, line output or a headphone load (16Ω to 62.5mW), supporting differential 2VRMS / pseudo-differential and single-ended 1VRMS. It integrates programmable channel gain, digital volume, a low-jitter PLL, HPF/biquad EQ and low-latency filter modes; sample rate 4kHz~768kHz with automatic clock/rate detection; audio interface TDM/I2S/LJ (16/20/24/32-bit), controller/target mode, I2C or SPI control; voice/ultrasonic activity detection, battery and thermal foldback protection, signal-distortion limiter.',
+        usedIn: 'Space-constrained automotive audio systems: emergency call (eCall), telematics control units, active noise cancellation (ANC), car head units.',
+        desc: 'Automotive stereo audio codec: 105dB stereo ADC + 114dB DAC (107dB single-ended 4-channel), 4k~768kHz sampling, TDM/I2S/LJ, I2C/SPI control, AEC-Q100 Grade 1, 32-WQFN 5×5mm; its pinout matches the TAC5111-Q1 (mono) pin-by-pin in name and position, differing only in channel modes and spec notes; not compatible with TAC5301/5312/5412-Q1.',
+        thermalPad: 'Exposed pad = VSS (Figure 4-1 marks Thermal Pad (VSS), Table 4-1 has a Thermal Pad row), must be shorted to the board ground plane.',
+        specs: [
+          { k: 'ADC dynamic range', v: '105dB (line/mic differential, stereo); THD+N −97dB; channel-sum mode SNR 108dB' },
+          { k: 'DAC dynamic range', v: '114dB (differential line/headphone, stereo); single-ended 4-channel 107dB; THD+N −96dB' },
+          { k: 'Sample rate', v: 'ADC/DAC both 4kHz ~ 768kHz' },
+          { k: 'Input/output', v: 'differential 2VRMS / single-ended 1VRMS; headphone drives 16Ω to 62.5mW' },
+          { k: 'Record channel config', v: 'up to 4 channels (2 analog+2 digital / 1 analog+3 digital / 4 digital)' },
+          { k: 'Mic bias', v: 'programmable, up to 3V' },
+          { k: 'Audio interface', v: 'TDM / I2S / left-justified (16/20/24/32-bit), controller/target mode' },
+          { k: 'Control interface', v: 'I2C or SPI' },
+          { k: 'Supply', v: 'AVDD 1.8V/3.3V single supply; IOVDD 1.2V/1.8V/3.3V' },
+          { k: 'Low power', v: '2-channel record 8mW / playback 10.5mW (1.8V supply)' },
+          { k: 'Automotive', v: 'AEC-Q100 Grade 1 (−40°C ~ +125°C)' },
+          { k: 'Package', v: '32-WQFN (RTV) 5×5mm, 0.5mm pitch, EP=VSS' }
+        ],
+        dropIn: [{ note: 'Same package/pinout (pin-by-pin same names/numbers); different spec grade — confirm your dynamic-range requirements.' }]
+      },
+      ja: {
+        subcategory: '車載オーディオコーデック（ステレオ ADC + DAC）',
+        whatIs: '車載グレード低消費電力ステレオオーディオコーデック：105dB ダイナミックレンジステレオ ADC + 114dB ダイナミックレンジステレオ DAC（シングルエンド 4 チャネルモードで 107dB）、差動/シングルエンド入出力対応、AEC-Q100 Grade 1（−40~+125°C）、eCall や車載ヘッドユニット等のオーディオ収録・再生用。',
+        func: 'ADC はライン/マイク差動入力（2VRMS フルスケール）と AC/DC 結合に対応、最大 4 録音チャネル（2 アナログ+2 デジタル／1 アナログ+3 デジタル／4 デジタル）に設定可、プログラマブルマイクバイアス（最大 3V）内蔵；DAC はステレオ差動または 4 チャネルシングルエンド出力、ライン出力またはヘッドホン負荷（16Ω を 62.5mW まで）に設定可、差動 2VRMS／擬似差動とシングルエンド 1VRMS 対応。プログラマブルチャネルゲイン、デジタルボリューム、低ジッタ PLL、HPF/バイクアッド EQ、低遅延フィルタモードを統合；サンプルレート 4kHz~768kHz、自動クロック/レート検出；オーディオインタフェース TDM/I2S/LJ（16/20/24/32-bit）、controller/target モード、I2C または SPI 制御；音声/超音波アクティビティ検出、バッテリと熱フォールバック保護、信号歪みリミッタ。',
+        usedIn: 'スペース制約のある車載オーディオシステム：緊急通報（eCall）、テレマティクス制御ユニット、アクティブノイズキャンセル（ANC）、車載ヘッドユニット。',
+        desc: '車載ステレオオーディオコーデック：105dB ステレオ ADC + 114dB DAC（シングルエンド 4 チャネル 107dB）、4k~768kHz サンプリング、TDM/I2S/LJ、I2C/SPI 制御、AEC-Q100 Grade 1、32-WQFN 5×5mm；pinout は TAC5111-Q1（モノ版）と 1 ピンずつ同名同位で、チャネルモードと仕様説明のみ異なる、TAC5301/5312/5412-Q1 とは非互換。',
+        thermalPad: '露出パッド=VSS（Figure 4-1 に Thermal Pad (VSS) 表記、Table 4-1 に Thermal Pad 列）、基板接地プレーンに短絡必須。',
+        specs: [
+          { k: 'ADC ダイナミックレンジ', v: '105dB（ライン/マイク差動、ステレオ）；THD+N −97dB；チャネル加算モード SNR 108dB' },
+          { k: 'DAC ダイナミックレンジ', v: '114dB（差動ライン/ヘッドホン、ステレオ）；シングルエンド 4 チャネル 107dB；THD+N −96dB' },
+          { k: 'サンプルレート', v: 'ADC/DAC とも 4kHz ~ 768kHz' },
+          { k: '入力/出力', v: '差動 2VRMS／シングルエンド 1VRMS；ヘッドホン 16Ω を 62.5mW まで駆動' },
+          { k: '録音チャネル構成', v: '最大 4 チャネル（2 アナログ+2 デジタル／1 アナログ+3 デジタル／4 デジタル）' },
+          { k: 'マイクバイアス', v: 'プログラマブル、最大 3V' },
+          { k: 'オーディオインタフェース', v: 'TDM / I2S / 左詰め（16/20/24/32-bit）、controller/target モード' },
+          { k: '制御インタフェース', v: 'I2C または SPI' },
+          { k: '電源', v: 'AVDD 1.8V/3.3V 単一電源；IOVDD 1.2V/1.8V/3.3V' },
+          { k: '低消費電力', v: '2 チャネル録音 8mW／再生 10.5mW（1.8V 供給）' },
+          { k: '車載', v: 'AEC-Q100 Grade 1（−40°C ~ +125°C）' },
+          { k: 'パッケージ', v: '32-WQFN (RTV) 5×5mm、0.5mm pitch、EP=VSS' }
+        ],
+        dropIn: [{ note: '同パッケージ同ピン配置（1 ピンずつ同名同番）；仕様グレードが異なる、ダイナミックレンジ要件を確認。' }]
+      },
+      ko: {
+        subcategory: '차량용 오디오 코덱(스테레오 ADC + DAC)',
+        whatIs: '차량 등급 저전력 스테레오 오디오 코덱: 105dB 다이내믹 레인지 스테레오 ADC + 114dB 다이내믹 레인지 스테레오 DAC(싱글엔드 4채널 모드에서 107dB), 차동/싱글엔드 입출력 지원, AEC-Q100 Grade 1(−40~+125°C), eCall이나 차량 헤드유닛 등의 오디오 수록·재생용.',
+        func: 'ADC는 라인/마이크 차동 입력(2VRMS 풀스케일)과 AC/DC 결합을 지원, 최대 4 녹음 채널(2 아날로그+2 디지털 / 1 아날로그+3 디지털 / 4 디지털)로 설정 가능, 프로그래머블 마이크 바이어스(최대 3V) 내장; DAC는 스테레오 차동 또는 4채널 싱글엔드 출력, 라인 출력이나 헤드폰 부하(16Ω를 62.5mW까지)로 설정 가능, 차동 2VRMS/의사 차동과 싱글엔드 1VRMS 지원. 프로그래머블 채널 이득, 디지털 볼륨, 저지터 PLL, HPF/바이쿼드 EQ, 저지연 필터 모드를 통합; 샘플링 4kHz~768kHz, 자동 클록/레이트 감지; 오디오 인터페이스 TDM/I2S/LJ(16/20/24/32-bit), controller/target 모드, I2C 또는 SPI 제어; 음성/초음파 활동 감지, 배터리와 열 폴백 보호, 신호 왜곡 리미터.',
+        usedIn: '공간 제약이 있는 차량 오디오 시스템: 긴급 호출(eCall), 텔레매틱스 제어 유닛, 능동 소음 제거(ANC), 차량 헤드유닛.',
+        desc: '차량용 스테레오 오디오 코덱: 105dB 스테레오 ADC + 114dB DAC(싱글엔드 4채널 107dB), 4k~768kHz 샘플링, TDM/I2S/LJ, I2C/SPI 제어, AEC-Q100 Grade 1, 32-WQFN 5×5mm; pinout은 TAC5111-Q1(모노 판)과 핀 단위로 동일 이름·위치이며 채널 모드와 사양 설명만 다름, TAC5301/5312/5412-Q1과는 비호환.',
+        thermalPad: '노출 패드=VSS(Figure 4-1에 Thermal Pad (VSS) 표기, Table 4-1에 Thermal Pad 행), 보드 접지 플레인에 단락 필수.',
+        specs: [
+          { k: 'ADC 다이내믹 레인지', v: '105dB(라인/마이크 차동, 스테레오); THD+N −97dB; 채널 합산 모드 SNR 108dB' },
+          { k: 'DAC 다이내믹 레인지', v: '114dB(차동 라인/헤드폰, 스테레오); 싱글엔드 4채널 107dB; THD+N −96dB' },
+          { k: '샘플링', v: 'ADC/DAC 모두 4kHz ~ 768kHz' },
+          { k: '입력/출력', v: '차동 2VRMS / 싱글엔드 1VRMS; 헤드폰 16Ω를 62.5mW까지 구동' },
+          { k: '녹음 채널 구성', v: '최대 4채널(2 아날로그+2 디지털 / 1 아날로그+3 디지털 / 4 디지털)' },
+          { k: '마이크 바이어스', v: '프로그래머블, 최대 3V' },
+          { k: '오디오 인터페이스', v: 'TDM / I2S / 좌측 정렬(16/20/24/32-bit), controller/target 모드' },
+          { k: '제어 인터페이스', v: 'I2C 또는 SPI' },
+          { k: '전원', v: 'AVDD 1.8V/3.3V 단일 전원; IOVDD 1.2V/1.8V/3.3V' },
+          { k: '저전력', v: '2채널 녹음 8mW / 재생 10.5mW(1.8V 공급)' },
+          { k: '차량', v: 'AEC-Q100 Grade 1(−40°C ~ +125°C)' },
+          { k: '패키지', v: '32-WQFN (RTV) 5×5mm, 0.5mm pitch, EP=VSS' }
+        ],
+        dropIn: [{ note: '동일 패키지 동일 핀 배치(핀 단위로 동일 이름·번호); 사양 등급이 다름, 다이내믹 레인지 요구사항 확인.' }]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
