@@ -6524,3 +6524,492 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 11A: entries 129-136 */
+(function () {
+  // TAC5312-Q1 / TAC5412-Q1 share func/usedIn (only dynamic-range grade differs)
+  var t53func = {
+    en: 'The ADC supports line/mic differential input with high-voltage full-scale (differential 10VRMS / single-ended 5VRMS), AC/DC coupling; a built-in boost converter (needing only 3.3V) or external HVDD generates the programmable mic bias (3V~10V); it provides mic-input diagnostics: open/short, short-to-ground/MICBIAS/VBAT, bias overcurrent. The DAC can be configured for stereo differential or single-ended output, line output or a headphone load (16Ω to 62.5mW), differential 2VRMS / single-ended 1VRMS. It integrates programmable channel gain, digital volume, a low-jitter PLL, HPF/biquad EQ, low-/ultra-low-latency filter modes; sample rate 4kHz~768kHz; audio interface TDM/I2S/LJ (16/20/24/32-bit), control via I2C or SPI.',
+    ja: 'ADC はライン/マイク差動入力に対応し高圧フルスケール（差動 10VRMS／シングルエンド 5VRMS）、AC/DC 結合可；内蔵ブーストコンバータ（3.3V 供給のみ）または外部 HVDD でプログラマブルマイクバイアス（3V~10V）を生成；マイク入力の開放/短絡、対地/MICBIAS/VBAT 短絡、バイアス過電流等の故障診断を提供。DAC はステレオ差動またはシングルエンド出力、ライン出力またはヘッドホン負荷（16Ω を 62.5mW まで）に設定可、差動 2VRMS／シングルエンド 1VRMS。プログラマブルチャネルゲイン、デジタルボリューム、低ジッタ PLL、HPF/バイクアッド EQ、低遅延/超低遅延フィルタモードを統合；サンプルレート 4kHz~768kHz；オーディオインタフェース TDM/I2S/LJ（16/20/24/32-bit）、制御は I2C または SPI。',
+    ko: 'ADC는 라인/마이크 차동 입력을 지원하며 고압 풀스케일(차동 10VRMS / 싱글엔드 5VRMS), AC/DC 결합 가능; 내장 부스트 컨버터(3.3V 공급만 필요) 또는 외부 HVDD로 프로그래머블 마이크 바이어스(3V~10V) 생성; 마이크 입력 개방/단락, 대지/MICBIAS/VBAT 단락, 바이어스 과전류 등 고장 진단 제공. DAC는 스테레오 차동 또는 싱글엔드 출력, 라인 출력이나 헤드폰 부하(16Ω를 62.5mW까지)로 설정 가능, 차동 2VRMS / 싱글엔드 1VRMS. 프로그래머블 채널 이득, 디지털 볼륨, 저지터 PLL, HPF/바이쿼드 EQ, 저지연/초저지연 필터 모드를 통합; 샘플링 4kHz~768kHz; 오디오 인터페이스 TDM/I2S/LJ(16/20/24/32-bit), 제어는 I2C 또는 SPI.'
+  };
+  var t53used = {
+    en: 'Automotive audio systems needing direct high-voltage mic connection and fault diagnostics: emergency call (eCall), telematics control units, active noise cancellation (ANC), car head units.',
+    ja: '高圧マイクの直接接続と故障診断が必要な車載オーディオシステム：緊急通報（eCall）、テレマティクス制御ユニット、アクティブノイズキャンセル（ANC）、車載ヘッドユニット。',
+    ko: '고압 마이크 직접 연결과 고장 진단이 필요한 차량 오디오 시스템: 긴급 호출(eCall), 텔레매틱스 제어 유닛, 능동 소음 제거(ANC), 차량 헤드유닛.'
+  };
+  var t53pad = {
+    en: 'Exposed pad = VSS (Figure 4-1 marks Thermal Pad (VSS), Table 4-1 has a Thermal Pad row), must be shorted to the board ground plane.',
+    ja: '露出パッド=VSS（Figure 4-1 に Thermal Pad (VSS) 表記、Table 4-1 に Thermal Pad 列）、基板接地プレーンに短絡必須。',
+    ko: '노출 패드=VSS(Figure 4-1에 Thermal Pad (VSS) 표기, Table 4-1에 Thermal Pad 행), 보드 접지 플레인에 단락 필수.'
+  };
+  function t53specs(lang, adc, dac) {
+    return {
+      en: [
+        { k: 'ADC dynamic range', v: adc },
+        { k: 'DAC dynamic range', v: dac },
+        { k: 'Sample rate', v: 'ADC/DAC both 4kHz ~ 768kHz' },
+        { k: 'Input/output', v: 'differential 10VRMS / single-ended 5VRMS input; differential 2VRMS / single-ended 1VRMS output; headphone 16Ω to 62.5mW' },
+        { k: 'Mic bias', v: 'programmable 3V~10V, built-in boost (3.3V supply) or external HVDD' },
+        { k: 'Diagnostics', v: 'mic-input open/short, short-to-ground/MICBIAS/VBAT, bias overcurrent protection' },
+        { k: 'Audio interface', v: 'TDM / I2S / left-justified (16/20/24/32-bit)' },
+        { k: 'Control interface', v: 'I2C or SPI' },
+        { k: 'Supply', v: 'AVDD 3.3V-only single supply; IOVDD 1.2V/1.8V/3.3V; BSTVDD 3.3V' },
+        { k: 'Automotive', v: 'AEC-Q100 Grade 1 (−40°C ~ +125°C)' },
+        { k: 'Package', v: '32-WQFN (RTV) 5×5mm, 0.5mm pitch, EP=VSS' }
+      ],
+      ja: [
+        { k: 'ADC ダイナミックレンジ', v: adc },
+        { k: 'DAC ダイナミックレンジ', v: dac },
+        { k: 'サンプルレート', v: 'ADC/DAC とも 4kHz ~ 768kHz' },
+        { k: '入力/出力', v: '差動 10VRMS／シングルエンド 5VRMS 入力；差動 2VRMS／シングルエンド 1VRMS 出力；ヘッドホン 16Ω を 62.5mW まで' },
+        { k: 'マイクバイアス', v: 'プログラマブル 3V~10V、内蔵ブースト（3.3V 供給）または外部 HVDD' },
+        { k: '故障診断', v: 'マイク入力の開放/短絡、対地/MICBIAS/VBAT 短絡、バイアス過電流保護' },
+        { k: 'オーディオインタフェース', v: 'TDM / I2S / 左詰め（16/20/24/32-bit）' },
+        { k: '制御インタフェース', v: 'I2C または SPI' },
+        { k: '電源', v: 'AVDD 3.3V のみ単一電源；IOVDD 1.2V/1.8V/3.3V；BSTVDD 3.3V' },
+        { k: '車載', v: 'AEC-Q100 Grade 1（−40°C ~ +125°C）' },
+        { k: 'パッケージ', v: '32-WQFN (RTV) 5×5mm、0.5mm pitch、EP=VSS' }
+      ],
+      ko: [
+        { k: 'ADC 다이내믹 레인지', v: adc },
+        { k: 'DAC 다이내믹 레인지', v: dac },
+        { k: '샘플링', v: 'ADC/DAC 모두 4kHz ~ 768kHz' },
+        { k: '입력/출력', v: '차동 10VRMS / 싱글엔드 5VRMS 입력; 차동 2VRMS / 싱글엔드 1VRMS 출력; 헤드폰 16Ω를 62.5mW까지' },
+        { k: '마이크 바이어스', v: '프로그래머블 3V~10V, 내장 부스트(3.3V 공급) 또는 외부 HVDD' },
+        { k: '고장 진단', v: '마이크 입력 개방/단락, 대지/MICBIAS/VBAT 단락, 바이어스 과전류 보호' },
+        { k: '오디오 인터페이스', v: 'TDM / I2S / 좌측 정렬(16/20/24/32-bit)' },
+        { k: '제어 인터페이스', v: 'I2C 또는 SPI' },
+        { k: '전원', v: 'AVDD 3.3V 전용 단일 전원; IOVDD 1.2V/1.8V/3.3V; BSTVDD 3.3V' },
+        { k: '차량', v: 'AEC-Q100 Grade 1(−40°C ~ +125°C)' },
+        { k: '패키지', v: '32-WQFN (RTV) 5×5mm, 0.5mm pitch, EP=VSS' }
+      ]
+    }[lang];
+  }
+  var t53drop = {
+    en: [{ note: 'Same package/pinout (pin-by-pin same names/numbers); different spec grade — confirm your dynamic-range requirements.' }],
+    ja: [{ note: '同パッケージ同ピン配置（1 ピンずつ同名同番）；仕様グレードが異なる、ダイナミックレンジ要件を確認。' }],
+    ko: [{ note: '동일 패키지 동일 핀 배치(핀 단위로 동일 이름·번호); 사양 등급이 다름, 다이내믹 레인지 요구사항 확인.' }]
+  };
+
+  var T = {
+    'TAC5301-Q1': {
+      en: {
+        subcategory: 'Automotive audio codec (mono ADC + DAC, high-voltage micbias)',
+        whatIs: 'Automotive mono audio codec: ADC dynamic range about 100~101dB (differential input; the datasheet title says 101dB while the Features text says 100dB — see the datasheet) + 110dB DAC, with programmable high-voltage mic bias (3V~10V, needs external HVDD), AEC-Q100 Grade 1 (−40~+125°C), 24-Pin QFN with special corner pins.',
+        func: 'The ADC supports line/mic differential input (2VRMS full-scale) with AC/DC coupling; mic bias is programmable 3V~10V and needs an external high-voltage HVDD supply (no built-in boost converter, unlike the family TAC5312-Q1/TAC5412-Q1). The DAC can be configured for mono differential or stereo single-ended output, line output or a headphone load (16Ω to 62.5mW), differential 2VRMS / pseudo-differential and single-ended 1VRMS. It integrates programmable channel gain, digital volume, a low-jitter PLL, HPF/biquad EQ, low-latency filter modes; sample rate 8kHz~192kHz (narrower than the family’s 4k~768kHz); audio interface TDM/I2S/LJ (16/20/24/32-bit), I2C control only (no SPI); voice/ultrasonic activity detection, battery/thermal foldback protection, signal-distortion limiter.',
+        usedIn: 'Space-constrained automotive audio systems: telematics control units, car head units, instrument clusters, rear-seat entertainment.',
+        desc: 'Automotive mono audio codec: ADC ~100~101dB / DAC 110dB, 8k~192kHz sampling, I2C-only control (no SPI), high-voltage mic bias 3~10V (needs external HVDD), AVDD 3.3V-only, 24-Pin QFN 4×4mm with special corner pins + EP; the pinout is completely incompatible with the family’s other 32-WQFN parts (TAC5112/5312/5412-Q1).',
+        thermalPad: 'Exposed pad = VSS (Figure 4-1 marks Thermal Pad (VSS), Table 4-1 has a Thermal Pad row), must be shorted to the board ground plane; the package also has 4 corner pins (A1~A4, all Ground), unique to this 24-Pin QFN with Exposed Thermal Pad and Corner Pins — not a standard 24-QFN, see datasheet Figure 4-1.',
+        specs: [
+          { k: 'ADC dynamic range', v: 'differential input 100dB (Features text) / datasheet title says 101dB, confirm in datasheet; THD+N −87dB' },
+          { k: 'DAC dynamic range', v: 'differential line output 110dB / differential headphone 109dB; THD+N −101dB' },
+          { k: 'Sample rate', v: 'ADC/DAC both 8kHz ~ 192kHz' },
+          { k: 'Input/output', v: 'differential 2VRMS / single-ended 1VRMS; headphone 16Ω to 62.5mW' },
+          { k: 'Mic bias', v: 'programmable 3V~10V, needs external HVDD (no built-in boost)' },
+          { k: 'Audio interface', v: 'TDM / I2S / left-justified (16/20/24/32-bit), controller/target mode' },
+          { k: 'Control interface', v: 'I2C only (no SPI)' },
+          { k: 'Supply', v: 'AVDD 3.3V-only single supply; IOVDD 1.2V/1.8V/3.3V; HVDD up to 12V' },
+          { k: 'Automotive', v: 'AEC-Q100 Grade 1 (−40°C ~ +125°C)' },
+          { k: 'Package', v: '24-Pin QFN (RGE) 4×4mm, with 4 corner pins + EP=VSS, non-standard layout' }
+        ]
+      },
+      ja: {
+        subcategory: '車載オーディオコーデック（モノ ADC + DAC・高圧 micbias）',
+        whatIs: '車載モノオーディオコーデック：ADC ダイナミックレンジ約 100~101dB（差動入力；datasheet タイトルは 101dB、Features 本文は 100dB と僅かに差異、datasheet 参照）+ DAC 110dB、プログラマブル高圧マイクバイアス（3V~10V、外部 HVDD 必要）対応、AEC-Q100 Grade 1（−40~+125°C）、特殊コーナーピン付 24-Pin QFN。',
+        func: 'ADC はライン/マイク差動入力（2VRMS フルスケール）と AC/DC 結合に対応；マイクバイアスは 3V~10V プログラマブルで外部高圧 HVDD 電源が必要（内蔵ブーストなし、同ファミリの TAC5312-Q1/TAC5412-Q1 と異なる）。DAC はモノ差動またはステレオシングルエンド出力、ライン出力またはヘッドホン負荷（16Ω を 62.5mW まで）に設定可、差動 2VRMS／擬似差動とシングルエンド 1VRMS。プログラマブルチャネルゲイン、デジタルボリューム、低ジッタ PLL、HPF/バイクアッド EQ、低遅延フィルタモードを統合；サンプルレート 8kHz~192kHz（ファミリ他型番の 4k~768kHz より狭い）；オーディオインタフェース TDM/I2S/LJ（16/20/24/32-bit）、制御は I2C のみ（SPI 非対応）；音声/超音波アクティビティ検出、バッテリ/熱フォールバック保護、信号歪みリミッタ。',
+        usedIn: 'スペース制約のある車載オーディオシステム：テレマティクス制御ユニット、車載ヘッドユニット、メータクラスタ、後席エンタテインメント。',
+        desc: '車載モノオーディオコーデック：ADC 約 100~101dB／DAC 110dB、8k~192kHz サンプリング、I2C のみ制御（SPI なし）、高圧マイクバイアス 3~10V（外部 HVDD 必要）、AVDD 3.3V のみ、24-Pin QFN 4×4mm 特殊コーナーピン＋EP；ピン配置はファミリ他の 32-WQFN 型番（TAC5112/5312/5412-Q1）と完全非互換。',
+        thermalPad: '露出パッド=VSS（Figure 4-1 に Thermal Pad (VSS) 表記、Table 4-1 に Thermal Pad 列）、基板接地プレーンに短絡必須；パッケージは 4 個のコーナーピン（A1~A4、すべて Ground）も持ち、この 24-Pin QFN with Exposed Thermal Pad and Corner Pins 特殊パッケージ独自のもの、標準 24-QFN でない、datasheet Figure 4-1 参照。',
+        specs: [
+          { k: 'ADC ダイナミックレンジ', v: '差動入力 100dB（Features 本文）／datasheet タイトルは 101dB、datasheet で確認；THD+N −87dB' },
+          { k: 'DAC ダイナミックレンジ', v: '差動ライン出力 110dB／差動ヘッドホン 109dB；THD+N −101dB' },
+          { k: 'サンプルレート', v: 'ADC/DAC とも 8kHz ~ 192kHz' },
+          { k: '入力/出力', v: '差動 2VRMS／シングルエンド 1VRMS；ヘッドホン 16Ω を 62.5mW まで' },
+          { k: 'マイクバイアス', v: 'プログラマブル 3V~10V、外部 HVDD 必要（内蔵ブーストなし）' },
+          { k: 'オーディオインタフェース', v: 'TDM / I2S / 左詰め（16/20/24/32-bit）、controller/target モード' },
+          { k: '制御インタフェース', v: 'I2C のみ（SPI 非対応）' },
+          { k: '電源', v: 'AVDD 3.3V のみ単一電源；IOVDD 1.2V/1.8V/3.3V；HVDD 最大 12V' },
+          { k: '車載', v: 'AEC-Q100 Grade 1（−40°C ~ +125°C）' },
+          { k: 'パッケージ', v: '24-Pin QFN (RGE) 4×4mm、コーナーピン 4 個＋EP=VSS、非標準レイアウト' }
+        ]
+      },
+      ko: {
+        subcategory: '차량용 오디오 코덱(모노 ADC + DAC·고압 micbias)',
+        whatIs: '차량용 모노 오디오 코덱: ADC 다이내믹 레인지 약 100~101dB(차동 입력; datasheet 제목은 101dB, Features 본문은 100dB로 약간 차이, datasheet 참조) + DAC 110dB, 프로그래머블 고압 마이크 바이어스(3V~10V, 외부 HVDD 필요) 지원, AEC-Q100 Grade 1(−40~+125°C), 특수 코너 핀 포함 24-Pin QFN.',
+        func: 'ADC는 라인/마이크 차동 입력(2VRMS 풀스케일)과 AC/DC 결합을 지원; 마이크 바이어스는 3V~10V 프로그래머블로 외부 고압 HVDD 전원 필요(내장 부스트 없음, 동일 패밀리 TAC5312-Q1/TAC5412-Q1과 다름). DAC는 모노 차동 또는 스테레오 싱글엔드 출력, 라인 출력이나 헤드폰 부하(16Ω를 62.5mW까지)로 설정 가능, 차동 2VRMS/의사 차동과 싱글엔드 1VRMS. 프로그래머블 채널 이득, 디지털 볼륨, 저지터 PLL, HPF/바이쿼드 EQ, 저지연 필터 모드를 통합; 샘플링 8kHz~192kHz(패밀리 다른 부품의 4k~768kHz보다 좁음); 오디오 인터페이스 TDM/I2S/LJ(16/20/24/32-bit), 제어는 I2C만(SPI 미지원); 음성/초음파 활동 감지, 배터리/열 폴백 보호, 신호 왜곡 리미터.',
+        usedIn: '공간 제약이 있는 차량 오디오 시스템: 텔레매틱스 제어 유닛, 차량 헤드유닛, 계기판(Cluster), 뒷좌석 엔터테인먼트.',
+        desc: '차량용 모노 오디오 코덱: ADC 약 100~101dB / DAC 110dB, 8k~192kHz 샘플링, I2C 전용 제어(SPI 없음), 고압 마이크 바이어스 3~10V(외부 HVDD 필요), AVDD 3.3V 전용, 24-Pin QFN 4×4mm 특수 코너 핀+EP; 핀 배치는 패밀리 다른 32-WQFN 부품(TAC5112/5312/5412-Q1)과 완전 비호환.',
+        thermalPad: '노출 패드=VSS(Figure 4-1에 Thermal Pad (VSS) 표기, Table 4-1에 Thermal Pad 행), 보드 접지 플레인에 단락 필수; 패키지는 4개의 코너 핀(A1~A4, 모두 Ground)도 있으며, 이 24-Pin QFN with Exposed Thermal Pad and Corner Pins 특수 패키지 고유의 것으로 표준 24-QFN이 아님, datasheet Figure 4-1 참조.',
+        specs: [
+          { k: 'ADC 다이내믹 레인지', v: '차동 입력 100dB(Features 본문) / datasheet 제목은 101dB, datasheet에서 확인; THD+N −87dB' },
+          { k: 'DAC 다이내믹 레인지', v: '차동 라인 출력 110dB / 차동 헤드폰 109dB; THD+N −101dB' },
+          { k: '샘플링', v: 'ADC/DAC 모두 8kHz ~ 192kHz' },
+          { k: '입력/출력', v: '차동 2VRMS / 싱글엔드 1VRMS; 헤드폰 16Ω를 62.5mW까지' },
+          { k: '마이크 바이어스', v: '프로그래머블 3V~10V, 외부 HVDD 필요(내장 부스트 없음)' },
+          { k: '오디오 인터페이스', v: 'TDM / I2S / 좌측 정렬(16/20/24/32-bit), controller/target 모드' },
+          { k: '제어 인터페이스', v: 'I2C만(SPI 미지원)' },
+          { k: '전원', v: 'AVDD 3.3V 전용 단일 전원; IOVDD 1.2V/1.8V/3.3V; HVDD 최대 12V' },
+          { k: '차량', v: 'AEC-Q100 Grade 1(−40°C ~ +125°C)' },
+          { k: '패키지', v: '24-Pin QFN (RGE) 4×4mm, 코너 핀 4개+EP=VSS, 비표준 레이아웃' }
+        ]
+      }
+    },
+    'TAC5312-Q1': {
+      en: {
+        subcategory: 'Automotive audio codec (stereo ADC + DAC, HV input/micbias + diagnostics)',
+        whatIs: 'Automotive stereo audio codec: 10VRMS high-voltage differential input, 104dB-dynamic-range ADC + 2VRMS differential output, 114dB-dynamic-range DAC; a built-in boost converter generates the programmable high-voltage mic bias (3V~10V) with mic-input fault diagnostics, AEC-Q100 Grade 1 (−40~+125°C).',
+        func: t53func.en, usedIn: t53used.en,
+        desc: 'Automotive stereo audio codec: 10VRMS HV differential input 104dB ADC + 114dB DAC, built-in boost HV mic bias (3~10V) + input fault diagnostics, 4k~768kHz sampling, TDM/I2S/LJ, I2C/SPI control, AEC-Q100 Grade 1, 32-WQFN 5×5mm; its pinout matches the TAC5412-Q1 pin by pin (only the ADC/DAC dynamic-range grade differs), incompatible with TAC5112-Q1/TAC5301-Q1.',
+        thermalPad: t53pad.en,
+        specs: t53specs('en', '104dB (line/mic differential input); THD+N −97dB; channel-sum mode SNR 107dB', '114dB (differential line output); 107dB (single-ended headphone); THD+N −96dB'),
+        dropIn: t53drop.en
+      },
+      ja: {
+        subcategory: '車載オーディオコーデック（ステレオ ADC + DAC・高圧入力/micbias＋診断）',
+        whatIs: '車載ステレオオーディオコーデック：10VRMS 高圧差動入力・104dB ダイナミックレンジ ADC + 2VRMS 差動出力・114dB ダイナミックレンジ DAC、内蔵ブーストコンバータで高圧プログラマブルマイクバイアス（3V~10V）を生成しマイク入力故障診断に対応、AEC-Q100 Grade 1（−40~+125°C）。',
+        func: t53func.ja, usedIn: t53used.ja,
+        desc: '車載ステレオオーディオコーデック：10VRMS 高圧差動入力 104dB ADC + 114dB DAC、内蔵ブースト高圧マイクバイアス（3~10V）＋入力故障診断、4k~768kHz サンプリング、TDM/I2S/LJ、I2C/SPI 制御、AEC-Q100 Grade 1、32-WQFN 5×5mm；pinout は TAC5412-Q1 と 1 ピンずつ完全一致（ADC/DAC ダイナミックレンジグレードのみ異なる）、TAC5112-Q1/TAC5301-Q1 とは非互換。',
+        thermalPad: t53pad.ja,
+        specs: t53specs('ja', '104dB（ライン/マイク差動入力）；THD+N −97dB；チャネル加算モード SNR 107dB', '114dB（差動ライン出力）；107dB（シングルエンドヘッドホン）；THD+N −96dB'),
+        dropIn: t53drop.ja
+      },
+      ko: {
+        subcategory: '차량용 오디오 코덱(스테레오 ADC + DAC·고압 입력/micbias+진단)',
+        whatIs: '차량용 스테레오 오디오 코덱: 10VRMS 고압 차동 입력·104dB 다이내믹 레인지 ADC + 2VRMS 차동 출력·114dB 다이내믹 레인지 DAC, 내장 부스트 컨버터로 고압 프로그래머블 마이크 바이어스(3V~10V)를 생성하고 마이크 입력 고장 진단 지원, AEC-Q100 Grade 1(−40~+125°C).',
+        func: t53func.ko, usedIn: t53used.ko,
+        desc: '차량용 스테레오 오디오 코덱: 10VRMS 고압 차동 입력 104dB ADC + 114dB DAC, 내장 부스트 고압 마이크 바이어스(3~10V)+입력 고장 진단, 4k~768kHz 샘플링, TDM/I2S/LJ, I2C/SPI 제어, AEC-Q100 Grade 1, 32-WQFN 5×5mm; pinout은 TAC5412-Q1과 핀 단위로 완전 일치(ADC/DAC 다이내믹 레인지 등급만 다름), TAC5112-Q1/TAC5301-Q1과는 비호환.',
+        thermalPad: t53pad.ko,
+        specs: t53specs('ko', '104dB(라인/마이크 차동 입력); THD+N −97dB; 채널 합산 모드 SNR 107dB', '114dB(차동 라인 출력); 107dB(싱글엔드 헤드폰); THD+N −96dB'),
+        dropIn: t53drop.ko
+      }
+    },
+    'TAC5412-Q1': {
+      en: {
+        subcategory: 'Automotive audio codec (stereo ADC + DAC, HV input/micbias + diagnostics, premium grade)',
+        whatIs: 'Automotive stereo audio codec (highest-performance grade of the family): 10VRMS high-voltage differential input, 112dB-dynamic-range ADC + 2VRMS differential output, 120dB-dynamic-range DAC; a built-in boost converter generates the programmable high-voltage mic bias (3V~10V) with mic-input fault diagnostics, AEC-Q100 Grade 1 (−40~+125°C).',
+        func: t53func.en, usedIn: t53used.en,
+        desc: 'Automotive stereo audio codec (family top grade): 10VRMS HV differential input 112dB ADC + 120dB DAC, built-in boost HV mic bias (3~10V) + input fault diagnostics, 4k~768kHz sampling, TDM/I2S/LJ, I2C/SPI control, AEC-Q100 Grade 1, 32-WQFN 5×5mm; its pinout matches the TAC5312-Q1 pin by pin (only the ADC/DAC dynamic-range grade differs, 5412 is higher), incompatible with TAC5112-Q1/TAC5301-Q1.',
+        thermalPad: t53pad.en,
+        specs: t53specs('en', '112dB (line/mic differential input); THD+N −99dB; channel-sum mode SNR 114dB', '120dB (differential line output); 111dB (single-ended headphone); THD+N −102dB'),
+        dropIn: t53drop.en
+      },
+      ja: {
+        subcategory: '車載オーディオコーデック（ステレオ ADC + DAC・高圧入力/micbias＋診断・上位グレード）',
+        whatIs: '車載ステレオオーディオコーデック（ファミリ最高性能グレード）：10VRMS 高圧差動入力・112dB ダイナミックレンジ ADC + 2VRMS 差動出力・120dB ダイナミックレンジ DAC、内蔵ブーストコンバータで高圧プログラマブルマイクバイアス（3V~10V）を生成しマイク入力故障診断に対応、AEC-Q100 Grade 1（−40~+125°C）。',
+        func: t53func.ja, usedIn: t53used.ja,
+        desc: '車載ステレオオーディオコーデック（ファミリ最高性能）：10VRMS 高圧差動入力 112dB ADC + 120dB DAC、内蔵ブースト高圧マイクバイアス（3~10V）＋入力故障診断、4k~768kHz サンプリング、TDM/I2S/LJ、I2C/SPI 制御、AEC-Q100 Grade 1、32-WQFN 5×5mm；pinout は TAC5312-Q1 と 1 ピンずつ完全一致（ADC/DAC ダイナミックレンジグレードのみ異なり 5412 が上位）、TAC5112-Q1/TAC5301-Q1 とは非互換。',
+        thermalPad: t53pad.ja,
+        specs: t53specs('ja', '112dB（ライン/マイク差動入力）；THD+N −99dB；チャネル加算モード SNR 114dB', '120dB（差動ライン出力）；111dB（シングルエンドヘッドホン）；THD+N −102dB'),
+        dropIn: t53drop.ja
+      },
+      ko: {
+        subcategory: '차량용 오디오 코덱(스테레오 ADC + DAC·고압 입력/micbias+진단·프리미엄 등급)',
+        whatIs: '차량용 스테레오 오디오 코덱(패밀리 최고 성능 등급): 10VRMS 고압 차동 입력·112dB 다이내믹 레인지 ADC + 2VRMS 차동 출력·120dB 다이내믹 레인지 DAC, 내장 부스트 컨버터로 고압 프로그래머블 마이크 바이어스(3V~10V)를 생성하고 마이크 입력 고장 진단 지원, AEC-Q100 Grade 1(−40~+125°C).',
+        func: t53func.ko, usedIn: t53used.ko,
+        desc: '차량용 스테레오 오디오 코덱(패밀리 최고 성능): 10VRMS 고압 차동 입력 112dB ADC + 120dB DAC, 내장 부스트 고압 마이크 바이어스(3~10V)+입력 고장 진단, 4k~768kHz 샘플링, TDM/I2S/LJ, I2C/SPI 제어, AEC-Q100 Grade 1, 32-WQFN 5×5mm; pinout은 TAC5312-Q1과 핀 단위로 완전 일치(ADC/DAC 다이내믹 레인지 등급만 다르며 5412가 상위), TAC5112-Q1/TAC5301-Q1과는 비호환.',
+        thermalPad: t53pad.ko,
+        specs: t53specs('ko', '112dB(라인/마이크 차동 입력); THD+N −99dB; 채널 합산 모드 SNR 114dB', '120dB(차동 라인 출력); 111dB(싱글엔드 헤드폰); THD+N −102dB'),
+        dropIn: t53drop.ko
+      }
+    },
+    'TAS2120': {
+      en: {
+        subcategory: 'Mono Class-D speaker amplifier (integrated Class-H boost)',
+        whatIs: '8.2W mono digital-input Class-D audio amplifier with a built-in 14.75V Class-H boost (5.1A max current limit), efficiency-optimized for battery-powered systems, up to 91% efficiency (@1W, 8Ω load).',
+        func: 'I2S/TDM serial audio interface (8 channels), HW-pin or I2C control; MCLK-free operation with automatic clock/sample-rate detection 16~192kHz; programmable battery current limit (39mA steps), boost sharing between two devices, external Class-H boost control algorithm; built-in Y-bridge for efficiency; precision supply-voltage monitoring and temperature sensing; over-temperature and over-current protection.',
+        usedIn: 'Voice-assistant smart speakers, Bluetooth/wireless speakers, building automation, tablets/wearables, laptops/desktops and other battery-powered audio systems.',
+        desc: '8.2W mono Class-D amplifier with integrated 14.75V Class-H boost, 114.4dB dynamic range, I2S/TDM 8ch, HW/I2C control, 26-QFN 0.4mm pitch 4×3.5mm.',
+        thermalPad: 'see datasheet (the Pin Functions table under §4 lists only 26 numbered pins with no separate EP/Thermal Pad row; §5.4 Thermal Information marks the package HR-QFN 26 PINS but the table has no corresponding pin number as evidence).',
+        specs: [
+          { k: 'Output power', v: '8.2W (rms) @1% THD+N (RL=4Ω+33µH, VBAT=4.4V)' },
+          { k: 'Class-H boost', v: '14.75V boost, 5.1A max current limit; 33mV adjustable steps' },
+          { k: 'Efficiency', v: 'up to 91% (@1W, 8Ω load); integrated 1.8V VDD Y-bridge' },
+          { k: 'Standby power', v: '14.7mW (noise gate off) / 5.3mW (noise gate on)' },
+          { k: 'Audio performance', v: '114.4dB dynamic range; THD+N −90dB; idle-channel noise 4.2µV A-wt' },
+          { k: 'Clocking', v: 'MCLK-free; automatic clock/sample-rate detection 16~192kHz' },
+          { k: 'Audio interface', v: 'I2S/TDM, up to 8 channels' },
+          { k: 'Control interface', v: 'HW-pin control or I2C' },
+          { k: 'Supply', v: 'VBAT 2.5~5.5V; VBAT_SNS 2.5~10.0V; VDD 1.65~1.95V; IOVDD 1.8V or 3.3V' },
+          { k: 'Package', v: '26-pin QFN, 0.4mm pitch, 4mm×3.5mm' }
+        ]
+      },
+      ja: {
+        subcategory: 'モノ Class-D スピーカアンプ（Class-H ブースト統合）',
+        whatIs: '8.2W モノデジタル入力 Class-D オーディオアンプ、14.75V Class-H ブースト内蔵（最大電流制限 5.1A）、バッテリ駆動システム向けに効率最適化、最高 91% 効率（@1W、8Ω 負荷）。',
+        func: 'I2S/TDM シリアルオーディオインタフェース（8 チャネル）、HW ピンまたは I2C 制御；MCLK フリー動作、自動クロック/サンプルレート検出 16~192kHz；プログラマブルバッテリ電流制限（39mA ステップ）、2 素子間ブースト共有、外部 Class-H ブースト制御アルゴリズム；Y ブリッジ内蔵で効率向上；高精度電源電圧監視と温度検出；過熱・過電流保護。',
+        usedIn: '音声アシスタント搭載スマートスピーカ、Bluetooth/ワイヤレススピーカ、ビル自動化システム、タブレット/ウェアラブル、ノート/デスクトップ PC 等のバッテリ駆動オーディオシステム。',
+        desc: '8.2W モノ Class-D アンプ、14.75V Class-H ブースト統合、114.4dB ダイナミックレンジ、I2S/TDM 8ch、HW/I2C 制御、26-QFN 0.4mm pitch 4×3.5mm。',
+        thermalPad: 'datasheet 参照（§4 Pin Functions 表は 26 個の番号付きピンのみで独立 EP/Thermal Pad 列なし；§5.4 Thermal Information はパッケージを HR-QFN 26 PINS と表記するが表に対応ピン番号の裏付けなし）。',
+        specs: [
+          { k: '出力電力', v: '8.2W（rms）@1% THD+N（RL=4Ω+33µH、VBAT=4.4V）' },
+          { k: 'Class-H ブースト', v: '14.75V ブースト、最大電流制限 5.1A；33mV ステップ可変' },
+          { k: '効率', v: '最高 91%（@1W、8Ω 負荷）；1.8V VDD Y ブリッジ統合' },
+          { k: '待機電力', v: '14.7mW（noise gate off）／5.3mW（noise gate on）' },
+          { k: 'オーディオ性能', v: '114.4dB ダイナミックレンジ；THD+N −90dB；アイドルチャネル雑音 4.2µV A-wt' },
+          { k: 'クロック', v: 'MCLK フリー動作；自動クロック/サンプルレート検出 16~192kHz' },
+          { k: 'オーディオインタフェース', v: 'I2S/TDM、最大 8 チャネル' },
+          { k: '制御インタフェース', v: 'HW ピン制御または I2C' },
+          { k: '電源', v: 'VBAT 2.5~5.5V；VBAT_SNS 2.5~10.0V；VDD 1.65~1.95V；IOVDD 1.8V または 3.3V' },
+          { k: 'パッケージ', v: '26-pin QFN、0.4mm pitch、4mm×3.5mm' }
+        ]
+      },
+      ko: {
+        subcategory: '모노 Class-D 스피커 앰프(Class-H 부스트 통합)',
+        whatIs: '8.2W 모노 디지털 입력 Class-D 오디오 앰프, 14.75V Class-H 부스트 내장(최대 전류 제한 5.1A), 배터리 구동 시스템용 효율 최적화, 최고 91% 효율(@1W, 8Ω 부하).',
+        func: 'I2S/TDM 시리얼 오디오 인터페이스(8채널), HW 핀 또는 I2C 제어; MCLK 프리 동작, 자동 클록/샘플레이트 감지 16~192kHz; 프로그래머블 배터리 전류 제한(39mA 스텝), 2소자 간 부스트 공유, 외부 Class-H 부스트 제어 알고리즘; Y 브리지 내장으로 효율 향상; 고정밀 전원 전압 감시와 온도 감지; 과열·과전류 보호.',
+        usedIn: '음성 비서 스마트 스피커, 블루투스/무선 스피커, 빌딩 자동화 시스템, 태블릿/웨어러블, 노트북/데스크톱 등 배터리 구동 오디오 시스템.',
+        desc: '8.2W 모노 Class-D 앰프, 14.75V Class-H 부스트 통합, 114.4dB 다이내믹 레인지, I2S/TDM 8ch, HW/I2C 제어, 26-QFN 0.4mm pitch 4×3.5mm.',
+        thermalPad: 'datasheet 참조(§4 Pin Functions 표는 26개 번호 핀만 있고 독립 EP/Thermal Pad 행 없음; §5.4 Thermal Information은 패키지를 HR-QFN 26 PINS로 표기하나 표에 대응 핀 번호 근거 없음).',
+        specs: [
+          { k: '출력 전력', v: '8.2W(rms) @1% THD+N(RL=4Ω+33µH, VBAT=4.4V)' },
+          { k: 'Class-H 부스트', v: '14.75V 부스트, 최대 전류 제한 5.1A; 33mV 스텝 가변' },
+          { k: '효율', v: '최고 91%(@1W, 8Ω 부하); 1.8V VDD Y 브리지 통합' },
+          { k: '대기 전력', v: '14.7mW(noise gate off) / 5.3mW(noise gate on)' },
+          { k: '오디오 성능', v: '114.4dB 다이내믹 레인지; THD+N −90dB; 아이들 채널 잡음 4.2µV A-wt' },
+          { k: '클록', v: 'MCLK 프리 동작; 자동 클록/샘플레이트 감지 16~192kHz' },
+          { k: '오디오 인터페이스', v: 'I2S/TDM, 최대 8채널' },
+          { k: '제어 인터페이스', v: 'HW 핀 제어 또는 I2C' },
+          { k: '전원', v: 'VBAT 2.5~5.5V; VBAT_SNS 2.5~10.0V; VDD 1.65~1.95V; IOVDD 1.8V 또는 3.3V' },
+          { k: '패키지', v: '26-pin QFN, 0.4mm pitch, 4mm×3.5mm' }
+        ]
+      }
+    },
+    'TAS5830': {
+      en: {
+        subcategory: 'Stereo closed-loop Class-D speaker amplifier (integrated audio processor + Class-H tracking)',
+        whatIs: '65W stereo digital-input high-efficiency closed-loop Class-D amplifier, integrating an audio DSP with up to 192kHz audio support and a Class-H audio-envelope-tracking algorithm that outputs a PWM signal via GPIO to control an external DC-DC converter for system efficiency.',
+        func: 'Supports multiple output configurations: BTL 2×80W (4Ω,26V,10%THD+N) / 2×65W (4Ω,26V,1%) / 2×74W (6Ω,30V,10%) / 2×63W (6Ω,30V,1%); PBTL mono 1×151W (3Ω,30V,10%) / 1×131W (3Ω,30V,1%). Audio I/O: I2S/LJ/RJ/TDM (4~16ch) input, 32/44.1/48/88.2/96/192kHz sample rates, SDOUT for monitoring/sub-channel/echo cancellation, 3-wire digital audio interface (MCLK-free). DSP: 3-band advanced DRC + 2EQ + AGL + 2EQ, 15 BQs/channel, level meter, mixer/volume/dynamic EQ/output crossbar, rattle suppression, frequency limiter. Protection: OCE, cycle-by-cycle current limit (4 selectable levels), OTW/OTE, UVLO/OVLO, PVDD droop detection. Control: I2C (Fast and Fast Plus) or hardware-pin mode.',
+        usedIn: 'Battery-powered speakers, Bluetooth wireless speakers, soundbars and subwoofers, smart speakers and other mid-to-high-power stereo audio systems.',
+        desc: '65W stereo closed-loop Class-D amplifier, Class-H tracking algorithm, SNR≥110dB, I2S/LJ/RJ/TDM 192kHz, I2C(Fast+)/HW-mode control, 32-TSSOP (DAD) 11×6.2mm PowerPAD.',
+        thermalPad: 'PowerPAD™ (last row of Table 4-1: PowerPAD™ / P / Ground, connect to grounded heat sink for best system performance), must connect to a grounded heat sink.',
+        specs: [
+          { k: 'Output configurations', v: 'BTL 2×80W(4Ω,26V,10%THD+N) / 2×65W(4Ω,26V,1%) / 2×74W(6Ω,30V,10%) / 2×63W(6Ω,30V,1%); PBTL 1×151W(3Ω,30V,10%) / 1×131W(3Ω,30V,1%)' },
+          { k: 'Efficiency', v: '>90% power efficiency, 70mΩ RDSon' },
+          { k: 'Audio performance', v: 'THD+N ≤0.03% (@1W,1kHz,PVDD=12V); SNR ≥110dB (A-weighted); ICN ≤40µVrms' },
+          { k: 'Audio interface', v: 'I2S/LJ/RJ, 4~16 channel TDM; 32/44.1/48/88.2/96/192kHz; 3-wire MCLK-free' },
+          { k: 'DSP', v: '3-Band DRC + 2EQ + AGL + 2EQ; 15 BQ/channel; level meter; 96/192kHz processing' },
+          { k: 'Protection', v: 'OCE; cycle-by-cycle current limit 4 levels; OTW/OTE; UVLO/OVLO; PVDD droop detection' },
+          { k: 'Control interface', v: 'I2C (Fast and Fast Plus) or hardware-pin mode' },
+          { k: 'Supply', v: 'PVDD 4.5V~30V; DVDD and IO 1.8V or 3.3V' },
+          { k: 'Package', v: '32-TSSOP (DAD) 11.00mm×6.20mm, PowerPAD thermal' }
+        ]
+      },
+      ja: {
+        subcategory: 'ステレオ閉ループ Class-D スピーカアンプ（オーディオプロセッサ＋Class-H トラッキング統合）',
+        whatIs: '65W ステレオデジタル入力高効率閉ループ Class-D アンプ、最高 192kHz オーディオ対応のオーディオ DSP を統合、Class-H オーディオ包絡トラッキングアルゴリズムで GPIO から PWM 信号を出力し外部 DC-DC コンバータを制御しシステム効率を向上。',
+        func: '多様な出力構成に対応：BTL 2×80W(4Ω,26V,10%THD+N)／2×65W(4Ω,26V,1%)／2×74W(6Ω,30V,10%)／2×63W(6Ω,30V,1%)；PBTL モノ 1×151W(3Ω,30V,10%)／1×131W(3Ω,30V,1%)。オーディオ I/O：I2S/LJ/RJ/TDM（4~16ch）入力、32/44.1/48/88.2/96/192kHz サンプルレート、SDOUT はモニタ/サブチャネル/エコーキャンセル用、3 線デジタルオーディオインタフェース（MCLK フリー）。DSP：3 バンド先進 DRC + 2EQ + AGL + 2EQ、15 BQ/チャネル、レベルメータ、Mixer/ボリューム/ダイナミック EQ/出力クロスバー、Rattle suppression、周波数リミッタ。保護：OCE、サイクル毎電流制限（4 段選択）、OTW/OTE、UVLO/OVLO、PVDD 電圧ドループ検出。制御：I2C（Fast と Fast Plus 対応）またはハードウェアピンモード。',
+        usedIn: 'バッテリ駆動スピーカ、Bluetooth ワイヤレススピーカ、サウンドバーとサブウーファ、スマートスピーカ等の中大電力ステレオオーディオシステム。',
+        desc: '65W ステレオ閉ループ Class-D アンプ、Class-H トラッキングアルゴリズム、SNR≥110dB、I2S/LJ/RJ/TDM 192kHz、I2C(Fast+)/HW モード制御、32-TSSOP(DAD) 11×6.2mm PowerPAD。',
+        thermalPad: 'PowerPAD™（Table 4-1 末行：PowerPAD™／P／Ground, connect to grounded heat sink for best system performance）、接地ヒートシンクに接続必須。',
+        specs: [
+          { k: '出力構成', v: 'BTL 2×80W(4Ω,26V,10%THD+N)／2×65W(4Ω,26V,1%)／2×74W(6Ω,30V,10%)／2×63W(6Ω,30V,1%)；PBTL 1×151W(3Ω,30V,10%)／1×131W(3Ω,30V,1%)' },
+          { k: '効率', v: '>90% power efficiency、70mΩ RDSon' },
+          { k: 'オーディオ性能', v: 'THD+N ≤0.03%（@1W,1kHz,PVDD=12V）；SNR ≥110dB（A-weighted）；ICN ≤40µVrms' },
+          { k: 'オーディオインタフェース', v: 'I2S/LJ/RJ、4~16 チャネル TDM；32/44.1/48/88.2/96/192kHz；3 線 MCLK フリー' },
+          { k: 'DSP', v: '3-Band DRC + 2EQ + AGL + 2EQ；15 BQ/channel；レベルメータ；96/192kHz 処理' },
+          { k: '保護', v: 'OCE；サイクル毎電流制限 4 段選択；OTW/OTE；UVLO/OVLO；PVDD 電圧ドループ検出' },
+          { k: '制御インタフェース', v: 'I2C（Fast と Fast Plus）またはハードウェアピンモード' },
+          { k: '電源', v: 'PVDD 4.5V~30V；DVDD と IO 1.8V または 3.3V' },
+          { k: 'パッケージ', v: '32-TSSOP (DAD) 11.00mm×6.20mm、PowerPAD 放熱' }
+        ]
+      },
+      ko: {
+        subcategory: '스테레오 폐루프 Class-D 스피커 앰프(오디오 프로세서+Class-H 추적 통합)',
+        whatIs: '65W 스테레오 디지털 입력 고효율 폐루프 Class-D 앰프, 최고 192kHz 오디오 지원 오디오 DSP를 통합, Class-H 오디오 포락선 추적 알고리즘으로 GPIO에서 PWM 신호를 출력해 외부 DC-DC 컨버터를 제어하고 시스템 효율 향상.',
+        func: '다양한 출력 구성 지원: BTL 2×80W(4Ω,26V,10%THD+N) / 2×65W(4Ω,26V,1%) / 2×74W(6Ω,30V,10%) / 2×63W(6Ω,30V,1%); PBTL 모노 1×151W(3Ω,30V,10%) / 1×131W(3Ω,30V,1%). 오디오 I/O: I2S/LJ/RJ/TDM(4~16ch) 입력, 32/44.1/48/88.2/96/192kHz 샘플레이트, SDOUT은 모니터/서브채널/에코 제거용, 3선 디지털 오디오 인터페이스(MCLK 프리). DSP: 3밴드 고급 DRC + 2EQ + AGL + 2EQ, 15 BQ/채널, 레벨 미터, 믹서/볼륨/다이내믹 EQ/출력 크로스바, Rattle suppression, 주파수 리미터. 보호: OCE, 사이클별 전류 제한(4단 선택), OTW/OTE, UVLO/OVLO, PVDD 전압 드룹 감지. 제어: I2C(Fast와 Fast Plus) 또는 하드웨어 핀 모드.',
+        usedIn: '배터리 구동 스피커, 블루투스 무선 스피커, 사운드바와 서브우퍼, 스마트 스피커 등 중대 전력 스테레오 오디오 시스템.',
+        desc: '65W 스테레오 폐루프 Class-D 앰프, Class-H 추적 알고리즘, SNR≥110dB, I2S/LJ/RJ/TDM 192kHz, I2C(Fast+)/HW 모드 제어, 32-TSSOP(DAD) 11×6.2mm PowerPAD.',
+        thermalPad: 'PowerPAD™(Table 4-1 마지막 행: PowerPAD™ / P / Ground, connect to grounded heat sink for best system performance), 접지 히트싱크에 연결 필수.',
+        specs: [
+          { k: '출력 구성', v: 'BTL 2×80W(4Ω,26V,10%THD+N) / 2×65W(4Ω,26V,1%) / 2×74W(6Ω,30V,10%) / 2×63W(6Ω,30V,1%); PBTL 1×151W(3Ω,30V,10%) / 1×131W(3Ω,30V,1%)' },
+          { k: '효율', v: '>90% power efficiency, 70mΩ RDSon' },
+          { k: '오디오 성능', v: 'THD+N ≤0.03%(@1W,1kHz,PVDD=12V); SNR ≥110dB(A-weighted); ICN ≤40µVrms' },
+          { k: '오디오 인터페이스', v: 'I2S/LJ/RJ, 4~16채널 TDM; 32/44.1/48/88.2/96/192kHz; 3선 MCLK 프리' },
+          { k: 'DSP', v: '3-Band DRC + 2EQ + AGL + 2EQ; 15 BQ/채널; 레벨 미터; 96/192kHz 처리' },
+          { k: '보호', v: 'OCE; 사이클별 전류 제한 4단 선택; OTW/OTE; UVLO/OVLO; PVDD 전압 드룹 감지' },
+          { k: '제어 인터페이스', v: 'I2C(Fast와 Fast Plus) 또는 하드웨어 핀 모드' },
+          { k: '전원', v: 'PVDD 4.5V~30V; DVDD와 IO 1.8V 또는 3.3V' },
+          { k: '패키지', v: '32-TSSOP (DAD) 11.00mm×6.20mm, PowerPAD 방열' }
+        ]
+      }
+    },
+    'LMK3H2108': {
+      en: {
+        subcategory: 'PCIe BAW universal clock generator (8 outputs, built-in BAW, no external XTAL)',
+        whatIs: 'Low-jitter universal clock generator with an integrated BAW resonator — no external XTAL/XO needed; up to 8 differential outputs (or up to 16 LVCMOS), 3 clock inputs all bypassable to any output group, supporting PCIe Gen1~Gen7.',
+        func: 'Two FODs (Fractional Output Dividers) give frequency flexibility, low power and low jitter; output formats selectable among 1.2/1.8/2.5/3.3V LVCMOS, DC/AC-coupled LVDS, adjustable-swing LP-HCSL (derivable to LVPECL/CML, etc.); programmable SSC — down-spread −0.05%~−3%, center-spread ±0.025%~±1.5%, or 4 preset down-spread values (−0.1/−0.25/−0.3/−0.5%); GPI/GPIO pins configurable as per-output OE, group OE, I2C address select, OTP page select, PWRGD/PWRDN#, status output, etc.; OTP one-time-programmable non-volatile memory with factory pre-programming; 5ms max startup; fail-safe input pins may be pulled high while the device is unpowered.',
+        usedIn: 'PCIe Gen1~7 clock generation for HPC server motherboards, NIC/SmartNICs, hardware accelerator cards, plus general-purpose clock generation and XO/XTAL replacement.',
+        desc: '8-output PCIe Gen1~7 BAW clock generator, no external XTAL, Gen5 CC+SSC jitter 61fs max, 3 inputs bypassable to any output, 40-QFN 5×5mm.',
+        thermalPad: 'DAP (Die Attach Pad, Table 4-2 pin 41: DAP / G / Connect to ground), must be grounded.',
+        specs: [
+          { k: 'Topology', v: '3 inputs (bypassable to any output) → up to 8 differential outputs or 16 LVCMOS' },
+          { k: 'Output frequency', v: 'up to 400MHz' },
+          { k: 'Output formats', v: '1.2/1.8/2.5/3.3V LVCMOS; DC/AC-coupled LVDS; adjustable-swing LP-HCSL (derivable to LVPECL/CML)' },
+          { k: 'PCIe support', v: 'Gen 1 ~ Gen 7' },
+          { k: 'Jitter (CC+SSC)', v: 'PCIe Gen5 61fs max / Gen6 36.4fs max / Gen7 25.5fs max' },
+          { k: 'SSC', v: 'programmable down-spread −0.05%~−3%, center-spread ±0.025%~±1.5%, or preset −0.1/−0.25/−0.3/−0.5% down-spread' },
+          { k: 'Startup time', v: '5ms max' },
+          { k: 'Supply', v: 'each VDD/VDDO pin independently 1.8V / 2.5V / 3.3V' },
+          { k: 'Temperature', v: '−40°C ~ 105°C' },
+          { k: 'Package', v: '40-pin QFN (RKP0040A) 5.0mm×5.0mm (LMK3H2108; the 4-output LMK3H2104 is 24-QFN 4×4mm, different pinout)' }
+        ]
+      },
+      ja: {
+        subcategory: 'PCIe BAW 汎用クロックジェネレータ（8 出力・BAW 内蔵・外部 XTAL 不要）',
+        whatIs: 'BAW 共振器統合の低ジッタ汎用クロックジェネレータで外部 XTAL/XO 不要；最大 8 系統差動出力（または最大 16 系統 LVCMOS）、3 系統クロック入力はいずれも任意の出力グループへバイパス可、PCIe Gen1~Gen7 対応。',
+        func: '2 組の FOD（Fractional Output Divider）が周波数柔軟性・低消費電力・低ジッタを提供；出力形式は 1.2/1.8/2.5/3.3V LVCMOS、DC/AC 結合 LVDS、可変振幅 LP-HCSL（LVPECL/CML 等に派生可）から選択；プログラマブル SSC——ダウンスプレッド −0.05%~−3%、センタースプレッド ±0.025%~±1.5%、または 4 組プリセットダウンスプレッド値（−0.1/−0.25/−0.3/−0.5%）；GPI/GPIO ピンは個別 OE、グループ OE、I2C アドレス選択、OTP ページ選択、PWRGD/PWRDN#、状態出力等に設定可；OTP 一次性プログラマブル不揮発メモリで工場プリプログラム可；起動時間 5ms max；fail-safe 入力ピンは素子非通電時もプルアップ可。',
+        usedIn: 'HPC サーバマザーボード、NIC/SmartNIC、ハードウェアアクセラレータカード等の PCIe Gen1~7 クロック生成、汎用クロック生成と XO/XTAL 置換。',
+        desc: '8 出力 PCIe Gen1~7 BAW クロックジェネレータ、外部 XTAL 不要、Gen5 CC+SSC ジッタ 61fs max、3 入力を任意出力へバイパス可、40-QFN 5×5mm。',
+        thermalPad: 'DAP（Die Attach Pad、Table 4-2 pin 41：DAP／G／Connect to ground）、接地必須。',
+        specs: [
+          { k: 'トポロジ', v: '3 系統入力（任意出力へバイパス可）→最大 8 系統差動出力または 16 系統 LVCMOS' },
+          { k: '出力周波数', v: '最高 400MHz' },
+          { k: '出力形式', v: '1.2/1.8/2.5/3.3V LVCMOS；DC/AC 結合 LVDS；可変振幅 LP-HCSL（LVPECL/CML 派生可）' },
+          { k: 'PCIe 対応', v: 'Gen 1 ~ Gen 7' },
+          { k: 'ジッタ（CC+SSC）', v: 'PCIe Gen5 61fs max／Gen6 36.4fs max／Gen7 25.5fs max' },
+          { k: 'SSC', v: 'プログラマブルダウンスプレッド −0.05%~−3%、センタースプレッド ±0.025%~±1.5%、またはプリセット −0.1/−0.25/−0.3/−0.5%' },
+          { k: '起動時間', v: '5ms max' },
+          { k: '電源', v: '各 VDD/VDDO ピンを独立に 1.8V／2.5V／3.3V 設定可' },
+          { k: '温度', v: '−40°C ~ 105°C' },
+          { k: 'パッケージ', v: '40-pin QFN (RKP0040A) 5.0mm×5.0mm（LMK3H2108；4 出力版 LMK3H2104 は 24-QFN 4×4mm、非同一ピン配置）' }
+        ]
+      },
+      ko: {
+        subcategory: 'PCIe BAW 범용 클록 발생기(8출력·BAW 내장·외부 XTAL 불필요)',
+        whatIs: 'BAW 공진기 통합 저지터 범용 클록 발생기로 외부 XTAL/XO 불필요; 최대 8계통 차동 출력(또는 최대 16계통 LVCMOS), 3계통 클록 입력 모두 임의 출력 그룹으로 바이패스 가능, PCIe Gen1~Gen7 지원.',
+        func: '2조의 FOD(Fractional Output Divider)가 주파수 유연성·저전력·저지터 제공; 출력 형식은 1.2/1.8/2.5/3.3V LVCMOS, DC/AC 결합 LVDS, 가변 진폭 LP-HCSL(LVPECL/CML 등 파생 가능)에서 선택; 프로그래머블 SSC - 다운 스프레드 −0.05%~−3%, 센터 스프레드 ±0.025%~±1.5%, 또는 4조 프리셋 다운 스프레드 값(−0.1/−0.25/−0.3/−0.5%); GPI/GPIO 핀은 개별 OE, 그룹 OE, I2C 주소 선택, OTP 페이지 선택, PWRGD/PWRDN#, 상태 출력 등으로 설정 가능; OTP 일회성 프로그래머블 비휘발성 메모리로 공장 사전 프로그램 가능; 시동 시간 5ms max; fail-safe 입력 핀은 소자 비통전 시에도 풀업 가능.',
+        usedIn: 'HPC 서버 메인보드, NIC/SmartNIC, 하드웨어 가속 카드 등의 PCIe Gen1~7 클록 생성, 범용 클록 생성과 XO/XTAL 대체.',
+        desc: '8출력 PCIe Gen1~7 BAW 클록 발생기, 외부 XTAL 불필요, Gen5 CC+SSC 지터 61fs max, 3입력을 임의 출력으로 바이패스 가능, 40-QFN 5×5mm.',
+        thermalPad: 'DAP(Die Attach Pad, Table 4-2 pin 41: DAP / G / Connect to ground), 접지 필수.',
+        specs: [
+          { k: '토폴로지', v: '3계통 입력(임의 출력으로 바이패스 가능) → 최대 8계통 차동 출력 또는 16계통 LVCMOS' },
+          { k: '출력 주파수', v: '최고 400MHz' },
+          { k: '출력 형식', v: '1.2/1.8/2.5/3.3V LVCMOS; DC/AC 결합 LVDS; 가변 진폭 LP-HCSL(LVPECL/CML 파생 가능)' },
+          { k: 'PCIe 지원', v: 'Gen 1 ~ Gen 7' },
+          { k: '지터(CC+SSC)', v: 'PCIe Gen5 61fs max / Gen6 36.4fs max / Gen7 25.5fs max' },
+          { k: 'SSC', v: '프로그래머블 다운 스프레드 −0.05%~−3%, 센터 스프레드 ±0.025%~±1.5%, 또는 프리셋 −0.1/−0.25/−0.3/−0.5%' },
+          { k: '시동 시간', v: '5ms max' },
+          { k: '전원', v: '각 VDD/VDDO 핀을 독립적으로 1.8V / 2.5V / 3.3V 설정 가능' },
+          { k: '온도', v: '−40°C ~ 105°C' },
+          { k: '패키지', v: '40-pin QFN (RKP0040A) 5.0mm×5.0mm(LMK3H2108; 4출력판 LMK3H2104는 24-QFN 4×4mm, 다른 핀 배치)' }
+        ]
+      }
+    },
+    'LMKDB1208': {
+      en: {
+        subcategory: 'PCIe LP-HCSL clock multiplexer (2 inputs, 8 outputs)',
+        whatIs: 'Ultra-low-additive-jitter LP-HCSL clock multiplexer: switches 2 differential inputs onto 8 LP-HCSL differential outputs, supporting PCIe Gen1~Gen7 (both CC and IR architectures), DB2000QL-compliant, for dual-clock-source redundancy switching.',
+        func: 'Per-output {OE}# enables (with internal pull-ups); an SBI (Side-Band Interface) can rapidly switch 4 output-enable pins ({OE3}/SBI_CLK, {OE4}/SBI_IN, {OE6}/{SHFT_LD}, {OE7}/SBI_OUT — function set by SBI_EN); an SMBus interface (SADR0/SADR1 three-level addressing) provides register control; {LOS} open-drain output indicates input-clock loss; output impedance 85Ω/100Ω selectable via ZOUT_SEL; flexible power-up sequencing, automatic output disable, fail-safe inputs.',
+        usedIn: 'Dual-source switching and fanout of PCIe clock trees in high-performance computing, server motherboards, NIC/SmartNICs and hardware accelerator cards.',
+        desc: 'PCIe Gen1~7 LP-HCSL 2:8 clock multiplexer, additive jitter 5fs (Gen5) / 2.1fs (Gen7) max, SBI + SMBus control, 1.8V/3.3V supply, 48-VQFN 6×6mm.',
+        thermalPad: 'Thermal Pad (GND) (last row of Table 5-1: Thermal Pad (GND) / Pad / G / Device Ground, Thermal pad.), must connect to the board ground plane.',
+        specs: [
+          { k: 'Topology', v: '2 differential inputs → 8 LP-HCSL differential outputs (per Table 4-1 Device Comparison: LMKDB1208 = Mux, 2 input, 8 output, 85Ω or 100Ω selectable)' },
+          { k: 'PCIe support', v: 'Gen 1 ~ Gen 7 (CC/IR architectures, with/without SSC input); DB2000QL-compliant' },
+          { k: 'Additive jitter', v: '31fs max (12kHz-20MHz RMS @156.25MHz); PCIe Gen4 13fs / Gen5 5fs / Gen6 3fs / Gen7 2.1fs max' },
+          { k: 'Control', v: 'per-output {OE}# + SBI fast switching + SMBus (three-level address ×2)' },
+          { k: 'Output impedance', v: '85Ω or 100Ω (ZOUT_SEL)' },
+          { k: 'Supply', v: '1.8V / 3.3V ±10%' },
+          { k: 'Temperature', v: '−40°C ~ 105°C' },
+          { k: 'Package', v: '48-pin VQFN (RSL) 6mm×6mm' }
+        ]
+      },
+      ja: {
+        subcategory: 'PCIe LP-HCSL クロックマルチプレクサ（2 入力 8 出力）',
+        whatIs: '極低付加ジッタ LP-HCSL クロックマルチプレクサ：2 系統差動入力を 8 系統 LP-HCSL 差動出力へ切替、PCIe Gen1~Gen7（CC と IR アーキテクチャとも）対応、DB2000QL 規格準拠、デュアルクロック源の冗長切替に。',
+        func: '系統毎 {OE}# イネーブル（内蔵プルアップ）；SBI（Side-Band Interface）で 4 組の出力イネーブルピンを高速切替（{OE3}/SBI_CLK、{OE4}/SBI_IN、{OE6}/{SHFT_LD}、{OE7}/SBI_OUT、機能は SBI_EN が決定）；SMBus インタフェース（SADR0/SADR1 三値アドレス）でレジスタ制御；{LOS} オープンドレイン出力で入力クロック喪失を指示；出力インピーダンス 85Ω/100Ω を ZOUT_SEL で選択；柔軟な電源投入順序、自動出力停止、fail-safe 入力。',
+        usedIn: '高性能計算、サーバマザーボード、NIC/SmartNIC、ハードウェアアクセラレータカード等の PCIe クロックツリーのデュアルソース切替とファンアウト。',
+        desc: 'PCIe Gen1~7 LP-HCSL 2:8 クロックマルチプレクサ、付加ジッタ 5fs（Gen5）/2.1fs（Gen7）max、SBI+SMBus 制御、1.8V/3.3V 供給、48-VQFN 6×6mm。',
+        thermalPad: 'Thermal Pad (GND)（Table 5-1 末行：Thermal Pad (GND)／Pad／G／Device Ground, Thermal pad.）、基板接地プレーンに接続必須。',
+        specs: [
+          { k: 'トポロジ', v: '2 系統差動入力 → 8 系統 LP-HCSL 差動出力（Table 4-1 Device Comparison：LMKDB1208＝Mux、2 input、8 output、85Ω または 100Ω 選択可）' },
+          { k: 'PCIe 対応', v: 'Gen 1 ~ Gen 7（CC/IR アーキテクチャ、SSC 入力有無とも可）；DB2000QL 準拠' },
+          { k: '付加ジッタ', v: '31fs max（12kHz-20MHz RMS @156.25MHz）；PCIe Gen4 13fs／Gen5 5fs／Gen6 3fs／Gen7 2.1fs max' },
+          { k: '制御', v: '系統毎 {OE}# ＋ SBI 高速切替 ＋ SMBus（三値アドレス×2）' },
+          { k: '出力インピーダンス', v: '85Ω または 100Ω（ZOUT_SEL 選択）' },
+          { k: '電源', v: '1.8V／3.3V ±10%' },
+          { k: '温度', v: '−40°C ~ 105°C' },
+          { k: 'パッケージ', v: '48-pin VQFN (RSL) 6mm×6mm' }
+        ]
+      },
+      ko: {
+        subcategory: 'PCIe LP-HCSL 클록 멀티플렉서(2입력 8출력)',
+        whatIs: '극저 부가 지터 LP-HCSL 클록 멀티플렉서: 2계통 차동 입력을 8계통 LP-HCSL 차동 출력으로 전환, PCIe Gen1~Gen7(CC와 IR 아키텍처 모두) 지원, DB2000QL 규격 준거, 듀얼 클록 소스 이중화 전환용.',
+        func: '계통별 {OE}# 인에이블(내장 풀업); SBI(Side-Band Interface)로 4조의 출력 인에이블 핀을 고속 전환({OE3}/SBI_CLK, {OE4}/SBI_IN, {OE6}/{SHFT_LD}, {OE7}/SBI_OUT, 기능은 SBI_EN이 결정); SMBus 인터페이스(SADR0/SADR1 3값 주소)로 레지스터 제어; {LOS} 오픈 드레인 출력으로 입력 클록 상실 지시; 출력 임피던스 85Ω/100Ω을 ZOUT_SEL로 선택; 유연한 전원 인가 순서, 자동 출력 정지, fail-safe 입력.',
+        usedIn: '고성능 컴퓨팅, 서버 메인보드, NIC/SmartNIC, 하드웨어 가속 카드 등의 PCIe 클록 트리 듀얼 소스 전환과 팬아웃.',
+        desc: 'PCIe Gen1~7 LP-HCSL 2:8 클록 멀티플렉서, 부가 지터 5fs(Gen5)/2.1fs(Gen7) max, SBI+SMBus 제어, 1.8V/3.3V 공급, 48-VQFN 6×6mm.',
+        thermalPad: 'Thermal Pad (GND)(Table 5-1 마지막 행: Thermal Pad (GND) / Pad / G / Device Ground, Thermal pad.), 보드 접지 플레인에 연결 필수.',
+        specs: [
+          { k: '토폴로지', v: '2계통 차동 입력 → 8계통 LP-HCSL 차동 출력(Table 4-1 Device Comparison: LMKDB1208=Mux, 2 input, 8 output, 85Ω 또는 100Ω 선택 가능)' },
+          { k: 'PCIe 지원', v: 'Gen 1 ~ Gen 7(CC/IR 아키텍처, SSC 입력 유무 모두 가능); DB2000QL 준거' },
+          { k: '부가 지터', v: '31fs max(12kHz-20MHz RMS @156.25MHz); PCIe Gen4 13fs / Gen5 5fs / Gen6 3fs / Gen7 2.1fs max' },
+          { k: '제어', v: '계통별 {OE}# + SBI 고속 전환 + SMBus(3값 주소×2)' },
+          { k: '출력 임피던스', v: '85Ω 또는 100Ω(ZOUT_SEL 선택)' },
+          { k: '전원', v: '1.8V / 3.3V ±10%' },
+          { k: '온도', v: '−40°C ~ 105°C' },
+          { k: '패키지', v: '48-pin VQFN (RSL) 6mm×6mm' }
+        ]
+      }
+    },
+    'LMX1205-EP': {
+      en: {
+        subcategory: 'JESD204B/C high-frequency low-noise clock buffer/multiplier/divider (4 outputs + SYSREF, enhanced reliability)',
+        whatIs: 'Low-noise high-frequency JESD204B/C clock buffer/multiplier/divider, output 300MHz~12.8GHz, 4 high-frequency clock outputs each paired with a SYSREF output, with noiseless input/output delay adjustment — for precision data-converter clocking, test & measurement, and aerospace/defense high-reliability applications.',
+        func: 'Shared divider 1(bypass)/2/3/4/5/6/7/8 and shared programmable multiplier ×2~×8; LOGICLKOUT has an independent divider bank (pre-div 1/2/4, post-div 1(bypass)~1023) plus a second logic-clock option (further 1/2/4/8 division); noiseless input delay up to 60ps (1.1ps resolution) and per-output delay up to 55ps (0.9ps resolution); SYSREF supports generator/repeater/repeater-retime modes with windowing, 508 delay steps at <2.5ps each @12.8GHz; 6 programmable output power levels; SPI control (SCK/SDI/{CS}/MUXOUT); SYNC synchronizes all dividers and multiple devices.',
+        usedIn: 'Test & measurement (oscilloscopes, wireless testers, wideband digitizers); aerospace/defense (radar, EW, seeker front ends, munitions, phased-array/beamforming); data-converter clocking and clock-buffer distribution.',
+        desc: '300MHz~12.8GHz JESD204B/C low-noise clock buffer/multiplier/divider, 4 outputs + SYSREF, noise floor −159dBc/Hz@6GHz, SPI control, 2.5V, −55~85°C enhanced-reliability grade, 40-VQFN 6×6mm.',
+        thermalPad: 'DAP (Table 4-1: DAP / DAP / GND / Ground these pins.), must be grounded.',
+        specs: [
+          { k: 'Output frequency', v: '300MHz ~ 12.8GHz' },
+          { k: 'Noise performance', v: 'noise floor −159dBc/Hz @6GHz output; additive jitter 36fs (DC~fCLK) / 10fs (100Hz~100MHz)' },
+          { k: 'Divide/multiply', v: 'shared divide 1(bypass)/2~8; shared programmable multiply ×2~×8; independent LOGICLK divider bank' },
+          { k: 'Delay adjust', v: 'input delay up to 60ps (1.1ps resolution); per-output delay up to 55ps (0.9ps resolution), all noiseless' },
+          { k: 'SYSREF', v: '4 HF outputs each paired with SYSREF; 508 delay steps <2.5ps@12.8GHz; generator/repeater/repeater-retime modes' },
+          { k: 'Control interface', v: 'SPI (SCK/SDI/{CS}/MUXOUT)' },
+          { k: 'Supply', v: '2.5V' },
+          { k: 'Temperature/reliability', v: '−55°C ~ 85°C; VID #V62/25648, Controlled Baseline, single assembly/test site, single fab, Extended Product Life Cycle, Product Traceability' },
+          { k: 'Package', v: '40-pin VQFN (RHA) 6mm×6mm' }
+        ]
+      },
+      ja: {
+        subcategory: 'JESD204B/C 高周波低雑音クロック Buffer/逓倍/分周器（4 出力+SYSREF・高信頼グレード）',
+        whatIs: '低雑音高周波 JESD204B/C クロック buffer/逓倍/分周器、出力周波数 300MHz~12.8GHz、4 組の高周波クロック出力に各々 SYSREF 出力をペア、noiseless 入力/出力遅延調整付——高精度データコンバータのクロック、テスト計測、航空宇宙防衛等の高信頼用途に好適。',
+        func: '共用分周 1(bypass)/2/3/4/5/6/7/8、共用プログラマブル逓倍 ×2~×8；LOGICLKOUT は独立分周バンク（前置 1/2/4、後置 1(bypass)~1023）＋第 2 論理クロックオプション（さらに 1/2/4/8 分周可）；入力遅延 noiseless 可変最大 60ps（分解能 1.1ps）、各出力遅延最大 55ps（分解能 0.9ps）；SYSREF は generator/repeater/repeater-retime モードとウィンドウ機能に対応、508 段遅延ステップ・各 <2.5ps @12.8GHz；6 組プログラマブル出力パワーレベル；SPI 制御（SCK/SDI/{CS}/MUXOUT）；SYNC で全分周器と複数素子を同期可。',
+        usedIn: 'オシロスコープ、無線機器テスタ、広帯域デジタイザ等のテスト計測；レーダ、電子戦、シーカ前端、弾薬、フェーズドアレイ/ビームフォーミング等の航空宇宙防衛用途；データコンバータのクロックとクロック buffer 分配。',
+        desc: '300MHz~12.8GHz JESD204B/C 低雑音クロック buffer/逓倍/分周器、4 出力+SYSREF、雑音フロア −159dBc/Hz@6GHz、SPI 制御、2.5V、−55~85°C 高信頼グレード、40-VQFN 6×6mm。',
+        thermalPad: 'DAP（Table 4-1：DAP／DAP／GND／Ground these pins.）、接地必須。',
+        specs: [
+          { k: '出力周波数', v: '300MHz ~ 12.8GHz' },
+          { k: '雑音性能', v: '雑音フロア −159dBc/Hz @6GHz 出力；付加ジッタ 36fs（DC~fCLK）／10fs（100Hz~100MHz）' },
+          { k: '分周/逓倍', v: '共用分周 1(bypass)/2~8；共用プログラマブル逓倍 ×2~×8；LOGICLK 独立分周バンク' },
+          { k: '遅延調整', v: '入力遅延最大 60ps（1.1ps 分解能）；各出力遅延最大 55ps（0.9ps 分解能）、いずれも noiseless' },
+          { k: 'SYSREF', v: '4 組高周波出力に各々 SYSREF ペア；508 段遅延ステップ <2.5ps@12.8GHz；generator/repeater/repeater-retime モード' },
+          { k: '制御インタフェース', v: 'SPI（SCK/SDI/{CS}/MUXOUT）' },
+          { k: '電源', v: '2.5V' },
+          { k: '温度/信頼性', v: '−55°C ~ 85°C；VID #V62/25648、Controlled Baseline、単一組立/試験拠点、単一ファブ、Extended Product Life Cycle、Product Traceability' },
+          { k: 'パッケージ', v: '40-pin VQFN (RHA) 6mm×6mm' }
+        ]
+      },
+      ko: {
+        subcategory: 'JESD204B/C 고주파 저잡음 클록 Buffer/체배/분주기(4출력+SYSREF·고신뢰 등급)',
+        whatIs: '저잡음 고주파 JESD204B/C 클록 buffer/체배/분주기, 출력 주파수 300MHz~12.8GHz, 4조 고주파 클록 출력에 각각 SYSREF 출력을 페어, noiseless 입력/출력 지연 조정 포함 - 고정밀 데이터 컨버터 클록, 테스트 계측, 항공우주 방위 등 고신뢰 용도에 적합.',
+        func: '공용 분주 1(bypass)/2/3/4/5/6/7/8, 공용 프로그래머블 체배 ×2~×8; LOGICLKOUT은 독립 분주 뱅크(전치 1/2/4, 후치 1(bypass)~1023)+제2 논리 클록 옵션(추가 1/2/4/8 분주 가능); 입력 지연 noiseless 가변 최대 60ps(분해능 1.1ps), 각 출력 지연 최대 55ps(분해능 0.9ps); SYSREF는 generator/repeater/repeater-retime 모드와 윈도우 기능 지원, 508단 지연 스텝·각 <2.5ps @12.8GHz; 6조 프로그래머블 출력 파워 레벨; SPI 제어(SCK/SDI/{CS}/MUXOUT); SYNC로 전체 분주기와 복수 소자 동기 가능.',
+        usedIn: '오실로스코프, 무선 기기 테스터, 광대역 디지타이저 등 테스트 계측; 레이더, 전자전, 시커 전단, 탄약, 위상 배열/빔포밍 등 항공우주 방위 용도; 데이터 컨버터 클록과 클록 buffer 분배.',
+        desc: '300MHz~12.8GHz JESD204B/C 저잡음 클록 buffer/체배/분주기, 4출력+SYSREF, 잡음 바닥 −159dBc/Hz@6GHz, SPI 제어, 2.5V, −55~85°C 고신뢰 등급, 40-VQFN 6×6mm.',
+        thermalPad: 'DAP(Table 4-1: DAP / DAP / GND / Ground these pins.), 접지 필수.',
+        specs: [
+          { k: '출력 주파수', v: '300MHz ~ 12.8GHz' },
+          { k: '잡음 성능', v: '잡음 바닥 −159dBc/Hz @6GHz 출력; 부가 지터 36fs(DC~fCLK) / 10fs(100Hz~100MHz)' },
+          { k: '분주/체배', v: '공용 분주 1(bypass)/2~8; 공용 프로그래머블 체배 ×2~×8; LOGICLK 독립 분주 뱅크' },
+          { k: '지연 조정', v: '입력 지연 최대 60ps(1.1ps 분해능); 각 출력 지연 최대 55ps(0.9ps 분해능), 모두 noiseless' },
+          { k: 'SYSREF', v: '4조 고주파 출력에 각각 SYSREF 페어; 508단 지연 스텝 <2.5ps@12.8GHz; generator/repeater/repeater-retime 모드' },
+          { k: '제어 인터페이스', v: 'SPI(SCK/SDI/{CS}/MUXOUT)' },
+          { k: '전원', v: '2.5V' },
+          { k: '온도/신뢰성', v: '−55°C ~ 85°C; VID #V62/25648, Controlled Baseline, 단일 조립/시험 거점, 단일 팹, Extended Product Life Cycle, Product Traceability' },
+          { k: '패키지', v: '40-pin VQFN (RHA) 6mm×6mm' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
