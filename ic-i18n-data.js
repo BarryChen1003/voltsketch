@@ -7013,3 +7013,468 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 11B: entries 137-143 */
+(function () {
+  // MSPM0C1105-Q1 / MSPM0C1106-Q1 share everything except memory size
+  var mcFunc = {
+    en: 'Low-power modes: RUN 91µA/MHz (CoreMark), STANDBY 2µA (full SRAM/register retention), SHUTDOWN 68nA (I/O wake). Digital peripherals: 3-channel DMA, 7-channel event fabric, 5 timers with up to 18 PWM outputs all operable in STANDBY (one 16-bit advanced timer with deadband, up to 64MHz; one 16-bit general timer with 4 capture/compares; three 16-bit general timers with 2 capture/compares each), windowed watchdog (WWDT), independent watchdog (IWDT), RTC with alarm/calendar, BEEPER (1/2/4/8kHz square wave for an external buzzer). Comms: 3× UART (one supporting LIN, IrDA, DALI, smart card, Manchester), 2× I2C (SMBus/PMBus, STOP-mode wake, up to FM+ 1Mbps), 1× SPI (up to 16Mbps). Clocking: built-in 32MHz SYSOSC (−2.1%~1.6%), built-in 32kHz LFOSC (±3%), external 4MHz~32MHz HFXT, external 32kHz LFXT, external LF/HF digital clock inputs, digital clock output. Data integrity: CRC-16. I/O: up to 45 GPIOs, 2 of them 5V-tolerant open-drain. Development: 2-pin SWD.',
+    ja: '低消費電力モード：RUN 91µA/MHz（CoreMark）、STANDBY 2µA（SRAM とレジスタ全保持）、SHUTDOWN 68nA（I/O ウェイク対応）。デジタル周辺：3 チャネル DMA、7 チャネルイベントファブリック、5 個のタイマで最大 18 系統 PWM 出力（すべて STANDBY 動作可；deadband 付 16-bit 先進タイマ 1 個・最高 64MHz、capture/compare 4 組付 16-bit 汎用タイマ 1 個、capture/compare 各 2 組の 16-bit 汎用タイマ 3 個）、ウィンドウウォッチドッグ（WWDT）、独立ウォッチドッグ（IWDT）、アラーム/カレンダー付 RTC、BEEPER（1/2/4/8kHz 方形波で外部ブザー駆動）。通信：3 組 UART（1 組は LIN・IrDA・DALI・smart card・Manchester 対応）、2 組 I2C（SMBus/PMBus、STOP モードウェイク、最高 FM+ 1Mbps）、1 組 SPI（最高 16Mbps）。クロック：内蔵 32MHz SYSOSC（−2.1%~1.6%）、内蔵 32kHz LFOSC（±3%）、外部 4MHz~32MHz HFXT、外部 32kHz LFXT、外部低/高周波デジタルクロック入力、デジタルクロック出力。データ完全性：CRC-16。I/O：最大 45 GPIO、うち 2 個は 5V 耐圧オープンドレイン。開発：2-pin SWD。',
+    ko: '저전력 모드: RUN 91µA/MHz(CoreMark), STANDBY 2µA(SRAM·레지스터 전체 유지), SHUTDOWN 68nA(I/O 웨이크 지원). 디지털 주변: 3채널 DMA, 7채널 이벤트 패브릭, 5개 타이머로 최대 18계통 PWM 출력(모두 STANDBY 동작 가능; deadband 포함 16-bit 고급 타이머 1개·최고 64MHz, capture/compare 4조 포함 16-bit 범용 타이머 1개, capture/compare 각 2조의 16-bit 범용 타이머 3개), 윈도우 워치독(WWDT), 독립 워치독(IWDT), 알람/캘린더 포함 RTC, BEEPER(1/2/4/8kHz 구형파로 외부 부저 구동). 통신: 3조 UART(1조는 LIN·IrDA·DALI·smart card·Manchester 지원), 2조 I2C(SMBus/PMBus, STOP 모드 웨이크, 최고 FM+ 1Mbps), 1조 SPI(최고 16Mbps). 클록: 내장 32MHz SYSOSC(−2.1%~1.6%), 내장 32kHz LFOSC(±3%), 외부 4MHz~32MHz HFXT, 외부 32kHz LFXT, 외부 저/고주파 디지털 클록 입력, 디지털 클록 출력. 데이터 무결성: CRC-16. I/O: 최대 45 GPIO, 그중 2개는 5V 내압 오픈 드레인. 개발: 2-pin SWD.'
+  };
+  var mcUsed = {
+    en: 'Automotive body electronics and lighting, gateways, steering-wheel systems, motor control, DC-AC inverters, interior lighting, door-handle modules, kick-to-open modules, occupant detection, seat-comfort modules.',
+    ja: '車載ボディ電子と照明、車載ゲートウェイ、ステアリングホイールシステム、車載モータ制御、DC-AC インバータ、車内照明、ドアハンドルモジュール、Kick-to-open モジュール、乗員検知、シート快適モジュール等の車載用途。',
+    ko: '차량 바디 전자와 조명, 차량 게이트웨이, 스티어링 휠 시스템, 차량 모터 제어, DC-AC 인버터, 실내 조명, 도어 핸들 모듈, Kick-to-open 모듈, 승객 감지, 시트 편의 모듈 등 차량 용도.'
+  };
+  var mcPad = {
+    en: 'Exposed pad = VSS (datasheet Figure 6-1 48-pin RGZ marks the center Thermal Pad), must connect to the board ground plane.',
+    ja: '露出パッド=VSS（datasheet 図 6-1 48-pin RGZ 中央に Thermal Pad 表記）、基板接地プレーンに接続必須。',
+    ko: '노출 패드=VSS(datasheet 그림 6-1 48-pin RGZ 중앙에 Thermal Pad 표기), 보드 접지 플레인에 연결 필수.'
+  };
+  function mcSpecs(lang, mem) {
+    return {
+      en: [
+        { k: 'Core', v: 'Arm 32-bit Cortex-M0+ with MPU, up to 32MHz' },
+        { k: 'Automotive', v: 'AEC-Q100 Grade 1 (−40°C ~ 125°C)' },
+        { k: 'Supply range', v: '1.62V ~ 3.6V' },
+        { k: 'Memory', v: mem },
+        { k: 'ADC', v: '12-bit, 1.6Msps, up to 27 external channels' },
+        { k: 'Reference', v: 'configurable 1.4V or 2.5V internal shared VREF' },
+        { k: 'Comparator', v: 'COMP with 8-bit reference DAC; integrated temperature sensor' },
+        { k: 'Low power', v: 'RUN 91µA/MHz (CoreMark); STANDBY 2µA; SHUTDOWN 68nA (I/O wake)' },
+        { k: 'Comms', v: '3×UART (one with LIN/IrDA/DALI/smart card/Manchester); 2×I2C (SMBus/PMBus, up to FM+ 1Mbps); 1×SPI (up to 16Mbps)' },
+        { k: 'Clocking', v: 'built-in 32MHz SYSOSC (−2.1%~1.6%); built-in 32kHz LFOSC (±3%); external 4~32MHz HFXT; external 32kHz LFXT' },
+        { k: 'I/O', v: 'up to 45 GPIOs, 2 of them 5V-tolerant open-drain' },
+        { k: 'Package options', v: '48-pin LQFP (PT)/VQFN (RGZ); 32-pin VQFN (RHB); 28-pin VSSOP (DGS28); 24-pin VQFN (RGE); 20-pin WQFN (RUK)/VSSOP (DGS20)' },
+        { k: 'Debug', v: '2-pin SWD' }
+      ],
+      ja: [
+        { k: 'コア', v: 'Arm 32-bit Cortex-M0+、MPU 付、最高 32MHz' },
+        { k: '車載', v: 'AEC-Q100 Grade 1（−40°C ~ 125°C）' },
+        { k: '電源範囲', v: '1.62V ~ 3.6V' },
+        { k: 'メモリ', v: mem },
+        { k: 'ADC', v: '12-bit、1.6Msps、最大 27 外部チャネル' },
+        { k: '基準電圧', v: '設定可能 1.4V または 2.5V 内部共用 VREF' },
+        { k: 'コンパレータ', v: 'COMP、8-bit 基準 DAC 付；温度センサ統合' },
+        { k: '低消費電力', v: 'RUN 91µA/MHz（CoreMark）；STANDBY 2µA；SHUTDOWN 68nA（I/O ウェイク）' },
+        { k: '通信', v: '3×UART（1 組 LIN/IrDA/DALI/smart card/Manchester 対応）；2×I2C（SMBus/PMBus、最高 FM+ 1Mbps）；1×SPI（最高 16Mbps）' },
+        { k: 'クロック', v: '内蔵 32MHz SYSOSC（−2.1%~1.6%）；内蔵 32kHz LFOSC（±3%）；外部 4~32MHz HFXT；外部 32kHz LFXT' },
+        { k: 'I/O', v: '最大 45 GPIO、うち 2 個 5V 耐圧オープンドレイン' },
+        { k: 'パッケージ選択肢', v: '48-pin LQFP (PT)／VQFN (RGZ)；32-pin VQFN (RHB)；28-pin VSSOP (DGS28)；24-pin VQFN (RGE)；20-pin WQFN (RUK)／VSSOP (DGS20)' },
+        { k: 'デバッグ', v: '2-pin SWD' }
+      ],
+      ko: [
+        { k: '코어', v: 'Arm 32-bit Cortex-M0+, MPU 포함, 최고 32MHz' },
+        { k: '차량', v: 'AEC-Q100 Grade 1(−40°C ~ 125°C)' },
+        { k: '전원 범위', v: '1.62V ~ 3.6V' },
+        { k: '메모리', v: mem },
+        { k: 'ADC', v: '12-bit, 1.6Msps, 최대 27 외부 채널' },
+        { k: '기준 전압', v: '설정 가능 1.4V 또는 2.5V 내부 공용 VREF' },
+        { k: '비교기', v: 'COMP, 8-bit 기준 DAC 포함; 온도 센서 통합' },
+        { k: '저전력', v: 'RUN 91µA/MHz(CoreMark); STANDBY 2µA; SHUTDOWN 68nA(I/O 웨이크)' },
+        { k: '통신', v: '3×UART(1조 LIN/IrDA/DALI/smart card/Manchester 지원); 2×I2C(SMBus/PMBus, 최고 FM+ 1Mbps); 1×SPI(최고 16Mbps)' },
+        { k: '클록', v: '내장 32MHz SYSOSC(−2.1%~1.6%); 내장 32kHz LFOSC(±3%); 외부 4~32MHz HFXT; 외부 32kHz LFXT' },
+        { k: 'I/O', v: '최대 45 GPIO, 그중 2개 5V 내압 오픈 드레인' },
+        { k: '패키지 선택지', v: '48-pin LQFP (PT)/VQFN (RGZ); 32-pin VQFN (RHB); 28-pin VSSOP (DGS28); 24-pin VQFN (RGE); 20-pin WQFN (RUK)/VSSOP (DGS20)' },
+        { k: '디버그', v: '2-pin SWD' }
+      ]
+    }[lang];
+  }
+  function mcWhat(lang, self, sib) {
+    return {
+      en: 'Automotive mixed-signal MCU: Arm 32-bit Cortex-M0+ core (with MPU, up to 32MHz), AEC-Q100 Grade 1 (−40°C~125°C), up to 64KB flash + 8KB SRAM, built-in 12-bit 1.6Msps ADC (up to 27 external channels), a comparator (COMP) with 8-bit reference DAC, integrated temperature sensor; package options include 48-pin LQFP (PT)/VQFN (RGZ), 32-pin VQFN (RHB), 28-pin VSSOP (DGS28), 24-pin VQFN (RGE), 20-pin WQFN (RUK)/VSSOP (DGS20). ' + self + ' = ' + sib + '.',
+      ja: '車載混合信号 MCU：Arm 32-bit Cortex-M0+ コア（MPU 付、最高 32MHz）、AEC-Q100 Grade 1（−40°C~125°C）、最大 64KB flash＋8KB SRAM、12-bit 1.6Msps ADC（最大 27 外部チャネル）、8-bit 基準 DAC 付コンパレータ（COMP）、温度センサ統合；パッケージ選択肢は 48-pin LQFP (PT)／VQFN (RGZ)、32-pin VQFN (RHB)、28-pin VSSOP (DGS28)、24-pin VQFN (RGE)、20-pin WQFN (RUK)／VSSOP (DGS20)。' + self + '＝' + sib + '。',
+      ko: '차량용 혼합 신호 MCU: Arm 32-bit Cortex-M0+ 코어(MPU 포함, 최고 32MHz), AEC-Q100 Grade 1(−40°C~125°C), 최대 64KB flash+8KB SRAM, 12-bit 1.6Msps ADC(최대 27 외부 채널), 8-bit 기준 DAC 포함 비교기(COMP), 온도 센서 통합; 패키지 선택지는 48-pin LQFP (PT)/VQFN (RGZ), 32-pin VQFN (RHB), 28-pin VSSOP (DGS28), 24-pin VQFN (RGE), 20-pin WQFN (RUK)/VSSOP (DGS20). ' + self + ' = ' + sib + '.'
+    }[lang];
+  }
+
+  var T = {
+    'LMX1404-EP': {
+      en: {
+        subcategory: 'JESD204B/C high-frequency low-noise clock buffer/multiplier/divider (4 outputs + SYSREF, pin-mode support, enhanced reliability)',
+        whatIs: 'Low-noise high-frequency JESD204B/C clock buffer/multiplier/divider, output 300MHz~15GHz, supporting SPI-free pin-mode configuration, 4 high-frequency clock outputs each paired with a SYSREF output, −55°C~125°C enhanced-reliability grade — for data-converter clocking and aerospace/defense payloads.',
+        func: 'Shared divider 1(buffer)/2/3/4/5/6/7/8 and shared programmable multiplier ×2/×3/×4; LOGICLKOUT has an independent divider bank (pre-div 1/2/4, post-div 1(bypass)~1023); in pin mode, pins like PWRSEL[2:0]/DIVSEL[2:0]/MUXSEL[1:0]/CLK0_EN~CLK3_EN/LOGIC_EN/SYSREF_EN configure output power levels, divide/multiply values, operating modes and per-channel enables without SPI; SPI control (SCK/SDI/{CS}/MUXOUT) is also supported; 8 programmable output power levels; SYSREF supports generator and repeater modes with windowing, 508 delay steps at <2.5ps each @12.8GHz; SYNC synchronizes all dividers and multiple devices; disabling SYSREF outputs lets it distribute multi-channel, low-skew, ultra-low-noise LO signals to multiple mixers.',
+        usedIn: 'Radar imaging payloads, communication payloads, command and data handling, data-converter clocking, clock distribution/multiplication/division for aerospace/defense and precision measurement.',
+        desc: '300MHz~15GHz JESD204B/C low-noise clock buffer/multiplier/divider with SPI-free pin mode, 4 outputs + SYSREF, noise floor −159dBc/Hz@6GHz, 2.5V, −55~125°C, 64-HTQFP 10×10mm.',
+        thermalPad: 'DAP (Table 4-1: DAP / DAP / GND / Ground the pad.), must be grounded.',
+        specs: [
+          { k: 'Output frequency', v: '300MHz ~ 15GHz' },
+          { k: 'Noise performance', v: 'noise floor −159dBc/Hz @6GHz output; additive jitter 36fs (100Hz~fCLK, @6GHz output) / 5fs (100Hz~100MHz)' },
+          { k: 'Divide/multiply', v: 'shared divide 1(buffer)/2~8; shared programmable multiply ×2/×3/×4; independent LOGICLK divider bank' },
+          { k: 'Config modes', v: 'pin mode (SPI-free, via PWRSEL/DIVSEL/MUXSEL/CLKx_EN pins) or SPI (SCK/SDI/{CS}/MUXOUT)' },
+          { k: 'SYSREF', v: '4 HF outputs each paired with SYSREF; 508 delay steps <2.5ps@12.8GHz; generator/repeater modes' },
+          { k: 'Output power levels', v: '8 programmable' },
+          { k: 'Supply', v: '2.5V' },
+          { k: 'Temperature/reliability', v: '−55°C ~ 125°C; VID #V62/24627, Controlled Baseline, single assembly/test site, single fab, Extended Product Life Cycle, Product Traceability' },
+          { k: 'Package', v: '64-pin HTQFP (PAP0064E) 10mm×10mm' }
+        ]
+      },
+      ja: {
+        subcategory: 'JESD204B/C 高周波低雑音クロック Buffer/逓倍/分周器（4 出力+SYSREF・pin mode 対応・高信頼グレード）',
+        whatIs: '低雑音高周波 JESD204B/C クロック buffer/逓倍/分周器、出力周波数 300MHz~15GHz、SPI 不要のピンモード（pin mode）設定対応、4 組の高周波クロック出力に各々 SYSREF 出力をペア、−55°C~125°C 高信頼グレード——データコンバータのクロックと航空宇宙防衛ペイロードに好適。',
+        func: '共用分周 1(buffer)/2/3/4/5/6/7/8、共用プログラマブル逓倍 ×2/×3/×4；LOGICLKOUT は独立分周バンク（前置 1/2/4、後置 1(bypass)~1023）；pin mode では PWRSEL[2:0]/DIVSEL[2:0]/MUXSEL[1:0]/CLK0_EN~CLK3_EN/LOGIC_EN/SYSREF_EN 等のピンで出力パワーレベル・分周/逓倍値・動作モード・各チャネル ON/OFF を SPI なしで直接設定；SPI 制御（SCK/SDI/{CS}/MUXOUT）にも対応；8 組プログラマブル出力パワーレベル；SYSREF は generator と repeater モードとウィンドウ機能に対応、508 段遅延ステップ・各 <2.5ps @12.8GHz；SYNC で全分周器と複数素子を同期可；SYSREF 出力を停止すればマルチチャネル・低スキュー・超低雑音のローカル発振信号を複数ミキサへ分配可。',
+        usedIn: 'レーダ撮像ペイロード、通信ペイロード、指令・データ処理（command and data handling）、データコンバータのクロック、クロック分配/逓倍/分周等の航空宇宙防衛と高精度計測用途。',
+        desc: '300MHz~15GHz JESD204B/C 低雑音クロック buffer/逓倍/分周器、SPI 不要 pin mode 対応、4 出力+SYSREF、雑音フロア −159dBc/Hz@6GHz、2.5V、−55~125°C、64-HTQFP 10×10mm。',
+        thermalPad: 'DAP（Table 4-1：DAP／DAP／GND／Ground the pad.）、接地必須。',
+        specs: [
+          { k: '出力周波数', v: '300MHz ~ 15GHz' },
+          { k: '雑音性能', v: '雑音フロア −159dBc/Hz @6GHz 出力；付加ジッタ 36fs（100Hz~fCLK、@6GHz 出力）／5fs（100Hz~100MHz）' },
+          { k: '分周/逓倍', v: '共用分周 1(buffer)/2~8；共用プログラマブル逓倍 ×2/×3/×4；LOGICLK 独立分周バンク' },
+          { k: '設定モード', v: 'Pin mode（SPI 不要、PWRSEL/DIVSEL/MUXSEL/CLKx_EN 等のピンで設定）または SPI（SCK/SDI/{CS}/MUXOUT）' },
+          { k: 'SYSREF', v: '4 組高周波出力に各々 SYSREF ペア；508 段遅延ステップ <2.5ps@12.8GHz；generator/repeater モード' },
+          { k: '出力パワーレベル', v: '8 組プログラマブル' },
+          { k: '電源', v: '2.5V' },
+          { k: '温度/信頼性', v: '−55°C ~ 125°C；VID #V62/24627、Controlled Baseline、単一組立/試験拠点、単一ファブ、Extended Product Life Cycle、Product Traceability' },
+          { k: 'パッケージ', v: '64-pin HTQFP (PAP0064E) 10mm×10mm' }
+        ]
+      },
+      ko: {
+        subcategory: 'JESD204B/C 고주파 저잡음 클록 Buffer/체배/분주기(4출력+SYSREF·pin mode 지원·고신뢰 등급)',
+        whatIs: '저잡음 고주파 JESD204B/C 클록 buffer/체배/분주기, 출력 주파수 300MHz~15GHz, SPI 불필요 핀 모드(pin mode) 설정 지원, 4조 고주파 클록 출력에 각각 SYSREF 출력을 페어, −55°C~125°C 고신뢰 등급 - 데이터 컨버터 클록과 항공우주 방위 페이로드에 적합.',
+        func: '공용 분주 1(buffer)/2/3/4/5/6/7/8, 공용 프로그래머블 체배 ×2/×3/×4; LOGICLKOUT은 독립 분주 뱅크(전치 1/2/4, 후치 1(bypass)~1023); pin mode에서는 PWRSEL[2:0]/DIVSEL[2:0]/MUXSEL[1:0]/CLK0_EN~CLK3_EN/LOGIC_EN/SYSREF_EN 등의 핀으로 출력 파워 레벨·분주/체배 값·동작 모드·각 채널 ON/OFF를 SPI 없이 직접 설정; SPI 제어(SCK/SDI/{CS}/MUXOUT)도 지원; 8조 프로그래머블 출력 파워 레벨; SYSREF는 generator와 repeater 모드와 윈도우 기능 지원, 508단 지연 스텝·각 <2.5ps @12.8GHz; SYNC로 전체 분주기와 복수 소자 동기 가능; SYSREF 출력을 정지하면 멀티채널·저스큐·초저잡음 로컬 발진 신호를 복수 믹서에 분배 가능.',
+        usedIn: '레이더 이미징 페이로드, 통신 페이로드, 지령·데이터 처리(command and data handling), 데이터 컨버터 클록, 클록 분배/체배/분주 등 항공우주 방위와 고정밀 계측 용도.',
+        desc: '300MHz~15GHz JESD204B/C 저잡음 클록 buffer/체배/분주기, SPI 불필요 pin mode 지원, 4출력+SYSREF, 잡음 바닥 −159dBc/Hz@6GHz, 2.5V, −55~125°C, 64-HTQFP 10×10mm.',
+        thermalPad: 'DAP(Table 4-1: DAP / DAP / GND / Ground the pad.), 접지 필수.',
+        specs: [
+          { k: '출력 주파수', v: '300MHz ~ 15GHz' },
+          { k: '잡음 성능', v: '잡음 바닥 −159dBc/Hz @6GHz 출력; 부가 지터 36fs(100Hz~fCLK, @6GHz 출력) / 5fs(100Hz~100MHz)' },
+          { k: '분주/체배', v: '공용 분주 1(buffer)/2~8; 공용 프로그래머블 체배 ×2/×3/×4; LOGICLK 독립 분주 뱅크' },
+          { k: '설정 모드', v: 'Pin mode(SPI 불필요, PWRSEL/DIVSEL/MUXSEL/CLKx_EN 등의 핀으로 설정) 또는 SPI(SCK/SDI/{CS}/MUXOUT)' },
+          { k: 'SYSREF', v: '4조 고주파 출력에 각각 SYSREF 페어; 508단 지연 스텝 <2.5ps@12.8GHz; generator/repeater 모드' },
+          { k: '출력 파워 레벨', v: '8조 프로그래머블' },
+          { k: '전원', v: '2.5V' },
+          { k: '온도/신뢰성', v: '−55°C ~ 125°C; VID #V62/24627, Controlled Baseline, 단일 조립/시험 거점, 단일 팹, Extended Product Life Cycle, Product Traceability' },
+          { k: '패키지', v: '64-pin HTQFP (PAP0064E) 10mm×10mm' }
+        ]
+      }
+    },
+    'TPS7H3034-SP': {
+      en: {
+        subcategory: 'Space-grade quad voltage supervisor/sequencer (push-pull outputs, Rad-Hard)',
+        whatIs: 'Space-grade quad power-rail voltage supervisor/sequencer: simultaneously monitors four rails (SENSE1-4) for undervoltage (UV) / overvoltage (OV), notifies the system via the corresponding RESET outputs, and includes a watchdog timer.',
+        func: 'SENSE1~SENSE4 each monitor a rail via an external resistor divider, comparator threshold typically 599.7mV (VTH_SENSEx). MODE selects output behavior: MODE=0 gives 2UV+2OV, MODE=1 gives 2-window; this TPS7H3034-SP is the push-pull-output, 4-UV-or-4-OV version (per MODE, which must not be switched dynamically). RESET1~RESET4 are the per-SENSE fault reset outputs (push-pull, VOH set by PULL_UP1; the open-drain versions use external pull-ups). WDI is the watchdog input which must be toggled low-to-high periodically to clear the timer; on timeout WDO goes low (push-pull, VOH set by PULL_UP2); WD_TMR/DLY_TMR each use one resistor to GND to set the watchdog timeout (0.52s~1.5s) and the post-fault delay (0.25ms~25ms) — floating disables the watchdog / gives no delay respectively. PWRGD outputs high when all rails (SENSE1-4) are within range. SR_UVLO is the system reset & UVLO input; pulling it low forces all outputs low, and a resistor divider from VIN programs the turn-on level (the datasheet Type column says O, but the functional description says input — the functional description prevails). VLDO is the internal-regulator output (needs ≥1µF to GND, 5mA max load, no overcurrent protection; usable to create a positive offset when monitoring negative rails). REFCAP is the 1.2V reference cap pin (needs 470nF, no other circuitry allowed). Radiation-tolerant space grade (QMLV-RHA): TID 100krad(Si) RLAT, DSEE immune to 75MeV-cm²/mg.',
+        usedIn: 'Multi-rail voltage supervision and sequencing, watchdog protection and power-good flag generation on satellite/space-payload boards.',
+        desc: '22-Pin CFP (HFT), radiation-tolerant (TID 100krad(Si)) space-grade quad voltage supervisor (push-pull-output version, 4UV or 4OV per MODE), with watchdog timer (WDI/WDO/WD_TMR) and fault-delay timer (DLY_TMR). The same datasheet also covers: the 2UV+2OV or 2-window selectable TPS7H3024-SP (same pinout); the open-drain-output TPS7H3124-SP/TPS7H3134-SP (TPS7H31x4) — on the latter, pins 17/18 become VLDO (paralleled with pin 15) / GND (paralleled with pin 14); this entry’s pin 14/15/17/18 descs note the open-drain-version differences. Orderable 5962R2420603VXC is marked “Advanced information” (pre-release) in the source — verify against the latest datasheet. The Thermal Pad is internally grounded (GND); the metal lid connects internally through the seal ring to the Thermal Pad and GND.',
+        specs: [
+          { k: 'Function', v: 'space-grade quad voltage supervisor/sequencer (push-pull outputs)' },
+          { k: 'Sense threshold (SENSE1-4, typ)', v: '599.7mV' },
+          { k: 'Hysteresis current (typ)', v: '24µA (set by 49.9kΩ HYS resistor)' },
+          { k: 'Watchdog timeout range', v: '0.52s ~ 1.5s (WD_TMR resistor 56.2k~174kΩ)' },
+          { k: 'Fault delay range', v: '0.25ms ~ 25ms (DLY_TMR resistor 10.5k~1.18MΩ)' },
+          { k: 'Main supply (IN)', v: '3V ~ 14V' },
+          { k: 'Radiation', v: 'TID 100krad(Si) RLAT; DSEE immune to 75MeV-cm²/mg' },
+          { k: 'Qualification', v: 'QMLV-RHA' },
+          { k: 'Package', v: '22-Pin CFP (HFT)' },
+          { k: 'Orderable', v: '5962R2420603VXC (marked Advanced information, pre-release)' }
+        ]
+      },
+      ja: {
+        subcategory: '宇宙級 4 チャネル電圧監視／シーケンサ（Quad Voltage Supervisor・push-pull 出力・Rad-Hard）',
+        whatIs: '宇宙級 4 チャネル電源電圧監視／シーケンサ：4 系統の電源レール（SENSE1-4）の低電圧（UV）／過電圧（OV）状態を同時監視し、対応する RESET 出力でシステムに通知、ウォッチドッグ（Watchdog）タイマ内蔵。',
+        func: 'SENSE1~SENSE4 は各々外部抵抗分圧で 1 系統の電源レールを監視、コンパレータしきい値は典型 599.7mV（VTH_SENSEx）。MODE ピンで出力動作を選択：MODE=0 は 2UV+2OV、MODE=1 は 2-window；本 TPS7H3034-SP は push-pull 出力・4 UV または 4 OV 機能版（MODE 設定による、動的切替不可）。RESET1~RESET4 は対応 SENSE チャネル故障時のリセット出力（push-pull、VOH は PULL_UP1 が決定；オープンドレイン版は外部プルアップが決定）。WDI はウォッチドッグ入力で定期的にローからハイへ反転しタイマをクリアする必要があり、タイムアウトで WDO がロー（push-pull、VOH は PULL_UP2 が決定）；WD_TMR/DLY_TMR は各々 GND への抵抗 1 本でウォッチドッグタイムアウト時間（0.52s~1.5s）と故障後遅延時間（0.25ms~25ms）を設定、浮きで各々ウォッチドッグ無効／遅延なし。PWRGD は全電源レール（SENSE1-4）が正常範囲内のとき高出力。SR_UVLO はシステムリセットと UVLO 入力、ローで全出力を強制ロー、VIN への抵抗分圧でオン電圧をプログラム可（datasheet の Type 欄は O 表記だが機能説明は入力信号、機能説明を優先）。VLDO は内部レギュレータ出力（GND へ最低 1µF 必要、最大負荷 5mA・過電流保護なし、負電圧監視時の正オフセット生成に使用可）。REFCAP は 1.2V 内部参照コンデンサピン（470nF 必要、他回路接続禁止）。耐放射線宇宙級（QMLV-RHA）：TID 100krad(Si) RLAT、DSEE は 75MeV-cm²/mg まで免疫。',
+        usedIn: '衛星・宇宙ペイロード基板上の多系統電源電圧監視とシーケンス、ウォッチドッグ保護、電源良好フラグ生成等の宇宙用途。',
+        desc: '22-Pin CFP（HFT）、耐放射線（TID 100krad(Si)）宇宙級 4 チャネル電圧監視器（push-pull 出力版、MODE で 4UV または 4OV）、ウォッチドッグタイマ（WDI/WDO/WD_TMR）と故障遅延タイマ（DLY_TMR）付。同一 datasheet 内に：2UV+2OV または 2-window 選択版 TPS7H3024-SP（同 pinout）；オープンドレイン出力版 TPS7H3124-SP/TPS7H3134-SP（TPS7H31x4）——後者は pin17/18 が VLDO（pin15 と並接）/GND（pin14 と並接）に変更、本条目の pin14/15/17/18 の desc にオープンドレイン版の差異を注記。注文型番 5962R2420603VXC は原文で「Advanced information」（未確定の事前公開情報）と注記、実際の仕様は最新 datasheet を確認。Thermal Pad は内部接地（GND）、金属リッド（Metal lid）はシールリング経由で Thermal Pad と GND に内部接続。',
+        specs: [
+          { k: '機能', v: '宇宙級 4 チャネル電圧監視／シーケンサ（push-pull 出力）' },
+          { k: '検出しきい値（SENSE1-4・典型）', v: '599.7mV' },
+          { k: 'ヒステリシス電流（典型）', v: '24µA（HYS 抵抗 49.9kΩ 設定）' },
+          { k: 'ウォッチドッグタイムアウト範囲', v: '0.52s ~ 1.5s（WD_TMR 抵抗 56.2k~174kΩ）' },
+          { k: '故障遅延範囲', v: '0.25ms ~ 25ms（DLY_TMR 抵抗 10.5k~1.18MΩ）' },
+          { k: '主電源入力（IN）', v: '3V ~ 14V' },
+          { k: '耐放射線', v: 'TID 100krad(Si) RLAT；DSEE は 75MeV-cm²/mg まで免疫' },
+          { k: '認証グレード', v: 'QMLV-RHA' },
+          { k: 'パッケージ', v: '22-Pin CFP (HFT)' },
+          { k: '注文型番', v: '5962R2420603VXC（原文 Advanced information 注記・事前公開）' }
+        ]
+      },
+      ko: {
+        subcategory: '우주급 4채널 전압 감시/시퀀서(Quad Voltage Supervisor·push-pull 출력·Rad-Hard)',
+        whatIs: '우주급 4채널 전원 전압 감시/시퀀서: 4계통 전원 레일(SENSE1-4)의 저전압(UV)/과전압(OV) 상태를 동시 감시하고 대응하는 RESET 출력으로 시스템에 통지, 워치독(Watchdog) 타이머 내장.',
+        func: 'SENSE1~SENSE4는 각각 외부 저항 분압으로 한 계통 전원 레일을 감시, 비교기 문턱은 전형 599.7mV(VTH_SENSEx). MODE 핀으로 출력 동작 선택: MODE=0은 2UV+2OV, MODE=1은 2-window; 본 TPS7H3034-SP는 push-pull 출력·4 UV 또는 4 OV 기능판(MODE 설정에 따름, 동적 전환 불가). RESET1~RESET4는 대응 SENSE 채널 고장 시 리셋 출력(push-pull, VOH는 PULL_UP1이 결정; 오픈 드레인판은 외부 풀업이 결정). WDI는 워치독 입력으로 정기적으로 로우에서 하이로 반전해 타이머를 클리어해야 하며, 타임아웃 시 WDO가 로우(push-pull, VOH는 PULL_UP2가 결정); WD_TMR/DLY_TMR은 각각 GND로의 저항 1개로 워치독 타임아웃 시간(0.52s~1.5s)과 고장 후 지연 시간(0.25ms~25ms)을 설정, 플로팅이면 각각 워치독 비활성/지연 없음. PWRGD는 전체 전원 레일(SENSE1-4)이 정상 범위 내일 때 하이 출력. SR_UVLO는 시스템 리셋과 UVLO 입력, 로우로 당기면 전체 출력 강제 로우, VIN으로의 저항 분압으로 온 전압 프로그램 가능(datasheet Type 열은 O 표기이나 기능 설명은 입력 신호, 기능 설명 우선). VLDO는 내부 레귤레이터 출력(GND로 최소 1µF 필요, 최대 부하 5mA·과전류 보호 없음, 음전압 감시 시 양 오프셋 생성에 사용 가능). REFCAP는 1.2V 내부 참조 커패시터 핀(470nF 필요, 다른 회로 연결 금지). 내방사선 우주급(QMLV-RHA): TID 100krad(Si) RLAT, DSEE는 75MeV-cm²/mg까지 면역.',
+        usedIn: '위성·우주 페이로드 보드상의 다계통 전원 전압 감시와 시퀀싱, 워치독 보호, 전원 양호 플래그 생성 등 우주 용도.',
+        desc: '22-Pin CFP(HFT), 내방사선(TID 100krad(Si)) 우주급 4채널 전압 감시기(push-pull 출력판, MODE로 4UV 또는 4OV), 워치독 타이머(WDI/WDO/WD_TMR)와 고장 지연 타이머(DLY_TMR) 포함. 동일 datasheet 내에: 2UV+2OV 또는 2-window 선택판 TPS7H3024-SP(동일 pinout); 오픈 드레인 출력판 TPS7H3124-SP/TPS7H3134-SP(TPS7H31x4) - 후자는 pin17/18이 VLDO(pin15와 병렬)/GND(pin14와 병렬)로 변경, 본 항목의 pin14/15/17/18 desc에 오픈 드레인판 차이 주석. 주문 부품 5962R2420603VXC는 원문에 「Advanced information」(미확정 사전 공개 정보) 표기, 실제 사양은 최신 datasheet 확인. Thermal Pad는 내부 접지(GND), 금속 리드(Metal lid)는 실 링 경유로 Thermal Pad와 GND에 내부 연결.',
+        specs: [
+          { k: '기능', v: '우주급 4채널 전압 감시/시퀀서(push-pull 출력)' },
+          { k: '감지 문턱(SENSE1-4·전형)', v: '599.7mV' },
+          { k: '히스테리시스 전류(전형)', v: '24µA(HYS 저항 49.9kΩ 설정)' },
+          { k: '워치독 타임아웃 범위', v: '0.52s ~ 1.5s(WD_TMR 저항 56.2k~174kΩ)' },
+          { k: '고장 지연 범위', v: '0.25ms ~ 25ms(DLY_TMR 저항 10.5k~1.18MΩ)' },
+          { k: '주전원 입력(IN)', v: '3V ~ 14V' },
+          { k: '내방사선', v: 'TID 100krad(Si) RLAT; DSEE는 75MeV-cm²/mg까지 면역' },
+          { k: '인증 등급', v: 'QMLV-RHA' },
+          { k: '패키지', v: '22-Pin CFP (HFT)' },
+          { k: '주문 부품', v: '5962R2420603VXC(원문 Advanced information 표기·사전 공개)' }
+        ]
+      }
+    },
+    'ADS9324': {
+      en: {
+        subcategory: '16-channel 16-bit simultaneous-sampling SAR ADC (integrated analog front end)',
+        whatIs: '16-channel, 16-bit successive-approximation (SAR) simultaneous-sampling data-acquisition system: up to 1MSPS per channel, each channel with a complete built-in analog front end — 1MΩ-input-impedance programmable-gain amplifier (PGA), input clamp, low-pass filter and ADC input driver — plus a built-in low-drift precision reference with buffer driving the ADC. The high input impedance connects directly to sensors and transformers with no external drivers, supporting differential and single-ended inputs.',
+        func: 'The serial interface is configurable as 1-lane, 2-lane, 4-lane or 8-lane readout; the ADC is also flexibly configurable into 2-CH, 4-CH, 8-CH or 16-CH simultaneous-sampling modes; input ranges: differential ±12.5V/±10V/±6.25V/±5V/±2.5V, common-mode ±12.5V; analog bandwidth options 25kHz and 325kHz; fail-safe open inputs (a floating input reads near zero); typical performance INL ±0.5LSB, DNL ±0.5LSB, SNR 88dB, THD −103dB, DC CMRR 100dB; low-drift on-chip 4.096V reference (buffered, 15ppm/°C typ); digital features include an on-chip digital filter (oversampling), system offset/gain/phase correction, a digital window comparator and an ADC output-data randomizer.',
+        usedIn: 'Substation automation, motor protection relays and contactors, motor-control current sensing, industrial automation, test & measurement — anywhere needing precise multi-channel simultaneous sampling.',
+        desc: '16-channel 16-bit simultaneous-sampling SAR ADC with integrated PGA/clamp/filter front end and 4.096V low-drift reference, 1MSPS/channel, 1/2/4/8-lane configurable serial interface, −40°C~125°C, 64-VQFN 8×8mm.',
+        thermalPad: 'Exposed pad, listed as Thermal Pad in the datasheet, must connect to GND (Figure 4-1 shows it at the package center).',
+        specs: [
+          { k: 'Resolution/channels', v: '16-bit, 16-channel simultaneous sampling' },
+          { k: 'Throughput', v: 'up to 1MSPS per channel' },
+          { k: 'Input front end', v: 'integrated PGA, 1MΩ input impedance, single-ended and differential inputs' },
+          { k: 'Input ranges', v: 'differential ±12.5V/±10V/±6.25V/±5V/±2.5V; common-mode ±12.5V' },
+          { k: 'Analog bandwidth', v: '25kHz or 325kHz (selectable)' },
+          { k: 'Typical performance', v: 'INL ±0.5LSB; DNL ±0.5LSB; SNR 88dB; THD −103dB; DC CMRR 100dB' },
+          { k: 'Reference', v: 'on-chip low-drift 4.096V + buffer, 15ppm/°C typical' },
+          { k: 'Digital interface', v: '1/2/4/8-lane configurable serial output; 2/4/8/16-CH simultaneous-sampling modes' },
+          { k: 'Supply', v: 'analog 5V and 1.8V; digital I/O 1.8V~3.3V' },
+          { k: 'Temperature range', v: '−40°C ~ +125°C' },
+          { k: 'Package', v: '64-VQFN (RSK) 8.00mm × 8.00mm, EP=GND' }
+        ]
+      },
+      ja: {
+        subcategory: '16 チャネル 16-bit 同時サンプリング SAR ADC（アナログフロントエンド統合）',
+        whatIs: '16 チャネル・16-bit 逐次比較（SAR）同時サンプリングデータ収集システム：各チャネル最高 1MSPS、各チャネルに完全なアナログフロントエンドを内蔵——1MΩ 入力インピーダンスのプログラマブルゲインアンプ（PGA）、入力クランプ、ローパスフィルタ、ADC 入力ドライバ——さらに低ドリフト精密参照電圧とバッファを内蔵し ADC を駆動。高入力インピーダンスでセンサやトランスに直結でき外部駆動回路不要、差動とシングルエンド入力に対応。',
+        func: 'シリアルインタフェースは 1-lane、2-lane、4-lane、8-lane 読み出しに設定可；ADC は 2-CH、4-CH、8-CH、16-CH 同時サンプリングモードに柔軟に設定可；入力範囲：差動 ±12.5V/±10V/±6.25V/±5V/±2.5V、コモンモード電圧 ±12.5V；アナログ帯域は 25kHz と 325kHz の選択肢；オープンセーフ入力（浮き入力時 ADC 出力コードはゼロ付近）；典型性能 INL ±0.5LSB、DNL ±0.5LSB、SNR 88dB、THD −103dB、DC CMRR 100dB；低ドリフトオンチップ参照電圧 4.096V（バッファ付、15ppm/°C 典型温度ドリフト）；デジタル機能はオンチップデジタルフィルタ（オーバーサンプリング）、システムオフセット/ゲイン/位相補正、デジタルウィンドウコンパレータ、ADC 出力データランダマイザを含む。',
+        usedIn: '変電所自動化、モータ保護リレーとコンタクタ、モータ制御電流検出、産業自動化、テスト計測等、高精度多チャネル同時サンプリングが必要な場面。',
+        desc: '16 チャネル 16-bit 同時サンプリング SAR ADC。PGA/クランプ/フィルタ前端と 4.096V 低ドリフト参照を統合、1MSPS/チャネル、1/2/4/8-lane 設定可シリアルインタフェース、−40°C~125°C、64-VQFN 8×8mm。',
+        thermalPad: '露出パッド、datasheet 表に Thermal Pad と記載、GND 接続必須（Figure 4-1 図示はパッケージ中央）。',
+        specs: [
+          { k: '分解能/チャネル数', v: '16-bit、16 チャネル同時サンプリング' },
+          { k: 'スループット', v: '各チャネル最高 1MSPS' },
+          { k: '入力フロントエンド', v: 'PGA 統合、1MΩ 入力インピーダンス、シングルエンドと差動入力対応' },
+          { k: '入力範囲', v: '差動 ±12.5V/±10V/±6.25V/±5V/±2.5V；コモンモード電圧 ±12.5V' },
+          { k: 'アナログ帯域', v: '25kHz または 325kHz（選択可）' },
+          { k: '典型性能', v: 'INL ±0.5LSB；DNL ±0.5LSB；SNR 88dB；THD −103dB；DC CMRR 100dB' },
+          { k: '参照電圧', v: 'オンチップ低ドリフト 4.096V＋バッファ、15ppm/°C typical' },
+          { k: 'デジタルインタフェース', v: '1/2/4/8-lane 設定可シリアル出力；2/4/8/16-CH 同時サンプリングモード設定可' },
+          { k: '電源', v: 'アナログ 5V と 1.8V；デジタル I/O 1.8V~3.3V' },
+          { k: '温度範囲', v: '−40°C ~ +125°C' },
+          { k: 'パッケージ', v: '64-VQFN (RSK) 8.00mm × 8.00mm、EP=GND' }
+        ]
+      },
+      ko: {
+        subcategory: '16채널 16-bit 동시 샘플링 SAR ADC(아날로그 프론트엔드 통합)',
+        whatIs: '16채널·16-bit 축차 비교(SAR) 동시 샘플링 데이터 수집 시스템: 각 채널 최고 1MSPS, 각 채널에 완전한 아날로그 프론트엔드 내장 - 1MΩ 입력 임피던스 프로그래머블 이득 증폭기(PGA), 입력 클램프, 저역 필터, ADC 입력 드라이버 - 또한 저드리프트 정밀 참조 전압과 버퍼를 내장해 ADC 구동. 고입력 임피던스로 센서와 트랜스에 직결 가능해 외부 구동 회로 불필요, 차동과 싱글엔드 입력 지원.',
+        func: '시리얼 인터페이스는 1-lane, 2-lane, 4-lane, 8-lane 읽기로 설정 가능; ADC는 2-CH, 4-CH, 8-CH, 16-CH 동시 샘플링 모드로 유연하게 설정 가능; 입력 범위: 차동 ±12.5V/±10V/±6.25V/±5V/±2.5V, 공통 모드 전압 ±12.5V; 아날로그 대역 25kHz와 325kHz 선택; 개방 안전 입력(플로팅 입력 시 ADC 출력 코드는 0 부근); 전형 성능 INL ±0.5LSB, DNL ±0.5LSB, SNR 88dB, THD −103dB, DC CMRR 100dB; 저드리프트 온칩 참조 전압 4.096V(버퍼 포함, 15ppm/°C 전형 온도 드리프트); 디지털 기능은 온칩 디지털 필터(오버샘플링), 시스템 오프셋/이득/위상 보정, 디지털 윈도우 비교기, ADC 출력 데이터 랜덤화기 포함.',
+        usedIn: '변전소 자동화, 모터 보호 릴레이와 접촉기, 모터 제어 전류 감지, 산업 자동화, 테스트 계측 등 고정밀 다채널 동시 샘플링이 필요한 곳.',
+        desc: '16채널 16-bit 동시 샘플링 SAR ADC. PGA/클램프/필터 전단과 4.096V 저드리프트 참조를 통합, 1MSPS/채널, 1/2/4/8-lane 설정 가능 시리얼 인터페이스, −40°C~125°C, 64-VQFN 8×8mm.',
+        thermalPad: '노출 패드, datasheet 표에 Thermal Pad로 기재, GND 연결 필수(Figure 4-1 도시는 패키지 중앙).',
+        specs: [
+          { k: '분해능/채널 수', v: '16-bit, 16채널 동시 샘플링' },
+          { k: '처리율', v: '각 채널 최고 1MSPS' },
+          { k: '입력 프론트엔드', v: 'PGA 통합, 1MΩ 입력 임피던스, 싱글엔드와 차동 입력 지원' },
+          { k: '입력 범위', v: '차동 ±12.5V/±10V/±6.25V/±5V/±2.5V; 공통 모드 전압 ±12.5V' },
+          { k: '아날로그 대역', v: '25kHz 또는 325kHz(선택 가능)' },
+          { k: '전형 성능', v: 'INL ±0.5LSB; DNL ±0.5LSB; SNR 88dB; THD −103dB; DC CMRR 100dB' },
+          { k: '참조 전압', v: '온칩 저드리프트 4.096V+버퍼, 15ppm/°C typical' },
+          { k: '디지털 인터페이스', v: '1/2/4/8-lane 설정 가능 시리얼 출력; 2/4/8/16-CH 동시 샘플링 모드 설정 가능' },
+          { k: '전원', v: '아날로그 5V와 1.8V; 디지털 I/O 1.8V~3.3V' },
+          { k: '온도 범위', v: '−40°C ~ +125°C' },
+          { k: '패키지', v: '64-VQFN (RSK) 8.00mm × 8.00mm, EP=GND' }
+        ]
+      }
+    },
+    'ADC3664-EP': {
+      en: {
+        subcategory: 'Dual-channel 14-bit 125MSPS low-noise low-power ADC (Enhanced Product)',
+        whatIs: 'Low-noise, ultra-low-power dual-channel 14-bit 125MSPS high-speed ADC, designed for best-in-class noise with a noise spectral density of −156.9dBFS/Hz plus linearity and dynamic range; supports IF sampling with latency as short as 2 clock cycles. The -EP suffix means TI “Enhanced Product” grade (not the exposed-pad EP in this table): ASTM E595 outgassing compliance, a VID (Vendor Item Drawing), −55°C~105°C extended temperature range, single fab/assembly/test site, gold-wire bonding with NiPdAu lead finish, wafer-lot traceability and extended product life cycle; -EP is NOT radiation-tolerant (radiation tolerance only in the -SEP version).',
+        func: 'Voltage reference selectable external (1~125MSPS) or internal (100~125MSPS); input bandwidth 200MHz (3dB); INL ±2.6LSB, DNL ±0.9LSB (typical); a built-in optional/bypassable on-chip DSP supports 2/4/8/16/32× decimation and a 32-bit NCO; the serial LVDS digital interface supports 2-wire, 1-wire and 1/2-wire modes; spectral performance (fIN=5MHz): SNR 77.5dBFS, SFDR 84dBc (HD2/HD3), SFDR 92dBFS (worst spur); power 100mW/channel (125MSPS).',
+        usedIn: 'High-speed data acquisition, satellite optical-communication payloads, satellite imaging payloads, satellite communication payloads, satellite RADAR/LIDAR payloads and other space/high-reliability applications.',
+        desc: 'Dual-channel 14-bit 125MSPS low-noise ADC, noise floor −156.9dBFS/Hz, 100mW/channel, serial LVDS interface, 40-QFN 5×5mm; -EP is the Enhanced Product grade (−55°C~105°C, not radiation-tolerant — see -SEP for that).',
+        thermalPad: 'PowerPAD exposed thermal pad = GND (listed on the Pin Functions GND row together with pins 11, 14, 37, 40), must connect to GND.',
+        specs: [
+          { k: 'Channels/resolution/rate', v: 'dual-channel, 14-bit (no missing codes), 125MSPS' },
+          { k: 'Noise floor', v: '−156.9dBFS/Hz' },
+          { k: 'Power', v: '100mW/channel (125MSPS)' },
+          { k: 'Latency', v: '2 clock cycles' },
+          { k: 'Voltage reference', v: 'external: 1~125MSPS; internal: 100~125MSPS' },
+          { k: 'Input bandwidth', v: '200MHz (3dB)' },
+          { k: 'Linearity', v: 'INL ±2.6LSB; DNL ±0.9LSB (typical)' },
+          { k: 'On-chip DSP', v: 'optional/bypassable; 2/4/8/16/32× decimation; 32-bit NCO' },
+          { k: 'Digital interface', v: 'serial LVDS (2-wire, 1-wire, 1/2-wire selectable)' },
+          { k: 'Spectral performance (fIN=5MHz)', v: 'SNR 77.5dBFS; SFDR 84dBc (HD2/HD3); SFDR 92dBFS (worst spur)' },
+          { k: 'Temperature range', v: '−55°C ~ +105°C (Enhanced Product)' },
+          { k: 'Package', v: '40-QFN (RSB) 5mm × 5mm, EP (PowerPAD)=GND' }
+        ]
+      },
+      ja: {
+        subcategory: '2 チャネル 14-bit 125MSPS 低雑音低消費電力 ADC（Enhanced Product）',
+        whatIs: '低雑音・超低消費電力の 2 チャネル 14-bit・125MSPS 高速 ADC。最良の雑音性能を目指した設計で雑音スペクトル密度 −156.9dBFS/Hz、線形性とダイナミックレンジを両立；IF サンプリング対応、最短 2 クロックサイクルの遅延。型番の -EP は TI「Enhanced Product」強化製品グレード（本表 exposed pad の EP 略称ではない）：ASTM E595 アウトガス規格適合、VID（Vendor Item Drawing）あり、−55°C~105°C 拡張温度範囲、単一ウェハ/封裝/試験工場、金線ボンディング＋NiPdAu 端子めっき、ウェハロット追跡可能、延長製品ライフサイクル；-EP は耐放射線特性なし（耐放射線は -SEP 版のみ）。',
+        func: '電圧参照は外部（1~125MSPS）または内部（100~125MSPS）を選択可；入力帯域 200MHz（3dB）；INL ±2.6LSB、DNL ±0.9LSB（typical）；内蔵の選択/バイパス可オンチップ DSP は 2/4/8/16/32 倍デシメーションと 32-bit NCO に対応；シリアル LVDS デジタルインタフェースは 2-wire、1-wire、1/2-wire モード対応；スペクトル性能（fIN=5MHz）：SNR 77.5dBFS、SFDR 84dBc（HD2/HD3）、SFDR 92dBFS（worst spur）；消費電力 100mW/チャネル（125MSPS）。',
+        usedIn: '高速データ収集、衛星光通信ペイロード、衛星撮像ペイロード、衛星通信ペイロード、衛星レーダ・ライダ（RADAR/LIDAR）ペイロード等の宇宙・高信頼用途。',
+        desc: '2 チャネル 14-bit 125MSPS 低雑音 ADC、雑音フロア −156.9dBFS/Hz、100mW/チャネル、シリアル LVDS インタフェース、40-QFN 5×5mm；-EP は強化製品グレード（−55°C~105°C、耐放射線なし、耐放射線は -SEP 参照）。',
+        thermalPad: 'PowerPAD 露出放熱パッド=GND（Pin Functions 表の GND 行にピン 11,14,37,40 と併記）、GND 接続必須。',
+        specs: [
+          { k: 'チャネル/分解能/速度', v: '2 チャネル、14-bit（no missing codes）、125MSPS' },
+          { k: '雑音フロア', v: '−156.9dBFS/Hz' },
+          { k: '消費電力', v: '100mW/チャネル（125MSPS）' },
+          { k: '遅延', v: '2 クロックサイクル' },
+          { k: '電圧参照', v: '外部：1~125MSPS；内部：100~125MSPS' },
+          { k: '入力帯域', v: '200MHz（3dB）' },
+          { k: '線形性', v: 'INL ±2.6LSB；DNL ±0.9LSB（typical）' },
+          { k: 'オンチップ DSP', v: '選択/バイパス可；デシメーション 2/4/8/16/32 倍；32-bit NCO' },
+          { k: 'デジタルインタフェース', v: 'シリアル LVDS（2-wire、1-wire、1/2-wire 選択可）' },
+          { k: 'スペクトル性能（fIN=5MHz）', v: 'SNR 77.5dBFS；SFDR 84dBc（HD2/HD3）；SFDR 92dBFS（worst spur）' },
+          { k: '温度範囲', v: '−55°C ~ +105°C（Enhanced Product）' },
+          { k: 'パッケージ', v: '40-QFN (RSB) 5mm × 5mm、EP(PowerPAD)=GND' }
+        ]
+      },
+      ko: {
+        subcategory: '2채널 14-bit 125MSPS 저잡음 저전력 ADC(Enhanced Product)',
+        whatIs: '저잡음·초저전력 2채널 14-bit·125MSPS 고속 ADC. 최상의 잡음 성능을 목표로 설계되어 잡음 스펙트럼 밀도 −156.9dBFS/Hz, 선형성과 다이내믹 레인지를 겸비; IF 샘플링 지원, 최단 2 클록 사이클 지연. 부품 번호의 -EP는 TI 「Enhanced Product」 강화 제품 등급(본 표 exposed pad의 EP 약칭이 아님): ASTM E595 아웃가스 규격 적합, VID(Vendor Item Drawing) 있음, −55°C~105°C 확장 온도 범위, 단일 웨이퍼/패키지/시험 공장, 금선 본딩+NiPdAu 단자 도금, 웨이퍼 로트 추적 가능, 연장 제품 수명 주기; -EP는 내방사선 특성 없음(내방사선은 -SEP판만).',
+        func: '전압 참조는 외부(1~125MSPS) 또는 내부(100~125MSPS) 선택 가능; 입력 대역 200MHz(3dB); INL ±2.6LSB, DNL ±0.9LSB(typical); 내장 선택/바이패스 가능 온칩 DSP는 2/4/8/16/32배 데시메이션과 32-bit NCO 지원; 시리얼 LVDS 디지털 인터페이스는 2-wire, 1-wire, 1/2-wire 모드 지원; 스펙트럼 성능(fIN=5MHz): SNR 77.5dBFS, SFDR 84dBc(HD2/HD3), SFDR 92dBFS(worst spur); 소비 전력 100mW/채널(125MSPS).',
+        usedIn: '고속 데이터 수집, 위성 광통신 페이로드, 위성 이미징 페이로드, 위성 통신 페이로드, 위성 레이더·라이다(RADAR/LIDAR) 페이로드 등 우주·고신뢰 용도.',
+        desc: '2채널 14-bit 125MSPS 저잡음 ADC, 잡음 바닥 −156.9dBFS/Hz, 100mW/채널, 시리얼 LVDS 인터페이스, 40-QFN 5×5mm; -EP는 강화 제품 등급(−55°C~105°C, 내방사선 아님, 내방사선은 -SEP 참조).',
+        thermalPad: 'PowerPAD 노출 방열 패드=GND(Pin Functions 표의 GND 행에 핀 11,14,37,40과 병기), GND 연결 필수.',
+        specs: [
+          { k: '채널/분해능/속도', v: '2채널, 14-bit(no missing codes), 125MSPS' },
+          { k: '잡음 바닥', v: '−156.9dBFS/Hz' },
+          { k: '소비 전력', v: '100mW/채널(125MSPS)' },
+          { k: '지연', v: '2 클록 사이클' },
+          { k: '전압 참조', v: '외부: 1~125MSPS; 내부: 100~125MSPS' },
+          { k: '입력 대역', v: '200MHz(3dB)' },
+          { k: '선형성', v: 'INL ±2.6LSB; DNL ±0.9LSB(typical)' },
+          { k: '온칩 DSP', v: '선택/바이패스 가능; 데시메이션 2/4/8/16/32배; 32-bit NCO' },
+          { k: '디지털 인터페이스', v: '시리얼 LVDS(2-wire, 1-wire, 1/2-wire 선택 가능)' },
+          { k: '스펙트럼 성능(fIN=5MHz)', v: 'SNR 77.5dBFS; SFDR 84dBc(HD2/HD3); SFDR 92dBFS(worst spur)' },
+          { k: '온도 범위', v: '−55°C ~ +105°C(Enhanced Product)' },
+          { k: '패키지', v: '40-QFN (RSB) 5mm × 5mm, EP(PowerPAD)=GND' }
+        ]
+      }
+    },
+    'MSPM0C1105-Q1': {
+      en: {
+        subcategory: 'Automotive Arm Cortex-M0+ mixed-signal MCU (32KB flash / 8KB RAM)',
+        whatIs: mcWhat('en', 'MSPM0C1105-Q1 = 32KB flash / 8KB RAM; the sibling MSPM0C1106-Q1', '64KB flash / 8KB RAM'),
+        func: mcFunc.en, usedIn: mcUsed.en,
+        desc: 'Automotive Arm Cortex-M0+ MCU, up to 32MHz / 32KB flash / 8KB SRAM, 12-bit 1.6Msps ADC (up to 27 channels), AEC-Q100 Grade 1, multiple packages incl. 48-VQFN (RGZ).',
+        thermalPad: mcPad.en,
+        specs: mcSpecs('en', 'MSPM0C1105-Q1: 32KB flash / 8KB SRAM (sibling MSPM0C1106-Q1: 64KB flash / 8KB SRAM)')
+      },
+      ja: {
+        subcategory: '車載 Arm Cortex-M0+ 混合信号 MCU（32KB flash／8KB RAM）',
+        whatIs: mcWhat('ja', 'MSPM0C1105-Q1＝32KB flash／8KB RAM；同シリーズ MSPM0C1106-Q1', '64KB flash／8KB RAM'),
+        func: mcFunc.ja, usedIn: mcUsed.ja,
+        desc: '車載 Arm Cortex-M0+ MCU、最高 32MHz／32KB flash／8KB SRAM、12-bit 1.6Msps ADC（最大 27 チャネル）、AEC-Q100 Grade 1、48-VQFN (RGZ) 等の複数パッケージ選択可。',
+        thermalPad: mcPad.ja,
+        specs: mcSpecs('ja', 'MSPM0C1105-Q1：32KB flash／8KB SRAM（同シリーズ MSPM0C1106-Q1：64KB flash／8KB SRAM）')
+      },
+      ko: {
+        subcategory: '차량용 Arm Cortex-M0+ 혼합 신호 MCU(32KB flash / 8KB RAM)',
+        whatIs: mcWhat('ko', 'MSPM0C1105-Q1 = 32KB flash / 8KB RAM; 동일 시리즈 MSPM0C1106-Q1', '64KB flash / 8KB RAM'),
+        func: mcFunc.ko, usedIn: mcUsed.ko,
+        desc: '차량용 Arm Cortex-M0+ MCU, 최고 32MHz / 32KB flash / 8KB SRAM, 12-bit 1.6Msps ADC(최대 27채널), AEC-Q100 Grade 1, 48-VQFN (RGZ) 등 복수 패키지 선택 가능.',
+        thermalPad: mcPad.ko,
+        specs: mcSpecs('ko', 'MSPM0C1105-Q1: 32KB flash / 8KB SRAM(동일 시리즈 MSPM0C1106-Q1: 64KB flash / 8KB SRAM)')
+      }
+    },
+    'MSPM0C1106-Q1': {
+      en: {
+        subcategory: 'Automotive Arm Cortex-M0+ mixed-signal MCU (64KB flash / 8KB RAM)',
+        whatIs: mcWhat('en', 'MSPM0C1106-Q1 = 64KB flash / 8KB RAM; the sibling MSPM0C1105-Q1', '32KB flash / 8KB RAM'),
+        func: mcFunc.en, usedIn: mcUsed.en,
+        desc: 'Automotive Arm Cortex-M0+ MCU, up to 32MHz / 64KB flash / 8KB SRAM, 12-bit 1.6Msps ADC (up to 27 channels), AEC-Q100 Grade 1, multiple packages incl. 48-VQFN (RGZ).',
+        thermalPad: mcPad.en,
+        specs: mcSpecs('en', 'MSPM0C1106-Q1: 64KB flash / 8KB SRAM (sibling MSPM0C1105-Q1: 32KB flash / 8KB SRAM)'),
+        dropIn: [{ note: 'Same datasheet (TI SLASFJ7A, same md5), identical 48-VQFN (RGZ) pinout; only memory differs: C1105=32KB flash/8KB RAM, C1106=64KB flash/8KB RAM' }]
+      },
+      ja: {
+        subcategory: '車載 Arm Cortex-M0+ 混合信号 MCU（64KB flash／8KB RAM）',
+        whatIs: mcWhat('ja', 'MSPM0C1106-Q1＝64KB flash／8KB RAM；同シリーズ MSPM0C1105-Q1', '32KB flash／8KB RAM'),
+        func: mcFunc.ja, usedIn: mcUsed.ja,
+        desc: '車載 Arm Cortex-M0+ MCU、最高 32MHz／64KB flash／8KB SRAM、12-bit 1.6Msps ADC（最大 27 チャネル）、AEC-Q100 Grade 1、48-VQFN (RGZ) 等の複数パッケージ選択可。',
+        thermalPad: mcPad.ja,
+        specs: mcSpecs('ja', 'MSPM0C1106-Q1：64KB flash／8KB SRAM（同シリーズ MSPM0C1105-Q1：32KB flash／8KB SRAM）'),
+        dropIn: [{ note: '同一 datasheet（TI SLASFJ7A、md5 同一）、48-VQFN (RGZ) pinout 完全同一、メモリのみ異なる：C1105=32KB flash／8KB RAM、C1106=64KB flash／8KB RAM' }]
+      },
+      ko: {
+        subcategory: '차량용 Arm Cortex-M0+ 혼합 신호 MCU(64KB flash / 8KB RAM)',
+        whatIs: mcWhat('ko', 'MSPM0C1106-Q1 = 64KB flash / 8KB RAM; 동일 시리즈 MSPM0C1105-Q1', '32KB flash / 8KB RAM'),
+        func: mcFunc.ko, usedIn: mcUsed.ko,
+        desc: '차량용 Arm Cortex-M0+ MCU, 최고 32MHz / 64KB flash / 8KB SRAM, 12-bit 1.6Msps ADC(최대 27채널), AEC-Q100 Grade 1, 48-VQFN (RGZ) 등 복수 패키지 선택 가능.',
+        thermalPad: mcPad.ko,
+        specs: mcSpecs('ko', 'MSPM0C1106-Q1: 64KB flash / 8KB SRAM(동일 시리즈 MSPM0C1105-Q1: 32KB flash / 8KB SRAM)'),
+        dropIn: [{ note: '동일 datasheet(TI SLASFJ7A, md5 동일), 48-VQFN (RGZ) pinout 완전 동일, 메모리만 다름: C1105=32KB flash/8KB RAM, C1106=64KB flash/8KB RAM' }]
+      }
+    },
+    'MSPM0L1126': {
+      en: {
+        subcategory: 'Arm Cortex-M0+ mixed-signal MCU (64KB flash / 12KB RAM, no LCD)',
+        whatIs: 'Mixed-signal MCU: Arm 32-bit Cortex-M0+ core (with MPU, up to 32MHz), −40°C~125°C operation, 1.62V~3.6V supply, up to 128KB flash (with ECC) + 12KB SRAM (ECC or parity), built-in 12-bit 1.6Msps ADC (up to 26 external channels), a comparator (COMP) with 8-bit reference DAC, an integrated temperature sensor, an AES accelerator (GCM/GMAC, CCM/CBC-MAC, CBC, CTR) + secure key storage; packages include 64-pin LQFP (PM), 48-pin LQFP (PT)/VQFN (RGZ), 32-pin VQFN (RHB), 28-pin VSSOP (DGS28)/WQFN-28 (RUY), 24-pin VQFN (RGE). MSPM0L1126 = 64KB flash / 12KB RAM; the sibling MSPM0L1127 = 128KB flash / 12KB RAM. (The same family datasheet also covers the LCD-controller siblings MSPM0L2116/L2117 — not this entry; L1126/L1127 have no LCD.)',
+        func: 'Low-power modes: RUN 98µA/MHz (CoreMark), SLEEP 1.3mA@32MHz, STOP 403µA@4MHz, STANDBY 1.6µA (full SRAM/register retention), SHUTDOWN 81nA (I/O wake). Digital peripherals: 3-channel DMA, 15-channel event fabric, up to 8 timers with up to 16 PWM outputs (7 of them operable in STANDBY): one 16-bit advanced timer with deadband (up to 64MHz), one 16-bit general timer with 4 capture/compares, two 16-bit general timers with 2 capture/compares each, four 16-bit basic timers; WWDT and IWDT watchdogs. Comms: up to 3× UART (one with LIN, IrDA, DALI, smart card, Manchester), up to 2× I2C (SMBus/PMBus, STOP-mode wake, up to FM+ 1Mbps), up to 2× SPI (up to 16Mbps). Clocking: built-in 32MHz SYSOSC (−2.1%~1.6%), built-in 32kHz LFOSC (±3%), external 4MHz~32MHz HFXT, external 32kHz LFXT, external LF/HF digital clock inputs, digital clock output. Data integrity & crypto: CRC-16, AES accelerator, secure key storage (one 256-bit or two 128-bit AES keys). I/O: up to 60 GPIOs, 2 of them 5V-tolerant open-drain (on the 48-VQFN RGZ: 44 usable GPIOs + NRST/VDD/VSS/VCORE = 48 pins). Development: 2-pin SWD.',
+        usedIn: 'Battery charge/discharge management, power supplies and power delivery, personal electronics, building security and fire safety, connected peripherals and printers, grid infrastructure, smart meters, communication modules, medical and healthcare.',
+        desc: 'Arm Cortex-M0+ MCU, up to 32MHz / 64KB flash / 12KB SRAM, 12-bit 1.6Msps ADC (up to 26 channels), AES accelerator + secure key storage, −40°C~125°C, multiple packages incl. 48-VQFN (RGZ) (no LCD; the L2116/L2117 siblings have LCD).',
+        thermalPad: 'Exposed pad (datasheet Figure 6-2 48-pin RGZ marks the center Thermal Pad), must connect to the board ground plane.',
+        specs: [
+          { k: 'Core', v: 'Arm 32-bit Cortex-M0+ with MPU, up to 32MHz' },
+          { k: 'Operating temperature', v: '−40°C ~ 125°C (the datasheet does not mark AEC-Q100 — not the -Q1 automotive version)' },
+          { k: 'Supply range', v: '1.62V ~ 3.6V' },
+          { k: 'Memory', v: 'MSPM0L1126: 64KB flash (ECC) / 12KB SRAM (ECC or parity) (sibling MSPM0L1127: 128KB flash / 12KB SRAM)' },
+          { k: 'ADC', v: '12-bit, 1.6Msps, up to 26 external channels (family max; actual channels on 48-VQFN RGZ per the pin table)' },
+          { k: 'Reference', v: 'configurable 1.4V or 2.5V internal shared VREF' },
+          { k: 'Comparator', v: 'COMP with 8-bit reference DAC; integrated temperature sensor' },
+          { k: 'Crypto/security', v: 'AES accelerator (GCM/GMAC, CCM/CBC-MAC, CBC, CTR); secure key storage 1×256-bit or 2×128-bit AES keys; CRC-16' },
+          { k: 'Low power', v: 'RUN 98µA/MHz (CoreMark); SLEEP 1.3mA@32MHz; STOP 403µA@4MHz; STANDBY 1.6µA; SHUTDOWN 81nA (I/O wake)' },
+          { k: 'Comms', v: 'up to 3×UART (one with LIN/IrDA/DALI/smart card/Manchester); up to 2×I2C (SMBus/PMBus, up to FM+ 1Mbps); up to 2×SPI (up to 16Mbps)' },
+          { k: 'Clocking', v: 'built-in 32MHz SYSOSC (−2.1%~1.6%); built-in 32kHz LFOSC (±3%); external 4~32MHz HFXT; external 32kHz LFXT' },
+          { k: 'I/O', v: 'up to 60 GPIOs, 2 of them 5V-tolerant open-drain; on 48-VQFN (RGZ): 44 GPIOs + NRST/VDD/VSS/VCORE' },
+          { k: 'Package options', v: '64-pin LQFP (PM); 48-pin LQFP (PT)/VQFN (RGZ); 32-pin VQFN (RHB); 28-pin VSSOP (DGS28)/WQFN-28 (RUY); 24-pin VQFN (RGE)' },
+          { k: 'Debug', v: '2-pin SWD' },
+          { k: 'Family differences', v: 'MSPM0L2116/L2117 add an LCD controller (up to 4x48/8x44 LCD); this entry’s L1126/L1127 have no LCD' }
+        ],
+        dropIn: [{ note: 'Same family datasheet (TI SLASFN5, same md5), identical Table 6-2 RGZ 48-VQFN pinout; only memory differs: L1126=64KB flash/12KB RAM, L1127=128KB flash/12KB RAM' }]
+      },
+      ja: {
+        subcategory: 'Arm Cortex-M0+ 混合信号 MCU（64KB flash／12KB RAM・LCD なし）',
+        whatIs: '混合信号 MCU：Arm 32-bit Cortex-M0+ コア（MPU 付、最高 32MHz）、動作温度 −40°C~125°C、電源範囲 1.62V~3.6V、最大 128KB flash（ECC 付）＋12KB SRAM（ECC または parity）、12-bit 1.6Msps ADC（最大 26 外部チャネル）、8-bit 基準 DAC 付コンパレータ（COMP）、温度センサ統合、AES アクセラレータ（GCM/GMAC、CCM/CBC-MAC、CBC、CTR）＋セキュア鍵ストレージ内蔵；パッケージは 64-pin LQFP (PM)、48-pin LQFP (PT)／VQFN (RGZ)、32-pin VQFN (RHB)、28-pin VSSOP (DGS28)／WQFN-28 (RUY)、24-pin VQFN (RGE)。MSPM0L1126＝64KB flash／12KB RAM；同シリーズ MSPM0L1127＝128KB flash／12KB RAM。（同一 family datasheet は LCD コントローラ付の姉妹品 MSPM0L2116／L2117 も収録、本条目対象外；L1126/L1127 は LCD なし）',
+        func: '低消費電力モード：RUN 98µA/MHz（CoreMark）、SLEEP 1.3mA@32MHz、STOP 403µA@4MHz、STANDBY 1.6µA（SRAM とレジスタ全保持）、SHUTDOWN 81nA（I/O ウェイク対応）。デジタル周辺：3 チャネル DMA、15 チャネルイベントファブリック、最大 8 個のタイマで最大 16 系統 PWM 出力（うち 7 個は STANDBY 動作可）：deadband 付 16-bit 先進タイマ 1 個（最高 64MHz）、capture/compare 4 組付 16-bit 汎用タイマ 1 個、capture/compare 各 2 組の 16-bit 汎用タイマ 2 個、16-bit 基本タイマ 4 個；WWDT と IWDT。通信：最大 3 組 UART（1 組は LIN・IrDA・DALI・smart card・Manchester 対応）、最大 2 組 I2C（SMBus/PMBus、STOP モードウェイク、最高 FM+ 1Mbps）、最大 2 組 SPI（最高 16Mbps）。クロック：内蔵 32MHz SYSOSC（−2.1%~1.6%）、内蔵 32kHz LFOSC（±3%）、外部 4MHz~32MHz HFXT、外部 32kHz LFXT、外部低/高周波デジタルクロック入力、デジタルクロック出力。データ完全性と暗号：CRC-16、AES アクセラレータ、セキュア鍵ストレージ（256-bit×1 または 128-bit×2 AES 鍵）。I/O：最大 60 GPIO、うち 2 個 5V 耐圧オープンドレイン（48-VQFN RGZ では実際 44 GPIO＋NRST/VDD/VSS/VCORE の計 48 ピン）。開発：2-pin SWD。',
+        usedIn: '電池充放電管理、電源供給と電力伝送、パーソナル電子機器、ビルセキュリティ・防火、コネクテッド周辺機器とプリンタ、電力網インフラ、スマートメータ、通信モジュール、医療・ヘルスケア等の用途。',
+        desc: 'Arm Cortex-M0+ MCU、最高 32MHz／64KB flash／12KB SRAM、12-bit 1.6Msps ADC（最大 26 チャネル）、AES アクセラレータ＋セキュア鍵ストレージ、動作温度 −40°C~125°C、48-VQFN (RGZ) 等の複数パッケージ選択可（LCD なし；同シリーズ L2116/L2117 は LCD 付）。',
+        thermalPad: '露出パッド（datasheet 図 6-2 48-pin RGZ 中央に Thermal Pad 表記）、基板接地プレーンに接続必須。',
+        specs: [
+          { k: 'コア', v: 'Arm 32-bit Cortex-M0+、MPU 付、最高 32MHz' },
+          { k: '動作温度', v: '−40°C ~ 125°C（datasheet に AEC-Q100 車載認証表記なし、-Q1 車載版でない）' },
+          { k: '電源範囲', v: '1.62V ~ 3.6V' },
+          { k: 'メモリ', v: 'MSPM0L1126：64KB flash（ECC）／12KB SRAM（ECC または parity）（同シリーズ MSPM0L1127：128KB flash／12KB SRAM）' },
+          { k: 'ADC', v: '12-bit、1.6Msps、最大 26 外部チャネル（ファミリ最大値；48-VQFN RGZ の実際の使用可能チャネル数はピン表参照）' },
+          { k: '基準電圧', v: '設定可能 1.4V または 2.5V 内部共用 VREF' },
+          { k: 'コンパレータ', v: 'COMP、8-bit 基準 DAC 付；温度センサ統合' },
+          { k: '暗号/セキュリティ', v: 'AES アクセラレータ（GCM/GMAC、CCM/CBC-MAC、CBC、CTR）；セキュア鍵ストレージ 1×256-bit または 2×128-bit AES 鍵；CRC-16' },
+          { k: '低消費電力', v: 'RUN 98µA/MHz（CoreMark）；SLEEP 1.3mA@32MHz；STOP 403µA@4MHz；STANDBY 1.6µA；SHUTDOWN 81nA（I/O ウェイク）' },
+          { k: '通信', v: '最大 3×UART（1 組 LIN/IrDA/DALI/smart card/Manchester 対応）；最大 2×I2C（SMBus/PMBus、最高 FM+ 1Mbps）；最大 2×SPI（最高 16Mbps）' },
+          { k: 'クロック', v: '内蔵 32MHz SYSOSC（−2.1%~1.6%）；内蔵 32kHz LFOSC（±3%）；外部 4~32MHz HFXT；外部 32kHz LFXT' },
+          { k: 'I/O', v: '最大 60 GPIO、うち 2 個 5V 耐圧オープンドレイン；48-VQFN (RGZ) では 44 GPIO＋NRST/VDD/VSS/VCORE' },
+          { k: 'パッケージ選択肢', v: '64-pin LQFP (PM)；48-pin LQFP (PT)／VQFN (RGZ)；32-pin VQFN (RHB)；28-pin VSSOP (DGS28)／WQFN-28 (RUY)；24-pin VQFN (RGE)' },
+          { k: 'デバッグ', v: '2-pin SWD' },
+          { k: '同シリーズ差異', v: 'MSPM0L2116/L2117 は LCD コントローラ付（最大 4x48／8x44 LCD）、本条目の L1126/L1127 は LCD なし' }
+        ],
+        dropIn: [{ note: '同一 family datasheet（TI SLASFN5、md5 同一）、Table 6-2 RGZ 48-VQFN pinout 完全同一、メモリのみ異なる：L1126=64KB flash／12KB RAM、L1127=128KB flash／12KB RAM' }]
+      },
+      ko: {
+        subcategory: 'Arm Cortex-M0+ 혼합 신호 MCU(64KB flash / 12KB RAM·LCD 없음)',
+        whatIs: '혼합 신호 MCU: Arm 32-bit Cortex-M0+ 코어(MPU 포함, 최고 32MHz), 동작 온도 −40°C~125°C, 전원 범위 1.62V~3.6V, 최대 128KB flash(ECC 포함)+12KB SRAM(ECC 또는 parity), 12-bit 1.6Msps ADC(최대 26 외부 채널), 8-bit 기준 DAC 포함 비교기(COMP), 온도 센서 통합, AES 가속기(GCM/GMAC, CCM/CBC-MAC, CBC, CTR)+보안 키 저장 내장; 패키지는 64-pin LQFP (PM), 48-pin LQFP (PT)/VQFN (RGZ), 32-pin VQFN (RHB), 28-pin VSSOP (DGS28)/WQFN-28 (RUY), 24-pin VQFN (RGE). MSPM0L1126 = 64KB flash / 12KB RAM; 동일 시리즈 MSPM0L1127 = 128KB flash / 12KB RAM. (동일 family datasheet는 LCD 컨트롤러 포함 자매품 MSPM0L2116/L2117도 수록, 본 항목 대상 외; L1126/L1127은 LCD 없음)',
+        func: '저전력 모드: RUN 98µA/MHz(CoreMark), SLEEP 1.3mA@32MHz, STOP 403µA@4MHz, STANDBY 1.6µA(SRAM·레지스터 전체 유지), SHUTDOWN 81nA(I/O 웨이크 지원). 디지털 주변: 3채널 DMA, 15채널 이벤트 패브릭, 최대 8개 타이머로 최대 16계통 PWM 출력(그중 7개는 STANDBY 동작 가능): deadband 포함 16-bit 고급 타이머 1개(최고 64MHz), capture/compare 4조 포함 16-bit 범용 타이머 1개, capture/compare 각 2조의 16-bit 범용 타이머 2개, 16-bit 기본 타이머 4개; WWDT와 IWDT. 통신: 최대 3조 UART(1조는 LIN·IrDA·DALI·smart card·Manchester 지원), 최대 2조 I2C(SMBus/PMBus, STOP 모드 웨이크, 최고 FM+ 1Mbps), 최대 2조 SPI(최고 16Mbps). 클록: 내장 32MHz SYSOSC(−2.1%~1.6%), 내장 32kHz LFOSC(±3%), 외부 4MHz~32MHz HFXT, 외부 32kHz LFXT, 외부 저/고주파 디지털 클록 입력, 디지털 클록 출력. 데이터 무결성과 암호: CRC-16, AES 가속기, 보안 키 저장(256-bit×1 또는 128-bit×2 AES 키). I/O: 최대 60 GPIO, 그중 2개 5V 내압 오픈 드레인(48-VQFN RGZ에서는 실제 44 GPIO+NRST/VDD/VSS/VCORE 총 48핀). 개발: 2-pin SWD.',
+        usedIn: '배터리 충방전 관리, 전원 공급과 전력 전송, 개인 전자제품, 빌딩 보안·방화, 커넥티드 주변기기와 프린터, 전력망 인프라, 스마트 미터, 통신 모듈, 의료·헬스케어 등 용도.',
+        desc: 'Arm Cortex-M0+ MCU, 최고 32MHz / 64KB flash / 12KB SRAM, 12-bit 1.6Msps ADC(최대 26채널), AES 가속기+보안 키 저장, 동작 온도 −40°C~125°C, 48-VQFN (RGZ) 등 복수 패키지 선택 가능(LCD 없음; 동일 시리즈 L2116/L2117은 LCD 포함).',
+        thermalPad: '노출 패드(datasheet 그림 6-2 48-pin RGZ 중앙에 Thermal Pad 표기), 보드 접지 플레인에 연결 필수.',
+        specs: [
+          { k: '코어', v: 'Arm 32-bit Cortex-M0+, MPU 포함, 최고 32MHz' },
+          { k: '동작 온도', v: '−40°C ~ 125°C(datasheet에 AEC-Q100 차량 인증 표기 없음, -Q1 차량판 아님)' },
+          { k: '전원 범위', v: '1.62V ~ 3.6V' },
+          { k: '메모리', v: 'MSPM0L1126: 64KB flash(ECC) / 12KB SRAM(ECC 또는 parity)(동일 시리즈 MSPM0L1127: 128KB flash / 12KB SRAM)' },
+          { k: 'ADC', v: '12-bit, 1.6Msps, 최대 26 외부 채널(패밀리 최대값; 48-VQFN RGZ의 실제 사용 가능 채널 수는 핀 표 참조)' },
+          { k: '기준 전압', v: '설정 가능 1.4V 또는 2.5V 내부 공용 VREF' },
+          { k: '비교기', v: 'COMP, 8-bit 기준 DAC 포함; 온도 센서 통합' },
+          { k: '암호/보안', v: 'AES 가속기(GCM/GMAC, CCM/CBC-MAC, CBC, CTR); 보안 키 저장 1×256-bit 또는 2×128-bit AES 키; CRC-16' },
+          { k: '저전력', v: 'RUN 98µA/MHz(CoreMark); SLEEP 1.3mA@32MHz; STOP 403µA@4MHz; STANDBY 1.6µA; SHUTDOWN 81nA(I/O 웨이크)' },
+          { k: '통신', v: '최대 3×UART(1조 LIN/IrDA/DALI/smart card/Manchester 지원); 최대 2×I2C(SMBus/PMBus, 최고 FM+ 1Mbps); 최대 2×SPI(최고 16Mbps)' },
+          { k: '클록', v: '내장 32MHz SYSOSC(−2.1%~1.6%); 내장 32kHz LFOSC(±3%); 외부 4~32MHz HFXT; 외부 32kHz LFXT' },
+          { k: 'I/O', v: '최대 60 GPIO, 그중 2개 5V 내압 오픈 드레인; 48-VQFN (RGZ)에서는 44 GPIO+NRST/VDD/VSS/VCORE' },
+          { k: '패키지 선택지', v: '64-pin LQFP (PM); 48-pin LQFP (PT)/VQFN (RGZ); 32-pin VQFN (RHB); 28-pin VSSOP (DGS28)/WQFN-28 (RUY); 24-pin VQFN (RGE)' },
+          { k: '디버그', v: '2-pin SWD' },
+          { k: '동일 시리즈 차이', v: 'MSPM0L2116/L2117은 LCD 컨트롤러 포함(최대 4x48/8x44 LCD), 본 항목의 L1126/L1127은 LCD 없음' }
+        ],
+        dropIn: [{ note: '동일 family datasheet(TI SLASFN5, md5 동일), Table 6-2 RGZ 48-VQFN pinout 완전 동일, 메모리만 다름: L1126=64KB flash/12KB RAM, L1127=128KB flash/12KB RAM' }]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
