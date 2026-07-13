@@ -7478,3 +7478,414 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+/* batch 12A: entries 144-149 */
+(function () {
+  var T = {
+    'MSPM0L1127': {
+      en: {
+        subcategory: 'Arm Cortex-M0+ mixed-signal MCU (128KB flash / 12KB RAM, no LCD)',
+        whatIs: 'Mixed-signal MCU: Arm 32-bit Cortex-M0+ core (with MPU, up to 32MHz), −40°C~125°C operation, 1.62V~3.6V supply, up to 128KB flash (with ECC) + 12KB SRAM (ECC or parity), built-in 12-bit 1.6Msps ADC (up to 26 external channels), a comparator (COMP) with 8-bit reference DAC, an integrated temperature sensor, an AES accelerator (GCM/GMAC, CCM/CBC-MAC, CBC, CTR) + secure key storage; packages include 64-pin LQFP (PM), 48-pin LQFP (PT)/VQFN (RGZ), 32-pin VQFN (RHB), 28-pin VSSOP (DGS28)/WQFN-28 (RUY), 24-pin VQFN (RGE). MSPM0L1127 = 128KB flash / 12KB RAM; the sibling MSPM0L1126 = 64KB flash / 12KB RAM. (The same family datasheet also covers the LCD-controller siblings MSPM0L2116/L2117 — not this entry; L1126/L1127 have no LCD.)',
+        func: 'Low-power modes: RUN 98µA/MHz (CoreMark), SLEEP 1.3mA@32MHz, STOP 403µA@4MHz, STANDBY 1.6µA (full SRAM/register retention), SHUTDOWN 81nA (I/O wake). Digital peripherals: 3-channel DMA, 15-channel event fabric, up to 8 timers with up to 16 PWM outputs (7 of them operable in STANDBY): one 16-bit advanced timer with deadband (up to 64MHz), one 16-bit general timer with 4 capture/compares, two 16-bit general timers with 2 capture/compares each, four 16-bit basic timers; WWDT and IWDT watchdogs. Comms: up to 3× UART (one with LIN, IrDA, DALI, smart card, Manchester), up to 2× I2C (SMBus/PMBus, STOP-mode wake, up to FM+ 1Mbps), up to 2× SPI (up to 16Mbps). Clocking: built-in 32MHz SYSOSC (−2.1%~1.6%), built-in 32kHz LFOSC (±3%), external 4MHz~32MHz HFXT, external 32kHz LFXT, external LF/HF digital clock inputs, digital clock output. Data integrity & crypto: CRC-16, AES accelerator, secure key storage (one 256-bit or two 128-bit AES keys). I/O: up to 60 GPIOs, 2 of them 5V-tolerant open-drain (on the 48-VQFN RGZ: 44 usable GPIOs + NRST/VDD/VSS/VCORE = 48 pins). Development: 2-pin SWD.',
+        usedIn: 'Battery charge/discharge management, power supplies and power delivery, personal electronics, building security and fire safety, connected peripherals and printers, grid infrastructure, smart meters, communication modules, medical and healthcare.',
+        desc: 'Arm Cortex-M0+ MCU, up to 32MHz / 128KB flash / 12KB SRAM, 12-bit 1.6Msps ADC (up to 26 channels), AES accelerator + secure key storage, −40°C~125°C, multiple packages incl. 48-VQFN (RGZ) (no LCD; the L2116/L2117 siblings have LCD).',
+        thermalPad: 'Exposed pad (datasheet Figure 6-2 48-pin RGZ marks the center Thermal Pad), must connect to the board ground plane.',
+        specs: [
+          { k: 'Core', v: 'Arm 32-bit Cortex-M0+ with MPU, up to 32MHz' },
+          { k: 'Operating temperature', v: '−40°C ~ 125°C (the datasheet does not mark AEC-Q100 — not the -Q1 automotive version)' },
+          { k: 'Supply range', v: '1.62V ~ 3.6V' },
+          { k: 'Memory', v: 'MSPM0L1127: 128KB flash (ECC) / 12KB SRAM (ECC or parity) (sibling MSPM0L1126: 64KB flash / 12KB RAM)' },
+          { k: 'ADC', v: '12-bit, 1.6Msps, up to 26 external channels (family max; actual channels on 48-VQFN RGZ per the pin table)' },
+          { k: 'Reference', v: 'configurable 1.4V or 2.5V internal shared VREF' },
+          { k: 'Comparator', v: 'COMP with 8-bit reference DAC; integrated temperature sensor' },
+          { k: 'Crypto/security', v: 'AES accelerator (GCM/GMAC, CCM/CBC-MAC, CBC, CTR); secure key storage 1×256-bit or 2×128-bit AES keys; CRC-16' },
+          { k: 'Low power', v: 'RUN 98µA/MHz (CoreMark); SLEEP 1.3mA@32MHz; STOP 403µA@4MHz; STANDBY 1.6µA; SHUTDOWN 81nA (I/O wake)' },
+          { k: 'Comms', v: 'up to 3×UART (one with LIN/IrDA/DALI/smart card/Manchester); up to 2×I2C (SMBus/PMBus, up to FM+ 1Mbps); up to 2×SPI (up to 16Mbps)' },
+          { k: 'Clocking', v: 'built-in 32MHz SYSOSC (−2.1%~1.6%); built-in 32kHz LFOSC (±3%); external 4~32MHz HFXT; external 32kHz LFXT' },
+          { k: 'I/O', v: 'up to 60 GPIOs, 2 of them 5V-tolerant open-drain; on 48-VQFN (RGZ): 44 GPIOs + NRST/VDD/VSS/VCORE' },
+          { k: 'Package options', v: '64-pin LQFP (PM); 48-pin LQFP (PT)/VQFN (RGZ); 32-pin VQFN (RHB); 28-pin VSSOP (DGS28)/WQFN-28 (RUY); 24-pin VQFN (RGE)' },
+          { k: 'Debug', v: '2-pin SWD' },
+          { k: 'Family differences', v: 'MSPM0L2116/L2117 add an LCD controller (up to 4x48/8x44 LCD); this entry’s L1126/L1127 have no LCD' }
+        ],
+        dropIn: [{ note: 'Same family datasheet (TI SLASFN5, same md5), identical Table 6-2 RGZ 48-VQFN pinout; only memory differs: L1127=128KB flash/12KB RAM, L1126=64KB flash/12KB RAM' }]
+      },
+      ja: {
+        subcategory: 'Arm Cortex-M0+ 混合信号 MCU（128KB flash／12KB RAM・LCD なし）',
+        whatIs: '混合信号 MCU：Arm 32-bit Cortex-M0+ コア（MPU 付、最高 32MHz）、動作温度 −40°C~125°C、電源範囲 1.62V~3.6V、最大 128KB flash（ECC 付）＋12KB SRAM（ECC または parity）、12-bit 1.6Msps ADC（最大 26 外部チャネル）、8-bit 基準 DAC 付コンパレータ（COMP）、温度センサ統合、AES アクセラレータ（GCM/GMAC、CCM/CBC-MAC、CBC、CTR）＋セキュア鍵ストレージ内蔵；パッケージは 64-pin LQFP (PM)、48-pin LQFP (PT)／VQFN (RGZ)、32-pin VQFN (RHB)、28-pin VSSOP (DGS28)／WQFN-28 (RUY)、24-pin VQFN (RGE)。MSPM0L1127＝128KB flash／12KB RAM；同シリーズ MSPM0L1126＝64KB flash／12KB RAM。（同一 family datasheet は LCD コントローラ付の姉妹品 MSPM0L2116／L2117 も収録、本条目対象外；L1126/L1127 は LCD なし）',
+        func: '低消費電力モード：RUN 98µA/MHz（CoreMark）、SLEEP 1.3mA@32MHz、STOP 403µA@4MHz、STANDBY 1.6µA（SRAM とレジスタ全保持）、SHUTDOWN 81nA（I/O ウェイク対応）。デジタル周辺：3 チャネル DMA、15 チャネルイベントファブリック、最大 8 個のタイマで最大 16 系統 PWM 出力（うち 7 個は STANDBY 動作可）：deadband 付 16-bit 先進タイマ 1 個（最高 64MHz）、capture/compare 4 組付 16-bit 汎用タイマ 1 個、capture/compare 各 2 組の 16-bit 汎用タイマ 2 個、16-bit 基本タイマ 4 個；WWDT と IWDT。通信：最大 3 組 UART（1 組は LIN・IrDA・DALI・smart card・Manchester 対応）、最大 2 組 I2C（SMBus/PMBus、STOP モードウェイク、最高 FM+ 1Mbps）、最大 2 組 SPI（最高 16Mbps）。クロック：内蔵 32MHz SYSOSC（−2.1%~1.6%）、内蔵 32kHz LFOSC（±3%）、外部 4MHz~32MHz HFXT、外部 32kHz LFXT、外部低/高周波デジタルクロック入力、デジタルクロック出力。データ完全性と暗号：CRC-16、AES アクセラレータ、セキュア鍵ストレージ（256-bit×1 または 128-bit×2 AES 鍵）。I/O：最大 60 GPIO、うち 2 個 5V 耐圧オープンドレイン（48-VQFN RGZ では実際 44 GPIO＋NRST/VDD/VSS/VCORE の計 48 ピン）。開発：2-pin SWD。',
+        usedIn: '電池充放電管理、電源供給と電力伝送、パーソナル電子機器、ビルセキュリティ・防火、コネクテッド周辺機器とプリンタ、電力網インフラ、スマートメータ、通信モジュール、医療・ヘルスケア等の用途。',
+        desc: 'Arm Cortex-M0+ MCU、最高 32MHz／128KB flash／12KB SRAM、12-bit 1.6Msps ADC（最大 26 チャネル）、AES アクセラレータ＋セキュア鍵ストレージ、動作温度 −40°C~125°C、48-VQFN (RGZ) 等の複数パッケージ選択可（LCD なし；同シリーズ L2116/L2117 は LCD 付）。',
+        thermalPad: '露出パッド（datasheet 図 6-2 48-pin RGZ 中央に Thermal Pad 表記）、基板接地プレーンに接続必須。',
+        specs: [
+          { k: 'コア', v: 'Arm 32-bit Cortex-M0+、MPU 付、最高 32MHz' },
+          { k: '動作温度', v: '−40°C ~ 125°C（datasheet に AEC-Q100 車載認証表記なし、-Q1 車載版でない）' },
+          { k: '電源範囲', v: '1.62V ~ 3.6V' },
+          { k: 'メモリ', v: 'MSPM0L1127：128KB flash（ECC）／12KB SRAM（ECC または parity）（同シリーズ MSPM0L1126：64KB flash／12KB RAM）' },
+          { k: 'ADC', v: '12-bit、1.6Msps、最大 26 外部チャネル（ファミリ最大値；48-VQFN RGZ の実際の使用可能チャネル数はピン表参照）' },
+          { k: '基準電圧', v: '設定可能 1.4V または 2.5V 内部共用 VREF' },
+          { k: 'コンパレータ', v: 'COMP、8-bit 基準 DAC 付；温度センサ統合' },
+          { k: '暗号/セキュリティ', v: 'AES アクセラレータ（GCM/GMAC、CCM/CBC-MAC、CBC、CTR）；セキュア鍵ストレージ 1×256-bit または 2×128-bit AES 鍵；CRC-16' },
+          { k: '低消費電力', v: 'RUN 98µA/MHz（CoreMark）；SLEEP 1.3mA@32MHz；STOP 403µA@4MHz；STANDBY 1.6µA；SHUTDOWN 81nA（I/O ウェイク）' },
+          { k: '通信', v: '最大 3×UART（1 組 LIN/IrDA/DALI/smart card/Manchester 対応）；最大 2×I2C（SMBus/PMBus、最高 FM+ 1Mbps）；最大 2×SPI（最高 16Mbps）' },
+          { k: 'クロック', v: '内蔵 32MHz SYSOSC（−2.1%~1.6%）；内蔵 32kHz LFOSC（±3%）；外部 4~32MHz HFXT；外部 32kHz LFXT' },
+          { k: 'I/O', v: '最大 60 GPIO、うち 2 個 5V 耐圧オープンドレイン；48-VQFN (RGZ) では 44 GPIO＋NRST/VDD/VSS/VCORE' },
+          { k: 'パッケージ選択肢', v: '64-pin LQFP (PM)；48-pin LQFP (PT)／VQFN (RGZ)；32-pin VQFN (RHB)；28-pin VSSOP (DGS28)／WQFN-28 (RUY)；24-pin VQFN (RGE)' },
+          { k: 'デバッグ', v: '2-pin SWD' },
+          { k: '同シリーズ差異', v: 'MSPM0L2116/L2117 は LCD コントローラ付（最大 4x48／8x44 LCD）、本条目の L1126/L1127 は LCD なし' }
+        ],
+        dropIn: [{ note: '同一 family datasheet（TI SLASFN5、md5 同一）、Table 6-2 RGZ 48-VQFN pinout 完全同一、メモリのみ異なる：L1127=128KB flash／12KB RAM、L1126=64KB flash／12KB RAM' }]
+      },
+      ko: {
+        subcategory: 'Arm Cortex-M0+ 혼합 신호 MCU(128KB flash / 12KB RAM·LCD 없음)',
+        whatIs: '혼합 신호 MCU: Arm 32-bit Cortex-M0+ 코어(MPU 포함, 최고 32MHz), 동작 온도 −40°C~125°C, 전원 범위 1.62V~3.6V, 최대 128KB flash(ECC 포함)+12KB SRAM(ECC 또는 parity), 12-bit 1.6Msps ADC(최대 26 외부 채널), 8-bit 기준 DAC 포함 비교기(COMP), 온도 센서 통합, AES 가속기(GCM/GMAC, CCM/CBC-MAC, CBC, CTR)+보안 키 저장 내장; 패키지는 64-pin LQFP (PM), 48-pin LQFP (PT)/VQFN (RGZ), 32-pin VQFN (RHB), 28-pin VSSOP (DGS28)/WQFN-28 (RUY), 24-pin VQFN (RGE). MSPM0L1127 = 128KB flash / 12KB RAM; 동일 시리즈 MSPM0L1126 = 64KB flash / 12KB RAM. (동일 family datasheet는 LCD 컨트롤러 포함 자매품 MSPM0L2116/L2117도 수록, 본 항목 대상 외; L1126/L1127은 LCD 없음)',
+        func: '저전력 모드: RUN 98µA/MHz(CoreMark), SLEEP 1.3mA@32MHz, STOP 403µA@4MHz, STANDBY 1.6µA(SRAM·레지스터 전체 유지), SHUTDOWN 81nA(I/O 웨이크 지원). 디지털 주변: 3채널 DMA, 15채널 이벤트 패브릭, 최대 8개 타이머로 최대 16계통 PWM 출력(그중 7개는 STANDBY 동작 가능): deadband 포함 16-bit 고급 타이머 1개(최고 64MHz), capture/compare 4조 포함 16-bit 범용 타이머 1개, capture/compare 각 2조의 16-bit 범용 타이머 2개, 16-bit 기본 타이머 4개; WWDT와 IWDT. 통신: 최대 3조 UART(1조는 LIN·IrDA·DALI·smart card·Manchester 지원), 최대 2조 I2C(SMBus/PMBus, STOP 모드 웨이크, 최고 FM+ 1Mbps), 최대 2조 SPI(최고 16Mbps). 클록: 내장 32MHz SYSOSC(−2.1%~1.6%), 내장 32kHz LFOSC(±3%), 외부 4MHz~32MHz HFXT, 외부 32kHz LFXT, 외부 저/고주파 디지털 클록 입력, 디지털 클록 출력. 데이터 무결성과 암호: CRC-16, AES 가속기, 보안 키 저장(256-bit×1 또는 128-bit×2 AES 키). I/O: 최대 60 GPIO, 그중 2개 5V 내압 오픈 드레인(48-VQFN RGZ에서는 실제 44 GPIO+NRST/VDD/VSS/VCORE 총 48핀). 개발: 2-pin SWD.',
+        usedIn: '배터리 충방전 관리, 전원 공급과 전력 전송, 개인 전자제품, 빌딩 보안·방화, 커넥티드 주변기기와 프린터, 전력망 인프라, 스마트 미터, 통신 모듈, 의료·헬스케어 등 용도.',
+        desc: 'Arm Cortex-M0+ MCU, 최고 32MHz / 128KB flash / 12KB SRAM, 12-bit 1.6Msps ADC(최대 26채널), AES 가속기+보안 키 저장, 동작 온도 −40°C~125°C, 48-VQFN (RGZ) 등 복수 패키지 선택 가능(LCD 없음; 동일 시리즈 L2116/L2117은 LCD 포함).',
+        thermalPad: '노출 패드(datasheet 그림 6-2 48-pin RGZ 중앙에 Thermal Pad 표기), 보드 접지 플레인에 연결 필수.',
+        specs: [
+          { k: '코어', v: 'Arm 32-bit Cortex-M0+, MPU 포함, 최고 32MHz' },
+          { k: '동작 온도', v: '−40°C ~ 125°C(datasheet에 AEC-Q100 차량 인증 표기 없음, -Q1 차량판 아님)' },
+          { k: '전원 범위', v: '1.62V ~ 3.6V' },
+          { k: '메모리', v: 'MSPM0L1127: 128KB flash(ECC) / 12KB SRAM(ECC 또는 parity)(동일 시리즈 MSPM0L1126: 64KB flash / 12KB RAM)' },
+          { k: 'ADC', v: '12-bit, 1.6Msps, 최대 26 외부 채널(패밀리 최대값; 48-VQFN RGZ의 실제 사용 가능 채널 수는 핀 표 참조)' },
+          { k: '기준 전압', v: '설정 가능 1.4V 또는 2.5V 내부 공용 VREF' },
+          { k: '비교기', v: 'COMP, 8-bit 기준 DAC 포함; 온도 센서 통합' },
+          { k: '암호/보안', v: 'AES 가속기(GCM/GMAC, CCM/CBC-MAC, CBC, CTR); 보안 키 저장 1×256-bit 또는 2×128-bit AES 키; CRC-16' },
+          { k: '저전력', v: 'RUN 98µA/MHz(CoreMark); SLEEP 1.3mA@32MHz; STOP 403µA@4MHz; STANDBY 1.6µA; SHUTDOWN 81nA(I/O 웨이크)' },
+          { k: '통신', v: '최대 3×UART(1조 LIN/IrDA/DALI/smart card/Manchester 지원); 최대 2×I2C(SMBus/PMBus, 최고 FM+ 1Mbps); 최대 2×SPI(최고 16Mbps)' },
+          { k: '클록', v: '내장 32MHz SYSOSC(−2.1%~1.6%); 내장 32kHz LFOSC(±3%); 외부 4~32MHz HFXT; 외부 32kHz LFXT' },
+          { k: 'I/O', v: '최대 60 GPIO, 그중 2개 5V 내압 오픈 드레인; 48-VQFN (RGZ)에서는 44 GPIO+NRST/VDD/VSS/VCORE' },
+          { k: '패키지 선택지', v: '64-pin LQFP (PM); 48-pin LQFP (PT)/VQFN (RGZ); 32-pin VQFN (RHB); 28-pin VSSOP (DGS28)/WQFN-28 (RUY); 24-pin VQFN (RGE)' },
+          { k: '디버그', v: '2-pin SWD' },
+          { k: '동일 시리즈 차이', v: 'MSPM0L2116/L2117은 LCD 컨트롤러 포함(최대 4x48/8x44 LCD), 본 항목의 L1126/L1127은 LCD 없음' }
+        ],
+        dropIn: [{ note: '동일 family datasheet(TI SLASFN5, md5 동일), Table 6-2 RGZ 48-VQFN pinout 완전 동일, 메모리만 다름: L1127=128KB flash/12KB RAM, L1126=64KB flash/12KB RAM' }]
+      }
+    },
+    'ADC3683-EP': {
+      en: {
+        subcategory: 'Low-noise low-power dual-channel 18-bit ADC (65MSPS)',
+        whatIs: 'Low-noise, low-power 18-bit dual-channel analog-to-digital converter (ADC), 65MSPS sample rate, serial LVDS digital interface, targeting space/defense high-reliability applications; the -EP suffix means TI Enhanced Product (hardened process and quality controls) and is unrelated to the package exposed pad. It shares one Pin Functions table with the radiation-tolerant -SEP sibling; this entry covers only the -EP general enhanced version.',
+        func: 'Dual differential analog inputs (AINP/AINM, BINP/BINM); VCM provides a 0.95V common-mode output; VREF accepts an external 1.6V reference with REFGND as reference ground; CLKP/CLKM are the differential sampling-clock inputs. The serial LVDS output supports configurable 2-wire / 1-wire / 1/2-wire modes, with 2 data lanes per channel (DA0/DA1, DB0/DB1), a data bit clock output (DCLKP/M) and a frame clock output (FCLKP/M), plus an LVDS bit-clock input (DCLKINP/M, built-in 100Ω termination) for external clock sync. A built-in optional DSP (2/4/8/16/32× decimation, 32-bit NCO, bypassable). SPI-compatible serial interface (SCLK/SDIO/{SEN}) for register config; PDN/SYNC for power-down or multi-chip sync (active-high); RESET is a hardware reset (active-high); REFBUF/CTRL sets the default clock type and reference source at power-up.',
+        usedIn: 'Satellite optical-communication payloads, satellite imaging payloads, satellite communication payloads, satellite RADAR/LIDAR payloads and other high-speed control loops and signal-acquisition systems.',
+        desc: 'Low-noise low-power dual-channel 18-bit ADC, 65MSPS, noise floor -160dBFS/Hz, 94mW/ch, 1-2 clock-cycle latency, serial LVDS interface, 40-VQFN 5×5mm, -55°C~105°C (Enhanced Product).',
+        thermalPad: 'Exposed PowerPAD = GND (datasheet Figure 4-1 marks the center Thermal Pad; Table 4-1 GND row notes PowerPAD), must connect to the board ground plane.',
+        specs: [
+          { k: 'Resolution', v: '18-bit (no missing codes)' },
+          { k: 'Sample rate', v: 'dual-channel 65 MSPS' },
+          { k: 'Noise floor', v: '-160 dBFS/Hz' },
+          { k: 'Power', v: '94 mW/ch (at 65MSPS)' },
+          { k: 'Latency', v: '1-2 clock cycles' },
+          { k: 'INL/DNL', v: 'INL: ±7 LSB, DNL: ±0.7 LSB (typical)' },
+          { k: 'Reference', v: 'external or internal selectable' },
+          { k: 'Digital interface', v: 'serial LVDS (2-wire / 1-wire / 1/2-wire selectable)' },
+          { k: 'Spectral performance (fIN=5MHz)', v: 'SNR 83.8dBFS; SFDR 89dBc (HD2/HD3); SFDR 101dBFS (worst spur)' },
+          { k: 'Package', v: '40-QFN 5×5mm' },
+          { k: 'Temperature range', v: '-55°C ~ 105°C (Enhanced Product)' }
+        ]
+      },
+      ja: {
+        subcategory: '低雑音低消費電力 2 チャネル 18-bit ADC（65MSPS）',
+        whatIs: '低雑音・低消費電力の 18-bit 2 チャネル A/D コンバータ（ADC）、65MSPS サンプルレート、シリアル LVDS デジタルインタフェース、宇宙/防衛等の高信頼用途向け；型番末尾の -EP は TI Enhanced Product（強化プロセスと品質管理）でパッケージの露出パッド（exposed pad）とは無関係。耐放射線版 -SEP と同一の Pin Functions 表を共有、本条目は -EP 一般強化版のみ収録。',
+        func: '2 チャネル差動アナログ入力（AINP/AINM、BINP/BINM）、VCM が 0.95V コモンモード電圧出力、VREF は外部 1.6V 参照接続可・REFGND は参照グランド；CLKP/CLKM は差動サンプリングクロック入力。シリアル LVDS デジタル出力は 2 線／1 線／1/2 線設定可モード対応、各チャネル 2 データ lane（DA0/DA1、DB0/DB1）、データビットクロック出力（DCLKP/M）とフレームクロック出力（FCLKP/M）、LVDS ビットクロック入力（DCLKINP/M、内蔵 100Ω 終端）で外部クロック同期可。内蔵の選択式 DSP（2/4/8/16/32 倍デシメーション、32-bit NCO、バイパス可）。SPI 互換シリアルインタフェース（SCLK/SDIO/{SEN}）でレジスタ設定；PDN/SYNC で電源遮断または複数チップ同期（ハイ動作）；RESET はハードウェアリセット（ハイ動作）；REFBUF/CTRL が起動時にデフォルトクロック形態と参照源を設定。',
+        usedIn: '衛星光通信ペイロード、衛星撮像ペイロード、衛星通信ペイロード、衛星レーダ/ライダ（RADAR/LIDAR）ペイロード等の高速制御ループと信号収集システム。',
+        desc: '低雑音低消費電力 2 チャネル 18-bit ADC、65MSPS、雑音フロア -160dBFS/Hz、94mW/ch、遅延 1-2 クロックサイクル、シリアル LVDS インタフェース、40-VQFN 5×5mm、-55°C~105°C（Enhanced Product）。',
+        thermalPad: '露出 PowerPAD=GND（datasheet 図 4-1 中央に Thermal Pad 表記、Table 4-1 GND 行に PowerPAD 注記）、基板接地プレーンに接続必須。',
+        specs: [
+          { k: '分解能', v: '18-bit（no missing codes）' },
+          { k: 'サンプルレート', v: '2 チャネル 65 MSPS' },
+          { k: '雑音フロア', v: '-160 dBFS/Hz' },
+          { k: '消費電力', v: '94 mW/ch（65MSPS 時）' },
+          { k: '遅延', v: '1-2 クロックサイクル' },
+          { k: 'INL/DNL', v: 'INL: ±7 LSB、DNL: ±0.7 LSB（typical）' },
+          { k: '参照電圧', v: '外部または内部選択可' },
+          { k: 'デジタルインタフェース', v: 'シリアル LVDS（2-wire／1-wire／1/2-wire 選択可）' },
+          { k: 'スペクトル性能（fIN=5MHz）', v: 'SNR 83.8dBFS；SFDR 89dBc（HD2/HD3）；SFDR 101dBFS（最悪スプリアス）' },
+          { k: 'パッケージ', v: '40-QFN 5×5mm' },
+          { k: '温度範囲', v: '-55°C ~ 105°C（Enhanced Product）' }
+        ]
+      },
+      ko: {
+        subcategory: '저잡음 저전력 2채널 18-bit ADC(65MSPS)',
+        whatIs: '저잡음·저전력 18-bit 2채널 아날로그-디지털 변환기(ADC), 65MSPS 샘플레이트, 시리얼 LVDS 디지털 인터페이스, 우주/방위 등 고신뢰 용도 대상; 부품 번호 끝 -EP는 TI Enhanced Product(강화 공정과 품질 관리)로 패키지 노출 패드(exposed pad)와 무관. 내방사선판 -SEP와 동일한 Pin Functions 표를 공유, 본 항목은 -EP 일반 강화판만 수록.',
+        func: '2채널 차동 아날로그 입력(AINP/AINM, BINP/BINM), VCM이 0.95V 공통 모드 전압 출력, VREF는 외부 1.6V 참조 연결 가능·REFGND는 참조 접지; CLKP/CLKM은 차동 샘플링 클록 입력. 시리얼 LVDS 디지털 출력은 2선/1선/1/2선 설정 가능 모드 지원, 각 채널 2 데이터 lane(DA0/DA1, DB0/DB1), 데이터 비트 클록 출력(DCLKP/M)과 프레임 클록 출력(FCLKP/M), LVDS 비트 클록 입력(DCLKINP/M, 내장 100Ω 종단)으로 외부 클록 동기 가능. 내장 선택식 DSP(2/4/8/16/32배 데시메이션, 32-bit NCO, 바이패스 가능). SPI 호환 시리얼 인터페이스(SCLK/SDIO/{SEN})로 레지스터 설정; PDN/SYNC로 전원 차단 또는 복수 칩 동기(하이 동작); RESET은 하드웨어 리셋(하이 동작); REFBUF/CTRL이 전원 인가 시 기본 클록 형태와 참조원 설정.',
+        usedIn: '위성 광통신 페이로드, 위성 이미징 페이로드, 위성 통신 페이로드, 위성 레이더/라이다(RADAR/LIDAR) 페이로드 등 고속 제어 루프와 신호 수집 시스템.',
+        desc: '저잡음 저전력 2채널 18-bit ADC, 65MSPS, 잡음 바닥 -160dBFS/Hz, 94mW/ch, 지연 1-2 클록 사이클, 시리얼 LVDS 인터페이스, 40-VQFN 5×5mm, -55°C~105°C(Enhanced Product).',
+        thermalPad: '노출 PowerPAD=GND(datasheet 그림 4-1 중앙에 Thermal Pad 표기, Table 4-1 GND 행에 PowerPAD 주석), 보드 접지 플레인에 연결 필수.',
+        specs: [
+          { k: '분해능', v: '18-bit(no missing codes)' },
+          { k: '샘플레이트', v: '2채널 65 MSPS' },
+          { k: '잡음 바닥', v: '-160 dBFS/Hz' },
+          { k: '소비 전력', v: '94 mW/ch(65MSPS 시)' },
+          { k: '지연', v: '1-2 클록 사이클' },
+          { k: 'INL/DNL', v: 'INL: ±7 LSB, DNL: ±0.7 LSB(typical)' },
+          { k: '참조 전압', v: '외부 또는 내부 선택 가능' },
+          { k: '디지털 인터페이스', v: '시리얼 LVDS(2-wire/1-wire/1/2-wire 선택 가능)' },
+          { k: '스펙트럼 성능(fIN=5MHz)', v: 'SNR 83.8dBFS; SFDR 89dBc(HD2/HD3); SFDR 101dBFS(최악 스퓨리어스)' },
+          { k: '패키지', v: '40-QFN 5×5mm' },
+          { k: '온도 범위', v: '-55°C ~ 105°C(Enhanced Product)' }
+        ]
+      }
+    },
+    'ADS125H18': {
+      en: {
+        subcategory: 'High-voltage-input multiplexed 8/16-channel 24-bit Delta-Sigma ADC',
+        whatIs: 'High-voltage-input multiplexed 8/16-channel, 24-bit Delta-Sigma ADC with data rates up to 1.067MSPS; each input front end contains a high-impedance precision resistor-divider network that steps high-voltage inputs directly down to the ADC input range with no external attenuation circuitry — suited to industrial high-voltage analog measurement.',
+        func: 'The analog multiplexer supports 17 independently selectable inputs (up to 8 fully differential or 16 single-ended, AIN0~AIN15); both the input buffer and reference buffer are rail-to-rail; RESP/RESN connect the front-end resistor-divider network’s positive/negative ends. The built-in reference outputs a selectable 2.5V or 4.096V (REFOUT); REFP/TDACOUT serves as the positive reference input or test-DAC output, REFN is the negative reference input. It has a channel auto-sequencer with FIFO buffering, fault detection and system-monitoring circuits; 4 adjustable speed modes trade data rate, resolution and power; at ≤25SPS it rejects 50Hz/60Hz simultaneously. SPI serial interface (SCLK/SDI/SDO-{DRDY}/{CS}) for control and readout, {RESET} for hardware reset; GPIO0~3 multiplex as START (conversion start), CLKIN (external clock), FAULT (fault output), etc.',
+        usedIn: 'Factory automation and control (condition monitoring, analog input modules), test & measurement (DAQ, semiconductor test equipment) — industrial measurement systems that accept high-voltage analog signals directly.',
+        desc: 'High-voltage-input multiplexed 8/16-channel 24-bit Delta-Sigma ADC, 1.067MSPS, built-in precision resistor-divider network, 17 selectable inputs, internal 25.6MHz 1% oscillator, 36-VQFN 5×5mm, -40°C~125°C.',
+        thermalPad: 'Exposed thermal pad (explicitly listed in Table 4-1); connect to AVSS.',
+        specs: [
+          { k: 'Data rate', v: 'programmable, up to 1.067MSPS' },
+          { k: 'Input mux', v: '17 independently selectable inputs, up to 8 fully differential or 16 single-ended' },
+          { k: 'Input front end', v: 'high-impedance voltage-divider network with built-in precision matched resistors' },
+          { k: 'Buffers', v: 'rail-to-rail analog-input and reference buffers' },
+          { k: 'Internal reference', v: 'selectable 2.5V or 4.096V output' },
+          { k: 'Oscillator', v: 'internal 25.6MHz, 1% accuracy' },
+          { k: 'Sequencing/buffering', v: 'channel auto-sequencer + FIFO buffer' },
+          { k: 'Noise rejection', v: 'simultaneous 50Hz and 60Hz rejection at ≤25SPS' },
+          { k: 'Speed modes', v: 'four adjustable speed modes' },
+          { k: 'Package', v: '36-VQFN 5.00×5.00mm, EP=AVSS' },
+          { k: 'Temperature range', v: '-40°C ~ 125°C' }
+        ]
+      },
+      ja: {
+        subcategory: '高圧入力マルチプレクス 8/16 チャネル 24-bit Delta-Sigma ADC',
+        whatIs: '高圧入力マルチプレクス型 8/16 チャネル・24-bit Delta-Sigma ADC、データレート最高 1.067MSPS；各入力フロントエンドに高インピーダンス精密抵抗分圧ネットワークを内蔵し、高電圧入力を ADC 入力範囲へ直接降圧、外部降圧回路不要——産業用高圧アナログ信号計測に好適。',
+        func: 'アナログマルチプレクサは 17 系統の独立選択可能入力（最大 8 全差動または 16 シングルエンド、AIN0~AIN15）対応、入力バッファと参照バッファはともにレールツーレール；RESP/RESN はフロントエンド抵抗分圧ネットワークの正負端接続。内蔵電圧参照は 2.5V または 4.096V 出力選択可（REFOUT）、REFP/TDACOUT は正参照入力またはテスト DAC 出力、REFN は負参照入力。チャネル自動シーケンサと FIFO バッファ、故障検出とシステム監視回路を内蔵；4 組の可変速度モードでデータレート・分解能・消費電力をトレードオフ；≤25SPS で 50Hz/60Hz を同時除去。SPI シリアルインタフェース（SCLK/SDI/SDO-{DRDY}/{CS}）で制御とデータ読出し、{RESET} はハードウェアリセット；GPIO0~3 は START（変換開始）、CLKIN（外部クロック）、FAULT（故障出力）等の専用機能に多重化可。',
+        usedIn: '工場自動化と制御（状態監視、アナログ入力モジュール）、テスト計測（DAQ、半導体試験装置）等、高圧アナログ信号を直接受ける産業計測システム。',
+        desc: '高圧入力マルチプレクス 8/16 チャネル 24-bit Delta-Sigma ADC、1.067MSPS、精密抵抗分圧ネットワーク内蔵、17 系統選択可能入力、内部 25.6MHz 1% 発振器、36-VQFN 5×5mm、-40°C~125°C。',
+        thermalPad: '露出放熱パッド（Table 4-1 に Thermal Pad 列明記）；AVSS 接続。',
+        specs: [
+          { k: 'データレート', v: 'プログラマブル、最高 1.067MSPS' },
+          { k: '入力マルチプレクス', v: '17 系統独立選択可能入力、最大 8 全差動または 16 シングルエンド' },
+          { k: '入力フロントエンド', v: '高インピーダンス電圧分圧ネットワーク、精密整合抵抗内蔵' },
+          { k: 'バッファ', v: 'アナログ入力バッファと参照バッファはレールツーレール' },
+          { k: '内部参照', v: '2.5V または 4.096V 出力選択可' },
+          { k: '発振器', v: '内部 25.6MHz、精度 1%' },
+          { k: 'シーケンスとバッファ', v: 'チャネル自動シーケンサ＋FIFO バッファ' },
+          { k: '雑音除去', v: '≤25SPS で 50Hz と 60Hz を同時除去' },
+          { k: '速度モード', v: '4 組の可変速度モード' },
+          { k: 'パッケージ', v: '36-VQFN 5.00×5.00mm、EP=AVSS' },
+          { k: '温度範囲', v: '-40°C ~ 125°C' }
+        ]
+      },
+      ko: {
+        subcategory: '고압 입력 멀티플렉스 8/16채널 24-bit Delta-Sigma ADC',
+        whatIs: '고압 입력 멀티플렉스형 8/16채널·24-bit Delta-Sigma ADC, 데이터 속도 최고 1.067MSPS; 각 입력 프론트엔드에 고임피던스 정밀 저항 분압 네트워크를 내장해 고전압 입력을 ADC 입력 범위로 직접 강압, 외부 강압 회로 불필요 - 산업용 고압 아날로그 신호 계측에 적합.',
+        func: '아날로그 멀티플렉서는 17계통 독립 선택 가능 입력(최대 8 전차동 또는 16 싱글엔드, AIN0~AIN15) 지원, 입력 버퍼와 참조 버퍼 모두 레일투레일; RESP/RESN은 프론트엔드 저항 분압 네트워크의 정·부 단 연결. 내장 전압 참조는 2.5V 또는 4.096V 출력 선택 가능(REFOUT), REFP/TDACOUT은 정참조 입력 또는 테스트 DAC 출력, REFN은 부참조 입력. 채널 자동 시퀀서와 FIFO 버퍼, 고장 감지와 시스템 감시 회로 내장; 4조 가변 속도 모드로 데이터 속도·분해능·소비 전력 트레이드오프; ≤25SPS에서 50Hz/60Hz 동시 제거. SPI 시리얼 인터페이스(SCLK/SDI/SDO-{DRDY}/{CS})로 제어와 데이터 읽기, {RESET}은 하드웨어 리셋; GPIO0~3은 START(변환 시작), CLKIN(외부 클록), FAULT(고장 출력) 등 전용 기능으로 다중화 가능.',
+        usedIn: '공장 자동화와 제어(상태 감시, 아날로그 입력 모듈), 테스트 계측(DAQ, 반도체 시험 장비) 등 고압 아날로그 신호를 직접 받는 산업 계측 시스템.',
+        desc: '고압 입력 멀티플렉스 8/16채널 24-bit Delta-Sigma ADC, 1.067MSPS, 정밀 저항 분압 네트워크 내장, 17계통 선택 가능 입력, 내부 25.6MHz 1% 발진기, 36-VQFN 5×5mm, -40°C~125°C.',
+        thermalPad: '노출 방열 패드(Table 4-1에 Thermal Pad 행 명기); AVSS 연결.',
+        specs: [
+          { k: '데이터 속도', v: '프로그래머블, 최고 1.067MSPS' },
+          { k: '입력 멀티플렉스', v: '17계통 독립 선택 가능 입력, 최대 8 전차동 또는 16 싱글엔드' },
+          { k: '입력 프론트엔드', v: '고임피던스 전압 분압 네트워크, 정밀 정합 저항 내장' },
+          { k: '버퍼', v: '아날로그 입력 버퍼와 참조 버퍼 모두 레일투레일' },
+          { k: '내부 참조', v: '2.5V 또는 4.096V 출력 선택 가능' },
+          { k: '발진기', v: '내부 25.6MHz, 정확도 1%' },
+          { k: '시퀀싱과 버퍼', v: '채널 자동 시퀀서+FIFO 버퍼' },
+          { k: '잡음 제거', v: '≤25SPS에서 50Hz와 60Hz 동시 제거' },
+          { k: '속도 모드', v: '4조 가변 속도 모드' },
+          { k: '패키지', v: '36-VQFN 5.00×5.00mm, EP=AVSS' },
+          { k: '온도 범위', v: '-40°C ~ 125°C' }
+        ]
+      }
+    },
+    'ADS125P08': {
+      en: {
+        subcategory: 'Multiplexed 8/16-channel 24-bit Delta-Sigma ADC (CRC data validation)',
+        whatIs: 'Multiplexed 8/16-channel, 24-bit Delta-Sigma ADC with data rates up to 1.067MSPS; built-in high-impedance input and reference buffers reduce signal loading; I/O data and register settings carry cyclic-redundancy-check (CRC) validation for operational reliability — suited to factory automation, patient monitoring, etc. Same package and pin base as the ADS125H18 but without the high-voltage resistor-divider front end; AIN8~15 can instead be repurposed as analog general-purpose I/O (AGPIO).',
+        func: 'The analog multiplexer supports 17 independently selectable inputs (up to 8 fully differential or 16 single-ended, AIN0~AIN15), with AIN8~AIN15 optionally configured as analog GPIO AGPIO0~7; AINCOM is the shared reference point for single-ended inputs, tied to analog ground. The built-in reference outputs a selectable 2.5V or 4.096V (REFOUT); REFP/TDACOUT serves as the positive reference input or test-DAC output, REFN is the negative reference input. It has a channel auto-sequencer with FIFO buffering, fault detection and system monitoring; 4 adjustable speed modes; simultaneous 50Hz/60Hz rejection at ≤25SPS. SPI serial interface (SCLK/SDI/SDO-{DRDY}/{CS}) for control and readout, {RESET} for hardware reset; GPIO0~3 multiplex as START, CLKIN, FAULT, etc.',
+        usedIn: 'Factory automation and control (condition monitoring, analog input modules, field transmitters such as flow meters), patient monitoring (ECG, infusion pumps), test & measurement (DAQ, semiconductor test equipment).',
+        desc: 'Multiplexed 8/16-channel 24-bit Delta-Sigma ADC, 1.067MSPS, built-in CRC data/register validation, 17 selectable inputs with analog GPIO reuse, internal 25.6MHz 1% oscillator, 36-VQFN 5×5mm, -40°C~125°C.',
+        thermalPad: 'Exposed thermal pad (explicitly listed in Table 4-1); connect to AVSS.',
+        specs: [
+          { k: 'Data rate', v: 'programmable, up to 1.067MSPS' },
+          { k: 'Input mux', v: '17 independently selectable inputs, up to 8 fully differential or 16 single-ended' },
+          { k: 'Buffers', v: 'rail-to-rail analog-input and reference buffers' },
+          { k: 'Internal reference', v: 'selectable 2.5V or 4.096V output' },
+          { k: 'Data integrity', v: 'CRC validation on I/O data and register settings' },
+          { k: 'Oscillator', v: 'internal 25.6MHz, 1% accuracy' },
+          { k: 'Sequencing/buffering', v: 'channel auto-sequencer + FIFO buffer' },
+          { k: 'Noise rejection', v: 'simultaneous 50Hz and 60Hz rejection at ≤25SPS' },
+          { k: 'Speed modes', v: 'four adjustable speed modes' },
+          { k: 'Package', v: '36-VQFN 5.00×5.00mm, EP=AVSS' },
+          { k: 'Temperature range', v: '-40°C ~ 125°C' }
+        ]
+      },
+      ja: {
+        subcategory: 'マルチプレクス 8/16 チャネル 24-bit Delta-Sigma ADC（CRC データ検証）',
+        whatIs: 'マルチプレクス型 8/16 チャネル・24-bit Delta-Sigma ADC、データレート最高 1.067MSPS、高インピーダンス入力バッファと参照バッファ内蔵で信号負荷を低減；入出力データとレジスタ設定に巡回冗長検査（CRC）を備え動作信頼性を向上、工場自動化・患者モニタ等に好適。ADS125H18 と同パッケージ同ピン基礎だが高圧抵抗分圧フロントエンドを省略、AIN8~15 はアナログ汎用入出力（AGPIO）に転用可。',
+        func: 'アナログマルチプレクサは 17 系統の独立選択可能入力（最大 8 全差動または 16 シングルエンド、AIN0~AIN15）対応、うち AIN8~AIN15 はアナログ GPIO AGPIO0~7 に設定可；AINCOM はシングルエンド入力の共用参照点でアナロググランド接続。内蔵電圧参照は 2.5V または 4.096V 出力選択可（REFOUT）、REFP/TDACOUT は正参照入力またはテスト DAC 出力、REFN は負参照入力。チャネル自動シーケンサと FIFO バッファ、故障検出とシステム監視回路を内蔵；4 組の可変速度モード；≤25SPS で 50Hz/60Hz を同時除去。SPI シリアルインタフェース（SCLK/SDI/SDO-{DRDY}/{CS}）で制御とデータ読出し、{RESET} はハードウェアリセット；GPIO0~3 は START、CLKIN、FAULT 等の専用機能に多重化可。',
+        usedIn: '工場自動化と制御（状態監視、アナログ入力モジュール、流量計等のフィールド変送器）、患者モニタ（ECG、輸液ポンプ）、テスト計測（DAQ、半導体試験装置）。',
+        desc: 'マルチプレクス 8/16 チャネル 24-bit Delta-Sigma ADC、1.067MSPS、CRC データ/レジスタ検証内蔵、17 系統選択可能入力（アナログ GPIO 転用可）、内部 25.6MHz 1% 発振器、36-VQFN 5×5mm、-40°C~125°C。',
+        thermalPad: '露出放熱パッド（Table 4-1 に Thermal Pad 列明記）；AVSS 接続。',
+        specs: [
+          { k: 'データレート', v: 'プログラマブル、最高 1.067MSPS' },
+          { k: '入力マルチプレクス', v: '17 系統独立選択可能入力、最大 8 全差動または 16 シングルエンド' },
+          { k: 'バッファ', v: 'レールツーレールのアナログ入力バッファと参照バッファ' },
+          { k: '内部参照', v: '2.5V または 4.096V 出力選択可' },
+          { k: 'データ完全性', v: '入出力データとレジスタ設定に CRC 巡回冗長検査' },
+          { k: '発振器', v: '内部 25.6MHz、精度 1%' },
+          { k: 'シーケンスとバッファ', v: 'チャネル自動シーケンサ＋FIFO バッファ' },
+          { k: '雑音除去', v: '≤25SPS で 50Hz と 60Hz を同時除去' },
+          { k: '速度モード', v: '4 組の可変速度モード' },
+          { k: 'パッケージ', v: '36-VQFN 5.00×5.00mm、EP=AVSS' },
+          { k: '温度範囲', v: '-40°C ~ 125°C' }
+        ]
+      },
+      ko: {
+        subcategory: '멀티플렉스 8/16채널 24-bit Delta-Sigma ADC(CRC 데이터 검증)',
+        whatIs: '멀티플렉스형 8/16채널·24-bit Delta-Sigma ADC, 데이터 속도 최고 1.067MSPS, 고임피던스 입력 버퍼와 참조 버퍼 내장으로 신호 부하 저감; 입출력 데이터와 레지스터 설정에 순환 중복 검사(CRC)를 갖춰 동작 신뢰성 향상, 공장 자동화·환자 모니터링 등에 적합. ADS125H18과 동일 패키지 동일 핀 기초이나 고압 저항 분압 프론트엔드를 생략, AIN8~15는 아날로그 범용 입출력(AGPIO)으로 전용 가능.',
+        func: '아날로그 멀티플렉서는 17계통 독립 선택 가능 입력(최대 8 전차동 또는 16 싱글엔드, AIN0~AIN15) 지원, 그중 AIN8~AIN15는 아날로그 GPIO AGPIO0~7로 설정 가능; AINCOM은 싱글엔드 입력의 공용 참조점으로 아날로그 접지 연결. 내장 전압 참조는 2.5V 또는 4.096V 출력 선택 가능(REFOUT), REFP/TDACOUT은 정참조 입력 또는 테스트 DAC 출력, REFN은 부참조 입력. 채널 자동 시퀀서와 FIFO 버퍼, 고장 감지와 시스템 감시 회로 내장; 4조 가변 속도 모드; ≤25SPS에서 50Hz/60Hz 동시 제거. SPI 시리얼 인터페이스(SCLK/SDI/SDO-{DRDY}/{CS})로 제어와 데이터 읽기, {RESET}은 하드웨어 리셋; GPIO0~3은 START, CLKIN, FAULT 등 전용 기능으로 다중화 가능.',
+        usedIn: '공장 자동화와 제어(상태 감시, 아날로그 입력 모듈, 유량계 등 필드 변송기), 환자 모니터링(ECG, 수액 펌프), 테스트 계측(DAQ, 반도체 시험 장비).',
+        desc: '멀티플렉스 8/16채널 24-bit Delta-Sigma ADC, 1.067MSPS, CRC 데이터/레지스터 검증 내장, 17계통 선택 가능 입력(아날로그 GPIO 전용 가능), 내부 25.6MHz 1% 발진기, 36-VQFN 5×5mm, -40°C~125°C.',
+        thermalPad: '노출 방열 패드(Table 4-1에 Thermal Pad 행 명기); AVSS 연결.',
+        specs: [
+          { k: '데이터 속도', v: '프로그래머블, 최고 1.067MSPS' },
+          { k: '입력 멀티플렉스', v: '17계통 독립 선택 가능 입력, 최대 8 전차동 또는 16 싱글엔드' },
+          { k: '버퍼', v: '레일투레일 아날로그 입력 버퍼와 참조 버퍼' },
+          { k: '내부 참조', v: '2.5V 또는 4.096V 출력 선택 가능' },
+          { k: '데이터 무결성', v: '입출력 데이터와 레지스터 설정에 CRC 순환 중복 검사' },
+          { k: '발진기', v: '내부 25.6MHz, 정확도 1%' },
+          { k: '시퀀싱과 버퍼', v: '채널 자동 시퀀서+FIFO 버퍼' },
+          { k: '잡음 제거', v: '≤25SPS에서 50Hz와 60Hz 동시 제거' },
+          { k: '속도 모드', v: '4조 가변 속도 모드' },
+          { k: '패키지', v: '36-VQFN 5.00×5.00mm, EP=AVSS' },
+          { k: '온도 범위', v: '-40°C ~ 125°C' }
+        ]
+      }
+    },
+    'AFE10004-EP': {
+      en: {
+        subcategory: 'Quad PA-bias-control precision analog front end (with EEPROM and gate-bias switches)',
+        whatIs: 'Highly integrated autonomous power-amplifier (PA) precision bias analog front end (AFE) with four temperature-compensated DACs, EEPROM and gate-bias switches; after power-up it automatically corrects the bias per temperature-to-voltage transfer functions stored in EEPROM, completing PA biasing and temperature compensation without continuous host intervention — for defense/space RF systems. The -EP suffix means TI Enhanced Product (hardened process and quality controls), unrelated to the package exposed pad — this device happens to have both (see the Table 4-1 Thermal Pad row).',
+        func: 'Four 13-bit monotonic DACs (DAC0~3) with buffered outputs, auto-configured output ranges at power-up (positive up to 5.5V, negative down to -10V), high-current drive (source up to 100mA, sink up to 20mA), tolerating capacitive loads up to 15µF; OUT1/OUT2 are DAC1/DAC2 outputs routed through gate-bias switches, with DRVEN1/DRVEN2 as the corresponding asynchronous switch controls, two programmable turn-off voltages and fast response — protecting depletion-mode GaAs/GaN transistors and coordinating PA sequencing with PA_ON. CLAMP1/CLAMP2 are auxiliary DAC buffered outputs, 50ns typical switching, 3Ω max on-resistance. Built-in local and remote (D+/D–) diode temperature sensing, ±2.5°C (max) error, 0.0625°C resolution. Built-in 2.5V reference. Selectable SPI (4-wire, SCL/{CS}, A2/SCLK, A1/SDI, A0/SDO) or I2C (SDA, SCL, 8 selectable addresses), 1.7V~3.6V operation; {RESET}/{ALMIN} is the reset input, also configurable as an active-low alarm input.',
+        usedIn: 'Autonomous bias-control circuits for LDMOS/GaAs/GaN power amplifiers in radar, electronic warfare, communication payloads and defense radios.',
+        desc: 'Quad PA-bias precision AFE with EEPROM storing 4 temperature-to-voltage transfer functions and gate-bias switches, 13-bit/1.22mV DAC resolution, SPI/I2C dual interface, 24-VQFN 4×4mm, -55°C~125°C (Enhanced Product).',
+        thermalPad: 'Package-bottom thermal pad (explicitly listed in Table 4-1); connect to the internal PCB ground plane through multiple vias.',
+        specs: [
+          { k: 'DAC resolution', v: '13-bit, four monotonic DACs, 1.22mV resolution' },
+          { k: 'Output ranges', v: 'auto-configured: positive up to 5.5V / negative down to -10V' },
+          { k: 'Drive capability', v: 'source up to 100mA / sink up to 20mA; tolerates capacitive loads up to 15µF' },
+          { k: 'Gate-bias switches', v: 'two programmable turn-off voltages, fast response' },
+          { k: 'Auxiliary DACs', v: 'two (CLAMP1/2), 1.22mV resolution, 50ns typical switching, 3Ω max on-resistance' },
+          { k: 'Temperature sensing', v: 'local and remote diode sensing, ±2.5°C (max) error, 0.0625°C resolution' },
+          { k: 'EEPROM', v: 'built-in, stores four independent temperature-to-voltage transfer functions and device config, plus user space, rated 15-year retention' },
+          { k: 'Reference', v: 'built-in 2.5V' },
+          { k: 'Interface', v: 'SPI (4-wire) and I2C (8 selectable addresses), 1.7V~3.6V operation' },
+          { k: 'Temperature range', v: '-55°C ~ 125°C' },
+          { k: 'Package', v: '24-VQFN 4×4mm, with bottom thermal pad' },
+          { k: 'Special grade', v: 'defense/space grade: controlled baseline, single assembly/test site, single fab, product traceability, extended product life cycle' }
+        ]
+      },
+      ja: {
+        subcategory: '4 チャネル PA バイアス制御精密アナログフロントエンド（EEPROM とゲートバイアススイッチ付）',
+        whatIs: '高集積自律型パワーアンプ（PA）精密バイアスアナログフロントエンド（AFE）、温度補償 DAC 4 組・EEPROM・ゲートバイアススイッチ内蔵；起動後は内部 EEPROM 格納の温度-電圧変換関数に従い自動でバイアスを補正、システムコントローラの継続介入なしで PA バイアス設定と温度補償を完了、国防/宇宙 RF システムに好適。型番末尾の -EP は TI Enhanced Product（強化プロセスと品質管理）でパッケージ露出パッドとは無関係——本装置は偶々両方を備える（Table 4-1 Thermal Pad 列参照）。',
+        func: '4 組の 13-bit 単調 DAC（DAC0~3）バッファ出力、起動時に出力範囲を自動設定（正出力最高 5.5V、負出力最低 -10V）、高電流駆動（source 最高 100mA、sink 最高 20mA）、最大 15µF の容量負荷に耐える；OUT1/OUT2 は DAC1/DAC2 のゲートバイアススイッチ経由の切替出力、DRVEN1/DRVEN2 は対応する非同期スイッチ制御信号で、2 組のプログラマブル遮断電圧と高速応答を持ち、GaAs/GaN 等のデプレッション型トランジスタを保護し PA_ON と連携して PA シーケンス制御を実現。CLAMP1/CLAMP2 は補助 DAC バッファ出力、切替時間典型 50ns、オン抵抗最大 3Ω。ローカルとリモート（D+/D–）ダイオード温度センサ内蔵、誤差 ±2.5°C（max）、分解能 0.0625°C。2.5V 参照内蔵。SPI（4 線、SCL/{CS}、A2/SCLK、A1/SDI、A0/SDO）と I2C（SDA、SCL、8 組選択可能アドレス）の両インタフェース選択可、動作電圧 1.7V~3.6V；{RESET}/{ALMIN} はリセット入力で、ロー動作アラーム入力にも設定可。',
+        usedIn: 'レーダ、電子戦、通信ペイロード、国防無線等の RF システムにおける LDMOS/GaAs/GaN パワーアンプの自律バイアス制御回路。',
+        desc: '4 チャネル PA バイアス精密 AFE。EEPROM に 4 組の温度-電圧変換関数を格納、ゲートバイアススイッチ付、DAC 分解能 13-bit/1.22mV、SPI/I2C 両インタフェース、24-VQFN 4×4mm、-55°C~125°C（Enhanced Product）。',
+        thermalPad: 'パッケージ底部放熱パッド（Table 4-1 に Thermal Pad 列明記）；複数ビアで内部 PCB 接地層に接続。',
+        specs: [
+          { k: 'DAC 分解能', v: '13-bit、4 組単調 DAC、分解能 1.22mV' },
+          { k: '出力範囲', v: '自動設定：正出力最高 5.5V／負出力最低 -10V' },
+          { k: '駆動能力', v: 'source 最高 100mA／sink 最高 20mA；容量負荷 15µF まで対応' },
+          { k: 'ゲートバイアススイッチ', v: '2 組のプログラマブル遮断電圧、高速応答' },
+          { k: '補助 DAC', v: '2 組（CLAMP1/2）、分解能 1.22mV、切替時間典型 50ns、オン抵抗最大 3Ω' },
+          { k: '温度検出', v: 'ローカルとリモートのダイオード温度検出、誤差 ±2.5°C（max）、分解能 0.0625°C' },
+          { k: 'EEPROM', v: '内蔵、4 組の独立温度-電圧変換関数と素子設定を格納、ユーザ領域あり、定格 15 年データ保持' },
+          { k: '参照電圧', v: '内蔵 2.5V' },
+          { k: 'インタフェース', v: 'SPI（4 線）と I2C（8 組選択可能アドレス）、動作電圧 1.7V~3.6V' },
+          { k: '温度範囲', v: '-55°C ~ 125°C' },
+          { k: 'パッケージ', v: '24-VQFN 4×4mm、底部放熱パッド付' },
+          { k: '特殊規格', v: '国防/宇宙用途規格：controlled baseline、単一組立試験工場、単一ファブ、製品追跡可能性、延長製品ライフサイクル' }
+        ]
+      },
+      ko: {
+        subcategory: '4채널 PA 바이어스 제어 정밀 아날로그 프론트엔드(EEPROM과 게이트 바이어스 스위치 포함)',
+        whatIs: '고집적 자율형 파워앰프(PA) 정밀 바이어스 아날로그 프론트엔드(AFE), 온도 보상 DAC 4조·EEPROM·게이트 바이어스 스위치 내장; 기동 후 내부 EEPROM 저장의 온도-전압 변환 함수에 따라 자동으로 바이어스를 보정, 시스템 컨트롤러의 지속 개입 없이 PA 바이어스 설정과 온도 보상 완료, 국방/우주 RF 시스템에 적합. 부품 번호 끝 -EP는 TI Enhanced Product(강화 공정과 품질 관리)로 패키지 노출 패드와 무관 - 본 장치는 마침 둘 다 갖춤(Table 4-1 Thermal Pad 행 참조).',
+        func: '4조 13-bit 단조 DAC(DAC0~3) 버퍼 출력, 기동 시 출력 범위 자동 설정(정출력 최고 5.5V, 부출력 최저 -10V), 대전류 구동(source 최고 100mA, sink 최고 20mA), 최대 15µF 용량 부하 허용; OUT1/OUT2는 DAC1/DAC2의 게이트 바이어스 스위치 경유 전환 출력, DRVEN1/DRVEN2는 대응하는 비동기 스위치 제어 신호로 2조 프로그래머블 차단 전압과 고속 응답을 갖춰 GaAs/GaN 등 공핍형 트랜지스터를 보호하고 PA_ON과 연계해 PA 시퀀스 제어 실현. CLAMP1/CLAMP2는 보조 DAC 버퍼 출력, 전환 시간 전형 50ns, 온저항 최대 3Ω. 로컬과 원격(D+/D–) 다이오드 온도 센서 내장, 오차 ±2.5°C(max), 분해능 0.0625°C. 2.5V 참조 내장. SPI(4선, SCL/{CS}, A2/SCLK, A1/SDI, A0/SDO)와 I2C(SDA, SCL, 8조 선택 가능 주소) 양 인터페이스 선택 가능, 동작 전압 1.7V~3.6V; {RESET}/{ALMIN}은 리셋 입력으로 로우 동작 알람 입력으로도 설정 가능.',
+        usedIn: '레이더, 전자전, 통신 페이로드, 국방 무전 등 RF 시스템에서 LDMOS/GaAs/GaN 파워앰프의 자율 바이어스 제어 회로.',
+        desc: '4채널 PA 바이어스 정밀 AFE. EEPROM에 4조 온도-전압 변환 함수 저장, 게이트 바이어스 스위치 포함, DAC 분해능 13-bit/1.22mV, SPI/I2C 양 인터페이스, 24-VQFN 4×4mm, -55°C~125°C(Enhanced Product).',
+        thermalPad: '패키지 바닥 방열 패드(Table 4-1에 Thermal Pad 행 명기); 복수 비아로 내부 PCB 접지층에 연결.',
+        specs: [
+          { k: 'DAC 분해능', v: '13-bit, 4조 단조 DAC, 분해능 1.22mV' },
+          { k: '출력 범위', v: '자동 설정: 정출력 최고 5.5V / 부출력 최저 -10V' },
+          { k: '구동 능력', v: 'source 최고 100mA / sink 최고 20mA; 용량 부하 15µF까지 허용' },
+          { k: '게이트 바이어스 스위치', v: '2조 프로그래머블 차단 전압, 고속 응답' },
+          { k: '보조 DAC', v: '2조(CLAMP1/2), 분해능 1.22mV, 전환 시간 전형 50ns, 온저항 최대 3Ω' },
+          { k: '온도 감지', v: '로컬과 원격 다이오드 온도 감지, 오차 ±2.5°C(max), 분해능 0.0625°C' },
+          { k: 'EEPROM', v: '내장, 4조 독립 온도-전압 변환 함수와 소자 설정 저장, 사용자 영역 있음, 정격 15년 데이터 보존' },
+          { k: '참조 전압', v: '내장 2.5V' },
+          { k: '인터페이스', v: 'SPI(4선)와 I2C(8조 선택 가능 주소), 동작 전압 1.7V~3.6V' },
+          { k: '온도 범위', v: '-55°C ~ 125°C' },
+          { k: '패키지', v: '24-VQFN 4×4mm, 바닥 방열 패드 포함' },
+          { k: '특수 규격', v: '국방/우주 용도 규격: controlled baseline, 단일 조립 시험 공장, 단일 팹, 제품 추적 가능성, 연장 제품 수명 주기' }
+        ]
+      }
+    },
+    'ADS1278QML-SP': {
+      en: {
+        subcategory: 'Space-grade 8-channel simultaneous-sampling Δ-Σ ADC',
+        whatIs: 'Radiation-tolerant space-grade 8-channel, 24-bit Δ-Σ analog-to-digital converter: eight channels sampled simultaneously, data rates up to 128kSPS, TID RLAT 50krad(Si), SEL-immune to LET 51MeV-cm²/mg (125°C), QMLV flight-grade screened — for precision measurement and sensing on satellites and space platforms.',
+        func: 'Eight Δ-Σ modulators sample simultaneously with a built-in linear-phase digital filter (bypassable to output raw modulator data); four selectable operating modes: High-Speed (128kSPS, 106dB SNR), High-Resolution (52kSPS, 111dB SNR), Low-Power (52kSPS, 31mW/ch), Low-Speed (10kSPS, 7mW/ch); SPI or Frame-Sync serial output, per-channel independent PWDN power-down control; analog supply 5V, digital core 1.8V, I/O supply 1.8~3.3V; low sampling-aperture error, chopper-stabilized high-order modulator architecture.',
+        usedIn: 'Temperature and attitude sensing on satellites/shuttles/space stations, orbital observation systems, space precision and scientific measurement, high-precision instrumentation — multi-channel simultaneous sampling in radiation environments.',
+        desc: 'Space-grade 8-channel 24-bit simultaneous-sampling Δ-Σ ADC, 128kSPS, 111dB SNR (High-Resolution mode), TID RLAT 50krad(Si), SEL-immune 51MeV-cm²/mg, SPI/Frame-Sync interface, 84-Pin CFP (HFQ).',
+        thermalPad: 'No exposed pad (84-pin CFP ceramic quad flat pack); thermal/mounting design per the datasheet mechanical section.',
+        specs: [
+          { k: 'Radiation tolerance', v: 'TID RLAT 50krad(Si); SEL-immune to LET 51MeV-cm²/mg @125°C' },
+          { k: 'Device grades', v: '5962L2521001VXC: Flight Grade 50krad(Si), −55°C~125°C; 5962L2521002VXC: Flight Grade 50krad(Si), −55°C~115°C' },
+          { k: 'Resolution/channels', v: '24-bit, 8-channel simultaneous sampling' },
+          { k: 'Data rate', v: 'up to 128kSPS (High-Speed mode)' },
+          { k: 'AC performance', v: '63kHz bandwidth, 111dB SNR (High-Resolution mode), THD −108dB' },
+          { k: 'DC performance', v: 'offset drift 0.8μV/°C; gain drift 1.3ppm/°C' },
+          { k: 'Operating modes', v: 'High-Speed 128kSPS/106dB SNR; High-Resolution 52kSPS/111dB SNR; Low-Power 52kSPS/31mW/ch; Low-Speed 10kSPS/7mW/ch' },
+          { k: 'Interface', v: 'SPI or Frame-Sync serial; linear-phase digital filter, bypassable for raw modulator output' },
+          { k: 'Supply', v: 'AVDD 5V; DVDD 1.8V; IOVDD 1.8V~3.3V' },
+          { k: 'Package', v: '84-Pin CFP (HFQ), mass 4.46g (±10%)' }
+        ]
+      },
+      ja: {
+        subcategory: '宇宙級 8 チャネル同時サンプリング Δ-Σ ADC',
+        whatIs: '耐放射線宇宙級 8 チャネル・24-bit Δ-Σ A/D コンバータ：8 チャネル同時サンプリング、データレート最高 128kSPS、TID RLAT 50krad(Si)、SEL は LET 51MeV-cm²/mg（125°C）まで免疫、宇宙飛行グレードスクリーニング（QMLV）適合、衛星と宇宙プラットフォームの精密計測・センシング用。',
+        func: '8 組の Δ-Σ 変調器が同時サンプリング、線形位相デジタルフィルタ内蔵（バイパスして変調器生データ出力可）；4 種の選択可能動作モード：High-Speed（128kSPS、106dB SNR）、High-Resolution（52kSPS、111dB SNR）、Low-Power（52kSPS、31mW/ch）、Low-Speed（10kSPS、7mW/ch）；SPI または Frame-Sync シリアル出力、各チャネル独立 PWDN 電源遮断制御；アナログ電源 5V、デジタルコア 1.8V、I/O 電源 1.8~3.3V；低サンプリングアパーチャ誤差、チョッパ安定化高次変調器アーキテクチャ。',
+        usedIn: '衛星/シャトル/宇宙ステーションの温度・姿勢センシング、軌道観測システム、宇宙精密・科学計測、高精度計装等、放射線環境下の多チャネル同時サンプリングシステム。',
+        desc: '宇宙級 8 チャネル 24-bit 同時サンプリング Δ-Σ ADC、128kSPS・111dB SNR（High-Resolution モード）、TID RLAT 50krad(Si)、SEL 免疫 51MeV-cm²/mg、SPI/Frame-Sync インタフェース、84-Pin CFP (HFQ)。',
+        thermalPad: '露出パッドなし（84-pin CFP セラミック四辺扁平パッケージ）；放熱と実装設計は datasheet 機構章参照。',
+        specs: [
+          { k: '放射線耐性', v: 'TID RLAT 50krad(Si)；SEL は LET 51MeV-cm²/mg @125°C まで免疫' },
+          { k: '素子グレード', v: '5962L2521001VXC：Flight Grade 50krad(Si)、−55°C~125°C；5962L2521002VXC：Flight Grade 50krad(Si)、−55°C~115°C' },
+          { k: '分解能/チャネル', v: '24-bit、8 チャネル同時サンプリング' },
+          { k: 'データレート', v: '最高 128kSPS（High-Speed モード）' },
+          { k: 'AC 性能', v: '63kHz 帯域、111dB SNR（High-Resolution モード）、THD −108dB' },
+          { k: 'DC 性能', v: 'オフセットドリフト 0.8μV/°C；ゲインドリフト 1.3ppm/°C' },
+          { k: '動作モード', v: 'High-Speed 128kSPS/106dB SNR；High-Resolution 52kSPS/111dB SNR；Low-Power 52kSPS/31mW/ch；Low-Speed 10kSPS/7mW/ch' },
+          { k: 'インタフェース', v: 'SPI または Frame-Sync シリアル；線形位相デジタルフィルタ、バイパスして変調器生データ出力可' },
+          { k: '電源', v: 'AVDD 5V；DVDD 1.8V；IOVDD 1.8V~3.3V' },
+          { k: 'パッケージ', v: '84-Pin CFP (HFQ)、質量 4.46g（±10%）' }
+        ]
+      },
+      ko: {
+        subcategory: '우주급 8채널 동시 샘플링 Δ-Σ ADC',
+        whatIs: '내방사선 우주급 8채널·24-bit Δ-Σ 아날로그-디지털 변환기: 8채널 동시 샘플링, 데이터 속도 최고 128kSPS, TID RLAT 50krad(Si), SEL은 LET 51MeV-cm²/mg(125°C)까지 면역, 우주 비행 등급 스크리닝(QMLV) 적합, 위성과 우주 플랫폼의 정밀 계측·센싱용.',
+        func: '8조 Δ-Σ 변조기가 동시 샘플링, 선형 위상 디지털 필터 내장(바이패스해 변조기 원시 데이터 출력 가능); 4종 선택 가능 동작 모드: High-Speed(128kSPS, 106dB SNR), High-Resolution(52kSPS, 111dB SNR), Low-Power(52kSPS, 31mW/ch), Low-Speed(10kSPS, 7mW/ch); SPI 또는 Frame-Sync 시리얼 출력, 각 채널 독립 PWDN 전원 차단 제어; 아날로그 전원 5V, 디지털 코어 1.8V, I/O 전원 1.8~3.3V; 저 샘플링 어퍼처 오차, 초퍼 안정화 고차 변조기 아키텍처.',
+        usedIn: '위성/셔틀/우주정거장의 온도·자세 센싱, 궤도 관측 시스템, 우주 정밀·과학 계측, 고정밀 계기 등 방사선 환경 하의 다채널 동시 샘플링 시스템.',
+        desc: '우주급 8채널 24-bit 동시 샘플링 Δ-Σ ADC, 128kSPS·111dB SNR(High-Resolution 모드), TID RLAT 50krad(Si), SEL 면역 51MeV-cm²/mg, SPI/Frame-Sync 인터페이스, 84-Pin CFP (HFQ).',
+        thermalPad: '노출 패드 없음(84-pin CFP 세라믹 사변 편평 패키지); 방열과 실장 설계는 datasheet 기구 장 참조.',
+        specs: [
+          { k: '방사선 내성', v: 'TID RLAT 50krad(Si); SEL은 LET 51MeV-cm²/mg @125°C까지 면역' },
+          { k: '소자 등급', v: '5962L2521001VXC: Flight Grade 50krad(Si), −55°C~125°C; 5962L2521002VXC: Flight Grade 50krad(Si), −55°C~115°C' },
+          { k: '분해능/채널', v: '24-bit, 8채널 동시 샘플링' },
+          { k: '데이터 속도', v: '최고 128kSPS(High-Speed 모드)' },
+          { k: 'AC 성능', v: '63kHz 대역, 111dB SNR(High-Resolution 모드), THD −108dB' },
+          { k: 'DC 성능', v: '오프셋 드리프트 0.8μV/°C; 이득 드리프트 1.3ppm/°C' },
+          { k: '동작 모드', v: 'High-Speed 128kSPS/106dB SNR; High-Resolution 52kSPS/111dB SNR; Low-Power 52kSPS/31mW/ch; Low-Speed 10kSPS/7mW/ch' },
+          { k: '인터페이스', v: 'SPI 또는 Frame-Sync 시리얼; 선형 위상 디지털 필터, 바이패스해 변조기 원시 데이터 출력 가능' },
+          { k: '전원', v: 'AVDD 5V; DVDD 1.8V; IOVDD 1.8V~3.3V' },
+          { k: '패키지', v: '84-Pin CFP (HFQ), 질량 4.46g(±10%)' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
