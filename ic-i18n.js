@@ -1,11 +1,13 @@
 /* ic-i18n.js — IC 條目內容層 i18n 架構（helper + UI 標籤四語）
  * 資料在 ic-i18n-data.js（IC_I18N[part] = { en:{...}, ja:{...}, ko:{...} }）。
  * 可覆蓋欄位：subcategory / whatIs / func / usedIn / desc / thermalPad / specs（全列覆蓋）/ dropIn（同序覆蓋 note）。
- * pins[].desc 不翻譯（訊號名/MUX 技術文字沿用原文）。
+ * pins[].desc 用共享字典翻譯：IC_PIN_I18N[zh 原文.trim()] = { en, ja, ko }（在 ic-pin-i18n-data.js）。
+ *   去重字典——同一 zh desc 全庫共用一條翻譯；未收錄者沿用 zh（合法 fallback）。訊號名/type 不動。
  * 用法：渲染前 ic = icLocalized(ic)；UI 標籤 icUI('whatIs')；語言事件 'vs-lang-change'（i18n.js 發）。
  */
 (function () {
   window.IC_I18N = window.IC_I18N || {};
+  window.IC_PIN_I18N = window.IC_PIN_I18N || {};
 
   window.IC_UI = {
     zh: {
@@ -46,7 +48,8 @@
     var lang = window.icLang();
     if (lang === 'zh') return ic;
     var t = window.IC_I18N[ic.part] && window.IC_I18N[ic.part][lang];
-    if (!t) return ic;
+    // pins 字典獨立於條目翻譯：條目未譯（!t）仍須覆蓋 pins.desc
+    if (!t) return window.icLocalizePins(ic, lang);
     var c = Object.assign({}, ic);
     ['subcategory', 'whatIs', 'func', 'usedIn', 'desc', 'thermalPad'].forEach(function (f) {
       if (t[f]) c[f] = t[f];
@@ -57,6 +60,28 @@
         return t.dropIn[i] && t.dropIn[i].note ? Object.assign({}, d, { note: t.dropIn[i].note }) : d;
       });
     }
+    c = window.icLocalizePins(c, lang);
+    return c;
+  };
+
+  // pins[].desc 覆蓋層：用去重共享字典 IC_PIN_I18N（不改 name/type/side/num）。
+  // 未收錄的 desc 沿用 zh 原文（合法 fallback）。獨立函式便於單測。
+  window.icLocalizePins = function (ic, lang) {
+    if (!ic || !ic.pins || !ic.pins.length) return ic;
+    if (!lang) lang = window.icLang();
+    if (lang === 'zh') return ic;
+    var dict = window.IC_PIN_I18N;
+    if (!dict) return ic;
+    var changed = false;
+    var pins = ic.pins.map(function (p) {
+      var d = p.desc == null ? '' : String(p.desc).trim();
+      var tr = d && dict[d] && dict[d][lang];
+      if (tr) { changed = true; return Object.assign({}, p, { desc: tr }); }
+      return p;
+    });
+    if (!changed) return ic;
+    var c = Object.assign({}, ic);
+    c.pins = pins;
     return c;
   };
 })();
