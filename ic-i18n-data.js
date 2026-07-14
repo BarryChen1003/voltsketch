@@ -8395,3 +8395,647 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+
+(function () {
+  var T = {
+    'DRV8762-Q1': {
+      en: {
+        subcategory: 'Automotive 48V H-Bridge Smart Gate Driver (external power MOSFETs)',
+        whatIs: 'Automotive-grade 48V H-bridge smart gate driver (external power MOSFETs): drives four N-channel MOSFETs forming one H-bridge, with an integrated low-side precision current-sense amplifier and full fault monitoring, AEC-Q100 qualified.',
+        func: 'Uses a bootstrap architecture to drive two high-side/low-side gate pairs; the Smart Gate Drive architecture provides 8-step adjustable peak gate-drive current (up to 224mA source / 448mA sink); supports 4x and 2x PWM modes; SPI provides detailed configuration and fault-diagnostic readback; DRVOFF independently disables the driver outputs; ASCIN triggers active short-circuit braking. The 48-QFN package shares the same pin framework as the six-channel DRV8363, with most unused channels shown as RSVD reserved pins.',
+        usedIn: '48V automotive motor-control applications such as automotive body motors, transmission actuators, and automotive brushed-DC (BDC) motors.',
+        desc: '48-QFN exposed-pad package, AEC-Q100 automotive-grade (device ambient -40C to +125C), 8V-85V wide operating voltage; 50mA average gate switching current can drive a 400nC MOSFET @20kHz; a trickle charge pump supports 100% PWM duty cycle and provides overdrive supply to the external switches. Low-side current-sense amplifier with 1mV input offset and 4-step adjustable gain. Integrated protections include battery/supply voltage monitoring, MOSFET VDS and Rsense overcurrent monitoring, VGS gate-fault monitoring, device thermal warning/shutdown and a fault-indication pin. BSTB2(pin46)/SHB2(pin47) are parallel auxiliary bootstrap/source-sense pins for channel B, tied to BSTB(pin45)/SHB(pin44) respectively.',
+        thermalPad: 'The exposed pad is for heat dissipation only, not electrical ground; it is high-impedance to GND/AGND (stated in the datasheet Layout section, p.75). Table 4-1 Pin Functions does not list this pad separately.',
+        specs: [
+          { k: 'Temp grade', v: 'AEC-Q100, device ambient -40C to +125C' },
+          { k: 'Operating voltage', v: '8V-85V (VDRAIN)' },
+          { k: 'Gate-drive current', v: '8-step adjustable, up to 224mA source / 448mA sink' },
+          { k: 'MOSFET drive', v: '50mA average gate switching current, drives 400nC MOSFET @20kHz' },
+          { k: 'Current sense', v: 'Low-side shunt amplifier, 1mV input offset, 4-step adjustable gain' },
+          { k: 'Control interface', v: 'SPI configuration and diagnostics; 4x/2x PWM modes' }
+        ]
+      },
+      ja: {
+        subcategory: '車載48V Hブリッジ スマートゲートドライバ（外付けパワーMOSFET）',
+        whatIs: '車載グレード48V Hブリッジ スマートゲートドライバ（外付けパワーMOSFET）：4個のNチャネルMOSFETを駆動して1組のHブリッジを構成し、ローサイド精密電流センスアンプと完全な故障監視を内蔵、AEC-Q100認定済み。',
+        func: 'ブートストラップ構成で2組のハイサイド/ローサイドゲートを駆動し、Smart Gate Driveアーキテクチャが8段階調整可能なピークゲート駆動電流（最大224mAソース/448mAシンク）を提供；4xおよび2x PWMモードに対応；SPIで詳細設定と故障診断の読み出しが可能；DRVOFFでドライバ出力を個別に無効化；ASCINでアクティブショートブレーキを起動。48-QFNパッケージは6チャネル版DRV8363と同じピンフレームを共有し、未使用チャネルの多くはRSVD予約ピンとして現れる。',
+        usedIn: '車載ボディモータ、トランスミッションアクチュエータ、車載ブラシ付きDCモータなど、48V車載モータ制御アプリケーション。',
+        desc: '48-QFN露出パッドパッケージ、AEC-Q100車載グレード（デバイス周囲温度-40C～+125C）、8V～85Vの広い動作電圧；50mAの平均ゲートスイッチング電流で400nC MOSFETを20kHzで駆動可能；トリクルチャージポンプが100% PWMデューティに対応し、外部スイッチにオーバードライブ電源を供給。ローサイド電流センスアンプは入力オフセット1mV、4段階調整可能ゲイン。バッテリ/電源電圧監視、MOSFET VDSおよびRsense過電流監視、VGSゲート故障監視、デバイス過熱警告/シャットダウン、故障表示ピンなどの保護を統合。BSTB2(pin46)/SHB2(pin47)はBチャネルのブートストラップ/ソースセンス並列補助ピンで、それぞれBSTB(pin45)/SHB(pin44)に接続する。',
+        thermalPad: '露出パッドは放熱専用で電気的なグランドではなく、GND/AGNDに対して高インピーダンス接続（datasheet Layout章 p.75に明記）；Table 4-1 Pin Functionsにこのパッドは個別に記載されていない。',
+        specs: [
+          { k: '温度グレード', v: 'AEC-Q100、デバイス周囲温度 -40C～+125C' },
+          { k: '動作電圧', v: '8V～85V（VDRAIN）' },
+          { k: 'ゲート駆動電流', v: '8段階調整、最大224mAソース/448mAシンク' },
+          { k: '駆動可能MOSFET', v: '50mA平均ゲートスイッチング電流、400nC MOSFETを20kHzで駆動可能' },
+          { k: '電流センス', v: 'ローサイドシャントアンプ、入力オフセット1mV、4段階調整ゲイン' },
+          { k: '制御インターフェース', v: 'SPI設定と診断；4x/2x PWMモード' }
+        ]
+      },
+      ko: {
+        subcategory: '차량용 48V H-브리지 스마트 게이트 드라이버 (외부 파워 MOSFET)',
+        whatIs: '차량용 등급 48V H-브리지 스마트 게이트 드라이버 (외부 파워 MOSFET): 4개의 N채널 MOSFET을 구동하여 하나의 H-브리지를 구성하며, 로우사이드 정밀 전류 감지 증폭기와 완전한 고장 감시를 내장, AEC-Q100 인증 완료.',
+        func: '부트스트랩 구조로 2조의 하이사이드/로우사이드 게이트를 구동하며, Smart Gate Drive 아키텍처가 8단계 조정 가능한 피크 게이트 구동 전류(최대 224mA 소스 / 448mA 싱크)를 제공; 4x 및 2x PWM 모드 지원; SPI로 상세 설정과 고장 진단 읽기 제공; DRVOFF로 드라이버 출력을 독립적으로 비활성화; ASCIN으로 능동 단락 제동을 트리거. 48-QFN 패키지는 6채널 버전 DRV8363과 동일한 핀 프레임을 공유하며, 사용하지 않는 대부분의 채널은 RSVD 예약 핀으로 표시된다.',
+        usedIn: '차량용 바디 모터, 변속기 액추에이터, 차량용 브러시 DC 모터 등 48V 차량용 모터 제어 응용.',
+        desc: '48-QFN 노출 패드 패키지, AEC-Q100 차량용 등급(소자 주위 온도 -40C~+125C), 8V~85V 광범위 동작 전압; 50mA 평균 게이트 스위칭 전류로 400nC MOSFET을 20kHz에서 구동 가능; 트리클 차지 펌프가 100% PWM 듀티를 지원하고 외부 스위치에 오버드라이브 전원을 공급. 로우사이드 전류 감지 증폭기는 입력 오프셋 1mV, 4단계 조정 가능 게인. 배터리/전원 전압 감시, MOSFET VDS 및 Rsense 과전류 감시, VGS 게이트 고장 감시, 소자 과열 경고/셧다운, 고장 표시 핀 등의 보호를 통합. BSTB2(pin46)/SHB2(pin47)은 B채널의 부트스트랩/소스 감지 병렬 보조 핀으로, 각각 BSTB(pin45)/SHB(pin44)에 연결된다.',
+        thermalPad: '노출 패드는 방열 전용이며 전기적 접지가 아니고, GND/AGND에 대해 고임피던스 연결(datasheet Layout 장 p.75에 명기); Table 4-1 Pin Functions에 이 패드는 별도로 기재되어 있지 않다.',
+        specs: [
+          { k: '온도 등급', v: 'AEC-Q100, 소자 주위 온도 -40C~+125C' },
+          { k: '동작 전압', v: '8V~85V (VDRAIN)' },
+          { k: '게이트 구동 전류', v: '8단계 조정, 최대 224mA 소스 / 448mA 싱크' },
+          { k: '구동 가능 MOSFET', v: '50mA 평균 게이트 스위칭 전류, 400nC MOSFET을 20kHz에서 구동 가능' },
+          { k: '전류 감지', v: '로우사이드 션트 증폭기, 입력 오프셋 1mV, 4단계 조정 게인' },
+          { k: '제어 인터페이스', v: 'SPI 설정 및 진단; 4x/2x PWM 모드' }
+        ]
+      }
+    },
+    'MCF8329HS': {
+      en: {
+        subcategory: 'Sensorless FOC Three-Phase BLDC Motor Gate Driver (external power MOSFETs)',
+        whatIs: 'Sensorless field-oriented control (FOC) three-phase BLDC/PMSM motor gate driver (external power MOSFETs), with a built-in code-free FOC algorithm that drives the motor without an MCU.',
+        func: 'Built-in sensorless FOC algorithm supporting up to 2.5kHz electrical frequency, offering speed/current/power/voltage control modes and supporting forward/reverse rotation and windmilling; configurable power and speed limits; control input can be analog, PWM, frequency or I2C; settings can be stored in EEPROM for standalone operation; provides external-MCU watchdog monitoring and a limp-home mode; supports one optional Hall input for position backup.',
+        usedIn: '12V/24V BLDC/PMSM motor applications such as cordless vacuum cleaners, dishwasher/washing-machine pumps, appliance fans and pumps, cordless garden and power tools, and lawn mowers.',
+        desc: '36-WQFN exposed-pad package, 4.5V-60V operating voltage, 65V three-phase half-bridge gate driver, bootstrap architecture supporting 100% duty cycle, 1A/2A peak source/sink current; sleep current max 5uA @24V, 25C; configurable EEPROM with read/write safety mechanism; supports up to 80kHz PWM switching frequency; configurable LDO (3.3V or 5V +/-3%, 80mA). A functional-safety-certified version MCF8329HSULIREER (UL 60730-1 certified, with locked-rotor, overload and phase-loss safety functions) shares the same 36-WQFN package and pinout as the standard MCF8329HSIREER.',
+        thermalPad: 'The Thermal Pad must be connected to ground (Table 5-1 states: Must be connected to ground).',
+        specs: [
+          { k: 'Operating voltage', v: '4.5V-60V' },
+          { k: 'Electrical frequency', v: 'Up to 2.5kHz' },
+          { k: 'Gate-drive current', v: '1A/2A peak source/sink' },
+          { k: 'Sleep current', v: '5uA max @24V, 25C' },
+          { k: 'PWM switching frequency', v: 'Up to 80kHz' },
+          { k: 'LDO', v: 'Configurable 3.3V or 5V +/-3%, 80mA' },
+          { k: 'Control input', v: 'Analog, PWM, frequency or I2C' }
+        ]
+      },
+      ja: {
+        subcategory: 'センサレスFOC三相ブラシレスモータ ゲートドライバ（外付けパワーMOSFET）',
+        whatIs: 'センサレス磁界方向制御（FOC）三相ブラシレス/PMSMモータ ゲートドライバ（外付けパワーMOSFET）、code-free FOCアルゴリズムを内蔵し、MCUなしでモータを駆動可能。',
+        func: 'センサレスFOCアルゴリズムを内蔵し、最大2.5kHzの電気周波数に対応、速度/電流/電力/電圧などの制御モードを提供、正転/逆転およびウインドミリング（風による自転）に対応；電力と回転数の上限を設定可能；制御入力はアナログ、PWM、周波数またはI2C；設定をEEPROMに保存でき、デバイス単独動作が可能；外部MCUウォッチドッグ監視とlimp-homeモードを備える；位置バックアップ用に1個のHall入力をオプション対応。',
+        usedIn: 'コードレス掃除機、食洗機/洗濯機ポンプ、家電ファンとポンプ、コードレス園芸/電動工具、芝刈り機など12V/24V BLDC/PMSMモータアプリケーション。',
+        desc: '36-WQFN露出パッドパッケージ、4.5V～60V動作電圧、65V三相ハーフブリッジゲートドライバ、ブートストラップ構成で100%デューティに対応、1A/2Aピークソース/シンク電流；スリープ電流最大5uA @24V, 25C；EEPROM設定可能で読み書き安全機構を備える；最大80kHz PWMスイッチング周波数に対応；LDO設定可能（3.3Vまたは5V ±3%, 80mA）。機能安全認証版MCF8329HSULIREER（UL 60730-1認証、ロック回転/過負荷/欠相などの安全機能を含む）があり、標準版MCF8329HSIREERと同じ36-WQFNパッケージとピン配置を共有する。',
+        thermalPad: 'Thermal Padは接地する必要がある（Table 5-1に明記：Must be connected to ground）。',
+        specs: [
+          { k: '動作電圧', v: '4.5V～60V' },
+          { k: '電気周波数', v: '最大2.5kHz' },
+          { k: 'ゲート駆動電流', v: '1A/2Aピークソース/シンク' },
+          { k: 'スリープ電流', v: '5uA max @24V, 25C' },
+          { k: 'PWMスイッチング周波数', v: '最大80kHz' },
+          { k: 'LDO', v: '設定可能 3.3Vまたは5V ±3%, 80mA' },
+          { k: '制御入力', v: 'アナログ、PWM、周波数またはI2C' }
+        ]
+      },
+      ko: {
+        subcategory: '센서리스 FOC 3상 BLDC 모터 게이트 드라이버 (외부 파워 MOSFET)',
+        whatIs: '센서리스 자속 방향 제어(FOC) 3상 BLDC/PMSM 모터 게이트 드라이버 (외부 파워 MOSFET), code-free FOC 알고리즘을 내장하여 MCU 없이 모터를 구동 가능.',
+        func: '센서리스 FOC 알고리즘을 내장하여 최대 2.5kHz 전기 주파수를 지원, 속도/전류/전력/전압 등 제어 모드를 제공, 정회전/역회전 및 윈드밀링(바람에 의한 자전)을 지원; 전력과 회전수 상한 설정 가능; 제어 입력은 아날로그, PWM, 주파수 또는 I2C; 설정을 EEPROM에 저장하여 소자 독립 동작 가능; 외부 MCU 워치도그 감시와 limp-home 모드를 제공; 위치 백업용으로 1개의 Hall 입력을 옵션 지원.',
+        usedIn: '무선 청소기, 식기세척기/세탁기 펌프, 가전 팬과 펌프, 무선 원예/전동 공구, 잔디깎기 등 12V/24V BLDC/PMSM 모터 응용.',
+        desc: '36-WQFN 노출 패드 패키지, 4.5V~60V 동작 전압, 65V 3상 하프브리지 게이트 드라이버, 부트스트랩 구조로 100% 듀티 지원, 1A/2A 피크 소스/싱크 전류; 슬립 전류 최대 5uA @24V, 25C; EEPROM 설정 가능하며 읽기/쓰기 안전 기구를 갖춤; 최대 80kHz PWM 스위칭 주파수 지원; LDO 설정 가능(3.3V 또는 5V ±3%, 80mA). 기능 안전 인증 버전 MCF8329HSULIREER(UL 60730-1 인증, 잠금 회전/과부하/결상 등 안전 기능 포함)이 있으며, 표준 버전 MCF8329HSIREER과 동일한 36-WQFN 패키지와 핀 배치를 공유한다.',
+        thermalPad: 'Thermal Pad는 접지에 연결해야 한다(Table 5-1 명시: Must be connected to ground).',
+        specs: [
+          { k: '동작 전압', v: '4.5V~60V' },
+          { k: '전기 주파수', v: '최대 2.5kHz' },
+          { k: '게이트 구동 전류', v: '1A/2A 피크 소스/싱크' },
+          { k: '슬립 전류', v: '5uA max @24V, 25C' },
+          { k: 'PWM 스위칭 주파수', v: '최대 80kHz' },
+          { k: 'LDO', v: '설정 가능 3.3V 또는 5V ±3%, 80mA' },
+          { k: '제어 입력', v: '아날로그, PWM, 주파수 또는 I2C' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* CC2745P10-Q1 / CC2745R7-Q1 — automotive BLE 6.0 MCU family (shared text) */
+(function () {
+  // English shared
+  var e_fh = 'Integrates a 96MHz Arm Cortex-M33 (with FPU, TrustZone-M) and a 96MHz algorithm processing unit (APU); the APU assists post-processing for Bluetooth Channel Sounding high-precision ranging (super-resolution algorithms such as IFFT and MUSIC plus vector/matrix operations); includes an HSM crypto subsystem (AES-256, ECC-521, RSA-3072, SHA-512, TRNG) and a separate LAES-128 accelerator for link-layer real-time encryption/decryption, plus TrustZone-M, memory firewall and voltage-glitch monitor (VGM) for automotive-grade security; integrates a BALUN and RF switch, ';
+  var e_ui = 'Automotive access and security systems: Digital Key, Phone-as-a-Key (PaaK), Passive Entry Passive Start (PEPS), Remote Keyless Entry (RKE).';
+  var e_core = { k: 'Core', v: 'Arm Cortex-M33 96MHz + APU 96MHz (Bluetooth Channel Sounding post-processing)' };
+  var e_rx = { k: 'RX sensitivity', v: 'BLE 125kbps -103.5dBm / 1Mbps -97dBm' };
+  var e_per = { k: 'Peripherals', v: '23 GPIO, 2x UART(LIN), 2x SPI, 1x I2C, 1x I2S, 1x CAN-FD, 12-bit ADC 1.2MSPS' };
+  var e_sec = { k: 'Security', v: 'HSM (AES-256/ECC-521/RSA-3072/SHA-512/TRNG), separate LAES-128, TrustZone-M, VGM' };
+  var e_pkg = { k: 'Grade/Package', v: 'AEC-Q100 Grade 2, Tj -40 to 125C; QFN-40 (RHA) 6x6mm' };
+  // Japanese shared
+  var j_fh = '96MHz Arm Cortex-M33（FPU、TrustZone-M内蔵）と96MHzアルゴリズム処理ユニット（APU）を統合し、APUはBluetooth Channel Soundingの高精度測距の後処理（IFFT、MUSICなどの超解像アルゴリズムおよびベクトル/行列演算）を支援；HSM暗号サブシステム（AES-256、ECC-521、RSA-3072、SHA-512、真性乱数生成器）と独立したLAES-128アクセラレータ（リンク層のリアルタイム暗号化/復号）を内蔵、さらにTrustZone-M、メモリファイアウォール、電圧グリッチ監視（VGM）で車載グレードのセキュリティを提供；BALUNとRFスイッチを統合し、';
+  var j_ui = '車載アクセス・セキュリティシステム：デジタルキー、スマートフォンキー（PaaK）、パッシブエントリ・パッシブスタート（PEPS）、リモートキーレスエントリ（RKE）。';
+  var j_core = { k: 'コア', v: 'Arm Cortex-M33 96MHz + APU 96MHz（Bluetooth Channel Sounding後処理）' };
+  var j_rx = { k: '受信感度', v: 'BLE 125kbps -103.5dBm／1Mbps -97dBm' };
+  var j_per = { k: '周辺機能', v: '23 GPIO、2×UART(LIN)、2×SPI、1×I2C、1×I2S、1×CAN-FD、12-bit ADC 1.2MSPS' };
+  var j_sec = { k: 'セキュリティ', v: 'HSM（AES-256/ECC-521/RSA-3072/SHA-512/TRNG）、独立LAES-128、TrustZone-M、VGM' };
+  var j_pkg = { k: '車載/パッケージ', v: 'AEC-Q100 Grade 2、Tj -40～125C；QFN-40 (RHA) 6×6mm' };
+  // Korean shared
+  var k_fh = '96MHz Arm Cortex-M33(FPU, TrustZone-M 내장)와 96MHz 알고리즘 처리 유닛(APU)을 통합하며, APU는 Bluetooth Channel Sounding 고정밀 측거의 후처리(IFFT, MUSIC 등 초해상 알고리즘 및 벡터/행렬 연산)를 지원; HSM 암호 서브시스템(AES-256, ECC-521, RSA-3072, SHA-512, 진성 난수 생성기)과 독립 LAES-128 가속기(링크 계층 실시간 암복호화)를 내장, 또한 TrustZone-M, 메모리 방화벽, 전압 글리치 감시(VGM)로 차량용 등급 보안을 제공; BALUN과 RF 스위치를 통합하며, ';
+  var k_ui = '차량용 액세스·보안 시스템: 디지털 키, 스마트폰 키(PaaK), 패시브 엔트리 패시브 스타트(PEPS), 리모트 키리스 엔트리(RKE).';
+  var k_core = { k: '코어', v: 'Arm Cortex-M33 96MHz + APU 96MHz(Bluetooth Channel Sounding 후처리)' };
+  var k_rx = { k: '수신 감도', v: 'BLE 125kbps -103.5dBm／1Mbps -97dBm' };
+  var k_per = { k: '주변 기능', v: '23 GPIO, 2×UART(LIN), 2×SPI, 1×I2C, 1×I2S, 1×CAN-FD, 12-bit ADC 1.2MSPS' };
+  var k_sec = { k: '보안', v: 'HSM(AES-256/ECC-521/RSA-3072/SHA-512/TRNG), 독립 LAES-128, TrustZone-M, VGM' };
+  var k_pkg = { k: '차량용/패키지', v: 'AEC-Q100 Grade 2, Tj -40~125C; QFN-40 (RHA) 6×6mm' };
+
+  var T = {
+    'CC2745P10-Q1': {
+      en: {
+        subcategory: 'SimpleLink Bluetooth Low Energy Wireless MCU (Cortex-M33, automotive, +20dBm PA)',
+        whatIs: 'Automotive-grade (AEC-Q100 Grade 2) 2.4GHz wireless microcontroller (MCU): Arm Cortex-M33 core + Bluetooth Low Energy 6.0 transceiver, with a built-in hardware security module (HSM); this P10 version supports up to +20dBm output power.',
+        func: e_fh + 'with the P version still completing TX/RX on a single RF pin to reduce BOM.',
+        usedIn: e_ui,
+        desc: 'AEC-Q100 automotive 2.4GHz BLE 6.0 wireless MCU, Cortex-M33 + APU, 1024KB Flash / 162KB SRAM, up to +20dBm output, QFN40 package, with CAN-FD and HSM; high-power version for automotive access applications.',
+        specs: [ e_core, { k: 'Memory', v: 'Flash 1024KB (96KB reserved for HSM firmware), SRAM 162KB (144KB with parity enabled)' }, { k: 'Wireless', v: 'Bluetooth Low Energy 6.0 certified, supports Channel Sounding; output power up to +20dBm' }, e_rx, e_per, e_sec, e_pkg ],
+        dropIn: [ { note: 'Same datasheet, pinout 100% identical; R7 is the standard-power version (PA up to +10dBm, Flash 864KB/SRAM 128KB; P10 is +20dBm, 1024KB/162KB).' } ]
+      },
+      ja: {
+        subcategory: 'SimpleLink Bluetooth Low Energy 無線MCU (Cortex-M33, 車載, +20dBm PA)',
+        whatIs: '車載グレード（AEC-Q100 Grade 2）2.4GHz 無線マイコン（MCU）：Arm Cortex-M33コア＋Bluetooth Low Energy 6.0トランシーバ、ハードウェアセキュリティモジュール（HSM）を内蔵、本P10版は最大+20dBm出力に対応。',
+        func: j_fh + 'P版は単一のRFピンで送受信を完結し、BOMを削減。',
+        usedIn: j_ui,
+        desc: 'AEC-Q100車載 2.4GHz BLE 6.0 無線MCU、Cortex-M33 + APU、1024KB Flash / 162KB SRAM、最大+20dBm出力、QFN40パッケージ、CAN-FDとHSMを内蔵、車載アクセス向け高出力版。',
+        specs: [ j_core, { k: 'メモリ', v: 'Flash 1024KB（うち96KBはHSMファームウェア用予約）、SRAM 162KB（parity有効時144KB）' }, { k: '無線', v: 'Bluetooth Low Energy 6.0認証、Channel Sounding対応；出力最大+20dBm' }, j_rx, j_per, j_sec, j_pkg ],
+        dropIn: [ { note: '同じdatasheet、ピン配置100%同一；R7は標準出力版（PA最大+10dBm、Flash 864KB/SRAM 128KB、P10は+20dBm、1024KB/162KB）。' } ]
+      },
+      ko: {
+        subcategory: 'SimpleLink Bluetooth Low Energy 무선 MCU (Cortex-M33, 차량용, +20dBm PA)',
+        whatIs: '차량용 등급(AEC-Q100 Grade 2) 2.4GHz 무선 마이크로컨트롤러(MCU): Arm Cortex-M33 코어 + Bluetooth Low Energy 6.0 트랜시버, 하드웨어 보안 모듈(HSM) 내장, 본 P10 버전은 최대 +20dBm 출력을 지원.',
+        func: k_fh + 'P 버전은 단일 RF 핀으로 송수신을 완결하여 BOM을 절감.',
+        usedIn: k_ui,
+        desc: 'AEC-Q100 차량용 2.4GHz BLE 6.0 무선 MCU, Cortex-M33 + APU, 1024KB Flash / 162KB SRAM, 최대 +20dBm 출력, QFN40 패키지, CAN-FD와 HSM 내장, 차량용 액세스용 고출력 버전.',
+        specs: [ k_core, { k: '메모리', v: 'Flash 1024KB(그중 96KB는 HSM 펌웨어 예약), SRAM 162KB(parity 활성화 시 144KB)' }, { k: '무선', v: 'Bluetooth Low Energy 6.0 인증, Channel Sounding 지원; 출력 최대 +20dBm' }, k_rx, k_per, k_sec, k_pkg ],
+        dropIn: [ { note: '동일 datasheet, 핀 배치 100% 동일; R7은 표준 출력 버전(PA 최대 +10dBm, Flash 864KB/SRAM 128KB, P10은 +20dBm, 1024KB/162KB).' } ]
+      }
+    },
+    'CC2745R7-Q1': {
+      en: {
+        subcategory: 'SimpleLink Bluetooth Low Energy Wireless MCU (Cortex-M33, automotive, +10dBm PA)',
+        whatIs: 'Automotive-grade (AEC-Q100 Grade 2) 2.4GHz wireless microcontroller (MCU): Arm Cortex-M33 core + Bluetooth Low Energy 6.0 transceiver, with a built-in hardware security module (HSM); this R7 version is the standard-power variant (up to +10dBm), with smaller Flash/SRAM than the P10/R10 versions.',
+        func: e_fh + 'with maximum output power of +10dBm, reducing BOM.',
+        usedIn: e_ui,
+        desc: 'AEC-Q100 automotive 2.4GHz BLE 6.0 wireless MCU, Cortex-M33 + APU, 864KB Flash / 128KB SRAM, up to +10dBm output, QFN40 package, with CAN-FD and HSM; standard-power version for automotive access applications.',
+        specs: [ e_core, { k: 'Memory', v: 'Flash 864KB (96KB reserved for HSM firmware), SRAM 128KB' }, { k: 'Wireless', v: 'Bluetooth Low Energy 6.0 certified, supports Channel Sounding; output power up to +10dBm' }, e_rx, e_per, e_sec, e_pkg ],
+        dropIn: [ { note: 'Same datasheet, pinout 100% identical; P10 is the high-power version (PA up to +20dBm, Flash 1024KB/SRAM 162KB; R7 is +10dBm, 864KB/128KB).' } ]
+      },
+      ja: {
+        subcategory: 'SimpleLink Bluetooth Low Energy 無線MCU (Cortex-M33, 車載, +10dBm PA)',
+        whatIs: '車載グレード（AEC-Q100 Grade 2）2.4GHz 無線マイコン（MCU）：Arm Cortex-M33コア＋Bluetooth Low Energy 6.0トランシーバ、HSMを内蔵、本R7版は標準出力版（最大+10dBm）で、Flash/SRAM容量はP10/R10版より小さい。',
+        func: j_fh + '最大出力+10dBmでBOMを削減。',
+        usedIn: j_ui,
+        desc: 'AEC-Q100車載 2.4GHz BLE 6.0 無線MCU、Cortex-M33 + APU、864KB Flash / 128KB SRAM、最大+10dBm出力、QFN40パッケージ、CAN-FDとHSMを内蔵、車載アクセス向け標準出力版。',
+        specs: [ j_core, { k: 'メモリ', v: 'Flash 864KB（うち96KBはHSMファームウェア用予約）、SRAM 128KB' }, { k: '無線', v: 'Bluetooth Low Energy 6.0認証、Channel Sounding対応；出力最大+10dBm' }, j_rx, j_per, j_sec, j_pkg ],
+        dropIn: [ { note: '同じdatasheet、ピン配置100%同一；P10は高出力版（PA最大+20dBm、Flash 1024KB/SRAM 162KB、R7は+10dBm、864KB/128KB）。' } ]
+      },
+      ko: {
+        subcategory: 'SimpleLink Bluetooth Low Energy 무선 MCU (Cortex-M33, 차량용, +10dBm PA)',
+        whatIs: '차량용 등급(AEC-Q100 Grade 2) 2.4GHz 무선 마이크로컨트롤러(MCU): Arm Cortex-M33 코어 + Bluetooth Low Energy 6.0 트랜시버, HSM 내장, 본 R7 버전은 표준 출력 버전(최대 +10dBm)으로, Flash/SRAM 용량이 P10/R10 버전보다 작다.',
+        func: k_fh + '최대 출력 +10dBm로 BOM을 절감.',
+        usedIn: k_ui,
+        desc: 'AEC-Q100 차량용 2.4GHz BLE 6.0 무선 MCU, Cortex-M33 + APU, 864KB Flash / 128KB SRAM, 최대 +10dBm 출력, QFN40 패키지, CAN-FD와 HSM 내장, 차량용 액세스용 표준 출력 버전.',
+        specs: [ k_core, { k: '메모리', v: 'Flash 864KB(그중 96KB는 HSM 펌웨어 예약), SRAM 128KB' }, { k: '무선', v: 'Bluetooth Low Energy 6.0 인증, Channel Sounding 지원; 출력 최대 +10dBm' }, k_rx, k_per, k_sec, k_pkg ],
+        dropIn: [ { note: '동일 datasheet, 핀 배치 100% 동일; P10은 고출력 버전(PA 최대 +20dBm, Flash 1024KB/SRAM 162KB, R7은 +10dBm, 864KB/128KB).' } ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* CC2755P10 / CC2755R10 — non-automotive multiprotocol 2.4GHz MCU family (shared text) */
+(function () {
+  var e_fh = 'Integrates a 96MHz Arm Cortex-M33 (with FPU, TrustZone-M) and a 96MHz algorithm processing unit (APU); the APU assists post-processing for Bluetooth Channel Sounding high-precision ranging (super-resolution algorithms such as IFFT and MUSIC); the same die can be flashed via the SimpleLink SDK with BLE, Zigbee, Thread or Matter protocol stacks and supports OTA firmware update (OAD); includes an HSM crypto subsystem (AES-256, ECC-521, RSA-3072, SHA-512, TRNG), a separate LAES-128 accelerator, TrustZone-M, VGM and other security mechanisms; integrates a BALUN and RF switch, ';
+  var e_ui = 'Home healthcare (glucose meters, blood-pressure monitors, CPAP, digital thermometers), patient-monitoring sensor patches, wearable fitness devices; building security (motion detection, smart locks, door/window sensors, garage doors), HVAC thermostats and environmental sensing, fire smoke/heat detection, IP surveillance cameras; lighting control; factory automation; retail electronic shelf labels; smart water/electricity/gas meters and grid communication; wireless LAN/router equipment; consumer peripherals, toys and non-medical wearables.';
+  var e_core = { k: 'Core', v: 'Arm Cortex-M33 96MHz + APU 96MHz (Bluetooth Channel Sounding post-processing)' };
+  var e_mem = { k: 'Memory', v: 'Flash 1024KB (96KB reserved for HSM firmware), SRAM 162KB' };
+  var e_rx = { k: 'RX sensitivity', v: 'BLE 125kbps -103.5dBm / 1Mbps -97dBm; IEEE 802.15.4 -103dBm' };
+  var e_per = { k: 'Peripherals', v: '23 GPIO, 2x UART(LIN), 2x SPI, 1x I2C, 1x I2S, 12-bit ADC 1.2MSPS (no CAN-FD)' };
+  var e_sec = { k: 'Security', v: 'HSM (AES-256/ECC-521/RSA-3072/SHA-512/TRNG), separate LAES-128, TrustZone-M, VGM' };
+  var e_pkg = { k: 'Package', v: 'QFN-40 (RHA) 6x6mm; the series also offers a WCSP 3.5x3.4mm preview package (not this part number)' };
+  var j_fh = '96MHz Arm Cortex-M33（FPU、TrustZone-M内蔵）と96MHzアルゴリズム処理ユニット（APU）を統合し、APUはBluetooth Channel Soundingの高精度測距の後処理（IFFT、MUSICなどの超解像アルゴリズム）を支援；同一のダイにSimpleLink SDKでBLE、Zigbee、ThreadまたはMatterのプロトコルスタックを書き込み可能、OTAファームウェア更新（OAD）に対応；HSM暗号サブシステム（AES-256、ECC-521、RSA-3072、SHA-512、TRNG）、独立LAES-128アクセラレータ、TrustZone-M、VGMなどのセキュリティ機構を内蔵；BALUNとRFスイッチを統合し、';
+  var j_ui = 'ホームヘルスケア（血糖計、血圧計、CPAP、電子体温計）、患者モニタリング用センサパッチ、ウェアラブルフィットネス機器；ビル警備（動体検知、スマートロック、ドア/窓センサ、ガレージドア）、HVACサーモスタットと環境センシング、火災の煙/熱検知、IP監視カメラ；照明制御；工場自動化；小売用電子棚札；スマート水道/電気/ガスメータとグリッド通信；無線LAN/ルータ機器；民生用周辺機器、玩具、非医療ウェアラブル。';
+  var j_core = { k: 'コア', v: 'Arm Cortex-M33 96MHz + APU 96MHz（Bluetooth Channel Sounding後処理）' };
+  var j_mem = { k: 'メモリ', v: 'Flash 1024KB（うち96KBはHSMファームウェア用予約）、SRAM 162KB' };
+  var j_rx = { k: '受信感度', v: 'BLE 125kbps -103.5dBm／1Mbps -97dBm；IEEE 802.15.4 -103dBm' };
+  var j_per = { k: '周辺機能', v: '23 GPIO、2×UART(LIN)、2×SPI、1×I2C、1×I2S、12-bit ADC 1.2MSPS（CAN-FDなし）' };
+  var j_sec = { k: 'セキュリティ', v: 'HSM（AES-256/ECC-521/RSA-3072/SHA-512/TRNG）、独立LAES-128、TrustZone-M、VGM' };
+  var j_pkg = { k: 'パッケージ', v: 'QFN-40 (RHA) 6×6mm；同シリーズにWCSP 3.5×3.4mmプレビューパッケージあり（本料番ではない）' };
+  var k_fh = '96MHz Arm Cortex-M33(FPU, TrustZone-M 내장)와 96MHz 알고리즘 처리 유닛(APU)을 통합하며, APU는 Bluetooth Channel Sounding 고정밀 측거의 후처리(IFFT, MUSIC 등 초해상 알고리즘)를 지원; 동일한 다이에 SimpleLink SDK로 BLE, Zigbee, Thread 또는 Matter 프로토콜 스택을 기록 가능하며, OTA 펌웨어 업데이트(OAD)를 지원; HSM 암호 서브시스템(AES-256, ECC-521, RSA-3072, SHA-512, TRNG), 독립 LAES-128 가속기, TrustZone-M, VGM 등 보안 기구를 내장; BALUN과 RF 스위치를 통합하며, ';
+  var k_ui = '홈 헬스케어(혈당계, 혈압계, CPAP, 전자 체온계), 환자 모니터링 센서 패치, 웨어러블 피트니스 기기; 건물 보안(움직임 감지, 스마트 도어록, 도어/창문 센서, 차고문), HVAC 서모스탯과 환경 센싱, 화재 연기/열 감지, IP 감시 카메라; 조명 제어; 공장 자동화; 소매용 전자 선반 라벨; 스마트 수도/전기/가스 미터와 그리드 통신; 무선 LAN/라우터 장비; 소비자용 주변 기기, 완구, 비의료 웨어러블.';
+  var k_core = { k: '코어', v: 'Arm Cortex-M33 96MHz + APU 96MHz(Bluetooth Channel Sounding 후처리)' };
+  var k_mem = { k: '메모리', v: 'Flash 1024KB(그중 96KB는 HSM 펌웨어 예약), SRAM 162KB' };
+  var k_rx = { k: '수신 감도', v: 'BLE 125kbps -103.5dBm／1Mbps -97dBm; IEEE 802.15.4 -103dBm' };
+  var k_per = { k: '주변 기능', v: '23 GPIO, 2×UART(LIN), 2×SPI, 1×I2C, 1×I2S, 12-bit ADC 1.2MSPS(CAN-FD 없음)' };
+  var k_sec = { k: '보안', v: 'HSM(AES-256/ECC-521/RSA-3072/SHA-512/TRNG), 독립 LAES-128, TrustZone-M, VGM' };
+  var k_pkg = { k: '패키지', v: 'QFN-40 (RHA) 6×6mm; 동일 시리즈에 WCSP 3.5×3.4mm 프리뷰 패키지 있음(본 부품 번호 아님)' };
+
+  var T = {
+    'CC2755P10': {
+      en: {
+        subcategory: 'SimpleLink Multiprotocol 2.4GHz Wireless MCU (Cortex-M33, BLE/Zigbee/Thread/Matter, +20dBm PA)',
+        whatIs: 'Non-automotive 2.4GHz multiprotocol wireless microcontroller (MCU): Arm Cortex-M33 core, supporting Bluetooth Low Energy 6.0, Zigbee 3.0, Thread, Matter and proprietary 2.4GHz protocols; this P10 version supports up to +20dBm output power.',
+        func: e_fh + 'with the P version still completing TX/RX on a single RF pin to reduce BOM.',
+        usedIn: e_ui,
+        desc: 'Non-automotive 2.4GHz multiprotocol (BLE/Zigbee/Thread/Matter) wireless MCU, Cortex-M33 + APU, 1024KB Flash / 162KB SRAM, up to +20dBm output, QFN40 package.',
+        specs: [ e_core, e_mem, { k: 'Wireless protocols', v: 'Bluetooth Low Energy 6.0, IEEE 802.15.4 (Zigbee 3.0 certified, Thread, Matter, proprietary 2.4GHz, multiprotocol); output power up to +20dBm' }, e_rx, e_per, e_sec, e_pkg ],
+        dropIn: [ { note: 'Same datasheet, pinout 100% identical; R10 is the standard-power version (PA up to +10dBm, Flash/SRAM same as P10: 1024KB/162KB).' } ]
+      },
+      ja: {
+        subcategory: 'SimpleLink マルチプロトコル 2.4GHz 無線MCU (Cortex-M33, BLE/Zigbee/Thread/Matter, +20dBm PA)',
+        whatIs: '非車載 2.4GHz マルチプロトコル無線マイコン（MCU）：Arm Cortex-M33コア、Bluetooth Low Energy 6.0、Zigbee 3.0、Thread、Matterおよび独自2.4GHzプロトコルに対応、本P10版は最大+20dBm出力に対応。',
+        func: j_fh + 'P版は単一のRFピンで送受信を完結し、BOMを削減。',
+        usedIn: j_ui,
+        desc: '非車載 2.4GHz マルチプロトコル（BLE/Zigbee/Thread/Matter）無線MCU、Cortex-M33 + APU、1024KB Flash / 162KB SRAM、最大+20dBm出力、QFN40パッケージ。',
+        specs: [ j_core, j_mem, { k: '無線プロトコル', v: 'Bluetooth Low Energy 6.0、IEEE 802.15.4（Zigbee 3.0認証、Thread、Matter、独自2.4GHz、マルチプロトコル）；出力最大+20dBm' }, j_rx, j_per, j_sec, j_pkg ],
+        dropIn: [ { note: '同じdatasheet、ピン配置100%同一；R10は標準出力版（PA最大+10dBm、Flash/SRAMはP10と同じ：1024KB/162KB）。' } ]
+      },
+      ko: {
+        subcategory: 'SimpleLink 멀티프로토콜 2.4GHz 무선 MCU (Cortex-M33, BLE/Zigbee/Thread/Matter, +20dBm PA)',
+        whatIs: '비차량용 2.4GHz 멀티프로토콜 무선 마이크로컨트롤러(MCU): Arm Cortex-M33 코어, Bluetooth Low Energy 6.0, Zigbee 3.0, Thread, Matter 및 독자 2.4GHz 프로토콜을 지원, 본 P10 버전은 최대 +20dBm 출력을 지원.',
+        func: k_fh + 'P 버전은 단일 RF 핀으로 송수신을 완결하여 BOM을 절감.',
+        usedIn: k_ui,
+        desc: '비차량용 2.4GHz 멀티프로토콜(BLE/Zigbee/Thread/Matter) 무선 MCU, Cortex-M33 + APU, 1024KB Flash / 162KB SRAM, 최대 +20dBm 출력, QFN40 패키지.',
+        specs: [ k_core, k_mem, { k: '무선 프로토콜', v: 'Bluetooth Low Energy 6.0, IEEE 802.15.4(Zigbee 3.0 인증, Thread, Matter, 독자 2.4GHz, 멀티프로토콜); 출력 최대 +20dBm' }, k_rx, k_per, k_sec, k_pkg ],
+        dropIn: [ { note: '동일 datasheet, 핀 배치 100% 동일; R10은 표준 출력 버전(PA 최대 +10dBm, Flash/SRAM은 P10과 동일: 1024KB/162KB).' } ]
+      }
+    },
+    'CC2755R10': {
+      en: {
+        subcategory: 'SimpleLink Multiprotocol 2.4GHz Wireless MCU (Cortex-M33, BLE/Zigbee/Thread/Matter, +10dBm PA)',
+        whatIs: 'Non-automotive 2.4GHz multiprotocol wireless microcontroller (MCU): Arm Cortex-M33 core, supporting Bluetooth Low Energy 6.0, Zigbee 3.0, Thread, Matter and proprietary 2.4GHz protocols; this R10 version is the standard-power variant (up to +10dBm).',
+        func: e_fh + 'with maximum output power of +10dBm, reducing BOM.',
+        usedIn: e_ui,
+        desc: 'Non-automotive 2.4GHz multiprotocol (BLE/Zigbee/Thread/Matter) wireless MCU, Cortex-M33 + APU, 1024KB Flash / 162KB SRAM, up to +10dBm output, QFN40 package.',
+        specs: [ e_core, e_mem, { k: 'Wireless protocols', v: 'Bluetooth Low Energy 6.0, IEEE 802.15.4 (Zigbee 3.0 certified, Thread, Matter, proprietary 2.4GHz, multiprotocol); output power up to +10dBm' }, e_rx, e_per, e_sec, e_pkg ],
+        dropIn: [ { note: 'Same datasheet, pinout 100% identical; P10 is the high-power version (PA up to +20dBm, Flash/SRAM same as R10: 1024KB/162KB).' } ]
+      },
+      ja: {
+        subcategory: 'SimpleLink マルチプロトコル 2.4GHz 無線MCU (Cortex-M33, BLE/Zigbee/Thread/Matter, +10dBm PA)',
+        whatIs: '非車載 2.4GHz マルチプロトコル無線マイコン（MCU）：Arm Cortex-M33コア、Bluetooth Low Energy 6.0、Zigbee 3.0、Thread、Matterおよび独自2.4GHzプロトコルに対応、本R10版は標準出力版（最大+10dBm）。',
+        func: j_fh + '最大出力+10dBmでBOMを削減。',
+        usedIn: j_ui,
+        desc: '非車載 2.4GHz マルチプロトコル（BLE/Zigbee/Thread/Matter）無線MCU、Cortex-M33 + APU、1024KB Flash / 162KB SRAM、最大+10dBm出力、QFN40パッケージ。',
+        specs: [ j_core, j_mem, { k: '無線プロトコル', v: 'Bluetooth Low Energy 6.0、IEEE 802.15.4（Zigbee 3.0認証、Thread、Matter、独自2.4GHz、マルチプロトコル）；出力最大+10dBm' }, j_rx, j_per, j_sec, j_pkg ],
+        dropIn: [ { note: '同じdatasheet、ピン配置100%同一；P10は高出力版（PA最大+20dBm、Flash/SRAMはR10と同じ：1024KB/162KB）。' } ]
+      },
+      ko: {
+        subcategory: 'SimpleLink 멀티프로토콜 2.4GHz 무선 MCU (Cortex-M33, BLE/Zigbee/Thread/Matter, +10dBm PA)',
+        whatIs: '비차량용 2.4GHz 멀티프로토콜 무선 마이크로컨트롤러(MCU): Arm Cortex-M33 코어, Bluetooth Low Energy 6.0, Zigbee 3.0, Thread, Matter 및 독자 2.4GHz 프로토콜을 지원, 본 R10 버전은 표준 출력 버전(최대 +10dBm).',
+        func: k_fh + '최대 출력 +10dBm로 BOM을 절감.',
+        usedIn: k_ui,
+        desc: '비차량용 2.4GHz 멀티프로토콜(BLE/Zigbee/Thread/Matter) 무선 MCU, Cortex-M33 + APU, 1024KB Flash / 162KB SRAM, 최대 +10dBm 출력, QFN40 패키지.',
+        specs: [ k_core, k_mem, { k: '무선 프로토콜', v: 'Bluetooth Low Energy 6.0, IEEE 802.15.4(Zigbee 3.0 인증, Thread, Matter, 독자 2.4GHz, 멀티프로토콜); 출력 최대 +10dBm' }, k_rx, k_per, k_sec, k_pkg ],
+        dropIn: [ { note: '동일 datasheet, 핀 배치 100% 동일; P10은 고출력 버전(PA 최대 +20dBm, Flash/SRAM은 R10과 동일: 1024KB/162KB).' } ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* CC3300MOD / CC3301MOD / CC3350MOD / CC3351MOD — Wi-Fi 6 companion module family (shared spec rows) */
+(function () {
+  // shared spec rows
+  var e_host = { k: 'Host interface', v: '4-bit SDIO or SPI' };
+  var e_hostble = { k: 'Host interface', v: '4-bit SDIO or SPI; BLE HCI can also use UART or shared SDIO' };
+  var e_thru = { k: 'Throughput', v: 'Up to ~50Mbps at application layer' };
+  var e_temp = { k: 'Operating temp', v: '-40C to +85C' };
+  var e_pkg = { k: 'Package', v: '65-pin LGA, 11mm x 11mm, 0.65mm pitch' };
+  var j_host = { k: 'ホストインターフェース', v: '4-bit SDIOまたはSPI' };
+  var j_hostble = { k: 'ホストインターフェース', v: '4-bit SDIOまたはSPI；BLE HCIはUARTまたは共用SDIOも使用可能' };
+  var j_thru = { k: 'スループット', v: 'アプリケーション層で最大約50Mbps' };
+  var j_temp = { k: '動作温度', v: '-40C～+85C' };
+  var j_pkg = { k: 'パッケージ', v: '65-pin LGA、11mm×11mm、0.65mmピッチ' };
+  var k_host = { k: '호스트 인터페이스', v: '4-bit SDIO 또는 SPI' };
+  var k_hostble = { k: '호스트 인터페이스', v: '4-bit SDIO 또는 SPI; BLE HCI는 UART 또는 공용 SDIO도 사용 가능' };
+  var k_thru = { k: '처리량', v: '애플리케이션 계층 최대 약 50Mbps' };
+  var k_temp = { k: '동작 온도', v: '-40C~+85C' };
+  var k_pkg = { k: '패키지', v: '65-pin LGA, 11mm×11mm, 0.65mm 피치' };
+  // band-specific rows
+  var e_wifi24 = { k: 'Wi-Fi', v: 'IEEE 802.11 b/g/n/ax, 2.4GHz, 20MHz bandwidth, single spatial stream (SISO)' };
+  var e_wifidual = { k: 'Wi-Fi', v: 'IEEE 802.11 a/b/g/n/ax, 2.4GHz and 5GHz dual-band, 20MHz bandwidth, single spatial stream (SISO)' };
+  var e_pw24 = { k: 'Output power', v: 'Integrated 2.4GHz PA, up to +18.4dBm' };
+  var e_pwdual = { k: 'Output power', v: 'Integrated dual-band PA, up to +18.3dBm' };
+  var e_bt54 = { k: 'Bluetooth', v: 'Bluetooth Low Energy 5.4, supports LE Coded PHY / LE 2M PHY / Advertising Extension' };
+  var j_wifi24 = { k: 'Wi-Fi', v: 'IEEE 802.11 b/g/n/ax、2.4GHz、20MHz帯域、シングル空間ストリーム（SISO）' };
+  var j_wifidual = { k: 'Wi-Fi', v: 'IEEE 802.11 a/b/g/n/ax、2.4GHzと5GHzのデュアルバンド、20MHz帯域、シングル空間ストリーム（SISO）' };
+  var j_pw24 = { k: '出力', v: '2.4GHz PA内蔵、最大+18.4dBm' };
+  var j_pwdual = { k: '出力', v: 'デュアルバンドPA内蔵、最大+18.3dBm' };
+  var j_bt54 = { k: 'Bluetooth', v: 'Bluetooth Low Energy 5.4、LE Coded PHY／LE 2M PHY／Advertising Extensionに対応' };
+  var k_wifi24 = { k: 'Wi-Fi', v: 'IEEE 802.11 b/g/n/ax, 2.4GHz, 20MHz 대역폭, 단일 공간 스트림(SISO)' };
+  var k_wifidual = { k: 'Wi-Fi', v: 'IEEE 802.11 a/b/g/n/ax, 2.4GHz와 5GHz 듀얼밴드, 20MHz 대역폭, 단일 공간 스트림(SISO)' };
+  var k_pw24 = { k: '출력', v: '2.4GHz PA 내장, 최대 +18.4dBm' };
+  var k_pwdual = { k: '출력', v: '듀얼밴드 PA 내장, 최대 +18.3dBm' };
+  var k_bt54 = { k: 'Bluetooth', v: 'Bluetooth Low Energy 5.4, LE Coded PHY／LE 2M PHY／Advertising Extension 지원' };
+
+  var T = {
+    'CC3300MOD': {
+      en: {
+        subcategory: 'Wi-Fi 6 (2.4GHz) Companion Module',
+        whatIs: '2.4GHz Wi-Fi 6 (802.11ax) companion module: integrates a complete Wi-Fi 6 transceiver, PA and antenna front end, providing a host MCU/processor with full TCP/IP wireless connectivity over an SDIO or SPI interface, freeing the host from handling RF and antenna design.',
+        func: 'Integrates MAC, baseband and a 2.4GHz RF transceiver, supporting IEEE 802.11 b/g/n/ax; includes a 2.4GHz power amplifier (PA) with up to +18.4dBm output; supports Wi-Fi 6 efficiency features such as TWT, OFDMA, downlink MU-MIMO and BSS Coloring, with hardware-accelerated WPA2/WPA3 encryption; host interface is 4-bit SDIO or SPI; a 40MHz XTAL fast clock is integrated in the module, and the slow clock can use an internal or external 32.768kHz; supports multi-role operation (e.g. concurrent STA+AP) and antenna diversity/selection; a 3-wire or 1-wire PTA allows coexistence with other 2.4GHz radios (such as Thread/Zigbee).',
+        usedIn: 'Cloud-connected applications such as grid infrastructure (meters, string/micro inverters, energy-storage PCS, EV charging stations), building/home automation (HVAC controllers/gateways, thermostats, garage doors, IP cameras/video doorbells), appliances (refrigerators, ovens, washing machines, water heaters, air purifiers, robotic vacuums) and medical devices (infusion pumps, patient monitors, blood-pressure monitors).',
+        desc: '65-pin 11x11mm LGA 2.4GHz Wi-Fi 6 companion module with integrated PA and transceiver, SDIO/SPI host interface, operating -40C to +85C; CC3300MOD is Wi-Fi-only, without Bluetooth (the BLE version is CC3301MOD).',
+        specs: [ e_wifi24, { k: 'Bluetooth', v: 'Not supported (Wi-Fi-only; BLE version is CC3301MOD)' }, e_pw24, e_host, e_thru, e_temp, e_pkg ],
+        dropIn: [ { note: 'Identical 65-pin LGA pinout (deep-equal verified); CC3301MOD additionally includes BLE 5.4 and can be swapped in to save cost when Bluetooth is not needed.' } ]
+      },
+      ja: {
+        subcategory: 'Wi-Fi 6 (2.4GHz) コンパニオンモジュール',
+        whatIs: '2.4GHz Wi-Fi 6（802.11ax）コンパニオンモジュール：完全なWi-Fi 6トランシーバ、PA、アンテナフロントエンドを内蔵し、SDIOまたはSPIインターフェース経由でホストMCU/プロセッサに完全なTCP/IP無線接続を提供、ホストがRFやアンテナ設計を扱う必要をなくす。',
+        func: 'MAC、ベースバンド、2.4GHz RFトランシーバを統合し、IEEE 802.11 b/g/n/axに対応；2.4GHzパワーアンプ（PA）を内蔵し最大+18.4dBm出力；TWT、OFDMA、下りMU-MIMO、BSS ColoringなどのWi-Fi 6効率機能に対応、WPA2/WPA3暗号化をハードウェアで高速化；ホストインターフェースは4-bit SDIOまたはSPI；40MHz XTAL高速クロックをモジュール内に統合、低速クロックは内蔵または外部32.768kHzを使用可能；マルチロール動作（STA+AP同時など）とアンテナダイバーシティ/選択に対応；3線または1線のPTAで他の2.4GHz無線（Thread/Zigbeeなど）と共存可能。',
+        usedIn: '電力網インフラ（電力量計、ストリング/マイクロインバータ、蓄電PCS、EV充電器）、ビル/ホームオートメーション（HVACコントローラ/ゲートウェイ、サーモスタット、ガレージドア、IPカメラ/ビデオドアベル）、家電（冷蔵庫、オーブン、洗濯機、給湯器、空気清浄機、ロボット掃除機）、医療機器（輸液ポンプ、患者モニタ、血圧計）などのクラウド接続アプリケーション。',
+        desc: '65-pin 11×11mm LGAパッケージの2.4GHz Wi-Fi 6コンパニオンモジュール、PAとトランシーバを内蔵、SDIO/SPIホストインターフェース、動作温度-40C～+85C；CC3300MODはWi-FiのみでBluetoothなし（BLE版はCC3301MOD）。',
+        specs: [ j_wifi24, { k: 'Bluetooth', v: '非対応（Wi-Fiのみ；BLE版はCC3301MOD）' }, j_pw24, j_host, j_thru, j_temp, j_pkg ],
+        dropIn: [ { note: '同一の65-pin LGAピン配置（deep-equal確認済み）；CC3301MODはBLE 5.4を追加で内蔵し、Bluetooth不要ならコスト削減のため置き換え可能。' } ]
+      },
+      ko: {
+        subcategory: 'Wi-Fi 6 (2.4GHz) 컴패니언 모듈',
+        whatIs: '2.4GHz Wi-Fi 6(802.11ax) 컴패니언 모듈: 완전한 Wi-Fi 6 트랜시버, PA, 안테나 프런트엔드를 내장하여 SDIO 또는 SPI 인터페이스를 통해 호스트 MCU/프로세서에 완전한 TCP/IP 무선 연결을 제공, 호스트가 RF와 안테나 설계를 다룰 필요를 없앤다.',
+        func: 'MAC, 베이스밴드, 2.4GHz RF 트랜시버를 통합하여 IEEE 802.11 b/g/n/ax를 지원; 2.4GHz 파워 앰프(PA)를 내장하여 최대 +18.4dBm 출력; TWT, OFDMA, 하향 MU-MIMO, BSS Coloring 등 Wi-Fi 6 효율 기능을 지원, WPA2/WPA3 암호화를 하드웨어로 가속; 호스트 인터페이스는 4-bit SDIO 또는 SPI; 40MHz XTAL 고속 클록을 모듈 내에 통합, 저속 클록은 내장 또는 외부 32.768kHz 사용 가능; 멀티롤 동작(STA+AP 동시 등)과 안테나 다이버시티/선택을 지원; 3선 또는 1선 PTA로 다른 2.4GHz 무선(Thread/Zigbee 등)과 공존 가능.',
+        usedIn: '전력망 인프라(전력량계, 스트링/마이크로 인버터, 에너지 저장 PCS, EV 충전기), 빌딩/홈 오토메이션(HVAC 컨트롤러/게이트웨이, 서모스탯, 차고문, IP 카메라/비디오 도어벨), 가전(냉장고, 오븐, 세탁기, 온수기, 공기청정기, 로봇청소기), 의료기기(수액 펌프, 환자 모니터, 혈압계) 등 클라우드 연결 응용.',
+        desc: '65-pin 11×11mm LGA 2.4GHz Wi-Fi 6 컴패니언 모듈, PA와 트랜시버 내장, SDIO/SPI 호스트 인터페이스, 동작 온도 -40C~+85C; CC3300MOD는 Wi-Fi 전용으로 Bluetooth 없음(BLE 버전은 CC3301MOD).',
+        specs: [ k_wifi24, { k: 'Bluetooth', v: '미지원(Wi-Fi 전용; BLE 버전은 CC3301MOD)' }, k_pw24, k_host, k_thru, k_temp, k_pkg ],
+        dropIn: [ { note: '동일한 65-pin LGA 핀 배치(deep-equal 확인 완료); CC3301MOD는 BLE 5.4를 추가로 내장하며, Bluetooth가 필요 없으면 비용 절감을 위해 교체 가능.' } ]
+      }
+    },
+    'CC3301MOD': {
+      en: {
+        subcategory: 'Wi-Fi 6 (2.4GHz) + BLE 5.4 Companion Module',
+        whatIs: '2.4GHz Wi-Fi 6 (802.11ax) and Bluetooth Low Energy 5.4 companion module: the same Wi-Fi 6 transceiver and PA as the CC3300MOD, plus a BLE 5.4 controller subsystem, with both radios sharing the same RF front end and antenna.',
+        func: 'Integrates MAC, baseband and a 2.4GHz RF transceiver, supporting IEEE 802.11 b/g/n/ax; includes a 2.4GHz PA with up to +18.4dBm output; supports Wi-Fi 6 efficiency features such as TWT, OFDMA, downlink MU-MIMO and BSS Coloring, with hardware-accelerated WPA2/WPA3; also integrates a Bluetooth Low Energy 5.4 controller subsystem supporting LE Coded PHY (long range), LE 2M PHY (high speed) and Advertising Extension, with HCI transport over UART or shared SDIO, and an internal coexistence mechanism that lets BLE and Wi-Fi share the same RF chain and antenna; host interface is 4-bit SDIO or SPI; a 40MHz XTAL is integrated in the module.',
+        usedIn: 'Same applications as the CC3300MOD (grid infrastructure, building/home automation, appliances, medical devices, etc.), plus scenarios requiring Bluetooth pairing/data transfer such as wearable pairing, mobile-app on-site provisioning and BLE-beacon hybrid connectivity.',
+        desc: '65-pin 11x11mm LGA package, 2.4GHz Wi-Fi 6 + Bluetooth Low Energy 5.4 companion module, SDIO/SPI to host, internal Wi-Fi/BLE coexistence, operating -40C to +85C.',
+        specs: [ e_wifi24, e_bt54, e_pw24, e_hostble, e_thru, e_temp, e_pkg ],
+        dropIn: [ { note: 'Identical 65-pin LGA pinout (deep-equal verified); CC3300MOD is the Wi-Fi-only version (no BLE) and can be swapped in when Bluetooth is not needed.' } ]
+      },
+      ja: {
+        subcategory: 'Wi-Fi 6 (2.4GHz) + BLE 5.4 コンパニオンモジュール',
+        whatIs: '2.4GHz Wi-Fi 6（802.11ax）とBluetooth Low Energy 5.4のコンパニオンモジュール：CC3300MODと同じWi-Fi 6トランシーバとPAに、BLE 5.4コントローラサブシステムを追加、両無線が同じRFフロントエンドとアンテナを共有。',
+        func: 'MAC、ベースバンド、2.4GHz RFトランシーバを統合し、IEEE 802.11 b/g/n/axに対応；2.4GHz PAを内蔵し最大+18.4dBm出力；TWT、OFDMA、下りMU-MIMO、BSS ColoringなどのWi-Fi 6効率機能に対応、WPA2/WPA3をハードウェアで高速化；さらにBluetooth Low Energy 5.4コントローラサブシステムを統合し、LE Coded PHY（長距離）、LE 2M PHY（高速）、Advertising Extensionに対応、HCI伝送はUARTまたは共用SDIO、内部共存機構によりBLEとWi-Fiが同一のRFチェーンとアンテナを共有；ホストインターフェースは4-bit SDIOまたはSPI；40MHz XTALをモジュール内に統合。',
+        usedIn: 'CC3300MODと同じアプリケーション（電力網インフラ、ビル/ホームオートメーション、家電、医療機器など）に加え、ウェアラブルのペアリング、モバイルアプリによる現地設定、BLEビーコンのハイブリッド接続など、Bluetoothペアリング/データ転送が必要なシナリオもカバー。',
+        desc: '65-pin 11×11mm LGAパッケージ、2.4GHz Wi-Fi 6 + Bluetooth Low Energy 5.4コンパニオンモジュール、SDIO/SPIでホスト接続、内部Wi-Fi/BLE共存、動作温度-40C～+85C。',
+        specs: [ j_wifi24, j_bt54, j_pw24, j_hostble, j_thru, j_temp, j_pkg ],
+        dropIn: [ { note: '同一の65-pin LGAピン配置（deep-equal確認済み）；CC3300MODはWi-Fiのみ版（BLEなし）で、Bluetooth不要時に置き換え可能。' } ]
+      },
+      ko: {
+        subcategory: 'Wi-Fi 6 (2.4GHz) + BLE 5.4 컴패니언 모듈',
+        whatIs: '2.4GHz Wi-Fi 6(802.11ax)와 Bluetooth Low Energy 5.4 컴패니언 모듈: CC3300MOD와 동일한 Wi-Fi 6 트랜시버와 PA에 BLE 5.4 컨트롤러 서브시스템을 추가, 두 무선이 동일한 RF 프런트엔드와 안테나를 공유.',
+        func: 'MAC, 베이스밴드, 2.4GHz RF 트랜시버를 통합하여 IEEE 802.11 b/g/n/ax를 지원; 2.4GHz PA를 내장하여 최대 +18.4dBm 출력; TWT, OFDMA, 하향 MU-MIMO, BSS Coloring 등 Wi-Fi 6 효율 기능을 지원, WPA2/WPA3를 하드웨어로 가속; 또한 Bluetooth Low Energy 5.4 컨트롤러 서브시스템을 통합하여 LE Coded PHY(장거리), LE 2M PHY(고속), Advertising Extension을 지원, HCI 전송은 UART 또는 공용 SDIO, 내부 공존 기구로 BLE와 Wi-Fi가 동일한 RF 체인과 안테나를 공유; 호스트 인터페이스는 4-bit SDIO 또는 SPI; 40MHz XTAL을 모듈 내에 통합.',
+        usedIn: 'CC3300MOD와 동일한 응용(전력망 인프라, 빌딩/홈 오토메이션, 가전, 의료기기 등)에 더해, 웨어러블 페어링, 모바일 앱 현장 설정, BLE 비콘 하이브리드 연결 등 Bluetooth 페어링/데이터 전송이 필요한 시나리오도 포함.',
+        desc: '65-pin 11×11mm LGA 패키지, 2.4GHz Wi-Fi 6 + Bluetooth Low Energy 5.4 컴패니언 모듈, SDIO/SPI로 호스트 연결, 내부 Wi-Fi/BLE 공존, 동작 온도 -40C~+85C.',
+        specs: [ k_wifi24, k_bt54, k_pw24, k_hostble, k_thru, k_temp, k_pkg ],
+        dropIn: [ { note: '동일한 65-pin LGA 핀 배치(deep-equal 확인 완료); CC3300MOD는 Wi-Fi 전용 버전(BLE 없음)으로, Bluetooth가 필요 없을 때 교체 가능.' } ]
+      }
+    },
+    'CC3350MOD': {
+      en: {
+        subcategory: 'Dual-Band (2.4/5GHz) Wi-Fi 6 Companion Module',
+        whatIs: '2.4GHz and 5GHz dual-band Wi-Fi 6 (802.11ax) companion module: integrates a dual-band transceiver, PA and antenna front end, providing a host MCU/processor with full TCP/IP wireless connectivity over an SDIO or SPI interface.',
+        func: 'Integrates MAC, baseband and a dual-band RF transceiver, supporting IEEE 802.11 a/b/g/n/ax (compatible with Wi-Fi 4 and Wi-Fi 5 802.11ac); both 2.4GHz and 5GHz are 20MHz, single spatial stream; includes 2.4GHz and 5GHz PAs with up to +18.3dBm output; supports Wi-Fi 6 efficiency features such as TWT, OFDMA, downlink MU-MIMO and BSS Coloring, with hardware-accelerated WPA2/WPA3; host interface is 4-bit SDIO or SPI; a 40MHz XTAL fast clock is integrated in the module, and the slow clock can use an internal or external 32.768kHz; supports multi-role operation and antenna diversity/selection; a 3-wire or 1-wire PTA allows coexistence with external 2.4GHz radios.',
+        usedIn: 'Grid infrastructure (meters, string/micro inverters, energy-storage PCS, EV charging stations), building/home automation (HVAC controllers/gateways, thermostats, garage doors, IP cameras/video doorbells), appliances (refrigerators, ovens, washing machines, water heaters, air purifiers, robotic vacuums) and medical devices (infusion pumps, patient monitors, blood-pressure monitors) requiring dual-band Wi-Fi connectivity.',
+        desc: '65-pin 11x11mm LGA 2.4GHz/5GHz dual-band Wi-Fi 6 companion module with integrated dual-band PA and transceiver, SDIO/SPI host interface, operating -40C to +85C; CC3350MOD is Wi-Fi-only, without Bluetooth (the BLE version is CC3351MOD).',
+        specs: [ e_wifidual, { k: 'Bluetooth', v: 'Not supported (Wi-Fi-only; BLE version is CC3351MOD)' }, e_pwdual, e_host, e_thru, e_temp, e_pkg ],
+        dropIn: [ { note: 'Identical 65-pin LGA pinout (deep-equal verified); CC3351MOD additionally includes BLE 5.4 and can be swapped in to save cost when Bluetooth is not needed.' } ]
+      },
+      ja: {
+        subcategory: 'デュアルバンド (2.4/5GHz) Wi-Fi 6 コンパニオンモジュール',
+        whatIs: '2.4GHzと5GHzのデュアルバンドWi-Fi 6（802.11ax）コンパニオンモジュール：デュアルバンドトランシーバ、PA、アンテナフロントエンドを内蔵し、SDIOまたはSPIインターフェース経由でホストMCU/プロセッサに完全なTCP/IP無線接続を提供。',
+        func: 'MAC、ベースバンド、デュアルバンドRFトランシーバを統合し、IEEE 802.11 a/b/g/n/axに対応（Wi-Fi 4およびWi-Fi 5 802.11acと互換）；2.4GHzと5GHzはいずれも20MHz、シングル空間ストリーム；2.4GHzと5GHzのPAを内蔵し最大+18.3dBm出力；TWT、OFDMA、下りMU-MIMO、BSS ColoringなどのWi-Fi 6効率機能に対応、WPA2/WPA3をハードウェアで高速化；ホストインターフェースは4-bit SDIOまたはSPI；40MHz XTAL高速クロックをモジュール内に統合、低速クロックは内蔵または外部32.768kHzを使用可能；マルチロール動作とアンテナダイバーシティ/選択に対応；3線または1線のPTAで外部2.4GHz無線と共存可能。',
+        usedIn: '電力網インフラ（電力量計、ストリング/マイクロインバータ、蓄電PCS、EV充電器）、ビル/ホームオートメーション（HVACコントローラ/ゲートウェイ、サーモスタット、ガレージドア、IPカメラ/ビデオドアベル）、家電（冷蔵庫、オーブン、洗濯機、給湯器、空気清浄機、ロボット掃除機）、医療機器（輸液ポンプ、患者モニタ、血圧計）など、デュアルバンドWi-Fiが必要な接続アプリケーション。',
+        desc: '65-pin 11×11mm LGAパッケージの2.4GHz/5GHzデュアルバンドWi-Fi 6コンパニオンモジュール、デュアルバンドPAとトランシーバを内蔵、SDIO/SPIホストインターフェース、動作温度-40C～+85C；CC3350MODはWi-FiのみでBluetoothなし（BLE版はCC3351MOD）。',
+        specs: [ j_wifidual, { k: 'Bluetooth', v: '非対応（Wi-Fiのみ；BLE版はCC3351MOD）' }, j_pwdual, j_host, j_thru, j_temp, j_pkg ],
+        dropIn: [ { note: '同一の65-pin LGAピン配置（deep-equal確認済み）；CC3351MODはBLE 5.4を追加で内蔵し、Bluetooth不要ならコスト削減のため置き換え可能。' } ]
+      },
+      ko: {
+        subcategory: '듀얼밴드 (2.4/5GHz) Wi-Fi 6 컴패니언 모듈',
+        whatIs: '2.4GHz와 5GHz 듀얼밴드 Wi-Fi 6(802.11ax) 컴패니언 모듈: 듀얼밴드 트랜시버, PA, 안테나 프런트엔드를 내장하여 SDIO 또는 SPI 인터페이스를 통해 호스트 MCU/프로세서에 완전한 TCP/IP 무선 연결을 제공.',
+        func: 'MAC, 베이스밴드, 듀얼밴드 RF 트랜시버를 통합하여 IEEE 802.11 a/b/g/n/ax를 지원(Wi-Fi 4 및 Wi-Fi 5 802.11ac 호환); 2.4GHz와 5GHz 모두 20MHz, 단일 공간 스트림; 2.4GHz와 5GHz PA를 내장하여 최대 +18.3dBm 출력; TWT, OFDMA, 하향 MU-MIMO, BSS Coloring 등 Wi-Fi 6 효율 기능을 지원, WPA2/WPA3를 하드웨어로 가속; 호스트 인터페이스는 4-bit SDIO 또는 SPI; 40MHz XTAL 고속 클록을 모듈 내에 통합, 저속 클록은 내장 또는 외부 32.768kHz 사용 가능; 멀티롤 동작과 안테나 다이버시티/선택을 지원; 3선 또는 1선 PTA로 외부 2.4GHz 무선과 공존 가능.',
+        usedIn: '전력망 인프라(전력량계, 스트링/마이크로 인버터, 에너지 저장 PCS, EV 충전기), 빌딩/홈 오토메이션(HVAC 컨트롤러/게이트웨이, 서모스탯, 차고문, IP 카메라/비디오 도어벨), 가전(냉장고, 오븐, 세탁기, 온수기, 공기청정기, 로봇청소기), 의료기기(수액 펌프, 환자 모니터, 혈압계) 등 듀얼밴드 Wi-Fi가 필요한 연결 응용.',
+        desc: '65-pin 11×11mm LGA 2.4GHz/5GHz 듀얼밴드 Wi-Fi 6 컴패니언 모듈, 듀얼밴드 PA와 트랜시버 내장, SDIO/SPI 호스트 인터페이스, 동작 온도 -40C~+85C; CC3350MOD는 Wi-Fi 전용으로 Bluetooth 없음(BLE 버전은 CC3351MOD).',
+        specs: [ k_wifidual, { k: 'Bluetooth', v: '미지원(Wi-Fi 전용; BLE 버전은 CC3351MOD)' }, k_pwdual, k_host, k_thru, k_temp, k_pkg ],
+        dropIn: [ { note: '동일한 65-pin LGA 핀 배치(deep-equal 확인 완료); CC3351MOD는 BLE 5.4를 추가로 내장하며, Bluetooth가 필요 없으면 비용 절감을 위해 교체 가능.' } ]
+      }
+    },
+    'CC3351MOD': {
+      en: {
+        subcategory: 'Dual-Band (2.4/5GHz) Wi-Fi 6 + BLE 5.4 Companion Module',
+        whatIs: '2.4GHz and 5GHz dual-band Wi-Fi 6 (802.11ax) and Bluetooth Low Energy 5.4 companion module: the same dual-band transceiver and PA as the CC3350MOD, plus a BLE 5.4 controller subsystem, with both radios sharing the same RF front end and antenna.',
+        func: 'Integrates MAC, baseband and a dual-band RF transceiver, supporting IEEE 802.11 a/b/g/n/ax (compatible with Wi-Fi 4 and Wi-Fi 5 802.11ac); includes a dual-band PA with up to +18.3dBm output; supports Wi-Fi 6 efficiency features such as TWT, OFDMA, downlink MU-MIMO and BSS Coloring, with hardware-accelerated WPA2/WPA3; also integrates a Bluetooth Low Energy 5.4 controller subsystem supporting LE Coded PHY (long range), LE 2M PHY (high speed) and Advertising Extension, with HCI transport over UART or shared SDIO, and an internal coexistence mechanism that lets BLE and Wi-Fi share the same RF chain and antenna; host interface is 4-bit SDIO or SPI.',
+        usedIn: 'Same applications as the CC3350MOD (grid infrastructure, building/home automation, appliances, medical devices and other dual-band Wi-Fi scenarios), plus scenarios requiring Bluetooth pairing/data transfer such as wearable pairing, mobile-app on-site provisioning and BLE-beacon hybrid connectivity.',
+        desc: '65-pin 11x11mm LGA package, 2.4GHz/5GHz dual-band Wi-Fi 6 + Bluetooth Low Energy 5.4 companion module, SDIO/SPI to host, internal Wi-Fi/BLE coexistence, operating -40C to +85C.',
+        specs: [ e_wifidual, e_bt54, e_pwdual, e_hostble, e_thru, e_temp, e_pkg ],
+        dropIn: [ { note: 'Identical 65-pin LGA pinout (deep-equal verified); CC3350MOD is the Wi-Fi-only version (no BLE) and can be swapped in when Bluetooth is not needed.' } ]
+      },
+      ja: {
+        subcategory: 'デュアルバンド (2.4/5GHz) Wi-Fi 6 + BLE 5.4 コンパニオンモジュール',
+        whatIs: '2.4GHzと5GHzのデュアルバンドWi-Fi 6（802.11ax）とBluetooth Low Energy 5.4のコンパニオンモジュール：CC3350MODと同じデュアルバンドトランシーバとPAに、BLE 5.4コントローラサブシステムを追加、両無線が同じRFフロントエンドとアンテナを共有。',
+        func: 'MAC、ベースバンド、デュアルバンドRFトランシーバを統合し、IEEE 802.11 a/b/g/n/axに対応（Wi-Fi 4およびWi-Fi 5 802.11acと互換）；デュアルバンドPAを内蔵し最大+18.3dBm出力；TWT、OFDMA、下りMU-MIMO、BSS ColoringなどのWi-Fi 6効率機能に対応、WPA2/WPA3をハードウェアで高速化；さらにBluetooth Low Energy 5.4コントローラサブシステムを統合し、LE Coded PHY（長距離）、LE 2M PHY（高速）、Advertising Extensionに対応、HCI伝送はUARTまたは共用SDIO、内部共存機構によりBLEとWi-Fiが同一のRFチェーンとアンテナを共有；ホストインターフェースは4-bit SDIOまたはSPI。',
+        usedIn: 'CC3350MODと同じアプリケーション（電力網インフラ、ビル/ホームオートメーション、家電、医療機器などのデュアルバンドWi-Fiシナリオ）に加え、ウェアラブルのペアリング、モバイルアプリによる現地設定、BLEビーコンのハイブリッド接続など、Bluetoothペアリング/データ転送が必要なシナリオもカバー。',
+        desc: '65-pin 11×11mm LGAパッケージ、2.4GHz/5GHzデュアルバンドWi-Fi 6 + Bluetooth Low Energy 5.4コンパニオンモジュール、SDIO/SPIでホスト接続、内部Wi-Fi/BLE共存、動作温度-40C～+85C。',
+        specs: [ j_wifidual, j_bt54, j_pwdual, j_hostble, j_thru, j_temp, j_pkg ],
+        dropIn: [ { note: '同一の65-pin LGAピン配置（deep-equal確認済み）；CC3350MODはWi-Fiのみ版（BLEなし）で、Bluetooth不要時に置き換え可能。' } ]
+      },
+      ko: {
+        subcategory: '듀얼밴드 (2.4/5GHz) Wi-Fi 6 + BLE 5.4 컴패니언 모듈',
+        whatIs: '2.4GHz와 5GHz 듀얼밴드 Wi-Fi 6(802.11ax)와 Bluetooth Low Energy 5.4 컴패니언 모듈: CC3350MOD와 동일한 듀얼밴드 트랜시버와 PA에 BLE 5.4 컨트롤러 서브시스템을 추가, 두 무선이 동일한 RF 프런트엔드와 안테나를 공유.',
+        func: 'MAC, 베이스밴드, 듀얼밴드 RF 트랜시버를 통합하여 IEEE 802.11 a/b/g/n/ax를 지원(Wi-Fi 4 및 Wi-Fi 5 802.11ac 호환); 듀얼밴드 PA를 내장하여 최대 +18.3dBm 출력; TWT, OFDMA, 하향 MU-MIMO, BSS Coloring 등 Wi-Fi 6 효율 기능을 지원, WPA2/WPA3를 하드웨어로 가속; 또한 Bluetooth Low Energy 5.4 컨트롤러 서브시스템을 통합하여 LE Coded PHY(장거리), LE 2M PHY(고속), Advertising Extension을 지원, HCI 전송은 UART 또는 공용 SDIO, 내부 공존 기구로 BLE와 Wi-Fi가 동일한 RF 체인과 안테나를 공유; 호스트 인터페이스는 4-bit SDIO 또는 SPI.',
+        usedIn: 'CC3350MOD와 동일한 응용(전력망 인프라, 빌딩/홈 오토메이션, 가전, 의료기기 등 듀얼밴드 Wi-Fi 시나리오)에 더해, 웨어러블 페어링, 모바일 앱 현장 설정, BLE 비콘 하이브리드 연결 등 Bluetooth 페어링/데이터 전송이 필요한 시나리오도 포함.',
+        desc: '65-pin 11×11mm LGA 패키지, 2.4GHz/5GHz 듀얼밴드 Wi-Fi 6 + Bluetooth Low Energy 5.4 컴패니언 모듈, SDIO/SPI로 호스트 연결, 내부 Wi-Fi/BLE 공존, 동작 온도 -40C~+85C.',
+        specs: [ k_wifidual, k_bt54, k_pwdual, k_hostble, k_thru, k_temp, k_pkg ],
+        dropIn: [ { note: '동일한 65-pin LGA 핀 배치(deep-equal 확인 완료); CC3350MOD는 Wi-Fi 전용 버전(BLE 없음)으로, Bluetooth가 필요 없을 때 교체 가능.' } ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* IWRL6432WMOD, MSPM0G5117, MSPM33C321A */
+(function () {
+  var T = {
+    'IWRL6432WMOD': {
+      en: {
+        subcategory: '60GHz FMCW mmWave Radar Module (Motion/Presence)',
+        whatIs: '60GHz mmWave radar module for motion and presence detection: integrates the IWRL6432W mmWave sensing chip, PCB-etched antennas and a power network; the host configures detection range, motion sensitivity and update rate over SPI.',
+        func: 'Integrated FMCW (frequency-modulated continuous-wave) transceiver with built-in PLL, transmitter, receiver, baseband and ADC; 3 receive and 2 transmit channel antennas are etched on the PCB, with an integrated power-distribution network and 40MHz XTAL; 5MHz IF bandwidth, real-only receive channels; antennas cover 57GHz-61.5GHz (4.5GHz continuous bandwidth) with a +/-60 degree field of view (azimuth and elevation); the host reads/writes configuration over SPI, and motion/presence detection results are indicated on GPIO outputs; the module has a built-in 1.8V regulator and on-chip LDO network to strengthen PSRR, supports a BOM-optimized mode, and includes low-power modes.',
+        usedIn: 'Presence/motion sensing applications such as air conditioners, automatic doors/gates, gaming/home entertainment, IP network cameras, occupancy detectors, PCs/laptops, portable electronics, refrigerators/freezers, smartwatches, tablets, TVs, thermostats, video doorbells and robots.',
+        desc: '30-pad LGA (4x9 grid, QFM) 60GHz FMCW mmWave radar module, 31mm x 15mm, with built-in antennas and 1.8V regulator, SPI host interface, motion/presence detection via GPIO outputs, operating -40C to +85C.',
+        specs: [
+          { k: 'Frequency', v: '57GHz-61.5GHz, 4.5GHz continuous bandwidth' },
+          { k: 'Field of view (FoV)', v: '+/-60 deg azimuth; +/-60 deg elevation' },
+          { k: 'Detection range', v: 'Human presence typical: ~15m at 0 deg; ~8m at FoV edge' },
+          { k: 'Supply', v: 'VCC/VIOIN both 3.3V (3.135-3.465V), built-in 1.8V regulator' },
+          { k: 'Host interface', v: 'SPI (BUSY/MOSI/MISO/CLK/CS)' },
+          { k: 'IF bandwidth', v: '5MHz, real-only receive channels' },
+          { k: 'Operating temp', v: '-40C to +85C (industrial)' }
+        ]
+      },
+      ja: {
+        subcategory: '60GHz FMCW ミリ波レーダモジュール（動き/存在検知）',
+        whatIs: '動き（motion）と存在（presence）検知用の60GHz mmWaveレーダモジュール：IWRL6432W mmWaveセンシングチップ、PCBエッチングアンテナ、電源ネットワークを内蔵し、ホストはSPIで検知距離、動き感度、更新レートを設定。',
+        func: '統合型FMCW（周波数変調連続波）トランシーバ、PLL、送信器、受信器、ベースバンド、ADCを内蔵；3系統の受信、2系統の送信チャネルアンテナをPCB上にエッチングし、電源分配ネットワークと40MHz XTALを統合；5MHz IF帯域、実数のみ（real-only）受信チャネル；アンテナは57GHz～61.5GHz（連続帯域4.5GHz）をカバー、視野角±60°（方位角と仰角）；ホストはSPIで設定を読み書きし、動き/存在検知結果はGPIO出力で表示；モジュールは1.8VレギュレータとオンチップLDOネットワークを内蔵しPSRRを強化、BOM最適化モードに対応、低消費電力モードを備える。',
+        usedIn: 'エアコン、自動ドア/ゲート、ゲーム/ホームエンタテインメント、IPネットワークカメラ、在室検知器、PC/ノートPC、携帯電子機器、冷蔵庫/冷凍庫、スマートウォッチ、タブレット、テレビ、サーモスタット、ビデオドアベル、ロボットなどの存在/動き検知アプリケーション。',
+        desc: '30-pad LGA（4×9グリッド、QFM）パッケージの60GHz FMCW mmWaveレーダモジュール、31mm×15mm、アンテナと1.8Vレギュレータを内蔵、SPIホストインターフェース、動き/存在検知はGPIO出力、動作温度-40C～+85C。',
+        specs: [
+          { k: '周波数', v: '57GHz～61.5GHz、連続帯域4.5GHz' },
+          { k: '視野角 (FoV)', v: '±60° 方位角；±60° 仰角' },
+          { k: '検知距離', v: '人体存在検知の代表値：0°方向で約15m；FoV端で約8m' },
+          { k: '電源', v: 'VCC/VIOINともに3.3V（3.135～3.465V）、1.8Vレギュレータ内蔵' },
+          { k: 'ホストインターフェース', v: 'SPI（BUSY/MOSI/MISO/CLK/CS）' },
+          { k: 'IF帯域', v: '5MHz、実数のみ（real-only）受信チャネル' },
+          { k: '動作温度', v: '-40C～+85C（工業級）' }
+        ]
+      },
+      ko: {
+        subcategory: '60GHz FMCW mmWave 레이더 모듈 (움직임/존재 감지)',
+        whatIs: '움직임(motion)과 존재(presence) 감지를 위한 60GHz mmWave 레이더 모듈: IWRL6432W mmWave 센싱 칩, PCB 에칭 안테나, 전원 네트워크를 내장하며, 호스트는 SPI로 감지 거리, 움직임 감도, 갱신율을 설정.',
+        func: '통합형 FMCW(주파수 변조 연속파) 트랜시버, PLL, 송신기, 수신기, 베이스밴드, ADC를 내장; 3계통 수신, 2계통 송신 채널 안테나를 PCB 위에 에칭하고, 전원 분배 네트워크와 40MHz XTAL을 통합; 5MHz IF 대역폭, 실수 전용(real-only) 수신 채널; 안테나는 57GHz~61.5GHz(연속 대역 4.5GHz)를 커버, 시야각 ±60°(방위각과 앙각); 호스트는 SPI로 설정을 읽고 쓰며, 움직임/존재 감지 결과는 GPIO 출력으로 표시; 모듈은 1.8V 레귤레이터와 온칩 LDO 네트워크를 내장하여 PSRR을 강화, BOM 최적화 모드를 지원, 저전력 모드를 갖춘다.',
+        usedIn: '에어컨, 자동문/게이트, 게임/홈 엔터테인먼트, IP 네트워크 카메라, 재실 감지기, PC/노트북, 휴대용 전자기기, 냉장고/냉동고, 스마트워치, 태블릿, TV, 서모스탯, 비디오 도어벨, 로봇 등 존재/움직임 감지 응용.',
+        desc: '30-pad LGA(4×9 그리드, QFM) 패키지의 60GHz FMCW mmWave 레이더 모듈, 31mm×15mm, 안테나와 1.8V 레귤레이터 내장, SPI 호스트 인터페이스, 움직임/존재 감지는 GPIO 출력, 동작 온도 -40C~+85C.',
+        specs: [
+          { k: '주파수', v: '57GHz~61.5GHz, 연속 대역 4.5GHz' },
+          { k: '시야각 (FoV)', v: '±60° 방위각; ±60° 앙각' },
+          { k: '감지 거리', v: '인체 존재 감지 대표값: 0° 방향 약 15m; FoV 가장자리 약 8m' },
+          { k: '전원', v: 'VCC/VIOIN 모두 3.3V(3.135~3.465V), 1.8V 레귤레이터 내장' },
+          { k: '호스트 인터페이스', v: 'SPI(BUSY/MOSI/MISO/CLK/CS)' },
+          { k: 'IF 대역폭', v: '5MHz, 실수 전용(real-only) 수신 채널' },
+          { k: '동작 온도', v: '-40C~+85C(산업용)' }
+        ]
+      }
+    },
+    'MSPM0G5117': {
+      en: {
+        subcategory: 'Arm Cortex-M0+ USB 2.0-FS Mixed-Signal MCU (up to 128KB flash / 32KB RAM)',
+        whatIs: 'Mixed-signal MCU: Arm 32-bit Cortex-M0+ core (with memory protection unit, up to 80MHz, PLL up to 80MHz), operating temperature -40C to 125C, supply range 1.62V-3.6V; up to 128KB flash (ECC, dual-bank supporting address swap for OTA update) + 8KB data-flash bank (ECC) + up to 32KB SRAM (ECC or hardware parity); built-in 12-bit 1.6Msps ADC (up to 26 external channels, configurable 1.6Msps with VREF1 or 0.9Msps with VREF2, 14-bit effective resolution at 100ksps), high-speed comparator COMP (with 8-bit reference DAC, 32ns propagation delay), two VREFs, and an integrated temperature sensor; built-in USB 2.0 full-speed (12Mbps) interface supporting device/host modes, crystal-less device operation and up to 8 bidirectional endpoints; targets PSA-L1 certification. MSPM0G5117, MSPM0G5116 and MSPM0G5115 are three memory-capacity variants in the same family; MSPM0G5117 is listed first in the page-1 Features (generally corresponding to the largest capacity, 128KB flash / 32KB SRAM); exact per-part configuration is not shown on this excerpt page, see the datasheet Device Comparison. Package options include DGS20, RUY, YCJ, RGE, RHB, RGZ (48-VQFN), PT (48-LQFP) and PM (8 total); per-package pin counts and exact dimensions are in the datasheet.',
+        func: 'Low-power modes: RUN 103uA/MHz (CoreMark), SLEEP 34uA/MHz, STOP 199uA@4MHz, STANDBY 1.5uA@32kHz (RTC + full SRAM/state retention), SHUTDOWN 88nA (IO wake supported); digital peripherals: 12-channel DMA controller, four timers supporting up to 14 PWM outputs (two 16-bit general-purpose timers; one 16-bit general-purpose timer with STANDBY low-power operation; one 16-bit advanced timer with deadband and complementary outputs, up to 8 PWM), one basic software timer with 4 independently configurable 16-bit counters (two can be chained into a 32-bit counter and generate 2x-interrupt-driven PWM), two windowed watchdogs (WWDT), one independent watchdog (IWDT), and an RTC with alarm and calendar modes; communication interfaces: four configurable UNICOMM serial interfaces (two support UART(LIN) or I2C(SMBus/PMBus); one supports UART or SPI; one supports SPI up to 32Mbps), one USB 2.0 full-speed interface, one digital-audio interface (supporting I2S standard UM11732, Codec LSB/MSB Justified, DSP serial interface with up to 8 audio channels per data pin, PCM short/long frame, TDM Classic/I2S/Left/Right Justified up to 8 slots); clock system: built-in 4-32MHz SYSOSC (+/-1.2%), PLL up to 80MHz, built-in 60MHz USB FLL (+/-0.25%), built-in 32kHz LFOSC (+/-3%), external 4-48MHz HFXT, external 32kHz LFXT, external clock input; security: AES accelerator (GCM/GMAC, CCM/CBC-MAC, CBC, CTR), up to 4 AES keys in secure storage; I/O: 43 GPIO pins (PAx/PBx) on the 48-VQFN (RGZ) package, plus NRST, VDD, VSS, VCORE and VUSB33 (one each); development: 2-pin SWD.',
+        usedIn: 'Suitable for general embedded applications needing a USB 2.0-FS interface, such as USB peripherals, sensor nodes, motor control, industrial automation, consumer electronics and data-acquisition modules (this excerpt page contains no explicit Applications list; see the datasheet).',
+        desc: 'Arm Cortex-M0+ MCU, up to 80MHz / up to 128KB flash / 32KB SRAM, built-in USB 2.0-FS interface, 12-bit 1.6Msps ADC, multiple packages including 48-VQFN (RGZ).',
+        thermalPad: 'Exposed pad (marked Thermal Pad in the center of the 48-pin RGZ in datasheet Figure 6-3); must connect to the VSS board ground plane.',
+        specs: [
+          { k: 'Core', v: 'Arm 32-bit Cortex-M0+, with memory protection unit, up to 80MHz (PLL up to 80MHz)' },
+          { k: 'Supply range', v: '1.62V ~ 3.6V' },
+          { k: 'Memory', v: 'Up to 128KB flash (ECC, dual-bank OTA address swap) + 8KB data-flash bank (ECC) + up to 32KB SRAM (ECC or hardware parity); MSPM0G5117 is the largest-capacity part in the series, exact configuration see datasheet' },
+          { k: 'ADC', v: '12-bit, 1.6Msps, up to 26 external channels; configurable 1.6Msps (VREF1) or 0.9Msps (VREF2); 14-bit effective resolution at 100ksps (hardware averaging)' },
+          { k: 'Comparator', v: 'High-speed COMP with 8-bit reference DAC, 32ns propagation delay (high-speed mode), <1uA in low-power mode' },
+          { k: 'USB', v: 'USB 2.0 full-speed (12Mbps), device/host modes, crystal-less device operation, up to 8 bidirectional endpoints' },
+          { k: 'Low power', v: 'RUN 103uA/MHz (CoreMark); SLEEP 34uA/MHz; STOP 199uA@4MHz; STANDBY 1.5uA@32kHz (RTC + full SRAM retention); SHUTDOWN 88nA (IO wake supported)' },
+          { k: 'Comm interfaces', v: '4 configurable UNICOMM serial interfaces (2x UART(LIN)/I2C(SMBus/PMBus); 1x UART or SPI; 1x SPI up to 32Mbps); 1 digital-audio interface (I2S/PCM/TDM)' },
+          { k: 'Clocks', v: 'Built-in 4-32MHz SYSOSC (+/-1.2%); PLL up to 80MHz; built-in 60MHz USB FLL (+/-0.25%); built-in 32kHz LFOSC (+/-3%); external 4-48MHz HFXT; external 32kHz LFXT' },
+          { k: 'Security', v: 'AES accelerator (GCM/GMAC, CCM/CBC-MAC, CBC, CTR); up to 4 AES keys in secure storage' },
+          { k: 'I/O', v: '43 GPIO on the 48-VQFN (RGZ) package' },
+          { k: 'Package options', v: 'DGS20, RUY, YCJ, RGE, RHB, RGZ (48-VQFN), PT (48-LQFP), PM (8 total)' },
+          { k: 'Debug', v: '2-pin SWD' }
+        ]
+      },
+      ja: {
+        subcategory: 'Arm Cortex-M0+ USB 2.0-FS ミックスドシグナルMCU（最大128KB flash／32KB RAM）',
+        whatIs: 'ミックスドシグナルMCU：Arm 32-bit Cortex-M0+コア（メモリ保護ユニット内蔵、最大80MHz、PLLで80MHz可能）、動作温度-40C～125C、電源範囲1.62V～3.6V；最大128KB flash（ECC、デュアルバンクでOTA更新用のアドレス交換に対応）＋8KB data flashバンク（ECC）＋最大32KB SRAM（ECCまたはハードウェアパリティ）；12-bit 1.6Msps ADC（最大26の外部チャネル、VREF1で1.6MspsまたはVREF2で0.9Mspsに設定可能、100kspsで14-bit有効分解能）、高速コンパレータCOMP（8-bit基準DAC内蔵、32ns伝搬遅延）、2組のVREF、温度センサを内蔵；USB2.0フルスピード（12Mbps）インターフェースを内蔵し、device/hostモード、クリスタルレスdevice動作、最大8個の双方向エンドポイントに対応；PSA-L1認証を目標。MSPM0G5117、MSPM0G5116、MSPM0G5115は同一ファミリの3つのメモリ容量型番で、MSPM0G5117はページ1 Featuresの先頭に記載（一般に最大容量128KB flash／32KB SRAMに対応）、正確な型番ごとの構成は本抜粋ページには記載なし、datasheet Device Comparison参照。パッケージオプションはDGS20、RUY、YCJ、RGE、RHB、RGZ (48-VQFN)、PT (48-LQFP)、PMの計8種、各パッケージのピン数と正確な寸法はdatasheet参照。',
+        func: '低消費電力モード：RUN 103uA/MHz（CoreMark）、SLEEP 34uA/MHz、STOP 199uA@4MHz、STANDBY 1.5uA@32kHz（RTC＋全SRAM/状態保持）、SHUTDOWN 88nA（IOウェイク対応）；デジタル周辺機能：12チャネルDMAコントローラ、4つのタイマで最大14系統のPWM出力（16-bit汎用タイマ2個；STANDBY低消費電力動作対応の16-bit汎用タイマ1個；deadbandと相補出力を備えた16-bit高機能タイマ1個、最大8系統PWM）、4組の独立設定可能な16-bitカウンタを持つ基本ソフトウェアタイマ1個（2組を32-bitカウンタに連結可能、2倍割り込み駆動PWMを生成可能）、2組のウィンドウ付きウォッチドッグ（WWDT）、1組の独立ウォッチドッグ（IWDT）、アラームとカレンダーモードを備えたRTC；通信インターフェース：4組の設定可能なUNICOMMシリアルインターフェース（2組はUART(LIN)またはI2C(SMBus/PMBus)対応；1組はUARTまたはSPI対応；1組はSPI最大32Mbps対応）、1組のUSB2.0フルスピードインターフェース、1組のデジタルオーディオインターフェース（I2S標準UM11732、Codec LSB/MSB Justified、データピンあたり最大8オーディオチャネルのDSPシリアルインターフェース、PCM短/長フレーム、TDM Classic/I2S/Left/Right Justified最大8スロットに対応）；クロックシステム：内蔵4～32MHz SYSOSC（±1.2%）、PLL最大80MHz、内蔵60MHz USB FLL（±0.25%）、内蔵32kHz LFOSC（±3%）、外部4～48MHz HFXT、外部32kHz LFXT、外部クロック入力；セキュリティ：AESアクセラレータ（GCM/GMAC、CCM/CBC-MAC、CBC、CTR対応）、最大4組のAES鍵をセキュアストレージに保存；I/O：48-VQFN(RGZ)パッケージ上に43個のGPIOピン（PAx/PBx）、ほかにNRST、VDD、VSS、VCORE、VUSB33を各1；開発サポート：2-pin SWD。',
+        usedIn: 'USB 2.0-FSインターフェースが必要な汎用組み込みアプリケーション（USB周辺機器、センサノード、モータ制御、産業オートメーション、民生用電子機器、データ収集モジュールなど）に適する（本抜粋ページに明確なApplicationsリストはなし、datasheet参照）。',
+        desc: 'Arm Cortex-M0+ MCU、最大80MHz／最大128KB flash／32KB SRAM、USB 2.0-FSインターフェース内蔵、12-bit 1.6Msps ADC、48-VQFN (RGZ) など複数パッケージから選択可能。',
+        thermalPad: '露出パッド（datasheet図6-3の48-pin RGZ中央にThermal Padと表示）、VSSの基板グランドプレーンに接続する必要がある。',
+        specs: [
+          { k: 'コア', v: 'Arm 32-bit Cortex-M0+、メモリ保護ユニット内蔵、最大80MHz（PLLで80MHz可能）' },
+          { k: '電源範囲', v: '1.62V ~ 3.6V' },
+          { k: 'メモリ', v: '最大128KB flash（ECC、デュアルバンクでOTAアドレス交換対応）＋8KB data flashバンク(ECC)＋最大32KB SRAM(ECCまたはハードウェアパリティ)；MSPM0G5117はシリーズ最大容量型番、正確な構成はdatasheet参照' },
+          { k: 'ADC', v: '12-bit、1.6Msps、最大26の外部チャネル；1.6Msps(VREF1)または0.9Msps(VREF2)に設定可能；100kspsで14-bit有効分解能(ハードウェア平均)' },
+          { k: 'コンパレータ', v: '高速COMP、8-bit基準DAC内蔵、32ns伝搬遅延(高速モード)、低消費電力モードで<1uA' },
+          { k: 'USB', v: 'USB2.0フルスピード(12Mbps)、device/hostモード、クリスタルレスdevice動作、最大8個の双方向エンドポイント' },
+          { k: '低消費電力', v: 'RUN 103uA/MHz(CoreMark)；SLEEP 34uA/MHz；STOP 199uA@4MHz；STANDBY 1.5uA@32kHz(RTC+全SRAM保持)；SHUTDOWN 88nA(IOウェイク対応)' },
+          { k: '通信インターフェース', v: '4組の設定可能なUNICOMMシリアルインターフェース(2組UART(LIN)/I2C(SMBus/PMBus)；1組UARTまたはSPI；1組SPI最大32Mbps)；1組デジタルオーディオインターフェース(I2S/PCM/TDM)' },
+          { k: 'クロック', v: '内蔵4～32MHz SYSOSC(±1.2%)；PLL最大80MHz；内蔵60MHz USB FLL(±0.25%)；内蔵32kHz LFOSC(±3%)；外部4～48MHz HFXT；外部32kHz LFXT' },
+          { k: 'セキュリティ', v: 'AESアクセラレータ(GCM/GMAC、CCM/CBC-MAC、CBC、CTR)；最大4組のAES鍵をセキュアストレージに保存' },
+          { k: 'I/O', v: '48-VQFN(RGZ)パッケージ上に43個のGPIO' },
+          { k: 'パッケージオプション', v: 'DGS20、RUY、YCJ、RGE、RHB、RGZ(48-VQFN)、PT(48-LQFP)、PMの計8種' },
+          { k: 'デバッグ', v: '2-pin SWD' }
+        ]
+      },
+      ko: {
+        subcategory: 'Arm Cortex-M0+ USB 2.0-FS 혼합신호 MCU (최대 128KB flash / 32KB RAM)',
+        whatIs: '혼합신호 MCU: Arm 32-bit Cortex-M0+ 코어(메모리 보호 유닛 내장, 최대 80MHz, PLL로 80MHz 가능), 동작 온도 -40C~125C, 전원 범위 1.62V~3.6V; 최대 128KB flash(ECC, 듀얼 뱅크로 OTA 업데이트용 주소 교환 지원) + 8KB data flash 뱅크(ECC) + 최대 32KB SRAM(ECC 또는 하드웨어 패리티); 12-bit 1.6Msps ADC(최대 26개 외부 채널, VREF1로 1.6Msps 또는 VREF2로 0.9Msps 설정 가능, 100ksps에서 14-bit 유효 분해능), 고속 비교기 COMP(8-bit 기준 DAC 내장, 32ns 전파 지연), 2조 VREF, 온도 센서를 내장; USB2.0 풀스피드(12Mbps) 인터페이스를 내장하여 device/host 모드, 크리스털리스 device 동작, 최대 8개 양방향 엔드포인트를 지원; PSA-L1 인증을 목표. MSPM0G5117, MSPM0G5116, MSPM0G5115는 동일 패밀리의 3가지 메모리 용량 모델이며, MSPM0G5117은 페이지1 Features 선두에 기재(일반적으로 최대 용량 128KB flash / 32KB SRAM에 대응), 정확한 모델별 구성은 본 발췌 페이지에 없음, datasheet Device Comparison 참조. 패키지 옵션은 DGS20, RUY, YCJ, RGE, RHB, RGZ (48-VQFN), PT (48-LQFP), PM 총 8종, 각 패키지의 핀 수와 정확한 치수는 datasheet 참조.',
+        func: '저전력 모드: RUN 103uA/MHz(CoreMark), SLEEP 34uA/MHz, STOP 199uA@4MHz, STANDBY 1.5uA@32kHz(RTC + 전체 SRAM/상태 유지), SHUTDOWN 88nA(IO 웨이크 지원); 디지털 주변 기능: 12채널 DMA 컨트롤러, 4개 타이머로 최대 14계통 PWM 출력(16-bit 범용 타이머 2개; STANDBY 저전력 동작 지원 16-bit 범용 타이머 1개; deadband와 상보 출력을 갖춘 16-bit 고급 타이머 1개, 최대 8계통 PWM), 4조의 독립 설정 가능한 16-bit 카운터를 갖는 기본 소프트웨어 타이머 1개(2조를 32-bit 카운터로 연결 가능, 2배 인터럽트 구동 PWM 생성 가능), 2조 윈도우 워치도그(WWDT), 1조 독립 워치도그(IWDT), 알람과 캘린더 모드를 갖춘 RTC; 통신 인터페이스: 4조의 설정 가능한 UNICOMM 시리얼 인터페이스(2조는 UART(LIN) 또는 I2C(SMBus/PMBus) 지원; 1조는 UART 또는 SPI 지원; 1조는 SPI 최대 32Mbps 지원), 1조 USB2.0 풀스피드 인터페이스, 1조 디지털 오디오 인터페이스(I2S 표준 UM11732, Codec LSB/MSB Justified, 데이터 핀당 최대 8 오디오 채널의 DSP 시리얼 인터페이스, PCM 짧은/긴 프레임, TDM Classic/I2S/Left/Right Justified 최대 8 슬롯 지원); 클록 시스템: 내장 4~32MHz SYSOSC(±1.2%), PLL 최대 80MHz, 내장 60MHz USB FLL(±0.25%), 내장 32kHz LFOSC(±3%), 외부 4~48MHz HFXT, 외부 32kHz LFXT, 외부 클록 입력; 보안: AES 가속기(GCM/GMAC, CCM/CBC-MAC, CBC, CTR 지원), 최대 4조 AES 키를 보안 저장소에 저장; I/O: 48-VQFN(RGZ) 패키지에 43개 GPIO 핀(PAx/PBx), 그 외 NRST, VDD, VSS, VCORE, VUSB33 각 1; 개발 지원: 2-pin SWD.',
+        usedIn: 'USB 2.0-FS 인터페이스가 필요한 범용 임베디드 응용(USB 주변기기, 센서 노드, 모터 제어, 산업 자동화, 소비자 전자, 데이터 수집 모듈 등)에 적합(본 발췌 페이지에 명확한 Applications 목록 없음, datasheet 참조).',
+        desc: 'Arm Cortex-M0+ MCU, 최대 80MHz / 최대 128KB flash / 32KB SRAM, USB 2.0-FS 인터페이스 내장, 12-bit 1.6Msps ADC, 48-VQFN (RGZ) 등 다양한 패키지 선택 가능.',
+        thermalPad: '노출 패드(datasheet 그림 6-3의 48-pin RGZ 중앙에 Thermal Pad 표시), VSS 기판 접지 평면에 연결해야 한다.',
+        specs: [
+          { k: '코어', v: 'Arm 32-bit Cortex-M0+, 메모리 보호 유닛 내장, 최대 80MHz(PLL로 80MHz 가능)' },
+          { k: '전원 범위', v: '1.62V ~ 3.6V' },
+          { k: '메모리', v: '최대 128KB flash(ECC, 듀얼 뱅크 OTA 주소 교환 지원) + 8KB data flash 뱅크(ECC) + 최대 32KB SRAM(ECC 또는 하드웨어 패리티); MSPM0G5117은 시리즈 최대 용량 모델, 정확한 구성은 datasheet 참조' },
+          { k: 'ADC', v: '12-bit, 1.6Msps, 최대 26개 외부 채널; 1.6Msps(VREF1) 또는 0.9Msps(VREF2) 설정 가능; 100ksps에서 14-bit 유효 분해능(하드웨어 평균)' },
+          { k: '비교기', v: '고속 COMP, 8-bit 기준 DAC 내장, 32ns 전파 지연(고속 모드), 저전력 모드에서 <1uA' },
+          { k: 'USB', v: 'USB2.0 풀스피드(12Mbps), device/host 모드, 크리스털리스 device 동작, 최대 8개 양방향 엔드포인트' },
+          { k: '저전력', v: 'RUN 103uA/MHz(CoreMark); SLEEP 34uA/MHz; STOP 199uA@4MHz; STANDBY 1.5uA@32kHz(RTC+전체 SRAM 유지); SHUTDOWN 88nA(IO 웨이크 지원)' },
+          { k: '통신 인터페이스', v: '4조 설정 가능한 UNICOMM 시리얼 인터페이스(2조 UART(LIN)/I2C(SMBus/PMBus); 1조 UART 또는 SPI; 1조 SPI 최대 32Mbps); 1조 디지털 오디오 인터페이스(I2S/PCM/TDM)' },
+          { k: '클록', v: '내장 4~32MHz SYSOSC(±1.2%); PLL 최대 80MHz; 내장 60MHz USB FLL(±0.25%); 내장 32kHz LFOSC(±3%); 외부 4~48MHz HFXT; 외부 32kHz LFXT' },
+          { k: '보안', v: 'AES 가속기(GCM/GMAC, CCM/CBC-MAC, CBC, CTR 지원); 최대 4조 AES 키를 보안 저장소에 저장' },
+          { k: 'I/O', v: '48-VQFN(RGZ) 패키지에 43개 GPIO' },
+          { k: '패키지 옵션', v: 'DGS20, RUY, YCJ, RGE, RHB, RGZ(48-VQFN), PT(48-LQFP), PM 총 8종' },
+          { k: '디버그', v: '2-pin SWD' }
+        ]
+      }
+    },
+    'MSPM33C321A': {
+      en: {
+        subcategory: 'Arm Cortex-M33 TrustZone Mixed-Signal MCU (up to 1MB flash / 256KB RAM, dual CAN-FD, ADVANCE INFORMATION preproduction)',
+        whatIs: '[Note: this part\'s datasheet (SLASFB6) is marked ADVANCE INFORMATION and is a preproduction specification subject to change without notice; values may change before mass production, so always refer to the latest TI datasheet.] Mixed-signal MCU: 160MHz Arm 32-bit Cortex-M33 CPU with TrustZone, FPU and DSP extensions, 4kB instruction cache for 0-wait-state execution; operating temperature -40C to 125C, supply range 1.71V-3.6V; up to 1MB flash (ECC, dual-bank address swap) + 256KB SRAM (ECC) + EEPROM emulation via 32KB high-endurance data flash; security: immutable Root of Trust in ROM (secure firmware install/boot/key provisioning), Global Security Controller (dynamic flash/SRAM/peripheral access control), AES256 hardware accelerator (GCM), SHA256 hardware accelerator (HMAC), Public Key Accelerator (PKA), 32-bit true random number generator (TRNG); analog: two high-speed 9.4Msps 12-bit ADCs (up to 36 external channels), two high-speed/low-power comparators (COMP), two externally accessible 8-bit DACs, a configurable 1.4V or 2.5V internal shared VREF, and integrated temperature and supply monitoring; a VBAT island with independent backup supply (including RTC, three tamper-detection IOs with timestamp, an independent watchdog IWDT, and 32B backup memory); up to 93 GPIO (largest package in the series). MSPM33C321A is the largest-capacity part in the series (1MB flash/256KB SRAM); the family MSPM33C3219 has 512KB flash/256KB SRAM. Package options: 100-pin LQFP (0.4mm & 0.5mm pitch, PFA/PZ), 80-pin LQFP (0.5mm, PN), 64-pin LQFP (0.5mm, PM), 48-pin VQFN (0.5mm, RGZ), 100-pin nFBGA (0.8mm, ZAW).',
+        func: 'Low-power modes: RUN 207uA/MHz (CoreMark), STANDBY 16uA (CPU-execution resume + 64KB SRAM retention), SHUTDOWN <100nA (IO wake supported); digital peripherals: two DMA controllers with 16 channels total, nine timers supporting up to 30 PWM outputs (two 16-bit advanced timers with deadband/fault handling/complementary output pairs; four 16-bit general-purpose timers; one 32-bit general-purpose timer; two 16-bit general-purpose timers with quadrature-encoder interface), one windowed watchdog, CRC16/32 module; communication interfaces: QSPI (for external memory, up to 20MB/s), two CAN interfaces (CAN2.0A/B and CAN-FD), three configurable serial interfaces supporting UART(LIN) or I2C(SMBus/PMBus), four configurable serial interfaces supporting UART/I2C/SPI, two dedicated I2C (up to FM+ 1Mbit/s, SMBus/PMBus), one dedicated SPI, one dedicated UART (supporting LIN, IrDA, DALI, Smart Card, Manchester), two digital-audio interfaces (full-duplex I2S and TDM 16-slot); clock system: built-in 32MHz SYSOSC, PLL, built-in 32kHz LFOSC, external 4-48MHz HFXT, external 32kHz LFXT, external clock input; development: 2-pin SWD; dev kit: LaunchPad EVM LP-MSPM33C321A, MSP SDK; 38 GPIO pins (PAx/PBx/PCx, including TDI/TDO JTAG-cum-GPIO pins) on the 48-VQFN (RGZ) package, plus NRST, VBAT, VDD (2 pins), VCORE.',
+        usedIn: 'Suitable for applications needing high security (TrustZone/RoT/AES256/SHA256/PKA/TRNG) and dual CAN-FD communication, such as industrial automation, motor control, battery management and security gateways (this excerpt page contains no explicit Applications list; see the datasheet).',
+        desc: 'Arm Cortex-M33 MCU (160MHz, with TrustZone/FPU/DSP), up to 1MB flash / 256KB SRAM, dual 9.4Msps 12-bit ADC, dual CAN-FD, multiple packages including 48-VQFN (RGZ) (ADVANCE INFORMATION, preproduction spec, see datasheet SLASFB6).',
+        thermalPad: 'Exposed pad = VSS (marked VSS in the center of the 48-pin RGZ in datasheet Figure 6-5); ground connection for this package is via this pad, which must connect to the board ground plane.',
+        specs: [
+          { k: 'Status', v: 'ADVANCE INFORMATION (preproduction spec, SLASFB6, Dec 2025); values may change, refer to the latest TI datasheet before production' },
+          { k: 'Core', v: '160MHz Arm 32-bit Cortex-M33 with TrustZone, FPU, DSP extensions; 4kB instruction cache (0 wait-state)' },
+          { k: 'Supply range', v: '1.71V ~ 3.6V' },
+          { k: 'Memory', v: 'Up to 1MB flash (ECC, dual-bank address swap) + 256KB SRAM (ECC) + 32KB high-endurance data flash (EEPROM emulation); MSPM33C321A is the largest-capacity part in the series' },
+          { k: 'Security', v: 'ROM Root of Trust; Global Security Controller; AES256 (GCM); SHA256 (HMAC); PKA; 32-bit TRNG' },
+          { k: 'ADC', v: 'Two high-speed 12-bit ADCs, 9.4Msps, up to 36 external channels' },
+          { k: 'Comparator/DAC', v: 'Two high-speed/low-power COMP; two externally accessible 8-bit DACs; configurable 1.4V/2.5V internal shared VREF; integrated temperature and supply monitoring' },
+          { k: 'Low power', v: 'RUN 207uA/MHz (CoreMark); STANDBY 16uA (CPU-execution resume + 64KB SRAM retention); SHUTDOWN <100nA (IO wake supported)' },
+          { k: 'Comm interfaces', v: 'QSPI up to 20MB/s; 2x CAN (CAN2.0A/B + CAN-FD); 3x UART(LIN)/I2C; 4x UART/I2C/SPI; 2x dedicated I2C (FM+ 1Mbit/s); 1x dedicated SPI; 1x dedicated UART (LIN/IrDA/DALI/SmartCard/Manchester); 2x digital audio (full-duplex I2S/TDM 16-slot)' },
+          { k: 'VBAT island', v: 'Independent supply, with RTC, 3 tamper-detection IOs (timestamp), independent watchdog IWDT, 32B backup memory' },
+          { k: 'I/O', v: 'Up to 93 GPIO (largest package in series); 38 GPIO on the 48-VQFN (RGZ) package' },
+          { k: 'Package options', v: '100-pin LQFP (0.4mm/0.5mm, PFA/PZ), 80-pin LQFP (PN), 64-pin LQFP (PM), 48-pin VQFN (RGZ), 100-pin nFBGA (ZAW)' },
+          { k: 'Debug', v: '2-pin SWD' }
+        ]
+      },
+      ja: {
+        subcategory: 'Arm Cortex-M33 TrustZone ミックスドシグナルMCU（最大1MB flash／256KB RAM、デュアルCAN-FD、ADVANCE INFORMATION 先行製品）',
+        whatIs: '【注意：本料番のdatasheet（SLASFB6）はADVANCE INFORMATIONと表示され、先行製品（preproduction）仕様で予告なく変更される場合があり、量産前に数値が変わる可能性があるため、必ずTIの最新版datasheetを参照】ミックスドシグナルMCU：160MHz Arm 32-bit Cortex-M33 CPU、TrustZone、FPU、DSP拡張を内蔵、4kB命令キャッシュで0 wait-state実行に対応；動作温度-40C～125C、電源範囲1.71V～3.6V；最大1MB flash（ECC、デュアルバンクアドレス交換）＋256KB SRAM（ECC）＋32KB高耐久data flashによるEEPROMエミュレーション；セキュリティ：ROM内蔵の不変Root of Trust（セキュアファームウェアインストール/起動/鍵プロビジョニング）、Global Security Controller（flash/SRAM/周辺の動的アクセス制御）、AES256ハードウェアアクセラレータ(GCM)、SHA256ハードウェアアクセラレータ(HMAC)、Public Key Accelerator(PKA)、32-bit真性乱数生成器(TRNG)；アナログ：高速9.4Msps 12-bit ADC 2組（最大36の外部チャネル）、高速/低消費電力コンパレータ(COMP)2組、外部から利用可能な8-bit DAC 2組、設定可能な1.4Vまたは2.5V内部共用VREF、温度と電源の監視を統合；VBAT island独立補助電源（RTC、タイムスタンプ付き3組のtamper検出IO、独立ウォッチドッグIWDT、32Bバックアップメモリを含む）；最大93個のGPIO（シリーズ最大パッケージ）。MSPM33C321Aはシリーズ最大容量型番（1MB flash/256KB SRAM）、同シリーズのMSPM33C3219は512KB flash/256KB SRAM。パッケージオプション：100-pin LQFP(0.4mm & 0.5mmピッチ、PFA/PZ)、80-pin LQFP(0.5mm、PN)、64-pin LQFP(0.5mm、PM)、48-pin VQFN(0.5mm、RGZ)、100-pin nFBGA(0.8mm、ZAW)。',
+        func: '低消費電力モード：RUN 207uA/MHz（CoreMark）、STANDBY 16uA（CPU実行復帰＋64KB SRAM保持）、SHUTDOWN <100nA（IOウェイク対応）；デジタル周辺機能：合計16チャネルのDMAコントローラ2組、9つのタイマで最大30系統のPWM出力（deadband/フォールト処理/相補出力ペアを備えた16-bit高機能タイマ2個；16-bit汎用タイマ4個；32-bit汎用タイマ1個；直交エンコーダインターフェース対応の16-bit汎用タイマ2個）、ウィンドウ付きウォッチドッグ1組、CRC16/32モジュール；通信インターフェース：QSPI（外部メモリ用、最大20MB/s）、2組のCANインターフェース（CAN2.0A/BとCAN-FD対応）、UART(LIN)またはI2C(SMBus/PMBus)対応の設定可能なシリアルインターフェース3組、UART/I2C/SPI対応の設定可能なシリアルインターフェース4組、専用I2C 2組（最大FM+ 1Mbit/s、SMBus/PMBus）、専用SPI 1組、専用UART 1組（LIN、IrDA、DALI、Smart Card、Manchester対応）、デジタルオーディオインターフェース2組（全二重I2SとTDM 16スロット）；クロックシステム：内蔵32MHz SYSOSC、PLL、内蔵32kHz LFOSC、外部4～48MHz HFXT、外部32kHz LFXT、外部クロック入力；開発サポート：2-pin SWD；開発キット：LaunchPad EVM LP-MSPM33C321A、MSP SDK；48-VQFN(RGZ)パッケージ上に38個のGPIOピン（PAx/PBx/PCx、TDI/TDOのJTAG兼GPIOピンを含む）、ほかにNRST、VBAT、VDD(2本)、VCORE。',
+        usedIn: '高いセキュリティ（TrustZone/RoT/AES256/SHA256/PKA/TRNG）とデュアルCAN-FD通信が必要な産業オートメーション、モータ制御、バッテリ管理、セキュリティゲートウェイなどのアプリケーションに適する（本抜粋ページに明確なApplicationsリストはなし、datasheet参照）。',
+        desc: 'Arm Cortex-M33 MCU（160MHz、TrustZone/FPU/DSP内蔵）、最大1MB flash／256KB SRAM、デュアル9.4Msps 12-bit ADC、デュアルCAN-FD、48-VQFN (RGZ) など複数パッケージから選択可能（ADVANCE INFORMATION、先行製品仕様、datasheet SLASFB6参照）。',
+        thermalPad: '露出パッド＝VSS（datasheet図6-5の48-pin RGZ中央にVSSと表示）；本パッケージのグランド接続はこのパッド経由で、基板グランドプレーンに接続する必要がある。',
+        specs: [
+          { k: 'ステータス', v: 'ADVANCE INFORMATION（先行製品仕様、SLASFB6、2025年12月）、数値は変更の可能性あり、量産前にTI最新版datasheetを基準とする' },
+          { k: 'コア', v: '160MHz Arm 32-bit Cortex-M33、TrustZone、FPU、DSP拡張内蔵；4kB命令キャッシュ（0 wait-state）' },
+          { k: '電源範囲', v: '1.71V ~ 3.6V' },
+          { k: 'メモリ', v: '最大1MB flash（ECC、デュアルバンクアドレス交換）＋256KB SRAM（ECC）＋32KB高耐久data flash（EEPROMエミュレーション）；MSPM33C321Aはシリーズ最大容量型番' },
+          { k: 'セキュリティ', v: 'ROM内蔵Root of Trust；Global Security Controller；AES256(GCM)；SHA256(HMAC)；PKA；32-bit TRNG' },
+          { k: 'ADC', v: '高速12-bit ADC 2組、9.4Msps、最大36の外部チャネル' },
+          { k: 'コンパレータ/DAC', v: '高速/低消費電力COMP 2組；外部から利用可能な8-bit DAC 2組；設定可能な1.4V/2.5V内部共用VREF；温度と電源の監視を統合' },
+          { k: '低消費電力', v: 'RUN 207uA/MHz(CoreMark)；STANDBY 16uA(CPU実行復帰+64KB SRAM保持)；SHUTDOWN <100nA(IOウェイク対応)' },
+          { k: '通信インターフェース', v: 'QSPI最大20MB/s；2×CAN(CAN2.0A/B+CAN-FD)；3組UART(LIN)/I2C；4組UART/I2C/SPI；2×専用I2C(FM+ 1Mbit/s)；1×専用SPI；1×専用UART(LIN/IrDA/DALI/SmartCard/Manchester)；2×デジタルオーディオ(I2S全二重/TDM 16スロット)' },
+          { k: 'VBAT island', v: '独立電源、RTC、3組のtamper検出IO(タイムスタンプ)、独立ウォッチドッグIWDT、32Bバックアップメモリを含む' },
+          { k: 'I/O', v: '最大93個のGPIO（シリーズ最大パッケージ）；48-VQFN(RGZ)パッケージ上に38個のGPIO' },
+          { k: 'パッケージオプション', v: '100-pin LQFP(0.4mm/0.5mm、PFA/PZ)、80-pin LQFP(PN)、64-pin LQFP(PM)、48-pin VQFN(RGZ)、100-pin nFBGA(ZAW)' },
+          { k: 'デバッグ', v: '2-pin SWD' }
+        ]
+      },
+      ko: {
+        subcategory: 'Arm Cortex-M33 TrustZone 혼합신호 MCU (최대 1MB flash / 256KB RAM, 듀얼 CAN-FD, ADVANCE INFORMATION 선행 제품)',
+        whatIs: '[주의: 본 부품의 datasheet(SLASFB6)는 ADVANCE INFORMATION으로 표시된 선행 제품(preproduction) 사양으로 예고 없이 변경될 수 있으며, 양산 전에 값이 바뀔 수 있으므로 반드시 TI 최신 datasheet를 참조] 혼합신호 MCU: 160MHz Arm 32-bit Cortex-M33 CPU, TrustZone, FPU, DSP 확장 내장, 4kB 명령 캐시로 0 wait-state 실행 지원; 동작 온도 -40C~125C, 전원 범위 1.71V~3.6V; 최대 1MB flash(ECC, 듀얼 뱅크 주소 교환) + 256KB SRAM(ECC) + 32KB 고내구 data flash에 의한 EEPROM 에뮬레이션; 보안: ROM 내장 불변 Root of Trust(보안 펌웨어 설치/부팅/키 프로비저닝), Global Security Controller(flash/SRAM/주변 동적 접근 제어), AES256 하드웨어 가속기(GCM), SHA256 하드웨어 가속기(HMAC), Public Key Accelerator(PKA), 32-bit 진성 난수 생성기(TRNG); 아날로그: 고속 9.4Msps 12-bit ADC 2조(최대 36개 외부 채널), 고속/저전력 비교기(COMP) 2조, 외부에서 사용 가능한 8-bit DAC 2조, 설정 가능한 1.4V 또는 2.5V 내부 공용 VREF, 온도와 전원 감시를 통합; VBAT island 독립 백업 전원(RTC, 타임스탬프 포함 3조 tamper 감지 IO, 독립 워치도그 IWDT, 32B 백업 메모리 포함); 최대 93개 GPIO(시리즈 최대 패키지). MSPM33C321A는 시리즈 최대 용량 모델(1MB flash/256KB SRAM), 동일 시리즈 MSPM33C3219는 512KB flash/256KB SRAM. 패키지 옵션: 100-pin LQFP(0.4mm & 0.5mm 피치, PFA/PZ), 80-pin LQFP(0.5mm, PN), 64-pin LQFP(0.5mm, PM), 48-pin VQFN(0.5mm, RGZ), 100-pin nFBGA(0.8mm, ZAW).',
+        func: '저전력 모드: RUN 207uA/MHz(CoreMark), STANDBY 16uA(CPU 실행 복귀 + 64KB SRAM 유지), SHUTDOWN <100nA(IO 웨이크 지원); 디지털 주변 기능: 총 16채널 DMA 컨트롤러 2조, 9개 타이머로 최대 30계통 PWM 출력(deadband/폴트 처리/상보 출력 쌍을 갖춘 16-bit 고급 타이머 2개; 16-bit 범용 타이머 4개; 32-bit 범용 타이머 1개; 직교 인코더 인터페이스 지원 16-bit 범용 타이머 2개), 윈도우 워치도그 1조, CRC16/32 모듈; 통신 인터페이스: QSPI(외부 메모리용, 최대 20MB/s), 2조 CAN 인터페이스(CAN2.0A/B와 CAN-FD 지원), UART(LIN) 또는 I2C(SMBus/PMBus) 지원 설정 가능 시리얼 인터페이스 3조, UART/I2C/SPI 지원 설정 가능 시리얼 인터페이스 4조, 전용 I2C 2조(최대 FM+ 1Mbit/s, SMBus/PMBus), 전용 SPI 1조, 전용 UART 1조(LIN, IrDA, DALI, Smart Card, Manchester 지원), 디지털 오디오 인터페이스 2조(전이중 I2S와 TDM 16슬롯); 클록 시스템: 내장 32MHz SYSOSC, PLL, 내장 32kHz LFOSC, 외부 4~48MHz HFXT, 외부 32kHz LFXT, 외부 클록 입력; 개발 지원: 2-pin SWD; 개발 키트: LaunchPad EVM LP-MSPM33C321A, MSP SDK; 48-VQFN(RGZ) 패키지에 38개 GPIO 핀(PAx/PBx/PCx, TDI/TDO JTAG 겸 GPIO 핀 포함), 그 외 NRST, VBAT, VDD(2개), VCORE.',
+        usedIn: '높은 보안(TrustZone/RoT/AES256/SHA256/PKA/TRNG)과 듀얼 CAN-FD 통신이 필요한 산업 자동화, 모터 제어, 배터리 관리, 보안 게이트웨이 등 응용에 적합(본 발췌 페이지에 명확한 Applications 목록 없음, datasheet 참조).',
+        desc: 'Arm Cortex-M33 MCU(160MHz, TrustZone/FPU/DSP 내장), 최대 1MB flash / 256KB SRAM, 듀얼 9.4Msps 12-bit ADC, 듀얼 CAN-FD, 48-VQFN (RGZ) 등 다양한 패키지 선택 가능(ADVANCE INFORMATION, 선행 제품 사양, datasheet SLASFB6 참조).',
+        thermalPad: '노출 패드 = VSS(datasheet 그림 6-5의 48-pin RGZ 중앙에 VSS 표시); 본 패키지의 접지 연결은 이 패드를 통하며, 기판 접지 평면에 연결해야 한다.',
+        specs: [
+          { k: '상태', v: 'ADVANCE INFORMATION(선행 제품 사양, SLASFB6, 2025년 12월), 값이 변경될 수 있음, 양산 전 TI 최신 datasheet를 기준으로 함' },
+          { k: '코어', v: '160MHz Arm 32-bit Cortex-M33, TrustZone, FPU, DSP 확장 내장; 4kB 명령 캐시(0 wait-state)' },
+          { k: '전원 범위', v: '1.71V ~ 3.6V' },
+          { k: '메모리', v: '최대 1MB flash(ECC, 듀얼 뱅크 주소 교환) + 256KB SRAM(ECC) + 32KB 고내구 data flash(EEPROM 에뮬레이션); MSPM33C321A는 시리즈 최대 용량 모델' },
+          { k: '보안', v: 'ROM 내장 Root of Trust; Global Security Controller; AES256(GCM); SHA256(HMAC); PKA; 32-bit TRNG' },
+          { k: 'ADC', v: '고속 12-bit ADC 2조, 9.4Msps, 최대 36개 외부 채널' },
+          { k: '비교기/DAC', v: '고속/저전력 COMP 2조; 외부에서 사용 가능한 8-bit DAC 2조; 설정 가능한 1.4V/2.5V 내부 공용 VREF; 온도와 전원 감시 통합' },
+          { k: '저전력', v: 'RUN 207uA/MHz(CoreMark); STANDBY 16uA(CPU 실행 복귀+64KB SRAM 유지); SHUTDOWN <100nA(IO 웨이크 지원)' },
+          { k: '통신 인터페이스', v: 'QSPI 최대 20MB/s; 2×CAN(CAN2.0A/B+CAN-FD); 3조 UART(LIN)/I2C; 4조 UART/I2C/SPI; 2×전용 I2C(FM+ 1Mbit/s); 1×전용 SPI; 1×전용 UART(LIN/IrDA/DALI/SmartCard/Manchester); 2×디지털 오디오(I2S 전이중/TDM 16슬롯)' },
+          { k: 'VBAT island', v: '독립 전원, RTC, 3조 tamper 감지 IO(타임스탬프), 독립 워치도그 IWDT, 32B 백업 메모리 포함' },
+          { k: 'I/O', v: '최대 93개 GPIO(시리즈 최대 패키지); 48-VQFN(RGZ) 패키지에 38개 GPIO' },
+          { k: '패키지 옵션', v: '100-pin LQFP(0.4mm/0.5mm, PFA/PZ), 80-pin LQFP(PN), 64-pin LQFP(PM), 48-pin VQFN(RGZ), 100-pin nFBGA(ZAW)' },
+          { k: '디버그', v: '2-pin SWD' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
