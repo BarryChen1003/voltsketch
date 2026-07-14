@@ -9731,3 +9731,724 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+
+/* Batch 15A: F29P329SM-Q1, ADS8688W, AM2611-Q1 */
+(function () {
+  var T = {
+    'F29P329SM-Q1': {
+      en: {
+        subcategory: 'C2000 Automotive Real-Time Control MCU (F29 triple-core)',
+        whatIs: 'C2000 F29-series automotive real-time control microcontroller (AEC-Q100): 200MHz triple-core architecture, 4MB CPU-mappable flash (ECC) + 256KB data-dedicated flash, integrating a high-precision ADC, PGA, DAC, comparators and rich communications, for functional-safety real-time control such as automotive power, motors and EV power electronics.',
+        func: 'Runs real-time control loops on the 200MHz C29 core, with a built-in ADC/PGA/DAC/CMP analog front end; provides many multiplexed GPIOs (see the Pin Attributes table for detailed signal assignment; some pin signals are unavailable on F29P32x), 5x SPI (up to 50MHz, pin-boot capable), UART, 2x I2C, PMBus, CAN and more; JTAG (TCK/TMS/TDI/TDO). X1/X2 connect to the crystal.',
+        usedIn: 'Automotive (AEC-Q100) power electronics, traction inverters, on-board chargers (OBC), DC-DC, and motor/servo control functional-safety real-time control systems.',
+        desc: 'C2000 F29 automotive real-time control MCU, 200MHz, 4MB flash (ECC), built-in ADC/PGA/DAC, 144-RFS TQFP (thermally enhanced).',
+        thermalPad: 'Exposed pad = VSS (Figure 5-7 marks VSS at the center of the 144-RFS TQFP, Thermally Enhanced); connect to the board ground plane.',
+        specs: [
+          { k: 'CPU', v: '200MHz C2000 F29 (triple-core architecture)' },
+          { k: 'Memory', v: '4MB CPU-mappable flash (ECC) + 256KB data-dedicated flash (ECC)' },
+          { k: 'Analog', v: 'High-precision ADC, PGA, DAC, comparators CMP' },
+          { k: 'Communication', v: '5x SPI (up to 50MHz, pin-boot), UART, 2x I2C, PMBus, CAN' },
+          { k: 'Automotive', v: 'AEC-Q100 (-Q1)' },
+          { k: 'Debug', v: 'JTAG (TCK/TMS/TDI/TDO)' },
+          { k: 'Package', v: '144-pin RFS TQFP (thermally enhanced); also 256-ZEX nFBGA, 176-PTS TQFP' }
+        ]
+      },
+      ja: {
+        subcategory: 'C2000 車載リアルタイム制御MCU（F29 トリプルコア）',
+        whatIs: 'C2000 F29シリーズ車載リアルタイム制御マイコン（AEC-Q100）：200MHzトリプルコア構成、4MB CPUマッパブルflash（ECC）＋256KBデータ専用flash、高精度ADC、PGA、DAC、コンパレータ、豊富な通信を統合、車載電源/モータ/EVパワーエレクトロニクスなどの機能安全リアルタイム制御向け。',
+        func: '200MHz C29コアでリアルタイム制御ループを実行し、ADC/PGA/DAC/CMPのアナログフロントエンドを内蔵；多数の多重化GPIO（詳細な信号割り当てはPin Attributes表参照；F29P32xでは一部ピンの信号が利用不可）、SPI×5（最大50MHz、pin-boot対応）、UART、I2C×2、PMBus、CANなどを提供；JTAG（TCK/TMS/TDI/TDO）。X1/X2は水晶振動子に接続。',
+        usedIn: '車載（AEC-Q100）パワーエレクトロニクス、トラクションインバータ、車載充電器（OBC）、DC-DC、モータ/サーボ制御などの機能安全リアルタイム制御システム。',
+        desc: 'C2000 F29 車載リアルタイム制御MCU、200MHz、4MB flash（ECC）、ADC/PGA/DAC内蔵、144-RFS TQFP（放熱強化）。',
+        thermalPad: '露出パッド＝VSS（図5-7の144-RFS TQFP中央にVSSと表示、Thermally Enhanced）；基板グランドプレーンに接続。',
+        specs: [
+          { k: 'CPU', v: '200MHz C2000 F29（トリプルコア構成）' },
+          { k: 'メモリ', v: '4MB CPUマッパブルflash（ECC）＋256KBデータ専用flash（ECC）' },
+          { k: 'アナログ', v: '高精度ADC、PGA、DAC、コンパレータCMP' },
+          { k: '通信', v: 'SPI×5（最大50MHz、pin-boot）、UART、I2C×2、PMBus、CAN' },
+          { k: '車載認定', v: 'AEC-Q100（-Q1）' },
+          { k: 'デバッグ', v: 'JTAG（TCK/TMS/TDI/TDO）' },
+          { k: 'パッケージ', v: '144-pin RFS TQFP（放熱強化）；ほかに256-ZEX nFBGA、176-PTS TQFP' }
+        ]
+      },
+      ko: {
+        subcategory: 'C2000 차량용 실시간 제어 MCU(F29 트리플 코어)',
+        whatIs: 'C2000 F29 시리즈 차량용 실시간 제어 마이크로컨트롤러(AEC-Q100): 200MHz 트리플 코어 구조, 4MB CPU 매핑 가능 flash(ECC) + 256KB 데이터 전용 flash, 고정밀 ADC, PGA, DAC, 비교기와 풍부한 통신을 통합, 차량용 전원/모터/EV 전력 전자 등 기능 안전 실시간 제어용.',
+        func: '200MHz C29 코어에서 실시간 제어 루프를 실행하며, ADC/PGA/DAC/CMP 아날로그 프런트엔드를 내장; 다수의 다중화 GPIO(자세한 신호 할당은 Pin Attributes 표 참조; F29P32x에서는 일부 핀 신호를 사용할 수 없음), SPI×5(최대 50MHz, pin-boot 지원), UART, I2C×2, PMBus, CAN 등을 제공; JTAG(TCK/TMS/TDI/TDO). X1/X2는 크리스털에 연결.',
+        usedIn: '차량용(AEC-Q100) 전력 전자, 트랙션 인버터, 차량 탑재 충전기(OBC), DC-DC, 모터/서보 제어 등 기능 안전 실시간 제어 시스템.',
+        desc: 'C2000 F29 차량용 실시간 제어 MCU, 200MHz, 4MB flash(ECC), ADC/PGA/DAC 내장, 144-RFS TQFP(방열 강화).',
+        thermalPad: '노출 패드 = VSS(그림 5-7의 144-RFS TQFP 중앙에 VSS 표시, Thermally Enhanced); 기판 접지 평면에 연결.',
+        specs: [
+          { k: 'CPU', v: '200MHz C2000 F29(트리플 코어 구조)' },
+          { k: '메모리', v: '4MB CPU 매핑 가능 flash(ECC) + 256KB 데이터 전용 flash(ECC)' },
+          { k: '아날로그', v: '고정밀 ADC, PGA, DAC, 비교기 CMP' },
+          { k: '통신', v: 'SPI×5(최대 50MHz, pin-boot), UART, I2C×2, PMBus, CAN' },
+          { k: '차량용 인증', v: 'AEC-Q100(-Q1)' },
+          { k: '디버그', v: 'JTAG(TCK/TMS/TDI/TDO)' },
+          { k: '패키지', v: '144-pin RFS TQFP(방열 강화); 그 외 256-ZEX nFBGA, 176-PTS TQFP' }
+        ]
+      }
+    },
+    'ADS8688W': {
+      en: {
+        subcategory: '8-Channel SAR ADC (integrated analog front end)',
+        whatIs: '16-bit, 500kSPS, 8-channel single-supply SAR ADC with an integrated analog front end (AFE): built-in 8-channel multiplexer (auto/manual scan), programmable input range, internal reference and alarm function, for multi-channel analog acquisition in industrial measurement and data acquisition.',
+        func: 'Eight differential analog inputs pass through the built-in multiplexer (auto/manual scan) into the 16-bit SAR ADC; programmable input range and AFE, internal reference (REFSEL selects internal/external, REFIO/REFCAP/REFGND), auxiliary input channel (AUX_INP/AUX_GND), programmable threshold alarm (ALARM); SPI interface (SDI/SDO/SCLK/{CS}) with daisy chain (DAISY); {RST}/{PD} reset/power-down. The ADS8684W is the 4-channel version (AIN_6/7 pins are NC).',
+        usedIn: 'Single-supply multi-channel analog input systems such as industrial automation measurement, multi-channel data acquisition (DAQ), power monitoring and sensor acquisition.',
+        desc: '16-bit 500kSPS 8-channel single-supply SAR ADC with integrated AFE + multiplexer + internal reference, SPI interface, 38-TSSOP.',
+        thermalPad: '38-pin TSSOP (leaded package, no exposed heat pad).',
+        specs: [
+          { k: 'Resolution', v: '16-bit' },
+          { k: 'Sampling rate', v: '500kSPS' },
+          { k: 'Channels', v: '8 channels (ADS8684W has 4) + 1 auxiliary channel, with auto/manual multiplexer scan' },
+          { k: 'Analog front end', v: 'Integrated AFE, programmable input range, internal reference' },
+          { k: 'Interface', v: 'SPI (SDI/SDO/SCLK/{CS}) + daisy chain' },
+          { k: 'Protection/alarm', v: 'Programmable-threshold ALARM output' },
+          { k: 'Package', v: '38-pin TSSOP (DBT) 9.70x6.40mm' }
+        ],
+        dropIn: [ { note: 'Same package and pinout, 4-channel version (AIN_6/AIN_7 pins are NC); confirm the channel-count requirement.' } ]
+      },
+      ja: {
+        subcategory: '8チャネルSAR ADC（アナログフロントエンド統合）',
+        whatIs: '16-bit、500kSPS、8チャネル単一電源SAR ADC、アナログフロントエンド（AFE）統合：8チャネルマルチプレクサ（自動/手動スキャン）、プログラマブル入力レンジ、内部リファレンス、アラーム機能を内蔵、産業計測やデータ収集などのマルチチャネルアナログ取得向け。',
+        func: '8系統の差動アナログ入力が内蔵マルチプレクサ（自動/手動スキャン）を経て16-bit SAR ADCへ入る；プログラマブル入力レンジとAFE、内部リファレンス（REFSELで内部/外部を切替、REFIO/REFCAP/REFGND）、補助入力チャネル（AUX_INP/AUX_GND）、プログラマブルしきい値アラーム（ALARM）；SPIインターフェース（SDI/SDO/SCLK/{CS}）はデイジーチェーン（DAISY）対応；{RST}/{PD}はリセット/パワーダウン。ADS8684Wは4チャネル版（AIN_6/7ピンはNC）。',
+        usedIn: '産業オートメーション計測、マルチチャネルデータ収集（DAQ）、電源監視、センサ取得などの単一電源マルチチャネルアナログ入力システム。',
+        desc: '16-bit 500kSPS 8チャネル単一電源SAR ADC、AFE＋マルチプレクサ＋内部リファレンス統合、SPIインターフェース、38-TSSOP。',
+        thermalPad: '38-pin TSSOP（リード付きパッケージ、露出放熱パッドなし）。',
+        specs: [
+          { k: '分解能', v: '16-bit' },
+          { k: 'サンプリングレート', v: '500kSPS' },
+          { k: 'チャネル', v: '8チャネル（ADS8684Wは4チャネル）＋補助1チャネル、マルチプレクサの自動/手動スキャン対応' },
+          { k: 'アナログフロントエンド', v: 'AFE統合、プログラマブル入力レンジ、内部リファレンス' },
+          { k: 'インターフェース', v: 'SPI（SDI/SDO/SCLK/{CS}）＋デイジーチェーン' },
+          { k: '保護/アラーム', v: 'プログラマブルしきい値ALARM出力' },
+          { k: 'パッケージ', v: '38-pin TSSOP (DBT) 9.70×6.40mm' }
+        ],
+        dropIn: [ { note: '同一パッケージ・同一ピン配置の4チャネル版（AIN_6/AIN_7ピンはNC）；チャネル数の要件を確認すること。' } ]
+      },
+      ko: {
+        subcategory: '8채널 SAR ADC(아날로그 프런트엔드 통합)',
+        whatIs: '16-bit, 500kSPS, 8채널 단일 전원 SAR ADC, 아날로그 프런트엔드(AFE) 통합: 8채널 멀티플렉서(자동/수동 스캔), 프로그래머블 입력 범위, 내부 기준, 알람 기능을 내장, 산업 계측·데이터 수집 등 다채널 아날로그 취득용.',
+        func: '8계통 차동 아날로그 입력이 내장 멀티플렉서(자동/수동 스캔)를 거쳐 16-bit SAR ADC로 들어감; 프로그래머블 입력 범위와 AFE, 내부 기준(REFSEL로 내부/외부 전환, REFIO/REFCAP/REFGND), 보조 입력 채널(AUX_INP/AUX_GND), 프로그래머블 임계값 알람(ALARM); SPI 인터페이스(SDI/SDO/SCLK/{CS})는 데이지 체인(DAISY) 지원; {RST}/{PD}는 리셋/파워다운. ADS8684W는 4채널 버전(AIN_6/7 핀은 NC).',
+        usedIn: '산업 자동화 계측, 다채널 데이터 수집(DAQ), 전원 모니터링, 센서 취득 등 단일 전원 다채널 아날로그 입력 시스템.',
+        desc: '16-bit 500kSPS 8채널 단일 전원 SAR ADC, AFE + 멀티플렉서 + 내부 기준 통합, SPI 인터페이스, 38-TSSOP.',
+        thermalPad: '38-pin TSSOP(리드 패키지, 노출 방열 패드 없음).',
+        specs: [
+          { k: '분해능', v: '16-bit' },
+          { k: '샘플링 속도', v: '500kSPS' },
+          { k: '채널', v: '8채널(ADS8684W는 4채널) + 보조 1채널, 멀티플렉서 자동/수동 스캔 지원' },
+          { k: '아날로그 프런트엔드', v: 'AFE 통합, 프로그래머블 입력 범위, 내부 기준' },
+          { k: '인터페이스', v: 'SPI(SDI/SDO/SCLK/{CS}) + 데이지 체인' },
+          { k: '보호/알람', v: '프로그래머블 임계값 ALARM 출력' },
+          { k: '패키지', v: '38-pin TSSOP (DBT) 9.70×6.40mm' }
+        ],
+        dropIn: [ { note: '동일 패키지·동일 핀 배치의 4채널 버전(AIN_6/AIN_7 핀은 NC); 채널 수 요구사항을 확인할 것.' } ]
+      }
+    },
+    'AM2611-Q1': {
+      en: {
+        subcategory: 'Sitara Arm Cortex-R5F Automotive Real-Time Control MCU',
+        whatIs: 'Sitara AM261x-series automotive microcontroller: single/dual-core Arm Cortex-R5F with real-time control peripherals (industrial Ethernet such as EtherCAT/PROFINET, CAN-FD, multiple ADC/PWM channels), targeting motor control, digital power and functional-safety applications.',
+        func: 'Runs control loops on the Cortex-R5F real-time cores, integrating ADCs (multiple AINx), ePWM, eCAP, SDFM, FSI, CAN-FD, MCAN, SPI/UART/I2C, GPMC, MMC/SD and industrial Ethernet MACs; IOMUX allows several signals to be selected per ball.',
+        usedIn: 'Servo/motor drives, automotive zone controllers, digital power conversion, industrial automation PLC/IO modules, and functional-safety (ASIL) real-time control nodes.',
+        desc: 'AM2611-Q1 is the automotive-grade version of the AM261x Sitara MCU, 293-ball nFBGA (ZNC package). The pinout in this entry uses the ZNC package: signal-ball primary names are taken from the datasheet figure (ZNC Pin Diagram, 293 balls resolved by coordinates) and cross-checked against Table 5-1 Pin Attributes (159 IOMUX signal balls structurally extracted via find_tables) for name-to-ball consistency (0 mismatch); electrical connectivity and mux modes are detailed in the datasheet Pin Attributes table. IOMUX ball descriptions list the main mux functions.',
+        thermalPad: '293-ball nFBGA ball array; heat is dissipated through the balls and substrate (many VSS ground balls); no separate exposed pad.',
+        specs: [
+          { k: 'Core', v: 'Single/dual-core Arm Cortex-R5F (real-time)' },
+          { k: 'Package', v: '293-ball nFBGA (ZNC) 15x15mm' },
+          { k: 'Analog', v: 'Multiple ADCs (ADC0/1/2 AINx), DAC_VREF, VREFHI/LO' },
+          { k: 'Control peripherals', v: 'ePWM/eCAP/SDFM/FSI (real-time control)' },
+          { k: 'Communication', v: 'CAN-FD/MCAN, industrial Ethernet, SPI/UART/I2C, MMC/SD, GPMC' },
+          { k: 'Automotive', v: 'AM2611-Q1 (AEC-Q100 family)' },
+          { k: 'Document', v: 'SPRSPA7C (PRODUCTION DATA)' }
+        ]
+      },
+      ja: {
+        subcategory: 'Sitara Arm Cortex-R5F 車載リアルタイム制御MCU',
+        whatIs: 'Sitara AM261xシリーズ車載マイコン：シングル/デュアルコアArm Cortex-R5F、リアルタイム制御ペリフェラル（EtherCAT/PROFINETなどの産業用イーサネット、CAN-FD、複数のADC/PWM）を内蔵、モータ制御、デジタル電源、機能安全アプリケーション向け。',
+        func: 'Cortex-R5Fリアルタイムコアで制御ループを実行し、ADC（複数のAINx）、ePWM、eCAP、SDFM、FSI、CAN-FD、MCAN、SPI/UART/I2C、GPMC、MMC/SD、産業用イーサネットMACを統合；IOMUXによりボールごとに複数の信号を選択可能。',
+        usedIn: 'サーボ/モータドライブ、車載ゾーンコントローラ、デジタル電力変換、産業オートメーションのPLC/IOモジュール、機能安全（ASIL）リアルタイム制御ノード。',
+        desc: 'AM2611-Q1はAM261x Sitara MCUの車載グレード版、293-ball nFBGA（ZNCパッケージ）。本項目のpinoutはZNCパッケージを採用：signalボールの主名はdatasheetの図（ZNC Pin Diagram、293ボールを座標解析）から取得し、Table 5-1 Pin Attributes（find_tablesで構造化抽出した159個のIOMUX signalボール）と交差検証してname↔ballの一致を確認（0 mismatch）；電気的接続とmuxモードの詳細はdatasheetのPin Attributes表参照。IOMUXボールのdescには主なmux機能一覧を付記。',
+        thermalPad: '293-ball nFBGAボールアレイ、放熱はボールと基板を通じて行われる（多数のVSS接地ボール）、独立した露出パッドなし。',
+        specs: [
+          { k: 'コア', v: 'シングル/デュアルコア Arm Cortex-R5F（リアルタイム）' },
+          { k: 'パッケージ', v: '293-ball nFBGA (ZNC) 15×15mm' },
+          { k: 'アナログ', v: '複数のADC（ADC0/1/2 AINx）、DAC_VREF、VREFHI/LO' },
+          { k: '制御ペリフェラル', v: 'ePWM/eCAP/SDFM/FSI（リアルタイム制御）' },
+          { k: '通信', v: 'CAN-FD/MCAN、産業用イーサネット、SPI/UART/I2C、MMC/SD、GPMC' },
+          { k: '車載認定', v: 'AM2611-Q1（AEC-Q100系）' },
+          { k: '文書', v: 'SPRSPA7C（PRODUCTION DATA）' }
+        ]
+      },
+      ko: {
+        subcategory: 'Sitara Arm Cortex-R5F 차량용 실시간 제어 MCU',
+        whatIs: 'Sitara AM261x 시리즈 차량용 마이크로컨트롤러: 싱글/듀얼 코어 Arm Cortex-R5F, 실시간 제어 주변장치(EtherCAT/PROFINET 등 산업용 이더넷, CAN-FD, 다수의 ADC/PWM)를 내장, 모터 제어, 디지털 전원, 기능 안전 응용을 겨냥.',
+        func: 'Cortex-R5F 실시간 코어에서 제어 루프를 실행하며, ADC(다수의 AINx), ePWM, eCAP, SDFM, FSI, CAN-FD, MCAN, SPI/UART/I2C, GPMC, MMC/SD, 산업용 이더넷 MAC을 통합; IOMUX로 볼마다 여러 신호를 선택 가능.',
+        usedIn: '서보/모터 드라이브, 차량용 존 컨트롤러, 디지털 전력 변환, 산업 자동화 PLC/IO 모듈, 기능 안전(ASIL) 실시간 제어 노드.',
+        desc: 'AM2611-Q1은 AM261x Sitara MCU의 차량용 등급 버전, 293-ball nFBGA(ZNC 패키지). 본 항목의 pinout은 ZNC 패키지를 채택: signal 볼의 주 이름은 datasheet 그림(ZNC Pin Diagram, 293볼 좌표 해석)에서 취하고, Table 5-1 Pin Attributes(find_tables로 구조화 추출한 159개 IOMUX signal 볼)와 교차 검증하여 name↔ball 일치를 확인(0 mismatch); 전기적 연결과 mux 모드의 상세는 datasheet Pin Attributes 표 참조. IOMUX 볼의 desc에는 주요 mux 기능 목록을 부기.',
+        thermalPad: '293-ball nFBGA 볼 어레이, 방열은 볼과 기판을 통해 이루어짐(다수의 VSS 접지 볼), 별도의 노출 패드 없음.',
+        specs: [
+          { k: '코어', v: '싱글/듀얼 코어 Arm Cortex-R5F(실시간)' },
+          { k: '패키지', v: '293-ball nFBGA (ZNC) 15×15mm' },
+          { k: '아날로그', v: '다수의 ADC(ADC0/1/2 AINx), DAC_VREF, VREFHI/LO' },
+          { k: '제어 주변장치', v: 'ePWM/eCAP/SDFM/FSI(실시간 제어)' },
+          { k: '통신', v: 'CAN-FD/MCAN, 산업용 이더넷, SPI/UART/I2C, MMC/SD, GPMC' },
+          { k: '차량용 인증', v: 'AM2611-Q1(AEC-Q100 계열)' },
+          { k: '문서', v: 'SPRSPA7C(PRODUCTION DATA)' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* Batch 15B: ADC32RF72, DAC39RF20 */
+(function () {
+  var T = {
+    'ADC32RF72': {
+      en: {
+        subcategory: 'Dual-Channel 1.5GSPS 16-bit RF-Sampling ADC (JESD204B/C)',
+        whatIs: 'The ADC32RF72 is a 16-bit, 1.5GSPS (non-interleaved) dual-channel analog-to-digital converter (ADC). It is designed for maximum signal-to-noise ratio (SNR), with a noise spectral density of -163.7dBFS/Hz; an internal averaging mode can further improve NSD to -166.2dBFS/Hz. The buffered analog input supports programmable internal termination of 50/100/200 ohm, a full-power input bandwidth (-3dB) of 1.8GHz, and allows any one of IN1/2/3 to be used together with IN0.',
+        func: 'Includes a 192-tap/channel programmable FIR equalization filter, a 12-bit fractional delay filter, and multiple digital down-converters (DDC): up to 8 DDCs supporting complex-output decimation by /2, /3, /5 up to /32768, with a 48-bit NCO supporting phase-continuous frequency hopping. The JESD204B/C high-speed serial data interface reaches up to 24.75Gbps, with a code error rate (CER) of 1E-15 errors/sample. Power efficiency is high: only 1.5W per channel at 1.5GSPS, and power scales down with the sampling rate. An SPI control interface works with GPIO1-23 programmable multiplexed function pins, and hardware RESET and SYNC provide system synchronization. LVDS output interface pins are also provided (not yet supported in software; must be left No Connect), as is a TIMESTAMP input (not yet supported; may be grounded).',
+        usedIn: 'RF-sampling applications requiring high SNR and high sampling rates, such as phased-array radar, wafer inspection equipment, spectrum analyzers, software-defined radio (SDR), electronic warfare systems, high-speed digitizers, wireline infrastructure and communications infrastructure.',
+        desc: 'Dual-channel 16-bit 1.5GSPS RF-sampling ADC, NSD -163.7dBFS/Hz, 8 DDCs + 192-tap FIR equalization filter, JESD204B/C up to 24.75Gbps, 1.5W/ch, 289-ball FCBGA 13.8x13.8mm.',
+        thermalPad: 'No exposed pad (289-ball FCBGA/FCCSP; heat is dissipated through the ball array and substrate); see the datasheet for thermal design.',
+        specs: [
+          { k: 'Resolution / sampling rate', v: '16-bit, 1.5GSPS dual-channel, single-core (non-interleaved) ADC architecture' },
+          { k: 'Noise performance', v: 'Noise spectral density -163.7dBFS/Hz (best -166.2dBFS/Hz in internal averaging mode); thermal noise 75.6dBFS; noise figure 14.4dB' },
+          { k: 'Aperture jitter', v: '40fs' },
+          { k: 'Analog input', v: 'Buffered input, full scale 1.44Vpp (4.1dBm); programmable internal termination 50/100/200 ohm; full-power input bandwidth (-3dB) 1.8GHz; IN0 + any one of IN1/2/3' },
+          { k: 'Phase noise', v: 'Ultra-low close-in residual phase noise -140dBc/Hz @10kHz offset (1GHz carrier)' },
+          { k: 'Spectral performance (fIN=1GHz, -1dBFS)', v: 'SNRflat 72.1dBFS; HD2,3 68dBc; Non-HD2,3 93dBFS' },
+          { k: 'Digital signal processing', v: '192-tap/ch programmable FIR equalization filter; 12-bit fractional delay filter; up to 8 DDCs (/2, /3, /4, /5 to /32768 complex-output decimation); 48-bit NCO phase-continuous hopping, hop time <1us' },
+          { k: 'Serial interface', v: 'JESD204B/C, lane rate up to 24.75Gbps; code error rate (CER) 1E-15 errors/sample' },
+          { k: 'Power', v: '1.5W/channel @1.5GSPS, scales down with sampling rate' },
+          { k: 'Package', v: '289-ball FCBGA (FCCSP), 17x17 ball array, 13.8x13.8mm' }
+        ]
+      },
+      ja: {
+        subcategory: 'デュアルチャネル 1.5GSPS 16-bit RFサンプリングADC（JESD204B/C）',
+        whatIs: 'ADC32RF72は16-bit、1.5GSPS（非インターリーブ）デュアルチャネルA/Dコンバータ（ADC）。最大のS/N比（SNR）を目標に設計され、ノイズスペクトル密度は-163.7dBFS/Hz；内部平均モードによりNSDを-166.2dBFS/Hzまで改善可能。バッファ付きアナログ入力はプログラマブル内部終端50/100/200Ωに対応し、フルパワー入力帯域（-3dB）は1.8GHz、IN1/2/3のいずれか1系統をIN0と組み合わせて使用可能。',
+        func: '192-tap/chのプログラマブルFIRイコライゼーションフィルタ、12-bit fractional delay filter、および複数のデジタルダウンコンバータ（DDC）を内蔵：最大8組のDDCが/2、/3、/5～/32768の複素出力デシメーションに対応、48-bit NCOが位相連続な周波数ホッピングをサポート。JESD204B/C高速シリアルデータインターフェースは最大24.75Gbps、符号誤り率（CER）は1E-15 errors/sample。電力効率が高く、1.5GSPS時のチャネルあたり消費電力はわずか1.5Wで、サンプリングレートの低下に応じて消費電力を下げられる。SPI制御インターフェースはGPIO1～23のプログラマブル多重機能ピンと組み合わせ、ハードウェアRESETとSYNCがシステム同期を提供。LVDS出力インターフェースピンも用意されている（現時点でソフトウェア未対応、No Connectのままとすること）ほか、TIMESTAMP入力（未対応、接地可）もある。',
+        usedIn: 'フェーズドアレイレーダ、ウェハ検査装置、スペクトラムアナライザ、ソフトウェア無線（SDR）、電子戦システム、高速デジタイザ、有線インフラ、通信インフラなど、高SNRと高サンプリングレートが必要なRFサンプリングアプリケーション。',
+        desc: 'デュアルチャネル16-bit 1.5GSPS RFサンプリングADC、NSD -163.7dBFS/Hz、8組のDDC＋192-tap FIRイコライゼーションフィルタ、JESD204B/C最大24.75Gbps、1.5W/ch、289-ball FCBGA 13.8×13.8mm。',
+        thermalPad: '露出パッドなし（289-ball FCBGA/FCCSP、放熱はボールアレイと基板を通じて行われる）；熱設計はdatasheet参照。',
+        specs: [
+          { k: '分解能/サンプリングレート', v: '16-bit、1.5GSPSデュアルチャネル、シングルコア（非インターリーブ）ADC構成' },
+          { k: 'ノイズ性能', v: 'ノイズスペクトル密度 -163.7dBFS/Hz（内部平均モードで最良 -166.2dBFS/Hz）；熱雑音 75.6dBFS；雑音指数 14.4dB' },
+          { k: 'Aperture jitter', v: '40fs' },
+          { k: 'アナログ入力', v: 'バッファ入力、フルスケール1.44Vpp (4.1dBm)；プログラマブル内部終端50/100/200Ω；フルパワー入力帯域(-3dB) 1.8GHz；IN0 + IN1/2/3のいずれか1系統' },
+          { k: '位相雑音', v: '超低近端残留位相雑音 -140dBc/Hz @10kHzオフセット（1GHzキャリア）' },
+          { k: 'スペクトル性能（fIN=1GHz, -1dBFS）', v: 'SNRflat 72.1dBFS；HD2,3 68dBc；Non-HD2,3 93dBFS' },
+          { k: 'デジタル信号処理', v: '192-tap/chプログラマブルFIRイコライゼーションフィルタ；12-bit fractional delay filter；最大8組のDDC（/2,/3,/4,/5～/32768の複素出力デシメーション）；48-bit NCOの位相連続ホッピング、ホップ時間 <1μs' },
+          { k: 'シリアルインターフェース', v: 'JESD204B/C、レーンレート最大24.75Gbps；符号誤り率(CER) 1E-15 errors/sample' },
+          { k: '消費電力', v: '1.5W/チャネル @1.5GSPS、サンプリングレートに応じて低減可能' },
+          { k: 'パッケージ', v: '289-ball FCBGA (FCCSP)、17×17ボールアレイ、13.8×13.8mm' }
+        ]
+      },
+      ko: {
+        subcategory: '듀얼 채널 1.5GSPS 16-bit RF 샘플링 ADC(JESD204B/C)',
+        whatIs: 'ADC32RF72는 16-bit, 1.5GSPS(비인터리브) 듀얼 채널 아날로그-디지털 변환기(ADC). 최대 신호대잡음비(SNR)를 목표로 설계되었으며, 잡음 스펙트럼 밀도는 -163.7dBFS/Hz; 내부 평균 모드로 NSD를 -166.2dBFS/Hz까지 개선 가능. 버퍼드 아날로그 입력은 프로그래머블 내부 종단 50/100/200Ω을 지원하고, 풀파워 입력 대역폭(-3dB)은 1.8GHz이며, IN1/2/3 중 어느 하나를 IN0과 함께 사용 가능.',
+        func: '192-tap/ch 프로그래머블 FIR 이퀄라이제이션 필터, 12-bit fractional delay filter, 다수의 디지털 다운컨버터(DDC)를 내장: 최대 8조 DDC가 /2, /3, /5~/32768의 복소 출력 데시메이션을 지원, 48-bit NCO가 위상 연속 주파수 호핑을 지원. JESD204B/C 고속 직렬 데이터 인터페이스는 최대 24.75Gbps, 부호 오류율(CER)은 1E-15 errors/sample. 전력 효율이 높아 1.5GSPS에서 채널당 1.5W만 소비하며, 샘플링 속도에 따라 소비 전력을 낮출 수 있다. SPI 제어 인터페이스는 GPIO1~23 프로그래머블 다중 기능 핀과 함께 동작하고, 하드웨어 RESET과 SYNC가 시스템 동기를 제공. LVDS 출력 인터페이스 핀도 제공되나(현재 소프트웨어 미지원, No Connect로 유지할 것), TIMESTAMP 입력(미지원, 접지 가능)도 있다.',
+        usedIn: '위상 배열 레이더, 웨이퍼 검사 장비, 스펙트럼 분석기, 소프트웨어 정의 무선(SDR), 전자전 시스템, 고속 디지타이저, 유선 인프라, 통신 인프라 등 높은 SNR과 높은 샘플링 속도가 필요한 RF 샘플링 응용.',
+        desc: '듀얼 채널 16-bit 1.5GSPS RF 샘플링 ADC, NSD -163.7dBFS/Hz, 8조 DDC + 192-tap FIR 이퀄라이제이션 필터, JESD204B/C 최대 24.75Gbps, 1.5W/ch, 289-ball FCBGA 13.8×13.8mm.',
+        thermalPad: '노출 패드 없음(289-ball FCBGA/FCCSP, 방열은 볼 어레이와 기판을 통해 이루어짐); 열 설계는 datasheet 참조.',
+        specs: [
+          { k: '분해능/샘플링 속도', v: '16-bit, 1.5GSPS 듀얼 채널, 싱글 코어(비인터리브) ADC 구조' },
+          { k: '잡음 성능', v: '잡음 스펙트럼 밀도 -163.7dBFS/Hz(내부 평균 모드 최상 -166.2dBFS/Hz); 열잡음 75.6dBFS; 잡음 지수 14.4dB' },
+          { k: 'Aperture jitter', v: '40fs' },
+          { k: '아날로그 입력', v: '버퍼드 입력, 풀스케일 1.44Vpp (4.1dBm); 프로그래머블 내부 종단 50/100/200Ω; 풀파워 입력 대역폭(-3dB) 1.8GHz; IN0 + IN1/2/3 중 하나' },
+          { k: '위상 잡음', v: '초저 근단 잔류 위상 잡음 -140dBc/Hz @10kHz 오프셋(1GHz 캐리어)' },
+          { k: '스펙트럼 성능(fIN=1GHz, -1dBFS)', v: 'SNRflat 72.1dBFS; HD2,3 68dBc; Non-HD2,3 93dBFS' },
+          { k: '디지털 신호 처리', v: '192-tap/ch 프로그래머블 FIR 이퀄라이제이션 필터; 12-bit fractional delay filter; 최대 8조 DDC(/2,/3,/4,/5~/32768 복소 출력 데시메이션); 48-bit NCO 위상 연속 호핑, 호핑 시간 <1μs' },
+          { k: '직렬 인터페이스', v: 'JESD204B/C, 레인 속도 최대 24.75Gbps; 부호 오류율(CER) 1E-15 errors/sample' },
+          { k: '소비 전력', v: '1.5W/채널 @1.5GSPS, 샘플링 속도에 따라 저감 가능' },
+          { k: '패키지', v: '289-ball FCBGA (FCCSP), 17×17 볼 어레이, 13.8×13.8mm' }
+        ]
+      }
+    },
+    'DAC39RF20': {
+      en: {
+        subcategory: '22/44GSPS Dual-Channel 16-bit RF DAC (JESD204C)',
+        whatIs: '22GSPS or 44GSPS 16-bit single/dual-channel multi-Nyquist digital-to-analog converter: with an external full-rate clock, NRZ/RF mode reaches up to 22GSPS (single-edge sampling) and DES2XL/DES2XH mode up to 44GSPS (dual-edge sampling), with a JESD204C high-speed serial interface, for high-speed signal generation such as satellite communications, phased-array antennas, synthetic-aperture radar excitation sources, and RF clock / local-oscillator synthesis.',
+        func: 'Can be used as a non-interpolating or interpolating DAC for direct RF sampling or complex baseband signal generation; maximum dual-channel input data rate is 21GSPS (12-bit) or 15.75GSPS (16-bit), and single-channel up to 22GSPS (16-bit); includes 4 digital up-converters (DUC) with interpolation of 1x, 4x, 6x, 8x up to 256x, supporting complex baseband I/Q output and complex-to-real up-conversion for direct RF sampling, with 64-bit NCO frequency resolution and phase-continuous frequency hopping; a programmable FIR equalizer at the DUC or DAC input; a built-in direct digital synthesis (DDS) function with 4 piecewise-linear waveform generators, 16 stored waveforms and 256 vectors in total, supporting automatic or synchronized external triggering; an optional built-in PLL/VCO for DAC clock generation; the JESD204C interface supports up to 16 lanes at up to 32.5Gbps per lane, Class C-S subclass-1 compliant; automatic clock and SYSREF calibration and tracking.',
+        usedIn: 'High-speed signal generation applications such as satellite communications (SATCOM), phased-array antenna systems, synthetic-aperture radar (SAR) excitation sources, RF clock or local-oscillator (LO) synthesis, wireless communication testers and arbitrary waveform generators (AWG).',
+        desc: '22/44GSPS 16-bit single/dual-channel multi-Nyquist DAC, JESD204C up to 16 lanes @32.5Gbps, -3dB output bandwidth 22GHz, built-in PLL/VCO and DDS waveform generator, 289-Ball FCCSP 13.8x13.8mm 0.8mm pitch.',
+        thermalPad: 'No exposed pad (289-ball FCCSP; heat is dissipated through the ball array and substrate); see the datasheet for thermal design.',
+        specs: [
+          { k: 'Resolution / DAC sampling rate', v: '16-bit; NRZ/RF mode 22GSPS; DES2XL/DES2XH mode 44GSPS' },
+          { k: 'Maximum input data rate', v: 'Dual-channel: 12-bit 21GSPS/ch, 16-bit 15.75GSPS/ch; single-channel: 16-bit 22GSPS' },
+          { k: 'Output bandwidth', v: '-3dB 22GHz' },
+          { k: 'AC performance (fOUT=8.9GHz, DES2XL, IOUT=40mA)', v: 'Noise floor (small signal, DEM/Dither off) -162dBFS/Hz; SFDR(-0.1dBFS) -64dBc; IMD3(-7dBFS/tone) -67dBc; additive phase noise -133dBc/Hz @10kHz offset' },
+          { k: 'Internal PLL/VCO mode sampling rate', v: 'NRZ/RF mode 17GSPS; DES2XL/DES2XH mode 34GSPS (when using the internal PLL/VCO)' },
+          { k: 'Digital up-conversion', v: '4 DUCs, interpolation 1x, 4x, 6x, 8x ... up to 256x; 64-bit NCO frequency resolution; complex baseband I/Q output and complex-to-real up-conversion' },
+          { k: 'Waveform generation', v: 'Direct digital synthesis (DDS): 4 piecewise-linear waveform generators, 16 stored waveforms, 256 total vectors, with automatic/synchronized external triggering' },
+          { k: 'JESD204C interface', v: 'Up to 16 lanes, up to 32.5Gbps per lane; Class C-S subclass-1 compliant; automatic clock and SYSREF calibration and tracking' },
+          { k: 'Package', v: '289-Ball FCCSP, 13.8mm x 13.8mm, 0.8mm pitch' }
+        ]
+      },
+      ja: {
+        subcategory: '22/44GSPS デュアルチャネル 16-bit RF DAC（JESD204C）',
+        whatIs: '22GSPSまたは44GSPSの16-bitシングル/デュアルチャネル・マルチナイキストD/Aコンバータ：外部フルレートクロック使用時、NRZ/RFモードで最大22GSPS（片エッジサンプリング）、DES2XL/DES2XHモードで最大44GSPS（両エッジサンプリング）、JESD204C高速シリアルインターフェースを備え、衛星通信、フェーズドアレイアンテナ、合成開口レーダの励起源、RFクロック/局部発振器の合成などの高速信号生成向け。',
+        func: '非補間または補間DACとして、直接RFサンプリングや複素ベースバンド信号生成に使用可能；デュアルチャネル最大入力データレートは21GSPS（12-bit）または15.75GSPS（16-bit）、シングルチャネルは最大22GSPS（16-bit）；4組のデジタルアップコンバータ（DUC）を内蔵し、補間倍率は1x、4x、6x、8x～256x、複素ベースバンドI/Q出力と直接RFサンプリング用の複素→実数アップコンバージョンに対応、64-bit NCO周波数分解能、位相連続な周波数ホッピングをサポート；DUCまたはDAC入力側にプログラマブルFIRイコライザ；ダイレクトデジタルシンセシス（DDS）機能を内蔵し、4組の区分線形波形生成器、16組の保存波形、計256組のベクトル、自動または同期外部トリガに対応；DACクロック生成用にオプションの内蔵PLL/VCO；JESD204Cインターフェースは最大16レーン、1レーンあたり最大32.5Gbps、Class C-S subclass-1準拠；クロックとSYSREFの自動校正とトラッキング。',
+        usedIn: '衛星通信（SATCOM）、フェーズドアレイアンテナシステム、合成開口レーダ（SAR）励起源、RFクロックまたは局部発振器（LO）の合成、無線通信テスタ、任意波形発生器（AWG）などの高速信号生成アプリケーション。',
+        desc: '22/44GSPS 16-bitシングル/デュアルチャネル・マルチナイキストDAC、JESD204C最大16レーン@32.5Gbps、-3dB出力帯域22GHz、PLL/VCOとDDS波形生成器を内蔵、289-Ball FCCSP 13.8×13.8mm 0.8mmピッチ。',
+        thermalPad: '露出パッドなし（289-ball FCCSP、放熱はボールアレイと基板を通じて行われる）；熱設計はdatasheet参照。',
+        specs: [
+          { k: '分解能/DACサンプリングレート', v: '16-bit；NRZ/RFモード 22GSPS；DES2XL/DES2XHモード 44GSPS' },
+          { k: '最大入力データレート', v: 'デュアルチャネル：12-bit 21GSPS/ch、16-bit 15.75GSPS/ch；シングルチャネル：16-bit 22GSPS' },
+          { k: '出力帯域', v: '-3dB 22GHz' },
+          { k: 'AC性能（fOUT=8.9GHz、DES2XL、IOUT=40mA）', v: 'ノイズフロア（小信号、DEM/Dither off）-162dBFS/Hz；SFDR(-0.1dBFS) -64dBc；IMD3(-7dBFS/tone) -67dBc；付加位相雑音 -133dBc/Hz@10kHzオフセット' },
+          { k: '内部PLL/VCOモードのサンプリングレート', v: 'NRZ/RFモード 17GSPS；DES2XL/DES2XHモード 34GSPS（内部PLL/VCO使用時）' },
+          { k: 'デジタルアップコンバージョン', v: '4組のDUC、補間 1x、4x、6x、8x…256xまで；64-bit NCO周波数分解能；複素ベースバンドI/Q出力と複素→実数アップコンバージョン' },
+          { k: '波形生成', v: 'ダイレクトデジタルシンセシス（DDS）：4組の区分線形波形生成器、16組の保存波形、計256組のベクトル、自動/同期外部トリガに対応' },
+          { k: 'JESD204Cインターフェース', v: '最大16レーン、1レーンあたり最大32.5Gbps；Class C-S subclass-1準拠；クロックとSYSREFの自動校正・トラッキング' },
+          { k: 'パッケージ', v: '289-Ball FCCSP、13.8mm×13.8mm、0.8mmピッチ' }
+        ]
+      },
+      ko: {
+        subcategory: '22/44GSPS 듀얼 채널 16-bit RF DAC(JESD204C)',
+        whatIs: '22GSPS 또는 44GSPS 16-bit 싱글/듀얼 채널 멀티 나이퀴스트 디지털-아날로그 변환기: 외부 풀레이트 클록 사용 시 NRZ/RF 모드에서 최대 22GSPS(단일 에지 샘플링), DES2XL/DES2XH 모드에서 최대 44GSPS(양 에지 샘플링), JESD204C 고속 직렬 인터페이스를 갖추어, 위성 통신, 위상 배열 안테나, 합성 개구 레이더 여기원, RF 클록/국부 발진기 합성 등 고속 신호 생성용.',
+        func: '비보간 또는 보간 DAC로서 직접 RF 샘플링이나 복소 기저대역 신호 생성에 사용 가능; 듀얼 채널 최대 입력 데이터 속도는 21GSPS(12-bit) 또는 15.75GSPS(16-bit), 싱글 채널은 최대 22GSPS(16-bit); 4조 디지털 업컨버터(DUC)를 내장하여 보간 배율 1x, 4x, 6x, 8x~256x, 복소 기저대역 I/Q 출력과 직접 RF 샘플링용 복소→실수 업컨버전을 지원, 64-bit NCO 주파수 분해능, 위상 연속 주파수 호핑을 지원; DUC 또는 DAC 입력단에 프로그래머블 FIR 이퀄라이저; 직접 디지털 합성(DDS) 기능을 내장하여 4조 구간 선형 파형 생성기, 16조 저장 파형, 총 256조 벡터, 자동 또는 동기 외부 트리거를 지원; DAC 클록 생성용 옵션 내장 PLL/VCO; JESD204C 인터페이스는 최대 16 레인, 레인당 최대 32.5Gbps, Class C-S subclass-1 호환; 클록과 SYSREF 자동 교정 및 추적.',
+        usedIn: '위성 통신(SATCOM), 위상 배열 안테나 시스템, 합성 개구 레이더(SAR) 여기원, RF 클록 또는 국부 발진기(LO) 합성, 무선 통신 시험기, 임의 파형 발생기(AWG) 등 고속 신호 생성 응용.',
+        desc: '22/44GSPS 16-bit 싱글/듀얼 채널 멀티 나이퀴스트 DAC, JESD204C 최대 16 레인 @32.5Gbps, -3dB 출력 대역폭 22GHz, PLL/VCO와 DDS 파형 생성기 내장, 289-Ball FCCSP 13.8×13.8mm 0.8mm 피치.',
+        thermalPad: '노출 패드 없음(289-ball FCCSP, 방열은 볼 어레이와 기판을 통해 이루어짐); 열 설계는 datasheet 참조.',
+        specs: [
+          { k: '분해능/DAC 샘플링 속도', v: '16-bit; NRZ/RF 모드 22GSPS; DES2XL/DES2XH 모드 44GSPS' },
+          { k: '최대 입력 데이터 속도', v: '듀얼 채널: 12-bit 21GSPS/ch, 16-bit 15.75GSPS/ch; 싱글 채널: 16-bit 22GSPS' },
+          { k: '출력 대역폭', v: '-3dB 22GHz' },
+          { k: 'AC 성능(fOUT=8.9GHz, DES2XL, IOUT=40mA)', v: '잡음 바닥(소신호, DEM/Dither off) -162dBFS/Hz; SFDR(-0.1dBFS) -64dBc; IMD3(-7dBFS/tone) -67dBc; 부가 위상 잡음 -133dBc/Hz@10kHz 오프셋' },
+          { k: '내부 PLL/VCO 모드 샘플링 속도', v: 'NRZ/RF 모드 17GSPS; DES2XL/DES2XH 모드 34GSPS(내부 PLL/VCO 사용 시)' },
+          { k: '디지털 업컨버전', v: '4조 DUC, 보간 1x, 4x, 6x, 8x…256x까지; 64-bit NCO 주파수 분해능; 복소 기저대역 I/Q 출력과 복소→실수 업컨버전' },
+          { k: '파형 생성', v: '직접 디지털 합성(DDS): 4조 구간 선형 파형 생성기, 16조 저장 파형, 총 256조 벡터, 자동/동기 외부 트리거 지원' },
+          { k: 'JESD204C 인터페이스', v: '최대 16 레인, 레인당 최대 32.5Gbps; Class C-S subclass-1 호환; 클록과 SYSREF 자동 교정·추적' },
+          { k: '패키지', v: '289-Ball FCCSP, 13.8mm×13.8mm, 0.8mm 피치' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* Batch 15C: AWRL6844, IWRL6843, IWRL6432AOP (60GHz mmWave radar SoCs) */
+(function () {
+  // shared across AWRL6844 / IWRL6843 (same 207-ball FCCSP family)
+  var e_tp = 'The 207-ball FCCSP (flip-chip CSP) is a ball-array package with no physically separate exposed pad; heat dissipation and grounding are achieved through 103 VSS/VSSA balls.';
+  var j_tp = '207-ball FCCSP（flip-chip CSP）はボールアレイパッケージで、物理的に独立したexposed padはない；放熱と接地は103個のVSS/VSSAボールにより達成される。';
+  var k_tp = '207-ball FCCSP(flip-chip CSP)는 볼 어레이 패키지로 물리적으로 독립된 exposed pad가 없다; 방열과 접지는 103개의 VSS/VSSA 볼로 달성된다.';
+  var e_band = { k: 'Frequency band', v: '57-64GHz FMCW, 7GHz continuous bandwidth' };
+  var j_band = { k: '周波数帯', v: '57～64GHz FMCW、7GHz連続帯域' };
+  var k_band = { k: '주파수 대역', v: '57~64GHz FMCW, 7GHz 연속 대역' };
+  var e_core = { k: 'Processing cores', v: 'Arm Cortex-R5F 200MHz + HWA 1.2 + C66x DSP 450MHz' };
+  var j_core = { k: '処理コア', v: 'Arm Cortex-R5F 200MHz + HWA 1.2 + C66x DSP 450MHz' };
+  var k_core = { k: '처리 코어', v: 'Arm Cortex-R5F 200MHz + HWA 1.2 + C66x DSP 450MHz' };
+  var e_if = { k: 'IF bandwidth', v: '10MHz, real-only Rx' };
+  var j_if = { k: 'IF帯域', v: '10MHz、real-only Rx' };
+  var k_if = { k: 'IF 대역폭', v: '10MHz, real-only Rx' };
+  var e_pkg = { k: 'Package', v: '207-ball FCCSP (ANC) 17x17, 9.1x9.1mm' };
+  var j_pkg = { k: 'パッケージ', v: '207-ball FCCSP (ANC) 17×17、9.1×9.1mm' };
+  var k_pkg = { k: '패키지', v: '207-ball FCCSP (ANC) 17×17, 9.1×9.1mm' };
+
+  var T = {
+    'AWRL6844': {
+      en: {
+        subcategory: '60GHz FMCW Automotive Radar Single-Chip SoC',
+        whatIs: 'The AWRL6843/AWRL6844 are TI 57-64GHz single-chip automotive mmWave radar sensors: they integrate an FMCW transceiver (PLL, transmitter, receiver, baseband and ADC), an Arm Cortex-R5F (200MHz) real-time core, an HWA 1.2 hardware accelerator and a C66x DSP (450MHz). The AWRL6844 is the 4-transmit-channel version and the AWRL6843 the 3-transmit-channel version; both have 4 receive channels.',
+        func: 'Transmits/receives mmWave using FMCW at 57-64GHz (7GHz continuous bandwidth), with a built-in fractional-N PLL generating linear chirps and a binary phase shifter per TX; the received signal passes through a 10MHz IF-bandwidth analog chain and is sampled by the ADC, then processed in place by the HWA (FFT/log-mag/CFAR) and the C66x DSP. Host interfaces include 3x UART, 2x CAN-FD, 2x SPI, LIN, QSPI, I2C, JTAG, 8x GPIO, PWM and 4x GPADC; LVDS provides raw ADC-sample output.',
+        usedIn: 'Automotive in-cabin sensing (child-presence detection CPD, occupant detection), driver monitoring, automotive short-range perimeter radar, gesture/presence detection and industrial radar sensing.',
+        desc: 'The AWRL6844 is the 4TX version of the AWRL6843/6844 family, in an FCCSP 207-ball package (17x17 BGA grid). The pinout in this entry is taken from the datasheet FCCSP Pin Diagram (Top View, 207 balls resolved by coordinates) and cross-checked against Table 6-20 Pin Attributes (57 signal/IOMUX balls extracted via find_tables) for name-to-ball consistency (0 mismatch, all 207 balls covered). Signal-ball descriptions list the IOMUX multiplexed functions; power/ground/RF-antenna/LVDS balls are taken from the Pin Diagram. TX1-TX4 = A3/A5/A7/A9, RX1-RX4 = N1/L1/J1/G1 (60GHz antenna ports).',
+        thermalPad: e_tp,
+        specs: [
+          e_band,
+          { k: 'TX/RX channels', v: '4x RX; TX 3 (AWRL6843) / 4 (AWRL6844)' },
+          e_core, e_if,
+          { k: 'TX output power', v: 'Typically 12.5dBm/TX' },
+          e_pkg,
+          { k: 'Interfaces', v: '3x UART / 2x CAN-FD / 2x SPI / LIN / QSPI / I2C / JTAG / LVDS' },
+          { k: 'Automotive', v: 'Automotive applications (see the datasheet for qualification status)' },
+          { k: 'Document', v: 'SWRS325A' }
+        ],
+        dropIn: [ { note: 'Same AWRL6843/6844 family and same 207-ball FCCSP package; the difference is 3 transmit channels (the AWRL6844 has 4; the 4th transmit antenna port TX4=A9 is unused on the AWRL6843). Not fully electrically equivalent - the channel count differs.' } ]
+      },
+      ja: {
+        subcategory: '60GHz FMCW 車載レーダ シングルチップSoC',
+        whatIs: 'AWRL6843/AWRL6844はTIの57～64GHzシングルチップ車載ミリ波レーダセンサ：FMCWトランシーバ（PLL、送信器、受信器、ベースバンド、ADC）、Arm Cortex-R5F（200MHz）リアルタイムコア、HWA 1.2ハードウェアアクセラレータ、C66x DSP（450MHz）を統合。AWRL6844は送信4チャネル版、AWRL6843は送信3チャネル版で、いずれも受信4チャネル。',
+        func: 'FMCWで57～64GHz（7GHz連続帯域）のミリ波を送受信し、フラクショナルN PLLで線形チャープを生成、各TXにバイナリ位相シフタを内蔵；受信信号は10MHz IF帯域のアナログチェーンを経てADCでサンプリングされ、HWA（FFT/log-mag/CFAR）とC66x DSPでその場でレーダデータを処理。ホストインターフェースはUART×3、CAN-FD×2、SPI×2、LIN、QSPI、I2C、JTAG、GPIO×8、PWM、GPADC×4；LVDSは生ADCサンプル出力を提供。',
+        usedIn: '車載キャビン内検知（チャイルドプレゼンス検知CPD、乗員検知）、ドライバモニタリング、車載近距離周辺レーダ、ジェスチャ/存在検知、産業用レーダセンシング。',
+        desc: 'AWRL6844はAWRL6843/6844ファミリの4TX版で、FCCSP 207-ballパッケージ（17×17 BGAグリッド）。本項目のpinoutはdatasheetのFCCSP Pin Diagram（Top View、207ボールを座標解析）から取得し、Table 6-20 Pin Attributes（find_tablesで抽出した57個のsignal/IOMUXボール）と交差検証してname↔ballの一致を確認（0 mismatch、207ボール全数カバー）。signalボールのdescにはIOMUX多重機能一覧を付記；電源/接地/RFアンテナ/LVDSボールはPin Diagramから取得。TX1～TX4=A3/A5/A7/A9、RX1～RX4=N1/L1/J1/G1（60GHzアンテナポート）。',
+        thermalPad: j_tp,
+        specs: [
+          j_band,
+          { k: '送受信チャネル', v: 'RX×4；TX 3（AWRL6843）/4（AWRL6844）' },
+          j_core, j_if,
+          { k: 'TX出力', v: '標準 12.5dBm/TX' },
+          j_pkg,
+          { k: 'インターフェース', v: 'UART×3 / CAN-FD×2 / SPI×2 / LIN / QSPI / I2C / JTAG / LVDS' },
+          { k: '車載認定', v: '車載アプリケーション（認定状況はdatasheet参照）' },
+          { k: '文書', v: 'SWRS325A' }
+        ],
+        dropIn: [ { note: '同じAWRL6843/6844ファミリ、同じ207-ball FCCSPパッケージ；差異は送信3チャネル（AWRL6844は4チャネル、第4送信アンテナポートTX4=A9はAWRL6843では未使用）。電気的に完全等価ではなく、チャネル数が異なる。' } ]
+      },
+      ko: {
+        subcategory: '60GHz FMCW 차량용 레이더 단일 칩 SoC',
+        whatIs: 'AWRL6843/AWRL6844는 TI의 57~64GHz 단일 칩 차량용 밀리미터파 레이더 센서: FMCW 트랜시버(PLL, 송신기, 수신기, 베이스밴드, ADC), Arm Cortex-R5F(200MHz) 실시간 코어, HWA 1.2 하드웨어 가속기, C66x DSP(450MHz)를 통합. AWRL6844는 송신 4채널 버전, AWRL6843은 송신 3채널 버전이며, 모두 수신 4채널.',
+        func: 'FMCW로 57~64GHz(7GHz 연속 대역)의 밀리미터파를 송수신하며, 프랙셔널 N PLL로 선형 처프를 생성하고 각 TX에 바이너리 위상 시프터를 내장; 수신 신호는 10MHz IF 대역 아날로그 체인을 거쳐 ADC로 샘플링되고, HWA(FFT/log-mag/CFAR)와 C66x DSP로 현장에서 레이더 데이터를 처리. 호스트 인터페이스는 UART×3, CAN-FD×2, SPI×2, LIN, QSPI, I2C, JTAG, GPIO×8, PWM, GPADC×4; LVDS는 원시 ADC 샘플 출력을 제공.',
+        usedIn: '차량 실내 감지(어린이 방치 감지 CPD, 탑승자 감지), 운전자 모니터링, 차량 근거리 주변 레이더, 제스처/존재 감지, 산업용 레이더 센싱.',
+        desc: 'AWRL6844는 AWRL6843/6844 패밀리의 4TX 버전으로, FCCSP 207-ball 패키지(17×17 BGA 그리드). 본 항목의 pinout은 datasheet FCCSP Pin Diagram(Top View, 207볼 좌표 해석)에서 취하고, Table 6-20 Pin Attributes(find_tables로 추출한 57개 signal/IOMUX 볼)와 교차 검증하여 name↔ball 일치를 확인(0 mismatch, 207볼 전수 커버). signal 볼의 desc에는 IOMUX 다중 기능 목록을 부기; 전원/접지/RF 안테나/LVDS 볼은 Pin Diagram에서 취함. TX1~TX4 = A3/A5/A7/A9, RX1~RX4 = N1/L1/J1/G1(60GHz 안테나 포트).',
+        thermalPad: k_tp,
+        specs: [
+          k_band,
+          { k: '송수신 채널', v: 'RX×4; TX 3(AWRL6843) / 4(AWRL6844)' },
+          k_core, k_if,
+          { k: 'TX 출력', v: '전형 12.5dBm/TX' },
+          k_pkg,
+          { k: '인터페이스', v: 'UART×3 / CAN-FD×2 / SPI×2 / LIN / QSPI / I2C / JTAG / LVDS' },
+          { k: '차량용 인증', v: '차량용 응용(인증 상태는 datasheet 참조)' },
+          { k: '문서', v: 'SWRS325A' }
+        ],
+        dropIn: [ { note: '동일 AWRL6843/6844 패밀리, 동일 207-ball FCCSP 패키지; 차이는 송신 3채널(AWRL6844는 4채널, 제4 송신 안테나 포트 TX4=A9는 AWRL6843에서 미사용). 전기적으로 완전 등가는 아니며 채널 수가 다르다.' } ]
+      }
+    },
+    'IWRL6843': {
+      en: {
+        subcategory: '60GHz FMCW Industrial Radar Single-Chip SoC',
+        whatIs: 'The IWRL6843/IWRL6844 are TI 57-64GHz single-chip industrial mmWave radar sensors: they integrate an FMCW transceiver (PLL, transmitter, receiver, baseband and ADC), an Arm Cortex-R5F (200MHz) real-time core, an HWA 1.2 hardware accelerator and a C66x DSP (450MHz). The IWRL6843 is the 3-transmit-channel version and the IWRL6844 the 4-transmit-channel version; both have 4 receive channels. They are the industrial counterparts, in the same package, of the automotive-grade AWRL6843/6844.',
+        func: 'Transmits/receives mmWave using FMCW at 57-64GHz (7GHz continuous bandwidth), with a built-in fractional-N PLL generating linear chirps and a binary phase shifter per TX; the received signal passes through a 10MHz IF-bandwidth analog chain and is sampled by the ADC, then processed in place by the HWA (FFT/log-mag/CFAR) and the C66x DSP. Host interfaces include UART (incl. UARTB), CAN-FD, SPI, QSPI, I2C, JTAG, GPIO, PWM and GPADC; LVDS provides raw ADC-sample output.',
+        usedIn: 'Medium-range mmWave radar applications such as industrial presence/motion detection, people counting, robot obstacle avoidance, building automation, traffic monitoring, level measurement and industrial safety-zone monitoring.',
+        desc: 'The IWRL6843 is the industrial version of the IWRL6843/6844 family (the pinout in this entry uses the FCCSP 207-ball package shared by the IWRL6843/6844, 17x17 BGA grid). The pinout is taken from the datasheet FCCSP Pin Diagram (Top View, 207 balls resolved by coordinates) and cross-checked against Table 6-19 Pin Attributes (57 signal/IOMUX balls extracted via find_tables) for name-to-ball consistency (0 mismatch, all 207 balls covered). Signal-ball type is determined by the IOMUX primary function mode, and descriptions list the multiplexed functions. Compared with the automotive-grade AWRL6844, only two balls differ in primary function (T11/U13: industrial = UARTB_rx/UARTB_tx, automotive = LIN). The IWRL6843 has 3 transmit channels; the package includes the TX1-TX4 ball positions (the 4th is not driven on the 3-channel version, see the datasheet).',
+        thermalPad: e_tp,
+        specs: [
+          e_band,
+          { k: 'TX/RX channels', v: '4x RX; TX 3 (IWRL6843) / 4 (IWRL6844)' },
+          e_core, e_if, e_pkg,
+          { k: 'Interfaces', v: 'UART / UARTB / CAN-FD / SPI / QSPI / I2C / JTAG / LVDS / GPADC' },
+          { k: 'Automotive counterpart', v: 'AWRL6843/AWRL6844 (automotive grade, same package)' },
+          { k: 'Document', v: 'SWRS326A' }
+        ],
+        dropIn: [ { note: 'Same IWRL6843/6844 family and same 207-ball FCCSP package; the difference is 4 transmit channels (the IWRL6843 has 3). The package pinout is identical; the transmit channel count differs.' } ]
+      },
+      ja: {
+        subcategory: '60GHz FMCW 産業用レーダ シングルチップSoC',
+        whatIs: 'IWRL6843/IWRL6844はTIの57～64GHzシングルチップ産業用ミリ波レーダセンサ：FMCWトランシーバ（PLL、送信器、受信器、ベースバンド、ADC）、Arm Cortex-R5F（200MHz）リアルタイムコア、HWA 1.2ハードウェアアクセラレータ、C66x DSP（450MHz）を統合。IWRL6843は送信3チャネル版、IWRL6844は送信4チャネル版で、いずれも受信4チャネル。車載グレードのAWRL6843/6844と同一パッケージの産業用対応品。',
+        func: 'FMCWで57～64GHz（7GHz連続帯域）のミリ波を送受信し、フラクショナルN PLLで線形チャープを生成、各TXにバイナリ位相シフタを内蔵；受信信号は10MHz IF帯域のアナログチェーンを経てADCでサンプリングされ、HWA（FFT/log-mag/CFAR）とC66x DSPでその場でレーダデータを処理。ホストインターフェースはUART（UARTBを含む）、CAN-FD、SPI、QSPI、I2C、JTAG、GPIO、PWM、GPADC；LVDSは生ADCサンプル出力を提供。',
+        usedIn: '産業用の存在/移動検知、人数カウント、ロボットの障害物回避、ビルオートメーション、交通監視、レベル計測、産業安全区域の監視などの中距離ミリ波レーダアプリケーション。',
+        desc: 'IWRL6843はIWRL6843/6844ファミリの産業用版（本項目のpinoutはIWRL6843/6844が共用するFCCSP 207-ballパッケージ、17×17 BGAグリッドを採用）。pinoutはdatasheetのFCCSP Pin Diagram（Top View、207ボールを座標解析）から取得し、Table 6-19 Pin Attributes（find_tablesで抽出した57個のsignal/IOMUXボール）と交差検証してname↔ballの一致を確認（0 mismatch、207ボール全数カバー）。signalボールのtypeはIOMUX主機能モードで判定し、descには多重機能一覧を付記。車載グレードのAWRL6844と比較して主機能が異なるのはT11/U13の2ボールのみ（産業版=UARTB_rx/UARTB_tx、車載版=LIN）。IWRL6843は送信3チャネルで、パッケージにはTX1～TX4のボール位置が含まれる（3チャネル版では第4系統は駆動されない、datasheet参照）。',
+        thermalPad: j_tp,
+        specs: [
+          j_band,
+          { k: '送受信チャネル', v: 'RX×4；TX 3（IWRL6843）/4（IWRL6844）' },
+          j_core, j_if, j_pkg,
+          { k: 'インターフェース', v: 'UART / UARTB / CAN-FD / SPI / QSPI / I2C / JTAG / LVDS / GPADC' },
+          { k: '車載対応品', v: 'AWRL6843/AWRL6844（同一パッケージの車載グレード）' },
+          { k: '文書', v: 'SWRS326A' }
+        ],
+        dropIn: [ { note: '同じIWRL6843/6844ファミリ、同じ207-ball FCCSPパッケージ；差異は送信4チャネル（IWRL6843は3チャネル）。パッケージのpinoutは同一で、送信チャネル数が異なる。' } ]
+      },
+      ko: {
+        subcategory: '60GHz FMCW 산업용 레이더 단일 칩 SoC',
+        whatIs: 'IWRL6843/IWRL6844는 TI의 57~64GHz 단일 칩 산업용 밀리미터파 레이더 센서: FMCW 트랜시버(PLL, 송신기, 수신기, 베이스밴드, ADC), Arm Cortex-R5F(200MHz) 실시간 코어, HWA 1.2 하드웨어 가속기, C66x DSP(450MHz)를 통합. IWRL6843은 송신 3채널 버전, IWRL6844는 송신 4채널 버전이며, 모두 수신 4채널. 차량용 등급 AWRL6843/6844와 동일 패키지의 산업용 대응 부품.',
+        func: 'FMCW로 57~64GHz(7GHz 연속 대역)의 밀리미터파를 송수신하며, 프랙셔널 N PLL로 선형 처프를 생성하고 각 TX에 바이너리 위상 시프터를 내장; 수신 신호는 10MHz IF 대역 아날로그 체인을 거쳐 ADC로 샘플링되고, HWA(FFT/log-mag/CFAR)와 C66x DSP로 현장에서 레이더 데이터를 처리. 호스트 인터페이스는 UART(UARTB 포함), CAN-FD, SPI, QSPI, I2C, JTAG, GPIO, PWM, GPADC; LVDS는 원시 ADC 샘플 출력을 제공.',
+        usedIn: '산업용 존재/움직임 감지, 인원 계수, 로봇 장애물 회피, 빌딩 자동화, 교통 감시, 레벨 계측, 산업 안전 구역 감시 등 중거리 밀리미터파 레이더 응용.',
+        desc: 'IWRL6843은 IWRL6843/6844 패밀리의 산업용 버전(본 항목의 pinout은 IWRL6843/6844가 공유하는 FCCSP 207-ball 패키지, 17×17 BGA 그리드를 채택). pinout은 datasheet FCCSP Pin Diagram(Top View, 207볼 좌표 해석)에서 취하고, Table 6-19 Pin Attributes(find_tables로 추출한 57개 signal/IOMUX 볼)와 교차 검증하여 name↔ball 일치를 확인(0 mismatch, 207볼 전수 커버). signal 볼의 type은 IOMUX 주기능 모드로 판정하고, desc에는 다중 기능 목록을 부기. 차량용 등급 AWRL6844와 비교하여 주기능이 다른 것은 T11/U13 두 볼뿐(산업용 = UARTB_rx/UARTB_tx, 차량용 = LIN). IWRL6843은 송신 3채널이며, 패키지에는 TX1~TX4 볼 위치가 포함된다(3채널 버전에서는 제4 계통이 구동되지 않음, datasheet 참조).',
+        thermalPad: k_tp,
+        specs: [
+          k_band,
+          { k: '송수신 채널', v: 'RX×4; TX 3(IWRL6843) / 4(IWRL6844)' },
+          k_core, k_if, k_pkg,
+          { k: '인터페이스', v: 'UART / UARTB / CAN-FD / SPI / QSPI / I2C / JTAG / LVDS / GPADC' },
+          { k: '차량용 대응 부품', v: 'AWRL6843/AWRL6844(동일 패키지 차량용 등급)' },
+          { k: '문서', v: 'SWRS326A' }
+        ],
+        dropIn: [ { note: '동일 IWRL6843/6844 패밀리, 동일 207-ball FCCSP 패키지; 차이는 송신 4채널(IWRL6843은 3채널). 패키지 pinout은 동일하고 송신 채널 수가 다르다.' } ]
+      }
+    },
+    'IWRL6432AOP': {
+      en: {
+        subcategory: '60GHz FMCW Industrial Radar Single-Chip SoC (Antennas-on-Package, AoP)',
+        whatIs: 'The IWRL6432AOP is a TI 57-63.5GHz single-chip industrial mmWave radar sensor that integrates 3 receive / 2 transmit antennas on the package (Antennas-On-Package, AoP), eliminating external antennas. It integrates an FMCW transceiver (PLL, transmitter, receiver, baseband, ADC), an Arm Cortex-M4F (160MHz) and an HWA 1.2 radar hardware accelerator (80MHz).',
+        func: 'Transmits/receives mmWave using FMCW at 57-63.5GHz (6.5GHz continuous bandwidth), with a typical measurement range of up to 20m; a fractional-N PLL generates linear chirps, the received signal passes through a 5MHz IF-bandwidth analog chain and is sampled by the ADC, then processed in place by the HWA (FFT/log-mag/CFAR). BOM-optimized and power-optimized modes are supported; host interfaces include QSPI, UART, I2C, SPI, GPADC and GPIO; OSC_CLK_OUT provides a clock output.',
+        usedIn: 'Low-power industrial radar applications such as presence/motion detection, people counting, gesture sensing, building automation, smart home, industrial safety-zone monitoring and level measurement.',
+        desc: 'The IWRL6432AOP is the AoP (antennas-on-package) version, with the antennas built onto the package, in a 101-ball BGA (AMY0101A, rectangular dual-side ball array with the antenna area in the middle). The pinout in this entry is taken from datasheet Figure 6-1 Pin Diagram (Top View, 101 balls resolved by coordinates, col1-5 left / col6-10 right) and cross-checked against Table 6-1 Pin Attributes for name-to-ball consistency (all 101 balls covered, 0 mismatch). QSPI[3] occupies two balls B3/B4 and OSC_CLK_OUT two balls A8/B8 (Pin Attributes merges multi-ball signals into one row; they are listed ball by ball here). Signal-ball descriptions list the IOMUX multiplexed functions.',
+        thermalPad: 'The 101-ball BGA (AoP) is a ball-array package with no physically separate exposed pad; heat dissipation and grounding are achieved through the VSS/VSSA balls. The antennas are integrated on the top surface of the package.',
+        specs: [
+          { k: 'Frequency band', v: '57-63.5GHz FMCW, 6.5GHz continuous bandwidth' },
+          { k: 'TX/RX channels', v: '3x RX / 2x TX (antennas integrated on package, AoP)' },
+          { k: 'Processing cores', v: 'Arm Cortex-M4F 160MHz + HWA 1.2 (80MHz)' },
+          { k: 'IF bandwidth', v: '5MHz, real-only Rx' },
+          { k: 'Measurement range', v: 'Typically up to 20m' },
+          { k: 'Package', v: '101-ball BGA (AMY0101A) 10.9x6.7mm, 0.5mm pitch' },
+          { k: 'Interfaces', v: 'QSPI / UART / SPI / I2C / GPADC / GPIO / OSC_CLK_OUT' },
+          { k: 'Document', v: 'SWRS323B' }
+        ]
+      },
+      ja: {
+        subcategory: '60GHz FMCW 産業用レーダ シングルチップSoC（アンテナ統合パッケージ AoP）',
+        whatIs: 'IWRL6432AOPはTIの57～63.5GHzシングルチップ産業用ミリ波レーダセンサで、3受信/2送信のアンテナをパッケージ上に統合（Antennas-On-Package, AoP）し、外付けアンテナを不要とする。FMCWトランシーバ（PLL、送信器、受信器、ベースバンド、ADC）、Arm Cortex-M4F（160MHz）、HWA 1.2レーダハードウェアアクセラレータ（80MHz）を統合。',
+        func: 'FMCWで57～63.5GHz（6.5GHz連続帯域）のミリ波を送受信し、標準的な計測距離は最大20m；フラクショナルN PLLで線形チャープを生成、受信信号は5MHz IF帯域のアナログチェーンを経てADCでサンプリングされ、HWA（FFT/log-mag/CFAR）でその場で処理。BOM最適化/低消費電力最適化モードに対応；ホストインターフェースはQSPI、UART、I2C、SPI、GPADC、GPIO；OSC_CLK_OUTはクロック出力を提供。',
+        usedIn: '存在/移動検知、人数カウント、ジェスチャセンシング、ビルオートメーション、スマートホーム、産業安全区域の監視、レベル計測などの低消費電力産業用レーダアプリケーション。',
+        desc: 'IWRL6432AOPはAoP（アンテナ統合パッケージ）版で、アンテナがパッケージ上に内蔵され、101-ball BGA（AMY0101A、矩形の両側ボールアレイで中央がアンテナ領域）。本項目のpinoutはdatasheet Figure 6-1 Pin Diagram（Top View、101ボールを座標解析、col1～5が左側/col6～10が右側）から取得し、Table 6-1 Pin Attributesと交差検証してname↔ballの一致を確認（101ボール全数カバー、0 mismatch）。QSPI[3]はB3/B4の2ボール、OSC_CLK_OUTはA8/B8の2ボール（Pin Attributesは複数ボール信号を1行に統合しているが、ここではボールごとに列挙）。signalボールのdescにはIOMUX多重機能を付記。',
+        thermalPad: '101-ball BGA（AoP）はボールアレイパッケージで、物理的に独立したexposed padはない；放熱と接地はVSS/VSSAボールにより達成される。アンテナはパッケージ上面に統合されている。',
+        specs: [
+          { k: '周波数帯', v: '57～63.5GHz FMCW、6.5GHz連続帯域' },
+          { k: '送受信チャネル', v: 'RX×3 / TX×2（アンテナをパッケージに統合 AoP）' },
+          { k: '処理コア', v: 'Arm Cortex-M4F 160MHz + HWA 1.2（80MHz）' },
+          { k: 'IF帯域', v: '5MHz、real-only Rx' },
+          { k: '計測距離', v: '標準で最大20m' },
+          { k: 'パッケージ', v: '101-ball BGA (AMY0101A) 10.9×6.7mm、0.5mmピッチ' },
+          { k: 'インターフェース', v: 'QSPI / UART / SPI / I2C / GPADC / GPIO / OSC_CLK_OUT' },
+          { k: '文書', v: 'SWRS323B' }
+        ]
+      },
+      ko: {
+        subcategory: '60GHz FMCW 산업용 레이더 단일 칩 SoC(안테나 통합 패키지 AoP)',
+        whatIs: 'IWRL6432AOP는 TI의 57~63.5GHz 단일 칩 산업용 밀리미터파 레이더 센서로, 3수신/2송신 안테나를 패키지 위에 통합(Antennas-On-Package, AoP)하여 외부 안테나가 불필요. FMCW 트랜시버(PLL, 송신기, 수신기, 베이스밴드, ADC), Arm Cortex-M4F(160MHz), HWA 1.2 레이더 하드웨어 가속기(80MHz)를 통합.',
+        func: 'FMCW로 57~63.5GHz(6.5GHz 연속 대역)의 밀리미터파를 송수신하며, 전형 측정 거리는 최대 20m; 프랙셔널 N PLL로 선형 처프를 생성하고, 수신 신호는 5MHz IF 대역 아날로그 체인을 거쳐 ADC로 샘플링되며, HWA(FFT/log-mag/CFAR)로 현장에서 처리. BOM 최적화/저전력 최적화 모드를 지원; 호스트 인터페이스는 QSPI, UART, I2C, SPI, GPADC, GPIO; OSC_CLK_OUT은 클록 출력을 제공.',
+        usedIn: '존재/움직임 감지, 인원 계수, 제스처 센싱, 빌딩 자동화, 스마트홈, 산업 안전 구역 감시, 레벨 계측 등 저전력 산업용 레이더 응용.',
+        desc: 'IWRL6432AOP는 AoP(안테나 통합 패키지) 버전으로, 안테나가 패키지 위에 내장되어 있으며, 101-ball BGA(AMY0101A, 직사각형 양측 볼 어레이로 중앙이 안테나 영역). 본 항목의 pinout은 datasheet Figure 6-1 Pin Diagram(Top View, 101볼 좌표 해석, col1~5 좌측/col6~10 우측)에서 취하고, Table 6-1 Pin Attributes와 교차 검증하여 name↔ball 일치를 확인(101볼 전수 커버, 0 mismatch). QSPI[3]은 B3/B4 두 볼, OSC_CLK_OUT은 A8/B8 두 볼(Pin Attributes는 다중 볼 신호를 한 행으로 병합하지만, 여기서는 볼별로 나열). signal 볼의 desc에는 IOMUX 다중 기능을 부기.',
+        thermalPad: '101-ball BGA(AoP)는 볼 어레이 패키지로 물리적으로 독립된 exposed pad가 없다; 방열과 접지는 VSS/VSSA 볼로 달성된다. 안테나는 패키지 상면에 통합되어 있다.',
+        specs: [
+          { k: '주파수 대역', v: '57~63.5GHz FMCW, 6.5GHz 연속 대역' },
+          { k: '송수신 채널', v: 'RX×3 / TX×2(안테나를 패키지에 통합 AoP)' },
+          { k: '처리 코어', v: 'Arm Cortex-M4F 160MHz + HWA 1.2(80MHz)' },
+          { k: 'IF 대역폭', v: '5MHz, real-only Rx' },
+          { k: '측정 거리', v: '전형적으로 최대 20m' },
+          { k: '패키지', v: '101-ball BGA (AMY0101A) 10.9×6.7mm, 0.5mm 피치' },
+          { k: '인터페이스', v: 'QSPI / UART / SPI / I2C / GPADC / GPIO / OSC_CLK_OUT' },
+          { k: '문서', v: 'SWRS323B' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* Batch 15D: DS1230Y, SLG59H1403C — NOTE: these two have string-type dropIn (not {part,note}) */
+(function () {
+  var T = {
+    'DS1230Y': {
+      en: {
+        subcategory: 'Nonvolatile SRAM (nvSRAM, built-in lithium energy backup)',
+        whatIs: '256K-bit (32K x 8) nonvolatile SRAM: read and written over a standard SRAM interface (address / data / CE / OE / WE), with built-in lithium energy that automatically preserves data on power loss. It runs at ordinary SRAM speed but does not lose data when powered down, and can directly replace volatile SRAM, EEPROM or Flash.',
+        func: 'Internally a 32K x 8 CMOS SRAM array; A0-A14 select the address, DQ0-DQ7 read/write the data, and access is controlled by {CE}, {OE} and {WE}. The instant power is lost, internal circuitry automatically write-protects the data and switches to the lithium energy backup, so the contents are preserved intact when power returns. Access time is 70ns, with an unlimited number of writes (unlike EEPROM/Flash). The DS1230Y is the +/-10% VCC version and the DS1230AB the +/-5% VCC version; the pinout is identical.',
+        usedIn: 'Industrial motherboards, POS terminals, instruments and telecom equipment - anywhere settings/counters/logs must survive power loss while requiring SRAM speed and unlimited write endurance; real-time nonvolatile storage as an alternative to EEPROM/Flash.',
+        desc: '256K-bit (32K x 8) nvSRAM, 70ns access, unlimited writes, built-in lithium energy backup, JEDEC-standard 28-pin DIP. DS1230Y = +/-10% VCC, DS1230AB = +/-5% VCC.',
+        specs: [
+          { k: 'Capacity', v: '256K-bit (32K x 8)' },
+          { k: 'Access time', v: '70 ns (read/write)' },
+          { k: 'Data retention', v: '>=10 years unpowered (built-in lithium energy)' },
+          { k: 'Write endurance', v: 'Unlimited' },
+          { k: 'VCC', v: '5V (DS1230Y +/-10% / DS1230AB +/-5%)' },
+          { k: 'Temperature', v: 'Commercial 0-70C; industrial (IND) -40 to +85C' }
+        ],
+        dropIn: [ 'DS1230AB (+/-5% VCC version, identical pinout)' ]
+      },
+      ja: {
+        subcategory: '不揮発性SRAM（nvSRAM、リチウム電源バックアップ内蔵）',
+        whatIs: '256K-bit（32K×8）不揮発性SRAM：標準的なSRAMインターフェース（アドレス／データ／CE／OE／WE）で読み書きし、内蔵リチウム電源が停電時に自動でデータを保存する。速度は通常のSRAMと同じでありながら電源が切れてもデータは失われず、揮発性SRAM、EEPROM、Flashを直接置き換えられる。',
+        func: '内部は32K×8のCMOS SRAMアレイで、A0～A14でアドレスを選択、DQ0～DQ7でデータを読み書きし、{CE}、{OE}、{WE}でアクセスを制御する。停電の瞬間、内部回路が自動的にデータを書き込み保護し、リチウム電源バックアップに切り替えるため、再通電後も内容はそのまま保持される。アクセス時間は70ns、書き込み回数は無制限（EEPROM／Flashと異なる）。DS1230Yは±10% VCC版、DS1230ABは±5% VCC版で、ピン配置は同一。',
+        usedIn: '産業用マザーボード、POS、計測器、通信機器など、設定／カウンタ／ログを停電時にも保存する必要があり、かつSRAMの速度と無制限の書き込み回数が求められる用途；EEPROM／Flash以外のリアルタイム不揮発性ストレージとして。',
+        desc: '256K-bit（32K×8）nvSRAM、70nsアクセス、書き込み回数無制限、リチウム電源バックアップ内蔵、JEDEC標準28-pin DIP。DS1230Y=±10% VCC、DS1230AB=±5% VCC。',
+        specs: [
+          { k: '容量', v: '256K-bit（32K × 8）' },
+          { k: 'アクセス時間', v: '70 ns（読み／書き）' },
+          { k: 'データ保持', v: '無通電で10年以上（内蔵リチウム電源）' },
+          { k: '書き込み回数', v: '無制限（unlimited）' },
+          { k: 'VCC', v: '5V（DS1230Y ±10% ／ DS1230AB ±5%）' },
+          { k: '温度', v: '民生 0～70°C；工業版（IND）-40～+85°C' }
+        ],
+        dropIn: [ 'DS1230AB（±5% VCC版、ピン配置同一）' ]
+      },
+      ko: {
+        subcategory: '비휘발성 SRAM(nvSRAM, 리튬 에너지 백업 내장)',
+        whatIs: '256K-bit(32K × 8) 비휘발성 SRAM: 표준 SRAM 인터페이스(주소/데이터/CE/OE/WE)로 읽고 쓰며, 내장 리튬 에너지가 정전 시 자동으로 데이터를 보존한다. 속도는 일반 SRAM과 같으면서도 전원이 꺼져도 데이터가 사라지지 않아, 휘발성 SRAM, EEPROM, Flash를 직접 대체할 수 있다.',
+        func: '내부는 32K × 8 CMOS SRAM 어레이로, A0-A14로 주소를 선택하고 DQ0-DQ7로 데이터를 읽고 쓰며, {CE}, {OE}, {WE}로 접근을 제어한다. 정전 순간 내부 회로가 자동으로 데이터를 쓰기 보호하고 리튬 에너지 백업으로 전환하므로, 재통전 후에도 내용이 그대로 유지된다. 접근 시간은 70ns, 쓰기 횟수는 무제한(EEPROM/Flash와 달리). DS1230Y는 ±10% VCC 버전, DS1230AB는 ±5% VCC 버전이며, 핀 배치는 동일하다.',
+        usedIn: '산업용 메인보드, POS, 계측기, 통신 장비 등 설정/카운터/로그를 정전 시에도 보존해야 하고 SRAM 속도와 무제한 쓰기 수명이 요구되는 용도; EEPROM/Flash 이외의 실시간 비휘발성 저장 수단으로.',
+        desc: '256K-bit(32K × 8) nvSRAM, 70ns 접근, 쓰기 횟수 무제한, 리튬 에너지 백업 내장, JEDEC 표준 28-pin DIP. DS1230Y = ±10% VCC, DS1230AB = ±5% VCC.',
+        specs: [
+          { k: '용량', v: '256K-bit(32K × 8)' },
+          { k: '접근 시간', v: '70 ns(읽기/쓰기)' },
+          { k: '데이터 보존', v: '무전원에서 10년 이상(내장 리튬 에너지)' },
+          { k: '쓰기 횟수', v: '무제한(unlimited)' },
+          { k: 'VCC', v: '5V(DS1230Y ±10% / DS1230AB ±5%)' },
+          { k: '온도', v: '상용 0-70°C; 산업용(IND) -40~+85°C' }
+        ],
+        dropIn: [ 'DS1230AB(±5% VCC 버전, 핀 배치 동일)' ]
+      }
+    },
+    'SLG59H1403C': {
+      en: {
+        subcategory: 'Power Multiplexer / Load Switch (dual-input single-output Power MUX)',
+        whatIs: 'Dual-input single-output 3A power multiplexer: it contains two 3A load switches sharing one output, and can automatically detect / select / seamlessly switch between two power sources, or switch manually - suitable for OR-ing or power MUXing in systems with multiple supply sources.',
+        func: 'Two 3A load switches (IN1, IN2) share the OUT node, each with an integrated VGS charge pump; the source is selected automatically per PR (priority), or forced to IN2 manually via SEL. OV1/OV2 with external dividers set each channel overvoltage threshold; exceeding the internal VREF shuts that channel off and returns to normal after recovery. ILIM with an external 1% resistor sets the current limit of both channels, SS with an external capacitor sets the output soft-start slope, and ST is an open-drain active-low status indicator (high = IN1 selected, low = IN2 selected). It provides true reverse-current blocking, undervoltage lockout and thermal shutdown. Typical RDSON is 52m ohm, input range 2.8-22V.',
+        usedIn: 'Industrial, server auxiliary power and redundant supply systems with dual sources (e.g. battery + adapter, dual feeds) that need automatic or manual switchover; OR-ing / power-MUX applications.',
+        desc: 'Dual-input single-output 3A Power MUX, 2.8-22V input, 52m ohm RDSON, automatic/manual source selection, adjustable overvoltage / current limit / soft-start, true reverse-current blocking, 20-WLCSP.',
+        specs: [
+          { k: 'Channels', v: '2 x 3A load switches sharing one output' },
+          { k: 'Input voltage', v: '2.8 V - 22 V' },
+          { k: 'RDSON', v: '52 m ohm (typ)' },
+          { k: 'Accuracy', v: '< +/-5% (current limit / overvoltage)' },
+          { k: 'Protection', v: 'Overvoltage, current limit, undervoltage lockout, thermal shutdown, true reverse-current blocking' },
+          { k: 'Package', v: '20L WLCSP 1.585x1.985mm 0.4mm pitch' }
+        ],
+        dropIn: [ 'SLG59H1403CTR (Tape & Reel, same die, same pinout)' ]
+      },
+      ja: {
+        subcategory: '電源マルチプレクサ／ロードスイッチ（2入力1出力 Power MUX）',
+        whatIs: '2入力1出力の3A電源マルチプレクサ：2個の3Aロードスイッチが出力を共有し、2系統の電源間で自動的に検出／選択／シームレスに切り替える、または手動で切り替えることができ、複数の電源ソースを持つシステムのOR-ingやPower MUXに適する。',
+        func: '2個の3Aロードスイッチ（IN1、IN2）がOUTを共有し、それぞれに統合VGSチャージポンプを備える；PR（優先度）に従って自動でソースを選択するか、SELで手動でIN2を強制選択する。OV1／OV2は外部分圧器と組み合わせて各チャネルの過電圧しきい値を設定し、内部VREFを超えると当該チャネルを遮断し、復帰後に正常に戻る。ILIMは外付け1%抵抗で両チャネルの電流制限を設定、SSは外付けコンデンサで出力のソフトスタート傾斜を設定、STはオープンドレインのactive-lowステータス表示（High=IN1選択、Low=IN2選択）。真の逆電流阻止、低電圧ロックアウト、サーマルシャットダウン保護を備える。RDSONは標準52mΩ、入力範囲2.8～22V。',
+        usedIn: '2系統電源（バッテリ＋アダプタ、二重給電など）を自動または手動で切り替える必要がある産業機器、サーバ補助電源、冗長給電システム；OR-ing／Power-MUXアプリケーション。',
+        desc: '2入力1出力3A Power MUX、2.8～22V入力、52mΩ RDSON、自動／手動ソース選択、過電圧／電流制限／ソフトスタート調整可能、真の逆電流阻止、20-WLCSP。',
+        specs: [
+          { k: 'チャネル', v: '2 × 3Aロードスイッチが出力を共有' },
+          { k: '入力電圧', v: '2.8 V ～ 22 V' },
+          { k: 'RDSON', v: '52 mΩ（typ）' },
+          { k: '精度', v: '< ±5%（電流制限／過電圧）' },
+          { k: '保護', v: '過電圧、電流制限、低電圧ロックアウト、サーマルシャットダウン、真の逆電流阻止' },
+          { k: 'パッケージ', v: '20L WLCSP 1.585×1.985mm 0.4mmピッチ' }
+        ],
+        dropIn: [ 'SLG59H1403CTR（Tape & Reel、同一ダイ・同一ピン配置）' ]
+      },
+      ko: {
+        subcategory: '전원 멀티플렉서/로드 스위치(2입력 1출력 Power MUX)',
+        whatIs: '2입력 1출력 3A 전원 멀티플렉서: 2개의 3A 로드 스위치가 출력을 공유하며, 두 전원 사이에서 자동으로 감지/선택/무결절 전환하거나 수동으로 전환할 수 있어, 여러 전원 소스를 가진 시스템의 OR-ing이나 Power MUX에 적합.',
+        func: '2개의 3A 로드 스위치(IN1, IN2)가 OUT을 공유하며, 각각 통합 VGS 차지 펌프를 갖는다; PR(우선순위)에 따라 자동으로 소스를 선택하거나, SEL로 수동으로 IN2를 강제 선택한다. OV1/OV2는 외부 분압기와 함께 각 채널의 과전압 임계값을 설정하며, 내부 VREF를 초과하면 해당 채널을 차단하고 복구 후 정상으로 돌아온다. ILIM은 외장 1% 저항으로 두 채널의 전류 제한을 설정하고, SS는 외장 커패시터로 출력 소프트스타트 기울기를 설정하며, ST는 오픈 드레인 active-low 상태 표시(High=IN1 선택, Low=IN2 선택). 진성 역전류 차단, 저전압 잠금, 열 차단 보호를 갖춘다. RDSON은 전형 52mΩ, 입력 범위 2.8~22V.',
+        usedIn: '2계통 전원(배터리 + 어댑터, 이중 급전 등)을 자동 또는 수동으로 전환해야 하는 산업 기기, 서버 보조 전원, 이중화 급전 시스템; OR-ing / Power-MUX 응용.',
+        desc: '2입력 1출력 3A Power MUX, 2.8~22V 입력, 52mΩ RDSON, 자동/수동 소스 선택, 과전압/전류 제한/소프트스타트 조정 가능, 진성 역전류 차단, 20-WLCSP.',
+        specs: [
+          { k: '채널', v: '2 × 3A 로드 스위치가 출력을 공유' },
+          { k: '입력 전압', v: '2.8 V - 22 V' },
+          { k: 'RDSON', v: '52 mΩ(typ)' },
+          { k: '정확도', v: '< ±5%(전류 제한/과전압)' },
+          { k: '보호', v: '과전압, 전류 제한, 저전압 잠금, 열 차단, 진성 역전류 차단' },
+          { k: '패키지', v: '20L WLCSP 1.585×1.985mm 0.4mm 피치' }
+        ],
+        dropIn: [ 'SLG59H1403CTR(Tape & Reel, 동일 다이·동일 핀 배치)' ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* Batch 15E: TPS99002S-Q1, LM851772-Q1 (very long func fields) */
+(function () {
+  var T = {
+    'TPS99002S-Q1': {
+      en: {
+        subcategory: 'Automotive DLP Headlight System Power-Management and Illumination-Control IC',
+        whatIs: 'Power-management and control IC for automotive DLP (Digital Light Processing) projection headlight systems: it integrates multi-rail buck enable/monitoring, DMD (digital micromirror device) dedicated power-rail generation, LED/laser illumination channel drive with current feedback, and a photodiode (TIA) analog front end, for automotive DLP smart headlight modules.',
+        func: 'The main functional blocks are as follows. 1) Power monitoring/enable: ENB_1P1V/ENB_1P8V/ENB_3P3V enable external bucks, and V1P1V/V1P8V/V3P3V monitor their voltages. 2) DMD dedicated power: DMD_VOFFSET/DMD_VBIAS/DMD_VRESET are three power rails (each requiring an external capacitor); DRST_HS_IND/DRST_LS_IND are the internal inductor switching nodes; VIN_DRST/VSS_DRST/DRST_PGND are the 6V input and grounds. 3) LED/laser illumination drive: D_EN/S_EN/LED_SEL_0-3 control LED enable and channel selection; R_EN/G_EN/B_EN drive the red/green/blue channel low-side NFETs; S_EN1/S_EN2 drive the shunt NFETs; IADJ/R_IADJ set the external LED-controller current; SYNC provides a synchronization trigger to the external LED buck; DRV_EN/CMODE are LM3409-related drive signals. 4) Photodiode feedback (TIA): TIA_PD1/TIA_PD2 drive the photodiode cathodes; TIA_PD1_FILT/TIA_PD2_FILT are low-bandwidth sampling filters; three dedicated LDOs VLDOT_3P3V/VLDOT_5V/VLDOT_M8 supply this block. 5) External ADC interface: ADC_IN1-7 analog input channels, ADC_VREF reference output, and ADC_MISO/ADC_MOSI as its dedicated SPI. 6) Digital host interface: SPI1/SPI2 two digital interfaces (CLK/DIN/DOUT/SS_Z) and COMPOUT high-speed comparator output. 7) System handshake: WD1/WD2 watchdog interrupt channels, PARK_Z mirror-park signal, RESET_Z/INT_Z reset/interrupt signals to the DLPC23xS-Q1, PROJ_ON projector enable; the nRST pin is not listed within this extraction scope (see the data limitation note below). 8) Test/debug: DMUX0/DMUX1 digital test points, AMUX0/AMUX1 analog test mux outputs. Data limitation: 19 pins - ADC_MISO/ADC_MOSI (pins 4, 5), SPI1_CLK/SS_Z/DOUT/DIN (pins 27-30), SPI2_DIN/DOUT/SS_Z/CLK (pins 31-34), LS_SENSE_N/P (pins 82, 83) and ADC_IN1-7 (pins 85, 86, 88, 90, 92, 93, 94) - had their names read from the package drawing (Figure 4-1) and cross-checked for pin-number consistency against the Pin Functions tables (Tables 4-1 to 4-4) of the other 81 pins (all checkable pins match 100%); however the official functional description text for these 19 pins was not included in this extraction scope. For detailed specifications, consult the complete Pin Functions table in the original datasheet.',
+        usedIn: 'Automotive DLP smart projection headlight (adaptive driving beam) modules, paired with the DLPC23xS-Q1 digital controller and a DMD device, driving R/G/B or white LED/laser light sources and feeding back photodiode signals for closed-loop control.',
+        desc: '100-Pin HTQFP (PZP) package, automotive DLP headlight system power-management and illumination-control IC, integrating multi-rail buck enable/monitoring, DMD dedicated power rails (VOFFSET/VBIAS/VRESET), RGB LED/laser drive with current feedback, a dual-channel TIA photodiode front end, a 7-channel external ADC interface and two SPI digital interfaces. PBKG (25, 60, 75, 99), AVSS (78, 100), VSSL_ADC (81, 84, 87, 89, 91), VSS_IO (13, 35) and VDD_IO (14, 36) are multi-pin same-name pins. The names of 19 pins (pins 4, 5, 27-34, 82, 83, 85, 86, 88, 90, 92-94) were read from the package drawing; the official Pin Functions table descriptions were not within this extraction scope, so consult the original datasheet for functional detail (this is a judgment call and may be revised). The extracted Pin Functions table shows no separate exposed-pad row, so this entry has no EP pin.',
+        specs: [
+          { k: 'Package', v: '100-Pin HTQFP (PZP)' },
+          { k: 'Power monitor/enable channels', v: 'Three external-buck enables for 1.1V/1.8V/3.3V (ENB_1P1V/1P8V/3P3V) with voltage monitoring (V1P1V/1P8V/3P3V)' },
+          { k: 'DMD power rails', v: 'VOFFSET (1uF), VBIAS (0.47uF), VRESET (1uF, via a diode to DRST_HS_IND); DRST stage 6V input' },
+          { k: 'TIA channels', v: '2 channels (PD1/PD2), each with dedicated filtering and LDOs (3.3V/5V/-8V)' },
+          { k: 'External ADC interface', v: '7 analog input channels (ADC_IN1-7) + ADC_VREF reference output + dedicated SPI (ADC_MISO/MOSI; see the datasheet for detailed function)' },
+          { k: 'Digital interface', v: 'SPI1 and SPI2, one each (CLK/DIN/DOUT/SS_Z); see the datasheet for detailed function' },
+          { k: 'LED/laser drive channels', v: 'R_EN/G_EN/B_EN three-color low-side drive + S_EN1/S_EN2 shunt drive; IADJ/R_IADJ set the external current' },
+          { k: 'Watchdog/system handshake', v: 'WD1, WD2 interrupt channels; PARK_Z, RESET_Z, INT_Z handshake with the DLPC23xS-Q1; PROJ_ON projector enable' },
+          { k: 'Document version', v: 'DLPS298 - DECEMBER 2025' }
+        ]
+      },
+      ja: {
+        subcategory: '車載DLPヘッドライトシステム電源管理・照明制御IC',
+        whatIs: '車載DLP（Digital Light Processing）投影ヘッドライトシステム用の電源管理・制御IC：多系統buckのイネーブル/監視、DMD（デジタルマイクロミラーデバイス）専用電源レール生成、LED/レーザ照明チャネル駆動と電流フィードバック、フォトダイオード（TIA）アナログフロントエンドを統合し、車載DLPスマートヘッドライトモジュールに使用する。',
+        func: '主な機能ブロックは以下のとおり。1) 電源監視/イネーブル：ENB_1P1V/ENB_1P8V/ENB_3P3Vが外部buckをイネーブルし、V1P1V/V1P8V/V3P3Vがその電圧を監視。2) DMD専用電源：DMD_VOFFSET/DMD_VBIAS/DMD_VRESETの3系統の電源レール（それぞれ外付けコンデンサが必要）、DRST_HS_IND/DRST_LS_INDは内部インダクタのスイッチングノード、VIN_DRST/VSS_DRST/DRST_PGNDは6V入力とグランド。3) LED/レーザ照明駆動：D_EN/S_EN/LED_SEL_0-3がLEDイネーブルとチャネル選択を制御、R_EN/G_EN/B_ENが赤/緑/青チャネルのローサイドNFETを駆動、S_EN1/S_EN2がシャントNFETを駆動、IADJ/R_IADJが外部LEDコントローラの電流を設定、SYNCが外部LED buckへの同期トリガを提供、DRV_EN/CMODEはLM3409関連の駆動信号。4) フォトダイオードフィードバック（TIA）：TIA_PD1/TIA_PD2がフォトダイオードのカソードを駆動、TIA_PD1_FILT/TIA_PD2_FILTは低帯域サンプリングフィルタ、専用のVLDOT_3P3V/VLDOT_5V/VLDOT_M8の3系統LDOが電源を供給。5) 外部ADCインターフェース：ADC_IN1-7アナログ入力チャネル、ADC_VREF基準出力、ADC_MISO/ADC_MOSIが専用SPI。6) デジタルホストインターフェース：SPI1/SPI2の2組のデジタルインターフェース（CLK/DIN/DOUT/SS_Z）、COMPOUT高速コンパレータ出力。7) システムハンドシェイク：WD1/WD2ウォッチドッグ割り込みチャネル、PARK_Zミラーパーク信号、RESET_Z/INT_ZはDLPC23xS-Q1へのリセット/割り込み信号、PROJ_ONはプロジェクタイネーブル；nRSTピンは本抽出範囲に記載なし（下記のデータ制限の説明参照）。8) テスト/デバッグ：DMUX0/DMUX1デジタルテストポイント、AMUX0/AMUX1アナログテストマルチプレクサ出力。データ制限：ADC_MISO/ADC_MOSI（pin4,5）、SPI1_CLK/SS_Z/DOUT/DIN（pin27-30）、SPI2_DIN/DOUT/SS_Z/CLK（pin31-34）、LS_SENSE_N/P（pin82,83）、ADC_IN1-7（pin85,86,88,90,92,93,94）の計19ピンは、その名称をパッケージ図（Figure 4-1）から読み取り、残る81ピンのPin Functions表（Table 4-1～4-4）とピン番号の一貫性を交差検証している（照合可能なピンは100%一致）。ただしこれら19ピンの公式な機能記述テキストは本抽出範囲に含まれていない。詳細仕様は原メーカーdatasheetの完全なPin Functions表を参照のこと。',
+        usedIn: '車載DLPスマート投影ヘッドライト（adaptive driving beam）モジュール。DLPC23xS-Q1デジタルコントローラとDMD素子と組み合わせ、R/G/Bまたは白色のLED/レーザ光源を駆動し、フォトダイオード信号をフィードバックして閉ループ制御を行う。',
+        desc: '100-Pin HTQFP(PZP)パッケージ、車載DLPヘッドライトシステム電源管理・照明制御IC。多系統buckのイネーブル/監視、DMD専用電源レール（VOFFSET/VBIAS/VRESET）、RGB LED/レーザ駆動と電流フィードバック、2チャネルTIAフォトダイオードフロントエンド、7チャネル外部ADCインターフェース、2組のSPIデジタルインターフェースを統合。PBKG(25,60,75,99)、AVSS(78,100)、VSSL_ADC(81,84,87,89,91)、VSS_IO(13,35)、VDD_IO(14,36)は複数ピンの同名ピン。19ピン(pin 4,5,27-34,82,83,85,86,88,90,92-94)の名称はパッケージ図から読み取ったもので、公式Pin Functions表の記述は本抽出範囲に含まれないため、機能の詳細は原メーカーdatasheetを参照のこと（これは判断による取捨であり、覆され得る）。本抽出のPin Functions表には独立した放熱パッド（exposed pad）の行が見当たらないため、本項目にEPピンは含まれない。',
+        specs: [
+          { k: 'パッケージ', v: '100-Pin HTQFP(PZP)' },
+          { k: '電源監視/イネーブルチャネル', v: '1.1V/1.8V/3.3Vの3系統の外部buckイネーブル(ENB_1P1V/1P8V/3P3V)と電圧監視(V1P1V/1P8V/3P3V)' },
+          { k: 'DMD電源レール', v: 'VOFFSET(1µF)、VBIAS(0.47µF)、VRESET(1µF、ダイオード経由でDRST_HS_INDへ)、DRST段は6V入力' },
+          { k: 'TIAチャネル数', v: '2チャネル(PD1/PD2)、それぞれ専用のフィルタとLDO(3.3V/5V/−8V)を備える' },
+          { k: '外部ADCインターフェース', v: '7アナログ入力チャネル(ADC_IN1-7)＋ADC_VREF基準出力＋専用SPI(ADC_MISO/MOSI、詳細機能はdatasheet参照)' },
+          { k: 'デジタルインターフェース', v: 'SPI1、SPI2を各1組(CLK/DIN/DOUT/SS_Z)、詳細機能はdatasheet参照' },
+          { k: 'LED/レーザ駆動チャネル', v: 'R_EN/G_EN/B_ENの3色ローサイド駆動＋S_EN1/S_EN2シャント駆動、IADJ/R_IADJで外部電流を設定' },
+          { k: 'ウォッチドッグ/システムハンドシェイク', v: 'WD1、WD2割り込みチャネル；PARK_Z、RESET_Z、INT_ZはDLPC23xS-Q1とハンドシェイク；PROJ_ONはプロジェクタイネーブル' },
+          { k: '文書バージョン', v: 'DLPS298 – DECEMBER 2025' }
+        ]
+      },
+      ko: {
+        subcategory: '차량용 DLP 헤드라이트 시스템 전원 관리 및 조명 제어 IC',
+        whatIs: '차량용 DLP(Digital Light Processing) 투영 헤드라이트 시스템의 전원 관리·제어 IC: 다중 레일 buck 인에이블/감시, DMD(디지털 마이크로미러 소자) 전용 전원 레일 생성, LED/레이저 조명 채널 구동과 전류 피드백, 포토다이오드(TIA) 아날로그 프런트엔드를 통합하여 차량용 DLP 스마트 헤드라이트 모듈에 사용.',
+        func: '주요 기능 블록은 다음과 같다. 1) 전원 감시/인에이블: ENB_1P1V/ENB_1P8V/ENB_3P3V가 외부 buck을 인에이블하고, V1P1V/V1P8V/V3P3V가 그 전압을 감시. 2) DMD 전용 전원: DMD_VOFFSET/DMD_VBIAS/DMD_VRESET 3계통 전원 레일(각각 외장 커패시터 필요), DRST_HS_IND/DRST_LS_IND는 내부 인덕터 스위칭 노드, VIN_DRST/VSS_DRST/DRST_PGND는 6V 입력과 접지. 3) LED/레이저 조명 구동: D_EN/S_EN/LED_SEL_0-3이 LED 인에이블과 채널 선택을 제어, R_EN/G_EN/B_EN이 적/녹/청 채널의 로우사이드 NFET을 구동, S_EN1/S_EN2가 션트 NFET을 구동, IADJ/R_IADJ가 외부 LED 컨트롤러 전류를 설정, SYNC가 외부 LED buck에 동기 트리거를 제공, DRV_EN/CMODE는 LM3409 관련 구동 신호. 4) 포토다이오드 피드백(TIA): TIA_PD1/TIA_PD2가 포토다이오드 캐소드를 구동, TIA_PD1_FILT/TIA_PD2_FILT는 저대역 샘플링 필터, 전용 VLDOT_3P3V/VLDOT_5V/VLDOT_M8 3계통 LDO가 전원을 공급. 5) 외부 ADC 인터페이스: ADC_IN1-7 아날로그 입력 채널, ADC_VREF 기준 출력, ADC_MISO/ADC_MOSI가 전용 SPI. 6) 디지털 호스트 인터페이스: SPI1/SPI2 두 조의 디지털 인터페이스(CLK/DIN/DOUT/SS_Z), COMPOUT 고속 비교기 출력. 7) 시스템 핸드셰이크: WD1/WD2 워치도그 인터럽트 채널, PARK_Z 미러 파크 신호, RESET_Z/INT_Z는 DLPC23xS-Q1에 대한 리셋/인터럽트 신호, PROJ_ON은 프로젝터 인에이블; nRST 핀은 본 추출 범위에 기재되지 않음(아래 데이터 제한 설명 참조). 8) 테스트/디버그: DMUX0/DMUX1 디지털 테스트 포인트, AMUX0/AMUX1 아날로그 테스트 멀티플렉서 출력. 데이터 제한: ADC_MISO/ADC_MOSI(pin4,5), SPI1_CLK/SS_Z/DOUT/DIN(pin27-30), SPI2_DIN/DOUT/SS_Z/CLK(pin31-34), LS_SENSE_N/P(pin82,83), ADC_IN1-7(pin85,86,88,90,92,93,94) 총 19핀은 그 이름을 패키지 도면(Figure 4-1)에서 판독하고, 나머지 81핀의 Pin Functions 표(Table 4-1~4-4)와 핀 번호 일관성을 교차 검증했다(대조 가능한 핀은 100% 일치). 다만 이 19핀의 공식 기능 설명 텍스트는 본 추출 범위에 포함되지 않았다. 상세 사양은 원제조사 datasheet의 완전한 Pin Functions 표를 참조할 것.',
+        usedIn: '차량용 DLP 스마트 투영 헤드라이트(adaptive driving beam) 모듈. DLPC23xS-Q1 디지털 컨트롤러와 DMD 소자와 조합하여 R/G/B 또는 백색 LED/레이저 광원을 구동하고 포토다이오드 신호를 피드백하여 폐루프 제어를 수행.',
+        desc: '100-Pin HTQFP(PZP) 패키지, 차량용 DLP 헤드라이트 시스템 전원 관리 및 조명 제어 IC. 다중 레일 buck 인에이블/감시, DMD 전용 전원 레일(VOFFSET/VBIAS/VRESET), RGB LED/레이저 구동과 전류 피드백, 2채널 TIA 포토다이오드 프런트엔드, 7채널 외부 ADC 인터페이스, 2조 SPI 디지털 인터페이스를 통합. PBKG(25,60,75,99), AVSS(78,100), VSSL_ADC(81,84,87,89,91), VSS_IO(13,35), VDD_IO(14,36)는 여러 핀이 같은 이름을 갖는 핀. 19개 핀(pin 4,5,27-34,82,83,85,86,88,90,92-94)의 이름은 패키지 도면에서 판독한 것이며, 공식 Pin Functions 표의 설명은 본 추출 범위에 포함되지 않으므로 기능 상세는 원제조사 datasheet를 참조할 것(이는 판단에 따른 취사이며 번복될 수 있음). 본 추출의 Pin Functions 표에는 독립된 방열 패드(exposed pad) 행이 보이지 않으므로, 본 항목에 EP 핀은 포함되지 않는다.',
+        specs: [
+          { k: '패키지', v: '100-Pin HTQFP(PZP)' },
+          { k: '전원 감시/인에이블 채널', v: '1.1V/1.8V/3.3V 3계통 외부 buck 인에이블(ENB_1P1V/1P8V/3P3V)과 전압 감시(V1P1V/1P8V/3P3V)' },
+          { k: 'DMD 전원 레일', v: 'VOFFSET(1µF), VBIAS(0.47µF), VRESET(1µF, 다이오드를 거쳐 DRST_HS_IND로), DRST 단 6V 입력' },
+          { k: 'TIA 채널 수', v: '2채널(PD1/PD2), 각각 전용 필터와 LDO(3.3V/5V/−8V)를 갖춤' },
+          { k: '외부 ADC 인터페이스', v: '7 아날로그 입력 채널(ADC_IN1-7) + ADC_VREF 기준 출력 + 전용 SPI(ADC_MISO/MOSI, 상세 기능은 datasheet 참조)' },
+          { k: '디지털 인터페이스', v: 'SPI1, SPI2 각 1조(CLK/DIN/DOUT/SS_Z), 상세 기능은 datasheet 참조' },
+          { k: 'LED/레이저 구동 채널', v: 'R_EN/G_EN/B_EN 3색 로우사이드 구동 + S_EN1/S_EN2 션트 구동, IADJ/R_IADJ로 외부 전류 설정' },
+          { k: '워치도그/시스템 핸드셰이크', v: 'WD1, WD2 인터럽트 채널; PARK_Z, RESET_Z, INT_Z는 DLPC23xS-Q1과 핸드셰이크; PROJ_ON은 프로젝터 인에이블' },
+          { k: '문서 버전', v: 'DLPS298 – DECEMBER 2025' }
+        ]
+      }
+    },
+    'LM851772-Q1': {
+      en: {
+        subcategory: 'Automotive Synchronous Buck-Boost Dual Half-Bridge Gate-Driver Controller',
+        whatIs: 'Automotive synchronous buck-boost / dual half-bridge gate-driver controller IC: it integrates an analog front end (current/voltage sensing), an I2C digital interface and buck + boost dual half-bridge gate drivers, and can form a four-switch buck-boost or two independent buck/boost converters, for automotive power systems.',
+        func: 'VCC1 is the auxiliary 5V regulator output. SS/ATRK serves both as soft-start programming (external capacitor to AGND) and as analog output-voltage tracking (it can be driven by a variable voltage reference such as a DAC; internal circuitry takes the lower of this pin voltage and the internal reference). SYNC is a synchronization clock input/output (configurable to 0 deg or 180 deg phase for two devices operating in parallel). DTRK is a digital PWM input for dynamic output-voltage tracking. SDA/SCL form the I2C interface (external pull-up resistors required). MODE selects power-save mode (PSM) or forced-PWM/CCM operation and can be switched dynamically. CFG2 selects the device operating configuration via an external resistor to GND. ADDR(CFG1) sets the I2C address LSB. CDC is the cable-drop-compensation or current-monitor output (gain can be set with a resistor to AGND). nFLT/nINT is an open-collector fault / power-good or interrupt output (pulled low for 256us when the STATUS register changes). RT sets the switching frequency via an external resistor to AGND. COMP is the error-amplifier output and requires an external RC compensation network. FB/SEL_intFB is the output-voltage feedback pin - tying it to VCC2 selects the device default fixed output voltage, or tying it to VCC2 before startup selects internal feedback. ILIMCOMP is the average-current-limit loop compensation/setting pin (the threshold can be set by an internal DAC or an external resistor; tying it to VCC2 disables this block to reduce quiescent current). VOUT is the output-voltage sense input. ISNSN/ISNSP are the (optional) average-current-sense amplifier differential inputs, which may be placed on the input side or the output side; when disabled they may be grounded or shorted to AGND respectively. CSB/CSA are the inductor peak-current-sense differential inputs and must be connected to the external sense resistor with a Kelvin connection. SW1/HO1/HB1/LO1 with PGND form the buck half-bridge (HB1 requires an external bootstrap capacitor to SW1). VCC2 is the internal linear bias regulator output that supplies the internal logic and gate drivers. SW2/HO2/HB2/LO2 form the boost half-bridge (HB2 requires an external bootstrap capacitor to SW2). DRV1 is a configurable external-FET drive pin (one of three types: push-pull, open-collector or charge pump). BIAS is an optional external input to the VCC2 bias regulator, which can reduce internal LDO power dissipation at high VIN. EN/UVLO is the enable input, with a precise analog comparator and hysteresis; combined with a resistor divider it gives a programmable UVLO. nRST is the enable input for the device internal logic / interface / VCC1 regulator. VIN is the power-stage supply and sense input. The thermal pad is internally grounded.',
+        usedIn: 'Automotive power-conversion modules such as on-board charging and LED/motor-drive front ends, wherever buck-boost dual half-bridge gate drive, precise current/voltage sensing and I2C digital control are needed (this document is marked ADVANCE INFORMATION; specifications are subject to change).',
+        desc: '40-Pin QFN(RHA) package, automotive synchronous buck + boost dual half-bridge gate-driver controller, integrating an I2C digital interface, programmable soft-start/tracking, and peak and average current sensing; includes 3 NC pins (26, 34, 39) and 1 thermal pad (internally grounded). This document is ADVANCE INFORMATION (2026-06); specifications are subject to change.',
+        specs: [
+          { k: 'Input voltage (recommended operating)', v: '0V - 80V (VIN), startup voltage 3.5V' },
+          { k: 'BIAS input voltage range', v: '0V - 55V' },
+          { k: 'Output voltage sense range', v: '1V - 55V' },
+          { k: 'Switching frequency', v: '100kHz - 2.2MHz (typical), externally synchronizable' },
+          { k: 'Current-limit sense resistor', v: 'Typically 10m ohm, tolerance +/-1%' },
+          { k: 'VCC1/VCC2 output capacitor requirement', v: 'VCC1 >=2uF, VCC2 >=6uF' },
+          { k: 'ESD', v: 'HBM +/-2000V; CDM corner pins +/-750V, other pins +/-500V' },
+          { k: 'Operating junction temperature', v: '-40C - 150C' },
+          { k: 'Thermal resistance (RthetaJA)', v: '33.9C/W (40-Pin QFN)' },
+          { k: 'Package', v: '40-Pin QFN(RHA)' },
+          { k: 'Document status', v: 'ADVANCE INFORMATION, SLVSJL6 - JUNE 2026' }
+        ]
+      },
+      ja: {
+        subcategory: '車載同期式Buck-Boost デュアルハーフブリッジ ゲートドライバコントローラ',
+        whatIs: '車載同期式buck-boost/デュアルハーフブリッジ ゲートドライバコントローラIC：アナログフロントエンド（電流/電圧センシング）、I2Cデジタルインターフェース、buck＋boostのデュアルハーフブリッジゲートドライブを統合し、4スイッチbuck-boostまたは2系統の独立した降圧/昇圧コンバータを構成でき、車載電源システムに使用する。',
+        func: 'VCC1は補助5Vレギュレータ出力。SS/ATRKはソフトスタートのプログラム（AGNDへの外付けコンデンサ）と、アナログ出力電圧トラッキング（DACなどの可変電圧リファレンスを接続可能；内部回路はこのピン電圧と内部リファレンス電圧の低い方を採用）の2つの機能を兼ねる。SYNCは同期クロック入出力（2台並列動作用に0°または180°の位相を設定可能）。DTRKは動的出力電圧トラッキング用のデジタルPWM入力。SDA/SCLはI2Cインターフェースを構成（外付けプルアップ抵抗が必要）。MODEは省電力モード（PSM）または強制PWM/CCM動作を選択し、動的に切り替え可能。CFG2はGNDへの外付け抵抗によりデバイスの動作設定を選択。ADDR(CFG1)はI2CアドレスのLSBを設定。CDCはケーブル電圧降下補償または電流モニタ出力（AGNDへの抵抗でゲインを設定可能）。nFLT/nINTはオープンコレクタの故障/パワーグッドまたは割り込み出力（STATUSレジスタ変化時に256µsローに引く）。RTはAGNDへの外付け抵抗でスイッチング周波数を設定。COMPは誤差アンプ出力で、外付けRC補償ネットワークが必要。FB/SEL_intFBは出力電圧フィードバックピンで、VCC2に接続するとデバイス既定の固定出力電圧を選択でき、あるいは起動前にVCC2へ接続して内部フィードバックを選択する。ILIMCOMPは平均電流制限ループの補償/設定ピン（内部DACまたは外付け抵抗でしきい値を設定可能、VCC2に接続するとこのブロックを無効化して静止電流を低減）。VOUTは出力電圧センス入力。ISNSN/ISNSPは（オプションの）平均電流センスアンプの差動入力で、入力側または出力側のいずれにも配置可能、無効時はそれぞれ接地またはAGNDへ短絡できる。CSB/CSAはインダクタのピーク電流センス差動入力で、外付けセンス抵抗へケルビン接続する必要がある。SW1/HO1/HB1/LO1とPGNDがbuckハーフブリッジを構成（HB1はSW1への外付けブートストラップコンデンサが必要）。VCC2は内部リニアバイアスレギュレータ出力で、内部ロジックとゲートドライバに供給する。SW2/HO2/HB2/LO2がboostハーフブリッジを構成（HB2はSW2への外付けブートストラップコンデンサが必要）。DRV1は設定可能な外部FET駆動ピン（プッシュプル/オープンコレクタ/チャージポンプの3形態から選択）。BIASはVCC2バイアスレギュレータのオプション外部入力で、高VIN時に内部LDOの損失を低減できる。EN/UVLOはイネーブル入力で、精密アナログコンパレータとヒステリシスを備え、抵抗分圧器と組み合わせてUVLOをプログラム可能。nRSTはデバイス内部ロジック/インターフェース/VCC1レギュレータのイネーブル入力。VINはパワー段の供給およびセンス入力。放熱パッドは内部で接地されている。',
+        usedIn: '車載充電やLED/モータ駆動の前段など、buck-boostデュアルハーフブリッジのゲートドライブ、精密な電流/電圧センシング、I2Cデジタル制御が必要な車載電力変換モジュール（本文書はADVANCE INFORMATIONと記載されており、仕様は変更される可能性がある）。',
+        desc: '40-Pin QFN(RHA)パッケージ、車載同期式buck＋boostデュアルハーフブリッジ ゲートドライバコントローラ。I2Cデジタルインターフェース、プログラマブルなソフトスタート/トラッキング、ピーク電流と平均電流のセンシングを統合し、3個のNCピン(26,34,39)と1個の放熱パッド(内部接地)を含む。本文書はADVANCE INFORMATION(2026-06)であり、仕様は変更される可能性がある。',
+        specs: [
+          { k: '入力電圧(推奨動作)', v: '0V ~ 80V(VIN)、起動電圧 3.5V' },
+          { k: 'BIAS入力電圧範囲', v: '0V ~ 55V' },
+          { k: '出力電圧センス範囲', v: '1V ~ 55V' },
+          { k: 'スイッチング周波数', v: '100kHz ~ 2.2MHz(標準)、外部同期可能' },
+          { k: '電流制限センス抵抗', v: '標準 10mΩ、公差 ±1%' },
+          { k: 'VCC1/VCC2出力コンデンサ要件', v: 'VCC1 ≥2µF、VCC2 ≥6µF' },
+          { k: 'ESD', v: 'HBM ±2000V；CDM 角ピン ±750V、その他ピン ±500V' },
+          { k: '動作接合部温度', v: '−40°C ~ 150°C' },
+          { k: '熱抵抗(RθJA)', v: '33.9°C/W(40-Pin QFN)' },
+          { k: 'パッケージ', v: '40-Pin QFN(RHA)' },
+          { k: '文書ステータス', v: 'ADVANCE INFORMATION、SLVSJL6 – JUNE 2026' }
+        ]
+      },
+      ko: {
+        subcategory: '차량용 동기식 Buck-Boost 듀얼 하프브리지 게이트 드라이버 컨트롤러',
+        whatIs: '차량용 동기식 buck-boost/듀얼 하프브리지 게이트 드라이버 컨트롤러 IC: 아날로그 프런트엔드(전류/전압 감지), I2C 디지털 인터페이스, buck + boost 듀얼 하프브리지 게이트 구동을 통합하여, 4스위치 buck-boost 또는 2계통 독립 강압/승압 컨버터를 구성할 수 있으며, 차량용 전원 시스템에 사용.',
+        func: 'VCC1은 보조 5V 레귤레이터 출력. SS/ATRK는 소프트스타트 프로그래밍(AGND로의 외장 커패시터)과 아날로그 출력 전압 추종(DAC 같은 가변 전압 기준을 연결 가능; 내부 회로는 이 핀 전압과 내부 기준 전압 중 낮은 쪽을 취함) 두 기능을 겸한다. SYNC는 동기 클록 입출력(2대 병렬 동작을 위해 0° 또는 180° 위상 설정 가능). DTRK는 동적 출력 전압 추종용 디지털 PWM 입력. SDA/SCL은 I2C 인터페이스를 구성(외장 풀업 저항 필요). MODE는 절전 모드(PSM) 또는 강제 PWM/CCM 동작을 선택하며 동적으로 전환 가능. CFG2는 GND로의 외장 저항으로 소자 동작 설정을 선택. ADDR(CFG1)은 I2C 주소 LSB를 설정. CDC는 케이블 전압 강하 보상 또는 전류 모니터 출력(AGND로의 저항으로 이득 설정 가능). nFLT/nINT는 오픈 컬렉터 고장/파워굿 또는 인터럽트 출력(STATUS 레지스터 변동 시 256µs 동안 로우로 당김). RT는 AGND로의 외장 저항으로 스위칭 주파수를 설정. COMP는 오차 증폭기 출력으로 외장 RC 보상 네트워크가 필요. FB/SEL_intFB는 출력 전압 피드백 핀으로, VCC2에 연결하면 소자 기본 고정 출력 전압을 선택하거나, 기동 전에 VCC2에 연결하여 내부 피드백을 선택한다. ILIMCOMP는 평균 전류 제한 루프의 보상/설정 핀(내부 DAC 또는 외장 저항으로 임계값 설정 가능, VCC2에 연결하면 이 블록을 비활성화하여 정지 전류를 낮춤). VOUT은 출력 전압 감지 입력. ISNSN/ISNSP은 (선택 사항인) 평균 전류 감지 증폭기의 차동 입력으로, 입력 측 또는 출력 측 어디에나 배치 가능하며, 비활성화 시 각각 접지하거나 AGND에 단락할 수 있다. CSB/CSA는 인덕터 피크 전류 감지 차동 입력으로, 외장 감지 저항에 켈빈 접속해야 한다. SW1/HO1/HB1/LO1과 PGND가 buck 하프브리지를 구성(HB1은 SW1로의 외장 부트스트랩 커패시터가 필요). VCC2는 내부 선형 바이어스 레귤레이터 출력으로 내부 로직과 게이트 드라이버에 공급한다. SW2/HO2/HB2/LO2가 boost 하프브리지를 구성(HB2는 SW2로의 외장 부트스트랩 커패시터가 필요). DRV1은 설정 가능한 외부 FET 구동 핀(푸시풀/오픈 컬렉터/차지 펌프 세 가지 형태 중 택일). BIAS는 VCC2 바이어스 레귤레이터의 선택적 외부 입력으로, 높은 VIN에서 내부 LDO 손실을 줄일 수 있다. EN/UVLO는 인에이블 입력으로, 정밀 아날로그 비교기와 히스테리시스를 갖추고 저항 분압기와 함께 UVLO를 프로그래밍할 수 있다. nRST은 소자 내부 로직/인터페이스/VCC1 레귤레이터의 인에이블 입력. VIN은 전력단 공급 및 감지 입력. 방열 패드는 내부에서 접지되어 있다.',
+        usedIn: '차량 탑재 충전, LED/모터 구동 전단 등 buck-boost 듀얼 하프브리지 게이트 구동, 정밀 전류/전압 감지, I2C 디지털 제어가 필요한 차량용 전력 변환 모듈(본 문서는 ADVANCE INFORMATION으로 표시되어 있으며, 사양이 변경될 수 있음).',
+        desc: '40-Pin QFN(RHA) 패키지, 차량용 동기식 buck + boost 듀얼 하프브리지 게이트 드라이버 컨트롤러. I2C 디지털 인터페이스, 프로그래머블 소프트스타트/추종, 피크 및 평균 전류 감지를 통합하며, 3개의 NC 핀(26,34,39)과 1개의 방열 패드(내부 접지)를 포함. 본 문서는 ADVANCE INFORMATION(2026-06)이며, 사양이 변경될 수 있다.',
+        specs: [
+          { k: '입력 전압(권장 동작)', v: '0V ~ 80V(VIN), 기동 전압 3.5V' },
+          { k: 'BIAS 입력 전압 범위', v: '0V ~ 55V' },
+          { k: '출력 전압 감지 범위', v: '1V ~ 55V' },
+          { k: '스위칭 주파수', v: '100kHz ~ 2.2MHz(전형), 외부 동기 가능' },
+          { k: '전류 제한 감지 저항', v: '전형 10mΩ, 공차 ±1%' },
+          { k: 'VCC1/VCC2 출력 커패시터 요건', v: 'VCC1 ≥2µF, VCC2 ≥6µF' },
+          { k: 'ESD', v: 'HBM ±2000V; CDM 코너 핀 ±750V, 기타 핀 ±500V' },
+          { k: '동작 접합 온도', v: '−40°C ~ 150°C' },
+          { k: '열저항(RθJA)', v: '33.9°C/W(40-Pin QFN)' },
+          { k: '패키지', v: '40-Pin QFN(RHA)' },
+          { k: '문서 상태', v: 'ADVANCE INFORMATION, SLVSJL6 – JUNE 2026' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();

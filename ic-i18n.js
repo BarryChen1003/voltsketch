@@ -59,8 +59,12 @@
     });
     if (t.specs && t.specs.length) c.specs = t.specs;
     if (t.dropIn && t.dropIn.length && ic.dropIn && ic.dropIn.length) {
+      // dropIn 有兩種形狀：{ part, note } 物件，或純字串（舊條目）。兩種都要能覆蓋。
       c.dropIn = ic.dropIn.map(function (d, i) {
-        return t.dropIn[i] && t.dropIn[i].note ? Object.assign({}, d, { note: t.dropIn[i].note }) : d;
+        var td = t.dropIn[i];
+        if (!td) return d;
+        if (typeof d === 'string') return typeof td === 'string' ? td : (td.note || d);
+        return td.note ? Object.assign({}, d, { note: td.note }) : d;
       });
     }
     c = window.icLocalizeArrays(c, lang);
