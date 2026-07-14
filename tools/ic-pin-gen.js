@@ -20,7 +20,56 @@ const todo = require('./pin-todo.json');
 const POL = { '正': ['positive', '正極', '정극'], '負': ['negative', '負極', '부극'] };
 const p = m => POL[m];
 
+// --- MSPM0 GPIO 腳位輔助（緩衝類型 + 尾段非 IOMUX 功能）---
+const BUF = {
+  'ODIO 5V耐受開汲極，支援喚醒': ['ODIO 5V-tolerant open-drain, wake-up capable', 'ODIO 5Vトレラント・オープンドレイン、ウェイクアップ対応', 'ODIO 5V 톨러런트 오픈 드레인, 웨이크업 지원'],
+  'SDIO 標準驅動': ['SDIO standard drive', 'SDIO 標準ドライブ', 'SDIO 표준 드라이브'],
+  'SDIO 標準驅動，支援喚醒': ['SDIO standard drive, wake-up capable', 'SDIO 標準ドライブ、ウェイクアップ対応', 'SDIO 표준 드라이브, 웨이크업 지원'],
+  'HDIO 高驅動，支援喚醒': ['HDIO high drive, wake-up capable', 'HDIO ハイドライブ、ウェイクアップ対応', 'HDIO 하이 드라이브, 웨이크업 지원'],
+  'HDIO 高驅動': ['HDIO high drive', 'HDIO ハイドライブ', 'HDIO 하이 드라이브'],
+  'LDIO 低驅動': ['LDIO low drive', 'LDIO ロードライブ', 'LDIO 로우 드라이브'],
+  'LDIO 低驅動，支援喚醒': ['LDIO low drive, wake-up capable', 'LDIO ロードライブ、ウェイクアップ対応', 'LDIO 로우 드라이브, 웨이크업 지원']
+};
+// 尾段（非 IOMUX 功能清單）內的中文片語 → 三語。訊號名不動。
+const TAIL_PH = [
+  [/（ADC 通道）/g, [' (ADC channel)', '（ADC チャネル）', '(ADC 채널)']],
+  [/（比較器內建 DAC 輸出）/g, [' (comparator built-in DAC output)', '（コンパレータ内蔵 DAC 出力）', '(비교기 내장 DAC 출력)']],
+  [/（比較器正輸入(\d+)）/g, [' (comparator positive input $1)', '（コンパレータ正入力$1）', '(비교기 정입력 $1)']],
+  [/（比較器負輸入(\d+)）/g, [' (comparator negative input $1)', '（コンパレータ負入力$1）', '(비교기 부입력 $1)']],
+  [/（ADC 參考電壓正端）/g, [' (ADC reference voltage positive)', '（ADC 基準電圧の正極）', '(ADC 기준 전압 정극)']],
+  [/（ADC 參考電壓負端）/g, [' (ADC reference voltage negative)', '（ADC 基準電圧の負極）', '(ADC 기준 전압 부극)']],
+  [/（32kHz 石英振盪器輸入）/g, [' (32kHz crystal oscillator input)', '（32kHz 水晶発振子入力）', '(32kHz 수정 발진자 입력)']],
+  [/（32kHz 石英振盪器輸出）/g, [' (32kHz crystal oscillator output)', '（32kHz 水晶発振子出力）', '(32kHz 수정 발진자 출력)']],
+  [/（4~32MHz 石英振盪器輸入）/g, [' (4-32MHz crystal oscillator input)', '（4～32MHz 水晶発振子入力）', '(4~32MHz 수정 발진자 입력)']],
+  [/（4~32MHz 石英振盪器輸出）/g, [' (4-32MHz crystal oscillator output)', '（4～32MHz 水晶発振子出力）', '(4~32MHz 수정 발진자 출력)']],
+  [/（開機載入程式喚起）/g, [' (bootloader invoke)', '（ブートローダ起動）', '(부트로더 기동)']],
+  [/；SWDIO 為 SWD 除錯資料腳/g, ['; SWDIO is the SWD debug data pin', '；SWDIO は SWD デバッグデータピン', '; SWDIO는 SWD 디버그 데이터 핀']],
+  [/；SWCLK 為 SWD 除錯時脈腳/g, ['; SWCLK is the SWD debug clock pin', '；SWCLK は SWD デバッグクロックピン', '; SWCLK는 SWD 디버그 클록 핀']],
+  [/；另有非 IOMUX 類比功能 /g, ['; additional non-IOMUX analog functions: ', '；非 IOMUX のアナログ機能：', '; 비 IOMUX 아날로그 기능: ']],
+  [/；另有非 IOMUX 功能 /g, ['; additional non-IOMUX functions: ', '；非 IOMUX 機能：', '; 비 IOMUX 기능: ']],
+  // 尾段多個非 IOMUX 功能的分隔頓號：en/ko 轉半形逗號，ja 保留（日文正確逗號）
+  [/、/g, [', ', '、', ', ']]
+];
+function trTail(s, li) {
+  if (!s) return '';
+  let out = s;
+  for (const [re, reps] of TAIL_PH) out = out.replace(re, reps[li]);
+  return out;
+}
+
 const RULES = [
+  // MSPM0 GPIO 腳位：GPIO {name}（緩衝類型：{buf}）；IOMUX 多工：{muxlist}[；另有非 IOMUX 尾段]
+  // 訊號名清單逐字保留，僅譯固定框架＋緩衝類型（BUF）＋尾段片語（trTail）。BUF 查不到→回 null 落手譯。
+  [/^GPIO (\S+?)（緩衝類型：(.+?)）；IOMUX 多工：([\s\S]+)$/, m => {
+    const buf = BUF[m[2]];
+    if (!buf) return null;
+    const name = m[1], rest = m[3];
+    return {
+      en: `GPIO ${name} (buffer type: ${buf[0]}); IOMUX mux: ${trTail(rest, 0)}`,
+      ja: `GPIO ${name}（バッファタイプ：${buf[1]}）；IOMUX 多重化：${trTail(rest, 1)}`,
+      ko: `GPIO ${name}(버퍼 타입: ${buf[2]}); IOMUX 다중화: ${trTail(rest, 2)}`
+    };
+  }],
   // GPIO with Pin Attributes note
   [/^通用輸入輸出 GPIO(\d+)（多工功能見 Pin Attributes 表）$/, m => ({
     en: `General-purpose I/O GPIO${m[1]} (see the Pin Attributes table for multiplexed functions)`,
