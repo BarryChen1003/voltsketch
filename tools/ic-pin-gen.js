@@ -28,7 +28,10 @@ const BUF = {
   'HDIO 高驅動，支援喚醒': ['HDIO high drive, wake-up capable', 'HDIO ハイドライブ、ウェイクアップ対応', 'HDIO 하이 드라이브, 웨이크업 지원'],
   'HDIO 高驅動': ['HDIO high drive', 'HDIO ハイドライブ', 'HDIO 하이 드라이브'],
   'LDIO 低驅動': ['LDIO low drive', 'LDIO ロードライブ', 'LDIO 로우 드라이브'],
-  'LDIO 低驅動，支援喚醒': ['LDIO low drive, wake-up capable', 'LDIO ロードライブ、ウェイクアップ対応', 'LDIO 로우 드라이브, 웨이크업 지원']
+  'LDIO 低驅動，支援喚醒': ['LDIO low drive, wake-up capable', 'LDIO ロードライブ、ウェイクアップ対応', 'LDIO 로우 드라이브, 웨이크업 지원'],
+  'ODIO 5V耐受開汲極': ['ODIO 5V-tolerant open-drain', 'ODIO 5Vトレラント・オープンドレイン', 'ODIO 5V 톨러런트 오픈 드레인'],
+  'HSIO 高速': ['HSIO high-speed', 'HSIO 高速', 'HSIO 고속'],
+  'USBIO（USB 2.0-FS）': ['USBIO (USB 2.0-FS)', 'USBIO（USB 2.0-FS）', 'USBIO(USB 2.0-FS)']
 };
 // 尾段（非 IOMUX 功能清單）內的中文片語 → 三語。訊號名不動。
 const TAIL_PH = [
