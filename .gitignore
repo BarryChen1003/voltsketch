@@ -13,3 +13,9 @@ node_modules/
 .env
 .env.*
 __pycache__/
+
+# ic i18n tool outputs (regenerate with tools/ic-i18n-coverage.js)
+tools/pin-todo.json
+tools/ss-todo.json
+tools/pin-todo-rest.json
+tools/pin-gen-out.js
