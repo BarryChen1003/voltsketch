@@ -1,13 +1,16 @@
 /* ic-i18n.js — IC 條目內容層 i18n 架構（helper + UI 標籤四語）
  * 資料在 ic-i18n-data.js（IC_I18N[part] = { en:{...}, ja:{...}, ko:{...} }）。
- * 可覆蓋欄位：subcategory / whatIs / func / usedIn / desc / thermalPad / specs（全列覆蓋）/ dropIn（同序覆蓋 note）。
- * pins[].desc 用共享字典翻譯：IC_PIN_I18N[zh 原文.trim()] = { en, ja, ko }（在 ic-pin-i18n-data.js）。
- *   去重字典——同一 zh desc 全庫共用一條翻譯；未收錄者沿用 zh（合法 fallback）。訊號名/type 不動。
+ * 條目可覆蓋欄位：subcategory / whatIs / func / usedIn / desc / thermalPad / specs（全列覆蓋）/ dropIn（同序覆蓋 note）。
+ * 陣列字串欄位（pins[].desc、secondSource[]）用**共享去重字串字典**翻譯：
+ *   IC_STR_I18N[zh 原文.trim()] = { en, ja, ko }（＝IC_PIN_I18N 同一物件，向下相容）。
+ *   同一 zh 短語全庫共用一條翻譯；未收錄者沿用 zh（合法 fallback）。訊號名/type/package 不動。
+ *   pins 字典在 ic-pin-i18n-data.js；secondSource（替換條件）字典在 ic-crit-i18n-data.js，皆 Object.assign 進同一物件。
  * 用法：渲染前 ic = icLocalized(ic)；UI 標籤 icUI('whatIs')；語言事件 'vs-lang-change'（i18n.js 發）。
  */
 (function () {
   window.IC_I18N = window.IC_I18N || {};
   window.IC_PIN_I18N = window.IC_PIN_I18N || {};
+  window.IC_STR_I18N = window.IC_PIN_I18N; // 對外新名，同一共享字串字典物件
 
   window.IC_UI = {
     zh: {
@@ -48,8 +51,8 @@
     var lang = window.icLang();
     if (lang === 'zh') return ic;
     var t = window.IC_I18N[ic.part] && window.IC_I18N[ic.part][lang];
-    // pins 字典獨立於條目翻譯：條目未譯（!t）仍須覆蓋 pins.desc
-    if (!t) return window.icLocalizePins(ic, lang);
+    // 陣列字串字典獨立於條目翻譯：條目未譯（!t）仍須覆蓋 pins.desc 與 secondSource
+    if (!t) return window.icLocalizeArrays(ic, lang);
     var c = Object.assign({}, ic);
     ['subcategory', 'whatIs', 'func', 'usedIn', 'desc', 'thermalPad'].forEach(function (f) {
       if (t[f]) c[f] = t[f];
@@ -60,28 +63,41 @@
         return t.dropIn[i] && t.dropIn[i].note ? Object.assign({}, d, { note: t.dropIn[i].note }) : d;
       });
     }
-    c = window.icLocalizePins(c, lang);
+    c = window.icLocalizeArrays(c, lang);
     return c;
   };
 
-  // pins[].desc 覆蓋層：用去重共享字典 IC_PIN_I18N（不改 name/type/side/num）。
-  // 未收錄的 desc 沿用 zh 原文（合法 fallback）。獨立函式便於單測。
-  window.icLocalizePins = function (ic, lang) {
-    if (!ic || !ic.pins || !ic.pins.length) return ic;
+  // 單一字串經共享去重字典翻譯；未收錄回傳原文。
+  window.icTrStr = function (s, lang) {
+    var d = window.IC_STR_I18N;
+    var k = s == null ? '' : String(s).trim();
+    return (k && d && d[k] && d[k][lang]) ? d[k][lang] : s;
+  };
+
+  // 覆蓋 ic 的陣列字串欄位（pins[].desc、secondSource[]）——共享字典，不改 name/type/num/package。
+  // 未收錄沿用 zh（合法 fallback）。只在有變動時淺拷貝。
+  window.icLocalizeArrays = function (ic, lang) {
+    if (!ic) return ic;
     if (!lang) lang = window.icLang();
     if (lang === 'zh') return ic;
-    var dict = window.IC_PIN_I18N;
-    if (!dict) return ic;
-    var changed = false;
-    var pins = ic.pins.map(function (p) {
-      var d = p.desc == null ? '' : String(p.desc).trim();
-      var tr = d && dict[d] && dict[d][lang];
-      if (tr) { changed = true; return Object.assign({}, p, { desc: tr }); }
-      return p;
-    });
-    if (!changed) return ic;
-    var c = Object.assign({}, ic);
-    c.pins = pins;
-    return c;
+    var out = ic, copied = false;
+    if (ic.pins && ic.pins.length) {
+      var chp = false;
+      var pins = ic.pins.map(function (p) {
+        var tr = window.icTrStr(p.desc, lang);
+        if (tr !== p.desc) { chp = true; return Object.assign({}, p, { desc: tr }); }
+        return p;
+      });
+      if (chp) { out = Object.assign({}, out); out.pins = pins; copied = true; }
+    }
+    if (ic.secondSource && ic.secondSource.length) {
+      var chs = false;
+      var ss = ic.secondSource.map(function (s) { var tr = window.icTrStr(s, lang); if (tr !== s) chs = true; return tr; });
+      if (chs) { if (!copied) { out = Object.assign({}, out); copied = true; } out.secondSource = ss; }
+    }
+    return out;
   };
+
+  // 向下相容別名（本 session 早期用名）
+  window.icLocalizePins = window.icLocalizeArrays;
 })();
