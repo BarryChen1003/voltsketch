@@ -426,7 +426,40 @@ const RULES = [
     en: `Reset output ${m[1]}; drives low when SENSE${m[2]} faults. Connected the same way as RESET${m[3]}.`,
     ja: `リセット出力 ${m[1]}；SENSE${m[2]} が故障するとローを出力。接続方法は RESET${m[3]} と同じ。`,
     ko: `리셋 출력 ${m[1]}; SENSE${m[2]} 고장 시 로우를 출력. 연결 방법은 RESET${m[3]}과 동일.`
-  })]
+  })],
+
+  // ---- 第三批規則 ----
+  // MUX: {訊號清單}（純訊號名，三語逐字保留）
+  [/^MUX: (.+)$/, m => ({ en: `MUX: ${m[1]}`, ja: `MUX: ${m[1]}`, ko: `MUX: ${m[1]}` })],
+  // LVDS 差動匯流排 X 控制訊號/時脈 正/負端輸入；差動 NΩ 端接
+  [/^LVDS 差動匯流排 ([A-Z]) (控制訊號|時脈)([正負])端輸入；差動 (\d+)Ω 端接$/, m => {
+    const kind = m[2] === '時脈' ? ['clock', 'クロック', '클록'] : ['control signal', '制御信号', '제어 신호'];
+    return {
+      en: `LVDS differential bus ${m[1]} ${kind[0]} ${p(m[3])[0]} input; differential ${m[4]} ohm terminated`,
+      ja: `LVDS 差動バス ${m[1]} ${kind[1]}${p(m[3])[1]}側入力；差動 ${m[4]}Ω 終端`,
+      ko: `LVDS 차동 버스 ${m[1]} ${kind[2]} ${p(m[3])[2]} 측 입력; 차동 ${m[4]}Ω 종단`
+    };
+  }],
+  // 類比輸入/輸出 N{P/M}（差動 正/負 端）
+  [/^類比(輸入|輸出) (\d+)([PM])（差動([正負])端）$/, m => {
+    const io = m[1] === '輸入' ? ['input', '入力', '입력'] : ['output', '出力', '출력'];
+    return {
+      en: `Analog ${io[0]} ${m[2]}${m[3]} (differential ${p(m[4])[0]} end)`,
+      ja: `アナログ${io[1]} ${m[2]}${m[3]}（差動${p(m[4])[1]}端）`,
+      ko: `아날로그 ${io[2]} ${m[2]}${m[3]}(차동 ${p(m[4])[2]} 단)`
+    };
+  }],
+  // 差動時脈輸入 N
+  [/^差動時脈輸入 (\d+)$/, m => ({ en: `Differential clock input ${m[1]}`, ja: `差動クロック入力 ${m[1]}`, ko: `차동 클록 입력 ${m[1]}` })],
+  // 低速差動[時脈]輸入 正/負 端
+  [/^低速差動(時脈)?輸入([正負])端$/, m => {
+    const clk = m[1] ? ['clock ', 'クロック', '클록 '] : ['', '', ''];
+    return {
+      en: `Low-speed differential ${clk[0]}input ${p(m[2])[0]} end`,
+      ja: `低速差動${clk[1]}入力${p(m[2])[1]}側`,
+      ko: `저속 차동 ${clk[2]}입력 ${p(m[2])[2]} 단`
+    };
+  }]
 ];
 
 const out = {};
