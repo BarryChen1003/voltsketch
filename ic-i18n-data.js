@@ -9039,3 +9039,695 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+
+/* CC3501E / CC3551E — SimpleLink Wi-Fi 6 + BLE MCU (single vs dual band) */
+(function () {
+  var e_ui = 'Embedded products needing dual-mode Wi-Fi 6 plus BLE connectivity, such as IoT connected endpoints, smart home/building and industrial connectivity.';
+  var e_cpu = { k: 'CPU', v: 'Arm Cortex-M33 @ 160MHz' };
+  var e_sram = { k: 'SRAM', v: '1.1MB (incl. 128KB TCM)' };
+  var e_flash = { k: 'Flash', v: 'External XiP: quad-SPI / octal-SPI, on-the-fly decryption' };
+  var e_periph = { k: 'Peripherals', v: '3x UART, 2x SPI, 2x I2C, I2S, PDM, SD/MMC, SDIO 2.0, CAN 2.0, 8ch 12-bit ADC, 8x Timer/PWM' };
+  var e_sys = { k: 'System', v: 'DMA, OTP, RTC, WDT' };
+  var e_pkg = { k: 'Package', v: '56-pin QFN 7x7mm' };
+  var e_tp = 'Bottom heat-dissipation pad (common on QFN); see the datasheet mechanical drawing for details; this pin diagram does not label a numbered EP pin.';
+  var j_ui = 'IoT接続端末、スマートホーム/ビル、産業用接続など、Wi-Fi 6とBLEのデュアルモード接続が必要な組み込み製品。';
+  var j_cpu = { k: 'CPU', v: 'Arm Cortex-M33 @ 160MHz' };
+  var j_sram = { k: 'SRAM', v: '1.1MB（128KB TCMを含む）' };
+  var j_flash = { k: 'Flash', v: '外付けXiP：quad-SPI / octal-SPI、オンザフライ復号対応' };
+  var j_periph = { k: '周辺機能', v: 'UART×3、SPI×2、I2C×2、I2S、PDM、SD/MMC、SDIO 2.0、CAN 2.0、8ch 12-bit ADC、8× Timer/PWM' };
+  var j_sys = { k: 'システム', v: 'DMA、OTP、RTC、WDT' };
+  var j_pkg = { k: 'パッケージ', v: '56-pin QFN 7×7mm' };
+  var j_tp = 'パッケージ底面の放熱パッド（QFNで一般的）；詳細はdatasheetの機構図参照；本ピン図に番号付きEPピンの表示はない。';
+  var k_ui = 'IoT 연결 단말, 스마트홈/빌딩, 산업용 연결 등 Wi-Fi 6와 BLE 듀얼 모드 연결이 필요한 임베디드 제품.';
+  var k_cpu = { k: 'CPU', v: 'Arm Cortex-M33 @ 160MHz' };
+  var k_sram = { k: 'SRAM', v: '1.1MB(128KB TCM 포함)' };
+  var k_flash = { k: 'Flash', v: '외부 XiP: quad-SPI / octal-SPI, 실시간 복호 지원' };
+  var k_periph = { k: '주변 기능', v: 'UART×3, SPI×2, I2C×2, I2S, PDM, SD/MMC, SDIO 2.0, CAN 2.0, 8ch 12-bit ADC, 8× Timer/PWM' };
+  var k_sys = { k: '시스템', v: 'DMA, OTP, RTC, WDT' };
+  var k_pkg = { k: '패키지', v: '56-pin QFN 7×7mm' };
+  var k_tp = '패키지 하단 방열 패드(QFN에서 일반적); 자세한 내용은 datasheet 기구도 참조; 본 핀 도면에 번호가 매겨진 EP 핀 표시는 없다.';
+  var e_sub = 'Wi-Fi 6 + BLE Wireless MCU (SimpleLink)';
+  var j_sub = 'Wi-Fi 6 + BLE 無線MCU（SimpleLink）';
+  var k_sub = 'Wi-Fi 6 + BLE 무선 MCU(SimpleLink)';
+
+  var T = {
+    'CC3501E': {
+      en: {
+        subcategory: e_sub,
+        whatIs: 'SimpleLink single-band (2.4GHz) Wi-Fi 6 and Bluetooth Low Energy wireless MCU: with a built-in 160MHz Arm Cortex-M33 processor, integrating the WLAN/BLE RF front end, 1.1MB SRAM and quad/octal-SPI for external XiP Flash (with on-the-fly decryption), for IoT connected devices.',
+        func: 'Runs application and network protocol stacks on the Cortex-M33 (160MHz), integrating Wi-Fi 6 and BLE RF; executes code from external XiP flash via XSPI (quad/octal-SPI) with on-the-fly decryption; provides up to 38 multiplexable I/Os (3x UART, 2x SPI, 2x I2C, I2S, PDM, SD/MMC, SDIO 2.0, CAN 2.0, 8-channel 12-bit ADC, 8 general-purpose timers/PWM); system services include DMA, OTP, RTC and watchdog.',
+        usedIn: e_ui,
+        desc: 'Single-band (2.4GHz) Wi-Fi 6 + BLE wireless MCU, Cortex-M33 160MHz, 1.1MB SRAM, XiP flash quad/octal-SPI, 56-QFN 7x7mm.',
+        thermalPad: e_tp,
+        specs: [ e_cpu, { k: 'Wireless', v: 'Wi-Fi 6 (802.11ax, single-band 2.4GHz) + Bluetooth Low Energy' }, e_sram, e_flash, { k: 'I/O', v: 'up to 38, flexible multiplexing' }, e_periph, e_sys, e_pkg ]
+      },
+      ja: {
+        subcategory: j_sub,
+        whatIs: 'SimpleLink シングルバンド（2.4GHz）Wi-Fi 6とBluetooth Low Energy無線MCU：160MHz Arm Cortex-M33プロセッサを内蔵し、WLAN/BLE RFフロントエンド、1.1MB SRAM、外付けXiP Flash用のquad/octal-SPI（オンザフライ復号を含む）を統合、IoT接続機器向け。',
+        func: 'Cortex-M33（160MHz）でアプリケーションとネットワークプロトコルスタックを実行し、Wi-Fi 6とBLEのRFを統合；XSPI（quad/octal-SPI）経由で外付けXiP flashからコードを実行（オンザフライ復号）；最大38個の多重化可能なI/O（UART×3、SPI×2、I2C×2、I2S、PDM、SD/MMC、SDIO 2.0、CAN 2.0、8チャネル12-bit ADC、8個の汎用タイマ/PWM）を提供；システムサービスはDMA、OTP、RTC、ウォッチドッグを含む。',
+        usedIn: j_ui,
+        desc: 'シングルバンド（2.4GHz）Wi-Fi 6 + BLE無線MCU、Cortex-M33 160MHz、1.1MB SRAM、XiP flash quad/octal-SPI、56-QFN 7×7mm。',
+        thermalPad: j_tp,
+        specs: [ j_cpu, { k: '無線', v: 'Wi-Fi 6（802.11ax、シングルバンド2.4GHz）＋ Bluetooth Low Energy' }, j_sram, j_flash, { k: 'I/O', v: '最大38個、柔軟な多重化' }, j_periph, j_sys, j_pkg ]
+      },
+      ko: {
+        subcategory: k_sub,
+        whatIs: 'SimpleLink 단일 밴드(2.4GHz) Wi-Fi 6와 Bluetooth Low Energy 무선 MCU: 160MHz Arm Cortex-M33 프로세서를 내장하여 WLAN/BLE RF 프런트엔드, 1.1MB SRAM, 외부 XiP Flash용 quad/octal-SPI(실시간 복호 포함)를 통합, IoT 연결 기기용.',
+        func: 'Cortex-M33(160MHz)에서 애플리케이션과 네트워크 프로토콜 스택을 실행하며, Wi-Fi 6와 BLE RF를 통합; XSPI(quad/octal-SPI)를 통해 외부 XiP flash에서 코드를 실행(실시간 복호); 최대 38개의 다중화 가능한 I/O(UART×3, SPI×2, I2C×2, I2S, PDM, SD/MMC, SDIO 2.0, CAN 2.0, 8채널 12-bit ADC, 8개 범용 타이머/PWM)를 제공; 시스템 서비스는 DMA, OTP, RTC, 워치도그를 포함.',
+        usedIn: k_ui,
+        desc: '단일 밴드(2.4GHz) Wi-Fi 6 + BLE 무선 MCU, Cortex-M33 160MHz, 1.1MB SRAM, XiP flash quad/octal-SPI, 56-QFN 7×7mm.',
+        thermalPad: k_tp,
+        specs: [ k_cpu, { k: '무선', v: 'Wi-Fi 6(802.11ax, 단일 밴드 2.4GHz) + Bluetooth Low Energy' }, k_sram, k_flash, { k: 'I/O', v: '최대 38개, 유연한 다중화' }, k_periph, k_sys, k_pkg ]
+      }
+    },
+    'CC3551E': {
+      en: {
+        subcategory: e_sub,
+        whatIs: 'SimpleLink dual-band (2.4GHz + 5GHz) Wi-Fi 6 and Bluetooth Low Energy wireless MCU: with a built-in 160MHz Arm Cortex-M33 processor, integrating the WLAN/BLE RF front end, 1.1MB SRAM and quad/octal-SPI for external XiP Flash (with on-the-fly decryption), for IoT connected devices.',
+        func: 'Runs application and network protocol stacks on the Cortex-M33 (160MHz), integrating Wi-Fi 6 and BLE RF; executes code from external XiP flash via XSPI (quad/octal-SPI) with on-the-fly decryption; provides up to 36 multiplexable I/Os (3x UART, 2x SPI, 2x I2C, I2S, PDM, SD/MMC, SDIO 2.0, CAN 2.0, 8-channel 12-bit ADC, 8 general-purpose timers/PWM); system services include DMA, OTP, RTC and watchdog.',
+        usedIn: e_ui,
+        desc: 'Dual-band (2.4GHz + 5GHz) Wi-Fi 6 + BLE wireless MCU, Cortex-M33 160MHz, 1.1MB SRAM, XiP flash quad/octal-SPI, 56-QFN 7x7mm.',
+        thermalPad: e_tp,
+        specs: [ e_cpu, { k: 'Wireless', v: 'Wi-Fi 6 (802.11ax, dual-band 2.4GHz + 5GHz) + Bluetooth Low Energy' }, e_sram, e_flash, { k: 'I/O', v: 'up to 36, flexible multiplexing' }, e_periph, e_sys, e_pkg ]
+      },
+      ja: {
+        subcategory: j_sub,
+        whatIs: 'SimpleLink デュアルバンド（2.4GHz + 5GHz）Wi-Fi 6とBluetooth Low Energy無線MCU：160MHz Arm Cortex-M33プロセッサを内蔵し、WLAN/BLE RFフロントエンド、1.1MB SRAM、外付けXiP Flash用のquad/octal-SPI（オンザフライ復号を含む）を統合、IoT接続機器向け。',
+        func: 'Cortex-M33（160MHz）でアプリケーションとネットワークプロトコルスタックを実行し、Wi-Fi 6とBLEのRFを統合；XSPI（quad/octal-SPI）経由で外付けXiP flashからコードを実行（オンザフライ復号）；最大36個の多重化可能なI/O（UART×3、SPI×2、I2C×2、I2S、PDM、SD/MMC、SDIO 2.0、CAN 2.0、8チャネル12-bit ADC、8個の汎用タイマ/PWM）を提供；システムサービスはDMA、OTP、RTC、ウォッチドッグを含む。',
+        usedIn: j_ui,
+        desc: 'デュアルバンド（2.4GHz + 5GHz）Wi-Fi 6 + BLE無線MCU、Cortex-M33 160MHz、1.1MB SRAM、XiP flash quad/octal-SPI、56-QFN 7×7mm。',
+        thermalPad: j_tp,
+        specs: [ j_cpu, { k: '無線', v: 'Wi-Fi 6（802.11ax、デュアルバンド2.4GHz + 5GHz）＋ Bluetooth Low Energy' }, j_sram, j_flash, { k: 'I/O', v: '最大36個、柔軟な多重化' }, j_periph, j_sys, j_pkg ]
+      },
+      ko: {
+        subcategory: k_sub,
+        whatIs: 'SimpleLink 듀얼밴드(2.4GHz + 5GHz) Wi-Fi 6와 Bluetooth Low Energy 무선 MCU: 160MHz Arm Cortex-M33 프로세서를 내장하여 WLAN/BLE RF 프런트엔드, 1.1MB SRAM, 외부 XiP Flash용 quad/octal-SPI(실시간 복호 포함)를 통합, IoT 연결 기기용.',
+        func: 'Cortex-M33(160MHz)에서 애플리케이션과 네트워크 프로토콜 스택을 실행하며, Wi-Fi 6와 BLE RF를 통합; XSPI(quad/octal-SPI)를 통해 외부 XiP flash에서 코드를 실행(실시간 복호); 최대 36개의 다중화 가능한 I/O(UART×3, SPI×2, I2C×2, I2S, PDM, SD/MMC, SDIO 2.0, CAN 2.0, 8채널 12-bit ADC, 8개 범용 타이머/PWM)를 제공; 시스템 서비스는 DMA, OTP, RTC, 워치도그를 포함.',
+        usedIn: k_ui,
+        desc: '듀얼밴드(2.4GHz + 5GHz) Wi-Fi 6 + BLE 무선 MCU, Cortex-M33 160MHz, 1.1MB SRAM, XiP flash quad/octal-SPI, 56-QFN 7×7mm.',
+        thermalPad: k_tp,
+        specs: [ k_cpu, { k: '무선', v: 'Wi-Fi 6(802.11ax, 듀얼밴드 2.4GHz + 5GHz) + Bluetooth Low Energy' }, k_sram, k_flash, { k: 'I/O', v: '최대 36개, 유연한 다중화' }, k_periph, k_sys, k_pkg ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* EFR32BG24L */
+(function () {
+  var T = {
+    'EFR32BG24L': {
+      en: {
+        subcategory: 'Bluetooth LE / Mesh Wireless SoC',
+        whatIs: 'Bluetooth Low Energy and Bluetooth mesh wireless SoC: with a built-in 78MHz Arm Cortex-M33, up to 768KB flash / 96KB RAM, high-performance 2.4GHz radio, AI/ML hardware accelerator and Secure Vault security subsystem, for low-power IoT devices such as smart home, lighting and portable medical.',
+        func: 'Runs applications and BLE/mesh protocols on the Cortex-M33 (up to 78MHz), integrating a 2.4GHz RF front end (output power up to +10dBm); a built-in DCDC regulator (VREGSW/VREGVDD/VREGVSS + DECOUPLE) reduces power; provides multiplexed GPIO on PA/PB/PC/PD ports (alternate functions include SWD debug SWCLK/SWDIO, IADC reference, TRACE, etc.; see datasheet Table 6.2); includes an AI/ML hardware accelerator, Secure Vault security and Channel Sounding ranging.',
+        usedIn: 'BLE IoT products such as smart-home gateways/sensors/switches/door locks/plugs, LED lighting, portable medical (glucose meters/pulse oximeters) and AI/ML edge (predictive maintenance/anomaly detection).',
+        desc: 'BLE / Bluetooth mesh wireless SoC, Cortex-M33 78MHz, up to 768KB flash / 96KB RAM, 2.4GHz +10dBm, built-in DCDC + Secure Vault + AI/ML accelerator, 40-QFN.',
+        thermalPad: 'QFN40 central exposed ground pad (GND); see datasheet section 7 QFN40 Land Pattern, connect to the board ground plane.',
+        specs: [
+          { k: 'CPU', v: 'Arm Cortex-M33 @ up to 78MHz' },
+          { k: 'Wireless', v: 'Bluetooth Low Energy / Bluetooth mesh, 2.4GHz, output up to +10dBm' },
+          { k: 'Memory', v: 'up to 768KB flash / 96KB RAM' },
+          { k: 'Security', v: 'Secure Vault (protects against remote and local attacks)' },
+          { k: 'Accelerator', v: 'AI/ML hardware accelerator; Channel Sounding ranging' },
+          { k: 'Power', v: 'Built-in DCDC regulator (low active/sleep current)' },
+          { k: 'Package', v: '40-pin QFN (central GND heat pad)' }
+        ]
+      },
+      ja: {
+        subcategory: 'Bluetooth LE / Mesh 無線SoC',
+        whatIs: 'Bluetooth Low EnergyとBluetooth mesh無線SoC：78MHz Arm Cortex-M33、最大768KB flash / 96KB RAM、高性能2.4GHz無線、AI/MLハードウェアアクセラレータ、Secure Vaultセキュリティサブシステムを内蔵、スマートホーム、照明、携帯医療などの低消費電力IoT機器向け。',
+        func: 'Cortex-M33（最大78MHz）でアプリケーションとBLE/meshプロトコルを実行し、2.4GHz RFフロントエンド（出力最大+10dBm）を統合；内蔵DCDCレギュレータ（VREGSW/VREGVDD/VREGVSS＋DECOUPLEデカップリング）で消費電力を低減；PA/PB/PC/PDポートの多重化GPIOを提供（代替機能にSWDデバッグSWCLK/SWDIO、IADC基準、TRACEなど、datasheet Table 6.2参照）；AI/MLハードウェアアクセラレータ、Secure Vaultセキュリティ、チャネル測距（Channel Sounding）を含む。',
+        usedIn: 'スマートホームゲートウェイ/センサ/スイッチ/ドアロック/コンセント、LED照明、携帯医療（血糖計/パルスオキシメータ）、AI/MLエッジ（予知保全/異常検知）などのBLE IoT製品。',
+        desc: 'BLE / Bluetooth mesh無線SoC、Cortex-M33 78MHz、最大768KB flash / 96KB RAM、2.4GHz +10dBm、DCDC＋Secure Vault＋AI/MLアクセラレータ内蔵、40-QFN。',
+        thermalPad: 'QFN40中央の露出接地パッド（GND）；datasheet §7 QFN40 Land Pattern参照、基板グランドプレーンに接続。',
+        specs: [
+          { k: 'CPU', v: 'Arm Cortex-M33 @ 最大78MHz' },
+          { k: '無線', v: 'Bluetooth Low Energy／Bluetooth mesh、2.4GHz、出力最大+10dBm' },
+          { k: 'メモリ', v: '最大768KB flash／96KB RAM' },
+          { k: 'セキュリティ', v: 'Secure Vault（リモート・ローカル攻撃対策）' },
+          { k: 'アクセラレータ', v: 'AI/MLハードウェアアクセラレータ；Channel Sounding測距' },
+          { k: '電源', v: '内蔵DCDCレギュレータ（低アクティブ/スリープ電流）' },
+          { k: 'パッケージ', v: '40-pin QFN（中央GND放熱パッド）' }
+        ]
+      },
+      ko: {
+        subcategory: 'Bluetooth LE / Mesh 무선 SoC',
+        whatIs: 'Bluetooth Low Energy와 Bluetooth mesh 무선 SoC: 78MHz Arm Cortex-M33, 최대 768KB flash / 96KB RAM, 고성능 2.4GHz 무선, AI/ML 하드웨어 가속기, Secure Vault 보안 서브시스템을 내장, 스마트홈, 조명, 휴대 의료 등 저전력 IoT 기기용.',
+        func: 'Cortex-M33(최대 78MHz)에서 애플리케이션과 BLE/mesh 프로토콜을 실행하며, 2.4GHz RF 프런트엔드(출력 최대 +10dBm)를 통합; 내장 DCDC 레귤레이터(VREGSW/VREGVDD/VREGVSS + DECOUPLE 디커플링)로 소비 전력을 절감; PA/PB/PC/PD 포트의 다중화 GPIO를 제공(대체 기능에 SWD 디버그 SWCLK/SWDIO, IADC 기준, TRACE 등, datasheet Table 6.2 참조); AI/ML 하드웨어 가속기, Secure Vault 보안, 채널 측거(Channel Sounding)를 포함.',
+        usedIn: '스마트홈 게이트웨이/센서/스위치/도어록/콘센트, LED 조명, 휴대 의료(혈당계/맥박 산소 측정기), AI/ML 엣지(예지 정비/이상 감지) 등 BLE IoT 제품.',
+        desc: 'BLE / Bluetooth mesh 무선 SoC, Cortex-M33 78MHz, 최대 768KB flash / 96KB RAM, 2.4GHz +10dBm, DCDC + Secure Vault + AI/ML 가속기 내장, 40-QFN.',
+        thermalPad: 'QFN40 중앙 노출 접지 패드(GND); datasheet §7 QFN40 Land Pattern 참조, 기판 접지 평면에 연결.',
+        specs: [
+          { k: 'CPU', v: 'Arm Cortex-M33 @ 최대 78MHz' },
+          { k: '무선', v: 'Bluetooth Low Energy / Bluetooth mesh, 2.4GHz, 출력 최대 +10dBm' },
+          { k: '메모리', v: '최대 768KB flash / 96KB RAM' },
+          { k: '보안', v: 'Secure Vault(원격 및 로컬 공격 방어)' },
+          { k: '가속기', v: 'AI/ML 하드웨어 가속기; Channel Sounding 측거' },
+          { k: '전원', v: '내장 DCDC 레귤레이터(저 액티브/슬립 전류)' },
+          { k: '패키지', v: '40-pin QFN(중앙 GND 방열 패드)' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* DLP3940S-Q1 / DLP3944-Q1 — automotive 0.39" DMD (154-Pin LGA sisters) */
+(function () {
+  var e_tp = 'A 154-Pin LGA ball-array package with no separate exposed pad; heat is dissipated through the ball array and substrate; the datasheet also describes a low-thermal-resistance design for heat dissipation (see section 5.5 Thermal Information).';
+  var e_mirror = { k: 'Micromirror array', v: '0.39-inch diagonal, 4.5um mirror pitch, +/-14.5 deg tilt (relative to flat), side illumination, compatible with LED or laser sources' };
+  var e_rails = { k: 'Power rails', v: 'VDD (digital core), VBIAS, VRESET, VOFFSET, VDDI (SubLVDS receiver)' };
+  var e_pkg = { k: 'Package', v: 'FSC 154-Pin LGA, 18.35mm x 9.60mm' };
+  var j_tp = '154-Pin LGAボールアレイパッケージ、独立した露出パッドなし；放熱はボールアレイと基板を通じて行われ、datasheetには放熱のための低熱抵抗設計も記載（5.5 Thermal Information章参照）。';
+  var j_mirror = { k: 'マイクロミラーアレイ', v: '0.39インチ対角、4.5umミラーピッチ、±14.5°チルト（平面に対して）、側面照明、LEDまたはレーザ光源に対応' };
+  var j_rails = { k: '電源レール', v: 'VDD（デジタルコア）、VBIAS、VRESET、VOFFSET、VDDI（SubLVDS受信器）' };
+  var j_pkg = { k: 'パッケージ', v: 'FSC 154-Pin LGA、18.35mm×9.60mm' };
+  var k_tp = '154-Pin LGA 볼 어레이 패키지, 별도의 노출 패드 없음; 방열은 볼 어레이와 기판을 통해 이루어지며, datasheet에는 방열을 위한 저열저항 설계도 기재(5.5 Thermal Information 장 참조).';
+  var k_mirror = { k: '마이크로미러 어레이', v: '0.39인치 대각, 4.5um 미러 피치, ±14.5° 틸트(평면 기준), 측면 조명, LED 또는 레이저 광원과 호환' };
+  var k_rails = { k: '전원 레일', v: 'VDD(디지털 코어), VBIAS, VRESET, VOFFSET, VDDI(SubLVDS 수신기)' };
+  var k_pkg = { k: '패키지', v: 'FSC 154-Pin LGA, 18.35mm×9.60mm' };
+
+  var T = {
+    'DLP3940S-Q1': {
+      en: {
+        subcategory: 'Automotive 0.39-inch 1080p FHD Digital Micromirror Device (DMD)',
+        whatIs: '[ADVANCE INFORMATION preproduction document] 0.39-inch diagonal automotive Digital Micromirror Device (DMD), a MEMS spatial light modulator providing 1080p FHD (1920x1080) @120Hz display resolution for automotive head-up displays (HUD) and cockpit displays; accompanying documentation supports ISO 26262 functional-safety design up to ASIL-B.',
+        func: 'Digitally controlled MEMS micromirror-array light modulator: each mirror corresponds to one pixel and reflects incident light at +/-14.5 deg tilt (relative to flat); it receives frame data from the display controller (DLPC231S-Q1) over a SubLVDS high-speed differential interface (up to 600MHz, C/D data lanes, each with 8 data pairs + 1 clock pair), driving the mirrors on/off per frame to synthesize the image with an LED or laser side-illumination source; 4.5um mirror pitch; 10kHz DMD reset refresh rate (across the full temperature range); built-in memory-cell self-test (BIST).',
+        usedIn: 'Automotive optical projection systems such as wide-field-of-view head-up displays (HUD), augmented-reality HUD, digital instrument clusters, and navigation/infotainment windshield displays; requires the DLPC231S-Q1 DMD controller and the TPS99002S-Q1 system-management and illumination controller to form a complete chipset.',
+        desc: '[ADVANCE INFORMATION preproduction document] Automotive 0.39-inch 1080p FHD (1920x1080@120Hz) DMD, 4.5um mirror pitch, +/-14.5 deg tilt, side illumination, SubLVDS interface up to 600MHz, FSC 154-Pin LGA package 18.35mm x 9.60mm, -40C to 105C DMD-array operating temperature range.',
+        thermalPad: e_tp,
+        specs: [
+          { k: 'Display resolution', v: '1080p FHD (1920x1080) @120Hz, 16:9' },
+          { k: 'High-speed data interface', v: 'SubLVDS, up to 600MHz; 2 high-speed differential data lanes (C, D), each with 8 differential data pairs + 1 differential clock, all Differential 100 ohm terminated' },
+          e_mirror, e_rails, e_pkg,
+          { k: 'Automotive qualification', v: 'Datasheet states "Qualified for automotive applications", -40C to 105C DMD-array operating temperature range; accompanying documentation supports ISO 26262 functional safety up to ASIL-B (no "AEC-Q100" text found anywhere in the datasheet, so it is not claimed)' },
+          { k: 'Document status', v: 'ADVANCE INFORMATION (preproduction document, specs subject to change); DLPS284 - December 2025' }
+        ],
+        dropIn: [ { note: 'Same FSC 154-Pin LGA package and ball definition (identical Table 4-1 PAD IDs); DLP3944-Q1 is the 4K UHD version and additionally uses the A and B high-speed differential data lanes (this DLP3940S-Q1 uses only the C and D lanes, with the A/B ball positions N/C on this part). They are not electrically interchangeable replacements; only the package and part of the ball definition are shared.' } ]
+      },
+      ja: {
+        subcategory: '車載 0.39インチ 1080p FHD デジタルマイクロミラーデバイス（DMD）',
+        whatIs: '【ADVANCE INFORMATION 先行製品文書】0.39インチ対角の車載デジタルマイクロミラーデバイス（DMD）、MEMS空間光変調器で、1080p FHD（1920×1080）@120Hzの表示解像度を提供、車載ヘッドアップディスプレイ（HUD）やコックピットディスプレイに使用；付属文書はISO 26262機能安全設計をASIL-Bまでサポート。',
+        func: 'デジタル制御MEMSマイクロミラーアレイ光変調器：各ミラーが1画素に対応し、±14.5°チルト（平面に対して）で入射光を反射、SubLVDS高速差動インターフェース（最高600MHz、C/Dの2組データレーン、各8対データ線+1対クロック）で表示コントローラ（DLPC231S-Q1）から画面データを受信、ミラーをフレームごとにオン/オフ反射させ、LEDまたはレーザの側面照明光源で画像を合成；4.5umミラーピッチ；10kHz DMDリセットリフレッシュレート（全温度範囲）；メモリセルセルフテスト（BIST）を内蔵。',
+        usedIn: '車載の広視野角ヘッドアップディスプレイ（HUD）、拡張現実HUD、デジタルメータ、ナビ/インフォテインメントのフロントガラス表示などの車載光学投影システム；DLPC231S-Q1 DMDコントローラとTPS99002S-Q1システム管理・照明コントローラと組み合わせて完全なチップセットを構成。',
+        desc: '【ADVANCE INFORMATION 先行製品文書】車載 0.39インチ 1080p FHD（1920×1080@120Hz）DMD、4.5umミラーピッチ、±14.5°チルト、側面照明、SubLVDSインターフェース最高600MHz、FSC 154-Pin LGAパッケージ 18.35mm×9.60mm、-40C～105C DMDアレイ動作温度範囲。',
+        thermalPad: j_tp,
+        specs: [
+          { k: '表示解像度', v: '1080p FHD（1920×1080）@120Hz、16:9' },
+          { k: '高速データインターフェース', v: 'SubLVDS、最高600MHz；2組の高速差動データレーン（C、D）、各8対の差動データ線+1対の差動クロック、すべてDifferential 100Ω終端' },
+          j_mirror, j_rails, j_pkg,
+          { k: '車載認定', v: 'datasheetに「Qualified for automotive applications」と明記、-40C～105C DMDアレイ動作温度範囲；付属文書はISO 26262機能安全をASIL-Bまでサポート（datasheet全文に「AEC-Q100」の記載はなく、確認できないため称しない）' },
+          { k: '文書ステータス', v: 'ADVANCE INFORMATION（先行製品文書、仕様変更の可能性あり）；DLPS284 – 2025年12月' }
+        ],
+        dropIn: [ { note: '同じFSC 154-Pin LGAパッケージとボール定義（Table 4-1 PAD ID一致）；DLP3944-Q1は4K UHD版で、A、Bの2組の高速差動データレーンも使用（本型番DLP3940S-Q1はC、Dの2組のみ使用、A/B対応ボール位置は本型番でN/C）。両者は電気的に互換な代替ではなく、パッケージと一部のボール定義のみ共通。' } ]
+      },
+      ko: {
+        subcategory: '차량용 0.39인치 1080p FHD 디지털 마이크로미러 디바이스(DMD)',
+        whatIs: '[ADVANCE INFORMATION 선행 제품 문서] 0.39인치 대각 차량용 디지털 마이크로미러 디바이스(DMD), MEMS 공간 광 변조기로 1080p FHD(1920×1080) @120Hz 표시 해상도를 제공, 차량용 헤드업 디스플레이(HUD)와 콕핏 디스플레이에 사용; 첨부 문서는 ISO 26262 기능 안전 설계를 ASIL-B까지 지원.',
+        func: '디지털 제어 MEMS 마이크로미러 어레이 광 변조기: 각 미러가 1픽셀에 대응하며 ±14.5° 틸트(평면 기준)로 입사광을 반사, SubLVDS 고속 차동 인터페이스(최고 600MHz, C/D 2조 데이터 레인, 각 8쌍 데이터선 + 1쌍 클록)로 표시 컨트롤러(DLPC231S-Q1)에서 화면 데이터를 수신, 미러를 프레임마다 온/오프 반사시켜 LED 또는 레이저 측면 조명 광원으로 이미지를 합성; 4.5um 미러 피치; 10kHz DMD 리셋 리프레시율(전체 온도 범위); 메모리 셀 셀프 테스트(BIST)를 내장.',
+        usedIn: '차량용 광시야각 헤드업 디스플레이(HUD), 증강 현실 HUD, 디지털 계기, 내비/인포테인먼트 윈드실드 표시 등 차량용 광학 투영 시스템; DLPC231S-Q1 DMD 컨트롤러와 TPS99002S-Q1 시스템 관리 및 조명 컨트롤러와 조합하여 완전한 칩셋을 구성.',
+        desc: '[ADVANCE INFORMATION 선행 제품 문서] 차량용 0.39인치 1080p FHD(1920×1080@120Hz) DMD, 4.5um 미러 피치, ±14.5° 틸트, 측면 조명, SubLVDS 인터페이스 최고 600MHz, FSC 154-Pin LGA 패키지 18.35mm×9.60mm, -40C~105C DMD 어레이 동작 온도 범위.',
+        thermalPad: k_tp,
+        specs: [
+          { k: '표시 해상도', v: '1080p FHD(1920×1080) @120Hz, 16:9' },
+          { k: '고속 데이터 인터페이스', v: 'SubLVDS, 최고 600MHz; 2조 고속 차동 데이터 레인(C, D), 각 8쌍 차동 데이터선 + 1쌍 차동 클록, 모두 Differential 100 ohm 종단' },
+          k_mirror, k_rails, k_pkg,
+          { k: '차량용 인증', v: 'datasheet에 "Qualified for automotive applications" 명기, -40C~105C DMD 어레이 동작 온도 범위; 첨부 문서는 ISO 26262 기능 안전을 ASIL-B까지 지원(datasheet 전문에 "AEC-Q100" 문구 없음, 확인 불가로 표기하지 않음)' },
+          { k: '문서 상태', v: 'ADVANCE INFORMATION(선행 제품 문서, 사양 변경 가능); DLPS284 - 2025년 12월' }
+        ],
+        dropIn: [ { note: '동일한 FSC 154-Pin LGA 패키지와 볼 정의(Table 4-1 PAD ID 일치); DLP3944-Q1은 4K UHD 버전으로 A, B 2조 고속 차동 데이터 레인도 사용(본 부품 DLP3940S-Q1은 C, D 2조만 사용, A/B 대응 볼 위치는 본 부품에서 N/C). 양자는 전기적으로 호환되는 대체품이 아니며, 패키지와 일부 볼 정의만 공유.' } ]
+      }
+    },
+    'DLP3944-Q1': {
+      en: {
+        subcategory: 'Automotive 0.39-inch 4K UHD Digital Micromirror Device (DMD)',
+        whatIs: '[ADVANCE INFORMATION preproduction document] 0.39-inch diagonal automotive Digital Micromirror Device (DMD), a MEMS spatial light modulator providing 4K UHD (3840x2160) @60Hz or 1080p FHD (1920x1080) @240Hz display resolution, for compact automotive 4K display systems such as rear-seat entertainment (RSE).',
+        func: 'Digitally controlled MEMS micromirror-array light modulator: each mirror corresponds to one pixel and reflects incident light at +/-14.5 deg tilt (relative to flat); it receives frame data from the display controller (DLPC431) over a SubLVDS high-speed differential interface (up to 720MHz, A/B/C/D data lanes, each with 8 data pairs + 1 clock pair), driving the mirrors on/off per frame to synthesize the image with an LED or laser side-illumination source; 4.5um mirror pitch; 10kHz DMD reset refresh rate (across the full temperature range); built-in memory-cell self-test (BIST).',
+        usedIn: 'Compact 4K UHD automotive display systems such as automotive rear-seat entertainment (RSE); requires the DLPC431 DMD display controller and the DLPA3085/DLPA3082 system-management and illumination driver to form a complete chipset.',
+        desc: '[ADVANCE INFORMATION preproduction document] Automotive 0.39-inch 4K UHD (3840x2160@60Hz, or 1080p FHD@240Hz) DMD, 4.5um mirror pitch, +/-14.5 deg tilt, side illumination, SubLVDS interface up to 720MHz, FSC 154-Pin LGA package 18.35mm x 9.60mm, -40C to 105C DMD-array operating temperature range.',
+        thermalPad: e_tp,
+        specs: [
+          { k: 'Display resolution', v: '4K UHD (3840x2160) @60Hz; or 1080p FHD (1920x1080) @240Hz' },
+          { k: 'High-speed data interface', v: 'SubLVDS, up to 720MHz; 4 high-speed differential data lanes (A, B, C, D), each with 8 differential data pairs + 1 differential clock, all Differential 100 ohm terminated' },
+          e_mirror, e_rails, e_pkg,
+          { k: 'Automotive qualification', v: 'Datasheet states "Qualified for automotive applications", -40C to 105C DMD-array operating temperature range (no "AEC-Q100" text found anywhere in the datasheet, so it is not claimed)' },
+          { k: 'Document status', v: 'ADVANCE INFORMATION (preproduction document, specs subject to change); SLVSKK1 - December 2025' }
+        ],
+        dropIn: [ { note: 'Same FSC 154-Pin LGA package and ball definition (identical Table 4-1 PAD IDs); DLP3940S-Q1 is the 1080p FHD version and uses only the C and D high-speed differential data lanes (this DLP3944-Q1 uses all four A/B/C/D lanes, with the A/B ball positions N/C on the DLP3940S-Q1). They are not electrically interchangeable replacements; only the package and part of the ball definition are shared.' } ]
+      },
+      ja: {
+        subcategory: '車載 0.39インチ 4K UHD デジタルマイクロミラーデバイス（DMD）',
+        whatIs: '【ADVANCE INFORMATION 先行製品文書】0.39インチ対角の車載デジタルマイクロミラーデバイス（DMD）、MEMS空間光変調器で、4K UHD（3840×2160）@60Hzまたは1080p FHD（1920×1080）@240Hzの表示解像度を提供、後席エンタテインメント（RSE）など車載小型4K表示システムに使用。',
+        func: 'デジタル制御MEMSマイクロミラーアレイ光変調器：各ミラーが1画素に対応し、±14.5°チルト（平面に対して）で入射光を反射、SubLVDS高速差動インターフェース（最高720MHz、A/B/C/Dの4組データレーン、各8対データ線+1対クロック）で表示コントローラ（DLPC431）から画面データを受信、ミラーをフレームごとにオン/オフ反射させ、LEDまたはレーザの側面照明光源で画像を合成；4.5umミラーピッチ；10kHz DMDリセットリフレッシュレート（全温度範囲）；メモリセルセルフテスト（BIST）を内蔵。',
+        usedIn: '車載後席エンタテインメント（RSE）など小型4K UHD車載表示システム；DLPC431 DMD表示コントローラとDLPA3085／DLPA3082システム管理・照明ドライバと組み合わせて完全なチップセットを構成。',
+        desc: '【ADVANCE INFORMATION 先行製品文書】車載 0.39インチ 4K UHD（3840×2160@60Hz、または1080p FHD@240Hz）DMD、4.5umミラーピッチ、±14.5°チルト、側面照明、SubLVDSインターフェース最高720MHz、FSC 154-Pin LGAパッケージ 18.35mm×9.60mm、-40C～105C DMDアレイ動作温度範囲。',
+        thermalPad: j_tp,
+        specs: [
+          { k: '表示解像度', v: '4K UHD（3840×2160）@60Hz；または1080p FHD（1920×1080）@240Hz' },
+          { k: '高速データインターフェース', v: 'SubLVDS、最高720MHz；4組の高速差動データレーン（A、B、C、D）、各8対の差動データ線+1対の差動クロック、すべてDifferential 100Ω終端' },
+          j_mirror, j_rails, j_pkg,
+          { k: '車載認定', v: 'datasheetに「Qualified for automotive applications」と明記、-40C～105C DMDアレイ動作温度範囲（datasheet全文に「AEC-Q100」の記載はなく、確認できないため称しない）' },
+          { k: '文書ステータス', v: 'ADVANCE INFORMATION（先行製品文書、仕様変更の可能性あり）；SLVSKK1 – 2025年12月' }
+        ],
+        dropIn: [ { note: '同じFSC 154-Pin LGAパッケージとボール定義（Table 4-1 PAD ID一致）；DLP3940S-Q1は1080p FHD版で、C、Dの2組の高速差動データレーンのみ使用（本型番DLP3944-Q1はA/B/C/Dの4組すべて使用、DLP3940S-Q1のA/B対応ボール位置はN/C）。両者は電気的に互換な代替ではなく、パッケージと一部のボール定義のみ共通。' } ]
+      },
+      ko: {
+        subcategory: '차량용 0.39인치 4K UHD 디지털 마이크로미러 디바이스(DMD)',
+        whatIs: '[ADVANCE INFORMATION 선행 제품 문서] 0.39인치 대각 차량용 디지털 마이크로미러 디바이스(DMD), MEMS 공간 광 변조기로 4K UHD(3840×2160) @60Hz 또는 1080p FHD(1920×1080) @240Hz 표시 해상도를 제공, 후석 엔터테인먼트(RSE) 등 차량용 소형 4K 표시 시스템에 사용.',
+        func: '디지털 제어 MEMS 마이크로미러 어레이 광 변조기: 각 미러가 1픽셀에 대응하며 ±14.5° 틸트(평면 기준)로 입사광을 반사, SubLVDS 고속 차동 인터페이스(최고 720MHz, A/B/C/D 4조 데이터 레인, 각 8쌍 데이터선 + 1쌍 클록)로 표시 컨트롤러(DLPC431)에서 화면 데이터를 수신, 미러를 프레임마다 온/오프 반사시켜 LED 또는 레이저 측면 조명 광원으로 이미지를 합성; 4.5um 미러 피치; 10kHz DMD 리셋 리프레시율(전체 온도 범위); 메모리 셀 셀프 테스트(BIST)를 내장.',
+        usedIn: '차량용 후석 엔터테인먼트(RSE) 등 소형 4K UHD 차량용 표시 시스템; DLPC431 DMD 표시 컨트롤러와 DLPA3085/DLPA3082 시스템 관리 및 조명 드라이버와 조합하여 완전한 칩셋을 구성.',
+        desc: '[ADVANCE INFORMATION 선행 제품 문서] 차량용 0.39인치 4K UHD(3840×2160@60Hz, 또는 1080p FHD@240Hz) DMD, 4.5um 미러 피치, ±14.5° 틸트, 측면 조명, SubLVDS 인터페이스 최고 720MHz, FSC 154-Pin LGA 패키지 18.35mm×9.60mm, -40C~105C DMD 어레이 동작 온도 범위.',
+        thermalPad: k_tp,
+        specs: [
+          { k: '표시 해상도', v: '4K UHD(3840×2160) @60Hz; 또는 1080p FHD(1920×1080) @240Hz' },
+          { k: '고속 데이터 인터페이스', v: 'SubLVDS, 최고 720MHz; 4조 고속 차동 데이터 레인(A, B, C, D), 각 8쌍 차동 데이터선 + 1쌍 차동 클록, 모두 Differential 100 ohm 종단' },
+          k_mirror, k_rails, k_pkg,
+          { k: '차량용 인증', v: 'datasheet에 "Qualified for automotive applications" 명기, -40C~105C DMD 어레이 동작 온도 범위(datasheet 전문에 "AEC-Q100" 문구 없음, 확인 불가로 표기하지 않음)' },
+          { k: '문서 상태', v: 'ADVANCE INFORMATION(선행 제품 문서, 사양 변경 가능); SLVSKK1 - 2025년 12월' }
+        ],
+        dropIn: [ { note: '동일한 FSC 154-Pin LGA 패키지와 볼 정의(Table 4-1 PAD ID 일치); DLP3940S-Q1은 1080p FHD 버전으로 C, D 2조 고속 차동 데이터 레인만 사용(본 부품 DLP3944-Q1은 A/B/C/D 4조 모두 사용, DLP3940S-Q1의 A/B 대응 볼 위치는 N/C). 양자는 전기적으로 호환되는 대체품이 아니며, 패키지와 일부 볼 정의만 공유.' } ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* DLP481RE / DLP481XE — 0.48" DMD (173-Pin PGA sisters) */
+(function () {
+  var e_fpre = 'Digitally controlled MEMS micromirror-array light modulator: each mirror corresponds to one pixel and reflects incident light at +/-14.5 deg tilt (relative to flat); 5.4um mirror pitch, corner illumination; it receives frame data over a SubLVDS high-speed differential interface from the ';
+  var e_fpost = ' controller, with A/B/C/D four high-speed differential data lanes, each with 8 differential data pairs + 1 differential clock; supports RGB laser, LED and Laser Phosphor light-source driving; also provides an LS_Interface low-speed interface (LSIF) and temperature-sensing diode (TEMP_N/TEMP_P).';
+  var e_upre = 'Display projection applications such as smart projectors, enterprise projectors, laser TVs, gaming projectors, home theater and golf simulators; requires the ';
+  var e_upost = ' DMD controller, the DLPA3082 PMIC and the DLPA100 color-wheel driver to form a complete chipset.';
+  var e_tp = 'A 173-Pin PGA pin array; heat is dissipated through the pins and substrate; no separate exposed pad.';
+  var e_mirror = { k: 'Micromirror array', v: '0.48-inch diagonal, 5.4um mirror pitch, +/-14.5 deg tilt (relative to flat), corner illumination' };
+  var e_dataif = { k: 'High-speed data interface', v: 'SubLVDS input data bus; A/B/C/D four high-speed differential data lanes, each with 8 data pairs + 1 differential clock, Differential 100 ohm terminated' };
+  var e_rails = { k: 'Power rails', v: 'VDD (digital core), VDDI, VBIAS, VRESET, VOFFSET' };
+  var e_pkg = { k: 'Package', v: 'FXM (PGA, 173), 32.2mm x 22.3mm' };
+  var e_drop = 'Same FXM 173-Pin PGA package with identical Table 4-1 per-pin definitions; the only difference is the display resolution mode (WUXGA vs 4K+), requiring the corresponding DLPC controller configuration (DLP481RE with DLPC8454, DLP481XE with DLPC8455).';
+  var j_fpre = 'デジタル制御MEMSマイクロミラーアレイ光変調器：各ミラーが1画素に対応し、±14.5°チルト（平面に対して）で入射光を反射；5.4umミラーピッチ、コーナー照明（Corner illumination）；SubLVDS高速差動インターフェースで';
+  var j_fpost = 'コントローラから画面データを受信、A/B/C/Dの4組の高速差動データレーン、各8対の差動データ線+1対の差動クロック；RGBレーザ、LED、Laser Phosphor光源駆動に対応；LS_Interface低速インターフェース（LSIF）と温度センスダイオード（TEMP_N/TEMP_P）も提供。';
+  var j_upre = 'スマートプロジェクタ、企業向けプロジェクタ、レーザTV、ゲーミングプロジェクタ、ホームシアター、ゴルフシミュレータなどの表示投影アプリケーション；';
+  var j_upost = ' DMDコントローラ、DLPA3082 PMIC、DLPA100カラーホイールドライバと組み合わせて完全なチップセットを構成。';
+  var j_tp = '173-Pin PGAピンアレイ、放熱はピンと基板を通じて行われ、独立した露出パッドなし。';
+  var j_mirror = { k: 'マイクロミラーアレイ', v: '0.48インチ対角、5.4umミラーピッチ、±14.5°チルト（平面に対して）、コーナー照明（Corner illumination）' };
+  var j_dataif = { k: '高速データインターフェース', v: 'SubLVDS入力データバス；A/B/C/Dの4組の高速差動データレーン、各8対データ線+1対の差動クロック、Differential 100Ω終端' };
+  var j_rails = { k: '電源レール', v: 'VDD（デジタルコア）、VDDI、VBIAS、VRESET、VOFFSET' };
+  var j_pkg = { k: 'パッケージ', v: 'FXM (PGA, 173)、32.2mm × 22.3mm' };
+  var j_drop = '同じFXM 173-Pin PGAパッケージ、Table 4-1のピンごとの定義は完全に同一；差異は表示解像度モードのみ（WUXGA vs 4K+）、対応するDLPCコントローラ構成が必要（DLP481RE＋DLPC8454、DLP481XE＋DLPC8455）。';
+  var k_fpre = '디지털 제어 MEMS 마이크로미러 어레이 광 변조기: 각 미러가 1픽셀에 대응하며 ±14.5° 틸트(평면 기준)로 입사광을 반사; 5.4um 미러 피치, 코너 조명(Corner illumination); SubLVDS 고속 차동 인터페이스로 ';
+  var k_fpost = ' 컨트롤러에서 화면 데이터를 수신, A/B/C/D 4조 고속 차동 데이터 레인, 각 8쌍 차동 데이터선 + 1쌍 차동 클록; RGB 레이저, LED, Laser Phosphor 광원 구동을 지원; LS_Interface 저속 인터페이스(LSIF)와 온도 감지 다이오드(TEMP_N/TEMP_P)도 제공.';
+  var k_upre = '스마트 프로젝터, 기업용 프로젝터, 레이저 TV, 게이밍 프로젝터, 홈시어터, 골프 시뮬레이터 등 표시 투영 응용; ';
+  var k_upost = ' DMD 컨트롤러, DLPA3082 PMIC, DLPA100 컬러휠 드라이버와 조합하여 완전한 칩셋을 구성.';
+  var k_tp = '173-Pin PGA 핀 어레이, 방열은 핀과 기판을 통해 이루어지며, 별도의 노출 패드 없음.';
+  var k_mirror = { k: '마이크로미러 어레이', v: '0.48인치 대각, 5.4um 미러 피치, ±14.5° 틸트(평면 기준), 코너 조명(Corner illumination)' };
+  var k_dataif = { k: '고속 데이터 인터페이스', v: 'SubLVDS 입력 데이터 버스; A/B/C/D 4조 고속 차동 데이터 레인, 각 8쌍 데이터선 + 1쌍 차동 클록, Differential 100 ohm 종단' };
+  var k_rails = { k: '전원 레일', v: 'VDD(디지털 코어), VDDI, VBIAS, VRESET, VOFFSET' };
+  var k_pkg = { k: '패키지', v: 'FXM (PGA, 173), 32.2mm × 22.3mm' };
+  var k_drop = '동일한 FXM 173-Pin PGA 패키지, Table 4-1 핀별 정의는 완전히 동일; 차이는 표시 해상도 모드뿐(WUXGA vs 4K+), 대응하는 DLPC 컨트롤러 구성이 필요(DLP481RE + DLPC8454, DLP481XE + DLPC8455).';
+
+  var T = {
+    'DLP481RE': {
+      en: {
+        subcategory: '0.48-inch WUXGA Digital Micromirror Device (DMD)',
+        whatIs: '0.48-inch diagonal Digital Micromirror Device (DMD), a MEMS spatial light modulator providing WUXGA (1920x1200) display resolution, up to 240Hz; it is the core of the TI DLP 0.48-inch WUXGA chipset and requires the DLPC8454 display controller, DLPA3082 PMIC and DLPA100 color-wheel driver to form a complete chipset, for applications such as smart projectors, enterprise projectors, laser TVs, gaming projectors, home theater and golf simulators.',
+        func: e_fpre + 'DLPC8454' + e_fpost,
+        usedIn: e_upre + 'DLPC8454' + e_upost,
+        desc: '0.48-inch WUXGA (1920x1200), up to 240Hz DMD, 5.4um mirror pitch, +/-14.5 deg tilt, corner illumination, SubLVDS interface, FXM 173-Pin PGA package 32.2mm x 22.3mm, PRODUCTION DATA.',
+        thermalPad: e_tp,
+        specs: [ { k: 'Display resolution', v: 'WUXGA (1920x1200), up to 240Hz' }, e_mirror, e_dataif, e_rails, e_pkg, { k: 'Companion chipset', v: 'DLPC8454 display controller, DLPA3082 PMIC, DLPA100 color-wheel driver' }, { k: 'Document status', v: 'PRODUCTION DATA; SLVSJK2 - December 2025' } ],
+        dropIn: [ { note: e_drop } ]
+      },
+      ja: {
+        subcategory: '0.48インチ WUXGA デジタルマイクロミラーデバイス（DMD）',
+        whatIs: '0.48インチ対角のデジタルマイクロミラーデバイス（DMD）、MEMS空間光変調器で、WUXGA（1920×1200）表示解像度を提供、最高240Hz対応；TI DLP 0.48インチWUXGAチップセットの中核で、DLPC8454表示コントローラ、DLPA3082 PMIC、DLPA100カラーホイールドライバと組み合わせて完全なチップセットを構成、スマートプロジェクタ、企業向けプロジェクタ、レーザTV、ゲーミングプロジェクタ、ホームシアター、ゴルフシミュレータなどに使用。',
+        func: j_fpre + 'DLPC8454' + j_fpost,
+        usedIn: j_upre + 'DLPC8454' + j_upost,
+        desc: '0.48インチ WUXGA（1920×1200）、最高240Hz対応DMD、5.4umミラーピッチ、±14.5°チルト、コーナー照明、SubLVDSインターフェース、FXM 173-Pin PGAパッケージ 32.2mm×22.3mm、PRODUCTION DATA。',
+        thermalPad: j_tp,
+        specs: [ { k: '表示解像度', v: 'WUXGA（1920×1200）、最高240Hz対応' }, j_mirror, j_dataif, j_rails, j_pkg, { k: 'コンパニオンチップセット', v: 'DLPC8454表示コントローラ、DLPA3082 PMIC、DLPA100カラーホイールドライバ' }, { k: '文書ステータス', v: 'PRODUCTION DATA；SLVSJK2 – 2025年12月' } ],
+        dropIn: [ { note: j_drop } ]
+      },
+      ko: {
+        subcategory: '0.48인치 WUXGA 디지털 마이크로미러 디바이스(DMD)',
+        whatIs: '0.48인치 대각 디지털 마이크로미러 디바이스(DMD), MEMS 공간 광 변조기로 WUXGA(1920×1200) 표시 해상도를 제공, 최고 240Hz 지원; TI DLP 0.48인치 WUXGA 칩셋의 핵심이며, DLPC8454 표시 컨트롤러, DLPA3082 PMIC, DLPA100 컬러휠 드라이버와 조합하여 완전한 칩셋을 구성, 스마트 프로젝터, 기업용 프로젝터, 레이저 TV, 게이밍 프로젝터, 홈시어터, 골프 시뮬레이터 등에 사용.',
+        func: k_fpre + 'DLPC8454' + k_fpost,
+        usedIn: k_upre + 'DLPC8454' + k_upost,
+        desc: '0.48인치 WUXGA(1920×1200), 최고 240Hz 지원 DMD, 5.4um 미러 피치, ±14.5° 틸트, 코너 조명, SubLVDS 인터페이스, FXM 173-Pin PGA 패키지 32.2mm×22.3mm, PRODUCTION DATA.',
+        thermalPad: k_tp,
+        specs: [ { k: '표시 해상도', v: 'WUXGA(1920×1200), 최고 240Hz 지원' }, k_mirror, k_dataif, k_rails, k_pkg, { k: '컴패니언 칩셋', v: 'DLPC8454 표시 컨트롤러, DLPA3082 PMIC, DLPA100 컬러휠 드라이버' }, { k: '문서 상태', v: 'PRODUCTION DATA; SLVSJK2 - 2025년 12월' } ],
+        dropIn: [ { note: k_drop } ]
+      }
+    },
+    'DLP481XE': {
+      en: {
+        subcategory: '0.48-inch 4K+ Digital Micromirror Device (DMD)',
+        whatIs: '0.48-inch diagonal Digital Micromirror Device (DMD), a MEMS spatial light modulator providing 4K+ (3840x2400) display resolution @60Hz and also supporting WUXGA (1920x1200) up to 240Hz; it is the core of the TI DLP 0.48-inch 4K+ chipset and requires the DLPC8455 display controller, DLPA3082 PMIC and DLPA100 color-wheel driver to form a complete chipset, for applications such as smart projectors, enterprise projectors, laser TVs, gaming projectors, home theater and golf simulators.',
+        func: e_fpre + 'DLPC8455' + e_fpost,
+        usedIn: e_upre + 'DLPC8455' + e_upost,
+        desc: '0.48-inch 4K+ (3840x2400) @60Hz; also supports WUXGA (1920x1200) up to 240Hz DMD, 5.4um mirror pitch, +/-14.5 deg tilt, corner illumination, SubLVDS interface, FXM 173-Pin PGA package 32.2mm x 22.3mm, PRODUCTION DATA.',
+        thermalPad: e_tp,
+        specs: [ { k: 'Display resolution', v: '4K+ (3840x2400) @60Hz; also supports WUXGA (1920x1200) up to 240Hz' }, e_mirror, e_dataif, e_rails, e_pkg, { k: 'Companion chipset', v: 'DLPC8455 display controller, DLPA3082 PMIC, DLPA100 color-wheel driver' }, { k: 'Document status', v: 'PRODUCTION DATA; SLVSJK5 - December 2025' } ],
+        dropIn: [ { note: e_drop } ]
+      },
+      ja: {
+        subcategory: '0.48インチ 4K+ デジタルマイクロミラーデバイス（DMD）',
+        whatIs: '0.48インチ対角のデジタルマイクロミラーデバイス（DMD）、MEMS空間光変調器で、4K+（3840×2400）表示解像度@60Hzを提供し、WUXGA（1920×1200）最高240Hzもサポート；TI DLP 0.48インチ4K+チップセットの中核で、DLPC8455表示コントローラ、DLPA3082 PMIC、DLPA100カラーホイールドライバと組み合わせて完全なチップセットを構成、スマートプロジェクタ、企業向けプロジェクタ、レーザTV、ゲーミングプロジェクタ、ホームシアター、ゴルフシミュレータなどに使用。',
+        func: j_fpre + 'DLPC8455' + j_fpost,
+        usedIn: j_upre + 'DLPC8455' + j_upost,
+        desc: '0.48インチ 4K+（3840×2400）@60Hz；WUXGA（1920×1200）最高240HzもサポートするDMD、5.4umミラーピッチ、±14.5°チルト、コーナー照明、SubLVDSインターフェース、FXM 173-Pin PGAパッケージ 32.2mm×22.3mm、PRODUCTION DATA。',
+        thermalPad: j_tp,
+        specs: [ { k: '表示解像度', v: '4K+（3840×2400）@60Hz；WUXGA（1920×1200）最高240Hzもサポート' }, j_mirror, j_dataif, j_rails, j_pkg, { k: 'コンパニオンチップセット', v: 'DLPC8455表示コントローラ、DLPA3082 PMIC、DLPA100カラーホイールドライバ' }, { k: '文書ステータス', v: 'PRODUCTION DATA；SLVSJK5 – 2025年12月' } ],
+        dropIn: [ { note: j_drop } ]
+      },
+      ko: {
+        subcategory: '0.48인치 4K+ 디지털 마이크로미러 디바이스(DMD)',
+        whatIs: '0.48인치 대각 디지털 마이크로미러 디바이스(DMD), MEMS 공간 광 변조기로 4K+(3840×2400) 표시 해상도 @60Hz를 제공하고 WUXGA(1920×1200) 최고 240Hz도 지원; TI DLP 0.48인치 4K+ 칩셋의 핵심이며, DLPC8455 표시 컨트롤러, DLPA3082 PMIC, DLPA100 컬러휠 드라이버와 조합하여 완전한 칩셋을 구성, 스마트 프로젝터, 기업용 프로젝터, 레이저 TV, 게이밍 프로젝터, 홈시어터, 골프 시뮬레이터 등에 사용.',
+        func: k_fpre + 'DLPC8455' + k_fpost,
+        usedIn: k_upre + 'DLPC8455' + k_upost,
+        desc: '0.48인치 4K+(3840×2400) @60Hz; WUXGA(1920×1200) 최고 240Hz도 지원하는 DMD, 5.4um 미러 피치, ±14.5° 틸트, 코너 조명, SubLVDS 인터페이스, FXM 173-Pin PGA 패키지 32.2mm×22.3mm, PRODUCTION DATA.',
+        thermalPad: k_tp,
+        specs: [ { k: '표시 해상도', v: '4K+(3840×2400) @60Hz; WUXGA(1920×1200) 최고 240Hz도 지원' }, k_mirror, k_dataif, k_rails, k_pkg, { k: '컴패니언 칩셋', v: 'DLPC8455 표시 컨트롤러, DLPA3082 PMIC, DLPA100 컬러휠 드라이버' }, { k: '문서 상태', v: 'PRODUCTION DATA; SLVSJK5 - 2025년 12월' } ],
+        dropIn: [ { note: k_drop } ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* DLP390TP / DLP391TP — 0.39" 4K UHD DMD (FQZ 159 vs FSB 154 packages) */
+(function () {
+  var e_sub = '0.39-inch 4K UHD Digital Micromirror Device (DMD)';
+  var e_ui = 'Compact 4K UHD display applications such as mobile smart TVs, mobile projectors and digital signage; requires the DLPC8445V display controller and the DLPA3085 / DLPA3082 PMIC and illumination driver to form a complete chipset.';
+  var e_res = { k: 'Display resolution', v: '4K UHD (3840x2160), supports 4K UHD @60Hz or 1080p up to @240Hz' };
+  var e_mirror = { k: 'Micromirror array', v: '0.39-inch diagonal, 4.5um mirror pitch, +/-14.5 deg tilt (relative to flat), side illumination' };
+  var e_dataif = { k: 'High-speed data interface', v: 'SubLVDS input data bus; A/B/C/D four high-speed differential data lanes, each with 8 data pairs + 1 differential clock, Differential 100 ohm terminated' };
+  var e_rails = { k: 'Power rails', v: 'VDD (digital core), VDDI (digital interface), VBIAS, VRESET, VOFFSET' };
+  var e_chip = { k: 'Companion chipset', v: 'DLPC8445V display controller, DLPA3085 / DLPA3082 PMIC and illumination driver' };
+  var j_sub = '0.39インチ 4K UHD デジタルマイクロミラーデバイス（DMD）';
+  var j_ui = 'モバイルスマートTV、モバイルプロジェクタ、デジタルサイネージなどの小型4K UHD表示アプリケーション；DLPC8445V表示コントローラとDLPA3085／DLPA3082 PMIC・照明ドライバと組み合わせて完全なチップセットを構成。';
+  var j_res = { k: '表示解像度', v: '4K UHD（3840×2160）、4K UHD @60Hzまたは1080p最高@240Hzに対応' };
+  var j_mirror = { k: 'マイクロミラーアレイ', v: '0.39インチ対角、4.5umミラーピッチ、±14.5°チルト（平面に対して）、側面照明（Side illumination）' };
+  var j_dataif = { k: '高速データインターフェース', v: 'SubLVDS入力データバス；A/B/C/Dの4組の高速差動データレーン、各8対データ線+1対の差動クロック、Differential 100Ω終端' };
+  var j_rails = { k: '電源レール', v: 'VDD（デジタルコア）、VDDI（デジタルインターフェース）、VBIAS、VRESET、VOFFSET' };
+  var j_chip = { k: 'コンパニオンチップセット', v: 'DLPC8445V表示コントローラ、DLPA3085／DLPA3082 PMIC・照明ドライバ' };
+  var k_sub = '0.39인치 4K UHD 디지털 마이크로미러 디바이스(DMD)';
+  var k_ui = '모바일 스마트 TV, 모바일 프로젝터, 디지털 사이니지 등 소형 4K UHD 표시 응용; DLPC8445V 표시 컨트롤러와 DLPA3085 / DLPA3082 PMIC 및 조명 드라이버와 조합하여 완전한 칩셋을 구성.';
+  var k_res = { k: '표시 해상도', v: '4K UHD(3840×2160), 4K UHD @60Hz 또는 1080p 최고 @240Hz 지원' };
+  var k_mirror = { k: '마이크로미러 어레이', v: '0.39인치 대각, 4.5um 미러 피치, ±14.5° 틸트(평면 기준), 측면 조명(Side illumination)' };
+  var k_dataif = { k: '고속 데이터 인터페이스', v: 'SubLVDS 입력 데이터 버스; A/B/C/D 4조 고속 차동 데이터 레인, 각 8쌍 데이터선 + 1쌍 차동 클록, Differential 100 ohm 종단' };
+  var k_rails = { k: '전원 레일', v: 'VDD(디지털 코어), VDDI(디지털 인터페이스), VBIAS, VRESET, VOFFSET' };
+  var k_chip = { k: '컴패니언 칩셋', v: 'DLPC8445V 표시 컨트롤러, DLPA3085 / DLPA3082 PMIC 및 조명 드라이버' };
+
+  var T = {
+    'DLP390TP': {
+      en: {
+        subcategory: e_sub,
+        whatIs: '0.39-inch diagonal Digital Micromirror Device (DMD), a MEMS spatial light modulator providing 4K UHD (3840x2160) display resolution, supporting 4K UHD @60Hz or 1080p @240Hz; 4.5um mirror pitch, +/-14.5 deg tilt (relative to flat), side illumination; it is the core of the TI DLP 0.39-inch 4K UHD chipset, paired with the DLPC8445V display controller and DLPA3085 / DLPA3082 PMIC and illumination driver to form a complete chipset, for applications such as mobile smart TVs, mobile projectors and digital signage.',
+        func: 'Digitally controlled MEMS micromirror-array light modulator: each mirror corresponds to one pixel and reflects incident light at +/-14.5 deg tilt (relative to flat); 4.5um mirror pitch, side illumination; it receives frame data from the DLPC8445V controller over a SubLVDS high-speed differential interface, with A/B/C/D four high-speed differential data lanes, each with 8 differential data pairs + 1 differential clock; also provides an LS_Interface low-speed interface (LPSDR), temperature-sensing diode (TEMP_N/TEMP_P) and internal test points (TP0-TP2, where TP0/TP1/TP2 share the same PAD ID as the VDDI/VDD/VSS power pins respectively).',
+        usedIn: e_ui,
+        desc: '0.39-inch 4K UHD (3840x2160), supports 4K UHD@60Hz or 1080p@240Hz DMD, 4.5um mirror pitch, +/-14.5 deg tilt, side illumination, SubLVDS interface, FQZ 159-Pin LGA package 19.25mm x 10.08mm, PRODUCTION DATA (datasheet note: only 143 pins are electrically connected for functional use in this package; the rest are No Connect or internal test/unused positions).',
+        thermalPad: 'A 159-Pin LGA ball array; heat is dissipated through the balls and substrate; no separate exposed pad.',
+        specs: [ e_res, e_mirror, e_dataif, e_rails, { k: 'Package', v: 'FQZ (LGA, 159), 19.25mm x 10.08mm' }, e_chip, { k: 'Document status', v: 'PRODUCTION DATA; DLPS254 - January 2026' } ]
+      },
+      ja: {
+        subcategory: j_sub,
+        whatIs: '0.39インチ対角のデジタルマイクロミラーデバイス（DMD）、MEMS空間光変調器で、4K UHD（3840×2160）表示解像度を提供、4K UHD @60Hzまたは1080p @240Hzに対応；4.5umミラーピッチ、±14.5°チルト（平面に対して）、側面照明（Side illumination）；TI DLP 0.39インチ4K UHDチップセットの中核で、DLPC8445V表示コントローラとDLPA3085／DLPA3082 PMIC・照明ドライバと組み合わせて完全なチップセットを構成、モバイルスマートTV、モバイルプロジェクタ、デジタルサイネージなどに使用。',
+        func: 'デジタル制御MEMSマイクロミラーアレイ光変調器：各ミラーが1画素に対応し、±14.5°チルト（平面に対して）で入射光を反射；4.5umミラーピッチ、側面照明；SubLVDS高速差動インターフェースでDLPC8445Vコントローラから画面データを受信、A/B/C/Dの4組の高速差動データレーン、各8対の差動データ線+1対の差動クロック；LS_Interface低速インターフェース（LPSDR）、温度センスダイオード（TEMP_N/TEMP_P）、内部テストポイント（TP0–TP2、TP0/TP1/TP2はそれぞれVDDI/VDD/VSS電源ピンと同じPAD IDを共有）も提供。',
+        usedIn: j_ui,
+        desc: '0.39インチ 4K UHD（3840×2160）、4K UHD@60Hzまたは1080p@240Hz対応DMD、4.5umミラーピッチ、±14.5°チルト、側面照明、SubLVDSインターフェース、FQZ 159-Pin LGAパッケージ 19.25mm×10.08mm、PRODUCTION DATA（datasheet注記：本パッケージで電気的に接続され機能に使用されるのは143ピンのみ、残りはNo Connectまたは内部テスト/未使用位置）。',
+        thermalPad: '159-Pin LGAボールアレイ、放熱はボールと基板を通じて行われ、独立した露出パッドなし。',
+        specs: [ j_res, j_mirror, j_dataif, j_rails, { k: 'パッケージ', v: 'FQZ (LGA, 159)、19.25mm × 10.08mm' }, j_chip, { k: '文書ステータス', v: 'PRODUCTION DATA；DLPS254 – 2026年1月' } ]
+      },
+      ko: {
+        subcategory: k_sub,
+        whatIs: '0.39인치 대각 디지털 마이크로미러 디바이스(DMD), MEMS 공간 광 변조기로 4K UHD(3840×2160) 표시 해상도를 제공, 4K UHD @60Hz 또는 1080p @240Hz 지원; 4.5um 미러 피치, ±14.5° 틸트(평면 기준), 측면 조명(Side illumination); TI DLP 0.39인치 4K UHD 칩셋의 핵심이며, DLPC8445V 표시 컨트롤러와 DLPA3085 / DLPA3082 PMIC 및 조명 드라이버와 조합하여 완전한 칩셋을 구성, 모바일 스마트 TV, 모바일 프로젝터, 디지털 사이니지 등에 사용.',
+        func: '디지털 제어 MEMS 마이크로미러 어레이 광 변조기: 각 미러가 1픽셀에 대응하며 ±14.5° 틸트(평면 기준)로 입사광을 반사; 4.5um 미러 피치, 측면 조명; SubLVDS 고속 차동 인터페이스로 DLPC8445V 컨트롤러에서 화면 데이터를 수신, A/B/C/D 4조 고속 차동 데이터 레인, 각 8쌍 차동 데이터선 + 1쌍 차동 클록; LS_Interface 저속 인터페이스(LPSDR), 온도 감지 다이오드(TEMP_N/TEMP_P), 내부 테스트 포인트(TP0-TP2, TP0/TP1/TP2는 각각 VDDI/VDD/VSS 전원 핀과 동일한 PAD ID를 공유)도 제공.',
+        usedIn: k_ui,
+        desc: '0.39인치 4K UHD(3840×2160), 4K UHD@60Hz 또는 1080p@240Hz 지원 DMD, 4.5um 미러 피치, ±14.5° 틸트, 측면 조명, SubLVDS 인터페이스, FQZ 159-Pin LGA 패키지 19.25mm×10.08mm, PRODUCTION DATA(datasheet 주기: 본 패키지에서 전기적으로 연결되어 기능에 사용되는 것은 143핀뿐, 나머지는 No Connect 또는 내부 테스트/미사용 위치).',
+        thermalPad: '159-Pin LGA 볼 어레이, 방열은 볼과 기판을 통해 이루어지며, 별도의 노출 패드 없음.',
+        specs: [ k_res, k_mirror, k_dataif, k_rails, { k: '패키지', v: 'FQZ (LGA, 159), 19.25mm × 10.08mm' }, k_chip, { k: '문서 상태', v: 'PRODUCTION DATA; DLPS254 - 2026년 1월' } ]
+      }
+    },
+    'DLP391TP': {
+      en: {
+        subcategory: e_sub,
+        whatIs: '0.39-inch diagonal Digital Micromirror Device (DMD), a MEMS spatial light modulator providing 4K UHD (3840x2160) display resolution, supporting 4K UHD @60Hz or 1080p @240Hz; 4.5um mirror pitch, +/-14.5 deg tilt (relative to flat), side illumination; it is the core of the TI DLP 0.39-inch 4K UHD chipset, paired with the DLPC8445V display controller and DLPA3085 / DLPA3082 PMIC and illumination driver to form a complete chipset, for applications such as mobile smart TVs, mobile projectors and digital signage. It belongs to the same 0.39-inch 4K UHD chipset as the DLP390TP but in a different package (FSB 154-Pin LGA, a smaller package size).',
+        func: 'Digitally controlled MEMS micromirror-array light modulator: each mirror corresponds to one pixel and reflects incident light at +/-14.5 deg tilt (relative to flat); 4.5um mirror pitch, side illumination; it receives frame data from the DLPC8445V controller over a SubLVDS high-speed differential interface, with A/B/C/D four high-speed differential data lanes, each with 8 differential data pairs + 1 differential clock; also provides an LS_Interface low-speed interface (LPSDR) and temperature-sensing diode (TEMP_N/TEMP_P); this package does not include separate test-point (TP0-TP2) entries.',
+        usedIn: e_ui,
+        desc: '0.39-inch 4K UHD (3840x2160), supports 4K UHD@60Hz or 1080p@240Hz DMD, 4.5um mirror pitch, +/-14.5 deg tilt, side illumination, SubLVDS interface, FSB 154-Pin LGA package 18.35mm x 9.60mm, PRODUCTION DATA (datasheet note: only 151 pins are electrically connected for functional use in this package; the rest are No Connect positions).',
+        thermalPad: 'A 154-Pin LGA ball array; heat is dissipated through the balls and substrate; no separate exposed pad.',
+        specs: [ e_res, e_mirror, e_dataif, e_rails, { k: 'Package', v: 'FSB (LGA, 154), 18.35mm x 9.60mm' }, e_chip, { k: 'Document status', v: 'PRODUCTION DATA; DLPS289A - June 2025 - revised September 2025' } ]
+      },
+      ja: {
+        subcategory: j_sub,
+        whatIs: '0.39インチ対角のデジタルマイクロミラーデバイス（DMD）、MEMS空間光変調器で、4K UHD（3840×2160）表示解像度を提供、4K UHD @60Hzまたは1080p @240Hzに対応；4.5umミラーピッチ、±14.5°チルト（平面に対して）、側面照明（Side illumination）；TI DLP 0.39インチ4K UHDチップセットの中核で、DLPC8445V表示コントローラとDLPA3085／DLPA3082 PMIC・照明ドライバと組み合わせて完全なチップセットを構成、モバイルスマートTV、モバイルプロジェクタ、デジタルサイネージなどに使用。DLP390TPと同じ0.39インチ4K UHDチップセットに属するが、パッケージが異なる（FSB 154-Pin LGA、より小型のパッケージサイズ）。',
+        func: 'デジタル制御MEMSマイクロミラーアレイ光変調器：各ミラーが1画素に対応し、±14.5°チルト（平面に対して）で入射光を反射；4.5umミラーピッチ、側面照明；SubLVDS高速差動インターフェースでDLPC8445Vコントローラから画面データを受信、A/B/C/Dの4組の高速差動データレーン、各8対の差動データ線+1対の差動クロック；LS_Interface低速インターフェース（LPSDR）と温度センスダイオード（TEMP_N/TEMP_P）も提供；本パッケージには独立したテストポイント（TP0–TP2）の項目は含まれない。',
+        usedIn: j_ui,
+        desc: '0.39インチ 4K UHD（3840×2160）、4K UHD@60Hzまたは1080p@240Hz対応DMD、4.5umミラーピッチ、±14.5°チルト、側面照明、SubLVDSインターフェース、FSB 154-Pin LGAパッケージ 18.35mm×9.60mm、PRODUCTION DATA（datasheet注記：本パッケージで電気的に接続され機能に使用されるのは151ピンのみ、残りはNo Connect位置）。',
+        thermalPad: '154-Pin LGAボールアレイ、放熱はボールと基板を通じて行われ、独立した露出パッドなし。',
+        specs: [ j_res, j_mirror, j_dataif, j_rails, { k: 'パッケージ', v: 'FSB (LGA, 154)、18.35mm × 9.60mm' }, j_chip, { k: '文書ステータス', v: 'PRODUCTION DATA；DLPS289A – 2025年6月 – 2025年9月改訂' } ]
+      },
+      ko: {
+        subcategory: k_sub,
+        whatIs: '0.39인치 대각 디지털 마이크로미러 디바이스(DMD), MEMS 공간 광 변조기로 4K UHD(3840×2160) 표시 해상도를 제공, 4K UHD @60Hz 또는 1080p @240Hz 지원; 4.5um 미러 피치, ±14.5° 틸트(평면 기준), 측면 조명(Side illumination); TI DLP 0.39인치 4K UHD 칩셋의 핵심이며, DLPC8445V 표시 컨트롤러와 DLPA3085 / DLPA3082 PMIC 및 조명 드라이버와 조합하여 완전한 칩셋을 구성, 모바일 스마트 TV, 모바일 프로젝터, 디지털 사이니지 등에 사용. DLP390TP와 동일한 0.39인치 4K UHD 칩셋에 속하지만 패키지가 다르다(FSB 154-Pin LGA, 더 작은 패키지 크기).',
+        func: '디지털 제어 MEMS 마이크로미러 어레이 광 변조기: 각 미러가 1픽셀에 대응하며 ±14.5° 틸트(평면 기준)로 입사광을 반사; 4.5um 미러 피치, 측면 조명; SubLVDS 고속 차동 인터페이스로 DLPC8445V 컨트롤러에서 화면 데이터를 수신, A/B/C/D 4조 고속 차동 데이터 레인, 각 8쌍 차동 데이터선 + 1쌍 차동 클록; LS_Interface 저속 인터페이스(LPSDR)와 온도 감지 다이오드(TEMP_N/TEMP_P)도 제공; 본 패키지에는 독립 테스트 포인트(TP0-TP2) 항목이 포함되지 않는다.',
+        usedIn: k_ui,
+        desc: '0.39인치 4K UHD(3840×2160), 4K UHD@60Hz 또는 1080p@240Hz 지원 DMD, 4.5um 미러 피치, ±14.5° 틸트, 측면 조명, SubLVDS 인터페이스, FSB 154-Pin LGA 패키지 18.35mm×9.60mm, PRODUCTION DATA(datasheet 주기: 본 패키지에서 전기적으로 연결되어 기능에 사용되는 것은 151핀뿐, 나머지는 No Connect 위치).',
+        thermalPad: '154-Pin LGA 볼 어레이, 방열은 볼과 기판을 통해 이루어지며, 별도의 노출 패드 없음.',
+        specs: [ k_res, k_mirror, k_dataif, k_rails, { k: '패키지', v: 'FSB (LGA, 154), 18.35mm × 9.60mm' }, k_chip, { k: '문서 상태', v: 'PRODUCTION DATA; DLPS289A - 2025년 6월 - 2025년 9월 개정' } ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* DLP472NP */
+(function () {
+  var T = {
+    'DLP472NP': {
+      en: {
+        subcategory: '0.47-inch 1080p FHD Digital Micromirror Device (DMD, S321)',
+        whatIs: '0.47-inch diagonal, 1920x1080 (1080p FHD) resolution Digital Micromirror Device (DMD): a MEMS spatial light modulator (SLM), 5.4um mirror pitch, +/-17 deg mirror tilt, bottom illumination, forming a 0.47-inch 1080p FHD DLP chipset with the DLPC8444 display controller and the DLPA3085 or DLPA3082 power-management and LED-driver IC.',
+        func: 'Receives display data over a SubLVDS high-speed differential interface: A/B/C/D four channels, each with an 8-bit differential data pair (D_xP(0..7)/D_xN(0..7)) + 1 differential clock (DCLK_xP/DCLK_xN), for a total of 32 high-speed differential data lanes + 4 differential clocks; the controller drives the micromirror array for PWM-style light modulation per the timing, supporting 1080p resolution up to 240Hz. It also includes a low-speed interface: LS_WDATA/LS_CLK are LVDS inputs, LS_RDATA_A~D are LVCMOS outputs for the controller to read/write status; DMD_DEN_ARSTZ is an asynchronous reset input; TEMP_P/TEMP_N are a built-in temperature-sensing diode for board-side die-temperature measurement. Independent power rails: VDD (digital core), VDDI (SubLVDS interface), VBIAS/VRESET (mirror-reset positive/negative bias), VOFFSET (HVCMOS boost logic), which must be powered according to the power-up/power-down sequence in datasheet Section 8 Power Supply Recommendations; an incorrect sequence may damage the device.',
+        usedIn: 'Compact 1080p FHD optical-engine systems using laser or LED light sources, such as mobile smart TVs, mobile projectors and digital signage, typically paired with the DLPC8444 controller and DLPA3085/DLPA3082 PMIC/LED driver.',
+        desc: '0.47-inch 1080p FHD DMD, 5.4um mirror pitch, +/-17 deg mirror tilt, SubLVDS input (32 lanes + 4 differential clocks), supporting 1080p up to 240Hz; FQY (CLGA) package, 24.50mm x 11.00mm, PRODUCTION DATA (TI DLPS258, August 2025). Note: the datasheet cover Device Information table and Figure 4-1 caption both state "FQY (166)" / "166-Pin LGA", but the Table 4-1 Pin Functions sum to 174 distinct PAD IDs, matching both the Section 12 Package Option Addendum ("CLGA (FQY) | 174") and the Package Materials Information (Pins=174); the 166 is judged to be a carried-over, un-updated cover/caption error, and this entry uses the pin-by-pin-verified 174 (see the "package pin count" spec).',
+        thermalPad: 'A 174-Pin CLGA (ceramic LGA) ball-array package with no separate exposed heat pad; the package center is the micromirror-array optical window (Active Array, with a window), and balls are located only on the two short left/right edges (rows A-N x columns 1-7 and 25-32); heat is dissipated mainly through the VSS/ground balls and substrate; see datasheet Section 6.6/6.7 for detailed thermal resistance and micromirror-array temperature/power-density calculations.',
+        specs: [
+          { k: 'Display resolution', v: '1080p FHD, 1920x1080, 5.4um mirror pitch, +/-17 deg mirror tilt, bottom illumination' },
+          { k: 'Data interface', v: 'SubLVDS, 4 channels (A/B/C/D) x 8-bit differential data lanes + 1 differential clock per channel, total 32 data lanes + 4 clock pairs, supports 1080p up to 240Hz' },
+          { k: 'Low-speed/auxiliary interface', v: 'LS_WDATA/LS_CLK (LVDS input), LS_RDATA_A~D (LVCMOS output), DMD_DEN_ARSTZ (asynchronous reset), TEMP_P/TEMP_N (built-in temperature-sensing diode)' },
+          { k: 'Power rails', v: 'VDD digital core / VDDI SubLVDS interface / VBIAS+VRESET mirror-reset positive/negative bias / VOFFSET HVCMOS boost logic; power per the datasheet power-up/down sequence (Section 8)' },
+          { k: 'Package', v: 'FQY, CLGA (ceramic LGA), 24.50mm x 11.00mm; companion controller DLPC8444, PMIC/LED driver DLPA3085 or DLPA3082' },
+          { k: 'Package pin count (inconsistent in datasheet, verified)', v: 'The cover Device Information table and Figure 4-1 caption both mark "FQY (166)"/166-Pin; but Table 4-1 pin-by-pin sums to 174 (unique PAD IDs, incl. 11 physical N/C balls), Section 12 Package Option Addendum marks "CLGA (FQY) | 174", and Package Materials Information marks Pins=174 - the three agree. This entry uses 174; datasheet footnote(2) also notes "Only 163 pins are electrically connected for functional use" (of the 174 physical balls, 163 have electrical function, the rest are N/C or mechanical balls)' },
+          { k: 'Document status', v: 'PRODUCTION DATA (official production document), TI DLPS258 - August 2025' }
+        ]
+      },
+      ja: {
+        subcategory: '0.47インチ 1080p FHD デジタルマイクロミラーデバイス（DMD, S321）',
+        whatIs: '0.47インチ対角、1920×1080（1080p FHD）解像度のデジタルマイクロミラーデバイス（DMD）：MEMS空間光変調器（SLM）、5.4umミラーピッチ、±17°ミラーチルト、ボトム照明（bottom illumination）、DLPC8444表示コントローラおよびDLPA3085またはDLPA3082電源管理・LEDドライバICと組み合わせて0.47インチ1080p FHD DLPチップセットを構成。',
+        func: 'SubLVDS高速差動インターフェースで表示データを受信：A/B/C/Dの4組のチャネル、各8-bit差動データ対（D_xP(0..7)/D_xN(0..7)）＋1組の差動クロック（DCLK_xP/DCLK_xN）、合計32組の高速差動データlane＋4組の差動クロック；コントローラはタイミングに従いマイクロミラーアレイをPWM式光変調で駆動、1080p解像度最高240Hzに対応。低速インターフェースも搭載：LS_WDATA/LS_CLKはLVDS入力、LS_RDATA_A~DはLVCMOS出力で、コントローラが状態を読み書き；DMD_DEN_ARSTZは非同期リセット入力；TEMP_P/TEMP_Nは内蔵温度センスダイオードで基板側からダイ温度を測定。独立電源レール：VDD（デジタルコア）、VDDI（SubLVDSインターフェース）、VBIAS/VRESET（ミラーリセット正/負バイアス）、VOFFSET（HVCMOS昇圧ロジック）、datasheet Section 8 Power Supply Recommendationsの電源投入/切断シーケンスに従って供給する必要があり、順序が誤ると素子を損傷する可能性がある。',
+        usedIn: 'モバイルスマートTV、モバイルプロジェクタ、デジタルサイネージなど、レーザまたはLED光源を用いる小型1080p FHD光学エンジンシステム、通常DLPC8444コントローラ＋DLPA3085/DLPA3082 PMIC/LEDドライバと組み合わせる。',
+        desc: '0.47インチ 1080p FHD DMD、5.4umミラーピッチ、±17°ミラーチルト、SubLVDS入力（32 lane＋4差動クロック）、1080p最高240Hzに対応；FQY (CLGA)パッケージ、24.50mm×11.00mm、PRODUCTION DATA（TI DLPS258、2025年8月）。注意：datasheet表紙のDevice Information表とFigure 4-1の図説はいずれも「FQY (166)」/「166-Pin LGA」と記載しているが、Table 4-1 Pin Functionsの各ピン合計は174個の相異なるPAD IDとなり、Section 12 Package Option Addendum（"CLGA (FQY) | 174"）およびPackage Materials Information（Pins=174）の両公式パッケージ頁と完全に一致；166は表紙/図説に残った旧版未更新の誤植と判断し、本項目はピンごとに検証した174を採用（specs「パッケージピン数」項参照）。',
+        thermalPad: '174-Pin CLGA（セラミックLGA）ボールアレイパッケージ、独立した露出放熱パッドなし；パッケージ中央はマイクロミラーアレイの光学窓（Active Array、窓板付き）で、ボールは左右の2つの短辺（A-N列×1-7行、25-32行）のみに配置、放熱は主にVSS/接地ボールと基板を通じて行われる；詳細な熱抵抗とマイクロミラーアレイの温度/電力密度計算はdatasheet Section 6.6/6.7参照。',
+        specs: [
+          { k: '表示解像度', v: '1080p FHD、1920×1080、5.4umミラーピッチ、±17°ミラーチルト、ボトム照明' },
+          { k: 'データインターフェース', v: 'SubLVDS、4組のチャネル（A/B/C/D）× 8-bit差動データlane＋1組の差動クロック／チャネル、合計32 data lane＋4 clock pair、1080p最高240Hzに対応' },
+          { k: '低速/補助インターフェース', v: 'LS_WDATA/LS_CLK（LVDS入力）、LS_RDATA_A~D（LVCMOS出力）、DMD_DEN_ARSTZ（非同期リセット）、TEMP_P/TEMP_N（内蔵温度センスダイオード）' },
+          { k: '電源レール', v: 'VDD デジタルコア／VDDI SubLVDSインターフェース／VBIAS＋VRESET ミラーリセット正負バイアス／VOFFSET HVCMOS昇圧ロジック；datasheetの電源投入/切断シーケンス（Section 8）に従って供給' },
+          { k: 'パッケージ', v: 'FQY、CLGA（セラミックLGA）、24.50mm×11.00mm；コンパニオンコントローラDLPC8444、PMIC/LEDドライバDLPA3085またはDLPA3082' },
+          { k: 'パッケージピン数（datasheet内で表示が不一致、検証済み）', v: '表紙Device Information表とFigure 4-1図説はいずれも「FQY (166)」/166-Pinと表示；しかしTable 4-1のピンごとの合計＝174（唯一のPAD ID、物理N/Cボール11個を含む）、Section 12 Package Option Addendumは「CLGA (FQY) | 174」、Package Materials InformationはPins=174と表示、3箇所が互いに一致。本項目は174を採用；datasheet footnote(2)はさらに「Only 163 pins are electrically connected for functional use」と注記（174個の物理ボールのうち163個が電気機能を持ち、残りはN/Cまたは機構ボール）' },
+          { k: '文書ステータス', v: 'PRODUCTION DATA（正式量産文書）、TI DLPS258 – 2025年8月' }
+        ]
+      },
+      ko: {
+        subcategory: '0.47인치 1080p FHD 디지털 마이크로미러 디바이스(DMD, S321)',
+        whatIs: '0.47인치 대각, 1920×1080(1080p FHD) 해상도 디지털 마이크로미러 디바이스(DMD): MEMS 공간 광 변조기(SLM), 5.4um 미러 피치, ±17° 미러 틸트, 하부 조명(bottom illumination), DLPC8444 표시 컨트롤러 및 DLPA3085 또는 DLPA3082 전원 관리·LED 드라이버 IC와 조합하여 0.47인치 1080p FHD DLP 칩셋을 구성.',
+        func: 'SubLVDS 고속 차동 인터페이스로 표시 데이터를 수신: A/B/C/D 4조 채널, 각 8-bit 차동 데이터 쌍(D_xP(0..7)/D_xN(0..7)) + 1조 차동 클록(DCLK_xP/DCLK_xN), 합계 32조 고속 차동 데이터 lane + 4조 차동 클록; 컨트롤러는 타이밍에 따라 마이크로미러 어레이를 PWM 방식 광 변조로 구동, 1080p 해상도 최고 240Hz 지원. 저속 인터페이스도 탑재: LS_WDATA/LS_CLK는 LVDS 입력, LS_RDATA_A~D는 LVCMOS 출력으로 컨트롤러가 상태를 읽고 씀; DMD_DEN_ARSTZ는 비동기 리셋 입력; TEMP_P/TEMP_N은 내장 온도 감지 다이오드로 기판 측에서 다이 온도를 측정. 독립 전원 레일: VDD(디지털 코어), VDDI(SubLVDS 인터페이스), VBIAS/VRESET(미러 리셋 정/부 바이어스), VOFFSET(HVCMOS 승압 로직), datasheet Section 8 Power Supply Recommendations의 전원 인가/차단 시퀀스에 따라 공급해야 하며, 순서가 잘못되면 소자를 손상시킬 수 있다.',
+        usedIn: '모바일 스마트 TV, 모바일 프로젝터, 디지털 사이니지 등 레이저 또는 LED 광원을 사용하는 소형 1080p FHD 광학 엔진 시스템, 일반적으로 DLPC8444 컨트롤러 + DLPA3085/DLPA3082 PMIC/LED 드라이버와 조합.',
+        desc: '0.47인치 1080p FHD DMD, 5.4um 미러 피치, ±17° 미러 틸트, SubLVDS 입력(32 lane + 4 차동 클록), 1080p 최고 240Hz 지원; FQY (CLGA) 패키지, 24.50mm×11.00mm, PRODUCTION DATA(TI DLPS258, 2025년 8월). 주의: datasheet 표지 Device Information 표와 Figure 4-1 도설은 모두 "FQY (166)" / "166-Pin LGA"로 기재하지만, Table 4-1 Pin Functions의 핀 합계는 174개의 서로 다른 PAD ID이며, Section 12 Package Option Addendum("CLGA (FQY) | 174")와 Package Materials Information(Pins=174)의 두 공식 패키지 페이지와 완전히 일치; 166은 표지/도설에 남은 구버전 미갱신 오기로 판단하며, 본 항목은 핀별로 검증한 174를 채택(specs "패키지 핀 수" 항 참조).',
+        thermalPad: '174-Pin CLGA(세라믹 LGA) 볼 어레이 패키지, 별도의 노출 방열 패드 없음; 패키지 중앙은 마이크로미러 어레이 광학 창(Active Array, 창판 포함)이며, 볼은 좌우 두 짧은 변(A-N 열 × 1-7 행, 25-32 행)에만 배치, 방열은 주로 VSS/접지 볼과 기판을 통해 이루어진다; 자세한 열저항과 마이크로미러 어레이 온도/전력 밀도 계산은 datasheet Section 6.6/6.7 참조.',
+        specs: [
+          { k: '표시 해상도', v: '1080p FHD, 1920×1080, 5.4um 미러 피치, ±17° 미러 틸트, 하부 조명' },
+          { k: '데이터 인터페이스', v: 'SubLVDS, 4조 채널(A/B/C/D) × 8-bit 차동 데이터 lane + 1조 차동 클록/채널, 합계 32 data lane + 4 clock pair, 1080p 최고 240Hz 지원' },
+          { k: '저속/보조 인터페이스', v: 'LS_WDATA/LS_CLK(LVDS 입력), LS_RDATA_A~D(LVCMOS 출력), DMD_DEN_ARSTZ(비동기 리셋), TEMP_P/TEMP_N(내장 온도 감지 다이오드)' },
+          { k: '전원 레일', v: 'VDD 디지털 코어 / VDDI SubLVDS 인터페이스 / VBIAS+VRESET 미러 리셋 정부 바이어스 / VOFFSET HVCMOS 승압 로직; datasheet 전원 인가/차단 시퀀스(Section 8)에 따라 공급' },
+          { k: '패키지', v: 'FQY, CLGA(세라믹 LGA), 24.50mm×11.00mm; 컴패니언 컨트롤러 DLPC8444, PMIC/LED 드라이버 DLPA3085 또는 DLPA3082' },
+          { k: '패키지 핀 수(datasheet 내 표시 불일치, 검증 완료)', v: '표지 Device Information 표와 Figure 4-1 도설은 모두 "FQY (166)"/166-Pin으로 표시; 그러나 Table 4-1 핀별 합계 = 174(고유 PAD ID, 물리 N/C 볼 11개 포함), Section 12 Package Option Addendum은 "CLGA (FQY) | 174", Package Materials Information은 Pins=174로 표시, 세 곳이 서로 일치. 본 항목은 174를 채택; datasheet footnote(2)는 추가로 "Only 163 pins are electrically connected for functional use"라고 주기(174개 물리 볼 중 163개가 전기 기능을 가지며, 나머지는 N/C 또는 기구 볼)' },
+          { k: '문서 상태', v: 'PRODUCTION DATA(정식 양산 문서), TI DLPS258 - 2025년 8월' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* DLP78TUV / DLP800XE — 350-Pin BGA DMD (3D printing / large-venue projection) */
+(function () {
+  var T = {
+    'DLP78TUV': {
+      en: {
+        subcategory: '0.78-inch 4K UHD Digital Micromirror Device (DMD) for 3D Printing',
+        whatIs: '0.78-inch diagonal 4K UHD (3840x2160 effective, via pixel shift) Digital Micromirror Device (DMD): a MEMS spatial light modulator (SLM) for high-resolution UV-exposure applications such as 3D printing (resin curing / DLP photopolymerization); driven by dual DLPC6422 display controllers (4 LVDS/SubLVDS buses A/B/C/D) to achieve 4K UHD-resolution data bandwidth.',
+        func: 'Receives display data over an LVDS high-speed differential interface: A/B/C/D four buses, each with a 16-bit differential data pair (D_xN(0..15)/D_xP(0..15)) + 1 differential clock (DCLK_xN/DCLK_xP) + 1 differential control signal (SCTRL_xN/SCTRL_xP), for a total of 64 high-speed differential data lanes + 4 differential clocks + 4 differential controls; the controller drives the micromirror array for PWM-style light modulation per the timing. It also includes an SCP (Serial Communications Port) low-speed interface: SCPCLK/SCPDI/SCPENZ are LVCMOS inputs, SCPDO is an LVCMOS output for the controller to read/write status registers; DMD_PWRDNZ is a chip-level asynchronous reset input, active low; TEMP_N/TEMP_P are a built-in temperature-sensing diode for board-side die-temperature measurement; MBRST(0..14) are 15 micromirror-bias reset input signals that drive the reset timing of each block of the micromirror array. Independent power rails: VDD (digital core), VDDI (LVDS/SubLVDS I/O interface), VCC2 (memory-array boost supply), which must be powered according to the power-up/power-down sequence in datasheet Section 8 Power Supply Recommendations; an incorrect sequence may damage the device.',
+        usedIn: 'High-resolution UV-exposure engines for desktop/industrial DLP photopolymer (resin) 3D printers and large-area precision photopolymerization systems, forming a 4K UHD DLP 3D-printing chipset with dual DLPC6422 controllers and the corresponding power-management / LED (or UV light-source) driver ICs.',
+        desc: '0.78-inch 4K UHD DMD for 3D printing, driven by dual DLPC6422 controllers (Figure 3-1 "Simplified Application for 4K System"); LVDS four buses (A/B/C/D) totaling 64 data lanes + 4 clock pairs + 4 control pairs; FYU BGA package, 350-Pin, 35.0mm x 32.2mm, PRODUCTION DATA (stated at the end of the cover page, TI DLPS294A, released September 2025, revised November 2025). Pin-by-pin verification: the Table 4-1 Pin Functions sum (166 signal + 23 N/C (Dual DLPC6422 4K System configuration) + 161 power/ground (VDD 43 + VDDI 18 + VCC2 11 + VSS 89) = 350) matches both the cover Package Information table (FYU (350)) and the 350-Pin FYU package marked in Figure 4-1, with no pin-count discrepancy. Note: the datasheet also provides, in the N/C list, a second NC set for the "Single DLPC6422 1080p System" configuration (covering all LVDS Bus A/B ball positions, since a single controller only needs Bus C/D to drive 1080p); that configuration is not the 4K dual-controller configuration applicable to this entry (consistent with Figure 3-1) and is not used; this entry keeps the Bus A/B ball positions as their original LVDS signal-pin definitions.',
+        thermalPad: 'A 350-Pin FYU ball-array package with no separate exposed heat pad (heat dissipated through VSS/ground balls and substrate); the package center is the micromirror-array optical window (Active Array), and balls are located only on the four peripheral edges (rows A-E and W-AA span all 26 columns; rows F-V have balls only in the left columns 1-4 and right columns 23-26); see datasheet Section 6 for detailed thermal resistance and micromirror-array temperature/power-density calculations.',
+        specs: [
+          { k: 'Display resolution', v: '4K UHD (3840x2160 effective), 0.78-inch diagonal, driven by dual DLPC6422 controllers' },
+          { k: 'Data interface', v: 'LVDS, 4 buses (A/B/C/D) x 16-bit differential data lanes + 1 differential clock + 1 differential control per bus, total 64 data lanes + 4 clock pairs + 4 control pairs, differential 100 ohm terminated' },
+          { k: 'Low-speed/auxiliary interface', v: 'SCP (Serial Communications Port): SCPCLK/SCPDI/SCPENZ inputs, SCPDO output, LVCMOS, with built-in pull-down resistors; DMD_PWRDNZ chip-level reset (active low); MBRST(0..14), 15 micromirror-bias reset signals' },
+          { k: 'Power rails', v: 'VDD (digital core, 43 pins), VDDI (LVDS I/O, 18 pins), VCC2 (memory-array boost, 11 pins), VSS (global ground, 89 pins)' },
+          { k: 'Package pin count', v: 'FYU BGA 350-Pin; the Table 4-1 pin-by-pin count matches the cover/Figure 4-1 markings (166 signal + 23 NC + 161 power/ground = 350)' },
+          { k: 'Application', v: 'High-resolution UV-exposure engine for DLP photopolymer (resin) 3D printers' },
+          { k: 'Document status', v: 'TI DLPS294A, released September 2025, revised November 2025; PRODUCTION DATA stated at the end of the cover page' }
+        ]
+      },
+      ja: {
+        subcategory: '0.78インチ 4K UHD 3Dプリンティング用デジタルマイクロミラーデバイス（DMD）',
+        whatIs: '0.78インチ対角 4K UHD（3840×2160相当、ピクセルシフトによる）デジタルマイクロミラーデバイス（DMD）：MEMS空間光変調器（SLM）で、3Dプリンティング（樹脂硬化／DLP光造形）などの高解像度UV露光アプリケーション向け；デュアルDLPC6422表示コントローラ（4組のLVDS/SubLVDSバスA/B/C/D）で駆動し、4K UHD解像度のデータ帯域を実現。',
+        func: 'LVDS高速差動インターフェースで表示データを受信：A/B/C/Dの4組のバス、各16-bit差動データ対（D_xN(0..15)/D_xP(0..15)）＋1組の差動クロック（DCLK_xN/DCLK_xP）＋1組の差動制御信号（SCTRL_xN/SCTRL_xP）、合計64組の高速差動データlane＋4組の差動クロック＋4組の差動制御；コントローラはタイミングに従いマイクロミラーアレイをPWM式光変調で駆動。SCP（Serial Communications Port）低速インターフェースも搭載：SCPCLK/SCPDI/SCPENZはLVCMOS入力、SCPDOはLVCMOS出力で、コントローラが状態レジスタを読み書き；DMD_PWRDNZはチップレベルの非同期リセット入力、ローアクティブ；TEMP_N/TEMP_Pは内蔵温度センスダイオードで基板側からダイ温度を測定；MBRST(0..14)は15組のマイクロミラーバイアスリセット信号で、マイクロミラーアレイの各ブロックのリセットタイミングを駆動。独立電源レール：VDD（デジタルコア）、VDDI（LVDS/SubLVDS I/Oインターフェース）、VCC2（メモリアレイ昇圧電源）、datasheet Section 8 Power Supply Recommendationsの電源投入/切断シーケンスに従って供給する必要があり、順序が誤ると素子を損傷する可能性がある。',
+        usedIn: 'デスクトップ/産業用DLP光造形（樹脂）3Dプリンタの高解像度UV露光エンジン、大面積精密光造形システム、デュアルDLPC6422コントローラ＋対応する電源管理／LED（またはUV光源）ドライバICと組み合わせて4K UHD DLP 3Dプリンティングチップセットを構成。',
+        desc: '0.78インチ 4K UHD 3Dプリンティング用DMD、デュアルDLPC6422コントローラで駆動（Figure 3-1 "Simplified Application for 4K System"）、LVDS 4バス（A/B/C/D）合計64 data lane＋4 clock pair＋4 control pair；FYU BGAパッケージ、350-Pin、35.0mm×32.2mm、PRODUCTION DATA（表紙頁末尾に明記、TI DLPS294A、2025年9月発行、2025年11月改訂）。ピンごとの検証：Table 4-1 Pin Functionsの合計（信号166＋N/C 23（Dual DLPC6422 4K System構成）＋電源/接地161（VDD 43＋VDDI 18＋VCC2 11＋VSS 89）＝350）は、表紙Package Information表（FYU (350)）およびFigure 4-1に示された350-Pin FYUパッケージと完全に一致、ピン数の不一致なし。注意：datasheetはN/Cリストに「Single DLPC6422 1080p System」構成の第2のNCリスト（LVDS Bus A/Bの全ボール位置を含む、単一コントローラは1080p駆動にBus C/Dのみ必要なため）も提供するが、その構成は本項目に該当する4Kデュアルコントローラ構成（Figure 3-1と一致）ではないため採用せず；本項目はBus A/Bのボール位置を元のLVDS信号ピン定義のまま維持。',
+        thermalPad: '350-Pin FYUボールアレイパッケージ、独立した露出放熱パッドなし（放熱はVSS/接地ボールと基板を通じて行われる）；パッケージ中央はマイクロミラーアレイの光学窓（Active Array）で、ボールは四周の縁のみに配置（A-E列とW-AA列は全26行にまたがる；F-V列は左側1-4行と右側23-26行のみボールあり）；詳細な熱抵抗とマイクロミラーアレイの温度/電力密度計算はdatasheet Section 6参照。',
+        specs: [
+          { k: '表示解像度', v: '4K UHD（3840×2160相当）、0.78インチ対角、デュアルDLPC6422コントローラで駆動' },
+          { k: 'データインターフェース', v: 'LVDS、4組のバス（A/B/C/D）× 16-bit差動データlane＋1組の差動クロック＋1組の差動制御／バス、合計64 data lane＋4 clock pair＋4 control pair、差動100Ω終端' },
+          { k: '低速/補助インターフェース', v: 'SCP（Serial Communications Port）：SCPCLK/SCPDI/SCPENZ入力、SCPDO出力、LVCMOS、内蔵プルダウン抵抗；DMD_PWRDNZチップレベルリセット（ローアクティブ）；MBRST(0..14)、計15組のマイクロミラーバイアスリセット信号' },
+          { k: '電源レール', v: 'VDD（デジタルコア、43 pin）、VDDI（LVDS I/O、18 pin）、VCC2（メモリアレイ昇圧、11 pin）、VSS（全体接地、89 pin）' },
+          { k: 'パッケージピン数', v: 'FYU BGA 350-Pin；Table 4-1のピンごとの計数は表紙/Figure 4-1の表示と一致（信号166＋NC23＋電源接地161＝350）' },
+          { k: '用途', v: 'DLP光造形（樹脂）3Dプリンタの高解像度UV露光エンジン' },
+          { k: '文書ステータス', v: 'TI DLPS294A、2025年9月発行・2025年11月改訂；表紙頁末尾にPRODUCTION DATAと明記' }
+        ]
+      },
+      ko: {
+        subcategory: '0.78인치 4K UHD 3D 프린팅용 디지털 마이크로미러 디바이스(DMD)',
+        whatIs: '0.78인치 대각 4K UHD(3840×2160 상당, 픽셀 시프트 방식) 디지털 마이크로미러 디바이스(DMD): MEMS 공간 광 변조기(SLM)로, 3D 프린팅(수지 경화 / DLP 광조형) 등 고해상도 UV 노광 응용용; 듀얼 DLPC6422 표시 컨트롤러(4조 LVDS/SubLVDS 버스 A/B/C/D)로 구동하여 4K UHD 해상도 데이터 대역폭을 실현.',
+        func: 'LVDS 고속 차동 인터페이스로 표시 데이터를 수신: A/B/C/D 4조 버스, 각 16-bit 차동 데이터 쌍(D_xN(0..15)/D_xP(0..15)) + 1조 차동 클록(DCLK_xN/DCLK_xP) + 1조 차동 제어 신호(SCTRL_xN/SCTRL_xP), 합계 64조 고속 차동 데이터 lane + 4조 차동 클록 + 4조 차동 제어; 컨트롤러는 타이밍에 따라 마이크로미러 어레이를 PWM 방식 광 변조로 구동. SCP(Serial Communications Port) 저속 인터페이스도 탑재: SCPCLK/SCPDI/SCPENZ는 LVCMOS 입력, SCPDO는 LVCMOS 출력으로 컨트롤러가 상태 레지스터를 읽고 씀; DMD_PWRDNZ는 칩 레벨 비동기 리셋 입력, 로우 액티브; TEMP_N/TEMP_P은 내장 온도 감지 다이오드로 기판 측에서 다이 온도를 측정; MBRST(0..14)는 15조 마이크로미러 바이어스 리셋 신호로, 마이크로미러 어레이의 각 블록의 리셋 타이밍을 구동. 독립 전원 레일: VDD(디지털 코어), VDDI(LVDS/SubLVDS I/O 인터페이스), VCC2(메모리 어레이 승압 전원), datasheet Section 8 Power Supply Recommendations의 전원 인가/차단 시퀀스에 따라 공급해야 하며, 순서가 잘못되면 소자를 손상시킬 수 있다.',
+        usedIn: '데스크톱/산업용 DLP 광조형(수지) 3D 프린터의 고해상도 UV 노광 엔진, 대면적 정밀 광조형 시스템, 듀얼 DLPC6422 컨트롤러 + 대응 전원 관리 / LED(또는 UV 광원) 드라이버 IC와 조합하여 4K UHD DLP 3D 프린팅 칩셋을 구성.',
+        desc: '0.78인치 4K UHD 3D 프린팅용 DMD, 듀얼 DLPC6422 컨트롤러로 구동(Figure 3-1 "Simplified Application for 4K System"), LVDS 4버스(A/B/C/D) 합계 64 data lane + 4 clock pair + 4 control pair; FYU BGA 패키지, 350-Pin, 35.0mm×32.2mm, PRODUCTION DATA(표지 페이지 끝에 명기, TI DLPS294A, 2025년 9월 발행, 2025년 11월 개정). 핀별 검증: Table 4-1 Pin Functions의 합계(신호 166 + N/C 23(Dual DLPC6422 4K System 구성) + 전원/접지 161(VDD 43 + VDDI 18 + VCC2 11 + VSS 89) = 350)는 표지 Package Information 표(FYU (350))와 Figure 4-1에 표시된 350-Pin FYU 패키지와 완전히 일치, 핀 수 불일치 없음. 주의: datasheet는 N/C 리스트에 "Single DLPC6422 1080p System" 구성의 두 번째 NC 리스트(LVDS Bus A/B 전체 볼 위치 포함, 단일 컨트롤러는 1080p 구동에 Bus C/D만 필요하므로)도 제공하지만, 그 구성은 본 항목에 해당하는 4K 듀얼 컨트롤러 구성(Figure 3-1과 일치)이 아니므로 채택하지 않음; 본 항목은 Bus A/B 볼 위치를 원래 LVDS 신호 핀 정의로 유지.',
+        thermalPad: '350-Pin FYU 볼 어레이 패키지, 별도의 노출 방열 패드 없음(방열은 VSS/접지 볼과 기판을 통해 이루어짐); 패키지 중앙은 마이크로미러 어레이 광학 창(Active Array)이며, 볼은 네 주변 가장자리에만 배치(A-E 열과 W-AA 열은 전체 26 행에 걸침; F-V 열은 좌측 1-4 행과 우측 23-26 행에만 볼 있음); 자세한 열저항과 마이크로미러 어레이 온도/전력 밀도 계산은 datasheet Section 6 참조.',
+        specs: [
+          { k: '표시 해상도', v: '4K UHD(3840×2160 상당), 0.78인치 대각, 듀얼 DLPC6422 컨트롤러로 구동' },
+          { k: '데이터 인터페이스', v: 'LVDS, 4조 버스(A/B/C/D) × 16-bit 차동 데이터 lane + 1조 차동 클록 + 1조 차동 제어/버스, 합계 64 data lane + 4 clock pair + 4 control pair, 차동 100 ohm 종단' },
+          { k: '저속/보조 인터페이스', v: 'SCP(Serial Communications Port): SCPCLK/SCPDI/SCPENZ 입력, SCPDO 출력, LVCMOS, 내장 풀다운 저항; DMD_PWRDNZ 칩 레벨 리셋(로우 액티브); MBRST(0..14), 총 15조 마이크로미러 바이어스 리셋 신호' },
+          { k: '전원 레일', v: 'VDD(디지털 코어, 43 pin), VDDI(LVDS I/O, 18 pin), VCC2(메모리 어레이 승압, 11 pin), VSS(전역 접지, 89 pin)' },
+          { k: '패키지 핀 수', v: 'FYU BGA 350-Pin; Table 4-1 핀별 계수는 표지/Figure 4-1 표시와 일치(신호166 + NC23 + 전원접지161 = 350)' },
+          { k: '용도', v: 'DLP 광조형(수지) 3D 프린터의 고해상도 UV 노광 엔진' },
+          { k: '문서 상태', v: 'TI DLPS294A, 2025년 9월 발행·2025년 11월 개정; 표지 페이지 끝에 PRODUCTION DATA 명기' }
+        ]
+      }
+    },
+    'DLP800XE': {
+      en: {
+        subcategory: '0.8-inch 4K+ Digital Micromirror Device (DMD) for Large-Venue Projection',
+        whatIs: '0.8-inch diagonal 4K+ (3840x2400 display resolution, 9.0um mirror pitch, +/-14.5 deg mirror tilt, corner illumination) Digital Micromirror Device (DMD): a MEMS spatial light modulator (SLM) supporting high optical power density (up to 22W/cm2), for high-brightness solid-state-illumination display systems such as large-venue projectors, smart projectors, enterprise projectors and digital signage driven by laser phosphor or RGB laser; driven by dual DLPC4420/DLPC4422 display controllers (4 LVDS buses A/B/C/D) to achieve 4K+-resolution data bandwidth, a member of the TI 0.8-inch 4K+ chipset (which also includes the DLPA300 mirror driver and DLPA100 power/motor driver IC).',
+        func: 'Receives display data over an LVDS high-speed differential interface: A/B/C/D four buses, each with a 16-bit differential data pair (D_xN(0..15)/D_xP(0..15)) + 1 differential clock (DCLK_xN/DCLK_xP) + 1 differential control signal (SCTRL_xN/SCTRL_xP), for a total of 64 high-speed differential data lanes + 4 differential clocks + 4 differential controls; the controller drives the micromirror array for PWM-style light modulation per the timing, supporting 4K+ up to 60Hz. It also includes an SCP (Serial Communications Port) low-speed interface: SCPCLK/SCPDI/SCPENZ are LVCMOS inputs, SCPDO is an LVCMOS output for the controller to read/write status registers; DMD_PWRDNZ is a chip-level asynchronous reset input, active low; TEMP_N/TEMP_P are a built-in temperature-sensing diode for board-side die-temperature measurement; MBRST(0..14) are 15 micromirror-bias reset input signals that drive the reset timing of each block of the micromirror array. Independent power rails: VDD (digital core), VDDI (LVDS I/O interface), VCC2 (memory-array boost supply), which must be powered according to the power-up/power-down sequence in datasheet Section 8 Power Supply Recommendations; an incorrect sequence may damage the device.',
+        usedIn: 'High-brightness laser solid-state-illumination display systems such as large-venue projectors, smart projectors, enterprise projectors and digital signage, forming a 0.8-inch 4K+ DLP projection chipset with dual DLPC4420/DLPC4422 display controllers, the DLPA300 mirror driver and the DLPA100 power/motor driver IC.',
+        desc: '0.8-inch 4K+ (3840x2400) DMD for large-venue projection, driven by dual DLPC4420/DLPC4422 controllers (Simplified Application block diagram: the two controllers drive Bus A/B and Bus C/D respectively); LVDS four buses (A/B/C/D) totaling 64 data lanes + 4 clock pairs + 4 control pairs; FYV BGA package, 350-Pin, 35.0mm x 32.2mm, PRODUCTION DATA (TI SLVSJA1, released August 2025). Pin-by-pin verification: the Table 4-1 Pin Functions sum (166 signal = LVDS 144 + SCP 4 + DMD_PWRDNZ 1 + TEMP_N/P 2 + MBRST 15 + 23 N/C + 161 power/ground (VDD 43 + VDDI 18 + VCC2 11 + VSS 89) = 350) agrees three-ways with the Section 12 Package Option Addendum ("CPGA (FYV) | 350") and the 350-Pin FYV package marked in Figure 4-1, with no pin-count discrepancy. Unlike the same-package-family DLP78TUV (350-Pin FYU): this datasheet does not provide an alternate single-controller NC configuration; Table 4-1 has only a single N/C list (23 balls), corresponding to a dual-controller 4K+ system with all four LVDS buses used as signal pins.',
+        thermalPad: 'A 350-Pin FYV ball-array package with no separate exposed heat pad (heat dissipated through VSS/ground balls and substrate); the package center is the micromirror-array optical window (Active Array), and balls are located only on the four peripheral edges (rows A-E and W-AA span all 26 columns; rows F-V have balls only in the left columns 1-4 and right columns 23-26); see datasheet Section 6 for detailed thermal resistance and micromirror-array temperature/power-density calculations.',
+        specs: [
+          { k: 'Display resolution', v: '0.8-inch diagonal 4K+, 3840x2400, 9.0um mirror pitch, +/-14.5 deg mirror tilt (relative to flat), corner illumination, supports 4K+ up to 60Hz' },
+          { k: 'Data interface', v: 'LVDS, 4 buses (A/B/C/D) x 16-bit differential data lanes + 1 differential clock per bus + 1 differential control per bus, total 64 data lanes + 4 clock pairs + 4 control pairs' },
+          { k: 'Low-speed/auxiliary interface', v: 'SCP (Serial Communications Port): SCPCLK/SCPDI/SCPENZ inputs, SCPDO output, LVCMOS, with built-in pull-down resistors; DMD_PWRDNZ chip-level reset (active low); TEMP_N/TEMP_P built-in temperature-sensing diode; MBRST(0..14), 15 micromirror-bias reset signals' },
+          { k: 'Power rails', v: 'VDD low-voltage CMOS core supply / VDDI LVDS I/O interface supply / VCC2 memory-array boost supply; power per the datasheet Section 8 power-up/down sequence, an incorrect sequence may damage the device' },
+          { k: 'Optical power', v: 'Supports high optical power density, up to 22W/cm2 total optical power density, for high-brightness large-venue displays' },
+          { k: 'Package', v: 'FYV, CPGA/BGA, 350-Pin, 35.0mm x 32.2mm; companion controllers DLPC4420/DLPC4422 (two), DLPA300 mirror driver, DLPA100 power and motor driver IC' },
+          { k: 'Document status', v: 'PRODUCTION DATA (official production document), TI SLVSJA1 - August 2025' }
+        ]
+      },
+      ja: {
+        subcategory: '0.8インチ 4K+ 大型施設投影用デジタルマイクロミラーデバイス（DMD）',
+        whatIs: '0.8インチ対角 4K+（3840×2400表示解像度、9.0umミラーピッチ、±14.5°ミラーチルト、コーナー照明）デジタルマイクロミラーデバイス（DMD）：MEMS空間光変調器（SLM）で、高い光学パワー密度（最高22W/cm2）に対応、レーザ蛍光体またはRGBレーザ駆動の大型施設プロジェクタ、スマートプロジェクタ、企業向けプロジェクタ、デジタルサイネージなどの高輝度ソリッドステート照明表示システム向け；デュアルDLPC4420／DLPC4422表示コントローラ（4組のLVDSバスA/B/C/D）で駆動し、4K+解像度のデータ帯域を実現、TI 0.8インチ4K+チップセット（DLPA300ミラードライバとDLPA100電源／モータドライバICも含む）のメンバー。',
+        func: 'LVDS高速差動インターフェースで表示データを受信：A/B/C/Dの4組のバス、各16-bit差動データ対（D_xN(0..15)/D_xP(0..15)）＋1組の差動クロック（DCLK_xN/DCLK_xP）＋1組の差動制御信号（SCTRL_xN/SCTRL_xP）、合計64組の高速差動データlane＋4組の差動クロック＋4組の差動制御；コントローラはタイミングに従いマイクロミラーアレイをPWM式光変調で駆動、4K+最高60Hzに対応。SCP（Serial Communications Port）低速インターフェースも搭載：SCPCLK/SCPDI/SCPENZはLVCMOS入力、SCPDOはLVCMOS出力で、コントローラが状態レジスタを読み書き；DMD_PWRDNZはチップレベルの非同期リセット入力、ローアクティブ；TEMP_N/TEMP_Pは内蔵温度センスダイオードで基板側からダイ温度を測定；MBRST(0..14)は15組のマイクロミラーバイアスリセット信号で、マイクロミラーアレイの各ブロックのリセットタイミングを駆動。独立電源レール：VDD（デジタルコア）、VDDI（LVDS I/Oインターフェース）、VCC2（メモリアレイ昇圧電源）、datasheet Section 8 Power Supply Recommendationsの電源投入/切断シーケンスに従って供給する必要があり、順序が誤ると素子を損傷する可能性がある。',
+        usedIn: '大型施設プロジェクタ、スマートプロジェクタ、企業向けプロジェクタ、デジタルサイネージなどの高輝度レーザソリッドステート照明表示システム、デュアルDLPC4420/DLPC4422表示コントローラ＋DLPA300ミラードライバ＋DLPA100電源／モータドライバICと組み合わせて0.8インチ4K+ DLP投影チップセットを構成。',
+        desc: '0.8インチ 4K+（3840×2400）大型施設投影用DMD、デュアルDLPC4420/DLPC4422コントローラで駆動（Simplified Applicationブロック図：2つのコントローラがそれぞれBus A/BとBus C/Dを駆動）、LVDS 4バス（A/B/C/D）合計64 data lane＋4 clock pair＋4 control pair；FYV BGAパッケージ、350-Pin、35.0mm×32.2mm、PRODUCTION DATA（TI SLVSJA1、2025年8月発行）。ピンごとの検証：Table 4-1 Pin Functionsの合計（信号166＝LVDS 144＋SCP 4＋DMD_PWRDNZ 1＋TEMP_N/P 2＋MBRST 15＋N/C 23＋電源/接地161（VDD 43＋VDDI 18＋VCC2 11＋VSS 89）＝350）は、Section 12 Package Option Addendum（"CPGA (FYV) | 350"）およびFigure 4-1に示された350-Pin FYVパッケージと三方で完全に一致、ピン数の不一致なし。同一パッケージファミリのDLP78TUV（350-Pin FYU）とは異なり：本データシートは単一コントローラの代替NC構成を提供せず、Table 4-1は単一のN/Cリスト（23ボール）のみで、4組すべてのLVDSバスを信号ピンとして使用するデュアルコントローラ4K+システムに対応。',
+        thermalPad: '350-Pin FYVボールアレイパッケージ、独立した露出放熱パッドなし（放熱はVSS/接地ボールと基板を通じて行われる）；パッケージ中央はマイクロミラーアレイの光学窓（Active Array）で、ボールは四周の縁のみに配置（A-E列とW-AA列は全26行にまたがる；F-V列は左側1-4行と右側23-26行のみボールあり）；詳細な熱抵抗とマイクロミラーアレイの温度/電力密度計算はdatasheet Section 6参照。',
+        specs: [
+          { k: '表示解像度', v: '0.8インチ対角 4K+、3840×2400、9.0umミラーピッチ、±14.5°ミラーチルト（平面に対して）、コーナー照明、4K+最高60Hzに対応' },
+          { k: 'データインターフェース', v: 'LVDS、4組のバス（A/B/C/D）× 16-bit差動データlane＋1組の差動クロック／バス＋1組の差動制御／バス、合計64 data lane＋4 clock pair＋4 control pair' },
+          { k: '低速/補助インターフェース', v: 'SCP（Serial Communications Port）：SCPCLK/SCPDI/SCPENZ入力、SCPDO出力、LVCMOS、内蔵プルダウン抵抗；DMD_PWRDNZチップレベルリセット（ローアクティブ）；TEMP_N/TEMP_P内蔵温度センスダイオード；MBRST(0..14)、計15組のマイクロミラーバイアスリセット信号' },
+          { k: '電源レール', v: 'VDD 低電圧CMOSコア供給／VDDI LVDS I/Oインターフェース供給／VCC2 メモリアレイ昇圧電源；datasheet Section 8の電源投入/切断シーケンスに従って供給、順序が誤ると素子を損傷する可能性がある' },
+          { k: '光学パワー', v: '高い光学パワー密度に対応、最高22W/cm2の総光学パワー密度、高輝度大型施設表示に適する' },
+          { k: 'パッケージ', v: 'FYV、CPGA/BGA、350-Pin、35.0mm×32.2mm；コンパニオンコントローラDLPC4420/DLPC4422（2個）、DLPA300ミラードライバ、DLPA100電源・モータドライバIC' },
+          { k: '文書ステータス', v: 'PRODUCTION DATA（正式量産文書）、TI SLVSJA1 – 2025年8月' }
+        ]
+      },
+      ko: {
+        subcategory: '0.8인치 4K+ 대형 시설 투영용 디지털 마이크로미러 디바이스(DMD)',
+        whatIs: '0.8인치 대각 4K+(3840×2400 표시 해상도, 9.0um 미러 피치, ±14.5° 미러 틸트, 코너 조명) 디지털 마이크로미러 디바이스(DMD): MEMS 공간 광 변조기(SLM)로 높은 광학 전력 밀도(최고 22W/cm2)를 지원, 레이저 형광체 또는 RGB 레이저 구동의 대형 시설 프로젝터, 스마트 프로젝터, 기업용 프로젝터, 디지털 사이니지 등 고휘도 솔리드스테이트 조명 표시 시스템용; 듀얼 DLPC4420/DLPC4422 표시 컨트롤러(4조 LVDS 버스 A/B/C/D)로 구동하여 4K+ 해상도 데이터 대역폭을 실현, TI 0.8인치 4K+ 칩셋(DLPA300 미러 드라이버와 DLPA100 전원/모터 드라이버 IC도 포함)의 멤버.',
+        func: 'LVDS 고속 차동 인터페이스로 표시 데이터를 수신: A/B/C/D 4조 버스, 각 16-bit 차동 데이터 쌍(D_xN(0..15)/D_xP(0..15)) + 1조 차동 클록(DCLK_xN/DCLK_xP) + 1조 차동 제어 신호(SCTRL_xN/SCTRL_xP), 합계 64조 고속 차동 데이터 lane + 4조 차동 클록 + 4조 차동 제어; 컨트롤러는 타이밍에 따라 마이크로미러 어레이를 PWM 방식 광 변조로 구동, 4K+ 최고 60Hz 지원. SCP(Serial Communications Port) 저속 인터페이스도 탑재: SCPCLK/SCPDI/SCPENZ는 LVCMOS 입력, SCPDO는 LVCMOS 출력으로 컨트롤러가 상태 레지스터를 읽고 씀; DMD_PWRDNZ는 칩 레벨 비동기 리셋 입력, 로우 액티브; TEMP_N/TEMP_P은 내장 온도 감지 다이오드로 기판 측에서 다이 온도를 측정; MBRST(0..14)는 15조 마이크로미러 바이어스 리셋 신호로, 마이크로미러 어레이의 각 블록의 리셋 타이밍을 구동. 독립 전원 레일: VDD(디지털 코어), VDDI(LVDS I/O 인터페이스), VCC2(메모리 어레이 승압 전원), datasheet Section 8 Power Supply Recommendations의 전원 인가/차단 시퀀스에 따라 공급해야 하며, 순서가 잘못되면 소자를 손상시킬 수 있다.',
+        usedIn: '대형 시설 프로젝터, 스마트 프로젝터, 기업용 프로젝터, 디지털 사이니지 등 고휘도 레이저 솔리드스테이트 조명 표시 시스템, 듀얼 DLPC4420/DLPC4422 표시 컨트롤러 + DLPA300 미러 드라이버 + DLPA100 전원/모터 드라이버 IC와 조합하여 0.8인치 4K+ DLP 투영 칩셋을 구성.',
+        desc: '0.8인치 4K+(3840×2400) 대형 시설 투영용 DMD, 듀얼 DLPC4420/DLPC4422 컨트롤러로 구동(Simplified Application 블록도: 두 컨트롤러가 각각 Bus A/B와 Bus C/D를 구동), LVDS 4버스(A/B/C/D) 합계 64 data lane + 4 clock pair + 4 control pair; FYV BGA 패키지, 350-Pin, 35.0mm×32.2mm, PRODUCTION DATA(TI SLVSJA1, 2025년 8월 발행). 핀별 검증: Table 4-1 Pin Functions의 합계(신호 166 = LVDS 144 + SCP 4 + DMD_PWRDNZ 1 + TEMP_N/P 2 + MBRST 15 + N/C 23 + 전원/접지 161(VDD 43 + VDDI 18 + VCC2 11 + VSS 89) = 350)는 Section 12 Package Option Addendum("CPGA (FYV) | 350")와 Figure 4-1에 표시된 350-Pin FYV 패키지와 세 방향으로 완전히 일치, 핀 수 불일치 없음. 동일 패키지 패밀리 DLP78TUV(350-Pin FYU)와 달리: 본 데이터시트는 단일 컨트롤러 대체 NC 구성을 제공하지 않으며, Table 4-1은 단일 N/C 리스트(23 볼)만 있고, 4조 모든 LVDS 버스를 신호 핀으로 사용하는 듀얼 컨트롤러 4K+ 시스템에 대응.',
+        thermalPad: '350-Pin FYV 볼 어레이 패키지, 별도의 노출 방열 패드 없음(방열은 VSS/접지 볼과 기판을 통해 이루어짐); 패키지 중앙은 마이크로미러 어레이 광학 창(Active Array)이며, 볼은 네 주변 가장자리에만 배치(A-E 열과 W-AA 열은 전체 26 행에 걸침; F-V 열은 좌측 1-4 행과 우측 23-26 행에만 볼 있음); 자세한 열저항과 마이크로미러 어레이 온도/전력 밀도 계산은 datasheet Section 6 참조.',
+        specs: [
+          { k: '표시 해상도', v: '0.8인치 대각 4K+, 3840×2400, 9.0um 미러 피치, ±14.5° 미러 틸트(평면 기준), 코너 조명, 4K+ 최고 60Hz 지원' },
+          { k: '데이터 인터페이스', v: 'LVDS, 4조 버스(A/B/C/D) × 16-bit 차동 데이터 lane + 1조 차동 클록/버스 + 1조 차동 제어/버스, 합계 64 data lane + 4 clock pair + 4 control pair' },
+          { k: '저속/보조 인터페이스', v: 'SCP(Serial Communications Port): SCPCLK/SCPDI/SCPENZ 입력, SCPDO 출력, LVCMOS, 내장 풀다운 저항; DMD_PWRDNZ 칩 레벨 리셋(로우 액티브); TEMP_N/TEMP_P 내장 온도 감지 다이오드; MBRST(0..14), 총 15조 마이크로미러 바이어스 리셋 신호' },
+          { k: '전원 레일', v: 'VDD 저전압 CMOS 코어 공급 / VDDI LVDS I/O 인터페이스 공급 / VCC2 메모리 어레이 승압 전원; datasheet Section 8 전원 인가/차단 시퀀스에 따라 공급, 순서가 잘못되면 소자를 손상시킬 수 있다' },
+          { k: '광학 전력', v: '높은 광학 전력 밀도 지원, 최고 22W/cm2 총 광학 전력 밀도, 고휘도 대형 시설 표시에 적합' },
+          { k: '패키지', v: 'FYV, CPGA/BGA, 350-Pin, 35.0mm×32.2mm; 컴패니언 컨트롤러 DLPC4420/DLPC4422(2개), DLPA300 미러 드라이버, DLPA100 전원·모터 드라이버 IC' },
+          { k: '문서 상태', v: 'PRODUCTION DATA(정식 양산 문서), TI SLVSJA1 - 2025년 8월' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
+
+/* TMS320F28P551SG */
+(function () {
+  var T = {
+    'TMS320F28P551SG': {
+      en: {
+        subcategory: 'C2000 Real-Time Control MCU (C28x DSP)',
+        whatIs: 'C2000 real-time control microcontroller: 160MHz C28x 32-bit DSP core (equivalent to 320MHz Arm Cortex-M7 compute), integrating a high-precision ADC, PGA, DAC, comparators and a rich set of GPIO/communication interfaces, for real-time control applications such as power conversion, motor control and digital power.',
+        func: 'Runs control loops on the C28x DSP (160MHz), with built-in programmable gain amplifiers (PGA1-3), DAC, comparators (CMP) and an ADC front end; provides many multiplexed GPIOs (see the Pin Attributes table for detailed signal assignment), 5x SPI (up to 50MHz), UART, 2x I2C, PMBus, CAN and other interfaces; JTAG debug (TCK/TMS/TDI/TDO). X1/X2 connect to the crystal.',
+        usedIn: 'Real-time control systems such as digital power/power conversion, motor and servo control, automotive (-Q1 versions) and renewable-energy inverters.',
+        desc: 'C2000 real-time control MCU, 160MHz C28x DSP (equivalent to 320MHz Cortex-M7), built-in PGA/DAC/CMP/ADC, 100-LQFP.',
+        thermalPad: '100-pin PZ LQFP (leaded package, no exposed heat pad).',
+        specs: [
+          { k: 'CPU', v: '160MHz C28x 32-bit DSP (equivalent to 320MHz Arm Cortex-M7 compute)' },
+          { k: 'Analog', v: 'High-precision ADC, programmable gain amplifiers PGA1-3, DAC, comparators CMP' },
+          { k: 'Communication', v: '5x SPI (up to 50MHz), UART, 2x I2C, PMBus, CAN' },
+          { k: 'GPIO', v: 'Many multiplexed GPIOs (see the Pin Attributes table)' },
+          { k: 'Debug', v: 'JTAG (TCK/TMS/TDI/TDO)' },
+          { k: 'Package', v: '100-pin LQFP (PZ); also available in 80/64/56-QFP, 49-WCSP, 32-QFN' }
+        ]
+      },
+      ja: {
+        subcategory: 'C2000 リアルタイム制御MCU（C28x DSP）',
+        whatIs: 'C2000 リアルタイム制御マイコン：160MHz C28x 32-bit DSPコア（320MHz Arm Cortex-M7相当の演算性能）、高精度ADC、PGA、DAC、コンパレータ、豊富なGPIO/通信インターフェースを統合、電力変換、モータ制御、デジタル電源などのリアルタイム制御アプリケーション向け。',
+        func: 'C28x DSP（160MHz）で制御ループを実行し、プログラマブルゲインアンプ（PGA1-3）、DAC、コンパレータ（CMP）、ADCフロントエンドを内蔵；多数の多重化GPIO（詳細な信号割り当てはPin Attributes表参照）、SPI×5（最大50MHz）、UART、I2C×2、PMBus、CANなどの通信を提供；JTAGデバッグ（TCK/TMS/TDI/TDO）。X1/X2は水晶振動子に接続。',
+        usedIn: 'デジタル電源/電力変換、モータ・サーボ制御、車載（-Q1版）、再生可能エネルギー用インバータなどのリアルタイム制御システム。',
+        desc: 'C2000 リアルタイム制御MCU、160MHz C28x DSP（320MHz Cortex-M7相当）、PGA/DAC/CMP/ADC内蔵、100-LQFP。',
+        thermalPad: '100-pin PZ LQFP（リード付きパッケージ、露出放熱パッドなし）。',
+        specs: [
+          { k: 'CPU', v: '160MHz C28x 32-bit DSP（320MHz Arm Cortex-M7相当の演算性能）' },
+          { k: 'アナログ', v: '高精度ADC、プログラマブルゲインアンプPGA1-3、DAC、コンパレータCMP' },
+          { k: '通信', v: 'SPI×5（最大50MHz）、UART、I2C×2、PMBus、CAN' },
+          { k: 'GPIO', v: '多数の多重化GPIO（Pin Attributes表参照）' },
+          { k: 'デバッグ', v: 'JTAG（TCK/TMS/TDI/TDO）' },
+          { k: 'パッケージ', v: '100-pin LQFP (PZ)；ほかに80/64/56-QFP、49-WCSP、32-QFN版あり' }
+        ]
+      },
+      ko: {
+        subcategory: 'C2000 실시간 제어 MCU(C28x DSP)',
+        whatIs: 'C2000 실시간 제어 마이크로컨트롤러: 160MHz C28x 32-bit DSP 코어(320MHz Arm Cortex-M7 상당 연산 성능), 고정밀 ADC, PGA, DAC, 비교기와 풍부한 GPIO/통신 인터페이스를 통합, 전력 변환, 모터 제어, 디지털 전원 등 실시간 제어 응용용.',
+        func: 'C28x DSP(160MHz)에서 제어 루프를 실행하며, 프로그래머블 게인 앰프(PGA1-3), DAC, 비교기(CMP), ADC 프런트엔드를 내장; 다수의 다중화 GPIO(자세한 신호 할당은 Pin Attributes 표 참조), SPI×5(최대 50MHz), UART, I2C×2, PMBus, CAN 등 통신을 제공; JTAG 디버그(TCK/TMS/TDI/TDO). X1/X2는 크리스털에 연결.',
+        usedIn: '디지털 전원/전력 변환, 모터 및 서보 제어, 차량용(-Q1 버전), 재생에너지 인버터 등 실시간 제어 시스템.',
+        desc: 'C2000 실시간 제어 MCU, 160MHz C28x DSP(320MHz Cortex-M7 상당), PGA/DAC/CMP/ADC 내장, 100-LQFP.',
+        thermalPad: '100-pin PZ LQFP(리드 패키지, 노출 방열 패드 없음).',
+        specs: [
+          { k: 'CPU', v: '160MHz C28x 32-bit DSP(320MHz Arm Cortex-M7 상당 연산 성능)' },
+          { k: '아날로그', v: '고정밀 ADC, 프로그래머블 게인 앰프 PGA1-3, DAC, 비교기 CMP' },
+          { k: '통신', v: 'SPI×5(최대 50MHz), UART, I2C×2, PMBus, CAN' },
+          { k: 'GPIO', v: '다수의 다중화 GPIO(Pin Attributes 표 참조)' },
+          { k: '디버그', v: 'JTAG(TCK/TMS/TDI/TDO)' },
+          { k: '패키지', v: '100-pin LQFP (PZ); 그 외 80/64/56-QFP, 49-WCSP, 32-QFN 버전 있음' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
