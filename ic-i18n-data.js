@@ -7889,3 +7889,509 @@
   };
   Object.assign(window.IC_I18N, T);
 })();
+
+/* batch 12B: entries 150-158 (DAC39RF10-SP, DAC39RFS10-SP, DRV8218, DRV81646-Q1,
+   FAN31790, X4003, NX48P0407, MCT8376Z-Q1, DRV8363) */
+(function () {
+  // DAC39RF10-SP / DAC39RFS10-SP 姊妹料共享文本（同一 datasheet SBAS932A）
+  function dacEntry(L, d) {
+    return {
+      subcategory: d.subcategory,
+      whatIs: d.whatIs,
+      func: d.func,
+      usedIn: d.usedIn,
+      desc: d.desc,
+      thermalPad: L.thermalPad,
+      specs: [
+        { k: L.kRad1, v: L.vRad1 },
+        { k: L.kRad2, v: L.vRad2 },
+        { k: L.kRes, v: d.vRes },
+        { k: L.kRate, v: d.vRate },
+        { k: L.kBw, v: L.vBw },
+        { k: L.kAc, v: L.vAc },
+        { k: L.kDuc, v: d.vDuc },
+        { k: L.kJesd, v: L.vJesd },
+        { k: L.kScreen, v: L.vScreen },
+        { k: L.kGrade, v: d.vGrade },
+        { k: L.kPkg, v: d.vPkg }
+      ],
+      dropIn: [{ note: d.dropNote }]
+    };
+  }
+  var dacL = {
+    en: {
+      thermalPad: 'No exposed pad (256-ball FCBGA; heat dissipates through the ball array and substrate); see datasheet for thermal design',
+      kRad1: 'Radiation tolerance (-SP)', vRad1: 'SEU-immune registers; SEL 120MeV-cm²/mg; TID RLAT 300krad(Si)',
+      kRad2: 'Radiation tolerance (-SEP, not in library, reference only)', vRad2: 'See datasheet: SEU-immune registers; SEL 43MeV-cm²/mg; TID RLAT 30krad(Si)',
+      kRes: 'Resolution/sample rate', kRate: 'Max input data rate',
+      kBw: 'Output bandwidth', vBw: '−3dB 12GHz',
+      kAc: 'AC performance (fOUT=2.997GHz, DES2XL, DEM/Dither off)', vAc: 'Noise floor −155dBFS/Hz; SFDR(−0.1dBFS) 60dBc; IMD3(−7dBFS/tone) −62dBc; additive phase noise −138dBc/Hz @10kHz offset',
+      kDuc: 'Digital upconversion',
+      kJesd: 'JESD204C interface', vJesd: 'Up to 16 lanes, up to 12.8Gbps per lane; Class C-S subclass-1; built-in AC-coupling capacitors',
+      kScreen: 'Space screening', vScreen: 'ASTM E595 outgassing compliant; single wafer fab/assembly/test site; wafer-lot traceability; extended product life cycle; RLAT; -SP adds production burn-in',
+      kGrade: 'Part number/grade', kPkg: 'Package'
+    },
+    ja: {
+      thermalPad: '露出パッドなし（256-ball FCBGA、放熱はボールアレイと基板経由）；熱設計は datasheet 参照',
+      kRad1: '放射線耐性（-SP）', vRad1: 'SEU 免疫レジスタ；SEL 120MeV-cm²/mg；TID RLAT 300krad(Si)',
+      kRad2: '放射線耐性（-SEP、未登録・参考）', vRad2: 'datasheet 参照：SEU 免疫レジスタ；SEL 43MeV-cm²/mg；TID RLAT 30krad(Si)',
+      kRes: '分解能/サンプルレート', kRate: '最大入力データレート',
+      kBw: '出力帯域', vBw: '−3dB 12GHz',
+      kAc: 'AC 性能（fOUT=2.997GHz、DES2XL、DEM/Dither off）', vAc: 'ノイズフロア −155dBFS/Hz；SFDR(−0.1dBFS) 60dBc；IMD3(−7dBFS/tone) −62dBc；付加位相雑音 −138dBc/Hz@10kHz オフセット',
+      kDuc: 'デジタルアップコンバート',
+      kJesd: 'JESD204C インタフェース', vJesd: '最大 16 レーン、1 レーン最大 12.8Gbps；Class C-S subclass-1；AC 結合コンデンサ内蔵',
+      kScreen: '宇宙スクリーニング', vScreen: 'ASTM E595 アウトガス規格適合；単一ウェハ製造/組立/テスト拠点；ウェハロット追跡可能；製品ライフサイクル延長；RLAT；-SP 版は production burn-in 込み',
+      kGrade: '型番/グレード', kPkg: 'パッケージ'
+    },
+    ko: {
+      thermalPad: '노출 패드 없음(256-ball FCBGA, 방열은 볼 어레이와 기판 경유); 열 설계는 datasheet 참조',
+      kRad1: '방사선 내성(-SP)', vRad1: 'SEU 면역 레지스터; SEL 120MeV-cm²/mg; TID RLAT 300krad(Si)',
+      kRad2: '방사선 내성(-SEP, 미등록·참고)', vRad2: 'datasheet 참조: SEU 면역 레지스터; SEL 43MeV-cm²/mg; TID RLAT 30krad(Si)',
+      kRes: '분해능/샘플레이트', kRate: '최대 입력 데이터 속도',
+      kBw: '출력 대역폭', vBw: '−3dB 12GHz',
+      kAc: 'AC 성능(fOUT=2.997GHz, DES2XL, DEM/Dither off)', vAc: '노이즈 플로어 −155dBFS/Hz; SFDR(−0.1dBFS) 60dBc; IMD3(−7dBFS/tone) −62dBc; 부가 위상 잡음 −138dBc/Hz@10kHz 오프셋',
+      kDuc: '디지털 업컨버전',
+      kJesd: 'JESD204C 인터페이스', vJesd: '최대 16레인, 레인당 최대 12.8Gbps; Class C-S subclass-1; AC 결합 커패시터 내장',
+      kScreen: '우주 스크리닝', vScreen: 'ASTM E595 아웃개싱 규격 적합; 단일 웨이퍼 제조/조립/테스트 사이트; 웨이퍼 로트 추적 가능; 제품 수명 주기 연장; RLAT; -SP판은 production burn-in 포함',
+      kGrade: '형번/등급', kPkg: '패키지'
+    }
+  };
+  var T = {
+    'DAC39RF10-SP': {
+      en: dacEntry(dacL.en, {
+        subcategory: 'Space-grade dual-channel 16-bit RF DAC (JESD204C)',
+        whatIs: 'Radiation-hardened space-grade dual-channel 16-bit multi-Nyquist digital-to-analog converter: up to 10.4GSPS/channel (dual) or 20.8GSPS (single-channel DES mode), JESD204C high-speed serial interface. For satellite communications, wideband high-speed signal generation and phased-array antennas on space platforms.',
+        func: 'Dual-channel 16-bit DAC core usable as a non-interpolating or interpolating DAC for direct RF sampling or complex baseband signal generation; 4 built-in digital upconverters (DUC) with 1x~256x interpolation, complex baseband I/Q output and complex-to-real upconversion for dual-channel direct RF sampling; 64-bit NCO frequency resolution with phase-continuous frequency hopping; JESD204C interface up to 16 lane pairs, up to 12.8Gbps per lane, Class C-S subclass-1 compliant with built-in AC-coupling capacitors; SYSREF windowing auto-calibrates SYSREF timing.',
+        usedIn: 'Satellite communications (SATCOM), wideband high-speed data transmission, clock/LO RF synthesis, phased-array antenna systems, synthetic aperture radar (SAR) excitation sources, spectrum measurement and other space-platform high-speed signal generation.',
+        desc: 'Space-grade dual-channel 16-bit multi-Nyquist DAC, 10.4GSPS/ch (dual) or 20.8GSPS (single-channel DES), JESD204C up to 16 lanes @12.8Gbps, SEL 120MeV-cm²/mg, TID RLAT 300krad(Si), 256-ball FCBGA 17×17mm 1mm pitch.',
+        vRes: '16-bit, 10.4 or 20.8GSPS multi-Nyquist DAC core',
+        vRate: 'Single-channel DES: 8-bit 20.8GSPS / 12-bit 15.5GSPS / 16-bit 10.4GSPS; dual-channel: 8-bit 10.4GSPS / 12-bit 7.75GSPS/ch / 16-bit 6.2GSPS/ch',
+        vDuc: '4 DUCs, interpolation 1x/2x/3x/4x/6x/8x/12x...256x; 64-bit NCO frequency resolution',
+        vGrade: 'DAC39RF10ACL-MLS: Flight grade Space-MLS (-SP), 300krad(Si); DAC39RF10ACLNSP: Space Enhanced (-SEP), 30krad(Si) (see datasheet)',
+        vPkg: '256-ball FCBGA (ACL), 17mm×17mm, 1mm pitch',
+        dropNote: 'Same datasheet (TI SBAS932A); Table 5-1 shares one 256-ball FCBGA pinout (ball numbers and names identical). RFS10 is the single-channel version; its DACOUTB+/DACOUTB− (balls T12/T13) are marked "Not available in single channel devices" in the datasheet. Channel-B power balls (VDDA18B/VDDLB/VDDEB/VEEBM18/TXEN1 etc.) are not explicitly excluded — confirm with the full datasheet or TI whether they are disabled/floating on the single-channel version.'
+      }),
+      ja: dacEntry(dacL.ja, {
+        subcategory: '宇宙グレード デュアルチャネル 16-bit RF DAC（JESD204C）',
+        whatIs: '耐放射線・宇宙グレードのデュアルチャネル 16-bit マルチナイキスト（multi-Nyquist）D/A コンバータ：最高 10.4GSPS/ch（デュアル）または 20.8GSPS（シングルチャネル DES モード）、JESD204C 高速シリアルインタフェース。衛星通信、広帯域高速信号生成、フェーズドアレイアンテナなど宇宙プラットフォーム用途。',
+        func: 'デュアルチャネル 16-bit DAC コア。非補間/補間 DAC として直接 RF サンプリングや複素ベースバンド信号生成に使用；デジタルアップコンバータ（DUC）4 系統内蔵、補間率 1x~256x、複素ベースバンド I/Q 出力とデュアルチャネル直接 RF サンプリングの複素→実数アップコンバートに対応；64-bit NCO 周波数分解能、位相連続周波数ホッピング対応；JESD204C 最大 16 レーン・1 レーン最大 12.8Gbps、Class C-S subclass-1 準拠、AC 結合コンデンサ内蔵；SYSREF windowing により SYSREF タイミングを自動校正。',
+        usedIn: '衛星通信（SATCOM）、広帯域高速データ伝送、クロック/局部発振（LO）RF 合成、フェーズドアレイアンテナ、合成開口レーダー（SAR）励振源、スペクトラム測定など宇宙プラットフォームの高速信号生成。',
+        desc: '宇宙グレード デュアルチャネル 16-bit multi-Nyquist DAC、10.4GSPS/ch（デュアル）または 20.8GSPS（シングル DES）、JESD204C 最大 16 レーン @12.8Gbps、SEL 120MeV-cm²/mg、TID RLAT 300krad(Si)、256-Ball FCBGA 17×17mm 1mm ピッチ。',
+        vRes: '16-bit、10.4 または 20.8GSPS multi-Nyquist DAC コア',
+        vRate: 'シングルチャネル DES：8-bit 20.8GSPS／12-bit 15.5GSPS／16-bit 10.4GSPS；デュアルチャネル：8-bit 10.4GSPS／12-bit 7.75GSPS/ch／16-bit 6.2GSPS/ch',
+        vDuc: 'DUC 4 系統、補間 1x/2x/3x/4x/6x/8x/12x...256x；64-bit NCO 周波数分解能',
+        vGrade: 'DAC39RF10ACL-MLS：Flight grade Space-MLS(-SP)、300krad(Si)；DAC39RF10ACLNSP：Space Enhanced(-SEP)、30krad(Si)（datasheet 参照）',
+        vPkg: '256-Ball FCBGA (ACL)、17mm×17mm、1mm ピッチ',
+        dropNote: '同一 datasheet（TI SBAS932A）・Table 5-1 の 256-ball FCBGA ピン配置を共用（ボール番号・ボール名とも同一）；RFS10 はシングルチャネル版で、DACOUTB+/DACOUTB−（ボール T12/T13）は datasheet に「Not available in single channel devices」と明記。チャネル B 系電源ボール（VDDA18B/VDDLB/VDDEB/VEEBM18/TXEN1 等）は明文の除外記載なし——シングルチャネル版で無効/開放かは完全版 datasheet か TI へ確認のこと。'
+      }),
+      ko: dacEntry(dacL.ko, {
+        subcategory: '우주급 듀얼 채널 16-bit RF DAC(JESD204C)',
+        whatIs: '내방사선 우주급 듀얼 채널 16-bit 멀티 나이퀴스트(multi-Nyquist) D/A 변환기: 최고 10.4GSPS/채널(듀얼) 또는 20.8GSPS(싱글 채널 DES 모드), JESD204C 고속 직렬 인터페이스. 위성 통신, 광대역 고속 신호 생성, 위상 배열 안테나 등 우주 플랫폼 응용.',
+        func: '듀얼 채널 16-bit DAC 코어. 비보간/보간 DAC로 직접 RF 샘플링이나 복소 기저대역 신호 생성에 사용; 디지털 업컨버터(DUC) 4조 내장, 보간율 1x~256x, 복소 기저대역 I/Q 출력과 듀얼 채널 직접 RF 샘플링의 복소→실수 업컨버트 지원; 64-bit NCO 주파수 분해능, 위상 연속 주파수 호핑 지원; JESD204C 최대 16레인·레인당 최대 12.8Gbps, Class C-S subclass-1 준거, AC 결합 커패시터 내장; SYSREF windowing으로 SYSREF 타이밍 자동 교정.',
+        usedIn: '위성 통신(SATCOM), 광대역 고속 데이터 전송, 클록/국부 발진(LO) RF 합성, 위상 배열 안테나 시스템, 합성 개구 레이더(SAR) 여기원, 스펙트럼 측정 등 우주 플랫폼 고속 신호 생성 응용.',
+        desc: '우주급 듀얼 채널 16-bit multi-Nyquist DAC, 10.4GSPS/ch(듀얼) 또는 20.8GSPS(싱글 DES), JESD204C 최대 16레인 @12.8Gbps, SEL 120MeV-cm²/mg, TID RLAT 300krad(Si), 256-Ball FCBGA 17×17mm 1mm 피치.',
+        vRes: '16-bit, 10.4 또는 20.8GSPS multi-Nyquist DAC 코어',
+        vRate: '싱글 채널 DES: 8-bit 20.8GSPS/12-bit 15.5GSPS/16-bit 10.4GSPS; 듀얼 채널: 8-bit 10.4GSPS/12-bit 7.75GSPS/ch/16-bit 6.2GSPS/ch',
+        vDuc: 'DUC 4조, 보간 1x/2x/3x/4x/6x/8x/12x...256x; 64-bit NCO 주파수 분해능',
+        vGrade: 'DAC39RF10ACL-MLS: Flight grade Space-MLS(-SP), 300krad(Si); DAC39RF10ACLNSP: Space Enhanced(-SEP), 30krad(Si)(datasheet 참조)',
+        vPkg: '256-Ball FCBGA (ACL), 17mm×17mm, 1mm 피치',
+        dropNote: '동일 datasheet(TI SBAS932A)·Table 5-1의 256-ball FCBGA 핀 배치 공용(볼 번호·볼 이름 동일); RFS10은 싱글 채널판으로, DACOUTB+/DACOUTB−(볼 T12/T13)는 datasheet에 「Not available in single channel devices」로 명기. 채널 B 계열 전원 볼(VDDA18B/VDDLB/VDDEB/VEEBM18/TXEN1 등)은 명문 제외 기재 없음——싱글 채널판에서 비활성/개방 여부는 완전판 datasheet나 TI로 확인할 것.'
+      })
+    },
+    'DAC39RFS10-SP': {
+      en: dacEntry(dacL.en, {
+        subcategory: 'Space-grade single-channel 16-bit RF DAC (JESD204C)',
+        whatIs: 'Radiation-hardened space-grade single-channel 16-bit multi-Nyquist digital-to-analog converter: up to 20.8GSPS (single-channel DES mode), JESD204C high-speed serial interface; shares the die/package/datasheet with the dual-channel DAC39RF10-SP (channel-B outputs unavailable). For satellite communications, wideband high-speed signal generation and phased-array antennas on space platforms.',
+        func: 'Single-channel 16-bit DAC core usable as a non-interpolating or interpolating DAC for direct RF sampling or complex baseband signal generation; built-in digital upconverter (DUC) with 1x~256x interpolation and complex baseband I/Q output; 64-bit NCO frequency resolution with phase-continuous frequency hopping; JESD204C interface up to 16 lane pairs, up to 12.8Gbps per lane, Class C-S subclass-1 compliant with built-in AC-coupling capacitors; SYSREF windowing auto-calibrates SYSREF timing; DACOUTB+/DACOUTB− are unavailable on this single-channel version.',
+        usedIn: 'Satellite communications (SATCOM), wideband high-speed data transmission, clock/LO RF synthesis, phased-array antenna systems, synthetic aperture radar (SAR) excitation sources, spectrum measurement and other space-platform single-channel high-speed signal generation.',
+        desc: 'Space-grade single-channel 16-bit multi-Nyquist DAC, up to 20.8GSPS (single-channel DES mode), JESD204C up to 16 lanes @12.8Gbps, SEL 120MeV-cm²/mg, TID RLAT 300krad(Si); shares the 256-ball FCBGA 17×17mm 1mm-pitch pinout with DAC39RF10-SP (DACOUTB unavailable).',
+        vRes: '16-bit, up to 20.8GSPS (DES mode) multi-Nyquist DAC core',
+        vRate: 'Single-channel DES: 8-bit 20.8GSPS / 12-bit 15.5GSPS / 16-bit 10.4GSPS',
+        vDuc: 'Interpolation 1x/2x/3x/4x/6x/8x/12x...256x; 64-bit NCO frequency resolution',
+        vGrade: 'DAC39RFS10ACL-MLS: Flight grade Space-MLS (-SP), 300krad(Si); DAC39RFS10ACLNSP: Space Enhanced (-SEP), 30krad(Si) (see datasheet)',
+        vPkg: '256-ball FCBGA (ACL), 17mm×17mm, 1mm pitch (shares pinout with DAC39RF10-SP)',
+        dropNote: 'Same datasheet (TI SBAS932A); Table 5-1 shares one 256-ball FCBGA pinout (ball numbers and names identical). RF10 is the dual-channel version; DACOUTB+/DACOUTB− (balls T12/T13) of this part (RFS10) are marked "Not available in single channel devices" in the datasheet, and this entry types those two balls as NC. Channel-B power balls (VDDA18B/VDDLB/VDDEB/VEEBM18/TXEN1 etc.) are not explicitly excluded — confirm with the full datasheet or TI whether they are disabled/floating on the single-channel version.'
+      }),
+      ja: dacEntry(dacL.ja, {
+        subcategory: '宇宙グレード シングルチャネル 16-bit RF DAC（JESD204C）',
+        whatIs: '耐放射線・宇宙グレードのシングルチャネル 16-bit マルチナイキスト（multi-Nyquist）D/A コンバータ：シングルチャネル最高 20.8GSPS（DES モード）、JESD204C 高速シリアルインタフェース。デュアルチャネル版 DAC39RF10-SP とチップ/パッケージ/datasheet を共用（チャネル B 系出力は使用不可）、衛星通信、広帯域高速信号生成、フェーズドアレイアンテナなど宇宙プラットフォーム用途。',
+        func: 'シングルチャネル 16-bit DAC コア。非補間/補間 DAC として直接 RF サンプリングや複素ベースバンド信号生成に使用；デジタルアップコンバータ（DUC）内蔵、補間率 1x~256x、複素ベースバンド I/Q 出力対応；64-bit NCO 周波数分解能、位相連続周波数ホッピング対応；JESD204C 最大 16 レーン・1 レーン最大 12.8Gbps、Class C-S subclass-1 準拠、AC 結合コンデンサ内蔵；SYSREF windowing により SYSREF タイミングを自動校正；DACOUTB+/DACOUTB− は本シングルチャネル版では使用不可。',
+        usedIn: '衛星通信（SATCOM）、広帯域高速データ伝送、クロック/局部発振（LO）RF 合成、フェーズドアレイアンテナ、合成開口レーダー（SAR）励振源、スペクトラム測定など宇宙プラットフォームのシングルチャネル高速信号生成。',
+        desc: '宇宙グレード シングルチャネル 16-bit multi-Nyquist DAC、最高 20.8GSPS（シングルチャネル DES モード）、JESD204C 最大 16 レーン @12.8Gbps、SEL 120MeV-cm²/mg、TID RLAT 300krad(Si)、DAC39RF10-SP と 256-Ball FCBGA 17×17mm 1mm ピッチのピン配置を共用（DACOUTB 使用不可）。',
+        vRes: '16-bit、シングルチャネル最高 20.8GSPS（DES モード）multi-Nyquist DAC コア',
+        vRate: 'シングルチャネル DES：8-bit 20.8GSPS／12-bit 15.5GSPS／16-bit 10.4GSPS',
+        vDuc: '補間 1x/2x/3x/4x/6x/8x/12x...256x；64-bit NCO 周波数分解能',
+        vGrade: 'DAC39RFS10ACL-MLS：Flight grade Space-MLS(-SP)、300krad(Si)；DAC39RFS10ACLNSP：Space Enhanced(-SEP)、30krad(Si)（datasheet 参照）',
+        vPkg: '256-Ball FCBGA (ACL)、17mm×17mm、1mm ピッチ（DAC39RF10-SP とピン配置共用）',
+        dropNote: '同一 datasheet（TI SBAS932A）・Table 5-1 の 256-ball FCBGA ピン配置を共用（ボール番号・ボール名とも同一）；RF10 はデュアルチャネル版。本品（RFS10）の DACOUTB+/DACOUTB−（ボール T12/T13）は datasheet に「Not available in single channel devices」と明記、本ライブラリでは当該 2 ボールの type を NC としている。チャネル B 系電源ボール（VDDA18B/VDDLB/VDDEB/VEEBM18/TXEN1 等）は明文の除外記載なし——シングルチャネル版で無効/開放かは完全版 datasheet か TI へ確認のこと。'
+      }),
+      ko: dacEntry(dacL.ko, {
+        subcategory: '우주급 싱글 채널 16-bit RF DAC(JESD204C)',
+        whatIs: '내방사선 우주급 싱글 채널 16-bit 멀티 나이퀴스트(multi-Nyquist) D/A 변환기: 싱글 채널 최고 20.8GSPS(DES 모드), JESD204C 고속 직렬 인터페이스. 듀얼 채널판 DAC39RF10-SP와 칩/패키지/datasheet 공용(채널 B 계열 출력 사용 불가), 위성 통신, 광대역 고속 신호 생성, 위상 배열 안테나 등 우주 플랫폼 응용.',
+        func: '싱글 채널 16-bit DAC 코어. 비보간/보간 DAC로 직접 RF 샘플링이나 복소 기저대역 신호 생성에 사용; 디지털 업컨버터(DUC) 내장, 보간율 1x~256x, 복소 기저대역 I/Q 출력 지원; 64-bit NCO 주파수 분해능, 위상 연속 주파수 호핑 지원; JESD204C 최대 16레인·레인당 최대 12.8Gbps, Class C-S subclass-1 준거, AC 결합 커패시터 내장; SYSREF windowing으로 SYSREF 타이밍 자동 교정; DACOUTB+/DACOUTB−는 본 싱글 채널판에서 사용 불가.',
+        usedIn: '위성 통신(SATCOM), 광대역 고속 데이터 전송, 클록/국부 발진(LO) RF 합성, 위상 배열 안테나 시스템, 합성 개구 레이더(SAR) 여기원, 스펙트럼 측정 등 우주 플랫폼 싱글 채널 고속 신호 생성 응용.',
+        desc: '우주급 싱글 채널 16-bit multi-Nyquist DAC, 최고 20.8GSPS(싱글 채널 DES 모드), JESD204C 최대 16레인 @12.8Gbps, SEL 120MeV-cm²/mg, TID RLAT 300krad(Si), DAC39RF10-SP와 256-Ball FCBGA 17×17mm 1mm 피치 핀 배치 공용(DACOUTB 사용 불가).',
+        vRes: '16-bit, 싱글 채널 최고 20.8GSPS(DES 모드) multi-Nyquist DAC 코어',
+        vRate: '싱글 채널 DES: 8-bit 20.8GSPS/12-bit 15.5GSPS/16-bit 10.4GSPS',
+        vDuc: '보간 1x/2x/3x/4x/6x/8x/12x...256x; 64-bit NCO 주파수 분해능',
+        vGrade: 'DAC39RFS10ACL-MLS: Flight grade Space-MLS(-SP), 300krad(Si); DAC39RFS10ACLNSP: Space Enhanced(-SEP), 30krad(Si)(datasheet 참조)',
+        vPkg: '256-Ball FCBGA (ACL), 17mm×17mm, 1mm 피치(DAC39RF10-SP와 핀 배치 공용)',
+        dropNote: '동일 datasheet(TI SBAS932A)·Table 5-1의 256-ball FCBGA 핀 배치 공용(볼 번호·볼 이름 동일); RF10은 듀얼 채널판. 본 부품(RFS10)의 DACOUTB+/DACOUTB−(볼 T12/T13)는 datasheet에 「Not available in single channel devices」로 명기, 본 라이브러리는 해당 2볼의 type을 NC로 표기. 채널 B 계열 전원 볼(VDDA18B/VDDLB/VDDEB/VEEBM18/TXEN1 등)은 명문 제외 기재 없음——싱글 채널판에서 비활성/개방 여부는 완전판 datasheet나 TI로 확인할 것.'
+      })
+    },
+    'DRV8218': {
+      en: {
+        subcategory: 'Brushed-DC motor driver (single-channel H-bridge)',
+        whatIs: '11V/8A single-channel H-bridge brushed-DC motor driver: four N-channel power FETs, a tripler charge pump and protection circuits integrated on one chip, all capacitors built in, operates from 1.8V.',
+        func: 'Accepts PWM, PH-EN or independent half-bridge control interfaces (selected by the tri-level MODE pin) to drive one bidirectional brushed motor, two unidirectional motors, relays or solenoids; sleep-mode quiescent current under 120nA.',
+        usedIn: 'Electric toothbrushes, smart locks, water/electricity/gas meters, toy robots, IP-camera IR-cut, video doorbells, blood pressure monitors, infusion pumps and other battery-powered small-motor applications.',
+        desc: '8-WSON H-bridge motor driver, VM 1.8-11V, VCC 1.8-5.5V, 80mΩ RDS(ON) (HS+LS), 8A peak, supports paralleled half-bridges (20mΩ). Built-in UVLO/OCP/TSD protection. DRV8210/8212/8220 share the pinout family (different voltage/resistance, not in library). ADVANCE INFORMATION (2026-05 pre-production document); recheck against the latest datasheet before production.',
+        thermalPad: 'Thermal pad to system ground (confirmed by both the pin table and the pad in the center of the pin diagram)',
+        specs: [
+          { k: 'Motor supply', v: '1.8V-11V (VM)' },
+          { k: 'Logic supply', v: '1.8V-5.5V (VCC), supports 1.8/3.3/5V logic' },
+          { k: 'Output', v: '8A peak, RDS(ON) 80mΩ (HS+LS total); paralleled half-bridge 20mΩ' },
+          { k: 'Sleep current', v: '<120nA (VM=5V, VCC=3.3V, 25°C)' },
+          { k: 'Control interface', v: 'PWM (IN1/IN2), PH/EN, independent half-bridge, parallel half-bridge' },
+          { k: 'Protection', v: 'UVLO, OCP, TSD' }
+        ]
+      },
+      ja: {
+        subcategory: 'ブラシ付き DC モータドライバ（単チャネル H ブリッジ）',
+        whatIs: '11V/8A 単チャネル H ブリッジ ブラシ付き DC モータドライバ：N チャネルパワー FET 4 個＋3 倍圧チャージポンプ＋保護回路をワンチップに集積、コンデンサ全内蔵、1.8V から動作。',
+        func: 'PWM／PH-EN／独立ハーフブリッジの 3 種の制御インタフェース（MODE 3 値ピンで選択）を受け、双方向ブラシ付きモータ 1 個、単方向モータ 2 個、リレーやソレノイドを駆動；スリープ時静止電流 <120nA。',
+        usedIn: '電動歯ブラシ、スマートロック、水道/電気/ガスメーター、玩具ロボット、ネットワークカメラの IR カットフィルタ、ビデオドアホン、血圧計、輸液ポンプなど電池駆動の小型モータ用途。',
+        desc: '8-WSON の H ブリッジモータドライバ、VM 1.8-11V・VCC 1.8-5.5V、80mΩ RDS(ON)（HS+LS）・ピーク 8A、ハーフブリッジ並列（20mΩ）対応。UVLO/OCP/TSD 保護内蔵。DRV8210/8212/8220 は同ピン配置ファミリ（電圧/抵抗違い、ライブラリ未登録）。ADVANCE INFORMATION（2026-05 量産前文書）、量産前に最新版 datasheet で照合のこと。',
+        thermalPad: 'サーマルパッドはシステムグラウンドへ接続（ピン表とピン図中央の両方で確認）',
+        specs: [
+          { k: 'モータ電源', v: '1.8V-11V（VM）' },
+          { k: 'ロジック電源', v: '1.8V-5.5V（VCC）、1.8/3.3/5V ロジック対応' },
+          { k: '出力', v: 'ピーク 8A、RDS(ON) 80mΩ（HS+LS 合計）；ハーフブリッジ並列 20mΩ' },
+          { k: 'スリープ電流', v: '<120nA（VM=5V, VCC=3.3V, 25°C）' },
+          { k: '制御インタフェース', v: 'PWM (IN1/IN2)、PH/EN、独立ハーフブリッジ、並列ハーフブリッジ' },
+          { k: '保護', v: 'UVLO、OCP、TSD' }
+        ]
+      },
+      ko: {
+        subcategory: '브러시 DC 모터 드라이버(단일 채널 H-브리지)',
+        whatIs: '11V/8A 단일 채널 H-브리지 브러시 DC 모터 드라이버: N채널 파워 FET 4개+3배압 차지 펌프+보호 회로를 단일 칩에 집적, 커패시터 전부 내장, 1.8V부터 동작.',
+        func: 'PWM/PH-EN/독립 하프 브리지 3종 제어 인터페이스(MODE 3레벨 핀으로 선택)를 받아 양방향 브러시 모터 1개, 단방향 모터 2개, 릴레이나 솔레노이드를 구동; 슬립 모드 대기 전류 <120nA.',
+        usedIn: '전동 칫솔, 스마트 도어락, 수도/전기/가스 계량기, 완구 로봇, 네트워크 카메라 IR-cut, 비디오 초인종, 혈압계, 수액 펌프 등 배터리 구동 소형 모터 응용.',
+        desc: '8-WSON H-브리지 모터 드라이버, VM 1.8-11V, VCC 1.8-5.5V, 80mΩ RDS(ON)(HS+LS), 8A 피크, 하프 브리지 병렬(20mΩ) 지원. UVLO/OCP/TSD 보호 내장. DRV8210/8212/8220은 동일 핀 배치 패밀리(전압/저항 상이, 라이브러리 미등록). ADVANCE INFORMATION(2026-05 양산 전 문서), 양산 전 최신 datasheet로 확인 필요.',
+        thermalPad: '서멀 패드는 시스템 그라운드에 연결(핀 표와 핀 다이어그램 중앙 양쪽으로 확인)',
+        specs: [
+          { k: '모터 전원', v: '1.8V-11V(VM)' },
+          { k: '로직 전원', v: '1.8V-5.5V(VCC), 1.8/3.3/5V 로직 지원' },
+          { k: '출력', v: '8A 피크, RDS(ON) 80mΩ(HS+LS 합계); 병렬 하프 브리지 20mΩ' },
+          { k: '슬립 전류', v: '<120nA(VM=5V, VCC=3.3V, 25°C)' },
+          { k: '제어 인터페이스', v: 'PWM (IN1/IN2), PH/EN, 독립 하프 브리지, 병렬 하프 브리지' },
+          { k: '보호', v: 'UVLO, OCP, TSD' }
+        ]
+      }
+    },
+    'DRV81646-Q1': {
+      en: {
+        subcategory: 'Automotive quad low-side driver (Hardware/SPI)',
+        whatIs: 'Automotive 65V quad integrated low-side switch: 140mΩ RDS(ON) per channel, built-in freewheeling diodes to VCLAMP, configurable current limit and slew rate.',
+        func: 'Controls four low-side switches via hardware GPIO (independent PWM input per channel) or 4-wire SPI to drive relays/solenoid valves/LEDs/unidirectional motors; a single ILIM resistor sets a global 0.5-4A current limit, RSLEW/CNTL sets slew rate (100-1500ns), nFAULT reports faults.',
+        usedIn: 'Relay/valve/LED driving in automotive body electronics and lighting, engine management, BMS and zone control units.',
+        desc: '24-HVSSOP automotive (AEC-Q100 family) quad low-side driver, 4.5-65V (70V abs max), PWM up to 500kHz, independent per-channel overtemperature/overcurrent protection, configurable overcurrent-deglitch delay (COD 0.5-2ms) and INRUSH mode. SRC1-4 brought out separately for external sense resistors. ADVANCE INFORMATION (2026-05 pre-production document); recheck against the latest datasheet before production.',
+        thermalPad: 'THERMAL PAD to system ground (confirmed by both the pin table and the pad in the center of the pin diagram); continuous ground copper with direct-connect vias',
+        specs: [
+          { k: 'Supply', v: '4.5V-65V (70V abs max)' },
+          { k: 'Channels', v: '4 low-side channels, RDS(ON) 140mΩ/channel (25°C)' },
+          { k: 'Current limit', v: '0.5A-4A selectable (global, via ILIM resistor)' },
+          { k: 'PWM', v: 'Up to 500kHz' },
+          { k: 'Slew rate', v: '100-1500ns configurable (RSLEW)' },
+          { k: 'Interface', v: 'Hardware (per-channel PWM) or 4-wire SPI; nFAULT interrupt' },
+          { k: 'Protection', v: 'Independent per-channel overtemp/overcurrent, COD 0.5-2ms, INRUSH mode' }
+        ]
+      },
+      ja: {
+        subcategory: '車載 4 チャネル ローサイドドライバ（Hardware/SPI）',
+        whatIs: '車載 65V 4 チャネル集積ローサイドスイッチ：各チャネル 140mΩ RDS(ON)、VCLAMP への還流ダイオード内蔵、電流制限とスルーレートを設定可能。',
+        func: 'ハードウェア GPIO（チャネルごとに独立 PWM 入力）または 4 線 SPI で 4 系統のローサイドスイッチを制御し、リレー/ソレノイドバルブ/LED/単方向モータを駆動；ILIM 抵抗 1 本で全チャネル一括 0.5-4A の電流制限を設定、RSLEW/CNTL でスルーレート（100-1500ns）を設定、nFAULT で故障を通知。',
+        usedIn: '車体電装と照明、エンジン管理、BMS、ゾーンコントローラ（Zone Control Unit）のリレー/バルブ/LED 駆動。',
+        desc: '24-HVSSOP 車載（AEC-Q100 系）4 チャネルローサイドドライバ、4.5-65V（絶対最大 70V）、PWM 最高 500kHz、チャネルごとに独立した過熱/過電流保護、過電流遮断遅延（COD 0.5-2ms）と INRUSH モード設定可能。SRC1-4 を個別に引き出し外付けセンス抵抗を接続可能。ADVANCE INFORMATION（2026-05 量産前文書）、量産前に最新版 datasheet で照合のこと。',
+        thermalPad: 'THERMAL PAD はシステムグラウンドへ接続（ピン表とピン図中央の両方で確認）；連続したグラウンド銅箔＋direct-connect ビア',
+        specs: [
+          { k: '電源', v: '4.5V-65V（絶対最大 70V）' },
+          { k: 'チャネル', v: 'ローサイド 4 チャネル、RDS(ON) 140mΩ/ch（25°C）' },
+          { k: '電流制限', v: '0.5A-4A 選択可（ILIM 抵抗で一括設定）' },
+          { k: 'PWM', v: '最高 500kHz' },
+          { k: 'スルーレート', v: '100-1500ns 設定可（RSLEW）' },
+          { k: 'インタフェース', v: 'Hardware（チャネル別 PWM）または 4 線 SPI；nFAULT 割り込み' },
+          { k: '保護', v: 'チャネル独立の過熱/過電流、COD 0.5-2ms、INRUSH モード' }
+        ]
+      },
+      ko: {
+        subcategory: '차량용 4채널 로우사이드 드라이버(Hardware/SPI)',
+        whatIs: '차량용 65V 4채널 집적 로우사이드 스위치: 채널당 140mΩ RDS(ON), VCLAMP로의 환류 다이오드 내장, 전류 제한과 슬루 레이트 설정 가능.',
+        func: '하드웨어 GPIO(채널별 독립 PWM 입력) 또는 4선 SPI로 4개 로우사이드 스위치를 제어해 릴레이/솔레노이드 밸브/LED/단방향 모터를 구동; ILIM 저항 1개로 전 채널 공통 0.5-4A 전류 제한 설정, RSLEW/CNTL로 슬루 레이트(100-1500ns) 설정, nFAULT로 고장 보고.',
+        usedIn: '차체 전장과 조명, 엔진 관리, BMS, 존 컨트롤러(Zone Control Unit)의 릴레이/밸브/LED 구동.',
+        desc: '24-HVSSOP 차량용(AEC-Q100 계열) 4채널 로우사이드 드라이버, 4.5-65V(절대 최대 70V), PWM 최고 500kHz, 채널별 독립 과열/과전류 보호, 과전류 차단 지연(COD 0.5-2ms)과 INRUSH 모드 설정 가능. SRC1-4 개별 인출로 외부 센스 저항 연결 가능. ADVANCE INFORMATION(2026-05 양산 전 문서), 양산 전 최신 datasheet로 확인 필요.',
+        thermalPad: 'THERMAL PAD는 시스템 그라운드에 연결(핀 표와 핀 다이어그램 중앙 양쪽으로 확인); 연속 그라운드 동박+direct-connect 비아',
+        specs: [
+          { k: '전원', v: '4.5V-65V(절대 최대 70V)' },
+          { k: '채널', v: '로우사이드 4채널, RDS(ON) 140mΩ/채널(25°C)' },
+          { k: '전류 제한', v: '0.5A-4A 선택 가능(ILIM 저항으로 공통 설정)' },
+          { k: 'PWM', v: '최고 500kHz' },
+          { k: '슬루 레이트', v: '100-1500ns 설정 가능(RSLEW)' },
+          { k: '인터페이스', v: 'Hardware(채널별 PWM) 또는 4선 SPI; nFAULT 인터럽트' },
+          { k: '보호', v: '채널별 독립 과열/과전류, COD 0.5-2ms, INRUSH 모드' }
+        ]
+      }
+    },
+    'FAN31790': {
+      en: {
+        subcategory: 'Fan controller (6-channel PWM/RPM, I2C)',
+        whatIs: '6-channel intelligent fan controller: independent 9-bit PWM outputs plus dedicated TACH inputs for closed-loop speed control, I2C interface, pin-to-pin/BOM-to-BOM compatible with common fan controllers.',
+        func: 'Drives 4-wire fans with six PWM channels (25Hz-25kHz) (3-wire/2-wire via external transistors), monitors up to 12 tachometer inputs at 11-bit; automatically adjusts duty cycle to hold the target RPM, enters a safe state on fault detection; power-on defaults are hardware-set by external pins.',
+        usedIn: 'Fan speed control and monitoring on desktop/server motherboards, GPU cards and hardware accelerators, automotive seat fans, air purifiers.',
+        desc: '28-LGA (4×4mm, pinout matches WQFN 4×4) 6-channel fan controller, 1.62-3.6V supply, -40 to 125°C. Built-in ±5% 32kHz oscillator, optional external 32.768kHz crystal (XTAL1/2) with CLKOUT output; I2C fast-mode 400kbps, 16 addresses (ADD0/1 quad-state); integrated watchdog. Register map compatible with existing driver software. Note: this package numbers pins counterclockwise (pin 1 bottom-left, pins 1-7 on the bottom edge).',
+        thermalPad: 'Thermal pad (GND/VSS) to GND (confirmed by both the pin table and the pad in the center of the pin diagram)',
+        specs: [
+          { k: 'Supply', v: '1.62V-3.6V; -40°C to 125°C' },
+          { k: 'PWM', v: '6 channels, 9-bit, 25Hz-25kHz, configurable duty ramp rate' },
+          { k: 'TACH', v: '6 dedicated + PWMOUT reconfigurable, up to 12 channels, 11-bit' },
+          { k: 'Interface', v: 'I2C fast-mode 400kbps, 16 hardware addresses' },
+          { k: 'Clock', v: 'Built-in 32kHz ±5%; optional external 32.768kHz crystal; CLKOUT output' },
+          { k: 'Compatibility', v: 'Pin-to-pin / BOM-to-BOM / register compatible with common fan controllers' }
+        ]
+      },
+      ja: {
+        subcategory: 'ファンコントローラ（6 チャネル PWM/RPM、I2C）',
+        whatIs: '6 チャネルインテリジェントファンコントローラ：独立 9-bit PWM 出力＋専用 TACH 入力によるクローズドループ回転数制御、I2C インタフェース、一般的なファンコントローラと pin-to-pin/BOM-to-BOM 互換。',
+        func: '6 系統の PWM（25Hz-25kHz）で 4 線ファンを駆動（3 線/2 線は外付けトランジスタ経由）、最大 12 系統の 11-bit タコメータ入力を監視；目標回転数を維持するようデューティ比を自動調整、故障検出時はセーフステートへ移行；電源投入時のデフォルト値は外部ピンでハードウェア設定。',
+        usedIn: 'デスクトップ/サーバーマザーボード、GPU カードやハードウェアアクセラレータ、車載シートファン、空気清浄機のファン制御と監視。',
+        desc: '28-LGA（4×4mm、ピン配置は WQFN 4×4 と同一）6 チャネルファンコントローラ、電源 1.62-3.6V、-40~125°C。±5% 32kHz 発振器内蔵、外付け 32.768kHz 水晶（XTAL1/2）対応・CLKOUT 出力；I2C fast-mode 400kbps、16 種アドレス（ADD0/1 4 値）；ウォッチドッグ集積。レジスタマップは既存ドライバソフトウェアと互換。注意：本パッケージは反時計回りのピン番号（pin 1 左下、1-7 が底辺）。',
+        thermalPad: 'サーマルパッド（GND/VSS）は GND へ接続（ピン表とピン図中央の両方で確認）',
+        specs: [
+          { k: '電源', v: '1.62V-3.6V；-40°C~125°C' },
+          { k: 'PWM', v: '6 チャネル 9-bit、25Hz-25kHz、デューティ変化率設定可' },
+          { k: 'TACH', v: '専用 6＋PWMOUT 再構成可、最大 12 チャネル 11-bit' },
+          { k: 'インタフェース', v: 'I2C fast-mode 400kbps、ハードウェアアドレス 16 種' },
+          { k: 'クロック', v: '内蔵 32kHz ±5%；外付け 32.768kHz 水晶対応；CLKOUT 出力' },
+          { k: '互換性', v: '一般的なファンコントローラと pin-to-pin / BOM-to-BOM / レジスタ互換' }
+        ]
+      },
+      ko: {
+        subcategory: '팬 컨트롤러(6채널 PWM/RPM, I2C)',
+        whatIs: '6채널 지능형 팬 컨트롤러: 독립 9-bit PWM 출력+전용 TACH 입력의 폐루프 회전수 제어, I2C 인터페이스, 일반 팬 컨트롤러와 pin-to-pin/BOM-to-BOM 호환.',
+        func: '6개 PWM(25Hz-25kHz)으로 4선 팬 구동(3선/2선은 외부 트랜지스터 경유), 최대 12개 11-bit 타코미터 입력 감시; 목표 회전수를 유지하도록 듀티비 자동 조정, 고장 감지 시 세이프 스테이트 진입; 전원 인가 시 기본값은 외부 핀으로 하드웨어 설정.',
+        usedIn: '데스크톱/서버 메인보드, GPU 카드와 하드웨어 가속기, 차량 시트 팬, 공기청정기의 팬 속도 제어와 모니터링.',
+        desc: '28-LGA(4×4mm, 핀 배치는 WQFN 4×4와 동일) 6채널 팬 컨트롤러, 전원 1.62-3.6V, -40~125°C. ±5% 32kHz 발진기 내장, 외부 32.768kHz 크리스털(XTAL1/2) 지원·CLKOUT 출력; I2C fast-mode 400kbps, 16종 주소(ADD0/1 4레벨); 워치독 집적. 레지스터 맵은 기존 드라이버 소프트웨어와 호환. 주의: 본 패키지는 반시계 방향 핀 번호(pin 1 왼쪽 아래, 1-7이 아래변).',
+        thermalPad: '서멀 패드(GND/VSS)는 GND에 연결(핀 표와 핀 다이어그램 중앙 양쪽으로 확인)',
+        specs: [
+          { k: '전원', v: '1.62V-3.6V; -40°C~125°C' },
+          { k: 'PWM', v: '6채널 9-bit, 25Hz-25kHz, 듀티 변화율 설정 가능' },
+          { k: 'TACH', v: '전용 6+PWMOUT 재구성 가능, 최대 12채널 11-bit' },
+          { k: '인터페이스', v: 'I2C fast-mode 400kbps, 하드웨어 주소 16종' },
+          { k: '클록', v: '내장 32kHz ±5%; 외부 32.768kHz 크리스털 지원; CLKOUT 출력' },
+          { k: '호환성', v: '일반 팬 컨트롤러와 pin-to-pin / BOM-to-BOM / 레지스터 호환' }
+        ]
+      }
+    },
+    'X4003': {
+      en: {
+        subcategory: 'CPU supervisor (POR + watchdog + low-voltage monitor)',
+        whatIs: 'Three-in-one CPU supervisor: power-on reset (POR), selectable watchdog timer and supply-voltage monitor on a single chip, replacing three parts to cut cost.',
+        func: 'Holds RESET active for 250ms at power-up so the supply and oscillator can stabilize; asserts RESET whenever VCC falls below the VTRIP threshold; the watchdog monitors SDA/SCL activity (fed by an I2C start+stop pattern) and resets the system if not serviced in time.',
+        usedIn: 'Power supervision and hang recovery for microcontroller/microprocessor systems (the supervisor slot on industrial and embedded boards).',
+        desc: '8-pin CPU supervisor (2005 Intersil document FN8113.0, now Renesas). Watchdog selectable 200ms/600ms/1.4s/off; five standard VTRIP levels (4.62/4.38/2.92/2.68/1.75V), trimmable via a special procedure; RESET valid down to VCC=1V. X4003 = active-low RESET, X4005 = active-high RESET (sister part, same datasheet). TSSOP pin map: WP=1, VCC=2, NC=3,4, RESET=5, VSS=6, SDA=7, SCL=8; MSOP: VCC=1, RESET=2, VSS=3, SDA=4, SCL=5, WP=6.',
+        thermalPad: 'None (no exposed pad on SOIC/MSOP/TSSOP)',
+        specs: [
+          { k: 'Supply', v: '1.8V-5.5V' },
+          { k: 'Watchdog', v: '200ms / 600ms / 1.4s / off, four settings (nonvolatile, lockable via WP)' },
+          { k: 'VTRIP', v: 'Five standard levels 4.62/4.38/2.92/2.68/1.75V, programmable trim' },
+          { k: 'Standby current', v: '12µA typ (watchdog on) / 800nA typ (watchdog off); 3mA active' },
+          { k: 'Interface', v: 'I2C 400kHz' },
+          { k: 'Variants', v: 'X4003 = active-low RESET; X4005 = active-high RESET (same datasheet)' }
+        ]
+      },
+      ja: {
+        subcategory: 'CPU スーパーバイザ（POR＋ウォッチドッグ＋低電圧監視）',
+        whatIs: 'CPU スーパーバイザ 3-in-1：パワーオンリセット（POR）、選択可能なウォッチドッグタイマ、電源電圧監視をワンチップに集積し、3 部品を置き換えてコスト削減。',
+        func: '電源投入時に RESET を 250ms 有効に保持し電源と発振器の安定を待つ；動作中 VCC が VTRIP しきい値を下回ると RESET をアサート；ウォッチドッグは SDA/SCL のアクティビティを監視（I2C start＋stop パターンで更新）、時間内に更新がなければリセット。',
+        usedIn: 'マイコン/マイクロプロセッサシステムの電源監視とハングアップ自動復旧（産業用ボード・組込みシステムのスーパーバイザ枠）。',
+        desc: '8 ピン CPU スーパーバイザ（2005 年 Intersil 文書 FN8113.0、現 Renesas）。ウォッチドッグ 200ms/600ms/1.4s/オフの 4 段選択；標準 VTRIP 5 段（4.62/4.38/2.92/2.68/1.75V）、特殊手順で微調整可；RESET は VCC=1V まで有効。X4003=RESET 負論理、X4005=RESET 正論理（同一 datasheet の姉妹品）。TSSOP ピン対応：WP=1,VCC=2,NC=3,4,RESET=5,VSS=6,SDA=7,SCL=8；MSOP：VCC=1,RESET=2,VSS=3,SDA=4,SCL=5,WP=6。',
+        thermalPad: 'なし（SOIC/MSOP/TSSOP いずれも露出パッドなし）',
+        specs: [
+          { k: '電源', v: '1.8V-5.5V' },
+          { k: 'ウォッチドッグ', v: '200ms / 600ms / 1.4s / オフ、4 段選択（不揮発設定、WP でロック可）' },
+          { k: 'VTRIP', v: '標準 5 段 4.62/4.38/2.92/2.68/1.75V、プログラム微調整可' },
+          { k: 'スタンバイ電流', v: '12µA typ（ウォッチドッグ有効）／800nA typ（無効）；動作時 3mA' },
+          { k: 'インタフェース', v: 'I2C 400kHz' },
+          { k: 'バリエーション', v: 'X4003=RESET 負論理；X4005=RESET 正論理（同一 datasheet）' }
+        ]
+      },
+      ko: {
+        subcategory: 'CPU 슈퍼바이저(POR+워치독+저전압 감시)',
+        whatIs: 'CPU 슈퍼바이저 3-in-1: 파워온 리셋(POR), 선택 가능한 워치독 타이머, 전원 전압 감시를 단일 칩에 집적, 3개 부품을 대체해 비용 절감.',
+        func: '전원 인가 시 RESET을 250ms 동안 유지해 전원과 발진기 안정화를 대기; 동작 중 VCC가 VTRIP 임계값 아래로 떨어지면 RESET 어서트; 워치독은 SDA/SCL 활동을 감시(I2C start+stop 패턴으로 갱신), 제때 갱신이 없으면 리셋.',
+        usedIn: '마이크로컨트롤러/마이크로프로세서 시스템의 전원 감시와 행업 자동 복구(산업용 보드·임베디드 시스템의 슈퍼바이저 슬롯).',
+        desc: '8핀 CPU 슈퍼바이저(2005년 Intersil 문서 FN8113.0, 현 Renesas). 워치독 200ms/600ms/1.4s/끄기 4단 선택; 표준 VTRIP 5단(4.62/4.38/2.92/2.68/1.75V), 특수 절차로 미세 조정 가능; RESET은 VCC=1V까지 유효. X4003=RESET 액티브 로우, X4005=RESET 액티브 하이(동일 datasheet 자매품). TSSOP 핀 대응: WP=1,VCC=2,NC=3,4,RESET=5,VSS=6,SDA=7,SCL=8; MSOP: VCC=1,RESET=2,VSS=3,SDA=4,SCL=5,WP=6.',
+        thermalPad: '없음(SOIC/MSOP/TSSOP 모두 노출 패드 없음)',
+        specs: [
+          { k: '전원', v: '1.8V-5.5V' },
+          { k: '워치독', v: '200ms / 600ms / 1.4s / 끄기, 4단 선택(비휘발 설정, WP로 잠금 가능)' },
+          { k: 'VTRIP', v: '표준 5단 4.62/4.38/2.92/2.68/1.75V, 프로그램 미세 조정 가능' },
+          { k: '대기 전류', v: '12µA typ(워치독 켬)/800nA typ(워치독 끔); 동작 3mA' },
+          { k: '인터페이스', v: 'I2C 400kHz' },
+          { k: '변형', v: 'X4003=RESET 액티브 로우; X4005=RESET 액티브 하이(동일 datasheet)' }
+        ]
+      }
+    },
+    'NX48P0407': {
+      en: {
+        subcategory: 'USB Type-C CC/SBU protection IC (48V, USB PD EPR)',
+        whatIs: '48V Type-C CC and SBU line protection IC: ultra-fast OVP response protects the CC/SBU pins from short-to-VBUS damage, for USB PD EPR systems (up to 48V VBUS).',
+        func: 'Sits between the USB PD controller (HOST side) and the Type-C connector (CON side); CC1/CC2 and SBU1/SBU2 each pass through a switch pair; on overvoltage it disconnects and reports via FLAG; built-in dead-battery Rd (DBRD pin) keeps the port recognizable by a source when there is no battery.',
+        usedIn: 'Type-C port protection in USB PD EPR (28V/36V/48V) laptops/power banks/monitors, in front of the PD controller.',
+        desc: 'HVQFN16 Type-C CC/SBU protection IC (NXP short datasheet Rev 1.0, 2024-08). Includes IEC ESD/surge protection, post clamp, OVP (OVPSEL-selectable), POR/OTP/UVLO, charge pump and dead-battery circuit. Note: the datasheet table misprints the CON_SBU1 description as "Connect SBU2" and CON_CC1 as "Connect CC2" — map by pin name.',
+        thermalPad: 'Neither the pin table nor the pin diagram of the short datasheet shows an EP connection — HVQFN physically has a central exposed pad; confirm the connection with the full NXP datasheet (honest scoping, nothing invented)',
+        specs: [
+          { k: 'Protects', v: 'Type-C CC1/CC2 and SBU1/SBU2 against short-to-VBUS (up to 48V PD EPR)' },
+          { k: 'Protection', v: 'Ultra-fast OVP disconnect, IEC ESD/surge protection, post clamp, OTP' },
+          { k: 'Dead battery', v: 'Built-in Rd (DBRD_CC1/CC2), recognizable by a source with no battery' },
+          { k: 'Indication', v: 'FLAG open-drain active-low fault output' },
+          { k: 'Document', v: 'Product short data sheet Rev 1.0 (2024-08); full specs in the complete NXP datasheet' }
+        ]
+      },
+      ja: {
+        subcategory: 'USB Type-C CC/SBU 保護 IC（48V、USB PD EPR）',
+        whatIs: '48V Type-C CC/SBU ライン保護 IC：超高速 OVP 応答で CC/SBU ピンを short-to-VBUS 破壊から保護、USB PD EPR（最大 48V VBUS）システム対応。',
+        func: 'USB PD コントローラ（HOST 側）と Type-C コネクタ（CON 側）の間に直列挿入、CC1/CC2 と SBU1/SBU2 はそれぞれスイッチ対を経由；過電圧を検出すると遮断し FLAG で通知；dead-battery Rd 内蔵（DBRD ピン）でバッテリなし状態でも給電側から認識可能。',
+        usedIn: 'USB PD EPR（28V/36V/48V）ノート PC/モバイルバッテリ/モニタの Type-C ポート保護、PD コントローラ前段。',
+        desc: 'HVQFN16 の Type-C CC/SBU 保護 IC（NXP ショート datasheet Rev 1.0、2024-08）。IEC ESD/サージ保護、post clamp、OVP（OVPSEL 選択）、POR/OTP/UVLO、チャージポンプ、dead-battery 回路内蔵。注意：datasheet 表では CON_SBU1 の説明が「Connect SBU2」、CON_CC1 が「Connect CC2」と誤植——ピン名で対応付けること。',
+        thermalPad: 'ショート datasheet のピン表・ピン図とも EP 接続の記載なし——HVQFN は物理的に中央露出パッドを持つ；接続は NXP 完全版 datasheet で確認のこと（誠実な範囲設定、創作しない）',
+        specs: [
+          { k: '保護対象', v: 'Type-C CC1/CC2 と SBU1/SBU2 の short-to-VBUS（最大 48V PD EPR）' },
+          { k: '保護機構', v: '超高速 OVP 遮断、IEC ESD/サージ保護、post clamp、OTP' },
+          { k: 'Dead battery', v: 'Rd 内蔵（DBRD_CC1/CC2）、バッテリなしでも給電側から認識可能' },
+          { k: '表示', v: 'FLAG オープンドレイン負論理フォールト出力' },
+          { k: '文書', v: 'Product short data sheet Rev 1.0（2024-08）；完全な仕様は NXP 完全版参照' }
+        ]
+      },
+      ko: {
+        subcategory: 'USB Type-C CC/SBU 보호 IC(48V, USB PD EPR)',
+        whatIs: '48V Type-C CC/SBU 라인 보호 IC: 초고속 OVP 응답으로 CC/SBU 핀을 short-to-VBUS 손상에서 보호, USB PD EPR(최대 48V VBUS) 시스템 지원.',
+        func: 'USB PD 컨트롤러(HOST 측)와 Type-C 커넥터(CON 측) 사이에 직렬 삽입, CC1/CC2와 SBU1/SBU2는 각각 스위치 쌍 경유; 과전압 감지 시 차단하고 FLAG로 보고; dead-battery Rd 내장(DBRD 핀)으로 배터리 없는 상태에서도 전원 공급 측이 인식 가능.',
+        usedIn: 'USB PD EPR(28V/36V/48V) 노트북/보조 배터리/모니터의 Type-C 포트 보호, PD 컨트롤러 전단.',
+        desc: 'HVQFN16 Type-C CC/SBU 보호 IC(NXP 쇼트 datasheet Rev 1.0, 2024-08). IEC ESD/서지 보호, post clamp, OVP(OVPSEL 선택), POR/OTP/UVLO, 차지 펌프, dead-battery 회로 내장. 주의: datasheet 표에서 CON_SBU1 설명이 「Connect SBU2」, CON_CC1이 「Connect CC2」로 오기——핀 이름으로 대응할 것.',
+        thermalPad: '쇼트 datasheet의 핀 표·핀 다이어그램 모두 EP 연결 표기 없음——HVQFN은 물리적으로 중앙 노출 패드 보유; 연결은 NXP 완전판 datasheet로 확인(정직한 범위 설정, 창작하지 않음)',
+        specs: [
+          { k: '보호 대상', v: 'Type-C CC1/CC2와 SBU1/SBU2의 short-to-VBUS(최대 48V PD EPR)' },
+          { k: '보호 기구', v: '초고속 OVP 차단, IEC ESD/서지 보호, post clamp, OTP' },
+          { k: 'Dead battery', v: 'Rd 내장(DBRD_CC1/CC2), 배터리 없이도 전원 공급 측이 인식 가능' },
+          { k: '표시', v: 'FLAG 오픈 드레인 액티브 로우 고장 출력' },
+          { k: '문서', v: 'Product short data sheet Rev 1.0(2024-08); 완전한 사양은 NXP 완전판 참조' }
+        ]
+      }
+    },
+    'MCT8376Z-Q1': {
+      en: {
+        subcategory: 'Sensored trapezoidal BLDC motor driver (integrated power FETs)',
+        whatIs: 'Sensored (Hall-based) trapezoidal (120° square-wave) three-phase BLDC motor driver with six integrated power MOSFETs (three half-bridges) — completes BLDC commutation without an external gate driver or MCU.',
+        func: 'Three built-in analog Hall comparators read the rotor position; a fixed-function state machine performs 120° sensored trapezoidal commutation; PWM input controls speed, DIR/BRAKE control direction and braking, nFAULT outputs fault status. Two configuration variants: MCT8376ZS-Q1 provides a 5MHz 16-bit SPI for configuration and fault-diagnostics readout; MCT8376ZH-Q1 uses external resistors on dedicated pins for hardware configuration (ADVANCE, MODE, GAIN_SLEW_tLOCK and other 7-level resistor-divider inputs).',
+        usedIn: 'HVAC blowers, office automation machines, factory automation and robotics, wireless antenna rotation motors, drones and other 4.5-65V BLDC motor modules.',
+        desc: '28-VQFN exposed-pad package, 4.5V-65V operation (70V abs max), 400mΩ RDS(ON) (high side + low side) @TA=25°C, 4.5A peak output; two built-in LDOs (3.3V/30mA and 5V/30mA); UVLO, CPUV, OCP (cycle-by-cycle phase-current limit), motor-lock protection, OTW/OTSD. This entry is the generic MCT8376Z-Q1 covering the hardware variant MCT8376ZH-Q1 and the SPI variant MCT8376ZS-Q1 — both share the same 28-VQFN package and pin numbering; only pins 20/21/22/23 differ by variant, and both functions are listed in each pin description.',
+        thermalPad: 'Thermal pad must be connected to analog ground AGND (Table 5-1: Must be connected to analog ground).',
+        specs: [
+          { k: 'Operating voltage', v: '4.5V-65V (70V abs max)' },
+          { k: 'RDS(ON)', v: '400mΩ (high side + low side) @TA=25°C' },
+          { k: 'Peak output current', v: '4.5A' },
+          { k: 'Sleep current', v: '1.5µA typ (VVM=24V, TA=25°C)' },
+          { k: 'PWM frequency', v: 'Up to 100kHz' },
+          { k: 'LDO', v: 'Built-in 3.3V/30mA and 5V/30mA LDOs' },
+          { k: 'Configuration interface', v: 'H-Q1: external-resistor hardware config; S-Q1: 5MHz 16-bit SPI' }
+        ]
+      },
+      ja: {
+        subcategory: 'センサ付き台形波 BLDC モータドライバ（パワー FET 集積）',
+        whatIs: 'センサ付き（Hall ベース）台形波（120° 方形波）三相ブラシレス DC モータドライバ：パワー MOSFET 6 個（ハーフブリッジ 3 組）内蔵、外付けゲートドライバや MCU なしで BLDC 転流制御を完結。',
+        func: '内蔵アナログ Hall コンパレータ 3 組でロータ位置を読み取り、固定機能ステートマシンが 120° センサ付き台形波転流を実行；PWM 入力で回転数制御、DIR/BRAKE で方向とブレーキ、nFAULT で故障状態を出力。設定バリアント 2 種：MCT8376ZS-Q1 は 5MHz 16-bit SPI で設定と故障診断読み出し；MCT8376ZH-Q1 は特定ピンの外付け抵抗によるハードウェア設定（ADVANCE、MODE、GAIN_SLEW_tLOCK など 7 レベル抵抗分圧入力）。',
+        usedIn: 'HVAC 送風モータ、オフィスオートメーション機器、工場自動化とロボット、無線アンテナ回転モータ、ドローンなど 4.5-65V BLDC モータモジュール。',
+        desc: '28-VQFN 露出パッドパッケージ、4.5V-65V 動作（絶対最大 70V）、400mΩ RDS(ON)（ハイサイド+ローサイド合計）@TA=25°C、ピーク出力 4.5A；3.3V/30mA と 5V/30mA の LDO 2 系統内蔵；UVLO、CPUV、OCP（サイクルごとの相電流制限）、モータロック保護、OTW/OTSD。本エントリは汎用型番 MCT8376Z-Q1 としてハードウェア設定版 MCT8376ZH-Q1 と SPI 版 MCT8376ZS-Q1 をカバー——両者は同一 28-VQFN パッケージとピン番号を共有し、pin20/21/22/23 の 4 ピンのみバリアントで機能が異なる（各ピン説明に両バリアントの機能を併記）。',
+        thermalPad: 'サーマルパッドはアナロググラウンド AGND へ接続必須（Table 5-1 明記：Must be connected to analog ground）。',
+        specs: [
+          { k: '動作電圧', v: '4.5V-65V（絶対最大 70V）' },
+          { k: 'RDS(ON)', v: '400mΩ（ハイサイド+ローサイド合計）@TA=25°C' },
+          { k: 'ピーク出力電流', v: '4.5A' },
+          { k: 'スリープ電流', v: '1.5µA typ（VVM=24V, TA=25°C）' },
+          { k: 'PWM 周波数', v: '最高 100kHz' },
+          { k: 'LDO', v: '3.3V/30mA、5V/30mA 各 1 系統内蔵' },
+          { k: '設定インタフェース', v: 'H-Q1：外付け抵抗ハードウェア設定；S-Q1：5MHz 16-bit SPI' }
+        ]
+      },
+      ko: {
+        subcategory: '센서형 사다리꼴파 BLDC 모터 드라이버(파워 FET 집적)',
+        whatIs: '센서형(Hall 기반) 사다리꼴파(120° 구형파) 3상 브러시리스 DC 모터 드라이버: 파워 MOSFET 6개(하프 브리지 3조) 내장, 외부 게이트 드라이버나 MCU 없이 BLDC 정류 제어 완결.',
+        func: '내장 아날로그 Hall 비교기 3조로 로터 위치를 읽고 고정 기능 상태 머신이 120° 센서형 사다리꼴파 정류를 수행; PWM 입력으로 속도 제어, DIR/BRAKE로 방향과 제동, nFAULT로 고장 상태 출력. 설정 변형 2종: MCT8376ZS-Q1은 5MHz 16-bit SPI로 설정과 고장 진단 판독; MCT8376ZH-Q1은 특정 핀의 외부 저항으로 하드웨어 설정(ADVANCE, MODE, GAIN_SLEW_tLOCK 등 7레벨 저항 분압 입력).',
+        usedIn: 'HVAC 송풍 모터, 사무 자동화 기기, 공장 자동화와 로봇, 무선 안테나 회전 모터, 드론 등 4.5-65V BLDC 모터 모듈.',
+        desc: '28-VQFN 노출 패드 패키지, 4.5V-65V 동작(절대 최대 70V), 400mΩ RDS(ON)(하이사이드+로우사이드 합계) @TA=25°C, 피크 출력 4.5A; 3.3V/30mA와 5V/30mA LDO 2조 내장; UVLO, CPUV, OCP(사이클 단위 상전류 제한), 모터 잠금 보호, OTW/OTSD. 본 항목은 범용 형번 MCT8376Z-Q1로 하드웨어 설정판 MCT8376ZH-Q1과 SPI판 MCT8376ZS-Q1을 포괄——둘은 동일 28-VQFN 패키지와 핀 번호를 공유하며 pin20/21/22/23 4핀만 변형별로 기능이 다름(각 핀 설명에 두 변형 기능 병기).',
+        thermalPad: '서멀 패드는 아날로그 그라운드 AGND에 연결 필수(Table 5-1 명기: Must be connected to analog ground).',
+        specs: [
+          { k: '동작 전압', v: '4.5V-65V(절대 최대 70V)' },
+          { k: 'RDS(ON)', v: '400mΩ(하이사이드+로우사이드 합계) @TA=25°C' },
+          { k: '피크 출력 전류', v: '4.5A' },
+          { k: '슬립 전류', v: '1.5µA typ(VVM=24V, TA=25°C)' },
+          { k: 'PWM 주파수', v: '최고 100kHz' },
+          { k: 'LDO', v: '3.3V/30mA, 5V/30mA 각 1조 내장' },
+          { k: '설정 인터페이스', v: 'H-Q1: 외부 저항 하드웨어 설정; S-Q1: 5MHz 16-bit SPI' }
+        ]
+      }
+    },
+    'DRV8363': {
+      en: {
+        subcategory: '48V three-phase smart gate driver (external power MOSFETs)',
+        whatIs: '48V-battery three-phase smart gate driver (external power MOSFETs): drives six N-channel MOSFETs forming three half-bridges, with a built-in low-side precision current-sense amplifier and full fault monitoring.',
+        func: 'Drives three high-side/low-side gate pairs with a bootstrap architecture; the Smart Gate Drive architecture offers 15 adjustable peak gate-drive current levels (up to 1A source / 2A sink) and supports 6x, 3x, 1x and independent PWM control modes; SPI provides detailed configuration and fault-diagnostics readout, DRVOFF independently disables the driver outputs, ASCIN triggers active-short-circuit braking.',
+        usedIn: 'Home appliances, cordless garden and power tools, lawn mowers, BLDC/PMSM motor modules, fan/pump/servo drives, e-bikes/scooters, cordless vacuums, drones and industrial/logistics robots, RC toys and other 48V battery motor applications.',
+        desc: '48-QFN exposed-pad package, 8V-85V wide operating range, 50mA average gate-switching current drives 400nC MOSFETs @20kHz; the trickle charge pump supports 100% PWM duty and provides overdrive supply for external switches. Low-side current-sense amplifier: 1mV input offset, 4 selectable gains, adjustable output bias for unidirectional or bidirectional sensing. Integrated battery/supply voltage monitors, MOSFET VDS and Rsense overcurrent monitors, VGS gate-fault monitor, thermal warning/shutdown and a fault-indication pin.',
+        thermalPad: 'Exposed pad is thermal-only, not an electrical ground — high-impedance to GND/AGND (datasheet Layout chapter p.87); Table 4-1 Pin Functions does not list it as a separate pin.',
+        specs: [
+          { k: 'Operating voltage', v: '8V-85V (VDRAIN)' },
+          { k: 'Gate-drive current', v: '15 levels, up to 1A source / 2A sink' },
+          { k: 'MOSFET drive capability', v: '50mA average gate-switching current, drives 400nC MOSFETs @20kHz' },
+          { k: 'Current sensing', v: 'Low-side shunt amplifier, 1mV input offset, 4 selectable gains' },
+          { k: 'Control interface', v: 'SPI configuration and diagnostics; 6x/3x/1x/independent PWM modes' },
+          { k: 'Protection', v: 'Supply voltage monitors, VDS/Rsense overcurrent, VGS gate fault, thermal warning/shutdown' }
+        ]
+      },
+      ja: {
+        subcategory: '48V 三相スマートゲートドライバ（外付けパワー MOSFET）',
+        whatIs: '48V バッテリ用三相スマートゲートドライバ（外付けパワー MOSFET）：N チャネル MOSFET 6 個で構成する三相ハーフブリッジを駆動、ローサイド高精度電流センスアンプと完全な故障監視を内蔵。',
+        func: 'ブートストラップ構成で 3 組のハイサイド/ローサイドゲートを駆動、Smart Gate Drive アーキテクチャは 15 段可変ピークゲート駆動電流（最大 1A ソース / 2A シンク）を提供し、6x、3x、1x、独立 PWM の 4 制御モードに対応；SPI で詳細設定と故障診断読み出し、DRVOFF でドライバ出力を独立遮断、ASCIN でアクティブ短絡（active short circuit）ブレーキを起動。',
+        usedIn: '家電、コードレス園芸/電動工具、芝刈り機、BLDC/PMSM モータモジュール、ファン/ポンプ/サーボ駆動、電動自転車/キックボード、コードレス掃除機、ドローン、産業/物流ロボット、RC トイなど 48V バッテリモータ用途。',
+        desc: '48-QFN 露出パッドパッケージ、8V-85V 広動作電圧、平均ゲートスイッチング電流 50mA で 400nC MOSFET を 20kHz 駆動；トリクルチャージポンプが 100% PWM デューティに対応し外部スイッチへ overdrive 電源を供給。ローサイド電流センスアンプは入力オフセット 1mV、4 段可変ゲイン、出力バイアス調整で単方向/双方向センシングに対応。バッテリ/電源電圧監視、MOSFET VDS と Rsense 過電流監視、VGS ゲート故障監視、熱警告/シャットダウン、故障表示ピンを集積。',
+        thermalPad: '露出パッドは放熱専用で電気的グラウンドではない——GND/AGND とは高インピーダンス接続（datasheet Layout 章 p.87 明記）；Table 4-1 Pin Functions には独立ピンとして記載なし。',
+        specs: [
+          { k: '動作電圧', v: '8V-85V（VDRAIN）' },
+          { k: 'ゲート駆動電流', v: '15 段可変、最大 1A ソース / 2A シンク' },
+          { k: '駆動可能 MOSFET', v: '平均ゲートスイッチング電流 50mA、400nC MOSFET を 20kHz で駆動' },
+          { k: '電流センス', v: 'ローサイドシャントアンプ、入力オフセット 1mV、4 段可変ゲイン' },
+          { k: '制御インタフェース', v: 'SPI 設定と診断；6x/3x/1x/独立 PWM モード' },
+          { k: '保護', v: '電源電圧監視、VDS/Rsense 過電流、VGS ゲート故障、熱警告/シャットダウン' }
+        ]
+      },
+      ko: {
+        subcategory: '48V 3상 스마트 게이트 드라이버(외부 파워 MOSFET)',
+        whatIs: '48V 배터리용 3상 스마트 게이트 드라이버(외부 파워 MOSFET): N채널 MOSFET 6개로 구성한 3상 하프 브리지를 구동, 로우사이드 정밀 전류 감지 앰프와 완전한 고장 모니터링 내장.',
+        func: '부트스트랩 구조로 3조의 하이사이드/로우사이드 게이트를 구동, Smart Gate Drive 아키텍처는 15단 가변 피크 게이트 구동 전류(최대 1A 소스/2A 싱크)를 제공하고 6x, 3x, 1x, 독립 PWM 4가지 제어 모드 지원; SPI로 상세 설정과 고장 진단 판독, DRVOFF로 드라이버 출력 독립 차단, ASCIN으로 능동 단락(active short circuit) 제동 트리거.',
+        usedIn: '가전, 무선 정원/전동 공구, 잔디깎이, BLDC/PMSM 모터 모듈, 팬/펌프/서보 드라이브, 전기자전거/킥보드, 무선 청소기, 드론, 산업/물류 로봇, RC 완구 등 48V 배터리 모터 응용.',
+        desc: '48-QFN 노출 패드 패키지, 8V-85V 광범위 동작 전압, 평균 게이트 스위칭 전류 50mA로 400nC MOSFET을 20kHz 구동; 트리클 차지 펌프가 100% PWM 듀티를 지원하고 외부 스위치에 overdrive 전원 공급. 로우사이드 전류 감지 앰프는 입력 오프셋 1mV, 4단 가변 이득, 출력 바이어스 조정으로 단방향/양방향 감지 지원. 배터리/전원 전압 감시, MOSFET VDS와 Rsense 과전류 감시, VGS 게이트 고장 감시, 열 경고/셧다운, 고장 표시 핀 집적.',
+        thermalPad: '노출 패드는 방열 전용으로 전기적 그라운드가 아님——GND/AGND와는 고임피던스 연결(datasheet Layout 장 p.87 명기); Table 4-1 Pin Functions에는 독립 핀으로 기재 없음.',
+        specs: [
+          { k: '동작 전압', v: '8V-85V(VDRAIN)' },
+          { k: '게이트 구동 전류', v: '15단 가변, 최대 1A 소스/2A 싱크' },
+          { k: '구동 가능 MOSFET', v: '평균 게이트 스위칭 전류 50mA, 400nC MOSFET을 20kHz로 구동' },
+          { k: '전류 감지', v: '로우사이드 션트 앰프, 입력 오프셋 1mV, 4단 가변 이득' },
+          { k: '제어 인터페이스', v: 'SPI 설정과 진단; 6x/3x/1x/독립 PWM 모드' },
+          { k: '보호', v: '전원 전압 감시, VDS/Rsense 과전류, VGS 게이트 고장, 열 경고/셧다운' }
+        ]
+      }
+    }
+  };
+  Object.assign(window.IC_I18N, T);
+})();
