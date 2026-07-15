@@ -522,8 +522,8 @@
       </div>
       <div id="pcbRefsPane" style="display:none;flex:1;padding:12px 16px;overflow-y:auto">
         <div style="background:var(--accent-soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:var(--ink);line-height:1.7">
-          <b>開源硬體公版庫</b>——「載入到 Layout」把公版的板框、層數、主要料件（含實際尺寸與正反面）、代表性走線與 via 帶進編輯器當起手板，可直接改；「疊加比較」把公版料件以虛線疊在你目前的設計上對照。載入後用右側「圖層管理」逐層開關檢視、「板上料件」看清單並點選定位。
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">⚠️ 為「教學重建版」佈局——依公板文件近似重建主要 BOM 與代表性走線，非原廠精確座標/完整 netlist；完整原理圖/PCB 源檔在各「原始碼」連結。授權多為 OSHW/CC-BY-SA。</div>
+          <b data-i18n="pcbf_refs_title">開源硬體公版庫</b><span data-i18n="pcbf_refs_body">——「載入到 Layout」把公版的板框、層數、主要料件（含實際尺寸與正反面）、代表性走線與 via 帶進編輯器當起手板，可直接改；「疊加比較」把公版料件以虛線疊在你目前的設計上對照。載入後用右側「圖層管理」逐層開關檢視、「板上料件」看清單並點選定位。</span>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px" data-i18n="pcbf_refs_warn">⚠️ 為「教學重建版」佈局——依公板文件近似重建主要 BOM 與代表性走線，非原廠精確座標/完整 netlist；完整原理圖/PCB 源檔在各「原始碼」連結。授權多為 OSHW/CC-BY-SA。</div>
         </div>
         <div id="refBoardList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px"></div>
       </div>
@@ -601,7 +601,7 @@
               <button class="small-button" id="syncNetlistBtn" data-i18n="pcb_syncnet" style="grid-column:1/-1" title="讀取線路圖頁自動存檔，建立元件與網路，飛線引導佈局">⇪ 從線路圖同步 netlist</button>
               <button class="small-button" id="view3dBtn" data-i18n="pcb_3d" style="grid-column:1/-1" title="教學級近似：元件方塊+pad+走線；Three.js 開啟時才載入">🧊 3D 檢視</button>
             </div>
-            <p style="font-size:11px;color:var(--muted);margin:6px 0 0">走線：拖曳畫線（0/45/90 吸角，Shift=自由角度，Esc 取消）；起點碰 pad/走線自動接該網路。銅箔工具：逐點點擊畫鋪銅、雙擊收尾（避讓 0.3mm 於 Gerber 生效）。</p>
+            <p style="font-size:11px;color:var(--muted);margin:6px 0 0" data-i18n="pcbf_h_trace">走線：拖曳畫線（0/45/90 吸角，Shift=自由角度，Esc 取消）；起點碰 pad/走線自動接該網路。銅箔工具：逐點點擊畫鋪銅、雙擊收尾（避讓 0.3mm 於 Gerber 生效）。</p>
           </section>
 
           <section class="panel-section">
@@ -609,7 +609,7 @@
               <h2 data-i18n="pcb_rules">Layout 規則</h2>
               <button class="small-button" id="nrAdd" data-i18n="pcb_addrule">＋規則</button>
             </div>
-            <p style="font-size:11px;color:var(--muted);margin:0 0 6px">net 名含關鍵字（或 /regex/）｜線寬下限｜線長上限｜差分對長度差（mm，0=不查）。畫線超標即時警示，DRC 全面稽核。</p>
+            <p style="font-size:11px;color:var(--muted);margin:0 0 6px" data-i18n="pcbf_h_rule">net 名含關鍵字（或 /regex/）｜線寬下限｜線長上限｜差分對長度差（mm，0=不查）。畫線超標即時警示，DRC 全面稽核。</p>
             <div id="netRulesList"></div>
           </section>
 
@@ -630,7 +630,7 @@
               <button class="small-button" id="impCalc" data-i18n="pcb_calc" style="align-self:end">計算</button>
             </div>
             <div id="impOut" style="font-size:13px;font-weight:600;color:var(--accent-strong);margin-top:6px"></div>
-            <p style="font-size:11px;color:var(--muted);margin:4px 0 0">單位 mm。近似式誤差 ±10% 等級；量產阻抗控制以板廠疊構與場型解算為準。</p>
+            <p style="font-size:11px;color:var(--muted);margin:4px 0 0" data-i18n="pcbf_h_imp">單位 mm。近似式誤差 ±10% 等級；量產阻抗控制以板廠疊構與場型解算為準。</p>
           </section>
 
           <section class="panel-section">
@@ -652,7 +652,7 @@
               <button class="small-button" id="exportKicadBtn" data-i18n="pcb_exp_kicad">💾 匯出 .kicad_pcb</button>
               <button class="small-button" id="exportGerberBtn" data-i18n="pcb_exp_gerber">🏭 匯出製造包（Gerber+鑽孔+鋼網+CPL+IPC-356）</button>
               <div id="kicadIoMsg" style="color:var(--muted);line-height:1.5"></div>
-              <div style="color:var(--muted);line-height:1.5">匯入檔會保留整棵原始資料樹；匯出時未編輯的幾何 100% 原樣回寫（零落差）。.brd 為 Cadence 專有二進位：匯入走「板面檢視」分頁的 SKILL 抽取，匯出走 SKILL 重建腳本。</div>
+              <div style="color:var(--muted);line-height:1.5" data-i18n="pcbf_h_kicad">匯入檔會保留整棵原始資料樹；匯出時未編輯的幾何 100% 原樣回寫（零落差）。.brd 為 Cadence 專有二進位：匯入走「板面檢視」分頁的 SKILL 抽取，匯出走 SKILL 重建腳本。</div>
             </div>
           </section>
 
@@ -743,7 +743,7 @@
 
           <section class="panel-section">
             <h2 data-i18n="pcb_emi">⚡ EMI 環路檢查（心中有環）</h2>
-            <p style="font-size:12px;color:var(--muted);margin:0 0 8px">指派關鍵元件 → 估算輸入熱環/輸出環面積（越小越好；輸入環優先）。</p>
+            <p style="font-size:12px;color:var(--muted);margin:0 0 8px" data-i18n="pcbf_h_emi">指派關鍵元件 → 估算輸入熱環/輸出環面積（越小越好；輸入環優先）。</p>
             <div id="emiRoles" style="display:grid;gap:6px;font-size:12px;">
               <label style="display:flex;justify-content:space-between;align-items:center;gap:6px"><span data-i18n="pcbf_cin">輸入電容 Cin</span> <select data-role="cin" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
               <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">IC / SW <select data-role="ic" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
@@ -802,27 +802,27 @@
             <div style="font-size: 13px; max-height: 320px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;">
               <details>
                 <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q1">電源去耦電容怎麼放？</summary>
-                <p style="color:var(--muted);margin-top:6px;">越靠近 IC 電源腳越好，小容值(0.1µF/1nF)最靠腳、大容值(10µF)稍遠；過孔直接打到電源/地平面，縮短迴路電感。每個電源腳至少一顆。</p>
+                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a1">越靠近 IC 電源腳越好，小容值(0.1µF/1nF)最靠腳、大容值(10µF)稍遠；過孔直接打到電源/地平面，縮短迴路電感。每個電源腳至少一顆。</p>
               </details>
               <details>
                 <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q2">高速差分對走線要點？</summary>
-                <p style="color:var(--muted);margin-top:6px;">等長(長度匹配控制 skew)、等距(維持差分阻抗如 90Ω/100Ω)、同層走線、少過孔、避免急轉(用 45°或弧線)、遠離噪聲源、參考完整地平面。</p>
+                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a2">等長(長度匹配控制 skew)、等距(維持差分阻抗如 90Ω/100Ω)、同層走線、少過孔、避免急轉(用 45°或弧線)、遠離噪聲源、參考完整地平面。</p>
               </details>
               <details>
                 <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q3">為什麼要完整的地平面(return path)？</summary>
-                <p style="color:var(--muted);margin-top:6px;">高頻回流電流走訊號正下方的地，路徑斷裂(跨分割/挖空)會迫使繞路 → 增大迴路面積、EMI 與串擾。換層時鄰近放回流過孔。</p>
+                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a3">高頻回流電流走訊號正下方的地，路徑斷裂(跨分割/挖空)會迫使繞路 → 增大迴路面積、EMI 與串擾。換層時鄰近放回流過孔。</p>
               </details>
               <details>
                 <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q4">開關電源(SW 節點)佈局注意？</summary>
-                <p style="color:var(--muted);margin-top:6px;">SW 節點銅面要小(降 EMI 又要散熱權衡)、高頻迴路(Vin-開關-二極體-Cin)面積最小、輸入電容最靠 IC、回授走線遠離 SW、單點接地。</p>
+                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a4">SW 節點銅面要小(降 EMI 又要散熱權衡)、高頻迴路(Vin-開關-二極體-Cin)面積最小、輸入電容最靠 IC、回授走線遠離 SW、單點接地。</p>
               </details>
               <details>
                 <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q5">疊層怎麼選(4 層)？</summary>
-                <p style="color:var(--muted);margin-top:6px;">常見 訊號-地-電源-訊號：訊號層緊鄰完整地平面以控阻抗與回流；電源地相鄰形成平面電容；高速線走在靠地的外層或內層 stripline。</p>
+                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a5">常見 訊號-地-電源-訊號：訊號層緊鄰完整地平面以控阻抗與回流；電源地相鄰形成平面電容；高速線走在靠地的外層或內層 stripline。</p>
               </details>
               <details>
                 <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q6">散熱怎麼處理？</summary>
-                <p style="color:var(--muted);margin-top:6px;">熱源下方加散熱過孔陣列接內層/底層大銅面、加大銅厚與銅面、必要時鋁基板或散熱片、考慮氣流方向、功率元件分散避免熱集中。</p>
+                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a6">熱源下方加散熱過孔陣列接內層/底層大銅面、加大銅厚與銅面、必要時鋁基板或散熱片、考慮氣流方向、功率元件分散避免熱集中。</p>
               </details>
             </div>
           </section>
@@ -868,7 +868,7 @@
         }
       });
     </script>
-    <script src="./i18n.js?v=2026-07-15d"></script>
+    <script src="./i18n.js?v=2026-07-15f"></script>
     <script src="./pcb-status.js?v=2026-07-15a"></script>
 </body>
 </html>
