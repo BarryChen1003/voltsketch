@@ -457,10 +457,10 @@
     <div id="pcbGate" style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.96);display:flex;align-items:center;justify-content:center;padding:16px">
       <div style="background:#fff;border-radius:14px;padding:32px 28px;max-width:380px;width:100%;text-align:center">
         <div style="font-size:40px">🔐</div>
-        <h2 style="margin:8px 0;color:#0f172a;font-size:20px">PCB Layout 邀請制</h2>
+        <h2 style="margin:8px 0;color:#0f172a;font-size:20px" data-i18n="pcb_gate_title">PCB Layout 邀請制</h2>
         <p style="color:#64748b;font-size:13px;margin:0 0 14px;line-height:1.7">目前以邀請碼開放。索取邀請碼或洽談合作請見<a href="contact.html">聯絡資訊</a>；訂閱 <a href="upgrade.html">12 個月方案</a>亦自動開通。</p>
-        <input id="pcbCode" placeholder="輸入邀請碼" autocomplete="off" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;text-align:center;letter-spacing:1px" />
-        <button id="pcbGo" class="primary-button" style="width:100%;margin-top:10px;padding:10px;font-size:14px">進入</button>
+        <input id="pcbCode" placeholder="輸入邀請碼" data-i18n-placeholder="pcb_gate_ph" autocomplete="off" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;text-align:center;letter-spacing:1px" />
+        <button id="pcbGo" data-i18n="pcb_gate_enter" class="primary-button" style="width:100%;margin-top:10px;padding:10px;font-size:14px">進入</button>
         <p id="pcbErr" style="color:#b91c1c;font-size:12px;min-height:16px;margin:8px 0 0"></p>
       </div>
     </div>
@@ -484,7 +484,7 @@
           <div class="brand-mark" aria-hidden="true">VS</div>
           <div>
             <h1>VoltSketch 硬體實驗室</h1>
-            <p>繪製、分析並保存你的直流線路圖</p>
+            <p data-i18n="kb_subtitle">繪製、分析並保存你的直流線路圖</p>
           </div>
         </div>
 
@@ -500,13 +500,13 @@
 
         <div class="top-actions">
           <button class="icon-button" type="button" id="newPcb">
-            <span aria-hidden="true">+ 新建</span>
+            <span aria-hidden="true" data-i18n="pcb_new">+ 新建</span>
           </button>
           <button class="icon-button" type="button" id="savePcb">
-            <span aria-hidden="true">💾 儲存</span>
+            <span aria-hidden="true" data-i18n="pcb_save">💾 儲存</span>
           </button>
           <button class="icon-button" type="button" id="exportPcb">
-            <span aria-hidden="true">📤 匯出</span>
+            <span aria-hidden="true" data-i18n="pcb_top_export">📤 匯出</span>
           </button>
           <div class="segmented" aria-label="Language">
             <button type="button" class="lang-option active" data-lang="zh">中</button>
@@ -517,9 +517,9 @@
 
       <!-- PCB 雙分頁：Layout 編輯（本頁工具）｜板面檢視（pcb-viewer 內嵌，共用邀請碼旗標） -->
       <div id="pcbTabs" style="display:flex;gap:8px;margin:12px 16px 0;align-items:center;overflow-x:auto;white-space:nowrap">
-        <button id="tabLayout" type="button" class="primary-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0">🛠 Layout 編輯</button>
-        <button id="tabViewer" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" title="板面檢視（Allegro 匯入）">🔍 板面檢視</button>
-        <button id="tabRefs" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0">📐 開源公版</button>
+        <button id="tabLayout" type="button" class="primary-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" data-i18n="pcb_tab_layout">🛠 Layout 編輯</button>
+        <button id="tabViewer" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" title="板面檢視（Allegro 匯入）" data-i18n="pcb_tab_viewer">🔍 板面檢視</button>
+        <button id="tabRefs" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" data-i18n="pcb_tab_refs">📐 開源公版</button>
       </div>
       <div id="pcbViewerPane" style="display:none;flex:1;padding:12px 16px">
         <iframe id="pcbViewerFrame" title="PCB 檢視器" style="width:100%;height:100%;min-height:72vh;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe>
@@ -558,15 +558,15 @@
       <main class="pcb-main">
         <aside class="pcb-sidebar">
           <section class="panel-section">
-            <h2>PCB 工具</h2>
+            <h2 data-i18n="pcb_tools">PCB 工具</h2>
             <div class="pcb-tool-grid">
               <button class="pcb-tool-btn active" data-tool="select">
                 <span class="pcb-tool-icon">↖</span>
-                <span>選取</span>
+                <span data-i18n="pcb_tool_select">選取</span>
               </button>
               <button class="pcb-tool-btn" data-tool="trace">
                 <span class="pcb-tool-icon">─</span>
-                <span>走線</span>
+                <span data-i18n="pcb_tool_trace">走線</span>
               </button>
               <button class="pcb-tool-btn" data-tool="via">
                 <span class="pcb-tool-icon">⊙</span>
@@ -578,19 +578,19 @@
               </button>
               <button class="pcb-tool-btn" data-tool="plane">
                 <span class="pcb-tool-icon">▧</span>
-                <span>銅箔</span>
+                <span data-i18n="pcb_tool_copper">銅箔</span>
               </button>
               <button class="pcb-tool-btn" data-tool="keepout">
                 <span class="pcb-tool-icon">⊘</span>
-                <span>禁止區</span>
+                <span data-i18n="pcb_tool_keepout">禁止區</span>
               </button>
               <button class="pcb-tool-btn" data-tool="text">
                 <span class="pcb-tool-icon">T</span>
-                <span>文字</span>
+                <span data-i18n="pcb_tool_text">文字</span>
               </button>
               <button class="pcb-tool-btn" data-tool="dimension">
                 <span class="pcb-tool-icon">↔</span>
-                <span>尺寸</span>
+                <span data-i18n="pcb_tool_dim">尺寸</span>
               </button>
               <button class="pcb-tool-btn" data-tool="netlabel">
                 <span class="pcb-tool-icon">⏚</span>
@@ -601,24 +601,24 @@
               <label style="display:grid;gap:2px">線寬 (mm)<input type="number" id="traceWidth" value="0.3" step="0.05" min="0.05" style="padding:3px"></label>
               <label style="display:grid;gap:2px">層<select id="traceLayer" style="padding:3px"></select></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ratsnestToggle">顯示飛線（未連線）</label>
-              <button class="small-button" id="autoRouteBtn" style="grid-column:1/-1">⚡ 自動佈線未連線（單層試驗）</button>
-              <button class="small-button" id="syncNetlistBtn" style="grid-column:1/-1" title="讀取線路圖頁自動存檔，建立元件與網路，飛線引導佈局">⇪ 從線路圖同步 netlist</button>
-              <button class="small-button" id="view3dBtn" style="grid-column:1/-1" title="教學級近似：元件方塊+pad+走線；Three.js 開啟時才載入">🧊 3D 檢視</button>
+              <button class="small-button" id="autoRouteBtn" data-i18n="pcb_autoroute" style="grid-column:1/-1">⚡ 自動佈線未連線（單層試驗）</button>
+              <button class="small-button" id="syncNetlistBtn" data-i18n="pcb_syncnet" style="grid-column:1/-1" title="讀取線路圖頁自動存檔，建立元件與網路，飛線引導佈局">⇪ 從線路圖同步 netlist</button>
+              <button class="small-button" id="view3dBtn" data-i18n="pcb_3d" style="grid-column:1/-1" title="教學級近似：元件方塊+pad+走線；Three.js 開啟時才載入">🧊 3D 檢視</button>
             </div>
             <p style="font-size:11px;color:var(--muted);margin:6px 0 0">走線：拖曳畫線（0/45/90 吸角，Shift=自由角度，Esc 取消）；起點碰 pad/走線自動接該網路。銅箔工具：逐點點擊畫鋪銅、雙擊收尾（避讓 0.3mm 於 Gerber 生效）。</p>
           </section>
 
           <section class="panel-section">
             <div class="section-head">
-              <h2>Layout 規則</h2>
-              <button class="small-button" id="nrAdd">＋規則</button>
+              <h2 data-i18n="pcb_rules">Layout 規則</h2>
+              <button class="small-button" id="nrAdd" data-i18n="pcb_addrule">＋規則</button>
             </div>
             <p style="font-size:11px;color:var(--muted);margin:0 0 6px">net 名含關鍵字（或 /regex/）｜線寬下限｜線長上限｜差分對長度差（mm，0=不查）。畫線超標即時警示，DRC 全面稽核。</p>
             <div id="netRulesList"></div>
           </section>
 
           <section class="panel-section">
-            <h2>阻抗計算（IPC-2141 近似）</h2>
+            <h2 data-i18n="pcb_imp">阻抗計算（IPC-2141 近似）</h2>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
               <label style="grid-column:1/-1;display:grid;gap:2px">結構<select id="impKind" style="padding:3px">
                 <option value="microstrip">微帶線（外層）</option>
@@ -631,37 +631,37 @@
               <label style="display:grid;gap:2px">銅厚 t<input type="number" id="impT" value="0.035" step="0.005" style="padding:3px"></label>
               <label style="display:grid;gap:2px">εr<input type="number" id="impEr" value="4.5" step="0.1" style="padding:3px"></label>
               <label style="display:grid;gap:2px">間距 s（差分）<input type="number" id="impS" value="0.2" step="0.05" style="padding:3px"></label>
-              <button class="small-button" id="impCalc" style="align-self:end">計算</button>
+              <button class="small-button" id="impCalc" data-i18n="pcb_calc" style="align-self:end">計算</button>
             </div>
             <div id="impOut" style="font-size:13px;font-weight:600;color:var(--accent-strong);margin-top:6px"></div>
             <p style="font-size:11px;color:var(--muted);margin:4px 0 0">單位 mm。近似式誤差 ±10% 等級；量產阻抗控制以板廠疊構與場型解算為準。</p>
           </section>
 
           <section class="panel-section">
-            <h2>IC 元件庫放料</h2>
+            <h2 data-i18n="pcb_iclib">IC 元件庫放料</h2>
             <div style="display:grid;gap:6px;font-size:12px">
-              <input id="icPartPick" list="icPartsList" placeholder="輸入料號（如 TAC5111-Q1）…" style="padding:6px 8px;border:1px solid var(--line);border-radius:6px">
+              <input id="icPartPick" list="icPartsList" placeholder="輸入料號（如 TAC5111-Q1）…" data-i18n-placeholder="pcb_icpick_ph" style="padding:6px 8px;border:1px solid var(--line);border-radius:6px">
               <datalist id="icPartsList"></datalist>
-              <button class="small-button" id="placeIcBtn">📦 放到板上（真 pad footprint）</button>
+              <button class="small-button" id="placeIcBtn" data-i18n="pcb_placeic">📦 放到板上（真 pad footprint）</button>
               <div id="icPlaceMsg" style="color:var(--muted);line-height:1.5"></div>
             </div>
           </section>
 
           <section class="panel-section">
-            <h2>KiCad 匯入 / 匯出</h2>
+            <h2 data-i18n="pcb_kicad">KiCad 匯入 / 匯出</h2>
             <div style="display:grid;gap:6px;font-size:12px">
               <label class="small-button" style="text-align:center;cursor:pointer">
                 📂 匯入 .kicad_pcb<input type="file" id="kicadFile" accept=".kicad_pcb" style="display:none">
               </label>
-              <button class="small-button" id="exportKicadBtn">💾 匯出 .kicad_pcb</button>
-              <button class="small-button" id="exportGerberBtn">🏭 匯出製造包（Gerber+鑽孔+鋼網+CPL+IPC-356）</button>
+              <button class="small-button" id="exportKicadBtn" data-i18n="pcb_exp_kicad">💾 匯出 .kicad_pcb</button>
+              <button class="small-button" id="exportGerberBtn" data-i18n="pcb_exp_gerber">🏭 匯出製造包（Gerber+鑽孔+鋼網+CPL+IPC-356）</button>
               <div id="kicadIoMsg" style="color:var(--muted);line-height:1.5"></div>
               <div style="color:var(--muted);line-height:1.5">匯入檔會保留整棵原始資料樹；匯出時未編輯的幾何 100% 原樣回寫（零落差）。.brd 為 Cadence 專有二進位：匯入走「板面檢視」分頁的 SKILL 抽取，匯出走 SKILL 重建腳本。</div>
             </div>
           </section>
 
           <section class="panel-section">
-            <h2>板框設定</h2>
+            <h2 data-i18n="pcb_board">板框設定</h2>
             <div style="display: grid; gap: 8px;">
               <label style="display: grid; gap: 4px; font-size: 13px;">
                 <span>寬度 (mm)</span>
@@ -675,7 +675,7 @@
                 <span>層數 (1~40 自訂)</span>
                 <input type="number" id="boardLayers" value="2" min="1" max="40" style="padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px;" />
               </label>
-              <button class="primary-button" id="applyBoardSettings" style="margin-top: 8px;">套用設定</button>
+              <button class="primary-button" id="applyBoardSettings" data-i18n="pcb_apply" style="margin-top: 8px;">套用設定</button>
             </div>
           </section>
         </aside>
@@ -684,12 +684,12 @@
           <div class="pcb-toolbar">
             <div class="pcb-status">
               <div class="pcb-status-dot"></div>
-              <span id="pcbStatusText">就緒</span>
+              <span id="pcbStatusText" data-i18n="pcb_ready">就緒</span>
             </div>
             <div style="display: flex; gap: 8px;">
               <button class="small-button" id="zoomIn">+</button>
               <button class="small-button" id="zoomOut">-</button>
-              <button class="small-button" id="zoomFit">適合</button>
+              <button class="small-button" id="zoomFit" data-i18n="pcb_zoomfit">適合</button>
               <span id="zoomLevel" style="font-size: 12px; color: var(--muted);">100%</span>
             </div>
           </div>
@@ -700,18 +700,18 @@
 
         <aside class="pcb-inspector">
           <section class="panel-section">
-            <h2>圖層管理</h2>
+            <h2 data-i18n="pcb_layers">圖層管理</h2>
             <div class="layer-list" id="layerList"></div>
           </section>
 
           <section class="panel-section">
-            <h2>板上料件</h2>
+            <h2 data-i18n="pcb_parts">板上料件</h2>
             <div id="partsSummary"></div>
             <div id="partsList" style="max-height:240px;overflow-y:auto;margin-top:6px"></div>
           </section>
 
           <section class="panel-section">
-            <h2>選取元件</h2>
+            <h2 data-i18n="pcb_selcomp">選取元件</h2>
             <div id="selInfo" style="font-size:12px;color:var(--muted)">select 工具點擊元件選取；拖曳移動（格點吸附）、R 鍵旋轉 90°、Esc 取消。</div>
             <div id="selFields" style="display:none;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
               <div id="selRef" style="grid-column:1/-1;font-family:monospace;color:var(--accent-strong)"></div>
@@ -719,14 +719,14 @@
               <label style="display:grid;gap:2px">Y (mm)<input type="number" id="selY" step="0.05" style="padding:3px"></label>
               <label style="display:grid;gap:2px">角度 (°)<input type="number" id="selRot" step="90" style="padding:3px"></label>
               <label style="display:grid;gap:2px">格點 (mm)<input type="number" id="gridSnap" value="0.05" step="0.05" min="0" style="padding:3px"></label>
-              <button class="small-button" id="selRotBtn" style="grid-column:1/-1">旋轉 90°（R）</button>
+              <button class="small-button" id="selRotBtn" data-i18n="pcb_rot90" style="grid-column:1/-1">旋轉 90°（R）</button>
             </div>
           </section>
 
           <section class="panel-section">
             <div class="section-head">
-              <h2>DRC 檢查</h2>
-              <button class="small-button" id="runDrc">執行檢查</button>
+              <h2 data-i18n="pcb_drc">DRC 檢查</h2>
+              <button class="small-button" id="runDrc" data-i18n="pcb_rundrc">執行檢查</button>
             </div>
             <details style="margin-bottom:8px">
               <summary style="cursor:pointer;font-size:12px;color:var(--muted)">規則設定（mm）</summary>
@@ -741,12 +741,12 @@
               </div>
             </details>
             <div class="drc-results" id="drcResults">
-              <p style="color: var(--muted); font-size: 13px; padding: 12px;">尚未執行 DRC 檢查</p>
+              <p style="color: var(--muted); font-size: 13px; padding: 12px;" data-i18n="pcb_no_drc">尚未執行 DRC 檢查</p>
             </div>
           </section>
 
           <section class="panel-section">
-            <h2>⚡ EMI 環路檢查（心中有環）</h2>
+            <h2 data-i18n="pcb_emi">⚡ EMI 環路檢查（心中有環）</h2>
             <p style="font-size:12px;color:var(--muted);margin:0 0 8px">指派關鍵元件 → 估算輸入熱環/輸出環面積（越小越好；輸入環優先）。</p>
             <div id="emiRoles" style="display:grid;gap:6px;font-size:12px;">
               <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">輸入電容 Cin <select data-role="cin" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
@@ -755,12 +755,12 @@
               <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">電感 L <select data-role="l" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
               <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">輸出電容 Cout <select data-role="cout" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
             </div>
-            <button class="primary-button" id="runEmi" style="margin-top:8px;width:100%">檢查環路</button>
+            <button class="primary-button" id="runEmi" data-i18n="pcb_runemi" style="margin-top:8px;width:100%">檢查環路</button>
             <div id="emiResults" style="margin-top:8px;font-size:12px;"></div>
           </section>
 
           <section class="panel-section">
-            <h2>🌡️ 熱 / 散熱估算</h2>
+            <h2 data-i18n="pcb_thermal">🌡️ 熱 / 散熱估算</h2>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;">
               <label style="display:grid;gap:2px">銅厚<select id="thCu" style="padding:3px"><option value="0.5">0.5 oz</option><option value="1" selected>1 oz</option><option value="2">2 oz</option><option value="3">3 oz</option></select></label>
               <label style="display:grid;gap:2px">溫升 ΔT(°C)<input type="number" id="thDT" value="10" step="1" style="padding:3px"></label>
@@ -770,39 +770,39 @@
               <label style="display:grid;gap:2px">散熱銅(cm²)<input type="number" id="thArea" value="1" step="0.5" style="padding:3px"></label>
               <label style="display:grid;gap:2px">散熱孔數<input type="number" id="thVias" value="0" step="1" style="padding:3px"></label>
             </div>
-            <button class="primary-button" id="runThermal" style="margin-top:8px;width:100%">熱估算</button>
+            <button class="primary-button" id="runThermal" data-i18n="pcb_runthermal" style="margin-top:8px;width:100%">熱估算</button>
             <div id="thermalResults" style="margin-top:8px;font-size:12px;"></div>
           </section>
 
           <section class="panel-section">
             <h2>Netlist</h2>
             <div id="netlistContent" style="font-size: 13px; max-height: 200px; overflow-y: auto;">
-              <p style="color: var(--muted);">尚無 Netlist 資料</p>
+              <p style="color: var(--muted);" data-i18n="pcb_no_netlist">尚無 Netlist 資料</p>
             </div>
           </section>
 
           <section class="panel-section">
-            <h2>📚 教學模式</h2>
+            <h2 data-i18n="pcb_tutorial">📚 教學模式</h2>
             <div id="tutorialList" style="font-size: 13px; max-height: 250px; overflow-y: auto;">
               <!-- Tutorial list will be rendered here -->
             </div>
             <div id="tutorialContent" style="margin-top: 12px; font-size: 13px;">
-              <p style="color: var(--muted);">選擇一個課程開始學習</p>
+              <p style="color: var(--muted);" data-i18n="pcb_pick_tutorial">選擇一個課程開始學習</p>
             </div>
           </section>
 
           <section class="panel-section">
-            <h2>🎯 練習模式</h2>
+            <h2 data-i18n="pcb_practice">🎯 練習模式</h2>
             <div id="practiceList" style="font-size: 13px; max-height: 250px; overflow-y: auto;">
               <!-- Practice list will be rendered here -->
             </div>
             <div id="practiceContent" style="margin-top: 12px; font-size: 13px;">
-              <p style="color: var(--muted);">選擇一個練習開始實作</p>
+              <p style="color: var(--muted);" data-i18n="pcb_pick_practice">選擇一個練習開始實作</p>
             </div>
           </section>
 
           <section class="panel-section">
-            <h2>📝 PCB Layout 面試題</h2>
+            <h2 data-i18n="pcb_interview">📝 PCB Layout 面試題</h2>
             <div style="font-size: 13px; max-height: 320px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;">
               <details>
                 <summary style="cursor:pointer;font-weight:600;">電源去耦電容怎麼放？</summary>
@@ -832,9 +832,9 @@
           </section>
 
           <section class="panel-section">
-            <h2>屬性</h2>
+            <h2 data-i18n="pcb_props">屬性</h2>
             <div id="pcbInspectorContent" style="font-size: 13px;">
-              <p style="color: var(--muted);">尚未選取元件</p>
+              <p style="color: var(--muted);" data-i18n="pcb_no_sel">尚未選取元件</p>
             </div>
           </section>
         </aside>
@@ -872,6 +872,6 @@
         }
       });
     </script>
-    <script src="./i18n.js?v=2026-07-15a"></script>
+    <script src="./i18n.js?v=2026-07-15b"></script>
 </body>
 </html>
