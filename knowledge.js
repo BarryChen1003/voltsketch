@@ -4377,7 +4377,9 @@ const knowledgeApp = {
 
   updateCounts() {
     const total = this.items.length;
-    document.querySelector('#totalCount').textContent = `${total} 個主題`;
+    const sfx = { zh: ' 個主題', en: ' topics', ja: '件', ko: '개 주제' };
+    const l = (window.I18N && I18N.lang) || 'zh';
+    document.querySelector('#totalCount').textContent = `${total}${sfx[l] || sfx.zh}`;
   },
 
   // 公式下標（HTML）：Vout→V<sub>out</sub>、Rds_on→Rds<sub>on</sub>、R1→R<sub>1</sub>

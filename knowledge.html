@@ -324,7 +324,7 @@
           <div class="brand-mark" aria-hidden="true">VS</div>
           <div>
             <h1>VoltSketch 硬體實驗室</h1>
-            <p>繪製、分析並保存你的直流線路圖</p>
+            <p data-i18n="kb_subtitle">繪製、分析並保存你的直流線路圖</p>
           </div>
         </div>
 
@@ -339,8 +339,8 @@
         </nav>
 
         <div class="top-actions">
-          <label class="icon-button file-button" title="上傳 PDF">
-            <span aria-hidden="true">📄 上傳</span>
+          <label class="icon-button file-button" title="上傳 PDF" data-i18n-title="kb_upload">
+            <span aria-hidden="true" data-i18n="kb_upload_btn">📄 上傳</span>
             <input id="pdfUpload" type="file" accept=".pdf" multiple />
           </label>
           <div class="segmented" aria-label="Language">
@@ -353,125 +353,125 @@
       <main class="knowledge-main">
         <aside class="knowledge-sidebar">
           <section class="panel-section">
-            <h2>產品大分類</h2>
+            <h2 data-i18n="kb_prodcat">產品大分類</h2>
             <div id="productFilter" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
           </section>
           <section class="panel-section">
-            <h2>常用線路拓樸</h2>
+            <h2 data-i18n="kb_topo">常用線路拓樸</h2>
             <div id="topoFilter" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
           </section>
           <section class="panel-section">
-            <h2>小分類（電路）</h2>
+            <h2 data-i18n="kb_subcat">小分類（電路）</h2>
             <div class="category-list" id="categoryList">
               <div class="category-item active" data-category="all">
                 <div class="category-icon">📚</div>
                 <div>
-                  <div class="category-name">全部主題</div>
+                  <div class="category-name" data-i18n="kb_all">全部主題</div>
                   <div class="category-count" id="totalCount">0 個主題</div>
                 </div>
               </div>
               <div class="category-item" data-category="power-management">
                 <div class="category-icon">⚡</div>
                 <div>
-                  <div class="category-name">電源管理</div>
+                  <div class="category-name" data-i18n="kb_power">電源管理</div>
                   <div class="category-count">LDO, Buck, Boost</div>
                 </div>
               </div>
               <div class="category-item" data-category="signal-processing">
                 <div class="category-icon">📡</div>
                 <div>
-                  <div class="category-name">訊號處理</div>
+                  <div class="category-name" data-i18n="kb_signal">訊號處理</div>
                   <div class="category-count">Level Shift, Op Amp</div>
                 </div>
               </div>
               <div class="category-item" data-category="communication">
                 <div class="category-icon">🔌</div>
                 <div>
-                  <div class="category-name">通訊介面</div>
+                  <div class="category-name" data-i18n="kb_comm">通訊介面</div>
                   <div class="category-count">UART, I2C, SPI, USB</div>
                 </div>
               </div>
               <div class="category-item" data-category="transistor">
                 <div class="category-icon">🔧</div>
                 <div>
-                  <div class="category-name">電晶體應用</div>
+                  <div class="category-name" data-i18n="kb_transistor">電晶體應用</div>
                   <div class="category-count">MOSFET, BJT</div>
                 </div>
               </div>
               <div class="category-item" data-category="protection">
                 <div class="category-icon">🛡️</div>
                 <div>
-                  <div class="category-name">保護電路</div>
+                  <div class="category-name" data-i18n="kb_protection">保護電路</div>
                   <div class="category-count">ESD, TVS</div>
                 </div>
               </div>
               <div class="category-item" data-category="high-speed">
                 <div class="category-icon">🚀</div>
                 <div>
-                  <div class="category-name">高速設計</div>
+                  <div class="category-name" data-i18n="kb_highspeed">高速設計</div>
                   <div class="category-count">Impedance, Return Path</div>
                 </div>
               </div>
               <div class="category-item" data-category="analog">
                 <div class="category-icon">🔊</div>
                 <div>
-                  <div class="category-name">類比電路</div>
+                  <div class="category-name" data-i18n="kb_analog">類比電路</div>
                   <div class="category-count">Op Amp, Current Sensing</div>
                 </div>
               </div>
               <div class="category-item" data-category="data-conversion">
                 <div class="category-icon">🔢</div>
                 <div>
-                  <div class="category-name">資料轉換</div>
+                  <div class="category-name" data-i18n="kb_dataconv">資料轉換</div>
                   <div class="category-count">ADC, DAC</div>
                 </div>
               </div>
               <div class="category-item" data-category="pcb-design">
                 <div class="category-icon">📐</div>
                 <div>
-                  <div class="category-name">PCB 設計</div>
-                  <div class="category-count">走線, 叠層, Via</div>
+                  <div class="category-name" data-i18n="kb_pcbdesign">PCB 設計</div>
+                  <div class="category-count" data-i18n="kb_c_pcb">走線, 叠層, Via</div>
                 </div>
               </div>
               <div class="category-item" data-category="measurement">
                 <div class="category-icon">📊</div>
                 <div>
-                  <div class="category-name">量測技術</div>
+                  <div class="category-name" data-i18n="kb_measure">量測技術</div>
                   <div class="category-count">Oscilloscope, Probe</div>
                 </div>
               </div>
               <div class="category-item" data-category="embedded">
                 <div class="category-icon">💻</div>
                 <div>
-                  <div class="category-name">嵌入式系統</div>
+                  <div class="category-name" data-i18n="kb_embedded">嵌入式系統</div>
                   <div class="category-count">Power Design</div>
                 </div>
               </div>
               <div class="category-item" data-category="automotive">
                 <div class="category-icon">🚗</div>
                 <div>
-                  <div class="category-name">車用電子</div>
+                  <div class="category-name" data-i18n="kb_auto">車用電子</div>
                   <div class="category-count">Transient, Load Dump</div>
                 </div>
               </div>
               <div class="category-item" data-category="emc">
                 <div class="category-icon">🛰️</div>
                 <div>
-                  <div class="category-name">EMC 設計</div>
-                  <div class="category-count">抗擾、接地、遮蔽</div>
+                  <div class="category-name" data-i18n="kb_emc">EMC 設計</div>
+                  <div class="category-count" data-i18n="kb_c_emc">抗擾、接地、遮蔽</div>
                 </div>
               </div>
               <div class="category-item" data-category="emi">
                 <div class="category-icon">📻</div>
                 <div>
-                  <div class="category-name">EMI 對策</div>
-                  <div class="category-count">濾波、共模扼流、佈局</div>
+                  <div class="category-name" data-i18n="kb_emi">EMI 對策</div>
+                  <div class="category-count" data-i18n="kb_c_emi">濾波、共模扼流、佈局</div>
                 </div>
               </div>
               <div class="category-item" data-category="interview">
                 <div class="category-icon">📝</div>
                 <div>
-                  <div class="category-name">面試題目</div>
+                  <div class="category-name" data-i18n="kb_interview">面試題目</div>
                   <div class="category-count">HW Engineer Q&A</div>
                 </div>
               </div>
@@ -479,16 +479,16 @@
           </section>
 
           <section class="panel-section">
-            <h2>PDF 管理</h2>
+            <h2 data-i18n="kb_pdfmgr">PDF 管理</h2>
             <div class="pdf-list" id="pdfList">
-              <p style="color: var(--muted); font-size: 13px;">尚未上傳 PDF</p>
+              <p style="color: var(--muted); font-size: 13px;" data-i18n="kb_nopdf">尚未上傳 PDF</p>
             </div>
           </section>
         </aside>
 
         <div class="knowledge-content">
           <div class="search-bar">
-            <input type="search" class="search-input" id="searchInput" placeholder="搜尋硬體知識..." />
+            <input type="search" class="search-input" id="searchInput" placeholder="搜尋硬體知識..." data-i18n-placeholder="kb_search" />
           </div>
 
           <div class="knowledge-grid" id="knowledgeGrid">
@@ -502,7 +502,7 @@
     <div id="knowledgeModal" class="knowledge-modal" hidden>
       <div class="knowledge-modal-content">
         <div class="modal-header">
-          <h2 id="modalTitle">知識標題</h2>
+          <h2 id="modalTitle" data-i18n="kb_modaltitle">知識標題</h2>
           <button class="modal-close" id="closeModal">✕</button>
         </div>
         <div class="modal-body" id="modalBody">
@@ -527,7 +527,7 @@
     <script src="./knowledge-video.js?v=2026-07-04a"></script>
     <script src="./knowledge-extra2.js?v=2026-07-10a"></script>
     <script src="./knowledge-extra3.js?v=2026-07-11a"></script>
-    <script src="./knowledge.js?v=2026-07-11a"></script>
+    <script src="./knowledge.js?v=2026-07-15a"></script>
     <script src="./knowledge-i18n.js?v=2026-07-04c"></script>
     <script src="./knowledge-i18n-detail.js?v=2026-07-04c"></script>
     <script src="./knowledge-i18n-detail2.js?v=2026-07-12g"></script>
@@ -541,9 +541,9 @@
           window.KB_LOCK = { unlocked: false, prods: ['電子紙', '車用電子', 'AI 伺服器', '手機', '筆電', '智慧手錶'] };
         }
         if (typeof knowledgeApp !== 'undefined') { knowledgeApp.renderProductFilter(); knowledgeApp.renderCards(); }
-        document.addEventListener('vs-lang-change', () => { if (typeof knowledgeApp !== 'undefined') { knowledgeApp.renderTopoFilter(); knowledgeApp.renderCards(); } });
+        document.addEventListener('vs-lang-change', () => { if (typeof knowledgeApp !== 'undefined') { knowledgeApp.renderTopoFilter(); knowledgeApp.renderCards(); knowledgeApp.updateCounts(); } });
       })();
     </script>
-    <script src="./i18n.js?v=2026-07-03c"></script>
+    <script src="./i18n.js?v=2026-07-15a"></script>
 </body>
 </html>

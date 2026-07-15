@@ -98,7 +98,38 @@ window.I18N = (function () {
     lab_title:    { zh: '儀器實驗台', en: 'Instrument Bench', ja: '計測器ベンチ', ko: '계측기 벤치' },
     lab_hint:     { zh: '教學級模擬（RC 一階解析解 + DFT），非 SPICE。點節點指定示波器通道；連線看訊號。', en: 'Teaching-grade simulation (first-order RC analytic + DFT), not SPICE. Click a node to assign scope channels.', ja: '教育用シミュレーション（RC一次解析解＋DFT）。SPICEではありません。ノードをクリックしてチャンネルへ割当。', ko: '교육용 시뮬레이션(RC 1차 해석해 + DFT), SPICE 아님. 노드를 클릭해 채널에 할당.' },
     lab_signal_path: { zh: '訊號路徑', en: 'Signal Path', ja: '信号経路', ko: '신호 경로' },
-    lab_3d_note:  { zh: '3D 面板為後續版本（Three.js）', en: '3D panels planned (Three.js)', ja: '3Dパネルは今後対応（Three.js）', ko: '3D 패널은 추후 지원(Three.js)' }
+    lab_3d_note:  { zh: '3D 面板為後續版本（Three.js）', en: '3D panels planned (Three.js)', ja: '3Dパネルは今後対応（Three.js）', ko: '3D 패널은 추후 지원(Three.js)' },
+
+    // ---- 硬體知識庫（左側欄位）----
+    kb_subtitle:   { zh: '繪製、分析並保存你的直流線路圖', en: 'Draw, analyze and save your DC schematics', ja: '直流回路図を描き、分析・保存', ko: 'DC 회로도를 그리고 분석·저장' },
+    kb_upload:     { zh: '上傳 PDF', en: 'Upload PDF', ja: 'PDF アップロード', ko: 'PDF 업로드' },
+    kb_upload_btn: { zh: '📄 上傳', en: '📄 Upload', ja: '📄 アップロード', ko: '📄 업로드' },
+    kb_prodcat:    { zh: '產品大分類', en: 'Product categories', ja: '製品カテゴリ', ko: '제품 카테고리' },
+    kb_topo:       { zh: '常用線路拓樸', en: 'Common topologies', ja: 'よく使う回路トポロジ', ko: '자주 쓰는 회로 토폴로지' },
+    kb_subcat:     { zh: '小分類（電路）', en: 'Subcategories (circuits)', ja: 'サブカテゴリ（回路）', ko: '세부 분류(회로)' },
+    kb_pdfmgr:     { zh: 'PDF 管理', en: 'PDF management', ja: 'PDF 管理', ko: 'PDF 관리' },
+    kb_nopdf:      { zh: '尚未上傳 PDF', en: 'No PDF uploaded yet', ja: 'まだ PDF がありません', ko: '업로드된 PDF 없음' },
+    kb_search:     { zh: '搜尋硬體知識...', en: 'Search hardware knowledge...', ja: 'ハードウェア知識を検索...', ko: '하드웨어 지식 검색...' },
+    kb_modaltitle: { zh: '知識標題', en: 'Knowledge title', ja: 'ナレッジタイトル', ko: '지식 제목' },
+    kb_all:        { zh: '全部主題', en: 'All topics', ja: 'すべてのトピック', ko: '전체 주제' },
+    kb_power:      { zh: '電源管理', en: 'Power management', ja: '電源管理', ko: '전원 관리' },
+    kb_signal:     { zh: '訊號處理', en: 'Signal processing', ja: '信号処理', ko: '신호 처리' },
+    kb_comm:       { zh: '通訊介面', en: 'Communication interfaces', ja: '通信インターフェース', ko: '통신 인터페이스' },
+    kb_transistor: { zh: '電晶體應用', en: 'Transistor applications', ja: 'トランジスタ応用', ko: '트랜지스터 응용' },
+    kb_protection: { zh: '保護電路', en: 'Protection circuits', ja: '保護回路', ko: '보호 회로' },
+    kb_highspeed:  { zh: '高速設計', en: 'High-speed design', ja: '高速設計', ko: '고속 설계' },
+    kb_analog:     { zh: '類比電路', en: 'Analog circuits', ja: 'アナログ回路', ko: '아날로그 회로' },
+    kb_dataconv:   { zh: '資料轉換', en: 'Data conversion', ja: 'データ変換', ko: '데이터 변환' },
+    kb_pcbdesign:  { zh: 'PCB 設計', en: 'PCB design', ja: 'PCB設計', ko: 'PCB 설계' },
+    kb_measure:    { zh: '量測技術', en: 'Measurement', ja: '計測技術', ko: '계측 기술' },
+    kb_embedded:   { zh: '嵌入式系統', en: 'Embedded systems', ja: '組み込みシステム', ko: '임베디드 시스템' },
+    kb_auto:       { zh: '車用電子', en: 'Automotive', ja: '車載エレクトロニクス', ko: '차량용 전자' },
+    kb_emc:        { zh: 'EMC 設計', en: 'EMC design', ja: 'EMC設計', ko: 'EMC 설계' },
+    kb_emi:        { zh: 'EMI 對策', en: 'EMI countermeasures', ja: 'EMI対策', ko: 'EMI 대책' },
+    kb_interview:  { zh: '面試題目', en: 'Interview questions', ja: '面接問題', ko: '면접 문제' },
+    kb_c_pcb:      { zh: '走線, 叠層, Via', en: 'Routing, Stackup, Via', ja: '配線, 積層, ビア', ko: '배선, 적층, Via' },
+    kb_c_emc:      { zh: '抗擾、接地、遮蔽', en: 'Immunity, Grounding, Shielding', ja: 'イミュニティ, 接地, シールド', ko: '내성, 접지, 차폐' },
+    kb_c_emi:      { zh: '濾波、共模扼流、佈局', en: 'Filtering, Common-mode choke, Layout', ja: 'フィルタ, コモンモードチョーク, レイアウト', ko: '필터링, 공통 모드 초크, 레이아웃' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';
@@ -126,6 +157,7 @@ window.I18N = (function () {
     // 重要：key 不在本字典就「不動元素」——避免蓋掉 app.js 自有 i18n 的內容（appTitle bug）
     root.querySelectorAll('[data-i18n]').forEach(el => { if (D[el.dataset.i18n]) el.textContent = t(el.dataset.i18n); });
     root.querySelectorAll('[data-i18n-title]').forEach(el => { if (D[el.dataset.i18nTitle]) el.title = t(el.dataset.i18nTitle); });
+    root.querySelectorAll('[data-i18n-placeholder]').forEach(el => { if (D[el.dataset.i18nPlaceholder]) el.placeholder = t(el.dataset.i18nPlaceholder); });
   }
 
   // 與 app.js 自有 i18n（線路圖左元件/右模擬 74 詞條，zh/en/ja/ko）同步
