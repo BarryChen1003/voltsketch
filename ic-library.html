@@ -92,14 +92,41 @@
     const CL = window.IC_CLASSIFICATION || {};
     const DATA = window.IC_DATA || [];
     const dataMap = {}; DATA.forEach(ic => dataMap[norm(ic.part)] = ic);
-    const catLabel = {}; (window.IC_CATEGORIES || []).forEach(c => catLabel[c.id] = c.label);
-    catLabel['_unclassified'] = '未分類（待複核）'; catLabel['_misc-non-ti'] = '其他/非 TI（待複核）';
+    const catLabelZh = {}; (window.IC_CATEGORIES || []).forEach(c => catLabelZh[c.id] = c.label);
+    catLabelZh['_unclassified'] = '未分類（待複核）'; catLabelZh['_misc-non-ti'] = '其他/非 TI（待複核）';
+    // category label i18n (id -> {en,ja,ko}); zh falls back to the bilingual IC_CATEGORIES label
+    const CAT_I18N = {
+      amplifiers: { en: 'Amplifiers', ja: 'Amplifiers アンプ', ko: 'Amplifiers 증폭기' },
+      audio: { en: 'Audio, haptics & piezo', ja: 'Audio, haptics & piezo 音声/ハプティクス/圧電', ko: 'Audio, haptics & piezo 오디오/햅틱/압전' },
+      clocks: { en: 'Clocks & timing', ja: 'Clocks & timing クロック/タイミング', ko: 'Clocks & timing 클록/타이밍' },
+      dlp: { en: 'DLP products', ja: 'DLP products', ko: 'DLP products' },
+      'data-converters': { en: 'Data converters (ADC/DAC/AFE)', ja: 'Data converters データコンバータ (ADC/DAC/AFE)', ko: 'Data converters 데이터 컨버터 (ADC/DAC/AFE)' },
+      'die-wafer': { en: 'Die & wafer services', ja: 'Die & wafer services', ko: 'Die & wafer services' },
+      interface: { en: 'Interface (USB/Ethernet/CAN/RS-485)', ja: 'Interface インターフェース (USB/Ethernet/CAN/RS-485)', ko: 'Interface 인터페이스 (USB/Ethernet/CAN/RS-485)' },
+      isolation: { en: 'Isolation', ja: 'Isolation 絶縁', ko: 'Isolation 절연' },
+      logic: { en: 'Logic & voltage translation', ja: 'Logic & voltage translation ロジック/レベル変換', ko: 'Logic & voltage translation 로직/전압 변환' },
+      mcu: { en: 'MCUs & processors', ja: 'MCUs & processors マイコン/プロセッサ', ko: 'MCUs & processors 마이크로컨트롤러/프로세서' },
+      memory: { en: 'Memory (Flash/EEPROM/DRAM)', ja: 'Memory メモリ (Flash/EEPROM/DRAM)', ko: 'Memory 메모리 (Flash/EEPROM/DRAM)' },
+      motor: { en: 'Motor drivers', ja: 'Motor drivers モータドライバ', ko: 'Motor drivers 모터 드라이버' },
+      power: { en: 'Power management', ja: 'Power management 電源管理', ko: 'Power management 전원 관리' },
+      rf: { en: 'RF & microwave (incl. mmWave radar)', ja: 'RF & microwave 高周波/マイクロ波 (mmWave レーダー含む)', ko: 'RF & microwave 고주파/마이크로파 (mmWave 레이더 포함)' },
+      sensors: { en: 'Sensors', ja: 'Sensors センサ', ko: 'Sensors 센서' },
+      'switch-mux': { en: 'Switch & multiplexers', ja: 'Switch & multiplexers スイッチ/マルチプレクサ', ko: 'Switch & multiplexers 스위치/멀티플렉서' },
+      wireless: { en: 'Wireless connectivity', ja: 'Wireless connectivity 無線接続', ko: 'Wireless connectivity 무선 연결' },
+      _unclassified: { en: 'Unclassified (under review)', ja: '未分類（要確認）', ko: '미분류(검토 필요)' },
+      '_misc-non-ti': { en: 'Other / non-TI (under review)', ja: 'その他/非 TI（要確認）', ko: '기타/비 TI(검토 필요)' }
+    };
+    function catLabelLoc(id) {
+      const lang = window.icLang ? icLang() : 'zh';
+      if (lang !== 'zh' && CAT_I18N[id] && CAT_I18N[id][lang]) return CAT_I18N[id][lang];
+      return catLabelZh[id] || id;
+    }
     let curCat = null;
 
     function renderCats() {
       const keys = Object.keys(CL).sort((a, b) => CL[b].length - CL[a].length);
       document.getElementById('cats').innerHTML = keys.map(k =>
-        `<button class="cat-btn" data-cat="${k}">${esc(catLabel[k] || k)}<span class="n">${CL[k].length}</span></button>`).join('');
+        `<button class="cat-btn${k === curCat ? ' active' : ''}" data-cat="${k}">${esc(catLabelLoc(k))}<span class="n">${CL[k].length}</span></button>`).join('');
     }
     function renderList(filter) {
       if (!curCat) { document.getElementById('icList').innerHTML = `<p style="color:#94a3b8;font-size:12px;padding:8px">${esc(ui('pickCat'))}</p>`; return; }
@@ -159,6 +186,7 @@
     }
     document.addEventListener('vs-lang-change', () => {
       applyStaticUI();
+      renderCats();
       if (curPart) showDetail(curPart);
       renderList((document.getElementById('srch').value || '').toLowerCase().trim());
     });
