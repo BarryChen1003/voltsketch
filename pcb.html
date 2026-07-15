@@ -518,7 +518,7 @@
         <button id="tabRefs" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" data-i18n="pcb_tab_refs">📐 開源公版</button>
       </div>
       <div id="pcbViewerPane" style="display:none;flex:1;padding:12px 16px">
-        <iframe id="pcbViewerFrame" title="PCB 檢視器" style="width:100%;height:100%;min-height:72vh;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe>
+        <iframe id="pcbViewerFrame" title="PCB 檢視器" data-i18n-title="pcbf_viewer_title" style="width:100%;height:100%;min-height:72vh;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe>
       </div>
       <div id="pcbRefsPane" style="display:none;flex:1;padding:12px 16px;overflow-y:auto">
         <div style="background:var(--accent-soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:var(--ink);line-height:1.7">
@@ -594,9 +594,9 @@
               </button>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-top:8px">
-              <label style="display:grid;gap:2px">線寬 (mm)<input type="number" id="traceWidth" value="0.3" step="0.05" min="0.05" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">層<select id="traceLayer" style="padding:3px"></select></label>
-              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ratsnestToggle">顯示飛線（未連線）</label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_tracew">線寬 (mm)</span><input type="number" id="traceWidth" value="0.3" step="0.05" min="0.05" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_layer">層</span><select id="traceLayer" style="padding:3px"></select></label>
+              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ratsnestToggle"><span data-i18n="pcbf_ratsnest">顯示飛線（未連線）</span></label>
               <button class="small-button" id="autoRouteBtn" data-i18n="pcb_autoroute" style="grid-column:1/-1">⚡ 自動佈線未連線（單層試驗）</button>
               <button class="small-button" id="syncNetlistBtn" data-i18n="pcb_syncnet" style="grid-column:1/-1" title="讀取線路圖頁自動存檔，建立元件與網路，飛線引導佈局">⇪ 從線路圖同步 netlist</button>
               <button class="small-button" id="view3dBtn" data-i18n="pcb_3d" style="grid-column:1/-1" title="教學級近似：元件方塊+pad+走線；Three.js 開啟時才載入">🧊 3D 檢視</button>
@@ -616,17 +616,17 @@
           <section class="panel-section">
             <h2 data-i18n="pcb_imp">阻抗計算（IPC-2141 近似）</h2>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
-              <label style="grid-column:1/-1;display:grid;gap:2px">結構<select id="impKind" style="padding:3px">
-                <option value="microstrip">微帶線（外層）</option>
-                <option value="stripline">帶狀線（內層）</option>
-                <option value="diff-microstrip">差分微帶線</option>
-                <option value="diff-stripline">差分帶狀線</option>
+              <label style="grid-column:1/-1;display:grid;gap:2px"><span data-i18n="pcbf_impkind">結構</span><select id="impKind" style="padding:3px">
+                <option value="microstrip" data-i18n="pcbf_o_micro">微帶線（外層）</option>
+                <option value="stripline" data-i18n="pcbf_o_strip">帶狀線（內層）</option>
+                <option value="diff-microstrip" data-i18n="pcbf_o_dmicro">差分微帶線</option>
+                <option value="diff-stripline" data-i18n="pcbf_o_dstrip">差分帶狀線</option>
               </select></label>
-              <label style="display:grid;gap:2px">線寬 w<input type="number" id="impW" value="0.35" step="0.05" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">介電厚 h<input type="number" id="impH" value="0.2" step="0.05" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">銅厚 t<input type="number" id="impT" value="0.035" step="0.005" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_impw">線寬 w</span><input type="number" id="impW" value="0.35" step="0.05" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_imph">介電厚 h</span><input type="number" id="impH" value="0.2" step="0.05" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_impt">銅厚 t</span><input type="number" id="impT" value="0.035" step="0.005" style="padding:3px"></label>
               <label style="display:grid;gap:2px">εr<input type="number" id="impEr" value="4.5" step="0.1" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">間距 s（差分）<input type="number" id="impS" value="0.2" step="0.05" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_imps">間距 s（差分）</span><input type="number" id="impS" value="0.2" step="0.05" style="padding:3px"></label>
               <button class="small-button" id="impCalc" data-i18n="pcb_calc" style="align-self:end">計算</button>
             </div>
             <div id="impOut" style="font-size:13px;font-weight:600;color:var(--accent-strong);margin-top:6px"></div>
@@ -647,7 +647,7 @@
             <h2 data-i18n="pcb_kicad">KiCad 匯入 / 匯出</h2>
             <div style="display:grid;gap:6px;font-size:12px">
               <label class="small-button" style="text-align:center;cursor:pointer">
-                📂 匯入 .kicad_pcb<input type="file" id="kicadFile" accept=".kicad_pcb" style="display:none">
+                <span data-i18n="pcbf_kicad_import">📂 匯入 .kicad_pcb</span><input type="file" id="kicadFile" accept=".kicad_pcb" style="display:none">
               </label>
               <button class="small-button" id="exportKicadBtn" data-i18n="pcb_exp_kicad">💾 匯出 .kicad_pcb</button>
               <button class="small-button" id="exportGerberBtn" data-i18n="pcb_exp_gerber">🏭 匯出製造包（Gerber+鑽孔+鋼網+CPL+IPC-356）</button>
@@ -660,15 +660,15 @@
             <h2 data-i18n="pcb_board">板框設定</h2>
             <div style="display: grid; gap: 8px;">
               <label style="display: grid; gap: 4px; font-size: 13px;">
-                <span>寬度 (mm)</span>
+                <span data-i18n="pcbf_boardw">寬度 (mm)</span>
                 <input type="number" id="boardWidth" value="100" min="10" max="500" style="padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px;" />
               </label>
               <label style="display: grid; gap: 4px; font-size: 13px;">
-                <span>高度 (mm)</span>
+                <span data-i18n="pcbf_boardh">高度 (mm)</span>
                 <input type="number" id="boardHeight" value="80" min="10" max="500" style="padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px;" />
               </label>
               <label style="display: grid; gap: 4px; font-size: 13px;">
-                <span>層數 (1~40 自訂)</span>
+                <span data-i18n="pcbf_layers">層數 (1~40 自訂)</span>
                 <input type="number" id="boardLayers" value="2" min="1" max="40" style="padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px;" />
               </label>
               <button class="primary-button" id="applyBoardSettings" data-i18n="pcb_apply" style="margin-top: 8px;">套用設定</button>
@@ -708,13 +708,13 @@
 
           <section class="panel-section">
             <h2 data-i18n="pcb_selcomp">選取元件</h2>
-            <div id="selInfo" style="font-size:12px;color:var(--muted)">select 工具點擊元件選取；拖曳移動（格點吸附）、R 鍵旋轉 90°、Esc 取消。</div>
+            <div id="selInfo" data-i18n="pcbf_selinfo" style="font-size:12px;color:var(--muted)">select 工具點擊元件選取；拖曳移動（格點吸附）、R 鍵旋轉 90°、Esc 取消。</div>
             <div id="selFields" style="display:none;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
               <div id="selRef" style="grid-column:1/-1;font-family:monospace;color:var(--accent-strong)"></div>
               <label style="display:grid;gap:2px">X (mm)<input type="number" id="selX" step="0.05" style="padding:3px"></label>
               <label style="display:grid;gap:2px">Y (mm)<input type="number" id="selY" step="0.05" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">角度 (°)<input type="number" id="selRot" step="90" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">格點 (mm)<input type="number" id="gridSnap" value="0.05" step="0.05" min="0" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_angle">角度 (°)</span><input type="number" id="selRot" step="90" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_grid">格點 (mm)</span><input type="number" id="gridSnap" value="0.05" step="0.05" min="0" style="padding:3px"></label>
               <button class="small-button" id="selRotBtn" data-i18n="pcb_rot90" style="grid-column:1/-1">旋轉 90°（R）</button>
             </div>
           </section>
@@ -725,15 +725,15 @@
               <button class="small-button" id="runDrc" data-i18n="pcb_rundrc">執行檢查</button>
             </div>
             <details style="margin-bottom:8px">
-              <summary style="cursor:pointer;font-size:12px;color:var(--muted)">規則設定（mm）</summary>
+              <summary style="cursor:pointer;font-size:12px;color:var(--muted)" data-i18n="pcbf_rulecfg">規則設定（mm）</summary>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-top:6px">
-                <label style="display:grid;gap:2px">最小間距<input type="number" id="ruleClearance" value="0.15" step="0.05" min="0.05" style="padding:3px"></label>
-                <label style="display:grid;gap:2px">最小線寬<input type="number" id="ruleMinTrace" value="0.1" step="0.05" min="0.05" style="padding:3px"></label>
-                <label style="display:grid;gap:2px">電源線寬<input type="number" id="ruleMinPower" value="0.3" step="0.05" min="0.1" style="padding:3px"></label>
-                <label style="display:grid;gap:2px">板邊間距<input type="number" id="ruleEdge" value="0.3" step="0.05" min="0.1" style="padding:3px"></label>
-                <label style="display:grid;gap:2px">元件間距<input type="number" id="ruleCompSpace" value="2" step="0.5" min="0.5" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pcbf_clearance">最小間距</span><input type="number" id="ruleClearance" value="0.15" step="0.05" min="0.05" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pcbf_mintrace">最小線寬</span><input type="number" id="ruleMinTrace" value="0.1" step="0.05" min="0.05" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pcbf_minpower">電源線寬</span><input type="number" id="ruleMinPower" value="0.3" step="0.05" min="0.1" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pcbf_edge">板邊間距</span><input type="number" id="ruleEdge" value="0.3" step="0.05" min="0.1" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pcbf_compspace">元件間距</span><input type="number" id="ruleCompSpace" value="2" step="0.5" min="0.5" style="padding:3px"></label>
                 <label style="display:grid;gap:2px">Cin→IC<input type="number" id="ruleCinDist" value="5" step="0.5" min="1" style="padding:3px"></label>
-                <label style="display:grid;gap:2px" title="兩開窗之間阻焊條下限；0=不查。標準綠油常見 0.2，細 pitch 板廠可到 0.1">阻焊橋下限<input type="number" id="ruleMaskSliver" value="0.15" step="0.05" min="0" style="padding:3px"></label>
+                <label style="display:grid;gap:2px" title="兩開窗之間阻焊條下限；0=不查。標準綠油常見 0.2，細 pitch 板廠可到 0.1"><span data-i18n="pcbf_masksliver">阻焊橋下限</span><input type="number" id="ruleMaskSliver" value="0.15" step="0.05" min="0" style="padding:3px"></label>
               </div>
             </details>
             <div class="drc-results" id="drcResults">
@@ -745,11 +745,11 @@
             <h2 data-i18n="pcb_emi">⚡ EMI 環路檢查（心中有環）</h2>
             <p style="font-size:12px;color:var(--muted);margin:0 0 8px">指派關鍵元件 → 估算輸入熱環/輸出環面積（越小越好；輸入環優先）。</p>
             <div id="emiRoles" style="display:grid;gap:6px;font-size:12px;">
-              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">輸入電容 Cin <select data-role="cin" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
+              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px"><span data-i18n="pcbf_cin">輸入電容 Cin</span> <select data-role="cin" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
               <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">IC / SW <select data-role="ic" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
-              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">二極體/上管 D <select data-role="d" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
-              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">電感 L <select data-role="l" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
-              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px">輸出電容 Cout <select data-role="cout" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
+              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px"><span data-i18n="pcbf_d">二極體/上管 D</span> <select data-role="d" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
+              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px"><span data-i18n="pcbf_l">電感 L</span> <select data-role="l" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
+              <label style="display:flex;justify-content:space-between;align-items:center;gap:6px"><span data-i18n="pcbf_cout">輸出電容 Cout</span> <select data-role="cout" class="emi-role" style="flex:1;max-width:130px;padding:3px"></select></label>
             </div>
             <button class="primary-button" id="runEmi" data-i18n="pcb_runemi" style="margin-top:8px;width:100%">檢查環路</button>
             <div id="emiResults" style="margin-top:8px;font-size:12px;"></div>
@@ -758,13 +758,13 @@
           <section class="panel-section">
             <h2 data-i18n="pcb_thermal">🌡️ 熱 / 散熱估算</h2>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;">
-              <label style="display:grid;gap:2px">銅厚<select id="thCu" style="padding:3px"><option value="0.5">0.5 oz</option><option value="1" selected>1 oz</option><option value="2">2 oz</option><option value="3">3 oz</option></select></label>
-              <label style="display:grid;gap:2px">溫升 ΔT(°C)<input type="number" id="thDT" value="10" step="1" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">環溫 Ta(°C)<input type="number" id="thTa" value="25" step="1" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">目標電流(A)<input type="number" id="thI" value="1" step="0.1" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">功耗 P(W)<input type="number" id="thP" value="0.5" step="0.1" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">散熱銅(cm²)<input type="number" id="thArea" value="1" step="0.5" style="padding:3px"></label>
-              <label style="display:grid;gap:2px">散熱孔數<input type="number" id="thVias" value="0" step="1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_thcu">銅厚</span><select id="thCu" style="padding:3px"><option value="0.5">0.5 oz</option><option value="1" selected>1 oz</option><option value="2">2 oz</option><option value="3">3 oz</option></select></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_thdt">溫升 ΔT(°C)</span><input type="number" id="thDT" value="10" step="1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_thta">環溫 Ta(°C)</span><input type="number" id="thTa" value="25" step="1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_thi">目標電流(A)</span><input type="number" id="thI" value="1" step="0.1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_thp">功耗 P(W)</span><input type="number" id="thP" value="0.5" step="0.1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_tharea">散熱銅(cm²)</span><input type="number" id="thArea" value="1" step="0.5" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pcbf_thvias">散熱孔數</span><input type="number" id="thVias" value="0" step="1" style="padding:3px"></label>
             </div>
             <button class="primary-button" id="runThermal" data-i18n="pcb_runthermal" style="margin-top:8px;width:100%">熱估算</button>
             <div id="thermalResults" style="margin-top:8px;font-size:12px;"></div>
@@ -801,27 +801,27 @@
             <h2 data-i18n="pcb_interview">📝 PCB Layout 面試題</h2>
             <div style="font-size: 13px; max-height: 320px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;">
               <details>
-                <summary style="cursor:pointer;font-weight:600;">電源去耦電容怎麼放？</summary>
+                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q1">電源去耦電容怎麼放？</summary>
                 <p style="color:var(--muted);margin-top:6px;">越靠近 IC 電源腳越好，小容值(0.1µF/1nF)最靠腳、大容值(10µF)稍遠；過孔直接打到電源/地平面，縮短迴路電感。每個電源腳至少一顆。</p>
               </details>
               <details>
-                <summary style="cursor:pointer;font-weight:600;">高速差分對走線要點？</summary>
+                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q2">高速差分對走線要點？</summary>
                 <p style="color:var(--muted);margin-top:6px;">等長(長度匹配控制 skew)、等距(維持差分阻抗如 90Ω/100Ω)、同層走線、少過孔、避免急轉(用 45°或弧線)、遠離噪聲源、參考完整地平面。</p>
               </details>
               <details>
-                <summary style="cursor:pointer;font-weight:600;">為什麼要完整的地平面(return path)？</summary>
+                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q3">為什麼要完整的地平面(return path)？</summary>
                 <p style="color:var(--muted);margin-top:6px;">高頻回流電流走訊號正下方的地，路徑斷裂(跨分割/挖空)會迫使繞路 → 增大迴路面積、EMI 與串擾。換層時鄰近放回流過孔。</p>
               </details>
               <details>
-                <summary style="cursor:pointer;font-weight:600;">開關電源(SW 節點)佈局注意？</summary>
+                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q4">開關電源(SW 節點)佈局注意？</summary>
                 <p style="color:var(--muted);margin-top:6px;">SW 節點銅面要小(降 EMI 又要散熱權衡)、高頻迴路(Vin-開關-二極體-Cin)面積最小、輸入電容最靠 IC、回授走線遠離 SW、單點接地。</p>
               </details>
               <details>
-                <summary style="cursor:pointer;font-weight:600;">疊層怎麼選(4 層)？</summary>
+                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q5">疊層怎麼選(4 層)？</summary>
                 <p style="color:var(--muted);margin-top:6px;">常見 訊號-地-電源-訊號：訊號層緊鄰完整地平面以控阻抗與回流；電源地相鄰形成平面電容；高速線走在靠地的外層或內層 stripline。</p>
               </details>
               <details>
-                <summary style="cursor:pointer;font-weight:600;">散熱怎麼處理？</summary>
+                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q6">散熱怎麼處理？</summary>
                 <p style="color:var(--muted);margin-top:6px;">熱源下方加散熱過孔陣列接內層/底層大銅面、加大銅厚與銅面、必要時鋁基板或散熱片、考慮氣流方向、功率元件分散避免熱集中。</p>
               </details>
             </div>
@@ -868,7 +868,7 @@
         }
       });
     </script>
-    <script src="./i18n.js?v=2026-07-15c"></script>
+    <script src="./i18n.js?v=2026-07-15d"></script>
     <script src="./pcb-status.js?v=2026-07-15a"></script>
 </body>
 </html>
