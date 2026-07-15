@@ -458,7 +458,7 @@
       <div style="background:#fff;border-radius:14px;padding:32px 28px;max-width:380px;width:100%;text-align:center">
         <div style="font-size:40px">🔐</div>
         <h2 style="margin:8px 0;color:#0f172a;font-size:20px" data-i18n="pcb_gate_title">PCB Layout 邀請制</h2>
-        <p style="color:#64748b;font-size:13px;margin:0 0 14px;line-height:1.7">目前以邀請碼開放。索取邀請碼或洽談合作請見<a href="contact.html">聯絡資訊</a>；訂閱 <a href="upgrade.html">12 個月方案</a>亦自動開通。</p>
+        <p id="pcbGateMsg" style="color:#64748b;font-size:13px;margin:0 0 14px;line-height:1.7">目前以邀請碼開放。索取邀請碼或洽談合作請見<a href="contact.html">聯絡資訊</a>；訂閱 <a href="upgrade.html">12 個月方案</a>亦自動開通。</p>
         <input id="pcbCode" placeholder="輸入邀請碼" data-i18n-placeholder="pcb_gate_ph" autocomplete="off" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;text-align:center;letter-spacing:1px" />
         <button id="pcbGo" data-i18n="pcb_gate_enter" class="primary-button" style="width:100%;margin-top:10px;padding:10px;font-size:14px">進入</button>
         <p id="pcbErr" style="color:#b91c1c;font-size:12px;min-height:16px;margin:8px 0 0"></p>
@@ -469,10 +469,22 @@
         var CODES = ['VSPCB-7K3M9', 'VSPCB-2QX8F', 'VSPCB-R5TN4', 'VSPCB-J8WD6', 'VSPCB-M3ZK7'];
         var gate = document.getElementById('pcbGate');
         if (localStorage.getItem('pcb-invite-ok') === '1') { gate.remove(); return; }
+        // gate copy contains inline links, so it needs a per-language template (not data-i18n)
+        var MSG = {
+          zh: '目前以邀請碼開放。索取邀請碼或洽談合作請見<a href="contact.html">聯絡資訊</a>；訂閱 <a href="upgrade.html">12 個月方案</a>亦自動開通。',
+          en: 'Currently open by invite code. To request a code or discuss a partnership, see <a href="contact.html">Contact</a>; subscribing to the <a href="upgrade.html">12-month plan</a> also unlocks it automatically.',
+          ja: '現在は招待コードで公開しています。コードの取得や提携のご相談は<a href="contact.html">お問い合わせ</a>へ；<a href="upgrade.html">12か月プラン</a>のご購読でも自動的に有効化されます。',
+          ko: '현재 초대 코드로 공개 중입니다. 코드 요청이나 협력 문의는 <a href="contact.html">문의</a>를 참조하세요; <a href="upgrade.html">12개월 플랜</a> 구독 시 자동으로 활성화됩니다.'
+        };
+        var ERR = { zh: '邀請碼不正確', en: 'Invalid invite code', ja: '招待コードが正しくありません', ko: '초대 코드가 올바르지 않습니다' };
+        function L() { return (window.I18N && I18N.lang) || 'zh'; }
+        function paintGate() { var p = document.getElementById('pcbGateMsg'); if (p) p.innerHTML = MSG[L()] || MSG.zh; }
+        paintGate();
+        document.addEventListener('vs-lang-change', paintGate);
         function tryCode() {
           var v = (document.getElementById('pcbCode').value || '').trim().toUpperCase();
           if (CODES.indexOf(v) >= 0) { localStorage.setItem('pcb-invite-ok', '1'); gate.remove(); }
-          else document.getElementById('pcbErr').textContent = '邀請碼不正確';
+          else document.getElementById('pcbErr').textContent = ERR[L()] || ERR.zh;
         }
         document.getElementById('pcbGo').addEventListener('click', tryCode);
         document.getElementById('pcbCode').addEventListener('keydown', function (e) { if (e.key === 'Enter') tryCode(); });
