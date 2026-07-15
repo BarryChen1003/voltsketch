@@ -3113,3 +3113,711 @@
   };
   Object.assign(window.IC_PIN_I18N, P);
 })();
+
+(function () {
+  /* residual batch 8 (worklist[0:140]) */
+  var P =
+  {
+    "穩壓器致能輸入；不可懸空。High=開啟、Low=關閉；可接至 PVIN。精準致能輸入可用外部電阻分壓器程式化輸入電壓 UVLO。": {
+      "en": "Regulator enable input; do not float. High=on, Low=off; can connect to PVIN. The precision enable input allows programming the input-voltage UVLO with an external resistor divider.",
+      "ja": "レギュレータのイネーブル入力；フロート不可。High=オン、Low=オフ；PVINへ接続可。精密イネーブル入力により外部抵抗分圧器で入力電圧UVLOをプログラム可能。",
+      "ko": "레귤레이터 인에이블 입력; 플로팅 금지. High=켜짐, Low=꺼짐; PVIN에 연결 가능. 정밀 인에이블 입력으로 외부 저항 분압기를 사용해 입력 전압 UVLO를 프로그래밍 가능."
+    },
+    "第一開關節點，接電感": {
+      "en": "First switch node, connects to the inductor",
+      "ja": "第1スイッチノード、インダクタに接続",
+      "ko": "첫 번째 스위치 노드, 인덕터에 연결"
+    },
+    "第二開關節點，接電感": {
+      "en": "Second switch node, connects to the inductor",
+      "ja": "第2スイッチノード、インダクタに接続",
+      "ko": "두 번째 스위치 노드, 인덕터에 연결"
+    },
+    "箝位/續流路徑，同 pin 4（表列 4, 21 合併展開）；接 VM 或經 Zener/TVS；不可懸空": {
+      "en": "Clamp/freewheel path, same as pin 4 (table rows 4, 21 expanded); connect to VM or via Zener/TVS; do not float",
+      "ja": "クランプ/フリーホイール経路、pin 4と同じ（表の4, 21行を展開）；VMに接続、またはZener/TVS経由；フロート不可",
+      "ko": "클램프/프리휠 경로, pin 4와 동일(표 항목 4, 21 확장); VM에 연결 또는 Zener/TVS 경유; 플로팅 금지"
+    },
+    "箝位/續流路徑：接 VM 電源，或經 Zener/TVS 二極體至 VM 或 GND；不可懸空（表列 4, 21 兩腳）": {
+      "en": "Clamp/freewheel path: connect to the VM supply, or via a Zener/TVS diode to VM or GND; do not float (table rows 4, 21, two pins)",
+      "ja": "クランプ/フリーホイール経路：VM電源に接続、またはZener/TVSダイオード経由でVMまたはGNDへ；フロート不可（表の4, 21の2ピン）",
+      "ko": "클램프/프리휠 경로: VM 전원에 연결, 또는 Zener/TVS 다이오드 경유로 VM 또는 GND에; 플로팅 금지(표 항목 4, 21 두 핀)"
+    },
+    "管理介面（SMI）時脈輸入": {
+      "en": "Management interface (SMI) clock input",
+      "ja": "管理インターフェース（SMI）クロック入力",
+      "ko": "관리 인터페이스(SMI) 클록 입력"
+    },
+    "管理介面（SMI）時脈輸入，內建上拉；供 MDIO（腳37）同步參考": {
+      "en": "Management interface (SMI) clock input, internal pull-up; provides sync reference for MDIO (pin 37)",
+      "ja": "管理インターフェース（SMI）クロック入力、内蔵プルアップ；MDIO（ピン37）の同期基準を供給",
+      "ko": "관리 인터페이스(SMI) 클록 입력, 내장 풀업; MDIO(핀 37) 동기 기준 제공"
+    },
+    "管理介面（SMI）資料輸入/輸出": {
+      "en": "Management interface (SMI) data input/output",
+      "ja": "管理インターフェース（SMI）データ入出力",
+      "ko": "관리 인터페이스(SMI) 데이터 입출력"
+    },
+    "管理介面（SMI）資料輸入/輸出，內建上拉，需與 MDC 同步；建議外接 1.0~4.7kΩ 上拉至 DVDDH": {
+      "en": "Management interface (SMI) data input/output, internal pull-up, must sync with MDC; external 1.0-4.7kΩ pull-up to DVDDH recommended",
+      "ja": "管理インターフェース（SMI）データ入出力、内蔵プルアップ、MDCと同期が必要；外付け1.0~4.7kΩプルアップをDVDDHへ推奨",
+      "ko": "관리 인터페이스(SMI) 데이터 입출력, 내장 풀업, MDC와 동기 필요; 외부 1.0~4.7kΩ 풀업을 DVDDH로 권장"
+    },
+    "系統側 CC1（P/AIO）：接 USB CC/PD 控制器的 CC1": {
+      "en": "System-side CC1 (P/AIO): connect to CC1 of the USB CC/PD controller",
+      "ja": "システム側CC1（P/AIO）：USB CC/PDコントローラのCC1に接続",
+      "ko": "시스템측 CC1(P/AIO): USB CC/PD 컨트롤러의 CC1에 연결"
+    },
+    "系統側 CC2（P/AIO）：接 USB CC/PD 控制器的 CC2": {
+      "en": "System-side CC2 (P/AIO): connect to CC2 of the USB CC/PD controller",
+      "ja": "システム側CC2（P/AIO）：USB CC/PDコントローラのCC2に接続",
+      "ko": "시스템측 CC2(P/AIO): USB CC/PD 컨트롤러의 CC2에 연결"
+    },
+    "系統側 SBU1（A/DIO）": {
+      "en": "System-side SBU1 (A/DIO)",
+      "ja": "システム側SBU1（A/DIO）",
+      "ko": "시스템측 SBU1(A/DIO)"
+    },
+    "系統側 SBU2（A/DIO）": {
+      "en": "System-side SBU2 (A/DIO)",
+      "ja": "システム側SBU2（A/DIO）",
+      "ko": "시스템측 SBU2(A/DIO)"
+    },
+    "系統側高壓感測節點。": {
+      "en": "System-side high-voltage sense node.",
+      "ja": "システム側高電圧センスノード。",
+      "ko": "시스템측 고전압 감지 노드."
+    },
+    "系統側高壓感測節點；為系統中的高壓 sinking 節點；用於對 GATE_VSYS 所控制的外部受電路徑實作逆電流保護(RCP)。": {
+      "en": "System-side high-voltage sense node; the high-voltage sinking node in the system; used to implement reverse current protection (RCP) for the external powered path controlled by GATE_VSYS.",
+      "ja": "システム側高電圧センスノード；システム内の高電圧シンクノード；GATE_VSYSが制御する外部受電経路の逆電流保護(RCP)を実装するために使用。",
+      "ko": "시스템측 고전압 감지 노드; 시스템 내 고전압 싱킹 노드; GATE_VSYS가 제어하는 외부 수전 경로에 역전류 보호(RCP)를 구현하는 데 사용."
+    },
+    "系統側高壓感測節點；用於對 GATE_VSYS 所控制的外部受電路徑實作逆電流保護(RCP)。": {
+      "en": "System-side high-voltage sense node; used to implement reverse current protection (RCP) for the external powered path controlled by GATE_VSYS.",
+      "ja": "システム側高電圧センスノード；GATE_VSYSが制御する外部受電経路の逆電流保護(RCP)を実装するために使用。",
+      "ko": "시스템측 고전압 감지 노드; GATE_VSYS가 제어하는 외부 수전 경로에 역전류 보호(RCP)를 구현하는 데 사용."
+    },
+    "系統重置與 UVLO 輸入；拉低此腳強制所有輸出為低態，可用 VIN 至 GND 電阻分壓器設定開啟電壓位準。datasheet Type 欄標示為 O，惟功能描述為輸入訊號，以功能描述為準。": {
+      "en": "System reset and UVLO input; pulling this pin low forces all outputs low; the turn-on voltage level can be set with a VIN-to-GND resistor divider. The datasheet Type column marks it O, but the functional description is an input signal; the functional description takes precedence.",
+      "ja": "システムリセットおよびUVLO入力；このピンをLowに引くと全出力がLowに固定される；オン電圧レベルはVIN～GND間の抵抗分圧器で設定可能。データシートのType欄はOと表記されるが、機能説明は入力信号であり、機能説明を優先する。",
+      "ko": "시스템 리셋 및 UVLO 입력; 이 핀을 Low로 당기면 모든 출력이 Low로 강제됨; 켜짐 전압 레벨은 VIN에서 GND로의 저항 분압기로 설정 가능. 데이터시트 Type 열에는 O로 표기되나 기능 설명은 입력 신호이며, 기능 설명을 우선함."
+    },
+    "系統重置，低態動作，內建上拉": {
+      "en": "System reset, active-low, internal pull-up",
+      "ja": "システムリセット、アクティブLow、内蔵プルアップ",
+      "ko": "시스템 리셋, 액티브 Low, 내장 풀업"
+    },
+    "紅色通道選擇，驅動低側 NFET。": {
+      "en": "Red channel select, drives the low-side NFET.",
+      "ja": "赤チャンネル選択、ローサイドNFETを駆動。",
+      "ko": "적색 채널 선택, 로우사이드 NFET 구동."
+    },
+    "綠色通道選擇，驅動低側 NFET。": {
+      "en": "Green channel select, drives the low-side NFET.",
+      "ja": "緑チャンネル選択、ローサイドNFETを駆動。",
+      "ko": "녹색 채널 선택, 로우사이드 NFET 구동."
+    },
+    "緩衝 DAC 輸出；ADC 通道/封裝球位：A0/B15/C15": {
+      "en": "Buffered DAC output; ADC channel/package ball: A0/B15/C15",
+      "ja": "バッファ付きDAC出力；ADCチャンネル/パッケージボール：A0/B15/C15",
+      "ko": "버퍼드 DAC 출력; ADC 채널/패키지 볼: A0/B15/C15"
+    },
+    "緩衝 DAC 輸出；ADC 通道/封裝球位：A0/C24": {
+      "en": "Buffered DAC output; ADC channel/package ball: A0/C24",
+      "ja": "バッファ付きDAC出力；ADCチャンネル/パッケージボール：A0/C24",
+      "ko": "버퍼드 DAC 출력; ADC 채널/패키지 볼: A0/C24"
+    },
+    "緩衝 DAC 輸出；ADC 通道/封裝球位：A1/B7/D11": {
+      "en": "Buffered DAC output; ADC channel/package ball: A1/B7/D11",
+      "ja": "バッファ付きDAC出力；ADCチャンネル/パッケージボール：A1/B7/D11",
+      "ko": "버퍼드 DAC 출력; ADC 채널/패키지 볼: A1/B7/D11"
+    },
+    "緩衝 DAC 輸出；ADC 通道/封裝球位：E0/A24": {
+      "en": "Buffered DAC output; ADC channel/package ball: E0/A24",
+      "ja": "バッファ付きDAC出力；ADCチャンネル/パッケージボール：E0/A24",
+      "ko": "버퍼드 DAC 출력; ADC 채널/패키지 볼: E0/A24"
+    },
+    "纜線壓降補償(cable drop compensation)或電流監控輸出腳；於 CDC 與 AGND 間接電阻以選擇補償增益。預設此腳輸出 ISNSP 與 ISNSN 間感測電壓的電流監控訊號；若停用電流監控功能，將 CDC 接地。": {
+      "en": "Cable drop compensation or current monitor output pin; connect a resistor between CDC and AGND to select the compensation gain. By default this pin outputs a current monitor signal of the sense voltage between ISNSP and ISNSN; if the current monitor function is disabled, connect CDC to ground.",
+      "ja": "ケーブル電圧降下補償(cable drop compensation)または電流モニタ出力ピン；CDCとAGND間に抵抗を接続して補償ゲインを選択する。デフォルトではこのピンはISNSPとISNSN間のセンス電圧の電流モニタ信号を出力する；電流モニタ機能を無効にする場合はCDCをグラウンドに接続する。",
+      "ko": "케이블 전압 강하 보상(cable drop compensation) 또는 전류 모니터 출력 핀; CDC와 AGND 사이에 저항을 연결해 보상 게인을 선택. 기본적으로 이 핀은 ISNSP와 ISNSN 사이 감지 전압의 전류 모니터 신호를 출력; 전류 모니터 기능을 비활성화하면 CDC를 접지."
+    },
+    "能量偵測（碰撞/線路活動）；組態模式為 MDIO": {
+      "en": "Energy detect (collision/line activity); MDIO in configuration mode",
+      "ja": "エナジー検出（衝突/回線アクティビティ）；コンフィグモードではMDIO",
+      "ko": "에너지 감지(충돌/회선 활동); 구성 모드에서는 MDIO"
+    },
+    "脈衝輸出": {
+      "en": "Pulse output",
+      "ja": "パルス出力",
+      "ko": "펄스 출력"
+    },
+    "自舉輸出腳。BSTA 與 SHA 間接一顆 X7R、1µF、25V 陶瓷電容。": {
+      "en": "Bootstrap output pin. Connect an X7R, 1µF, 25V ceramic capacitor between BSTA and SHA.",
+      "ja": "ブートストラップ出力ピン。BSTAとSHA間にX7R、1µF、25Vのセラミックコンデンサを1個接続。",
+      "ko": "부트스트랩 출력 핀. BSTA와 SHA 사이에 X7R, 1µF, 25V 세라믹 커패시터 1개 연결."
+    },
+    "自舉輸出腳。BSTB 與 SHB 間接一顆 X7R、1µF、25V 陶瓷電容。": {
+      "en": "Bootstrap output pin. Connect an X7R, 1µF, 25V ceramic capacitor between BSTB and SHB.",
+      "ja": "ブートストラップ出力ピン。BSTBとSHB間にX7R、1µF、25Vのセラミックコンデンサを1個接続。",
+      "ko": "부트스트랩 출력 핀. BSTB와 SHB 사이에 X7R, 1µF, 25V 세라믹 커패시터 1개 연결."
+    },
+    "自舉輸出腳。BSTC 與 SHC 間接一顆 X7R、1µF、25V 陶瓷電容。": {
+      "en": "Bootstrap output pin. Connect an X7R, 1µF, 25V ceramic capacitor between BSTC and SHC.",
+      "ja": "ブートストラップ出力ピン。BSTCとSHC間にX7R、1µF、25Vのセラミックコンデンサを1個接続。",
+      "ko": "부트스트랩 출력 핀. BSTC와 SHC 사이에 X7R, 1µF, 25V 세라믹 커패시터 1개 연결."
+    },
+    "自舉輸出腳。BSTC 與 SHC 間接自舉電容。": {
+      "en": "Bootstrap output pin. Connect a bootstrap capacitor between BSTC and SHC.",
+      "ja": "ブートストラップ出力ピン。BSTCとSHC間にブートストラップコンデンサを接続。",
+      "ko": "부트스트랩 출력 핀. BSTC와 SHC 사이에 부트스트랩 커패시터 연결."
+    },
+    "致能 + 故障回報（雙功能）": {
+      "en": "Enable + fault reporting (dual function)",
+      "ja": "イネーブル + 故障報告（デュアル機能）",
+      "ko": "인에이블 + 결함 보고(이중 기능)"
+    },
+    "致能/關閉本 IC 與 DLP 投影機的輸入訊號。": {
+      "en": "Input signal to enable/disable this IC and the DLP projector.",
+      "ja": "本ICとDLPプロジェクタをイネーブル/ディセーブルする入力信号。",
+      "ko": "본 IC와 DLP 프로젝터를 인에이블/디스에이블하는 입력 신호."
+    },
+    "致能腳。拉低停用、拉高正常；可用 VIN 分壓電阻設定輸入 UVLO": {
+      "en": "Enable pin. Pull low to disable, pull high for normal; the input UVLO can be set with a VIN divider resistor",
+      "ja": "イネーブルピン。Lowで無効、Highで通常；VIN分圧抵抗で入力UVLOを設定可能",
+      "ko": "인에이블 핀. Low로 비활성화, High로 정상; VIN 분압 저항으로 입력 UVLO 설정 가능"
+    },
+    "致能腳，控制 DC/DC 切換轉換器開關；啟動前 EN 懸空則轉換器關閉。建議最大施加電壓 5.5V；TI 不建議將 EN 直接接至 VIN": {
+      "en": "Enable pin, controls the DC/DC switching converter switch; if EN floats before startup, the converter is off. Recommended maximum applied voltage 5.5V; TI does not recommend connecting EN directly to VIN",
+      "ja": "イネーブルピン、DC/DCスイッチングコンバータのスイッチを制御；起動前にENがフロートするとコンバータはオフ。推奨最大印加電圧5.5V；TIはENをVINに直接接続することを推奨しない",
+      "ko": "인에이블 핀, DC/DC 스위칭 컨버터 스위치 제어; 시작 전 EN이 플로팅되면 컨버터 꺼짐. 권장 최대 인가 전압 5.5V; TI는 EN을 VIN에 직접 연결하는 것을 권장하지 않음"
+    },
+    "致能腳，數位輸入以致能轉換器切換動作。此輸入具備精準類比比較器與遲滯特性以監控輸入電壓；須接電阻分壓器(由輸入電壓分壓)以維持 UVLO(欠壓鎖定)功能。": {
+      "en": "Enable pin, a digital input to enable converter switching. This input has a precision analog comparator with hysteresis to monitor the input voltage; connect a resistor divider (dividing the input voltage) to maintain the UVLO (undervoltage lockout) function.",
+      "ja": "イネーブルピン、コンバータのスイッチング動作を有効にするデジタル入力。この入力は入力電圧を監視する精密アナログコンパレータとヒステリシス特性を備える；UVLO(低電圧ロックアウト)機能を維持するため抵抗分圧器(入力電圧を分圧)を接続する必要がある。",
+      "ko": "인에이블 핀, 컨버터 스위칭 동작을 활성화하는 디지털 입력. 이 입력은 입력 전압을 감시하는 정밀 아날로그 비교기와 히스테리시스 특성을 갖춤; UVLO(저전압 잠금) 기능을 유지하려면 저항 분압기(입력 전압을 분압)를 연결해야 함."
+    },
+    "致能（active-low；高則全斷，低才依位址導通）": {
+      "en": "Enable (active-low; high disconnects all, low conducts per address)",
+      "ja": "イネーブル（アクティブLow；Highで全遮断、Lowでアドレスに従って導通）",
+      "ko": "인에이블(액티브 Low; High면 전체 차단, Low라야 주소에 따라 도통)"
+    },
+    "致能（低=正常、高=低功耗）": {
+      "en": "Enable (low=normal, high=low power)",
+      "ja": "イネーブル（Low=通常、High=低消費電力）",
+      "ko": "인에이블(Low=정상, High=저전력)"
+    },
+    "致能（低=正常、高=關機）": {
+      "en": "Enable (low=normal, high=shutdown)",
+      "ja": "イネーブル（Low=通常、High=シャットダウン）",
+      "ko": "인에이블(Low=정상, High=셧다운)"
+    },
+    "致能（低態致能，active-low）": {
+      "en": "Enable (active-low)",
+      "ja": "イネーブル（アクティブLow）",
+      "ko": "인에이블(액티브 Low)"
+    },
+    "致能（高=啟用、低=關斷；勿浮接）": {
+      "en": "Enable (high=on, low=off; do not float)",
+      "ja": "イネーブル（High=有効、Low=遮断；フロート不可）",
+      "ko": "인에이블(High=활성화, Low=차단; 플로팅 금지)"
+    },
+    "致能（高態致能）": {
+      "en": "Enable (active-high)",
+      "ja": "イネーブル（アクティブHigh）",
+      "ko": "인에이블(액티브 High)"
+    },
+    "致能（高致能，需上拉）": {
+      "en": "Enable (active-high, requires pull-up)",
+      "ja": "イネーブル（アクティブHigh、プルアップが必要）",
+      "ko": "인에이블(액티브 High, 풀업 필요)"
+    },
+    "致能；高=啟用、低=關斷": {
+      "en": "Enable; high=on, low=off",
+      "ja": "イネーブル；High=有効、Low=遮断",
+      "ko": "인에이블; High=활성화, Low=차단"
+    },
+    "菊鏈模式下序列通訊的鏈接資料輸入": {
+      "en": "Chained data input for serial communication in daisy-chain mode",
+      "ja": "デイジーチェーンモードでのシリアル通信のチェーンデータ入力",
+      "ko": "데이지 체인 모드에서 시리얼 통신의 체인 데이터 입력"
+    },
+    "菊鏈（daisy-chain）資料輸入": {
+      "en": "Daisy-chain data input",
+      "ja": "デイジーチェーン（daisy-chain）データ入力",
+      "ko": "데이지 체인(daisy-chain) 데이터 입력"
+    },
+    "藍色通道選擇，驅動低側 NFET。": {
+      "en": "Blue channel select, drives the low-side NFET.",
+      "ja": "青チャンネル選択、ローサイドNFETを駆動。",
+      "ko": "청색 채널 선택, 로우사이드 NFET 구동."
+    },
+    "補償設定": {
+      "en": "Compensation setting",
+      "ja": "補償設定",
+      "ko": "보상 설정"
+    },
+    "裝置功率地。": {
+      "en": "Device power ground.",
+      "ja": "デバイスパワーグラウンド。",
+      "ko": "디바이스 파워 그라운드."
+    },
+    "裝置功率地。原表列為合併腳位「PGND 3, 7」，本檔已展開為兩個獨立腳位（本腳為 pin3）。": {
+      "en": "Device power ground. The original table lists a merged pin 'PGND 3, 7'; this file expands it into two separate pins (this pin is pin3).",
+      "ja": "デバイスパワーグラウンド。元の表では統合ピン「PGND 3, 7」として記載、本ファイルでは2つの独立ピンに展開（このピンはpin3）。",
+      "ko": "디바이스 파워 그라운드. 원본 표에는 병합 핀 'PGND 3, 7'로 기재; 본 파일에서는 두 개의 독립 핀으로 확장(이 핀은 pin3)."
+    },
+    "裝置功率地。原表列為合併腳位「PGND 3, 7」，本檔已展開為兩個獨立腳位（本腳為 pin7）。": {
+      "en": "Device power ground. The original table lists a merged pin 'PGND 3, 7'; this file expands it into two separate pins (this pin is pin7).",
+      "ja": "デバイスパワーグラウンド。元の表では統合ピン「PGND 3, 7」として記載、本ファイルでは2つの独立ピンに展開（このピンはpin7）。",
+      "ko": "디바이스 파워 그라운드. 원본 표에는 병합 핀 'PGND 3, 7'로 기재; 본 파일에서는 두 개의 독립 핀으로 확장(이 핀은 pin7)."
+    },
+    "裝置復位輸入": {
+      "en": "Device reset input",
+      "ja": "デバイスリセット入力",
+      "ko": "디바이스 리셋 입력"
+    },
+    "裝置接地": {
+      "en": "Device ground",
+      "ja": "デバイスグラウンド",
+      "ko": "디바이스 접지"
+    },
+    "裝置數位地。": {
+      "en": "Device digital ground.",
+      "ja": "デバイスデジタルグラウンド。",
+      "ko": "디바이스 디지털 그라운드."
+    },
+    "裝置設定腳；於 CFG2 與 GND 間接電阻以選擇裝置運作方式(詳見原廠 datasheet)。": {
+      "en": "Device configuration pin; connect a resistor between CFG2 and GND to select the device operating mode (see the vendor datasheet for details).",
+      "ja": "デバイス設定ピン；CFG2とGND間に抵抗を接続してデバイスの動作方式を選択（詳細はメーカーのデータシート参照）。",
+      "ko": "디바이스 설정 핀; CFG2와 GND 사이에 저항을 연결해 디바이스 동작 방식을 선택(자세한 내용은 제조사 데이터시트 참조)."
+    },
+    "裝置運作模式選擇數位輸入：低電位=省電模式(PSM)、高電位=強制 PWM/CCM 運作；運作中可動態切換模式；不可懸空。": {
+      "en": "Device operating mode select digital input: low=power save mode (PSM), high=forced PWM/CCM operation; the mode can be switched dynamically during operation; do not float.",
+      "ja": "デバイス動作モード選択デジタル入力：Low=省電力モード(PSM)、High=強制PWM/CCM動作；動作中にモードを動的に切り替え可能；フロート不可。",
+      "ko": "디바이스 동작 모드 선택 디지털 입력: Low=절전 모드(PSM), High=강제 PWM/CCM 동작; 동작 중 모드 동적 전환 가능; 플로팅 금지."
+    },
+    "觸發介面時脈；作為 FR Interface 輸入時脈，或作為觸發介面輸出時脈；內建下拉": {
+      "en": "Trigger interface clock; serves as the FR Interface input clock, or as the trigger interface output clock; internal pull-down",
+      "ja": "トリガインターフェースクロック；FR Interface入力クロック、またはトリガインターフェース出力クロックとして機能；内蔵プルダウン",
+      "ko": "트리거 인터페이스 클록; FR Interface 입력 클록 또는 트리거 인터페이스 출력 클록으로 동작; 내장 풀다운"
+    },
+    "觸發介面球 4；於 FR Interface 亦作為晶片選擇輸入；內建下拉": {
+      "en": "Trigger interface ball 4; also serves as the chip select input in the FR Interface; internal pull-down",
+      "ja": "トリガインターフェースボール4；FR Interfaceではチップセレクト入力としても機能；内蔵プルダウン",
+      "ko": "트리거 인터페이스 볼 4; FR Interface에서는 칩 선택 입력으로도 동작; 내장 풀다운"
+    },
+    "觸發輸入（<1/2 CONT 使 OUT 高、DISCH 開）": {
+      "en": "Trigger input (<1/2 CONT drives OUT high, DISCH open)",
+      "ja": "トリガ入力（<1/2 CONTでOUTがHigh、DISCHオープン）",
+      "ko": "트리거 입력(<1/2 CONT면 OUT High, DISCH 개방)"
+    },
+    "計時器輸出": {
+      "en": "Timer output",
+      "ja": "タイマー出力",
+      "ko": "타이머 출력"
+    },
+    "訊號地": {
+      "en": "Signal ground",
+      "ja": "シグナルグラウンド",
+      "ko": "신호 접지"
+    },
+    "訊號地（內接功率地）": {
+      "en": "Signal ground (internally connected to power ground)",
+      "ja": "シグナルグラウンド（内部でパワーグラウンドに接続）",
+      "ko": "신호 접지(내부적으로 파워 그라운드에 연결)"
+    },
+    "設定 Channel 1 優先權的類比輸入，與內部 VREF 比較；不需要時接 GND": {
+      "en": "Analog input that sets the Channel 1 priority, compared with the internal VREF; connect to GND when not needed",
+      "ja": "Channel 1の優先度を設定するアナログ入力、内部VREFと比較；不要時はGNDに接続",
+      "ko": "Channel 1 우선순위를 설정하는 아날로그 입력, 내부 VREF와 비교; 필요 없을 때는 GND에 연결"
+    },
+    "設定 DCDC3 預設輸出電壓": {
+      "en": "Sets the DCDC3 default output voltage",
+      "ja": "DCDC3のデフォルト出力電圧を設定",
+      "ko": "DCDC3 기본 출력 전압 설정"
+    },
+    "設定 LDO1 預設輸出電壓": {
+      "en": "Sets the LDO1 default output voltage",
+      "ja": "LDO1のデフォルト出力電圧を設定",
+      "ko": "LDO1 기본 출력 전압 설정"
+    },
+    "設定 cycle-by-cycle 相電流限制的閾值，由外部電阻分壓決定（datasheet Table 5-1 該列 TYPE 欄位留空，依功能歸類為類比設定腳）。": {
+      "en": "Sets the threshold for the cycle-by-cycle phase current limit, determined by an external resistor divider (the TYPE column of that row in datasheet Table 5-1 is blank; classified by function as an analog setting pin).",
+      "ja": "cycle-by-cycle相電流制限の閾値を設定、外部抵抗分圧で決定（データシートTable 5-1の該当行のTYPE欄は空欄、機能によりアナログ設定ピンに分類）。",
+      "ko": "cycle-by-cycle 상 전류 제한의 임계값을 설정, 외부 저항 분압으로 결정(데이터시트 Table 5-1 해당 행의 TYPE 열은 공란; 기능상 아날로그 설정 핀으로 분류)."
+    },
+    "設定上電時預設取樣時脈型態與參考電壓來源；內建 100kΩ 上拉電阻至 AVDD": {
+      "en": "Sets the default sampling clock pattern and reference voltage source at power-up; internal 100kΩ pull-up resistor to AVDD",
+      "ja": "電源投入時のデフォルトサンプリングクロックパターンと基準電圧源を設定；内蔵100kΩプルアップ抵抗をAVDDへ",
+      "ko": "전원 인가 시 기본 샘플링 클록 패턴과 기준 전압 소스를 설정; 내장 100kΩ 풀업 저항을 AVDD로"
+    },
+    "設定輸入；接地或 LDO_3V3。": {
+      "en": "Configuration input; connect to ground or LDO_3V3.",
+      "ja": "設定入力；グラウンドまたはLDO_3V3に接続。",
+      "ko": "설정 입력; 접지 또는 LDO_3V3에 연결."
+    },
+    "誤差放大器反相輸入": {
+      "en": "Error amplifier inverting input",
+      "ja": "誤差アンプ反転入力",
+      "ko": "오차 증폭기 반전 입력"
+    },
+    "誤差放大器輸出（補償）": {
+      "en": "Error amplifier output (compensation)",
+      "ja": "誤差アンプ出力（補償）",
+      "ko": "오차 증폭기 출력(보상)"
+    },
+    "誤差放大器輸出；須於 COMP 與 AGND 間接外部 RC 網路以穩定/補償穩壓迴路。": {
+      "en": "Error amplifier output; connect an external RC network between COMP and AGND to stabilize/compensate the regulation loop.",
+      "ja": "誤差アンプ出力；COMPとAGND間に外付けRCネットワークを接続してレギュレーションループを安定化/補償する必要がある。",
+      "ko": "오차 증폭기 출력; COMP와 AGND 사이에 외부 RC 네트워크를 연결해 레귤레이션 루프를 안정화/보상해야 함."
+    },
+    "誤差放大器非反相輸入": {
+      "en": "Error amplifier non-inverting input",
+      "ja": "誤差アンプ非反転入力",
+      "ko": "오차 증폭기 비반전 입력"
+    },
+    "調變器時脈輸出（內部振盪）": {
+      "en": "Modulator clock output (internal oscillation)",
+      "ja": "変調器クロック出力（内部発振）",
+      "ko": "변조기 클록 출력(내부 발진)"
+    },
+    "警報輸出（超出可程式門檻時觸發）": {
+      "en": "Alarm output (triggered when a programmable threshold is exceeded)",
+      "ja": "アラーム出力（プログラム可能な閾値超過時にトリガ）",
+      "ko": "알람 출력(프로그래밍 가능한 임계값 초과 시 트리거)"
+    },
+    "警示輸出：偵測到內部未遮罩告警時動作；告警遮罩由 ALM_MASK 暫存器設定；無上下拉": {
+      "en": "Alert output: asserts when an unmasked internal alarm is detected; alarm masking is set by the ALM_MASK register; no pull-up/pull-down",
+      "ja": "アラート出力：内部の非マスクアラームを検出時にアサート；アラームマスクはALM_MASKレジスタで設定；プルアップ/プルダウンなし",
+      "ko": "경고 출력: 마스킹되지 않은 내부 알람 감지 시 동작; 알람 마스킹은 ALM_MASK 레지스터로 설정; 풀업/풀다운 없음"
+    },
+    "變壓器匝比設定 Np/Ns（電阻到 GND）": {
+      "en": "Transformer turns ratio setting Np/Ns (resistor to GND)",
+      "ja": "トランス巻数比設定 Np/Ns（GNDへの抵抗）",
+      "ko": "변압기 권선비 설정 Np/Ns(GND로의 저항)"
+    },
+    "象限 0 數位輸出（開汲極）": {
+      "en": "Quadrant 0 digital output (open drain)",
+      "ja": "象限0デジタル出力（オープンドレイン）",
+      "ko": "사분면 0 디지털 출력(오픈 드레인)"
+    },
+    "象限 1 數位輸出（開汲極）": {
+      "en": "Quadrant 1 digital output (open drain)",
+      "ja": "象限1デジタル出力（オープンドレイン）",
+      "ko": "사분면 1 디지털 출력(오픈 드레인)"
+    },
+    "負極性類比輸入，通道 A": {
+      "en": "Negative-polarity analog input, channel A",
+      "ja": "負極性アナログ入力、チャンネルA",
+      "ko": "음극성 아날로그 입력, 채널 A"
+    },
+    "負極性類比輸入，通道 B": {
+      "en": "Negative-polarity analog input, channel B",
+      "ja": "負極性アナログ入力、チャンネルB",
+      "ko": "음극성 아날로그 입력, 채널 B"
+    },
+    "負端參考電壓輸入": {
+      "en": "Negative reference voltage input",
+      "ja": "負側基準電圧入力",
+      "ko": "부극 기준 전압 입력"
+    },
+    "負輸入（接 100nF 交流耦合電容）": {
+      "en": "Negative input (connect a 100nF AC coupling capacitor)",
+      "ja": "負入力（100nF ACカップリングコンデンサを接続）",
+      "ko": "부극 입력(100nF AC 커플링 커패시터 연결)"
+    },
+    "負邏輯輸入": {
+      "en": "Negative-logic input",
+      "ja": "負論理入力",
+      "ko": "부논리 입력"
+    },
+    "負電源輸入（pad 20/22）": {
+      "en": "Negative supply input (pad 20/22)",
+      "ja": "負電源入力（pad 20/22）",
+      "ko": "부전원 입력(pad 20/22)"
+    },
+    "負電源（最負電位）；單電源時接 GND": {
+      "en": "Negative supply (most negative potential); connect to GND for single-supply operation",
+      "ja": "負電源（最も負の電位）；単一電源時はGNDに接続",
+      "ko": "부전원(가장 낮은 전위); 단일 전원 시 GND에 연결"
+    },
+    "負電源；單電源時接 GND；0.1~10µF 去耦": {
+      "en": "Negative supply; connect to GND for single-supply operation; 0.1-10µF decoupling",
+      "ja": "負電源；単一電源時はGNDに接続；0.1~10µFデカップリング",
+      "ko": "부전원; 단일 전원 시 GND에 연결; 0.1~10µF 디커플링"
+    },
+    "資料就緒或告警旗標輸出；active high": {
+      "en": "Data ready or alarm flag output; active high",
+      "ja": "データレディまたはアラームフラグ出力；アクティブHigh",
+      "ko": "데이터 준비 완료 또는 알람 플래그 출력; 액티브 High"
+    },
+    "資料輸入": {
+      "en": "Data input",
+      "ja": "データ入力",
+      "ko": "데이터 입력"
+    },
+    "跨阻放大器輸入（接光電二極體）": {
+      "en": "Transimpedance amplifier input (connect to photodiode)",
+      "ja": "トランスインピーダンスアンプ入力（フォトダイオードに接続）",
+      "ko": "트랜스임피던스 증폭기 입력(포토다이오드에 연결)"
+    },
+    "軟啟動控制腳；懸空為內部固定軟啟動斜率，外接電容至地可延長軟啟動時間(2µA 電流對電容充電)；亦可外接斜坡訊號做追蹤(tracking)；不可短接至地。": {
+      "en": "Soft-start control pin; floating gives an internal fixed soft-start slope, an external capacitor to ground can extend the soft-start time (2µA current charges the capacitor); an external ramp signal can also be applied for tracking; do not short to ground.",
+      "ja": "ソフトスタート制御ピン；フロートで内部固定のソフトスタート傾き、外付けコンデンサをグラウンドへ接続するとソフトスタート時間を延長可能(2µA電流でコンデンサを充電)；外付けランプ信号でトラッキング(tracking)も可能；グラウンドへのショート不可。",
+      "ko": "소프트 스타트 제어 핀; 플로팅 시 내부 고정 소프트 스타트 기울기, 외부 커패시터를 접지로 연결하면 소프트 스타트 시간을 연장 가능(2µA 전류로 커패시터 충전); 외부 램프 신호로 트래킹(tracking)도 가능; 접지로 단락 금지."
+    },
+    "軟啟動程式化腳：於 SS 腳與 AGND 間接電容可設定軟啟動時間。亦為類比輸出電壓追蹤(analog output voltage tracking)腳：可接至可變電壓參考(例如 DAC)以程式化 VOUT 調節目標；內部電路會在此腳電壓與內部參考電壓間選擇較低者。": {
+      "en": "Soft-start programming pin: connect a capacitor between the SS pin and AGND to set the soft-start time. Also an analog output voltage tracking pin: can be connected to a variable voltage reference (such as a DAC) to program the VOUT regulation target; internal circuitry selects the lower of this pin voltage and the internal reference voltage.",
+      "ja": "ソフトスタートプログラミングピン：SSピンとAGND間にコンデンサを接続してソフトスタート時間を設定。アナログ出力電圧トラッキング(analog output voltage tracking)ピンでもある：可変電圧リファレンス(例:DAC)に接続してVOUT調節目標をプログラム可能；内部回路はこのピン電圧と内部基準電圧のうち低い方を選択する。",
+      "ko": "소프트 스타트 프로그래밍 핀: SS 핀과 AGND 사이에 커패시터를 연결해 소프트 스타트 시간을 설정. 아날로그 출력 전압 트래킹(analog output voltage tracking) 핀이기도 함: 가변 전압 기준(예: DAC)에 연결해 VOUT 조절 목표를 프로그래밍 가능; 내부 회로는 이 핀 전압과 내부 기준 전압 중 낮은 쪽을 선택함."
+    },
+    "軟啟動（兼最大工作週期箝位）": {
+      "en": "Soft-start (also maximum duty-cycle clamp)",
+      "ja": "ソフトスタート（最大デューティサイクルクランプ兼用）",
+      "ko": "소프트 스타트(최대 듀티 사이클 클램프 겸용)"
+    },
+    "輔助 5V 穩壓器輸出；靠近此腳放置去耦電容。若依邏輯設定停用此輸出，須以電阻將此腳接地或提升至 VCC2；不可懸空。": {
+      "en": "Auxiliary 5V regulator output; place a decoupling capacitor near this pin. If this output is disabled by logic configuration, this pin must be tied to ground or pulled up to VCC2 with a resistor; do not float.",
+      "ja": "補助5Vレギュレータ出力；このピンの近くにデカップリングコンデンサを配置。ロジック設定でこの出力を無効にする場合、このピンを抵抗でグラウンドに接続するかVCC2に引き上げる必要がある；フロート不可。",
+      "ko": "보조 5V 레귤레이터 출력; 이 핀 근처에 디커플링 커패시터 배치. 로직 설정으로 이 출력을 비활성화하는 경우, 이 핀을 저항으로 접지하거나 VCC2로 풀업해야 함; 플로팅 금지."
+    },
+    "輔助輸入通道正端；與 pin11 AUX_GND 去耦": {
+      "en": "Auxiliary input channel positive terminal; decoupled with pin11 AUX_GND",
+      "ja": "補助入力チャンネル正側；pin11 AUX_GNDとデカップリング",
+      "ko": "보조 입력 채널 정극; pin11 AUX_GND와 디커플링"
+    },
+    "輔助輸入通道負端；與 pin10 AUX_INP 去耦": {
+      "en": "Auxiliary input channel negative terminal; decoupled with pin10 AUX_INP",
+      "ja": "補助入力チャンネル負側；pin10 AUX_INPとデカップリング",
+      "ko": "보조 입력 채널 부극; pin10 AUX_INP와 디커플링"
+    },
+    "輸入 A（Schmitt）": {
+      "en": "Input A (Schmitt)",
+      "ja": "入力A（シュミット）",
+      "ko": "입력 A(슈미트)"
+    },
+    "輸入 B（Schmitt）": {
+      "en": "Input B (Schmitt)",
+      "ja": "入力B（シュミット）",
+      "ko": "입력 B(슈미트)"
+    },
+    "輸入二極體陰極": {
+      "en": "Input diode cathode",
+      "ja": "入力ダイオードカソード",
+      "ko": "입력 다이오드 캐소드"
+    },
+    "輸入二極體陽極": {
+      "en": "Input diode anode",
+      "ja": "入力ダイオードアノード",
+      "ko": "입력 다이오드 애노드"
+    },
+    "輸入時脈遺失指示（active-low，開汲極需外部上拉電阻）：低=輸入時脈無效，高=輸入時脈有效": {
+      "en": "Input clock loss indication (active-low, open drain requires external pull-up resistor): low=input clock invalid, high=input clock valid",
+      "ja": "入力クロック消失表示（アクティブLow、オープンドレインは外部プルアップ抵抗が必要）：Low=入力クロック無効、High=入力クロック有効",
+      "ko": "입력 클록 손실 표시(액티브 Low, 오픈 드레인은 외부 풀업 저항 필요): Low=입력 클록 무효, High=입력 클록 유효"
+    },
+    "輸入時脈遺失指示（active-low，開汲極需外部上拉）：低=輸入時脈無效": {
+      "en": "Input clock loss indication (active-low, open drain requires external pull-up): low=input clock invalid",
+      "ja": "入力クロック消失表示（アクティブLow、オープンドレインは外部プルアップが必要）：Low=入力クロック無効",
+      "ko": "입력 클록 손실 표시(액티브 Low, 오픈 드레인은 외부 풀업 필요): Low=입력 클록 무효"
+    },
+    "輸入選擇（CLK0/CLK1；LVTTL/LVCMOS 相容）": {
+      "en": "Input select (CLK0/CLK1; LVTTL/LVCMOS compatible)",
+      "ja": "入力選択（CLK0/CLK1；LVTTL/LVCMOS互換）",
+      "ko": "입력 선택(CLK0/CLK1; LVTTL/LVCMOS 호환)"
+    },
+    "輸入電壓": {
+      "en": "Input voltage",
+      "ja": "入力電圧",
+      "ko": "입력 전압"
+    },
+    "輸入電壓（高側 GaN FET 汲極）": {
+      "en": "Input voltage (high-side GaN FET drain)",
+      "ja": "入力電圧（ハイサイドGaN FETドレイン）",
+      "ko": "입력 전압(하이사이드 GaN FET 드레인)"
+    },
+    "輸入電源與感測輸入；連接至功率級供電電源。": {
+      "en": "Input supply and sense input; connect to the power stage supply.",
+      "ja": "入力電源とセンス入力；パワーステージの供給電源に接続。",
+      "ko": "입력 전원 및 감지 입력; 파워 스테이지 공급 전원에 연결."
+    },
+    "輸出 0 電源（設電平）": {
+      "en": "Output 0 supply (sets the level)",
+      "ja": "出力0電源（レベルを設定）",
+      "ko": "출력 0 전원(레벨 설정)"
+    },
+    "輸出 Q": {
+      "en": "Output Q",
+      "ja": "出力Q",
+      "ko": "출력 Q"
+    },
+    "輸出 Y = A": {
+      "en": "Output Y = A",
+      "ja": "出力 Y = A",
+      "ko": "출력 Y = A"
+    },
+    "輸出 Y = A·B": {
+      "en": "Output Y = A·B",
+      "ja": "出力 Y = A·B",
+      "ko": "출력 Y = A·B"
+    },
+    "輸出 Y = A·B·C": {
+      "en": "Output Y = A·B·C",
+      "ja": "出力 Y = A·B·C",
+      "ko": "출력 Y = A·B·C"
+    },
+    "輸出 Y = NOT A": {
+      "en": "Output Y = NOT A",
+      "ja": "出力 Y = NOT A",
+      "ko": "출력 Y = NOT A"
+    },
+    "輸出 Y = NOT(A+B)": {
+      "en": "Output Y = NOT(A+B)",
+      "ja": "出力 Y = NOT(A+B)",
+      "ko": "출력 Y = NOT(A+B)"
+    },
+    "輸出 Y = NOT(A·B·C)": {
+      "en": "Output Y = NOT(A·B·C)",
+      "ja": "出力 Y = NOT(A·B·C)",
+      "ko": "출력 Y = NOT(A·B·C)"
+    },
+    "輸出 strobe（active-low；高則 Y 全低）": {
+      "en": "Output strobe (active-low; high forces all Y low)",
+      "ja": "出力ストローブ（アクティブLow；HighでY全てLow）",
+      "ko": "출력 스트로브(액티브 Low; High면 Y 전체 Low)"
+    },
+    "輸出參考電位輸入（設定輸出中心）": {
+      "en": "Output reference potential input (sets the output center)",
+      "ja": "出力基準電位入力（出力中心を設定）",
+      "ko": "출력 기준 전위 입력(출력 중심 설정)"
+    },
+    "輸出或輸入平均電流感測放大器負端感測輸入；若使用內部平均電流感測器，須於 ISNSN 與 ISNSP 間接選用的電流感測電阻(可置於功率級輸入側或輸出側)。若停用選用電流感測器，將 ISNSN 與 ISNSP 一併接至 AGND。": {
+      "en": "Output or input average current sense amplifier negative sense input; if the internal average current sensor is used, connect an optional current sense resistor between ISNSN and ISNSP (which can be placed on the input side or output side of the power stage). If the optional current sensor is disabled, tie both ISNSN and ISNSP to AGND.",
+      "ja": "出力または入力の平均電流センスアンプの負側センス入力；内部平均電流センサを使用する場合、ISNSNとISNSP間に任意の電流センス抵抗(パワーステージの入力側または出力側に配置可能)を接続する必要がある。任意の電流センサを無効にする場合、ISNSNとISNSPをともにAGNDに接続する。",
+      "ko": "출력 또는 입력 평균 전류 감지 증폭기의 부극 감지 입력; 내부 평균 전류 센서를 사용하는 경우, ISNSN과 ISNSP 사이에 선택적 전류 감지 저항(파워 스테이지의 입력측 또는 출력측에 배치 가능)을 연결해야 함. 선택적 전류 센서를 비활성화하는 경우, ISNSN과 ISNSP를 함께 AGND에 연결."
+    },
+    "輸出或輸入電流感測放大器正端感測輸入；若使用內部平均電流感測器，須於 ISNSN 與 ISNSP 間接選用的電流感測電阻(可置於功率級輸入側或輸出側)。若停用選用電流感測器，將 ISNSP 接地。": {
+      "en": "Output or input current sense amplifier positive sense input; if the internal average current sensor is used, connect an optional current sense resistor between ISNSN and ISNSP (which can be placed on the input side or output side of the power stage). If the optional current sensor is disabled, connect ISNSP to ground.",
+      "ja": "出力または入力の電流センスアンプの正側センス入力；内部平均電流センサを使用する場合、ISNSNとISNSP間に任意の電流センス抵抗(パワーステージの入力側または出力側に配置可能)を接続する必要がある。任意の電流センサを無効にする場合、ISNSPをグラウンドに接続する。",
+      "ko": "출력 또는 입력 전류 감지 증폭기의 정극 감지 입력; 내부 평균 전류 센서를 사용하는 경우, ISNSN과 ISNSP 사이에 선택적 전류 감지 저항(파워 스테이지의 입력측 또는 출력측에 배치 가능)을 연결해야 함. 선택적 전류 센서를 비활성화하는 경우, ISNSP를 접지에 연결."
+    },
+    "輸出緩衝器正類比電源（0V ~ 5.5V）": {
+      "en": "Output buffer positive analog supply (0V to 5.5V)",
+      "ja": "出力バッファ正アナログ電源（0V ~ 5.5V）",
+      "ko": "출력 버퍼 정극 아날로그 전원(0V ~ 5.5V)"
+    },
+    "輸出緩衝器負類比電源（–11V ~ 0V）": {
+      "en": "Output buffer negative analog supply (-11V to 0V)",
+      "ja": "出力バッファ負アナログ電源（–11V ~ 0V）",
+      "ko": "출력 버퍼 부극 아날로그 전원(–11V ~ 0V)"
+    },
+    "輸出至 DLPC23xS-Q1 的中斷訊號(開集極輸出)；建議提升電阻拉至由 TPS99002S-Q1 的 ENB_3P3V 訊號控制的 DLPC23xS-Q1 3.3V 電源軌。": {
+      "en": "Interrupt signal output to the DLPC23xS-Q1 (open collector output); a pull-up resistor is recommended to the DLPC23xS-Q1 3.3V rail controlled by the ENB_3P3V signal of the TPS99002S-Q1.",
+      "ja": "DLPC23xS-Q1への割り込み信号(オープンコレクタ出力)；TPS99002S-Q1のENB_3P3V信号で制御されるDLPC23xS-Q1の3.3V電源レールへのプルアップ抵抗を推奨。",
+      "ko": "DLPC23xS-Q1로 출력하는 인터럽트 신호(오픈 컬렉터 출력); TPS99002S-Q1의 ENB_3P3V 신호로 제어되는 DLPC23xS-Q1의 3.3V 전원 레일로의 풀업 저항 권장."
+    },
+    "輸出至 DLPC23xS-Q1 的重置訊號，由 TPS99002S-Q1 控制。": {
+      "en": "Reset signal output to the DLPC23xS-Q1, controlled by the TPS99002S-Q1.",
+      "ja": "DLPC23xS-Q1へのリセット信号、TPS99002S-Q1が制御。",
+      "ko": "DLPC23xS-Q1로 출력하는 리셋 신호, TPS99002S-Q1이 제어."
+    },
+    "輸出致能/待機（NC 可浮接）": {
+      "en": "Output enable/standby (NC, can float)",
+      "ja": "出力イネーブル/スタンバイ（NC、フロート可）",
+      "ko": "출력 인에이블/대기(NC, 플로팅 가능)"
+    },
+    "輸出致能/待機（低=停用、高/浮接=啟用；內部 150kΩ 上拉）": {
+      "en": "Output enable/standby (low=disable, high/floating=enable; internal 150kΩ pull-up)",
+      "ja": "出力イネーブル/スタンバイ（Low=無効、High/フロート=有効；内部150kΩプルアップ）",
+      "ko": "출력 인에이블/대기(Low=비활성화, High/플로팅=활성화; 내부 150kΩ 풀업)"
+    },
+    "輸出致能輸入（active-low）": {
+      "en": "Output enable input (active-low)",
+      "ja": "出力イネーブル入力（アクティブLow）",
+      "ko": "출력 인에이블 입력(액티브 Low)"
+    },
+    "輸出致能（active-high；高致能、低則三態）": {
+      "en": "Output enable (active-high; high enables, low tri-states)",
+      "ja": "出力イネーブル（アクティブHigh；Highで有効、Lowでトライステート）",
+      "ko": "출력 인에이블(액티브 High; High면 활성화, Low면 트라이스테이트)"
+    },
+    "輸出致能（active-low；低則全通、高則全斷）": {
+      "en": "Output enable (active-low; low passes all, high disconnects all)",
+      "ja": "出力イネーブル（アクティブLow；Lowで全通過、Highで全遮断）",
+      "ko": "출력 인에이블(액티브 Low; Low면 전체 통과, High면 전체 차단)"
+    },
+    "輸出致能（active-low；高則全斷）": {
+      "en": "Output enable (active-low; high disconnects all)",
+      "ja": "出力イネーブル（アクティブLow；Highで全遮断）",
+      "ko": "출력 인에이블(액티브 Low; High면 전체 차단)"
+    },
+    "輸出致能（高態致能；低則全部三態）；參考 VCCA": {
+      "en": "Output enable (active-high; low tri-states all); referenced to VCCA",
+      "ja": "出力イネーブル（アクティブHigh；Lowで全てトライステート）；VCCA基準",
+      "ko": "출력 인에이블(액티브 High; Low면 전체 트라이스테이트); VCCA 기준"
+    },
+    "輸出行為選擇腳(2UV+2OV 或 2-window)；不可動態切換。MODE=0 對應 2UV+2OV，MODE=1 對應 2-window。": {
+      "en": "Output behavior select pin (2UV+2OV or 2-window); cannot be switched dynamically. MODE=0 corresponds to 2UV+2OV, MODE=1 corresponds to 2-window.",
+      "ja": "出力動作選択ピン(2UV+2OVまたは2-window)；動的切り替え不可。MODE=0は2UV+2OV、MODE=1は2-windowに対応。",
+      "ko": "출력 동작 선택 핀(2UV+2OV 또는 2-window); 동적 전환 불가. MODE=0은 2UV+2OV, MODE=1은 2-window에 대응."
+    },
+    "輸出電壓回授輸入，差動遠端感測電路正輸入端，接至負載側的 Vout 感測點。設定外部回授時，由 VOUT 到 GOS 的電阻分壓器在 FB 腳分接以設定輸出電壓": {
+      "en": "Output voltage feedback input, the positive input of the differential remote sense circuit, connected to the Vout sense point on the load side. When configuring external feedback, a resistor divider from VOUT to GOS taps at the FB pin to set the output voltage",
+      "ja": "出力電圧フィードバック入力、差動リモートセンス回路の正入力端、負荷側のVoutセンスポイントに接続。外部フィードバックを設定する場合、VOUTからGOSへの抵抗分圧器がFBピンで分岐して出力電圧を設定",
+      "ko": "출력 전압 피드백 입력, 차동 원격 감지 회로의 정극 입력단, 부하측 Vout 감지점에 연결. 외부 피드백 설정 시, VOUT에서 GOS로의 저항 분압기가 FB 핀에서 분기하여 출력 전압을 설정"
+    },
+    "輸出電壓回授輸入；接電阻分壓器設定輸出電壓；運作中不可將此腳短接至地。": {
+      "en": "Output voltage feedback input; connect a resistor divider to set the output voltage; do not short this pin to ground during operation.",
+      "ja": "出力電圧フィードバック入力；抵抗分圧器を接続して出力電圧を設定；動作中にこのピンをグラウンドにショートしてはならない。",
+      "ko": "출력 전압 피드백 입력; 저항 분압기를 연결해 출력 전압을 설정; 동작 중 이 핀을 접지로 단락하면 안 됨."
+    },
+    "輸出電壓回授（接分壓中點設定 Vout；固定 5V 版接 VOUT）": {
+      "en": "Output voltage feedback (connect to the divider midpoint to set Vout; connect to VOUT for the fixed 5V version)",
+      "ja": "出力電圧フィードバック（分圧中点に接続してVoutを設定；固定5V版はVOUTに接続）",
+      "ko": "출력 전압 피드백(분압 중점에 연결해 Vout 설정; 고정 5V 버전은 VOUT에 연결)"
+    },
+    "輸出電壓感測輸入；連接至功率級輸出軌。": {
+      "en": "Output voltage sense input; connect to the power stage output rail.",
+      "ja": "出力電圧センス入力；パワーステージの出力レールに接続。",
+      "ko": "출력 전압 감지 입력; 파워 스테이지 출력 레일에 연결."
+    },
+    "輸出電壓調節回授腳；由轉換器輸出端接電阻分壓網路至 FB 腳。將 FB 接至 VCC2 可運作於裝置預設的固定輸出電壓；欲選擇內部回授，須在裝置啟動前將此腳接至 VCC2。": {
+      "en": "Output voltage regulation feedback pin; connect a resistor divider network from the converter output to the FB pin. Connecting FB to VCC2 operates at the device's default fixed output voltage; to select internal feedback, connect this pin to VCC2 before the device starts up.",
+      "ja": "出力電圧調節フィードバックピン；コンバータ出力端から抵抗分圧ネットワークをFBピンに接続。FBをVCC2に接続するとデバイスのデフォルト固定出力電圧で動作；内部フィードバックを選択するには、デバイス起動前にこのピンをVCC2に接続する必要がある。",
+      "ko": "출력 전압 조절 피드백 핀; 컨버터 출력단에서 저항 분압 네트워크를 FB 핀에 연결. FB를 VCC2에 연결하면 디바이스 기본 고정 출력 전압으로 동작; 내부 피드백을 선택하려면 디바이스 시작 전에 이 핀을 VCC2에 연결해야 함."
+    },
+    "輸出電晶體射極": {
+      "en": "Output transistor emitter",
+      "ja": "出力トランジスタエミッタ",
+      "ko": "출력 트랜지스터 이미터"
+    },
+    "輸出電晶體集極": {
+      "en": "Output transistor collector",
+      "ja": "出力トランジスタコレクタ",
+      "ko": "출력 트랜지스터 컬렉터"
+    },
+    "輸出驅動級接地": {
+      "en": "Output driver stage ground",
+      "ja": "出力ドライバ段グラウンド",
+      "ko": "출력 드라이버 단 접지"
+    },
+    "輸出驅動級電源": {
+      "en": "Output driver stage supply",
+      "ja": "出力ドライバ段電源",
+      "ko": "출력 드라이버 단 전원"
+    },
+    "轉換啟動": {
+      "en": "Conversion start",
+      "ja": "変換開始",
+      "ko": "변환 시작"
+    },
+    "轉速計輸入 6（數位或類比訊號可設定）；數位 TACH 可做 RPM 閉迴路，類比可偵測 2 線風扇失效": {
+      "en": "Tachometer input 6 (configurable for digital or analog signal); digital TACH enables an RPM closed loop, analog can detect 2-wire fan failure",
+      "ja": "タコメータ入力6（デジタルまたはアナログ信号を設定可能）；デジタルTACHはRPMクローズドループ、アナログは2線ファンの故障を検出可能",
+      "ko": "타코미터 입력 6(디지털 또는 아날로그 신호 설정 가능); 디지털 TACH는 RPM 폐루프 가능, 아날로그는 2선 팬 고장 감지 가능"
+    }
+  };
+  Object.assign(window.IC_PIN_I18N, P);
+})();
