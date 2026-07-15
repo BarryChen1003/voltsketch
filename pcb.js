@@ -578,6 +578,7 @@ const pcbApp = {
         </div>
       `).join('');
     }
+    return results;
   },
 
   loadDrcRules() {

@@ -183,7 +183,35 @@ window.I18N = (function () {
     pcb_interview:  { zh: '📝 PCB Layout 面試題', en: '📝 PCB Layout interview Q&A', ja: '📝 PCB Layout 面接問題', ko: '📝 PCB Layout 면접 문제' },
     pcb_props:      { zh: '屬性', en: 'Properties', ja: 'プロパティ', ko: '속성' },
     pcb_no_sel:     { zh: '尚未選取元件', en: 'No component selected', ja: '部品が未選択', ko: '선택된 부품 없음' },
-    pcb_icpick_ph:  { zh: '輸入料號（如 TAC5111-Q1）…', en: 'Enter part number (e.g. TAC5111-Q1)…', ja: '型番を入力（例 TAC5111-Q1）…', ko: '부품 번호 입력(예 TAC5111-Q1)…' }
+    pcb_icpick_ph:  { zh: '輸入料號（如 TAC5111-Q1）…', en: 'Enter part number (e.g. TAC5111-Q1)…', ja: '型番を入力（例 TAC5111-Q1）…', ko: '부품 번호 입력(예 TAC5111-Q1)…' },
+
+    // ---- PCB 狀態面板（Allegro 風格）----
+    st_btn:          { zh: '📊 狀態', en: '📊 Status', ja: '📊 ステータス', ko: '📊 상태' },
+    st_title:        { zh: '板況狀態', en: 'Board status', ja: '基板ステータス', ko: '보드 상태' },
+    st_symnets:      { zh: '符號與網路', en: 'Symbols and nets', ja: 'シンボルとネット', ko: '심볼 및 넷' },
+    st_unplaced:     { zh: '未佈局符號', en: 'Unplaced symbols', ja: '未配置シンボル', ko: '미배치 심볼' },
+    st_unrouted_nets:{ zh: '未繞線網路', en: 'Unrouted nets', ja: '未配線ネット', ko: '미배선 넷' },
+    st_unrouted_conns:{ zh: '未繞線連接', en: 'Unrouted connections', ja: '未配線接続', ko: '미배선 연결' },
+    st_shapes:       { zh: '形狀（鋪銅）', en: 'Shapes', ja: 'シェイプ（銅箔）', ko: '셰이프(카퍼)' },
+    st_isolated:     { zh: '孤立形狀', en: 'Isolated shapes', ja: '孤立シェイプ', ko: '고립 셰이프' },
+    st_unassigned:   { zh: '未指派形狀', en: 'Unassigned shapes', ja: '未割当シェイプ', ko: '미할당 셰이프' },
+    st_outofdate:    { zh: '過期形狀', en: 'Out of date shapes', ja: '期限切れシェイプ', ko: '오래된 셰이프' },
+    st_dynfill:      { zh: '動態填充', en: 'Dynamic fill', ja: 'ダイナミックフィル', ko: '동적 채움' },
+    st_smooth:       { zh: '平滑', en: 'Smooth', ja: 'スムーズ', ko: '스무스' },
+    st_rough:        { zh: '粗略', en: 'Rough', ja: 'ラフ', ko: '러프' },
+    st_disabled:     { zh: '停用', en: 'Disabled', ja: '無効', ko: '비활성' },
+    st_drc:          { zh: 'DRC 與檢查', en: 'DRC and checks', ja: 'DRC・チェック', ko: 'DRC 및 검사' },
+    st_drc_err:      { zh: 'DRC 錯誤', en: 'DRC errors', ja: 'DRC エラー', ko: 'DRC 오류' },
+    st_short_err:    { zh: '短路錯誤', en: 'Shorting errors', ja: 'ショートエラー', ko: '단락 오류' },
+    st_warn:         { zh: '警告', en: 'Warnings', ja: '警告', ko: '경고' },
+    st_online_drc:   { zh: '即時 DRC', en: 'On-line DRC', ja: 'オンライン DRC', ko: '온라인 DRC' },
+    st_update_drc:   { zh: '更新 DRC', en: 'Update DRC', ja: 'DRC 更新', ko: 'DRC 업데이트' },
+    st_stats:        { zh: '統計', en: 'Statistics', ja: '統計', ko: '통계' },
+    st_edit_time:    { zh: '編輯時間', en: 'Editing time', ja: '編集時間', ko: '편집 시간' },
+    st_last_active:  { zh: '最後編輯', en: 'Last edited', ja: '最終編集', ko: '마지막 편집' },
+    st_reset:        { zh: '重設', en: 'Reset', ja: 'リセット', ko: '리셋' },
+    st_refresh:      { zh: '重新整理', en: 'Refresh', ja: '更新', ko: '새로 고침' },
+    st_close:        { zh: '關閉', en: 'Close', ja: '閉じる', ko: '닫기' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';
