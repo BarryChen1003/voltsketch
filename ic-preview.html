@@ -49,14 +49,14 @@
 </head>
 <body>
   <div class="wrap">
-    <h1 style="color:#0f172a">IC 元件庫 — 符號預覽（驗外觀）</h1>
-    <p style="color:#64748b">引擎 ic-symbol.js + 資料 ic-data.js。仿 datasheet Pin Configuration：腳號在框內、腳名在框外、上下腳名垂直、Thermal Pad 補 GND 腳。</p>
+    <h1 id="pvTitle" style="color:#0f172a">IC 元件庫 — 符號預覽（驗外觀）</h1>
+    <p id="pvNote" style="color:#64748b">引擎 ic-symbol.js + 資料 ic-data.js。仿 datasheet Pin Configuration：腳號在框內、腳名在框外、上下腳名垂直、Thermal Pad 補 GND 腳。</p>
     <div id="list"></div>
   </div>
 
   <script src="./ic-symbol.js"></script>
   <script src="./ic-data.js?v=42"></script>
-  <script src="./ic-i18n.js?v=2026-07-14c"></script>
+  <script src="./ic-i18n.js?v=2026-07-14d"></script>
   <script src="./ic-i18n-data.js?v=2026-07-14d"></script>
   <script src="./ic-pin-i18n-data.js?v=2026-07-14r"></script>
   <script src="./ic-crit-i18n-data.js?v=2026-07-14c"></script>
@@ -104,7 +104,7 @@
           <div><h2>${esc(ic.part)}</h2><div class="pkg">${esc(ic.subcategory || '')} · ${esc(ic.package || '')}</div></div>
           <div style="text-align:right">
             <div class="mfr">${esc(ic.mfr || '')}</div>
-            <a class="primary-button" style="display:inline-block;padding:6px 14px;margin-top:6px;font-size:13px" href="index.html?addIC=${encodeURIComponent('data:' + ic.part)}">＋ 放到線路圖</a>
+            <a class="primary-button" style="display:inline-block;padding:6px 14px;margin-top:6px;font-size:13px" href="index.html?addIC=${encodeURIComponent('data:' + ic.part)}">＋ ${esc(ui('addToSchem'))}</a>
           </div>
         </div>
         ${introBlock(ic)}
@@ -118,7 +118,11 @@
         ${pinTable(ic)}
       </div>`;
     }
-    function renderAll() { document.getElementById('list').innerHTML = (window.IC_DATA || []).map(renderCard).join(''); }
+    function renderAll() {
+      const t = document.getElementById('pvTitle'); if (t) t.textContent = ui('previewTitle');
+      const n = document.getElementById('pvNote'); if (n) n.textContent = ui('previewNote');
+      document.getElementById('list').innerHTML = (window.IC_DATA || []).map(renderCard).join('');
+    }
     renderAll();
     document.addEventListener('vs-lang-change', renderAll);
   </script>

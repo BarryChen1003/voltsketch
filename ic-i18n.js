@@ -17,25 +17,53 @@
       whatIs: '是什麼', func: '功用', usedIn: '用在哪', specs: '重點規格',
       pinDef: '接腳定義（Pin Functions）', pin: '腳', name: '名稱', type: '類型', fn: '功能',
       dropIn: '可直接替換（pin-to-pin 相容）', none: '尚無', critTitle: '替換必須符合的條件',
-      filled: '已建檔', empty: '待補', pickCat: '選一個分類', noMatch: '無符合'
+      filled: '已建檔', empty: '待補', pickCat: '選一個分類', noMatch: '無符合',
+      searchPh: '搜尋料號…', listHint: '← 左邊選分類，中間點料號看詳細頁',
+      addToSchem: '放到線路圖', optNative: '直接可用（本站自寫）', optViaTool: '經工具生成（.olb 為專有二進位，不自寫）', exportBtn: '匯出',
+      skillTitle: 'PCB 換料腳本（Allegro SKILL）', swapPre: '把', swapPost: '換成', skillGen: '產生 SKILL (.il)',
+      skillNote: '只允許 pin 相容（同 footprint）的料當目標；產出腳本在 Allegro 跑、保留接線，執行前先備份 .brd。',
+      notBuilt: '尚未建檔（無 pinout/規格資料）。', notBuiltHint: '建檔後此處會顯示：白話簡述 + 符號 + 重點規格 + pin 相容替換 + 接腳定義，並可放到線路圖。',
+      msgLogin: '請先登入才能匯出', msgQuota: '已達本月匯出上限（升級 VIP 可增加）', exported: '已匯出', exportedLeft: '已匯出，本月剩 ', exportedRight: ' 次',
+      previewTitle: 'IC 元件庫 — 符號預覽（驗外觀）', previewNote: '引擎 ic-symbol.js + 資料 ic-data.js。仿 datasheet Pin Configuration：腳號在框內、腳名在框外、上下腳名垂直、Thermal Pad 補 GND 腳。'
     },
     en: {
       whatIs: 'What is it', func: 'Function', usedIn: 'Used in', specs: 'Key specs',
       pinDef: 'Pin Functions', pin: 'Pin', name: 'Name', type: 'Type', fn: 'Description',
       dropIn: 'Drop-in replacements (pin-to-pin)', none: 'None yet', critTitle: 'Replacement requirements',
-      filled: 'In library', empty: 'Pending', pickCat: 'Pick a category', noMatch: 'No match'
+      filled: 'In library', empty: 'Pending', pickCat: 'Pick a category', noMatch: 'No match',
+      searchPh: 'Search part number…', listHint: '← Pick a category on the left, then click a part number to see its detail page',
+      addToSchem: 'Add to schematic', optNative: 'Ready to use (native)', optViaTool: 'Generated via tool (.olb is proprietary binary, not native)', exportBtn: 'Export',
+      skillTitle: 'PCB part-swap script (Allegro SKILL)', swapPre: 'Replace', swapPost: 'with', skillGen: 'Generate SKILL (.il)',
+      skillNote: 'Only pin-compatible parts (same footprint) are allowed as targets; the generated script runs in Allegro and preserves routing — back up the .brd before running.',
+      notBuilt: 'Not in the library yet (no pinout/spec data).', notBuiltHint: 'Once added, this shows: a plain-language summary + symbol + key specs + pin-compatible replacements + pin functions, and can be placed on the schematic.',
+      msgLogin: 'Please sign in to export', msgQuota: 'Monthly export limit reached (upgrade to VIP for more)', exported: 'Exported', exportedLeft: 'Exported, ', exportedRight: ' left this month',
+      previewTitle: 'IC Library — Symbol Preview (visual check)', previewNote: 'Engine ic-symbol.js + data ic-data.js. Mimics the datasheet Pin Configuration: pin numbers inside the box, pin names outside, top/bottom pin names vertical, Thermal Pad adds a GND pin.'
     },
     ja: {
       whatIs: '概要', func: '機能', usedIn: '用途', specs: '主要スペック',
       pinDef: 'ピン機能（Pin Functions）', pin: 'ピン', name: '名称', type: '種別', fn: '機能説明',
       dropIn: '直接置換可（pin-to-pin 互換）', none: 'なし', critTitle: '置換の必須条件',
-      filled: '登録済', empty: '未登録', pickCat: 'カテゴリを選択', noMatch: '該当なし'
+      filled: '登録済', empty: '未登録', pickCat: 'カテゴリを選択', noMatch: '該当なし',
+      searchPh: '品番を検索…', listHint: '← 左でカテゴリを選び、中央の品番をクリックで詳細ページ',
+      addToSchem: '回路図に追加', optNative: 'そのまま使用可（自作）', optViaTool: 'ツールで生成（.olb は専有バイナリのため非自作）', exportBtn: 'エクスポート',
+      skillTitle: 'PCB 部品置換スクリプト（Allegro SKILL）', swapPre: '', swapPost: 'を次に置換', skillGen: 'SKILL を生成 (.il)',
+      skillNote: 'ピン互換（同一フットプリント）の部品のみターゲットに指定可能。生成スクリプトは Allegro で実行し配線を保持します。実行前に .brd をバックアップしてください。',
+      notBuilt: '未登録（pinout/仕様データなし）。', notBuiltHint: '登録後、ここに表示されます：わかりやすい概要＋シンボル＋主要スペック＋ピン互換の置換＋ピン機能。回路図にも配置できます。',
+      msgLogin: 'エクスポートするにはログインしてください', msgQuota: '今月のエクスポート上限に達しました（VIP にアップグレードで増加）', exported: 'エクスポート完了', exportedLeft: 'エクスポート完了、今月残り ', exportedRight: ' 回',
+      previewTitle: 'ICライブラリ — シンボルプレビュー（外観確認）', previewNote: 'エンジン ic-symbol.js ＋ データ ic-data.js。datasheet の Pin Configuration を模倣：ピン番号は枠内、ピン名は枠外、上下のピン名は垂直、Thermal Pad は GND ピンを補う。'
     },
     ko: {
       whatIs: '개요', func: '기능', usedIn: '용도', specs: '주요 사양',
       pinDef: '핀 기능(Pin Functions)', pin: '핀', name: '이름', type: '유형', fn: '기능 설명',
       dropIn: '직접 대체 가능(pin-to-pin 호환)', none: '없음', critTitle: '대체 필수 조건',
-      filled: '등록됨', empty: '미등록', pickCat: '카테고리 선택', noMatch: '일치 없음'
+      filled: '등록됨', empty: '미등록', pickCat: '카테고리 선택', noMatch: '일치 없음',
+      searchPh: '부품 번호 검색…', listHint: '← 왼쪽에서 분류를 선택하고, 가운데 부품 번호를 클릭하면 상세 페이지',
+      addToSchem: '회로도에 추가', optNative: '바로 사용 가능(자체 제작)', optViaTool: '도구로 생성(.olb는 독점 바이너리, 비자체)', exportBtn: '내보내기',
+      skillTitle: 'PCB 부품 교체 스크립트(Allegro SKILL)', swapPre: '', swapPost: '를 다음으로 교체', skillGen: 'SKILL 생성 (.il)',
+      skillNote: '핀 호환(동일 풋프린트) 부품만 대상으로 허용; 생성된 스크립트는 Allegro에서 실행되며 배선을 유지합니다. 실행 전에 .brd를 백업하세요.',
+      notBuilt: '아직 미등록(pinout/사양 데이터 없음).', notBuiltHint: '등록 후 여기에 표시됩니다: 쉬운 요약 + 심볼 + 주요 사양 + 핀 호환 대체 + 핀 기능. 회로도에도 배치할 수 있습니다.',
+      msgLogin: '내보내려면 로그인하세요', msgQuota: '이번 달 내보내기 한도 도달(VIP 업그레이드 시 증가)', exported: '내보내기 완료', exportedLeft: '내보내기 완료, 이번 달 남은 ', exportedRight: ' 회',
+      previewTitle: 'IC 라이브러리 — 심볼 미리보기(외관 확인)', previewNote: '엔진 ic-symbol.js + 데이터 ic-data.js. datasheet의 Pin Configuration을 모방: 핀 번호는 프레임 내부, 핀 이름은 프레임 외부, 위/아래 핀 이름은 수직, Thermal Pad는 GND 핀을 보충.'
     }
   };
 
