@@ -96,6 +96,7 @@
 
   function build() {
     var m = compute();
+    var bd = (window.Backdrill && Backdrill.status) ? Backdrill.status() : { n: 0, stale: false };
     var green = '#16a34a', yellow = '#eab308', red = '#dc2626';
     var online = localStorage.getItem(ONLINE_KEY);
     online = online == null ? true : online === 'true';
@@ -148,6 +149,10 @@
             '<label style="font-size:12px;white-space:nowrap;cursor:pointer"><input type="checkbox" id="stOnline"' + (online ? ' checked' : '') + '> <span data-i18n="st_online_drc">' + esc(t('st_online_drc')) + '</span></label>' +
           '</div>' +
           rowHTML(m.warns ? yellow : green, 'st_warn', String(m.warns), null) +
+          '<div style="display:flex;align-items:center">' +
+            '<div style="flex:1">' + rowHTML(bd.stale ? yellow : green, 'st_bd', String(bd.n), null) + '</div>' +
+            '<button id="stUpdateBd" class="small-button" style="white-space:nowrap"' + (window.Backdrill ? '' : ' disabled') + ' data-i18n="st_update_bd">' + esc(t('st_update_bd')) + '</button>' +
+          '</div>' +
         '</div>' +
 
         '<div style="' + sec + '"><div style="' + h + '" data-i18n="st_stats">' + esc(t('st_stats')) + '</div>' +
@@ -173,6 +178,8 @@
     frag.querySelector('#stOk').onclick = close;
     frag.querySelector('#stRefresh').onclick = build;
     frag.querySelector('#stUpdateDrc').onclick = function () { try { pcbApp.runDrc(); } catch (e) { } build(); };
+    var bdBtn = frag.querySelector('#stUpdateBd');
+    if (bdBtn && window.Backdrill) bdBtn.onclick = function () { try { Backdrill.update(); } catch (e) { } build(); };
     frag.querySelector('#stReset').onclick = function () { editSeconds = 0; localStorage.setItem(EDIT_KEY, '0'); var el = frag.querySelector('#stEditTime'); if (el) el.textContent = fmtTime(0); };
     frag.querySelector('#stOnline').onchange = function (e) { localStorage.setItem(ONLINE_KEY, e.target.checked ? 'true' : 'false'); };
     frag.querySelectorAll('input[name="stFill"]').forEach(function (r) {

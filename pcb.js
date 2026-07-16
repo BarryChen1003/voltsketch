@@ -154,6 +154,9 @@ const pcbApp = {
     // Draw EMI 環路疊圖
     this.drawEmiLoops(scale);
 
+    // Backdrill 標記（虛線圈疊加在 via 上）
+    if (window.Backdrill) Backdrill.draw(this, scale);
+
     // Restore context
     ctx.restore();
   },
@@ -566,6 +569,12 @@ const pcbApp = {
 
     // Constraint Manager：class 線寬/線長/類別間距矩陣/銳角
     if (window.ConstraintMgr) results.push(...window.ConstraintMgr.audit(window.ConstraintMgr.load(), this.state, rules.clearance.traceToTrace));
+
+    // Backdrill：已計算的背鑽數＋板況變更後的過期警示
+    if (window.Backdrill) {
+      const bs = Backdrill.status();
+      if (bs.n) results.push({ type: bs.stale ? 'warning' : 'info', message: pcbT(bs.stale ? 'bd_drc_stale' : 'bd_drc', { n: bs.n }) });
+    }
 
     // 未連線統計（飛線）
     if (window.Ratsnest) {
@@ -1857,9 +1866,10 @@ const pcbApp = {
         const b = this.screenToBoard(e);
         const g = this.gridStep();
         const hit = this.snapTarget(b.x, b.y);
+        const psDef = window.Padstack ? Padstack.load() : { od: 0.6, drill: 0.3 };
         this.state.vias.push({
           x: hit ? hit.x : this.snap(b.x, g), y: hit ? hit.y : this.snap(b.y, g),
-          od: 0.6, id: 0.3, net: hit ? hit.net : '', user: true
+          od: psDef.od, id: psDef.drill, net: hit ? hit.net : '', user: true
         });
         this.state.ratsnest = null;
         this.renderPartsList();

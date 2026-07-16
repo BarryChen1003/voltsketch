@@ -474,6 +474,17 @@ window.GerberExport = (function () {
     });
     const drills = [{ name: base + '-PTH.drl', text: drillFile(pth, slots) }];
     if (npth.length) drills.push({ name: base + '-NPTH.drl', text: drillFile(npth, []) });
+    // 背鑽（depth-controlled；per-side 檔＋must-not-cut 註解，板廠依此設鑽深）
+    const bds = state.backdrills || [];
+    if (bds.length) {
+      for (const [side, suffix] of [['T', '-Backdrill-Top.drl'], ['B', '-Backdrill-Bot.drl']]) {
+        const list = bds.filter(b => b.side === side);
+        if (!list.length) continue;
+        const mnc = [...new Set(list.map(b => b.to))].join(', ');
+        const head = '; Backdrill from ' + (side === 'T' ? 'TOP' : 'BOTTOM') + ' - depth-controlled, must-not-cut layer(s): ' + mnc + '\n';
+        drills.push({ name: base + suffix, text: head + drillFile(list.map(b => ({ x: b.x, y: b.y, d: b.d })), []) });
+      }
+    }
 
     // ---------- CPL 貼片座標檔（SMT 置件；座標系與 Gerber 一致：Y 向上、板中心原點） ----------
     const cplEsc = v => { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };

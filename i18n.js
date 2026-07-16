@@ -608,7 +608,31 @@ window.I18N = (function () {
     cm_e_len:    { zh: '約束線長：{net}（{cls}）總長 {len}mm > {max}mm', en: 'Constraint length: {net} ({cls}) total {len}mm > {max}mm', ja: '制約線長：{net}（{cls}）合計 {len}mm > {max}mm', ko: '제약 길이: {net}({cls}) 합계 {len}mm > {max}mm' },
     cm_e_clear:  { zh: '類別間距：{netA}（{clsA}）↔ {netB}（{clsB}）間距 {d}mm < 要求 {req}mm', en: 'Class clearance: {netA} ({clsA}) ↔ {netB} ({clsB}) gap {d}mm < required {req}mm', ja: 'クラス間クリアランス：{netA}（{clsA}）↔ {netB}（{clsB}）間隔 {d}mm < 要求 {req}mm', ko: '클래스 간격: {netA}({clsA}) ↔ {netB}({clsB}) 간격 {d}mm < 요구 {req}mm' },
     cm_w_acute:  { zh: '銳角走線：{net} 於 ({x},{y}) 夾角 {ang}° < 90°（酸角蝕刻風險）', en: 'Acute-angle trace: {net} at ({x},{y}) angle {ang}° < 90° (acid-trap risk)', ja: '鋭角配線：{net} の ({x},{y}) で {ang}° < 90°（アシッドトラップの恐れ）', ko: '예각 배선: {net}의 ({x},{y})에서 {ang}° < 90°(에칭 트랩 위험)' },
-    cm_w_acute_more: { zh: '…另有 {n} 處銳角未列出', en: '…{n} more acute angles not listed', ja: '…他に {n} 箇所の鋭角あり', ko: '…예각 {n}곳 더 있음' }
+    cm_w_acute_more: { zh: '…另有 {n} 處銳角未列出', en: '…{n} more acute angles not listed', ja: '…他に {n} 箇所の鋭角あり', ko: '…예각 {n}곳 더 있음' },
+
+    // ---- 疊層 / Padstack / Backdrill ----
+    sk_title:   { zh: '疊層 / Padstack / Backdrill', en: 'Stackup / Padstack / Backdrill', ja: '積層 / パッドスタック / バックドリル', ko: '적층 / 패드스택 / 백드릴' },
+    sk_layer:   { zh: '層', en: 'Layer', ja: 'レイヤー', ko: '레이어' },
+    sk_type:    { zh: '用途', en: 'Type', ja: '用途', ko: '용도' },
+    sk_thick:   { zh: '厚度', en: 'Thickness', ja: '厚さ', ko: '두께' },
+    sk_diel:    { zh: '介電層', en: 'Dielectric', ja: '誘電体', ko: '유전체' },
+    sk_total:   { zh: '板厚合計', en: 'Total thickness', ja: '基板総厚', ko: '총 보드 두께' },
+    sk_toimp:   { zh: '帶入阻抗計算', en: 'Apply to impedance calc', ja: 'インピーダンス計算へ適用', ko: '임피던스 계산에 적용' },
+    sk_applied: { zh: '已帶入阻抗計算（h/εr/t 取第 1 介電層與頂層銅）', en: 'Applied to impedance calc (h/εr/t from dielectric 1 and top copper)', ja: 'インピーダンス計算へ適用済み（h/εr/t は誘電体1と表層銅）', ko: '임피던스 계산에 적용됨(h/εr/t는 유전체 1과 상단 동박)' },
+    ps_title:   { zh: 'Via Padstack 預設', en: 'Via padstack defaults', ja: 'Via パッドスタック既定値', ko: 'Via 패드스택 기본값' },
+    ps_od:      { zh: '外徑', en: 'OD', ja: '外径', ko: '외경' },
+    ps_drill:   { zh: '鑽徑', en: 'Drill', ja: 'ドリル径', ko: '드릴 직경' },
+    ps_apply:   { zh: '套用到既有 via', en: 'Apply to existing vias', ja: '既存 via に適用', ko: '기존 via에 적용' },
+    ps_applied: { zh: '已更新 {n} 個 via', en: 'Updated {n} via(s)', ja: '{n} 個の via を更新', ko: 'via {n}개 업데이트됨' },
+    bd_title:   { zh: 'Backdrill（背鑽殘樁）', en: 'Backdrill (stub removal)', ja: 'バックドリル（スタブ除去）', ko: '백드릴(스텁 제거)' },
+    bd_classes: { zh: '目標類別', en: 'Target classes', ja: '対象クラス', ko: '대상 클래스' },
+    bd_update:  { zh: '更新 Backdrill', en: 'Update Backdrill', ja: 'バックドリル更新', ko: '백드릴 업데이트' },
+    bd_result:  { zh: '{n} 處背鑽（頂 {t}／底 {b}）；匯出製造包含背鑽鑽孔檔', en: '{n} backdrill(s) (top {t} / bottom {b}); fab package will include backdrill files', ja: 'バックドリル {n} 箇所（上 {t}／下 {b}）；製造パッケージに背鑽ドリルファイルを含む', ko: '백드릴 {n}곳(상 {t}/하 {b}); 제조 패키지에 백드릴 파일 포함' },
+    bd_none:    { zh: '無需背鑽（無殘樁或層數 < 4）', en: 'No backdrill needed (no stubs or fewer than 4 layers)', ja: 'バックドリル不要（スタブなし、または 4 層未満）', ko: '백드릴 불필요(스텁 없음 또는 4층 미만)' },
+    bd_drc:     { zh: 'Backdrill：{n} 處已標記背鑽（匯出製造包生效）', en: 'Backdrill: {n} marked for backdrilling (applied in fab export)', ja: 'バックドリル：{n} 箇所を指定（製造出力に反映）', ko: '백드릴: {n}곳 지정(제조 출력에 반영)' },
+    bd_drc_stale: { zh: 'Backdrill 已過期：板況變更後未重算（{n} 處），請按「更新 Backdrill」', en: 'Backdrill out of date: board changed since last compute ({n}); press "Update Backdrill"', ja: 'バックドリルが古い：計算後に基板が変更（{n} 箇所）。「バックドリル更新」を押してください', ko: '백드릴이 오래됨: 계산 후 보드 변경({n}곳). "백드릴 업데이트"를 누르세요' },
+    st_bd:      { zh: '背鑽（過期＝板況已變）', en: 'Backdrills (yellow = out of date)', ja: 'バックドリル（黄＝要更新）', ko: '백드릴(노랑=업데이트 필요)' },
+    st_update_bd: { zh: '更新 Backdrill', en: 'Update Backdrill', ja: 'バックドリル更新', ko: '백드릴 업데이트' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';
