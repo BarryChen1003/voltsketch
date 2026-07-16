@@ -9,6 +9,9 @@
 window.FootprintGen = (function () {
   'use strict';
 
+  // i18n：I18N 未載（純 node harness）時回 key
+  const T = (k, vars) => (typeof window !== 'undefined' && window.I18N) ? window.I18N.t(k, vars) : k;
+
   const STD_PITCH = [0.35, 0.4, 0.5, 0.65, 0.8, 0.95, 1.0, 1.27, 2.54];
   const snapPitch = p => STD_PITCH.reduce((a, b) => Math.abs(b - p) < Math.abs(a - p) ? b : a);
 
@@ -77,13 +80,13 @@ window.FootprintGen = (function () {
   function quadNoLead(ic, pk, warn) {
     const pins = numericPins(ic);
     const n = pins.length;
-    if (n % 4 !== 0) { warn.push('腳數 ' + n + ' 非 4 倍數，改用雙列近似'); return dualGullwing(ic, pk, warn, 'TSSOP'); }
+    if (n % 4 !== 0) { warn.push(T('fg_n4', { n })); return dualGullwing(ic, pk, warn, 'TSSOP'); }
     const per = n / 4;
     let bw = pk.bw, bh = pk.bh;
     let pitch = pk.pitch;
     if (!pitch && bw) pitch = snapPitch((Math.min(bw, bh || bw) - 1.5) / (per - 1));
-    if (!pitch) { pitch = 0.5; warn.push('pitch 未載，預設 0.5mm'); }
-    if (!bw) { bw = bh = r2(per * pitch + 1.6); warn.push('封裝尺寸未載，依腳數推估 ' + bw + 'mm'); }
+    if (!pitch) { pitch = 0.5; warn.push(T('fg_pitch', { p: 0.5 })); }
+    if (!bw) { bw = bh = r2(per * pitch + 1.6); warn.push(T('fg_dims', { w: bw })); }
     if (!bh) bh = bw;
     const padL = 0.9, padW = Math.min(0.6 * pitch, pitch - 0.2);
     const half = i => (i - (per - 1) / 2) * pitch;
@@ -91,7 +94,7 @@ window.FootprintGen = (function () {
     const byNum = {}; pins.forEach(p => byNum[+p.num] = p);
     for (let k = 1; k <= n; k++) {
       const p = byNum[k];
-      if (!p) { warn.push('缺 pin ' + k); continue; }
+      if (!p) { warn.push(T('fg_missing', { k })); continue; }
       let x, y, w, h;
       if (k <= per) { x = -bw / 2; y = half(k - 1); w = padL; h = padW; }               // 左（上→下）
       else if (k <= 2 * per) { x = half(k - per - 1); y = bh / 2; w = padW; h = padL; } // 下（左→右）
@@ -104,7 +107,7 @@ window.FootprintGen = (function () {
     if (corners.length) {
       const pos = { A1: [-bw / 2, -bh / 2], A2: [-bw / 2, bh / 2], A3: [bw / 2, bh / 2], A4: [bw / 2, -bh / 2] };
       corners.forEach(p => { const c = pos[p.num]; if (c) pads.push(mkPad(p.num, p.name, c[0], c[1], 0.6, 0.6)); });
-      warn.push('角落腳 A1–A4 以四角名目位置近似');
+      warn.push(T('fg_corner'));
     }
     const ep = epPin(ic);
     if (ep) pads.push(mkPad(ep.num, ep.name, 0, 0, r2(bw * 0.55), r2(bh * 0.55), { shape: 'rect', rr: 0 }));
@@ -115,7 +118,7 @@ window.FootprintGen = (function () {
   function dualGullwing(ic, pk, warn, famOverride) {
     const pins = numericPins(ic);
     const n = pins.length;
-    if (n % 2 !== 0) warn.push('腳數 ' + n + ' 非偶數，右列少一腳');
+    if (n % 2 !== 0) warn.push(T('fg_odd', { n }));
     const per = Math.ceil(n / 2);
     const fam = famOverride || pk.fam;
     const d = DUAL_DEFAULTS[fam] || DUAL_DEFAULTS.SOIC;
@@ -132,7 +135,7 @@ window.FootprintGen = (function () {
     const byNum = {}; pins.forEach(p => byNum[+p.num] = p);
     for (let k = 1; k <= n; k++) {
       const p = byNum[k];
-      if (!p) { warn.push('缺 pin ' + k); continue; }
+      if (!p) { warn.push(T('fg_missing', { k })); continue; }
       const left = k <= per;
       const idx = left ? k - 1 : (n - k);           // 右列由下往上
       const x = left ? -xC : xC;
@@ -176,7 +179,7 @@ window.FootprintGen = (function () {
     if (balls.length < 4) return null;
     const letters = [...new Set(balls.map(p => String(p.num).match(/^([A-Z]{1,2})/)[1]))];
     const seq = rowSeqFor(letters);
-    if (!seq) { warn.push('球號列字母超出支援序列'); return null; }
+    if (!seq) { warn.push(T('fg_rows')); return null; }
     let maxR = 0, maxC = 0;
     const parsed = [];
     for (const p of balls) {
@@ -189,7 +192,7 @@ window.FootprintGen = (function () {
     const rows = maxR + 1, cols = maxC + 1;
     let pitch = pk.pitch;
     if (!pitch && pk.bw) pitch = snapPitch(Math.min(pk.bw / cols, (pk.bh || pk.bw) / rows));
-    if (!pitch) { pitch = tht ? 2.54 : 0.5; warn.push('pitch 未載，預設 ' + (tht ? 2.54 : 0.5) + 'mm'); }
+    if (!pitch) { pitch = tht ? 2.54 : 0.5; warn.push(T('fg_pitch', { p: tht ? 2.54 : 0.5 })); }
     const bw = pk.bw || r2(cols * pitch), bh = pk.bh || r2(rows * pitch);
     const pads = parsed.map(({ p, ri, ci }) => {
       const x = (ci - (cols - 1) / 2) * pitch, y = (ri - (rows - 1) / 2) * pitch;
@@ -203,7 +206,7 @@ window.FootprintGen = (function () {
   function fromIC(ic) {
     const warn = [];
     const pk = parsePackage(ic.package);
-    if (!pk.fam) return { ok: false, reason: '封裝家族無法辨識：' + (ic.package || '(空)') };
+    if (!pk.fam) return { ok: false, reason: T('fg_r_fam', { p: ic.package || '(-)' }) };
     let r = null;
     try {
       if (GRID.includes(pk.fam)) {
@@ -213,18 +216,18 @@ window.FootprintGen = (function () {
           const np = numericPins(ic).length;
           if (np >= 8 && np <= 48 && np % 4 === 0) {
             r = quadNoLead(ic, pk, warn);
-            if (r) { r.meta.family = 'LGA(周邊近似)'; warn.push('數字腳 LGA 以四邊周邊近似（實際 land pattern 依原廠）'); }
+            if (r) { r.meta.family = 'LGA'; warn.push(T('fg_lga_perim')); }
           }
         }
       }
       else if (QUAD_NL.includes(pk.fam)) r = quadNoLead(ic, pk, warn);
       else if (QUAD_GW.includes(pk.fam)) r = quadGullwing(ic, pk, warn);
       else if (DUAL_GW.includes(pk.fam) || DUAL_NL.includes(pk.fam) || THT_DUAL.includes(pk.fam)) r = dualGullwing(ic, pk, warn);
-    } catch (e) { return { ok: false, reason: '產生失敗：' + e.message }; }
-    if (!r || !r.pads.length) return { ok: false, reason: '此封裝腳號型態不支援參數化（如角落腳/混合編號）' };
+    } catch (e) { return { ok: false, reason: T('fg_r_err', { err: e.message }) }; }
+    if (!r || !r.pads.length) return { ok: false, reason: T('fg_r_pins') };
     // 腳數核對：條目所有腳（含 EP）都該有對應 pad
     const expect = (ic.pins || []).length;
-    if (r.pads.length !== expect) warn.push('pad 數 ' + r.pads.length + ' ≠ 條目腳數 ' + expect);
+    if (r.pads.length !== expect) warn.push(T('fg_padcount', { a: r.pads.length, b: expect }));
     r.ok = true;
     r.meta.source = '參數化 IPC-7351 名目近似（量產前以原廠 land pattern 覆核）';
     r.meta.warnings = warn;

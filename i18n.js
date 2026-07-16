@@ -531,7 +531,42 @@ window.I18N = (function () {
     prac_bk_d:  { zh: '練習建立 Buck 降壓轉換器電路', en: 'Practice building a buck step-down converter circuit', ja: 'Buck 降圧コンバータ回路を作る練習', ko: 'Buck 강압 컨버터 회로를 만드는 연습' },
     prac_bk_h1: { zh: 'Buck 轉換器用於降壓', en: 'A buck converter steps voltage down', ja: 'Buck コンバータは降圧に使う', ko: 'Buck 컨버터는 강압용' },
     prac_bk_h2: { zh: '輸入和輸出都需要電容濾波', en: 'Both input and output need capacitor filtering', ja: '入力と出力の両方にコンデンサフィルタが必要', ko: '입력과 출력 모두 커패시터 필터 필요' },
-    prac_bk_h3: { zh: '注意接線正確', en: 'Make sure the wiring is correct', ja: '配線が正しいか確認', ko: '배선이 올바른지 확인' }
+    prac_bk_h3: { zh: '注意接線正確', en: 'Make sure the wiring is correct', ja: '配線が正しいか確認', ko: '배선이 올바른지 확인' },
+
+    // --- PCB 基本元件放料（parts-lib.js＋pcb.js placePart）---
+    pl_title:  { zh: '基本元件放料', en: 'Basic parts placement', ja: '基本部品の配置', ko: '기본 부품 배치' },
+    pj_fp_src: { zh: '參數化 IPC-7351 名目近似（量產前以原廠 land pattern 覆核）', en: 'Parametric IPC-7351 nominal approximation (verify against the vendor land pattern before production)', ja: 'パラメトリック IPC-7351 名目近似（量産前にメーカーの land pattern と照合）', ko: '파라메트릭 IPC-7351 명목 근사(양산 전 제조사 land pattern과 대조)' },
+    fg_n4:      { zh: '腳數 {n} 非 4 倍數，改用雙列近似', en: 'Pin count {n} not a multiple of 4; using dual-row approximation', ja: 'ピン数 {n} が 4 の倍数でないため 2 列近似を使用', ko: '핀 수 {n}이 4의 배수가 아니어서 2열 근사 사용' },
+    fg_pitch:   { zh: 'pitch 未載，預設 {p}mm', en: 'Pitch not given; defaulting to {p}mm', ja: 'ピッチ記載なし。既定 {p}mm を使用', ko: '피치 미기재, 기본 {p}mm 사용' },
+    fg_dims:    { zh: '封裝尺寸未載，依腳數推估 {w}mm', en: 'Package size not given; estimated {w}mm from pin count', ja: 'パッケージ寸法記載なし。ピン数から {w}mm と推定', ko: '패키지 치수 미기재, 핀 수로 {w}mm 추정' },
+    fg_missing: { zh: '缺 pin {k}', en: 'Missing pin {k}', ja: 'pin {k} が欠落', ko: 'pin {k} 누락' },
+    fg_corner:  { zh: '角落腳 A1–A4 以四角名目位置近似', en: 'Corner pins A1-A4 placed at nominal corner positions', ja: 'コーナーピン A1–A4 を四隅の名目位置に近似配置', ko: '코너 핀 A1-A4를 네 모서리 명목 위치로 근사 배치' },
+    fg_odd:     { zh: '腳數 {n} 非偶數，右列少一腳', en: 'Odd pin count {n}; right row has one fewer pin', ja: 'ピン数 {n} が奇数のため右列が 1 本少ない', ko: '핀 수 {n}이 홀수여서 오른쪽 열이 1핀 적음' },
+    fg_rows:    { zh: '球號列字母超出支援序列', en: 'Ball row letters outside supported sequences', ja: 'ボール行文字がサポート範囲外', ko: '볼 행 문자가 지원 범위 밖' },
+    fg_lga_perim: { zh: '數字腳 LGA 以四邊周邊近似（實際 land pattern 依原廠）', en: 'Numeric-pinned LGA approximated as quad perimeter (actual land pattern per vendor)', ja: '数値ピン LGA を四辺周辺配置で近似（実際の land pattern はメーカー準拠）', ko: '숫자 핀 LGA를 사변 둘레로 근사(실제 land pattern은 제조사 기준)' },
+    fg_padcount: { zh: 'pad 數 {a} ≠ 條目腳數 {b}', en: 'Pad count {a} ≠ entry pin count {b}', ja: 'pad 数 {a} ≠ エントリのピン数 {b}', ko: 'pad 수 {a} ≠ 항목 핀 수 {b}' },
+    fg_r_fam:   { zh: '封裝家族無法辨識：{p}', en: 'Package family not recognized: {p}', ja: 'パッケージファミリを認識できません：{p}', ko: '패키지 패밀리 인식 불가: {p}' },
+    fg_r_err:   { zh: '產生失敗：{err}', en: 'Generation failed: {err}', ja: '生成失敗：{err}', ko: '생성 실패: {err}' },
+    fg_r_pins:  { zh: '此封裝腳號型態不支援參數化（如角落腳/混合編號）', en: 'This package pin-numbering style is not supported parametrically (e.g. corner pins / mixed numbering)', ja: 'このパッケージのピン番号形式はパラメトリック生成非対応（コーナーピン/混在番号など）', ko: '이 패키지의 핀 번호 형식은 파라메트릭 생성 미지원(코너 핀/혼합 번호 등)' },
+    pl_val_ph: { zh: '數值（如 10kΩ / 100nF，可留空）', en: 'Value (e.g. 10kΩ / 100nF, optional)', ja: '値（例 10kΩ / 100nF、省略可）', ko: '값(예: 10kΩ / 100nF, 생략 가능)' },
+    pl_place:  { zh: '🧩 放到板上', en: '🧩 Place on board', ja: '🧩 基板に配置', ko: '🧩 보드에 배치' },
+    pl_placed: { zh: '已放 {ref}＝{name}（{pads} pads）。', en: 'Placed {ref}={name} ({pads} pads).', ja: '{ref}＝{name} を配置（{pads} pads）。', ko: '{ref}={name} 배치({pads} pads).' },
+    pl_fail:   { zh: '規格不支援或 parts-lib 未載入', en: 'Spec not supported or parts-lib not loaded', ja: '仕様未対応または parts-lib 未ロード', ko: '사양 미지원 또는 parts-lib 미로드' },
+    pl_c_res:  { zh: '電阻（chip）', en: 'Resistor (chip)', ja: 'チップ抵抗', ko: '칩 저항' },
+    pl_c_cap:  { zh: '電容（chip）', en: 'Capacitor (chip)', ja: 'チップコンデンサ', ko: '칩 커패시터' },
+    pl_c_ind:  { zh: '電感（chip）', en: 'Inductor (chip)', ja: 'チップインダクタ', ko: '칩 인덕터' },
+    pl_c_bead: { zh: '鐵氧體磁珠', en: 'Ferrite bead', ja: 'フェライトビーズ', ko: '페라이트 비드' },
+    pl_c_led:  { zh: 'LED（chip）', en: 'LED (chip)', ja: 'チップ LED', ko: '칩 LED' },
+    pl_c_dio:  { zh: '二極體', en: 'Diode', ja: 'ダイオード', ko: '다이오드' },
+    pl_c_tran: { zh: '電晶體 / MOSFET', en: 'Transistor / MOSFET', ja: 'トランジスタ / MOSFET', ko: '트랜지스터 / MOSFET' },
+    pl_c_tant: { zh: '鉭電容', en: 'Tantalum capacitor', ja: 'タンタルコンデンサ', ko: '탄탈 커패시터' },
+    pl_c_ecap: { zh: '鋁電解電容（SMD）', en: 'Aluminum electrolytic (SMD)', ja: 'アルミ電解コンデンサ（SMD）', ko: '알루미늄 전해 커패시터(SMD)' },
+    pl_c_xtal: { zh: '晶振', en: 'Crystal', ja: '水晶振動子', ko: '크리스털' },
+    pl_c_hdr:  { zh: '排針 2.54mm（THT）', en: 'Pin header 2.54mm (THT)', ja: 'ピンヘッダ 2.54mm（THT）', ko: '핀 헤더 2.54mm(THT)' },
+    pl_c_term: { zh: '螺絲端子 5.08mm（THT）', en: 'Screw terminal 5.08mm (THT)', ja: 'ネジ端子 5.08mm（THT）', ko: '나사 단자 5.08mm(THT)' },
+    pl_c_fuse: { zh: '保險絲（chip）', en: 'Fuse (chip)', ja: 'チップヒューズ', ko: '칩 퓨즈' },
+    pl_c_tp:   { zh: '測試點', en: 'Test point', ja: 'テストポイント', ko: '테스트 포인트' },
+    pl_c_hole: { zh: '安裝孔（NPTH）', en: 'Mounting hole (NPTH)', ja: '取付穴（NPTH）', ko: '장착 홀(NPTH)' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';

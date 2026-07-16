@@ -49,6 +49,7 @@ const pcbApp = {
     this.populateEmiSelects();
     this.renderRefBoards();
     this.populateIcPicker();
+    this.populatePartsPicker();
     this.state.netRules = window.NetRules ? window.NetRules.load() : [];
     this.renderNetRules();
     this.render();
@@ -780,7 +781,7 @@ const pcbApp = {
     if (r.ok) {
       comp = Object.assign(base, { w: r.body.w, h: r.body.h, pads: r.pads });
       say(pcbT('pj_ic_placed', { ref, part: ic.part, family: r.meta.family, n: r.pads.length, pitch: r.meta.pitch }) +
-        (r.meta.warnings.length ? '；⚠ ' + r.meta.warnings.join('；') : '') + '。' + r.meta.source);
+        (r.meta.warnings.length ? '；⚠ ' + r.meta.warnings.join('；') : '') + '。' + pcbT('pj_fp_src'));
     } else {
       comp = Object.assign(base, { w: 6, h: 4 });
       say(pcbT('pj_ic_placed_box', { ref, part: ic.part, reason: r.reason }));
@@ -790,6 +791,50 @@ const pcbApp = {
     this.renderPartsList();
     this.populateEmiSelects();
     this.render();
+  },
+
+  // ---- 基本元件放料（parts-lib.js：R/C/L/二極體/電晶體/排針/測試點…）----
+  populatePartsPicker() {
+    const catSel = document.getElementById('plCat');
+    if (!catSel || !window.PartsLib) return;
+    const cur = catSel.value;
+    catSel.innerHTML = window.PartsLib.list().map(c =>
+      `<option value="${c.id}">${pcbT('pl_c_' + c.id)}</option>`).join('');
+    if ([...catSel.options].some(o => o.value === cur)) catSel.value = cur;
+    this.populatePartsVariants();
+  },
+
+  populatePartsVariants() {
+    const catSel = document.getElementById('plCat');
+    const varSel = document.getElementById('plVar');
+    if (!catSel || !varSel || !window.PartsLib) return;
+    const cat = window.PartsLib.list().find(c => c.id === catSel.value);
+    if (!cat) return;
+    const cur = varSel.value;
+    varSel.innerHTML = cat.variants.map(v => `<option>${v}</option>`).join('');
+    if (cat.variants.includes(cur)) varSel.value = cur;
+  },
+
+  placePart(catId, variant, value) {
+    const msg = document.getElementById('plMsg');
+    const say = t => { if (msg) msg.textContent = t; };
+    const r = window.PartsLib ? window.PartsLib.build(catId, variant) : { ok: false };
+    if (!r.ok) { say(pcbT('pl_fail')); return; }
+    const seq = this.state.components.filter(c => new RegExp('^' + r.ref + '\\d+$').test(c.ref || '')).length + 1;
+    const ref = r.ref + seq;
+    const n = this.state.components.length;
+    const comp = {
+      id: `part-${Date.now()}`, type: 'ic', kind: 'part', ref, label: ref,
+      part: value || variant, package: variant, side: 'top', rot: 0,
+      x: (n % 5) * 8 - 16, y: Math.floor(n / 5) * 8 - 8,
+      w: r.body.w, h: r.body.h, pads: r.pads
+    };
+    this.state.components.push(comp);
+    this.state.selected = comp;
+    this.renderPartsList();
+    this.populateEmiSelects();
+    this.render();
+    say(pcbT('pl_placed', { ref, name: comp.part, pads: r.pads.length }) + ' ' + pcbT('pj_fp_src'));
   },
 
   // 公版元件來源：schema v2 用 components（含尺寸/正反面），舊資料退回 blocks
@@ -1471,6 +1516,7 @@ const pcbApp = {
       this.renderPartsList();
       this.renderNetRules();
       this.renderRefBoards();
+      this.populatePartsPicker();
       const drc = document.querySelector('#drcResults');
       if (drc && drc.innerHTML.trim()) this.runDrc();
     });
@@ -1577,6 +1623,15 @@ const pcbApp = {
     });
     document.querySelector('#icPartPick')?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); const v = e.target.value.trim(); if (v) this.placeIcFootprint(v); }
+    });
+
+    // 基本元件放料
+    document.getElementById('plCat')?.addEventListener('change', () => this.populatePartsVariants());
+    document.getElementById('plPlaceBtn')?.addEventListener('click', () => {
+      const cat = document.getElementById('plCat')?.value;
+      const variant = document.getElementById('plVar')?.value;
+      const value = document.getElementById('plVal')?.value?.trim() || '';
+      if (cat && variant) this.placePart(cat, variant, value);
     });
 
     // Board settings

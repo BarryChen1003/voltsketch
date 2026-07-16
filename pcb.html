@@ -656,6 +656,17 @@
           </section>
 
           <section class="panel-section">
+            <h2 data-i18n="pl_title">基本元件放料</h2>
+            <div style="display:grid;gap:6px;font-size:12px">
+              <select id="plCat" style="padding:6px 8px;border:1px solid var(--line);border-radius:6px"></select>
+              <select id="plVar" style="padding:6px 8px;border:1px solid var(--line);border-radius:6px"></select>
+              <input id="plVal" placeholder="數值（如 10kΩ / 100nF，可留空）" data-i18n-placeholder="pl_val_ph" style="padding:6px 8px;border:1px solid var(--line);border-radius:6px">
+              <button class="small-button" id="plPlaceBtn" data-i18n="pl_place">🧩 放到板上</button>
+              <div id="plMsg" style="color:var(--muted);line-height:1.5"></div>
+            </div>
+          </section>
+
+          <section class="panel-section">
             <h2 data-i18n="pcb_kicad">KiCad 匯入 / 匯出</h2>
             <div style="display:grid;gap:6px;font-size:12px">
               <label class="small-button" style="text-align:center;cursor:pointer">
@@ -857,19 +868,20 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./auth.js?v=2026-07-04b"></script>
-    <script src="./i18n.js?v=2026-07-15k"></script>
+    <script src="./i18n.js?v=2026-07-15l"></script>
     <script src="./pcb-tutorial.js?v=6"></script>
     <script src="./pcb-practice.js?v=6"></script>
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
     <script src="./circuit-engine.js?v=34"></script>
     <script src="./ic-data.js?v=42"></script>
     <script src="./footprint-gen.js?v=3"></script>
+    <script src="./parts-lib.js?v=1"></script>
     <script src="./kicad-io.js?v=8"></script>
     <script src="./gerber-export.js?v=4"></script>
     <script src="./pcb-drc.js?v=4"></script>
     <script src="./pcb-rules.js?v=4"></script>
     <script src="./pcb-3d.js?v=1"></script>
-    <script src="./pcb.js?v=19"></script>
+    <script src="./pcb.js?v=20"></script>
     <script>
       // Initialize tutorial and practice after page load
       document.addEventListener('DOMContentLoaded', () => {
