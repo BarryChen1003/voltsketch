@@ -1,4 +1,6 @@
 // PCB Layout Application
+// i18n：I18N 未載時回 key（pcb.html 先載 i18n.js）
+const pcbT = (k, vars) => window.I18N ? window.I18N.t(k, vars) : k;
 const pcbApp = {
   canvas: null,
   ctx: null,
@@ -67,6 +69,17 @@ const pcbApp = {
     ]);
   },
 
+  // 層顯示名依當前語言派生（layerStack.name 存 zh，不直接用）
+  layerDispName(l) {
+    const sfx = l.id === 'F.Cu' ? 'pj_layer_top'
+      : l.id === 'B.Cu' ? 'pj_layer_bottom'
+      : /^In\d+\.Cu$/.test(l.id) ? 'pj_layer_inner'
+      : l.id === 'F.SilkS' ? 'pj_layer_silk'
+      : l.id === 'B.SilkS' ? 'pj_layer_bsilk'
+      : l.id === 'Edge.Cuts' ? 'pj_layer_edge' : null;
+    return sfx ? `${l.id} (${pcbT(sfx)})` : (l.name || l.id);
+  },
+
   renderLayerList() {
     const el = document.getElementById('layerList');
     if (!el) return;
@@ -74,13 +87,13 @@ const pcbApp = {
     this.state.traces.forEach(t => { const k = t.layer || 'F.Cu'; cnt[k] = (cnt[k] || 0) + 1; });
     el.innerHTML = (this.state.layerStack || []).map(l => {
       const vis = this.state.visibleLayers.includes(l.id);
-      const n = cnt[l.id] ? `<span style="font-size:10px;color:var(--muted);margin-left:4px">${cnt[l.id]}條</span>` : '';
+      const n = cnt[l.id] ? `<span style="font-size:10px;color:var(--muted);margin-left:4px">${pcbT('pj_seg_count', { n: cnt[l.id] })}</span>` : '';
       const typeSel = l.kind === 'copper'
         ? `<select class="layer-type" data-layer="${l.id}" style="margin-left:auto;font-size:11px;padding:1px 4px;" onclick="event.stopPropagation()">` +
         ['Signal', 'GND', 'PWR', 'Mixed'].map(t => `<option ${l.type === t ? 'selected' : ''}>${t}</option>`).join('') + `</select>`
         : '';
       return `<div class="layer-item" data-layer="${l.id}"><div class="layer-color" style="background:${l.color}"></div>` +
-        `<span class="layer-name">${l.name}</span>${n}${typeSel}<span class="layer-visibility" style="opacity:${vis ? 1 : 0.3};margin-left:8px">👁</span></div>`;
+        `<span class="layer-name">${this.layerDispName(l)}</span>${n}${typeSel}<span class="layer-visibility" style="opacity:${vis ? 1 : 0.3};margin-left:8px">👁</span></div>`;
     }).join('');
     this.populateTraceLayerSel();
   },
@@ -441,7 +454,7 @@ const pcbApp = {
     if (this.state.boardWidth < 10 || this.state.boardHeight < 10) {
       results.push({
         type: 'warning',
-        message: '板框尺寸過小，建議至少 10mm x 10mm'
+        message: pcbT('pj_drc_board_small')
       });
     }
 
@@ -449,7 +462,7 @@ const pcbApp = {
     if (this.state.components.length === 0) {
       results.push({
         type: 'info',
-        message: '尚未放置任何元件'
+        message: pcbT('pj_drc_no_comp')
       });
     }
 
@@ -457,7 +470,7 @@ const pcbApp = {
     if (this.state.traces.length === 0) {
       results.push({
         type: 'info',
-        message: '尚未建立任何走線'
+        message: pcbT('pj_drc_no_trace')
       });
     }
 
@@ -469,7 +482,7 @@ const pcbApp = {
       if (width < rules.width.minTrace) {
         results.push({
           type: 'warning',
-          message: `走線寬度過細：${width}mm < ${rules.width.minTrace}mm`
+          message: pcbT('pj_drc_thin', { w: width, lim: rules.width.minTrace })
         });
       }
     });
@@ -478,7 +491,7 @@ const pcbApp = {
     if (this.state.vias.length === 0 && this.state.traces.length > 10) {
       results.push({
         type: 'info',
-        message: '建議使用 Via 進行層間連接'
+        message: pcbT('pj_drc_use_via')
       });
     }
 
@@ -487,7 +500,7 @@ const pcbApp = {
     if (nets.size < this.state.components.length / 2) {
       results.push({
         type: 'warning',
-        message: '可能存在未連接的網路'
+        message: pcbT('pj_drc_unconnected')
       });
     }
 
@@ -503,7 +516,7 @@ const pcbApp = {
       }
     });
     Object.entries(powerThin).forEach(([net, e]) =>
-      results.push({ type: 'warning', message: `電源/大電流線 ${net}：${e.n} 段線寬 < ${rules.width.minPowerTrace}mm（最細 ${e.min}mm）` }));
+      results.push({ type: 'warning', message: pcbT('pj_drc_power_thin', { net, n: e.n, lim: rules.width.minPowerTrace, min: e.min }) }));
 
     // 走線距板邊太近：有真實板框幾何（KiCad 匯入）時由 pad 級 DRC 用 edgeSegs 算，這裡只做矩形近似
     if (!(this.state.edgeSegs || []).length) {
@@ -512,7 +525,7 @@ const pcbApp = {
       this.state.traces.forEach((t, i) => {
         const g = Math.min(edgeGap(t.x1, t.y1), edgeGap(t.x2, t.y2));
         if (g < rules.clearance.traceToEdge)
-          results.push({ type: g < 0 ? 'error' : 'warning', message: `走線#${i + 1} 距板邊 ${g.toFixed(2)}mm < ${rules.clearance.traceToEdge}mm` });
+          results.push({ type: g < 0 ? 'error' : 'warning', message: pcbT('pj_drc_edge_near', { i: i + 1, d: g.toFixed(2), lim: rules.clearance.traceToEdge }) });
       });
     }
 
@@ -525,7 +538,7 @@ const pcbApp = {
         if (hasGeom(comps[i]) && hasGeom(comps[j])) continue;
         const d = Math.hypot(comps[i].x - comps[j].x, comps[i].y - comps[j].y);
         if (d < rules.compSpacing)
-          results.push({ type: d < rules.compSpacing / 2 ? 'error' : 'warning', message: `元件 ${comps[i].label}/${comps[j].label} 間距 ${d.toFixed(2)}mm < ${rules.compSpacing}mm` });
+          results.push({ type: d < rules.compSpacing / 2 ? 'error' : 'warning', message: pcbT('pj_drc_comp_close', { a: comps[i].label, b: comps[j].label, d: d.toFixed(2), lim: rules.compSpacing }) });
       }
 
     // Cin → IC 距離（沿用 EMI 角色指派）
@@ -535,17 +548,17 @@ const pcbApp = {
     if (cin && ic) {
       const d = Math.hypot(cin.x - ic.x, cin.y - ic.y);
       if (d > rules.cinDist)
-        results.push({ type: 'warning', message: `Cin 離 IC ${d.toFixed(2)}mm > ${rules.cinDist}mm → 輸入迴路電感大，拉近` });
+        results.push({ type: 'warning', message: pcbT('pj_drc_cin_far', { d: d.toFixed(2), lim: rules.cinDist }) });
     }
 
     // 多層板電源/地平面建議
     const cu = (this.state.layerStack || []).filter(l => l.kind === 'copper');
     if (cu.length >= 4 && !cu.some(l => l.type === 'GND'))
-      results.push({ type: 'info', message: '多層板建議至少一層完整 GND 平面（降低迴路電感/EMI）' });
+      results.push({ type: 'info', message: pcbT('pj_drc_gnd_plane') });
 
     // pad 級 DRC：真 pad 幾何算間距/環寬/鑽孔餘裕（pcb-drc.js）
     if (window.PadDrc) results.push(...window.PadDrc.run(this.state, this.padAbs.bind(this), rules));
-    else results.push({ type: 'info', message: 'pad 級 DRC 模組未載入（pcb-drc.js）' });
+    else results.push({ type: 'info', message: pcbT('pj_drc_no_paddrc') });
 
     // Layout 規則稽核（net 線寬下限/線長上限/差分對長度差）
     if (window.NetRules) results.push(...window.NetRules.audit(this.state.netRules || [], this.state));
@@ -553,7 +566,7 @@ const pcbApp = {
     // 未連線統計（飛線）
     if (window.Ratsnest) {
       const rl = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
-      if (rl.length) results.push({ type: 'warning', message: `未連線（飛線）：${rl.length} 條——側欄勾「顯示飛線」定位；有同名鋪銅的 net 視為平面連接不計` });
+      if (rl.length) results.push({ type: 'warning', message: pcbT('pj_drc_ratsnest', { n: rl.length }) });
     }
 
     // Display results
@@ -563,12 +576,12 @@ const pcbApp = {
     const infoCount = results.filter(r => r.type === 'info').length;
 
     if (results.length === 0) {
-      container.innerHTML = '<p style="color: var(--accent-strong); padding: 12px;">✓ DRC 檢查通過</p>';
+      container.innerHTML = `<p style="color: var(--accent-strong); padding: 12px;">${pcbT('pj_drc_pass')}</p>`;
     } else {
       let header = `<div style="padding: 8px; border-bottom: 1px solid var(--line); font-size: 12px;">`;
-      if (errorCount > 0) header += `<span style="color: var(--danger);">✕ ${errorCount} 個錯誤</span> `;
-      if (warningCount > 0) header += `<span style="color: var(--warn);">! ${warningCount} 個警告</span> `;
-      if (infoCount > 0) header += `<span style="color: var(--accent-strong);">i ${infoCount} 個資訊</span>`;
+      if (errorCount > 0) header += `<span style="color: var(--danger);">${pcbT('pj_drc_err_n', { n: errorCount })}</span> `;
+      if (warningCount > 0) header += `<span style="color: var(--warn);">${pcbT('pj_drc_warn_n', { n: warningCount })}</span> `;
+      if (infoCount > 0) header += `<span style="color: var(--accent-strong);">${pcbT('pj_drc_info_n', { n: infoCount })}</span>`;
       header += `</div>`;
 
       container.innerHTML = header + results.map(r => `
@@ -649,16 +662,16 @@ const pcbApp = {
       <div class="ref-card" style="border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--panel-soft)">
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
           <b style="color:var(--ink);font-size:14px">${b.name}</b>
-          <span style="font-size:11px;color:var(--accent-strong)">${b.soc} · ${b.layers} 層 · ${b.w}×${b.h}mm</span>
+          <span style="font-size:11px;color:var(--accent-strong)">${b.soc} · ${pcbT('pj_ref_layers', { n: b.layers })} · ${b.w}×${b.h}mm</span>
         </div>
         <div style="font-size:12px;color:var(--muted);margin:6px 0;line-height:1.6">${b.note}</div>
         <ul style="margin:6px 0;padding-left:16px;font-size:12px;color:var(--muted);line-height:1.6">
           ${b.circuits.map(c => `<li>${c}</li>`).join('')}
         </ul>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-          <button class="primary-button ref-load" data-refid="${b.id}" style="padding:6px 12px;font-size:12px">📥 載入到 Layout（編輯）</button>
-          <button class="icon-button ref-overlay" data-refid="${b.id}" style="padding:6px 12px;font-size:12px">🔍 疊加比較</button>
-          <a href="${b.github}" target="_blank" rel="noopener" style="padding:6px 12px;font-size:12px;color:var(--accent-strong);text-decoration:none;align-self:center">原始碼 ↗</a>
+          <button class="primary-button ref-load" data-refid="${b.id}" style="padding:6px 12px;font-size:12px">📥 ${pcbT('pj_ref_load')}</button>
+          <button class="icon-button ref-overlay" data-refid="${b.id}" style="padding:6px 12px;font-size:12px">🔍 ${pcbT('pj_ref_overlay')}</button>
+          <a href="${b.github}" target="_blank" rel="noopener" style="padding:6px 12px;font-size:12px;color:var(--accent-strong);text-decoration:none;align-self:center">${pcbT('pj_ref_source')} ↗</a>
         </div>
       </div>`).join('');
   },
@@ -667,7 +680,7 @@ const pcbApp = {
   importKicad(text, fileName) {
     let parsed;
     try { parsed = window.KicadIO.importText(text); }
-    catch (err) { alert('KiCad 解析失敗：' + err.message); return false; }
+    catch (err) { alert(pcbT('pj_kicad_parse_fail', { err: err.message })); return false; }
     const m = parsed.model;
     const off = { x: m.bbox.x + m.bbox.w / 2, y: m.bbox.y + m.bbox.h / 2 }; // 置中偏移（匯出時還原）
     const s = this.state;
@@ -728,8 +741,8 @@ const pcbApp = {
     URL.revokeObjectURL(a.href);
     const el = document.getElementById('kicadIoMsg');
     if (el) el.textContent = s.kicad
-      ? `已匯出 ${name}（原樹回寫：未編輯的幾何 100% 原樣）`
-      : `已匯出 ${name}（從零建檔：元件為外形示意無 pad，走線/via/板框精確）`;
+      ? pcbT('pj_kicad_exported_tree', { name })
+      : pcbT('pj_kicad_exported_new', { name });
   },
 
   exportGerber() {
@@ -739,8 +752,11 @@ const pcbApp = {
     const el = document.getElementById('kicadIoMsg');
     if (el) {
       const names = r.files.map(f => f.name.replace(/^.*?-/, '')).join('、');
-      el.innerHTML = `已匯出 Gerber ZIP（${r.files.length} 檔：${names}；鑽孔 PTH ${r.drillCounts.pth}${r.drillCounts.npth ? '＋NPTH ' + r.drillCounts.npth : ''}${r.drillCounts.slots ? '＋開槽 ' + r.drillCounts.slots : ''}）` +
-        (r.warnings.length ? '<br>⚠ ' + r.warnings.join('<br>⚠ ') : '');
+      el.innerHTML = pcbT('pj_gerber_exported', {
+        n: r.files.length, names, pth: r.drillCounts.pth,
+        npth: r.drillCounts.npth ? '＋NPTH ' + r.drillCounts.npth : '',
+        slots: r.drillCounts.slots ? pcbT('pj_gerber_slots', { n: r.drillCounts.slots }) : ''
+      }) + (r.warnings.length ? '<br>⚠ ' + r.warnings.join('<br>⚠ ') : '');
     }
   },
 
@@ -755,19 +771,19 @@ const pcbApp = {
     const msg = document.getElementById('icPlaceMsg');
     const say = t => { if (msg) msg.textContent = t; };
     const ic = (window.IC_DATA || []).find(x => x.part === partName);
-    if (!ic) { say('找不到料號：' + partName); return; }
+    if (!ic) { say(pcbT('pj_ic_notfound', { part: partName })); return; }
     const n = this.state.components.length;
     const ref = 'U' + (this.state.components.filter(c => /^U\d+$/.test(c.ref || '')).length + 1);
     const base = { id: `lib-${Date.now()}`, type: 'ic', ref, part: ic.part, package: ic.package || '', label: ref, side: 'top', kind: 'ic', rot: 0, x: (n % 5) * 8 - 16, y: Math.floor(n / 5) * 8 - 8 };
-    const r = window.FootprintGen ? window.FootprintGen.fromIC(ic) : { ok: false, reason: 'footprint-gen 未載入' };
+    const r = window.FootprintGen ? window.FootprintGen.fromIC(ic) : { ok: false, reason: pcbT('pj_ic_nofpgen') };
     let comp;
     if (r.ok) {
       comp = Object.assign(base, { w: r.body.w, h: r.body.h, pads: r.pads });
-      say(`已放 ${ref}＝${ic.part}（${r.meta.family} ${r.pads.length} pads，pitch ${r.meta.pitch}mm）` +
+      say(pcbT('pj_ic_placed', { ref, part: ic.part, family: r.meta.family, n: r.pads.length, pitch: r.meta.pitch }) +
         (r.meta.warnings.length ? '；⚠ ' + r.meta.warnings.join('；') : '') + '。' + r.meta.source);
     } else {
       comp = Object.assign(base, { w: 6, h: 4 });
-      say(`已放 ${ref}＝${ic.part}（⚠ 方框示意無 pad：${r.reason}——此料不會出現在銅層/Gerber）`);
+      say(pcbT('pj_ic_placed_box', { ref, part: ic.part, reason: r.reason }));
     }
     this.state.components.push(comp);
     this.state.selected = comp;
@@ -837,15 +853,15 @@ const pcbApp = {
     const bot = comps.length - top;
     const perLayer = {};
     this.state.traces.forEach(t => { const l = t.layer || 'F.Cu'; perLayer[l] = (perLayer[l] || 0) + 1; });
-    const layerTxt = Object.keys(perLayer).map(l => `${l} ${perLayer[l]}條`).join('、') || '無';
+    const layerTxt = Object.keys(perLayer).map(l => `${l} ${pcbT('pj_seg_count', { n: perLayer[l] })}`).join('、') || pcbT('pj_none');
     sum.innerHTML = `<div style="font-size:12px;color:var(--muted);line-height:1.7">` +
-      `${this.state.layers} 層板 · 料件 ${comps.length}（頂 ${top}／底 ${bot}）· via ${this.state.vias.length}<br>走線：${layerTxt}</div>`;
+      pcbT('pj_parts_sum', { layers: this.state.layers, n: comps.length, top, bot, vias: this.state.vias.length, layerTxt }) + `</div>`;
     list.innerHTML = comps.map((c, i) =>
       `<div class="part-row" data-idx="${i}" style="display:flex;gap:6px;align-items:center;padding:3px 6px;border-radius:5px;cursor:pointer;font-size:12px;${this.state.selected === c ? 'background:var(--accent-soft);' : ''}">` +
       `<b style="font-family:ui-monospace,monospace;min-width:38px">${c.ref || c.label || '-'}</b>` +
       `<span style="color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.part || c.label || ''}</span>` +
-      `<span style="font-size:10px;padding:0 5px;border-radius:999px;background:${c.side === 'bottom' ? '#1f3a5f' : '#2d4a3e'};color:#cbd5e1">${c.side === 'bottom' ? '底' : '頂'}</span></div>`
-    ).join('') || '<div style="font-size:12px;color:var(--muted);padding:4px 6px">尚無料件（載入公版或放置元件）</div>';
+      `<span style="font-size:10px;padding:0 5px;border-radius:999px;background:${c.side === 'bottom' ? '#1f3a5f' : '#2d4a3e'};color:#cbd5e1">${c.side === 'bottom' ? pcbT('pj_side_bottom') : pcbT('pj_side_top')}</span></div>`
+    ).join('') || `<div style="font-size:12px;color:var(--muted);padding:4px 6px">${pcbT('pj_parts_empty')}</div>`;
   },
 
   // ---- EMI 環路檢查（心中有環）----
@@ -879,21 +895,21 @@ const pcbApp = {
     const inPts = [role.cin, role.ic, role.d].filter(Boolean);
     const outPts = [role.d, role.l, role.cout].filter(Boolean);
     const inArea = this.polyArea(inPts), outArea = this.polyArea(outPts);
-    const rate = a => a < 25 ? ['green', '良好'] : a < 100 ? ['orange', '偏大'] : ['red', '過大'];
+    const rate = a => a < 25 ? ['green', pcbT('pj_rate_good')] : a < 100 ? ['orange', pcbT('pj_rate_high')] : ['red', pcbT('pj_rate_toobig')];
     if (inPts.length >= 3) {
       const [c, t] = rate(inArea);
-      issues.push({ sev: c === 'red' ? 'err' : c === 'orange' ? 'warn' : 'ok', msg: `輸入熱環面積 ≈ ${inArea.toFixed(1)} mm²（${t}）` });
-    } else issues.push({ sev: 'info', msg: '輸入熱環需指派 Cin / IC / D 三者' });
+      issues.push({ sev: c === 'red' ? 'err' : c === 'orange' ? 'warn' : 'ok', msg: pcbT('pj_emi_in_area', { a: inArea.toFixed(1), t }) });
+    } else issues.push({ sev: 'info', msg: pcbT('pj_emi_in_need') });
     if (outPts.length >= 3) {
       const [c, t] = rate(outArea);
-      issues.push({ sev: c === 'red' ? 'err' : c === 'orange' ? 'warn' : 'ok', msg: `輸出環面積 ≈ ${outArea.toFixed(1)} mm²（${t}）` });
-    } else issues.push({ sev: 'info', msg: '輸出環需指派 D / L / Cout 三者' });
+      issues.push({ sev: c === 'red' ? 'err' : c === 'orange' ? 'warn' : 'ok', msg: pcbT('pj_emi_out_area', { a: outArea.toFixed(1), t }) });
+    } else issues.push({ sev: 'info', msg: pcbT('pj_emi_out_need') });
     if (inPts.length >= 3 && outPts.length >= 3 && inArea > outArea)
-      issues.push({ sev: 'warn', msg: '⚠ 輸入熱環比輸出環大 → 優先縮小輸入環（di/dt 大、EMI 主因）' });
+      issues.push({ sev: 'warn', msg: pcbT('pj_emi_in_gt_out') });
     if (role.cin && role.ic && dist(role.cin, role.ic) > 5)
-      issues.push({ sev: 'warn', msg: `⚠ Cin 離 IC ${dist(role.cin, role.ic).toFixed(1)}mm（>5mm）→ 輸入迴路電感大，拉近` });
+      issues.push({ sev: 'warn', msg: pcbT('pj_emi_cin_far', { d: dist(role.cin, role.ic).toFixed(1) }) });
     if (role.l && role.ic && dist(role.l, role.ic) > 8)
-      issues.push({ sev: 'info', msg: `電感離 SW ${dist(role.l, role.ic).toFixed(1)}mm，建議靠近 SW` });
+      issues.push({ sev: 'info', msg: pcbT('pj_emi_l_far', { d: dist(role.l, role.ic).toFixed(1) }) });
 
     this.state.emiLoops = { input: inPts, output: outPts, inArea, outArea };
     this.renderEmiResults(issues);
@@ -942,11 +958,11 @@ const pcbApp = {
     const Tj = p.Ta + p.P * theta;
     const sev = Tj > 125 ? 'err' : Tj > 85 ? 'warn' : 'ok';
     const issues = [
-      { sev: 'ok', msg: `載 ${p.I}A、ΔT ${p.dT}°C（${p.oz}oz）→ 建議最小線寬 ≈ ${wNeedMm.toFixed(2)} mm` },
-      { sev, msg: `功率元件 Tj 簡估 ≈ ${Tj.toFixed(0)}°C（θ_ja≈${theta.toFixed(0)}°C/W）` }
+      { sev: 'ok', msg: pcbT('pj_th_minw', { i: p.I, dt: p.dT, oz: p.oz, w: wNeedMm.toFixed(2) }) },
+      { sev, msg: pcbT('pj_th_tj', { tj: Tj.toFixed(0), theta: theta.toFixed(0) }) }
     ];
-    if (sev !== 'ok') issues.push({ sev: 'info', msg: '降溫：加大散熱銅面積、多打散熱孔、加厚銅、必要時加散熱片' });
-    issues.push({ sev: 'info', msg: '🔒 逐條走線載流量精算為進階功能，登入 + PCB 解鎖後由後端計算' });
+    if (sev !== 'ok') issues.push({ sev: 'info', msg: pcbT('pj_th_cool') });
+    issues.push({ sev: 'info', msg: pcbT('pj_th_locked') });
     this.renderThermalResults(issues);
   },
 
@@ -1101,11 +1117,11 @@ const pcbApp = {
     const r = window.NetRules.match(this.state.netRules, tr.net);
     if (!r) return;
     if (r.minW > 0 && (tr.width || 0.3) < r.minW - 1e-9)
-      this.toast(`超出標準：${tr.net} 線寬 ${tr.width}mm < 規則下限 ${r.minW}mm（規則「${r.pattern}」）`, 'error');
+      this.toast(pcbT('pj_rule_w_toast', { net: tr.net, w: tr.width, lim: r.minW, pattern: r.pattern }), 'error');
     if (r.maxLen > 0) {
       const L = window.NetRules.netLength(this.state.traces, tr.net);
       if (L > r.maxLen + 1e-9)
-        this.toast(`超出標準：${tr.net} 總線長 ${L.toFixed(2)}mm > 規則上限 ${r.maxLen}mm（規則「${r.pattern}」）`, 'error');
+        this.toast(pcbT('pj_rule_len_toast', { net: tr.net, len: L.toFixed(2), lim: r.maxLen, pattern: r.pattern }), 'error');
     }
   },
 
@@ -1120,10 +1136,10 @@ const pcbApp = {
       const r = window.NetRules.match(this.state.netRules, td.net);
       if (r && r.maxLen > 0) {
         const total = window.NetRules.netLength(this.state.traces, td.net) + len;
-        label += ` │ ${td.net} 累計 ${total.toFixed(1)}/${r.maxLen}mm`;
-        if (total > r.maxLen) { over = true; label += ' 超長!'; }
+        label += ' │ ' + pcbT('pj_draw_total', { net: td.net, total: total.toFixed(1), max: r.maxLen });
+        if (total > r.maxLen) { over = true; label += ' ' + pcbT('pj_draw_over'); }
       }
-      if (r && r.minW > 0 && (this.state.traceWidth || 0.3) < r.minW) { over = true; label += ` │ 線寬<${r.minW}mm!`; }
+      if (r && r.minW > 0 && (this.state.traceWidth || 0.3) < r.minW) { over = true; label += ' │ ' + pcbT('pj_draw_thin', { lim: r.minW }); }
     }
     ctx.save();
     ctx.strokeStyle = over ? '#e74c3c' : '#2ecc71';
@@ -1284,13 +1300,13 @@ const pcbApp = {
     const rules = this.state.netRules || [];
     host.innerHTML = rules.map((r, i) =>
       `<div class="nr-row" data-i="${i}" style="display:grid;grid-template-columns:1fr 46px 46px 46px 46px 20px;gap:4px;margin-bottom:4px;font-size:12px">
-        <input class="nr-pat" value="${(r.pattern || '').replace(/"/g, '&quot;')}" placeholder="net 含…或 /regex/" style="padding:3px">
-        <input class="nr-minw" type="number" step="0.05" min="0" value="${r.minW || 0}" title="線寬下限 mm（0=不查）" style="padding:3px">
-        <input class="nr-maxl" type="number" step="1" min="0" value="${r.maxLen || 0}" title="線長上限 mm（0=不限）" style="padding:3px">
-        <input class="nr-pair" type="number" step="0.1" min="0" value="${r.pairTol || 0}" title="差分對長度差上限 mm（0=不查）" style="padding:3px">
-        <input class="nr-gap" type="number" step="0.05" min="0" value="${r.gap || 0}" title="差分對目標間距 mm，邊到邊（0=不查；容差 ±max(25%,0.05)）" style="padding:3px">
-        <button class="nr-del" title="刪除規則" style="padding:0;cursor:pointer">✕</button>
-      </div>`).join('') || '<p style="color:var(--muted);font-size:12px;margin:0">尚無規則，按「＋規則」新增</p>';
+        <input class="nr-pat" value="${(r.pattern || '').replace(/"/g, '&quot;')}" placeholder="${pcbT('pj_nr_pat_ph')}" style="padding:3px">
+        <input class="nr-minw" type="number" step="0.05" min="0" value="${r.minW || 0}" title="${pcbT('pj_nr_minw_t')}" style="padding:3px">
+        <input class="nr-maxl" type="number" step="1" min="0" value="${r.maxLen || 0}" title="${pcbT('pj_nr_maxl_t')}" style="padding:3px">
+        <input class="nr-pair" type="number" step="0.1" min="0" value="${r.pairTol || 0}" title="${pcbT('pj_nr_pair_t')}" style="padding:3px">
+        <input class="nr-gap" type="number" step="0.05" min="0" value="${r.gap || 0}" title="${pcbT('pj_nr_gap_t')}" style="padding:3px">
+        <button class="nr-del" title="${pcbT('pj_nr_del_t')}" style="padding:0;cursor:pointer">✕</button>
+      </div>`).join('') || `<p style="color:var(--muted);font-size:12px;margin:0">${pcbT('pj_nr_empty')}</p>`;
   },
 
   readNetRules() {
@@ -1307,13 +1323,13 @@ const pcbApp = {
 
   // netlist 同步：讀線路圖（localStorage voltsketch-project）→ 建 PCB 元件+pad net，飛線引導佈線
   syncFromSchematic() {
-    if (!window.CircuitEngine) { this.toast('circuit-engine 未載入', 'error'); return; }
+    if (!window.CircuitEngine) { this.toast(pcbT('pj_sync_noeng'), 'error'); return; }
     let proj = null;
     try { proj = JSON.parse(localStorage.getItem('voltsketch-project') || 'null'); } catch (e) {}
     const sComps = (proj && proj.components || []).filter(c => c && c.type);
-    if (!sComps.length) { this.toast('線路圖無資料——先到「線路圖」頁畫圖（會自動存檔）', 'warn'); return; }
+    if (!sComps.length) { this.toast(pcbT('pj_sync_nodata'), 'warn'); return; }
     if (this.state.components.length || this.state.traces.length) {
-      if (!confirm('同步將清空目前板面（元件/走線/via/鋪銅），確定？')) return;
+      if (!confirm(pcbT('pj_sync_confirm'))) return;
     }
     const eng = window.CircuitEngine;
     const nets = eng.computeNets(sComps, proj.wires || []);
@@ -1376,14 +1392,14 @@ const pcbApp = {
     this.populateEmiSelects();
     this.render();
     const netN = new Set([...rootName.values()]).size;
-    this.toast(`已同步線路圖：${newComps.length} 元件 / ${netN} 個 net。黃色飛線=待佈線，拖元件擺位後畫線或自動佈線`, 'info');
+    this.toast(pcbT('pj_sync_done', { c: newComps.length, n: netN }), 'info');
   },
 
   // 自動佈線：把目前所有飛線逐條丟給 A*（單層試驗，無推擠、不插 via）
   autoRoute() {
     if (!window.Ratsnest || !window.AutoRoute) return;
     const lines = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
-    if (!lines.length) { this.toast('沒有未連線可佈', 'info'); return; }
+    if (!lines.length) { this.toast(pcbT('pj_ar_none'), 'info'); return; }
     const cap = 30;
     const todo = lines.slice(0, cap);
     let okN = 0, failN = 0;
@@ -1409,7 +1425,7 @@ const pcbApp = {
     this.state.ratsnest = null;
     this.renderPartsList();
     this.render();
-    this.toast(`自動佈線：成功 ${okN} 條、失敗 ${failN} 條${lines.length > cap ? `（僅取前 ${cap}）` : ''}，${ms}ms。試驗性：單層、無推擠，失敗請手動佈`, failN ? 'warn' : 'info');
+    this.toast(pcbT('pj_ar_done', { ok: okN, fail: failN, cap: lines.length > cap ? pcbT('pj_ar_cap', { cap }) : '', ms }), failN ? 'warn' : 'info');
   },
 
   // 阻抗計算（IPC-2141 近似式；±10% 等級，正式設計用場型解算器）
@@ -1436,7 +1452,7 @@ const pcbApp = {
     const r = this.calcImpedance(kind, v('impW'), v('impH'), v('impT'), v('impEr'), v('impS'));
     const out = document.getElementById('impOut');
     if (!out) return;
-    if (!r) { out.textContent = '參數不合法（w/h/t>0、εr>1、差分需 s>0）'; return; }
+    if (!r) { out.textContent = pcbT('pj_imp_bad'); return; }
     out.textContent = `Z0 ≈ ${r.z0.toFixed(1)} Ω` + (r.zdiff ? `；Zdiff ≈ ${r.zdiff.toFixed(1)} Ω` : '');
   },
 
@@ -1449,6 +1465,16 @@ const pcbApp = {
   },
 
   bindEvents() {
+    // 切語言：JS 產生的清單/面板重繪（DRC 結果有內容才重跑）
+    document.addEventListener('vs-lang-change', () => {
+      this.renderLayerList();
+      this.renderPartsList();
+      this.renderNetRules();
+      this.renderRefBoards();
+      const drc = document.querySelector('#drcResults');
+      if (drc && drc.innerHTML.trim()) this.runDrc();
+    });
+
     // Tool buttons
     document.querySelectorAll('.pcb-tool-btn').forEach(btn => {
       btn.addEventListener('click', () => this.setTool(btn.dataset.tool));
@@ -1536,7 +1562,7 @@ const pcbApp = {
       rd.onload = () => {
         const ok = this.importKicad(String(rd.result), f.name);
         const el = document.getElementById('kicadIoMsg');
-        if (el && ok) el.textContent = `已匯入 ${f.name}：${this.state.components.length} 料 / ${this.state.traces.length} 段走線 / ${this.state.vias.length} via / ${this.state.layers} 層`;
+        if (el && ok) el.textContent = pcbT('pj_kicad_imported', { name: f.name, c: this.state.components.length, t: this.state.traces.length, v: this.state.vias.length, l: this.state.layers });
       };
       rd.readAsText(f);
       e.target.value = '';
@@ -1617,8 +1643,8 @@ const pcbApp = {
           const hit = this.snapTarget(b.x, b.y);
           this.state.zoneDraw = { pts: [[px, py]], net: hit ? hit.net : '', cursor: [px, py] };
           this.toast(this.state.zoneDraw.net
-            ? `鋪銅開始（net=${this.state.zoneDraw.net}）：逐點點擊，雙擊收尾，Esc 取消`
-            : '鋪銅開始（無網路——起點點在 pad 上可自動綁 net）：逐點點擊，雙擊收尾', 'info');
+            ? pcbT('pj_zone_start_net', { net: this.state.zoneDraw.net })
+            : pcbT('pj_zone_start_nonet'), 'info');
         } else {
           this.state.zoneDraw.pts.push([px, py]);
         }
@@ -1636,10 +1662,10 @@ const pcbApp = {
         const [ax, ay] = zd.pts[zd.pts.length - 1], [bx2, by2] = zd.pts[zd.pts.length - 2];
         if (Math.hypot(ax - bx2, ay - by2) < 1e-9) zd.pts.pop();
       }
-      if (zd.pts.length < 3) { this.toast('鋪銅至少 3 個頂點，已取消', 'warn'); this.render(); return; }
+      if (zd.pts.length < 3) { this.toast(pcbT('pj_zone_min3'), 'warn'); this.render(); return; }
       this.state.userZones.push({ layer: this.state.traceLayer || 'F.Cu', net: zd.net || '', pts: zd.pts, clearance: 0.3, user: true });
       this.state.ratsnest = null;
-      this.toast(`鋪銅完成：${zd.net || '無網路'} / ${this.state.traceLayer}（避讓 0.3mm，匯出 Gerber 生效）`, 'info');
+      this.toast(pcbT('pj_zone_done', { net: zd.net || pcbT('drc_nonet'), layer: this.state.traceLayer }), 'info');
       this.render();
     });
 
@@ -1695,7 +1721,7 @@ const pcbApp = {
           if (endHit) { td.x2 = endHit.x; td.y2 = endHit.y; }
           const net = td.net || (endHit ? endHit.net : '');
           if (td.net && endHit && endHit.net && endHit.net !== td.net)
-            this.toast(`警告：兩端網路不同（${td.net} ↔ ${endHit.net}），可能短路`, 'error');
+            this.toast(pcbT('pj_net_mismatch', { a: td.net, b: endHit.net }), 'error');
           const tr = {
             id: `trace-${Date.now()}-${this.state.traces.length}`,
             x1: td.x1, y1: td.y1, x2: td.x2, y2: td.y2,
@@ -1834,7 +1860,7 @@ const pcbApp = {
     if (!container) return;
 
     if (this.state.nets.length === 0) {
-      container.innerHTML = '<p style="color: var(--muted);">尚無 Netlist 資料</p>';
+      container.innerHTML = `<p style="color: var(--muted);">${pcbT('pj_netlist_empty')}</p>`;
       return;
     }
 
