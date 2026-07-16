@@ -1264,52 +1264,87 @@ const pcbApp = {
     if (!zs.length && !zd) return;
     const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
     const layerOf = id => (state.layerStack || []).find(l => l.id === id);
+    // 動態填充模式（Status 面板）：smooth=實算避讓+thermal、rough=純半透明、disabled=只畫外框
+    const fillMode = localStorage.getItem('pcb-dyn-fill') || 'smooth';
+    const pip = (px, py, pts) => {
+      let ins = false;
+      for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+        const xi = pts[i][0], yi = pts[i][1], xj = pts[j][0], yj = pts[j][1];
+        if ((yi > py) !== (yj > py) && px < (xj - xi) * (py - yi) / (yj - yi) + xi) ins = !ins;
+      }
+      return ins;
+    };
     for (const z of zs) {
       const col = (layerOf(z.layer) || {}).color || '#16a085';
-      const off = document.createElement('canvas');
-      off.width = this.canvas.width; off.height = this.canvas.height;
-      const o = off.getContext('2d');
-      o.fillStyle = col;
-      o.globalAlpha = 0.4;
-      o.beginPath();
-      z.pts.forEach((p, i) => i ? o.lineTo(X(p[0]), Y(p[1])) : o.moveTo(X(p[0]), Y(p[1])));
-      o.closePath(); o.fill();
-      // 避讓打洞（destination-out）：異網 pad / 走線 / via
-      o.globalAlpha = 1;
-      o.globalCompositeOperation = 'destination-out';
-      const c = z.clearance || 0.3;
-      for (const comp of state.components) for (const p of (comp.pads || [])) {
-        if (p.cu === false) continue;
-        if (z.net && (p.net || '') === z.net) continue;
-        const sideOk = p.side === '*' || (z.layer === 'F.Cu' && p.side === 'F') || (z.layer === 'B.Cu' && p.side === 'B');
-        if (!sideOk) continue;
-        const a = this.padAbs(comp, p);
-        o.save();
-        o.translate(X(a.x), Y(a.y));
-        o.rotate(-(p.rot || 0) * Math.PI / 180);
-        o.fillRect(-((p.w || 0.5) / 2 + c) * scale, -((p.h || 0.5) / 2 + c) * scale,
-                   ((p.w || 0.5) + 2 * c) * scale, ((p.h || 0.5) + 2 * c) * scale);
-        o.restore();
+      if (fillMode !== 'disabled') {
+        const off = document.createElement('canvas');
+        off.width = this.canvas.width; off.height = this.canvas.height;
+        const o = off.getContext('2d');
+        o.fillStyle = col;
+        o.globalAlpha = 0.4;
+        o.beginPath();
+        z.pts.forEach((p, i) => i ? o.lineTo(X(p[0]), Y(p[1])) : o.moveTo(X(p[0]), Y(p[1])));
+        o.closePath(); o.fill();
+        if (fillMode === 'smooth') {
+          // 避讓打洞（destination-out）：異網 pad / 走線 / via；同網 pad＝thermal 環隙＋輻條
+          o.globalAlpha = 1;
+          o.globalCompositeOperation = 'destination-out';
+          const c = z.clearance || 0.3;
+          const thermalOn = z.thermal !== false && !!z.net;
+          const spokes = [];
+          for (const comp of state.components) for (const p of (comp.pads || [])) {
+            if (p.cu === false) continue;
+            const sideOk = p.side === '*' || (z.layer === 'F.Cu' && p.side === 'F') || (z.layer === 'B.Cu' && p.side === 'B');
+            if (!sideOk) continue;
+            const a = this.padAbs(comp, p);
+            const same = z.net && (p.net || '') === z.net;
+            if (same && (!thermalOn || !pip(a.x, a.y, z.pts))) continue; // 實心連接
+            o.save();
+            o.translate(X(a.x), Y(a.y));
+            o.rotate(-(p.rot || 0) * Math.PI / 180);
+            o.fillRect(-((p.w || 0.5) / 2 + c) * scale, -((p.h || 0.5) / 2 + c) * scale,
+                       ((p.w || 0.5) + 2 * c) * scale, ((p.h || 0.5) + 2 * c) * scale);
+            o.restore();
+            if (same) {
+              const L = (Math.max(p.w || 0.5, p.h || 0.5) / 2 + c + 0.05);
+              const a0 = ((p.rot || 0) % 360) * Math.PI / 180;
+              for (let k = 0; k < 4; k++) {
+                const ang = a0 + k * Math.PI / 2;
+                spokes.push([a.x, a.y, a.x + L * Math.cos(ang), a.y + L * Math.sin(ang)]);
+              }
+            }
+          }
+          o.lineCap = 'round';
+          for (const t of state.traces) {
+            if ((t.layer || 'F.Cu') !== z.layer) continue;
+            if (z.net && (t.net || '') === z.net) continue;
+            o.lineWidth = ((t.width || 0.3) + 2 * c) * scale;
+            o.beginPath(); o.moveTo(X(t.x1), Y(t.y1)); o.lineTo(X(t.x2), Y(t.y2)); o.stroke();
+          }
+          for (const v of state.vias) {
+            if (z.net && (v.net || '') === z.net) continue;
+            o.beginPath(); o.arc(X(v.x), Y(v.y), ((v.od || 0.6) / 2 + c) * scale, 0, Math.PI * 2); o.fill();
+          }
+          // 輻條（回暗色畫在 zone 圖層上；pad 本體由元件層蓋回）
+          o.globalCompositeOperation = 'source-over';
+          o.globalAlpha = 0.4;
+          o.strokeStyle = col;
+          o.lineWidth = 0.4 * scale;
+          for (const s of spokes) {
+            o.beginPath(); o.moveTo(X(s[0]), Y(s[1])); o.lineTo(X(s[2]), Y(s[3])); o.stroke();
+          }
+        }
+        ctx.drawImage(off, 0, 0);
       }
-      o.lineCap = 'round';
-      for (const t of state.traces) {
-        if ((t.layer || 'F.Cu') !== z.layer) continue;
-        if (z.net && (t.net || '') === z.net) continue;
-        o.lineWidth = ((t.width || 0.3) + 2 * c) * scale;
-        o.beginPath(); o.moveTo(X(t.x1), Y(t.y1)); o.lineTo(X(t.x2), Y(t.y2)); o.stroke();
-      }
-      for (const v of state.vias) {
-        if (z.net && (v.net || '') === z.net) continue;
-        o.beginPath(); o.arc(X(v.x), Y(v.y), ((v.od || 0.6) / 2 + c) * scale, 0, Math.PI * 2); o.fill();
-      }
-      ctx.drawImage(off, 0, 0);
       // 外框
       ctx.strokeStyle = col;
       ctx.globalAlpha = 0.9;
       ctx.lineWidth = 1;
+      if (fillMode === 'disabled') ctx.setLineDash([4, 3]);
       ctx.beginPath();
       z.pts.forEach((p, i) => i ? ctx.lineTo(X(p[0]), Y(p[1])) : ctx.moveTo(X(p[0]), Y(p[1])));
       ctx.closePath(); ctx.stroke();
+      ctx.setLineDash([]);
       ctx.globalAlpha = 1;
     }
     // 進行中預覽（虛線）
@@ -1721,7 +1756,8 @@ const pcbApp = {
         if (Math.hypot(ax - bx2, ay - by2) < 1e-9) zd.pts.pop();
       }
       if (zd.pts.length < 3) { this.toast(pcbT('pj_zone_min3'), 'warn'); this.render(); return; }
-      this.state.userZones.push({ layer: this.state.traceLayer || 'F.Cu', net: zd.net || '', pts: zd.pts, clearance: 0.3, user: true });
+      const thermal = document.getElementById('zoneThermal') ? document.getElementById('zoneThermal').checked : true;
+      this.state.userZones.push({ layer: this.state.traceLayer || 'F.Cu', net: zd.net || '', pts: zd.pts, clearance: 0.3, thermal, user: true });
       this.state.ratsnest = null;
       this.toast(pcbT('pj_zone_done', { net: zd.net || pcbT('drc_nonet'), layer: this.state.traceLayer }), 'info');
       this.render();

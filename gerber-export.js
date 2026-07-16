@@ -13,6 +13,19 @@
 window.GerberExport = (function () {
   'use strict';
 
+  // i18n：I18N 未載（純 node harness）時回 key
+  const T = (k, vars) => (typeof window !== 'undefined' && window.I18N) ? window.I18N.t(k, vars) : k;
+
+  // 點在多邊形內（even-odd ray cast；pts=[[x,y],…]）
+  const ptInPoly = (px, py, pts) => {
+    let inside = false;
+    for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+      const xi = pts[i][0], yi = pts[i][1], xj = pts[j][0], yj = pts[j][1];
+      if ((yi > py) !== (yj > py) && px < (xj - xi) * (py - yi) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  };
+
   // ---------- CRC32 + ZIP（store，無壓縮） ----------
   const CRC_TABLE = (() => {
     const t = new Uint32Array(256);
@@ -277,17 +290,31 @@ window.GerberExport = (function () {
       if (uz.length) {
         uz.forEach(z => gf.region(z.pts));
         gf.lpc();
+        const spokes = []; // 熱風焊盤輻條（LPD 後畫，避免被後續清除）
         for (const z of uz) {
           const cl = z.clearance || 0.3;
+          const thermalOn = z.thermal !== false && !!z.net;
           (state.components || []).forEach(cp => (cp.pads || []).forEach(pad => {
             if (pad.cu === false) return;
-            if (z.net && (pad.net || '') === z.net) return;
             const hit = pad.side === '*' || (pad.side === 'F' && idx === 0) || (pad.side === 'B' && idx === cuStack.length - 1);
             if (!hit) return;
             const p = padAbsFn(cp, pad);
             const radius = pad.shape === 'circle' ? pad.w / 2 + cl
               : pad.shape === 'oval' ? Math.min(pad.w, pad.h) / 2 + cl
               : pad.shape === 'roundrect' ? (pad.rr || 0.25) * Math.min(pad.w, pad.h) + cl : cl;
+            if (z.net && (pad.net || '') === z.net) {
+              // 同網 pad：熱風焊盤＝清出環隙＋4 輻條（pad 本體由後續 pad pass 補回）
+              if (thermalOn && ptInPoly(p.x, p.y, z.pts)) {
+                gf.region(padOutline(p.x, p.y, pad.w + 2 * cl, pad.h + 2 * cl, ((pad.rot || 0) % 360 + 360) % 360, radius));
+                const L = Math.max(pad.w, pad.h) / 2 + cl + 0.05;
+                const a0 = ((pad.rot || 0) % 360) * Math.PI / 180;
+                for (let k = 0; k < 4; k++) {
+                  const a = a0 + k * Math.PI / 2;
+                  spokes.push([p.x, p.y, p.x + L * Math.cos(a), p.y + L * Math.sin(a)]);
+                }
+              }
+              return;
+            }
             gf.region(padOutline(p.x, p.y, pad.w + 2 * cl, pad.h + 2 * cl, ((pad.rot || 0) % 360 + 360) % 360, radius));
           }));
           (state.traces || []).forEach(t => {
@@ -302,11 +329,12 @@ window.GerberExport = (function () {
             gf.arc3(a.x1, a.y1, a.xm, a.ym, a.x2, a.y2, (a.width || 0.3) + 2 * cl);
           });
           (state.vias || []).forEach(v => {
-            if (z.net && (v.net || '') === z.net) return;
+            if (z.net && (v.net || '') === z.net) return; // 同網 via＝實心連接（業界常規）
             gf.flash(v.x, v.y, 'C,' + AP((v.od || 0.6) + 2 * cl));
           });
         }
         gf.lpd();
+        spokes.forEach(s => gf.line(s[0], s[1], s[2], s[3], 0.4)); // 輻條 0.4mm
       }
       // 走線（跳過弧線折線，改出真圓弧）
       (state.traces || []).forEach(t => {
@@ -522,16 +550,16 @@ window.GerberExport = (function () {
 
     // ---------- 警告（誠實回報） ----------
     const zonesNoFill = (state.zones || []).length > 0 && (!state.zoneFills || !state.zoneFills.length);
-    if (zonesNoFill) warnings.push('板上有 ' + state.zones.length + ' 個鋪銅 zone 但檔內無 filled_polygon（KiCad 內按 B 灌銅後再存檔），銅層 Gerber 不含鋪銅');
+    if (zonesNoFill) warnings.push(T('ge_w_nofill', { n: state.zones.length }));
     const noPadComps = (state.components || []).filter(c => !c.pads || !c.pads.length);
-    if (noPadComps.length) warnings.push(noPadComps.length + ' 個元件無 pad 幾何（手放/公版示意），不會出現在銅層：' + noPadComps.slice(0, 8).map(c => c.ref || c.label).join(',') + (noPadComps.length > 8 ? '…' : ''));
+    if (noPadComps.length) warnings.push(T('ge_w_nopad', { n: noPadComps.length, list: noPadComps.slice(0, 8).map(c => c.ref || c.label).join(',') + (noPadComps.length > 8 ? '…' : '') }));
     if ((state.userZones || []).length)
-      warnings.push('使用者鋪銅以 LPC 清除極性避讓（避讓 ' + ((state.userZones[0] || {}).clearance || 0.3) + 'mm）；同網 pad 為實心連接（無 thermal relief）；鋪銅互疊未檢查；KiCad 匯出暫不含使用者鋪銅');
-    if (silkCount > 0) warnings.push('絲印文字以內建向量字體重繪（非 KiCad 原生字形，字寬/字距近似）；隱藏文字未輸出');
-    else warnings.push('絲印層為空（板上無絲印圖形，或匯入來源未含絲印）');
-    if (epFullPaste) warnings.push(epFullPaste + ' 個手建 footprint 散熱 EP 為 100% 錫膏開窗——量產鋼網建議縮至 50-70% 分格（KiCad 內修或請鋼網廠調整）');
-    if (cplSkipped) warnings.push('CPL 略過 ' + cplSkipped + ' 個無 pad 元件（手放/示意方塊，SMT 不置件）');
-    warnings.push('IPC-D-356A 為 KiCad 相容欄位排版（inch CUST 0）；正式電測前建議 CAM 端讀檔確認');
+      warnings.push(T('ge_w_userzone', { cl: (state.userZones[0] || {}).clearance || 0.3 }));
+    if (silkCount > 0) warnings.push(T('ge_w_silk'));
+    else warnings.push(T('ge_w_nosilk'));
+    if (epFullPaste) warnings.push(T('ge_w_ep', { n: epFullPaste }));
+    if (cplSkipped) warnings.push(T('ge_w_cpl', { n: cplSkipped }));
+    warnings.push(T('ge_w_ipc'));
 
     const out = files.map(f => ({ name: f.name, text: f.gf.text(), stats: f.gf.stats }))
       .concat(drills.map(d => ({ name: d.name, text: d.text, stats: null })))

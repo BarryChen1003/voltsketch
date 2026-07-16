@@ -449,7 +449,11 @@ window.KicadIO = (function () {
     cu.push(['31', { q: true, v: 'B.Cu' }, 'signal']);
     cu.push(['44', { q: true, v: 'Edge.Cuts' }, 'user']);
     cu.push(['37', { q: true, v: 'F.SilkS' }, 'user']);
-    const netNames = ['', ...new Set(appState.traces.map(t => t.net).filter(Boolean))];
+    const netNames = ['', ...new Set([
+      ...appState.traces.map(t => t.net),
+      ...(appState.vias || []).map(v => v.net),
+      ...(appState.userZones || []).map(z => z.net)
+    ].filter(Boolean))];
     const tree = ['kicad_pcb',
       ['version', '20240108'], ['generator', { q: true, v: 'voltsketch' }],
       ['general', ['thickness', '1.6']],
@@ -500,6 +504,17 @@ window.KicadIO = (function () {
     for (const v of appState.vias) {
       tree.push(['via', ['at', fmt(v.x + ox), fmt(v.y + oy)], ['size', fmt(v.od || 0.6)], ['drill', fmt(v.id || 0.3)],
         ['layers', { q: true, v: 'F.Cu' }, { q: true, v: 'B.Cu' }], ['net', netNo(v.net)]]);
+    }
+    // 使用者鋪銅 → zone 外框（KiCad 開檔後按 B 重灌銅；thermal=false 出實心連接）
+    for (const z of (appState.userZones || [])) {
+      const cp = z.thermal === false
+        ? ['connect_pads', 'yes', ['clearance', fmt(z.clearance || 0.3)]]
+        : ['connect_pads', ['clearance', fmt(z.clearance || 0.3)]];
+      tree.push(['zone', ['net', netNo(z.net)], ['net_name', { q: true, v: z.net || '' }],
+        ['layer', { q: true, v: z.layer || 'F.Cu' }], ['hatch', 'edge', '0.5'],
+        cp, ['min_thickness', '0.25'],
+        ['fill', 'yes', ['thermal_gap', fmt(z.clearance || 0.3)], ['thermal_bridge_width', '0.4']],
+        ['polygon', ['pts', ...z.pts.map(p => ['xy', fmt(p[0] + ox), fmt(p[1] + oy)])]]]);
     }
     return serialize(tree, 0) + '\n';
   }

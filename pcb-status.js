@@ -176,7 +176,10 @@
     frag.querySelector('#stReset').onclick = function () { editSeconds = 0; localStorage.setItem(EDIT_KEY, '0'); var el = frag.querySelector('#stEditTime'); if (el) el.textContent = fmtTime(0); };
     frag.querySelector('#stOnline').onchange = function (e) { localStorage.setItem(ONLINE_KEY, e.target.checked ? 'true' : 'false'); };
     frag.querySelectorAll('input[name="stFill"]').forEach(function (r) {
-      r.onchange = function () { localStorage.setItem(FILL_KEY, r.value); };
+      r.onchange = function () {
+        localStorage.setItem(FILL_KEY, r.value);
+        if (window.pcbApp && window.pcbApp.render) window.pcbApp.render(); // 動態填充模式即時生效
+      };
     });
   }
 
