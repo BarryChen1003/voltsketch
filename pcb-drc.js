@@ -6,6 +6,10 @@
 //   custom 以外框矩形近似（結果附註）。兩形狀距離 = 核心多邊形距離 − rA − rB。
 window.PadDrc = (() => {
 
+  // i18n：I18N 未載（純 node harness）時回 key
+  const T = (k, vars) => (typeof window !== 'undefined' && window.I18N) ? window.I18N.t(k, vars) : k;
+  const NN = net => net || T('drc_nonet');
+
   // ---------- 基礎幾何 ----------
   const ptSegDist = (px, py, x1, y1, x2, y2) => {
     const dx = x2 - x1, dy = y2 - y1, len2 = dx * dx + dy * dy;
@@ -147,9 +151,8 @@ window.PadDrc = (() => {
       if (cd - A.sh.circ - B.sh.circ >= cl.padToPad) continue;
       const d = padDist(A.sh, B.sh);
       if (d < cl.padToPad - EPS)
-        add('焊盤間距', 'error',
-          `焊盤間距：${A.label}(${A.net || '無網路'}) ↔ ${B.label}(${B.net || '無網路'}) ` +
-          `${fmt(Math.max(0, d))}mm < ${cl.padToPad}mm ${at(A.sh)}`);
+        add('drc_cat_padgap', 'error',
+          T('drc_padgap', { a: A.label, an: NN(A.net), b: B.label, bn: NN(B.net), d: fmt(Math.max(0, d)), lim: cl.padToPad, at: at(A.sh) }));
     }
 
     // 1b) 阻焊橋（mask sliver）：同面兩開窗（=pad 外形，margin 0）之間阻焊條過細會斷
@@ -164,9 +167,8 @@ window.PadDrc = (() => {
         if (cd - A.sh.circ - B.sh.circ >= sliverMin) continue;
         const d = padDist(A.sh, B.sh);
         if (d > EPS && d < sliverMin - EPS)
-          add('阻焊橋', 'warning',
-            `阻焊橋過細：${A.label} ↔ ${B.label} 開窗間 ${fmt(d)}mm < ${sliverMin}mm` +
-            `（標準綠油下限常見 0.2mm；細 pitch 量產可與板廠確認或改合併開窗）${at(A.sh)}`);
+          add('drc_cat_sliver', 'warning',
+            T('drc_sliver', { a: A.label, b: B.label, d: fmt(d), lim: sliverMin, at: at(A.sh) }));
       }
     }
 
@@ -180,9 +182,8 @@ window.PadDrc = (() => {
         if (ptSegDist(P.sh.cx, P.sh.cy, t.x1, t.y1, t.x2, t.y2) - P.sh.circ - tw >= cl.traceToPad) continue;
         const d = segPadDist(t.x1, t.y1, t.x2, t.y2, P.sh) - tw;
         if (d < cl.traceToPad - EPS)
-          add('走線對焊盤', 'error',
-            `走線(${t.net || '無網路'}/${tl}) ↔ 焊盤 ${P.label}(${P.net || '無網路'}) ` +
-            `淨距 ${fmt(Math.max(0, d))}mm < ${cl.traceToPad}mm ${at(P.sh)}`);
+          add('drc_cat_trace_pad', 'error',
+            T('drc_trace_pad', { tn: NN(t.net), tl, p: P.label, pn: NN(P.net), d: fmt(Math.max(0, d)), lim: cl.traceToPad, at: at(P.sh) }));
       }
     }
 
@@ -203,12 +204,11 @@ window.PadDrc = (() => {
         - (a.width || 0.3) / 2 - (b.width || 0.3) / 2;
       if (d >= cl.traceToTrace - EPS) continue;
       if (!a.net || !b.net) {
-        if (d > 0) add('走線間距(無網路)', 'warning',
-          `走線#${i + 1} ↔ #${j + 1} 淨距 ${fmt(d)}mm < ${cl.traceToTrace}mm（無網路資訊，若非同一網請調整）`);
+        if (d > 0) add('drc_cat_tt_nonet', 'warning',
+          T('drc_tt_nonet', { i: i + 1, j: j + 1, d: fmt(d), lim: cl.traceToTrace }));
       } else {
-        add('走線間距', 'error',
-          `走線間距：${a.net} ↔ ${b.net}（${a.layer || 'F.Cu'}）淨距 ${fmt(Math.max(0, d))}mm < ${cl.traceToTrace}mm ` +
-          `@(${a.x1.toFixed(1)},${a.y1.toFixed(1)})`);
+        add('drc_cat_tt', 'error',
+          T('drc_tt', { a: a.net, b: b.net, layer: a.layer || 'F.Cu', d: fmt(Math.max(0, d)), lim: cl.traceToTrace, x: a.x1.toFixed(1), y: a.y1.toFixed(1) }));
       }
     }
 
@@ -221,19 +221,19 @@ window.PadDrc = (() => {
         if (vnet && vnet === (u.net || '')) continue;
         const d = Math.hypot(v.x - u.x, v.y - u.y) - vr - (u.od || 0.6) / 2;
         if (d < cl.viaToVia - EPS)
-          add('via間距', 'error', `via#${i + 1}(${vnet || '無網路'}) ↔ via#${j + 1}(${u.net || '無網路'}) 淨距 ${fmt(Math.max(0, d))}mm < ${cl.viaToVia}mm @(${v.x.toFixed(1)},${v.y.toFixed(1)})`);
+          add('drc_cat_via_via', 'error', T('drc_via_via', { i: i + 1, an: NN(vnet), j: j + 1, bn: NN(u.net), d: fmt(Math.max(0, d)), lim: cl.viaToVia, x: v.x.toFixed(1), y: v.y.toFixed(1) }));
       }
       for (const t of traces) {
         if (vnet && vnet === (t.net || '')) continue;
         const d = ptSegDist(v.x, v.y, t.x1, t.y1, t.x2, t.y2) - vr - (t.width || 0.3) / 2;
         if (d < cl.traceToTrace - EPS)
-          add('via對走線', 'error', `via#${i + 1}(${vnet || '無網路'}) ↔ 走線(${t.net || '無網路'}/${t.layer || 'F.Cu'}) 淨距 ${fmt(Math.max(0, d))}mm < ${cl.traceToTrace}mm @(${v.x.toFixed(1)},${v.y.toFixed(1)})`);
+          add('drc_cat_via_trace', 'error', T('drc_via_trace', { i: i + 1, an: NN(vnet), tn: NN(t.net), tl: t.layer || 'F.Cu', d: fmt(Math.max(0, d)), lim: cl.traceToTrace, x: v.x.toFixed(1), y: v.y.toFixed(1) }));
       }
       for (const P of pads) {
         if (vnet && vnet === P.net) continue;
         const d = ptPadDist(v.x, v.y, P.sh) - vr;
         if (d < cl.padToPad - EPS)
-          add('via對焊盤', 'error', `via#${i + 1}(${vnet || '無網路'}) ↔ 焊盤 ${P.label}(${P.net || '無網路'}) 淨距 ${fmt(Math.max(0, d))}mm < ${cl.padToPad}mm @(${v.x.toFixed(1)},${v.y.toFixed(1)})`);
+          add('drc_cat_via_pad', 'error', T('drc_via_pad', { i: i + 1, an: NN(vnet), p: P.label, pn: NN(P.net), d: fmt(Math.max(0, d)), lim: cl.padToPad, x: v.x.toFixed(1), y: v.y.toFixed(1) }));
       }
     }
 
@@ -245,25 +245,25 @@ window.PadDrc = (() => {
         ? Math.min((p.w - p.slot.w) / 2, (p.h - p.slot.h) / 2)
         : (Math.min(p.w, p.h) - p.drill) / 2;
       if (ring < -EPS)
-        add('環寬', 'error', `焊盤 ${P.label} 鑽孔大於焊盤（環寬 ${fmt(ring)}mm）${at(P.sh)}`);
+        add('drc_cat_ring', 'error', T('drc_ring_neg', { p: P.label, ring: fmt(ring), at: at(P.sh) }));
       else if (ring < via.minRing - EPS)
-        add('環寬', 'error', `焊盤 ${P.label} 環寬 ${fmt(ring)}mm < ${via.minRing}mm（斷環風險）${at(P.sh)}`);
+        add('drc_cat_ring', 'error', T('drc_ring_small', { p: P.label, ring: fmt(ring), lim: via.minRing, at: at(P.sh) }));
     }
     vias.forEach((v, i) => {
       const ring = ((v.od || 0.6) - (v.id || 0.3)) / 2;
       if (ring < via.minRing - EPS)
-        add('via環寬', 'warning', `via#${i + 1} 環寬 ${fmt(ring)}mm < ${via.minRing}mm @(${v.x.toFixed(1)},${v.y.toFixed(1)})`);
+        add('drc_cat_via_ring', 'warning', T('drc_via_ring', { i: i + 1, ring: fmt(ring), lim: via.minRing, x: v.x.toFixed(1), y: v.y.toFixed(1) }));
     });
 
     // 6) 鑽孔：最小孔徑 + 孔對孔餘裕（斷鑽風險，與網路無關）
     for (const H of holes) {
       if (H.cap.d > 0 && H.cap.d < via.minDrill - EPS)
-        add('最小孔徑', 'warning', `${H.label} 鑽孔 ${fmt(H.cap.d)}mm < ${via.minDrill}mm`);
+        add('drc_cat_min_drill', 'warning', T('drc_min_drill', { h: H.label, d: fmt(H.cap.d), lim: via.minDrill }));
     }
     for (let i = 0; i < holes.length; i++) for (let j = i + 1; j < holes.length; j++) {
       const g = capsuleGap(holes[i].cap, holes[j].cap);
       if (g < holeGapMin - EPS)
-        add('孔對孔', 'error', `鑽孔過近：${holes[i].label} ↔ ${holes[j].label} 孔壁距 ${fmt(Math.max(0, g))}mm < ${holeGapMin}mm（斷鑽風險）`);
+        add('drc_cat_hole_hole', 'error', T('drc_hole_hole', { a: holes[i].label, b: holes[j].label, d: fmt(Math.max(0, g)), lim: holeGapMin }));
     }
 
     // 7) courtyard 重疊（KiCad 匯入元件有 CrtYd 外框才查；旋轉矩形精確判斷）
@@ -278,7 +278,7 @@ window.PadDrc = (() => {
           .map(([rx, ry]) => [c.x + rx * co + ry * si, c.y - rx * si + ry * co]);
       };
       if (polyDist(poly(A), poly(B)) <= EPS)
-        add('courtyard', 'warning', `courtyard 重疊：${A.ref || A.label} ↔ ${B.ref || B.label} @(${A.x.toFixed(1)},${A.y.toFixed(1)})`);
+        add('drc_cat_courtyard', 'warning', T('drc_courtyard', { a: A.ref || A.label, b: B.ref || B.label, x: A.x.toFixed(1), y: A.y.toFixed(1) }));
     }
 
     // 8) 絲印壓 pad（同面，絲印線與 pad 銅面真重疊才報，比照 KiCad；文字不查）
@@ -294,7 +294,7 @@ window.PadDrc = (() => {
           if (ptSegDist(P.sh.cx, P.sh.cy, ax, ay, bx, by) - P.sh.circ - (g.w || 0.12) / 2 >= SILK_CL) continue;
           const d = segPadDist(ax, ay, bx, by, P.sh) - (g.w || 0.12) / 2;
           if (d < SILK_CL - EPS)
-            add('絲印壓pad', 'warning', `絲印線壓到焊盤銅面：${c.ref || c.label} 絲印 ↔ ${P.label}（重疊 ${fmt(Math.abs(d))}mm）${at(P.sh)}`);
+            add('drc_cat_silk_pad', 'warning', T('drc_silk_pad', { c: c.ref || c.label, p: P.label, d: fmt(Math.abs(d)), at: at(P.sh) }));
         }
       }
     }
@@ -314,21 +314,21 @@ window.PadDrc = (() => {
         if (d >= lim - EPS) continue;
         const loc = `@(${t.x1.toFixed(1)},${t.y1.toFixed(1)})`;
         if (d >= -EPS)
-          add('走線對板框', 'warning', `走線#${i + 1}(${t.net || '無網路'}) 距板框 ${fmt(Math.max(0, d))}mm < ${lim}mm ${loc}`);
+          add('drc_cat_trace_edge', 'warning', T('drc_trace_edge', { i: i + 1, tn: NN(t.net), d: fmt(Math.max(0, d)), lim, at: loc }));
         else if (mEnd <= tw + EPS)
-          add('走線止於板框', 'warning', `走線#${i + 1}(${t.net || '無網路'}) 止於板框（城堡孔/邊緣鍍金屬刻意設計則可忽略）${loc}`);
+          add('drc_cat_edge_end', 'warning', T('drc_trace_edge_end', { i: i + 1, tn: NN(t.net), at: loc }));
         else
-          add('走線跨越板框', 'error', `走線#${i + 1}(${t.net || '無網路'}) 跨越板框 ${loc}`);
+          add('drc_cat_edge_cross', 'error', T('drc_trace_edge_cross', { i: i + 1, tn: NN(t.net), at: loc }));
       }
     }
 
     // 誠實附註
     if (customCount > 0)
-      res.push({ type: 'info', message: `${customCount} 個 custom 形狀焊盤以外框矩形近似檢查` });
+      res.push({ type: 'info', message: T('drc_custom_approx', { n: customCount }) });
     if ((state.zoneFills || []).length > 0)
-      res.push({ type: 'info', message: '鋪銅避讓未檢查（沿用 KiCad 填充結果）' });
+      res.push({ type: 'info', message: T('drc_zone_skip') });
     Object.entries(tally).forEach(([k, n]) => {
-      if (n > CAP) res.push({ type: 'info', message: `${k}：僅列前 ${CAP} 筆，另有 ${n - CAP} 筆（共 ${n}）` });
+      if (n > CAP) res.push({ type: 'info', message: T('drc_capped', { cat: T(k), cap: CAP, more: n - CAP, total: n }) });
     });
     return res;
   };
