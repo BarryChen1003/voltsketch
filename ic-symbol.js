@@ -84,5 +84,39 @@ window.ICSymbol = (function () {
     return { svg, width: W, height: H };
   }
 
-  return { render };
+  // 多 unit 拆分：腳數 > maxPins 時按功能拆（datasheet multi-unit 慣例），
+  // 解決巨型 BGA 單一符號縮到不可讀的問題。
+  //   - 電源/接地（type=power|ground）獨立一個 PWR unit，同名多腳聚合成單 stub（腳號欄顯示 ×N，
+  //     完整球號見下方接腳定義表）。
+  //   - 其餘訊號腳依原順序每 maxPins 一個 unit，左右兩欄橫排（最可讀）。
+  // 回傳 { split, units:[{ label:{kind:'sig',i,n}|{kind:'pwr'}|null, svg, width, height }] }
+  function resideLR(list) {
+    const half = Math.ceil(list.length / 2);
+    return list.map((p, i) => ({ ...p, side: i < half ? 'L' : 'R' }));
+  }
+  function renderMulti(ic, maxPins) {
+    maxPins = maxPins || 80;
+    const pins = ic.pins || [];
+    if (pins.length <= maxPins) return { split: false, units: [Object.assign({ label: null }, render(ic))] };
+    const isPwr = p => /^(power|ground)$/i.test(p.type || '');
+    const sig = pins.filter(p => !isPwr(p));
+    const pwr = pins.filter(isPwr);
+    // 電源/地同名聚合
+    const agg = {};
+    pwr.forEach(p => { const k = epName(p); (agg[k] = agg[k] || []).push(p); });
+    const pwrPins = Object.values(agg).map(list => ({
+      name: list[0].name, ep: list[0].ep, type: list[0].type,
+      num: list.length > 1 ? '×' + list.length : String(list[0].num)
+    }));
+    const units = [];
+    const nChunk = Math.max(1, Math.ceil(sig.length / maxPins));
+    for (let i = 0; i < nChunk; i++) {
+      const c = sig.slice(i * Math.ceil(sig.length / nChunk), (i + 1) * Math.ceil(sig.length / nChunk));
+      if (c.length) units.push(Object.assign({ label: { kind: 'sig', i: i + 1, n: nChunk } }, render({ ...ic, pins: resideLR(c) })));
+    }
+    if (pwrPins.length) units.push(Object.assign({ label: { kind: 'pwr' } }, render({ ...ic, pins: resideLR(pwrPins) })));
+    return { split: true, units };
+  }
+
+  return { render, renderMulti };
 })();

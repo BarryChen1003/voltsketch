@@ -75,9 +75,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./auth-config.js?v=2026-07-04a"></script>
   <script src="./auth.js?v=2026-07-04b"></script>
-  <script src="./ic-symbol.js"></script>
+  <script src="./ic-symbol.js?v=2026-07-16a"></script>
   <script src="./ic-data.js?v=42"></script>
-  <script src="./ic-i18n.js?v=2026-07-14d"></script>
+  <script src="./ic-i18n.js?v=2026-07-16a"></script>
   <script src="./ic-i18n-data.js?v=2026-07-14d"></script>
   <script src="./ic-pin-i18n-data.js?v=2026-07-14s"></script>
   <script src="./ic-crit-i18n-data.js?v=2026-07-14c"></script>
@@ -148,7 +148,9 @@
     }
     function detailCard(ic) {
       if (window.icLocalized) ic = icLocalized(ic);
-      const sym = ICSymbol.render(ic);
+      const mu = ICSymbol.renderMulti ? ICSymbol.renderMulti(ic) : { split: false, units: [Object.assign({ label: null }, ICSymbol.render(ic))] };
+      const unitLabel = l => !l ? '' : (l.kind === 'pwr' ? ui('unitPwr') : ui('unitSig') + (l.n > 1 ? ` ${l.i}/${l.n}` : ''));
+      const symBoxes = mu.units.map(u => (u.label ? `<div style="font-size:12px;color:#64748b;margin:8px 0 2px"><b>${esc(ic.part)}</b> — ${esc(unitLabel(u.label))}</div>` : '') + `<div class="symbol-box">${u.svg}</div>`).join('');
       const specs = (ic.specs || []).map(s => `<div class="spec-row"><div class="k">${esc(s.k)}</div><div class="v">${esc(s.v)}</div></div>`).join('');
       const drop = (ic.dropIn || []).map(d => `<li><b style="color:#15803d">${esc(d.part)}</b> — ${esc(d.note || '')}</li>`).join('');
       const crit = (ic.secondSource || []).map(s => `<li>${esc(s)}</li>`).join('');
@@ -165,7 +167,7 @@
             <span id="exportMsg" style="font-size:12px;color:#94a3b8"></span>
           </div></div>
         <div style="background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;padding:12px;margin:12px 0;font-size:13px">${row(esc(ui('whatIs')), ic.whatIs)}${row(esc(ui('func')), ic.func)}${row(esc(ui('usedIn')), ic.usedIn)}</div>
-        <div class="symbol-box">${sym.svg}</div>
+        ${symBoxes}
         <div class="spec-box"><h3>${esc(ui('specs'))}</h3>${specs}</div>
         <div class="sec"><h4 style="color:#15803d">${esc(ui('dropIn'))}</h4>${drop ? `<ul>${drop}</ul>` : `<p style="color:#64748b;font-size:13px">${esc(ui('none'))}</p>`}</div>
         ${crit ? `<div class="sec"><h4>${esc(ui('critTitle'))}</h4><ul>${crit}</ul></div>` : ''}
