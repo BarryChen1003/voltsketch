@@ -21,8 +21,11 @@ window.FootprintGen = (function () {
     if (fam === 'SO') fam = 'SOIC';
     if (fam === 'CFP' || fam === 'DFP') fam = 'CFP';
     if (fam === 'DHVQFN') fam = 'QFN';
+    // 全名寫法（DLP 等）：Ball Grid Array / Pin Grid Array
+    if (!fam && /ball\s*grid\s*array/i.test(s)) fam = 'BGA';
+    if (!fam && (/pin\s*grid\s*array/i.test(s) || /\bPGA\b/.test(s))) fam = 'PGA';
     const cntM = s.match(/(\d{1,3})\s*[-–]?\s*(?:pin|Pin|腳)/) || s.match(/[A-Z](?:QFN|SON|DFN|SOIC|SSOP|SOP|SOT|QFP|GA)[^\d]{0,6}(\d{1,3})/i) || s.match(/-(\d{1,3})\b/);
-    const dimM = s.match(/(\d+(?:\.\d+)?)\s*[×x]\s*(\d+(?:\.\d+)?)\s*mm/);
+    const dimM = s.match(/(\d+(?:\.\d+)?)\s*(?:mm)?\s*[×x]\s*(\d+(?:\.\d+)?)\s*mm/);
     const pitchM = s.match(/(\d\.\d+)\s*mm\s*pitch/i);
     return {
       fam,
@@ -38,7 +41,7 @@ window.FootprintGen = (function () {
   const DUAL_GW = ['SOIC', 'TSSOP', 'HTSSOP', 'MSOP', 'VSSOP', 'SSOP', 'SOP', 'SOT23', 'SOT', 'SC70', 'CFP'];
   const DUAL_NL = ['WSON', 'SON', 'WDFN', 'DFN', 'X2SON'];
   const QUAD_GW = ['HTQFP', 'TQFP', 'LQFP', 'QFP'];
-  const GRID = ['LGA', 'TLGA', 'BGA', 'DSBGA', 'FCBGA', 'FCCSP', 'WCSP', 'CSP'];
+  const GRID = ['LGA', 'TLGA', 'BGA', 'DSBGA', 'FCBGA', 'FCCSP', 'WCSP', 'CSP', 'PGA'];
   const THT_DUAL = ['PDIP', 'DIP'];
 
   // 家族預設（body 寬 mm、pitch mm、pad 長）——缺尺寸時用
@@ -96,6 +99,13 @@ window.FootprintGen = (function () {
       else { x = -half(k - 3 * per - 1); y = -bh / 2; w = padW; h = padL; }             // 上（右→左）
       pads.push(mkPad(k, p.name, x, y, w, h));
     }
+    // 角落腳（TI RGE "Corner Pins" A1..A4）：A1 左上，依左下/右下/右上排
+    const corners = (ic.pins || []).filter(p => !p.ep && /^A[1-4]$/.test(String(p.num).trim()));
+    if (corners.length) {
+      const pos = { A1: [-bw / 2, -bh / 2], A2: [-bw / 2, bh / 2], A3: [bw / 2, bh / 2], A4: [bw / 2, -bh / 2] };
+      corners.forEach(p => { const c = pos[p.num]; if (c) pads.push(mkPad(p.num, p.name, c[0], c[1], 0.6, 0.6)); });
+      warn.push('角落腳 A1–A4 以四角名目位置近似');
+    }
     const ep = epPin(ic);
     if (ep) pads.push(mkPad(ep.num, ep.name, 0, 0, r2(bw * 0.55), r2(bh * 0.55), { shape: 'rect', rr: 0 }));
     return { pads, body: { w: bw, h: bh }, meta: { family: 'QFN', pitch } };
@@ -151,17 +161,27 @@ window.FootprintGen = (function () {
     return r;
   }
 
-  // ---- 格狀（LGA/BGA，球號 A1..K10；JEDEC 列字母跳 I,O,Q,S,X,Z）----
-  const ROWS = 'ABCDEFGHJKLMNPRTUVWY';
-  function grid(ic, pk, warn) {
+  // ---- 格狀（LGA/BGA/PGA，球號 A1..AA26）----
+  // 列字母序候選：JEDEC 跳 I,O,Q,S,X,Z／跳 I,O,Q,S（DLP 系用到 X,Z,AA）／全字母
+  const ROW_SEQS = ['ABCDEFGHJKLMNPRTUVWY', 'ABCDEFGHJKLMNPRTUVWXYZ', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
+  function rowSeqFor(letters) {
+    for (const base of ROW_SEQS) {
+      const seq = base.split('').concat(base.split('').map(c => 'A' + c));
+      if (letters.every(L => seq.indexOf(L) >= 0)) return seq;
+    }
+    return null;
+  }
+  function grid(ic, pk, warn, tht) {
     const balls = (ic.pins || []).filter(p => !p.ep && /^[A-Z]{1,2}\d{1,2}$/.test(String(p.num).trim()));
     if (balls.length < 4) return null;
+    const letters = [...new Set(balls.map(p => String(p.num).match(/^([A-Z]{1,2})/)[1]))];
+    const seq = rowSeqFor(letters);
+    if (!seq) { warn.push('球號列字母超出支援序列'); return null; }
     let maxR = 0, maxC = 0;
     const parsed = [];
     for (const p of balls) {
       const m = String(p.num).match(/^([A-Z]{1,2})(\d{1,2})$/);
-      const ri = ROWS.indexOf(m[1]);
-      if (ri < 0) { warn.push('球號列字母 ' + m[1] + ' 超出支援'); return null; }
+      const ri = seq.indexOf(m[1]);
       const ci = parseInt(m[2]) - 1;
       maxR = Math.max(maxR, ri); maxC = Math.max(maxC, ci);
       parsed.push({ p, ri, ci });
@@ -169,12 +189,15 @@ window.FootprintGen = (function () {
     const rows = maxR + 1, cols = maxC + 1;
     let pitch = pk.pitch;
     if (!pitch && pk.bw) pitch = snapPitch(Math.min(pk.bw / cols, (pk.bh || pk.bw) / rows));
-    if (!pitch) { pitch = 0.5; warn.push('pitch 未載，預設 0.5mm'); }
+    if (!pitch) { pitch = tht ? 2.54 : 0.5; warn.push('pitch 未載，預設 ' + (tht ? 2.54 : 0.5) + 'mm'); }
     const bw = pk.bw || r2(cols * pitch), bh = pk.bh || r2(rows * pitch);
-    const d = r2(pitch * 0.55);
-    const pads = parsed.map(({ p, ri, ci }) =>
-      mkPad(p.num, p.name, (ci - (cols - 1) / 2) * pitch, (ri - (rows - 1) / 2) * pitch, d, d, { shape: 'circle', rr: 0 }));
-    return { pads, body: { w: bw, h: bh }, meta: { family: 'GRID', pitch, rows, cols } };
+    const pads = parsed.map(({ p, ri, ci }) => {
+      const x = (ci - (cols - 1) / 2) * pitch, y = (ri - (rows - 1) / 2) * pitch;
+      return tht
+        ? mkPad(p.num, p.name, x, y, 1.4, 1.4, { shape: 'circle', rr: 0, drill: 0.7, type: 'thru_hole', side: '*' })
+        : mkPad(p.num, p.name, x, y, r2(pitch * 0.55), r2(pitch * 0.55), { shape: 'circle', rr: 0 });
+    });
+    return { pads, body: { w: bw, h: bh }, meta: { family: tht ? 'PGA' : 'GRID', pitch, rows, cols } };
   }
 
   function fromIC(ic) {
@@ -183,14 +206,24 @@ window.FootprintGen = (function () {
     if (!pk.fam) return { ok: false, reason: '封裝家族無法辨識：' + (ic.package || '(空)') };
     let r = null;
     try {
-      if (GRID.includes(pk.fam)) r = grid(ic, pk, warn);
+      if (GRID.includes(pk.fam)) {
+        r = grid(ic, pk, warn, pk.fam === 'PGA');
+        // 數字腳小型 LGA（如 TI ZFP）：無球號 → 四邊周邊近似
+        if (!r) {
+          const np = numericPins(ic).length;
+          if (np >= 8 && np <= 48 && np % 4 === 0) {
+            r = quadNoLead(ic, pk, warn);
+            if (r) { r.meta.family = 'LGA(周邊近似)'; warn.push('數字腳 LGA 以四邊周邊近似（實際 land pattern 依原廠）'); }
+          }
+        }
+      }
       else if (QUAD_NL.includes(pk.fam)) r = quadNoLead(ic, pk, warn);
       else if (QUAD_GW.includes(pk.fam)) r = quadGullwing(ic, pk, warn);
       else if (DUAL_GW.includes(pk.fam) || DUAL_NL.includes(pk.fam) || THT_DUAL.includes(pk.fam)) r = dualGullwing(ic, pk, warn);
     } catch (e) { return { ok: false, reason: '產生失敗：' + e.message }; }
     if (!r || !r.pads.length) return { ok: false, reason: '此封裝腳號型態不支援參數化（如角落腳/混合編號）' };
-    // 腳數核對：數字腳全進 pad 才算成功
-    const expect = numericPins(ic).length + (epPin(ic) ? 1 : 0);
+    // 腳數核對：條目所有腳（含 EP）都該有對應 pad
+    const expect = (ic.pins || []).length;
     if (r.pads.length !== expect) warn.push('pad 數 ' + r.pads.length + ' ≠ 條目腳數 ' + expect);
     r.ok = true;
     r.meta.source = '參數化 IPC-7351 名目近似（量產前以原廠 land pattern 覆核）';
