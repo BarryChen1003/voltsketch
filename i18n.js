@@ -566,7 +566,26 @@ window.I18N = (function () {
     pl_c_term: { zh: '螺絲端子 5.08mm（THT）', en: 'Screw terminal 5.08mm (THT)', ja: 'ネジ端子 5.08mm（THT）', ko: '나사 단자 5.08mm(THT)' },
     pl_c_fuse: { zh: '保險絲（chip）', en: 'Fuse (chip)', ja: 'チップヒューズ', ko: '칩 퓨즈' },
     pl_c_tp:   { zh: '測試點', en: 'Test point', ja: 'テストポイント', ko: '테스트 포인트' },
-    pl_c_hole: { zh: '安裝孔（NPTH）', en: 'Mounting hole (NPTH)', ja: '取付穴（NPTH）', ko: '장착 홀(NPTH)' }
+    pl_c_hole: { zh: '安裝孔（NPTH）', en: 'Mounting hole (NPTH)', ja: '取付穴（NPTH）', ko: '장착 홀(NPTH)' },
+
+    // ---- Constraint Manager（約束管理）----
+    cm_title:    { zh: '約束管理（Constraint Manager）', en: 'Constraint Manager', ja: '制約マネージャ', ko: '제약 관리자' },
+    cm_class:    { zh: '類別', en: 'Class', ja: 'クラス', ko: '클래스' },
+    cm_patterns: { zh: '規則（net 含字串或 /regex/，逗號分隔）', en: 'Patterns (substring or /regex/, comma-sep)', ja: 'パターン（部分一致か /regex/、カンマ区切り）', ko: '패턴(부분 일치 또는 /regex/, 쉼표 구분)' },
+    cm_minw:     { zh: '線寬≥', en: 'Width ≥', ja: '線幅≥', ko: '선폭≥' },
+    cm_maxlen:   { zh: '長度≤', en: 'Length ≤', ja: '長さ≤', ko: '길이≤' },
+    cm_add:      { zh: '＋類別', en: '+ Class', ja: '＋クラス', ko: '＋클래스' },
+    cm_reset:    { zh: '還原預設', en: 'Reset defaults', ja: '初期値に戻す', ko: '기본값 복원' },
+    cm_nets_btn: { zh: '檢視 net 分類', en: 'View net classes', ja: 'ネット分類を表示', ko: '넷 분류 보기' },
+    cm_no_nets:  { zh: '板上尚無 net', en: 'No nets on board yet', ja: '基板上にネットなし', ko: '보드에 넷 없음' },
+    cm_del:      { zh: '刪除類別', en: 'Delete class', ja: 'クラス削除', ko: '클래스 삭제' },
+    cm_matrix:   { zh: '類別間距矩陣（mm；空白＝用全域 DRC 間距）', en: 'Class-to-class clearance matrix (mm; blank = global DRC clearance)', ja: 'クラス間クリアランス行列（mm；空欄＝全体 DRC 値）', ko: '클래스 간 간격 행렬(mm; 공백=전역 DRC 값)' },
+    cm_hint:     { zh: 'net 依規則歸類（DEFAULT 收尾）；跑 DRC 時套用類別線寬/長度/間距約束與銳角檢查。', en: 'Nets are classified by pattern (DEFAULT catches the rest); DRC applies per-class width/length/clearance constraints and the acute-angle check.', ja: 'ネットはパターンで分類（残りは DEFAULT）；DRC 実行時にクラス別の線幅/長さ/クリアランス制約と鋭角チェックを適用。', ko: '넷은 패턴으로 분류(나머지는 DEFAULT); DRC 실행 시 클래스별 선폭/길이/간격 제약과 예각 검사를 적용.' },
+    cm_e_width:  { zh: '約束線寬：{net}（{cls}）有 {n} 段 < {min}mm（最細 {seen}mm）', en: 'Constraint width: {net} ({cls}) has {n} segment(s) < {min}mm (thinnest {seen}mm)', ja: '制約線幅：{net}（{cls}）に {min}mm 未満が {n} 本（最細 {seen}mm）', ko: '제약 선폭: {net}({cls})에 {min}mm 미만 {n}개(최소 {seen}mm)' },
+    cm_e_len:    { zh: '約束線長：{net}（{cls}）總長 {len}mm > {max}mm', en: 'Constraint length: {net} ({cls}) total {len}mm > {max}mm', ja: '制約線長：{net}（{cls}）合計 {len}mm > {max}mm', ko: '제약 길이: {net}({cls}) 합계 {len}mm > {max}mm' },
+    cm_e_clear:  { zh: '類別間距：{netA}（{clsA}）↔ {netB}（{clsB}）間距 {d}mm < 要求 {req}mm', en: 'Class clearance: {netA} ({clsA}) ↔ {netB} ({clsB}) gap {d}mm < required {req}mm', ja: 'クラス間クリアランス：{netA}（{clsA}）↔ {netB}（{clsB}）間隔 {d}mm < 要求 {req}mm', ko: '클래스 간격: {netA}({clsA}) ↔ {netB}({clsB}) 간격 {d}mm < 요구 {req}mm' },
+    cm_w_acute:  { zh: '銳角走線：{net} 於 ({x},{y}) 夾角 {ang}° < 90°（酸角蝕刻風險）', en: 'Acute-angle trace: {net} at ({x},{y}) angle {ang}° < 90° (acid-trap risk)', ja: '鋭角配線：{net} の ({x},{y}) で {ang}° < 90°（アシッドトラップの恐れ）', ko: '예각 배선: {net}의 ({x},{y})에서 {ang}° < 90°(에칭 트랩 위험)' },
+    cm_w_acute_more: { zh: '…另有 {n} 處銳角未列出', en: '…{n} more acute angles not listed', ja: '…他に {n} 箇所の鋭角あり', ko: '…예각 {n}곳 더 있음' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';

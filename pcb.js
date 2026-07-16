@@ -564,6 +564,9 @@ const pcbApp = {
     // Layout 規則稽核（net 線寬下限/線長上限/差分對長度差）
     if (window.NetRules) results.push(...window.NetRules.audit(this.state.netRules || [], this.state));
 
+    // Constraint Manager：class 線寬/線長/類別間距矩陣/銳角
+    if (window.ConstraintMgr) results.push(...window.ConstraintMgr.audit(window.ConstraintMgr.load(), this.state, rules.clearance.traceToTrace));
+
     // 未連線統計（飛線）
     if (window.Ratsnest) {
       const rl = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
