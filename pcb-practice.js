@@ -1,10 +1,10 @@
 // PCB Practice Mode
+// 練習內容四語字典在 i18n.js（prac_* keys）；資料只存 key，render 時解析（切語言即時生效）
+const pracT = (k, vars) => (typeof window !== 'undefined' && window.I18N) ? window.I18N.t(k, vars) : k;
 const PCBPractice = {
   exercises: [
     {
-      id: 'simple-led',
-      title: '簡單 LED 電路',
-      description: '練習放置電阻和 LED，建立簡單的 LED 電路',
+      id: 'simple-led', k: 'prac_sl',
       difficulty: 'beginner',
       components: [
         { type: 'resistor', label: 'R1', value: '330Ω' },
@@ -15,16 +15,10 @@ const PCBPractice = {
         { from: 'R1.pin2', to: 'LED1.anode', net: 'LED' },
         { from: 'LED1.cathode', to: 'GND', net: 'GND' }
       ],
-      hints: [
-        '電阻用於限制電流',
-        'LED 的陽極（長腳）連接到電阻',
-        'LED 的陰極（短腳）連接到 GND'
-      ]
+      hints: 3
     },
     {
-      id: 'voltage-divider',
-      title: '分壓器電路',
-      description: '練習建立電阻分壓器',
+      id: 'voltage-divider', k: 'prac_vd',
       difficulty: 'beginner',
       components: [
         { type: 'resistor', label: 'R1', value: '10kΩ' },
@@ -35,16 +29,10 @@ const PCBPractice = {
         { from: 'R1.pin2', to: 'R2.pin1', net: 'VOUT' },
         { from: 'R2.pin2', to: 'GND', net: 'GND' }
       ],
-      hints: [
-        'VOUT = VCC * R2 / (R1 + R2)',
-        '兩個電阻串聯',
-        '輸出電壓在兩個電阻之間'
-      ]
+      hints: 3
     },
     {
-      id: 'rc-filter',
-      title: 'RC 濾波器',
-      description: '練習建立 RC 低通濾波器',
+      id: 'rc-filter', k: 'prac_rc',
       difficulty: 'intermediate',
       components: [
         { type: 'resistor', label: 'R1', value: '1kΩ' },
@@ -55,16 +43,10 @@ const PCBPractice = {
         { from: 'R1.pin2', to: 'C1.pin1', net: 'VOUT' },
         { from: 'C1.pin2', to: 'GND', net: 'GND' }
       ],
-      hints: [
-        '截止頻率 fc = 1 / (2π * R * C)',
-        '電阻和電容串聯',
-        '輸出在 R 和 C 之間'
-      ]
+      hints: 3
     },
     {
-      id: 'buck-converter',
-      title: 'Buck 轉換器',
-      description: '練習建立 Buck 降壓轉換器電路',
+      id: 'buck-converter', k: 'prac_bk',
       difficulty: 'advanced',
       components: [
         { type: 'dcdc', label: 'U1', value: '5V' },
@@ -78,11 +60,7 @@ const PCBPractice = {
         { from: 'C1.pin2', to: 'GND', net: 'GND' },
         { from: 'U1.VOUT-', to: 'GND', net: 'GND' }
       ],
-      hints: [
-        'Buck 轉換器用於降壓',
-        '輸入和輸出都需要電容濾波',
-        '注意接線正確'
-      ]
+      hints: 3
     }
   ],
 
@@ -96,11 +74,11 @@ const PCBPractice = {
 
     container.innerHTML = this.exercises.map(ex => `
       <div class="practice-item" data-id="${ex.id}">
-        <div class="practice-title">${ex.title}</div>
-        <div class="practice-desc">${ex.description}</div>
+        <div class="practice-title">${pracT(ex.k + '_t')}</div>
+        <div class="practice-desc">${pracT(ex.k + '_d')}</div>
         <div class="practice-meta">
           <span class="difficulty ${ex.difficulty}">${this.getDifficultyLabel(ex.difficulty)}</span>
-          <span>${ex.components.length} 個元件</span>
+          <span>${pracT('prac_comp_n', { n: ex.components.length })}</span>
         </div>
       </div>
     `).join('');
@@ -112,12 +90,12 @@ const PCBPractice = {
   },
 
   getDifficultyLabel(difficulty) {
-    const labels = {
-      beginner: '入門',
-      intermediate: '中級',
-      advanced: '進階'
+    const keys = {
+      beginner: 'prac_diff_beginner',
+      intermediate: 'prac_diff_intermediate',
+      advanced: 'prac_diff_advanced'
     };
-    return labels[difficulty] || difficulty;
+    return keys[difficulty] ? pracT(keys[difficulty]) : difficulty;
   },
 
   // Start an exercise
@@ -135,19 +113,20 @@ const PCBPractice = {
     if (!container) return;
 
     const ex = this.currentExercise;
+    const hints = Array.from({ length: ex.hints }, (_, i) => pracT(`${ex.k}_h${i + 1}`));
 
     container.innerHTML = `
       <div class="exercise-header">
-        <h3>${ex.title}</h3>
+        <h3>${pracT(ex.k + '_t')}</h3>
         <span class="difficulty ${ex.difficulty}">${this.getDifficultyLabel(ex.difficulty)}</span>
       </div>
-      
+
       <div class="exercise-description">
-        <p>${ex.description}</p>
+        <p>${pracT(ex.k + '_d')}</p>
       </div>
 
       <div class="exercise-components">
-        <h4>需要的元件：</h4>
+        <h4>${pracT('prac_comps_h')}</h4>
         <div class="component-list">
           ${ex.components.map(comp => `
             <div class="component-item">
@@ -160,7 +139,7 @@ const PCBPractice = {
       </div>
 
       <div class="exercise-connections">
-        <h4>需要的連接：</h4>
+        <h4>${pracT('prac_conns_h')}</h4>
         <div class="connection-list">
           ${ex.connections.map(conn => `
             <div class="connection-item">
@@ -174,16 +153,16 @@ const PCBPractice = {
       </div>
 
       <div class="exercise-hints">
-        <h4>💡 提示：</h4>
+        <h4>${pracT('tut_tips_label')}</h4>
         <ul>
-          ${ex.hints.map(hint => `<li>${hint}</li>`).join('')}
+          ${hints.map(hint => `<li>${hint}</li>`).join('')}
         </ul>
       </div>
 
       <div class="exercise-actions">
-        <button class="primary-button" id="checkExercise">檢查答案</button>
-        <button class="small-button" id="showSolution">顯示解答</button>
-        <button class="small-button" id="nextExercise">下一個練習</button>
+        <button class="primary-button" id="checkExercise">${pracT('prac_check')}</button>
+        <button class="small-button" id="showSolution">${pracT('prac_solution')}</button>
+        <button class="small-button" id="nextExercise">${pracT('prac_next')}</button>
       </div>
 
       <div id="exerciseResult" class="exercise-result" hidden></div>
@@ -204,14 +183,14 @@ const PCBPractice = {
     resultDiv.hidden = false;
     resultDiv.innerHTML = `
       <div class="result-success">
-        <strong>✓ 線路檢查完成</strong>
-        <p>請確認以下項目：</p>
+        <strong>${pracT('prac_check_done')}</strong>
+        <p>${pracT('prac_check_confirm')}</p>
         <ul>
-          <li>所有元件已正確放置</li>
-          <li>所有連接已完成</li>
-          <li>電源和接地已連接</li>
+          <li>${pracT('prac_check_i1')}</li>
+          <li>${pracT('prac_check_i2')}</li>
+          <li>${pracT('prac_check_i3')}</li>
         </ul>
-        <p>使用 DRC 檢查按鈕進行更詳細的檢查。</p>
+        <p>${pracT('prac_check_drc')}</p>
       </div>
     `;
   },
@@ -225,13 +204,13 @@ const PCBPractice = {
     resultDiv.hidden = false;
     resultDiv.innerHTML = `
       <div class="result-solution">
-        <strong>解答：</strong>
+        <strong>${pracT('prac_sol_h')}</strong>
         <div class="solution-circuit">
           <svg viewBox="0 0 200 100" width="200" height="100">
             ${this.generateSolutionSVG(ex)}
           </svg>
         </div>
-        <p>按照圖示連接元件即可完成練習。</p>
+        <p>${pracT('prac_sol_note')}</p>
       </div>
     `;
   },
@@ -258,6 +237,14 @@ const PCBPractice = {
     this.startExercise(this.exercises[nextIndex].id);
   }
 };
+
+// 切語言：練習清單＋開啟中的練習重繪（結果面板重置，同重新開啟）
+if (typeof document !== 'undefined') {
+  document.addEventListener('vs-lang-change', () => {
+    PCBPractice.renderExerciseList();
+    if (PCBPractice.currentExercise) PCBPractice.renderExercise();
+  });
+}
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
