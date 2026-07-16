@@ -7,8 +7,9 @@
 
 | # | 項目 | 內容 | 狀態 |
 |---|---|---|---|
-| A1 | Google 帳號權限 | Search Console 註冊驗證、GA4 建立（技術面 meta/sitemap 已備） | ❌ 卡 Gmail 帳號設定 |
-| A2 | Email 服務 | 對外聯絡信箱＋Supabase Auth SMTP（密碼重設/驗證信寄送品質） | ❌ 同上 |
+| A0 | **正式網域** | github.io 為暫時網址，成品後換自訂網域並關閉舊址。遷移 checklist（工程端屆時執行）：canonical/OG URL 全站改、Supabase Auth redirect URL、ECPay ReturnURL/ClientBackURL、CORS、GitHub Pages custom domain + HTTPS、（可能）舊址 301 | ⬜ 卡網域購買/定名 |
+| A1 | Search Console + GA4 | **必須站主本人 Google 帳號登入操作**（工程端只能備 meta 驗證檔/sitemap＋一步步指引，不能代登入）。⚠️ 建議**等 A0 網域定案再辦**——現在對 github.io 驗證，換網域要整套重來 | ⏸ 等 A0 |
+| A2 | Email 服務 | 對外聯絡信箱＋Supabase Auth SMTP（密碼重設/驗證信寄送品質）。同樣需站主本人開通，建議與 A0/A1 一起辦 | ⏸ 等 A0 |
 | A3 | 綠界特約商店 | 申請正式商店（個人賣家或公司）→ 取 MerchantID/HashKey/HashIV → `supabase secrets set` → ECPAY_ACTION_URL 換正式 → 真實小額測試（沙盒 E2E 已過） | ❌ 卡申請（3–5 工作天） |
 | A4 | 電子發票 | 正式收款（台灣）需開立發票：綠界電子發票加值服務或其他方案，接進 webhook 入帳流程 | ⬜ A3 之後 |
 | A5 | Supabase 正式部署核對 | SQL 三件（schema/export-quota/payment）＋ owner-grant 已跑？Functions 已 deploy？secrets 已設？ | ⬜ 站主核對一次 |
@@ -18,9 +19,9 @@
 | # | 項目 | 內容 | 狀態 |
 |---|---|---|---|
 | B1 | 贊助後端 | `create-order` 支援 `plan:'sponsor'`：後端驗 amount（整數/上下限）再簽章；沙盒測一筆；前端 UI 已上線（upgrade.html） | ⬜ 下一批 |
-| B2 | PCB JS 動態字串 i18n | pcb.js/pcb-drc/pcb-rules/pcb-tutorial/pcb-practice 的 toast/DRC/教學字串；先給 I18N.t 加內插；逐路徑實測。接手 prompt 已備 | ⬜ 已排程 |
+| B2 | PCB JS 動態字串 i18n 殘量 | 站主 2026-07-16 視翻譯為完結；並行 session 已做 pcb-practice（54c9f7e）。做 B4 時順手核對殘量（pcb.js toast/pcb-drc 訊息），不另開專輪 | 🔄 併入 B4 |
 | B3 | 剩餘頁面內文 i18n | upgrade.html VIP 方案卡文字、interview/login/terms/privacy/architecture 內文逐頁盤點（nav/brand 已全站自動翻） | ⬜ |
-| B4 | PCB 企業級續 | backdrill、疊層編輯器、DRC 分類細化、netlist import diff、3D 強化（Status 面板已上線） | ⬜ 待排序 |
+| B4 | **PCB 企業級（當前主線）** | 以 Allegro 標準推進：constraint manager（net class/約束表）、DRC 細化（clearance matrix/annular ring/acute angle）、疊層編輯器、padstack、鋪銅 thermal relief 實算、差分對/等長調諧、push&shove、backdrill、3D 強化（Status 面板已上線） | 🔄 2026-07-16 起主線 |
 | B5 | IC 資料補洞 | KSZ9031RNX 缺 EP 腳；AMC 系列「固定增益精值待補」 | ⬜ 小 |
 | B6 | 知識卡：特殊線路卡批4 | 沿 datasheet 打底模式續做（批1–3 共 24 張已上） | 🔄 可自主 |
 | B7 | 知識卡：產品卡填充 | 產品大分類卡片持續補充 | 🔄 可自主 |
@@ -31,6 +32,16 @@
 |---|---|---|---|
 | C1 | 付費知識卡月更 | VIP 方案文案承諾「**每月上線新內容**」——收費後即為義務。建議固定節奏：每月 5 張（6 付費分類輪流），來源沿 datasheet/教學打底管線 | ⬜ 定節奏後可自主產出 |
 | C2 | 面試題庫擴充 | 12 個月方案賣點；現 27+ 題，持續加題（interview-i18n.sql 已有 i18n 架構） | ⬜ |
+
+## F. 細修（站主 2026-07-16 驗收回饋，整體完成後逐項修）
+
+| # | 項目 | 內容 | 狀態 |
+|---|---|---|---|
+| F1 | 知識卡付費內容不可見 | 站主反映看不到付費卡內容——查因：owner 帳號未登入？owner-grant 未跑？KB_LOCK 邏輯把 owner 也鎖？demo 模式判斷？ | ⬜ 先診斷 |
+| F2 | 知識卡內容明確性 | 部分卡片表達不夠明確——需站主指出卡片清單，逐張複審改寫 | ⬜ 待站主列卡 |
+| F3 | IC symbol 文字/圖重疊 | 部分 IC 的 symbol 渲染文字與圖形重疊——需盤點是哪幾顆（ic-symbol.js 排版問題），修渲染引擎 | ⬜ 先盤點 |
+| F4 | 多 pin IC 拆 multi-unit symbol | 大 pin 數 IC symbol 過大、與其他 IC 比例失衡——按功能拆 2~3 個 unit（如電源 bank/GPIO bank/類比 bank，KiCad unit 慣例），symbol 引擎＋資料層都要支援 | ⬜ 設計後做 |
+| F5 | 問題 IC 盤點 | 站主反映「有幾個 IC 是有問題的」——需站主列料號，逐顆核對 datasheet 修正 | ⬜ 待站主列料號 |
 
 ## D. 最終步驟（站主明說才做）
 
