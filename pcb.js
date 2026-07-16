@@ -1159,6 +1159,108 @@ const pcbApp = {
     return best;
   },
 
+  // ---- 差分對佈線 / 等長調諧（B4-③）----
+  // 配對網名：X_P↔X_N、…P↔…N、…+↔…-（存在於板上才算）
+  pairNetOf(net) {
+    if (!net) return null;
+    const subs = [['_P', '_N'], ['_N', '_P'], ['_p', '_n'], ['_n', '_p'], ['P', 'N'], ['N', 'P'], ['+', '-'], ['-', '+']];
+    for (const [a, b] of subs) {
+      if (net.endsWith(a)) {
+        const cand = net.slice(0, net.length - a.length) + b;
+        if (cand !== net && this.netExists(cand)) return cand;
+      }
+    }
+    return null;
+  },
+
+  netExists(net) {
+    for (const c of this.state.components) for (const p of (c.pads || [])) if ((p.net || '') === net) return true;
+    for (const t of this.state.traces) if ((t.net || '') === net) return true;
+    return false;
+  },
+
+  findNetPad(net, nx, ny) {
+    let best = null;
+    for (const c of this.state.components) for (const p of (c.pads || [])) {
+      if ((p.net || '') !== net) continue;
+      const a = this.padAbs(c, p);
+      const d = Math.hypot(a.x - nx, a.y - ny);
+      if (!best || d < best.d) best = { x: a.x, y: a.y, d };
+    }
+    return best && best.d <= 5 ? best : null; // 配對腳限 5mm 內
+  },
+
+  // 差分對間距：Constraint Manager 的 class pairGap > NetRules gap > 0.2mm
+  diffGapOf(net) {
+    try {
+      if (window.ConstraintMgr) {
+        const cls = ConstraintMgr.classOf(ConstraintMgr.load(), net);
+        if (cls && cls.elec && cls.elec.pairGap > 0) return cls.elec.pairGap;
+      }
+    } catch (e) { }
+    if (window.NetRules) {
+      const r = NetRules.match(this.state.netRules || [], net);
+      if (r && r.gap > 0) return r.gap;
+    }
+    return 0.2;
+  },
+
+  // 等長調諧：把 net 的最長段換成蛇形，補到目標長（空目標＝對齊配對網路）
+  meanderTune() {
+    const msg = document.getElementById('tuneMsg');
+    const say = (t, k) => { if (msg) msg.textContent = t; this.toast(t, k || 'info'); };
+    const net = document.getElementById('tuneNet')?.value?.trim();
+    if (!net) { say(pcbT('pj_tune_nonet'), 'warn'); return; }
+    if (!window.NetRules) return;
+    const L = NetRules.netLength(this.state.traces, net);
+    if (!(L > 0)) { say(pcbT('pj_tune_notrace', { net }), 'warn'); return; }
+    let target = parseFloat(document.getElementById('tuneTarget')?.value);
+    let pair = null;
+    if (!(target > 0)) {
+      pair = this.pairNetOf(net);
+      if (!pair) { say(pcbT('pj_tune_nopair', { net }), 'warn'); return; }
+      target = NetRules.netLength(this.state.traces, pair);
+    }
+    const dL = target - L;
+    if (dL < 0.05) { say(pcbT('pj_tune_already', { len: L.toFixed(2), target: target.toFixed(2) }), 'info'); return; }
+    const segs = this.state.traces.filter(t => (t.net || '') === net);
+    let seg = null, best = 0;
+    for (const t of segs) { const l = Math.hypot(t.x2 - t.x1, t.y2 - t.y1); if (l > best) { best = l; seg = t; } }
+    const w = seg.width || 0.3;
+    const s = Math.max(4 * w, 1.2);            // 每 bump 沿線耗長
+    const kMax = Math.floor((best - 1.0) / s); // 兩端留 0.5 lead
+    if (kMax < 1) { say(pcbT('pj_tune_nofit'), 'error'); return; }
+    let k = Math.min(kMax, Math.max(1, Math.ceil(dL / (2 * 2.0)))); // 振幅上限 2mm 起算
+    let A = dL / (2 * k);
+    if (A > 3.0) { say(pcbT('pj_tune_nofit'), 'error'); return; }   // 段不夠長塞不下
+    // 蛇形折線（單側方波；每 bump 額外 +2A）
+    const ux = (seg.x2 - seg.x1) / best, uy = (seg.y2 - seg.y1) / best, pxv = -uy, pyv = ux;
+    const lead = (best - k * s) / 2;
+    const pts = [[seg.x1, seg.y1]];
+    let cx = seg.x1 + ux * lead, cy = seg.y1 + uy * lead;
+    pts.push([cx, cy]);
+    for (let i = 0; i < k; i++) {
+      pts.push([cx + pxv * A, cy + pyv * A]);
+      cx += ux * (s / 2); cy += uy * (s / 2);
+      pts.push([cx + pxv * A, cy + pyv * A]);
+      pts.push([cx, cy]);
+      cx += ux * (s / 2); cy += uy * (s / 2);
+      pts.push([cx, cy]);
+    }
+    pts.push([seg.x2, seg.y2]);
+    this.state.traces.splice(this.state.traces.indexOf(seg), 1);
+    pts.forEach((p, i) => {
+      if (i === 0) return;
+      const [x1, y1] = pts[i - 1], [x2, y2] = p;
+      if (Math.hypot(x2 - x1, y2 - y1) < 1e-6) return;
+      this.state.traces.push({ id: `trace-${Date.now()}-${i}`, x1, y1, x2, y2, width: w, layer: seg.layer, net });
+    });
+    this.state.ratsnest = null;
+    const after = NetRules.netLength(this.state.traces, net);
+    say(pcbT('pj_tune_done', { net, before: L.toFixed(2), after: after.toFixed(2), target: target.toFixed(2), k, amp: A.toFixed(2) }), 'info');
+    this.render();
+  },
+
   // 走線落子後即時規則檢查（超標 toast 警示）
   checkTraceRules(tr) {
     if (!window.NetRules || !tr.net) return;
@@ -1188,6 +1290,22 @@ const pcbApp = {
         if (total > r.maxLen) { over = true; label += ' ' + pcbT('pj_draw_over'); }
       }
       if (r && r.minW > 0 && (this.state.traceWidth || 0.3) < r.minW) { over = true; label += ' │ ' + pcbT('pj_draw_thin', { lim: r.minW }); }
+    }
+    // 即時間距提示：預覽段 vs 同層異網走線（Constraint 矩陣感知）
+    if (window.PadDrc && window.PadDrc._geom) {
+      const gm = window.PadDrc._geom;
+      const lay = this.state.traceLayer || 'F.Cu';
+      const w2 = (this.state.traceWidth || 0.3) / 2;
+      const cmData = window.ConstraintMgr ? ConstraintMgr.load() : null;
+      let worstD = Infinity, worstReq = 0;
+      for (const t of this.state.traces) {
+        if ((t.layer || 'F.Cu') !== lay) continue;
+        if (td.net && t.net && t.net === td.net) continue;
+        const d = gm.segSegDist(td.x1, td.y1, td.x2, td.y2, t.x1, t.y1, t.x2, t.y2) - w2 - (t.width || 0.3) / 2;
+        const req = cmData ? ConstraintMgr.clearanceBetween(cmData, td.net || '', t.net || '', 0.15) : 0.15;
+        if (d - req < worstD - worstReq) { worstD = d; worstReq = req; }
+      }
+      if (worstD < worstReq) { over = true; label += ' │ ' + pcbT('pj_draw_clr', { d: Math.max(0, worstD).toFixed(2), lim: worstReq }); }
     }
     ctx.save();
     ctx.strokeStyle = over ? '#e74c3c' : '#2ecc71';
@@ -1663,6 +1781,9 @@ const pcbApp = {
       if (e.key === 'Enter') { e.preventDefault(); const v = e.target.value.trim(); if (v) this.placeIcFootprint(v); }
     });
 
+    // 等長調諧
+    document.getElementById('tuneBtn')?.addEventListener('click', () => this.meanderTune());
+
     // 基本元件放料
     document.getElementById('plCat')?.addEventListener('change', () => this.populatePartsVariants());
     document.getElementById('plPlaceBtn')?.addEventListener('click', () => {
@@ -1716,6 +1837,21 @@ const pcbApp = {
         const hit = this.snapTarget(b.x, b.y);
         const sx = hit ? hit.x : this.snap(b.x, g), sy = hit ? hit.y : this.snap(b.y, g);
         this.state.traceDraw = { x1: sx, y1: sy, x2: sx, y2: sy, net: hit ? hit.net : '' };
+        // 差分對模式：起點吸到 P/N 網且配對腳在近旁 → 改畫中心線，收尾展開平行對
+        const dp = document.getElementById('diffPair');
+        if (dp && dp.checked && hit && hit.net) {
+          const pairNet = this.pairNetOf(hit.net);
+          const mate = pairNet && this.findNetPad(pairNet, hit.x, hit.y);
+          if (mate) {
+            const mx = (hit.x + mate.x) / 2, my = (hit.y + mate.y) / 2;
+            this.state.traceDraw = {
+              x1: mx, y1: my, x2: mx, y2: my, net: hit.net,
+              diff: { netA: hit.net, ax: hit.x, ay: hit.y, netB: pairNet, bx: mate.x, by: mate.y }
+            };
+          } else {
+            this.toast(pcbT('pj_diff_nopair', { net: hit.net }), 'warn');
+          }
+        }
         this.render();
       } else if (this.state.tool === 'via') {
         const b = this.screenToBoard(e);
@@ -1807,6 +1943,46 @@ const pcbApp = {
     });
 
     this.canvas?.addEventListener('mouseup', (e) => {
+      if (this.state.traceDraw && this.state.traceDraw.diff) {
+        // 差分對收尾：中心線 → 兩條平行走線＋起點（及終點）fanout
+        const td = this.state.traceDraw;
+        this.state.traceDraw = null;
+        const len = Math.hypot(td.x2 - td.x1, td.y2 - td.y1);
+        if (len >= 0.05) {
+          const w = this.state.traceWidth || 0.3;
+          const gap = this.diffGapOf(td.diff.netA);
+          const half = (gap + w) / 2;
+          const ux = (td.x2 - td.x1) / len, uy = (td.y2 - td.y1) / len;
+          const pxv = -uy, pyv = ux;
+          const sideA = ((td.diff.ax - td.x1) * pxv + (td.diff.ay - td.y1) * pyv) >= 0 ? 1 : -1;
+          const ox = pxv * half * sideA, oy = pyv * half * sideA;
+          const layer = this.state.traceLayer || 'F.Cu';
+          const segs = [];
+          const mk = (x1, y1, x2, y2, net) => segs.push({
+            id: `trace-${Date.now()}-${this.state.traces.length + segs.length}`,
+            x1, y1, x2, y2, width: w, layer, net
+          });
+          mk(td.diff.ax, td.diff.ay, td.x1 + ox, td.y1 + oy, td.diff.netA);
+          mk(td.diff.bx, td.diff.by, td.x1 - ox, td.y1 - oy, td.diff.netB);
+          mk(td.x1 + ox, td.y1 + oy, td.x2 + ox, td.y2 + oy, td.diff.netA);
+          mk(td.x1 - ox, td.y1 - oy, td.x2 - ox, td.y2 - oy, td.diff.netB);
+          // 終點附近（5mm 內）有 P/N 配對腳且非起點腳 → 兩側補終端 fanout
+          const aEnd = this.findNetPad(td.diff.netA, td.x2, td.y2);
+          const bEnd = this.findNetPad(td.diff.netB, td.x2, td.y2);
+          const notStart = (p, sx2, sy2) => p && Math.hypot(p.x - sx2, p.y - sy2) > 0.01;
+          if (notStart(aEnd, td.diff.ax, td.diff.ay) && notStart(bEnd, td.diff.bx, td.diff.by)) {
+            mk(td.x2 + ox, td.y2 + oy, aEnd.x, aEnd.y, td.diff.netA);
+            mk(td.x2 - ox, td.y2 - oy, bEnd.x, bEnd.y, td.diff.netB);
+          }
+          this.state.traces.push(...segs);
+          this.state.ratsnest = null;
+          segs.slice(2, 4).forEach(t => this.checkTraceRules(t));
+          this.toast(pcbT('pj_diff_done', { a: td.diff.netA, b: td.diff.netB, gap }), 'info');
+          this.renderPartsList();
+        }
+        this.render();
+        return;
+      }
       if (this.state.traceDraw) {
         const td = this.state.traceDraw;
         this.state.traceDraw = null;
