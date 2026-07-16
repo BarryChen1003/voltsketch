@@ -273,13 +273,29 @@ window.I18N = (function () {
     pcbf_a6:        { zh: '熱源下方加散熱過孔陣列接內層/底層大銅面、加大銅厚與銅面、必要時鋁基板或散熱片、考慮氣流方向、功率元件分散避免熱集中。', en: 'Add a thermal-via array under the heat source connecting to large inner/bottom copper, increase copper weight and area, use a metal-core board or heatsink if needed, consider airflow direction, spread power devices to avoid heat concentration.', ja: '熱源の下に放熱ビアアレイを追加して内層/底層の大きな銅面に接続、銅厚と銅面を増やす、必要ならアルミ基板やヒートシンク、気流方向を考慮、電力部品を分散して熱集中を回避。', ko: '열원 아래에 방열 비아 어레이를 추가해 내층/바닥층 큰 카퍼에 연결, 동박 두께와 면적 증가, 필요 시 메탈 코어 기판이나 히트싱크, 기류 방향 고려, 전력 소자를 분산해 열 집중 회피.' },
     pcbf_refs_title:{ zh: '開源硬體公版庫', en: 'Open-source reference boards', ja: 'オープンソース公板ライブラリ', ko: '오픈소스 레퍼런스 보드' },
     pcbf_refs_body: { zh: '——「載入到 Layout」把公版的板框、層數、主要料件（含實際尺寸與正反面）、代表性走線與 via 帶進編輯器當起手板，可直接改；「疊加比較」把公版料件以虛線疊在你目前的設計上對照。載入後用右側「圖層管理」逐層開關檢視、「板上料件」看清單並點選定位。', en: '—— "Load into Layout" brings the reference board outline, layer count, main parts (with real sizes and top/bottom side), representative traces and vias into the editor as a starting board you can edit directly; "Overlay compare" shows the reference parts as dashed ghosts over your current design. After loading, use "Layers" on the right to toggle each layer and "Board parts" to list and locate parts.', ja: '——「Layout に読み込み」は公板の基板外形、層数、主要部品（実寸法と表裏を含む）、代表的な配線とビアをエディタに取り込み、直接編集できる初期基板にします；「重ね比較」は公板部品を破線ゴーストとして現在の設計に重ねます。読み込み後は右側の「レイヤー管理」で層ごとに表示切替、「基板上の部品」で一覧と位置決めができます。', ko: '—— \'Layout에 불러오기\'는 공용 보드의 외형, 층수, 주요 부품(실제 치수와 앞뒤면 포함), 대표적인 배선과 비아를 에디터에 가져와 바로 편집할 수 있는 시작 보드로 만듭니다; \'겹쳐 비교\'는 공용 보드 부품을 점선 고스트로 현재 설계 위에 겹칩니다. 불러온 후 오른쪽 \'레이어 관리\'로 층별 표시 전환, \'보드 부품\'으로 목록 확인 및 위치 지정.' },
-    pcbf_refs_warn: { zh: '⚠️ 為「教學重建版」佈局——依公板文件近似重建主要 BOM 與代表性走線，非原廠精確座標/完整 netlist；完整原理圖/PCB 源檔在各「原始碼」連結。授權多為 OSHW/CC-BY-SA。', en: '⚠️ These are "teaching-rebuild" layouts —— the main BOM and representative traces are approximately reconstructed from the reference-board docs, not the vendor exact coordinates / full netlist; the full schematic / PCB source is under each "Source" link. Licenses are mostly OSHW / CC-BY-SA.', ja: '⚠️ 「教育用再構築版」レイアウトです——公板ドキュメントから主要 BOM と代表的な配線を近似再構築したもので、メーカーの正確な座標/完全な netlist ではありません；完全な回路図/PCB ソースは各「ソース」リンクにあります。ライセンスは多くが OSHW/CC-BY-SA です。', ko: '⚠️ \'교육용 재구성판\' 레이아웃입니다 —— 공용 보드 문서로부터 주요 BOM과 대표적인 배선을 근사 재구성한 것이며, 제조사의 정확한 좌표/완전한 netlist가 아닙니다; 완전한 회로도/PCB 소스는 각 \'소스\' 링크에 있습니다. 라이선스는 대부분 OSHW/CC-BY-SA입니다.' }
+    pcbf_refs_warn: { zh: '⚠️ 為「教學重建版」佈局——依公板文件近似重建主要 BOM 與代表性走線，非原廠精確座標/完整 netlist；完整原理圖/PCB 源檔在各「原始碼」連結。授權多為 OSHW/CC-BY-SA。', en: '⚠️ These are "teaching-rebuild" layouts —— the main BOM and representative traces are approximately reconstructed from the reference-board docs, not the vendor exact coordinates / full netlist; the full schematic / PCB source is under each "Source" link. Licenses are mostly OSHW / CC-BY-SA.', ja: '⚠️ 「教育用再構築版」レイアウトです——公板ドキュメントから主要 BOM と代表的な配線を近似再構築したもので、メーカーの正確な座標/完全な netlist ではありません；完全な回路図/PCB ソースは各「ソース」リンクにあります。ライセンスは多くが OSHW/CC-BY-SA です。', ko: '⚠️ \'교육용 재구성판\' 레이아웃입니다 —— 공용 보드 문서로부터 주요 BOM과 대표적인 배선을 근사 재구성한 것이며, 제조사의 정확한 좌표/완전한 netlist가 아닙니다; 완전한 회로도/PCB 소스는 각 \'소스\' 링크에 있습니다. 라이선스는 대부분 OSHW/CC-BY-SA입니다.' },
+
+    // --- PCB JS 執行期動態字串：pcb-rules.js（NetRules.audit＋AutoRoute reason）---
+    rule_minw:      { zh: '規則線寬：{net} 有 {n} 段 < {minW}mm（最細 {minSeen}mm，規則「{pattern}」）', en: 'Width rule: {net} has {n} segment(s) < {minW}mm (thinnest {minSeen}mm, rule "{pattern}")', ja: '線幅ルール：{net} のセグメント {n} 本が {minW}mm 未満（最小 {minSeen}mm、ルール「{pattern}」）', ko: '선폭 규칙: {net}에 {minW}mm 미만 구간 {n}개(최소 {minSeen}mm, 규칙 "{pattern}")' },
+    rule_maxlen:    { zh: '規則線長：{net} 總長 {len}mm > {maxLen}mm（規則「{pattern}」）', en: 'Length rule: {net} total {len}mm > {maxLen}mm (rule "{pattern}")', ja: '配線長ルール：{net} 総長 {len}mm > {maxLen}mm（ルール「{pattern}」）', ko: '배선 길이 규칙: {net} 총 길이 {len}mm > {maxLen}mm (규칙 "{pattern}")' },
+    rule_pairlen:   { zh: '差分對長度差：{a}({la}mm) vs {b}({lb}mm) 差 {d}mm > {tol}mm', en: 'Diff-pair length mismatch: {a}({la}mm) vs {b}({lb}mm) differs by {d}mm > {tol}mm', ja: '差動ペア長差：{a}({la}mm) vs {b}({lb}mm) 差 {d}mm > {tol}mm', ko: '차동 쌍 길이 차: {a}({la}mm) vs {b}({lb}mm) 차이 {d}mm > {tol}mm' },
+    rule_gap_close: { zh: '差分對間距過近：{a}/{b} 有 {len}mm 段間距 {worst}mm < 目標 {gap}±{tol}mm（過近會改變差動阻抗）', en: 'Diff-pair gap too small: {a}/{b} has {len}mm with gap {worst}mm < target {gap}±{tol}mm (too-close spacing shifts the differential impedance)', ja: '差動ペア間隔が狭すぎ：{a}/{b} の {len}mm 区間で間隔 {worst}mm < 目標 {gap}±{tol}mm（近すぎると差動インピーダンスが変化）', ko: '차동 쌍 간격 과소: {a}/{b}의 {len}mm 구간 간격 {worst}mm < 목표 {gap}±{tol}mm(너무 가까우면 차동 임피던스가 변함)' },
+    rule_gap_uncoupled: { zh: '差分對耦合不足：{a}/{b} 未耦合 {unc}mm／{total}mm（{pct}%）＞20%（目標 gap {gap}±{tol}mm，同層才計耦合）', en: 'Diff-pair under-coupled: {a}/{b} uncoupled {unc}mm / {total}mm ({pct}%) > 20% (target gap {gap}±{tol}mm; only same-layer counts as coupled)', ja: '差動ペア結合不足：{a}/{b} 非結合 {unc}mm／{total}mm（{pct}%）＞20%（目標 gap {gap}±{tol}mm、同層のみ結合と判定）', ko: '차동 쌍 결합 부족: {a}/{b} 비결합 {unc}mm/{total}mm({pct}%) > 20%(목표 gap {gap}±{tol}mm, 같은 층만 결합으로 판정)' },
+    rule_grid_too_big: { zh: '網格過大（板太大或格太細）', en: 'Grid too large (board too big or grid too fine)', ja: 'グリッドが大きすぎます（基板が大きすぎるかグリッドが細かすぎ）', ko: '그리드 과대(보드가 너무 크거나 그리드가 너무 촘촘함)' },
+    rule_ep_outside: { zh: '端點在板框外', en: 'Endpoint outside the board outline', ja: '端点が基板外形の外です', ko: '끝점이 보드 외곽선 밖에 있음' },
+    rule_ep_blocked: { zh: '端點被異網障礙包住', en: 'Endpoint enclosed by other-net obstacles', ja: '端点が他ネットの障害物に囲まれています', ko: '끝점이 다른 네트 장애물에 둘러싸임' },
+    rule_no_path:   { zh: '找不到路徑（單層擁擠或被隔斷）', en: 'No path found (single layer congested or blocked)', ja: '経路が見つかりません（単層が混雑または遮断）', ko: '경로를 찾을 수 없음(단층 혼잡 또는 차단)' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';
   if (!LANGS.some(l => l[0] === lang)) lang = 'zh';
 
-  function t(key) { const e = D[key]; return e ? (e[lang] || e.zh) : key; }
+  function t(key, vars) {
+    const e = D[key];
+    let s = e ? (e[lang] || e.zh) : key;
+    if (vars) s = s.replace(/\{(\w+)\}/g, (m, name) => (name in vars ? String(vars[name]) : m));
+    return s;
+  }
 
   // nav 依 href 自動翻譯（不用每頁加 data-i18n）
   const NAV_MAP = {
