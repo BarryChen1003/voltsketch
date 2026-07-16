@@ -21,7 +21,7 @@
 | B1 | 贊助後端 | `create-order` 支援 `plan:'sponsor'`：後端驗 amount（整數/上下限）再簽章；沙盒測一筆；前端 UI 已上線（upgrade.html） | ⬜ 下一批 |
 | B2 | PCB JS 動態字串 i18n 殘量 | 站主 2026-07-16 視翻譯為完結；並行 session 已做 pcb-practice（54c9f7e）。做 B4 時順手核對殘量（pcb.js toast/pcb-drc 訊息），不另開專輪 | 🔄 併入 B4 |
 | B3 | 剩餘頁面內文 i18n | upgrade.html VIP 方案卡文字、interview/login/terms/privacy/architecture 內文逐頁盤點（nav/brand 已全站自動翻） | ⬜ |
-| B4 | **PCB 企業級（當前主線）** | 依序：①Constraint Manager（net class/間距矩陣/銳角 DRC）✅e3f108f ②鋪銅實算（thermal relief/避讓/動態填充/KiCad zone 匯出）✅ed37bc4 ③佈線強化（差分對/等長調諧/push&shove）⬜ ④疊層＋padstack＋backdrill ⬜（Status 面板已上線） | 🔄 模組①②完成 |
+| B4 | **PCB 企業級（當前主線）** | 依序：①Constraint Manager（net class/間距矩陣/銳角 DRC）✅e3f108f ②鋪銅實算（thermal relief/避讓/動態填充/KiCad zone 匯出）✅ed37bc4 ③佈線強化（差分對佈線+等長蛇形+即時間距提示）✅28fe289（push&shove 維持結構性不追） ④疊層＋padstack＋backdrill ⬜（Status 面板已上線） | 🔄 模組①②③完成 |
 | B5 | IC 資料補洞 | KSZ9031RNX 缺 EP 腳；AMC 系列「固定增益精值待補」 | ⬜ 小 |
 | B6 | 知識卡：特殊線路卡批4 | 沿 datasheet 打底模式續做（批1–3 共 24 張已上） | 🔄 可自主 |
 | B7 | 知識卡：產品卡填充 | 產品大分類卡片持續補充 | 🔄 可自主 |
