@@ -1,6 +1,10 @@
 // 阻焊 sliver + 差分對間距 DRC 測試
 global.window = global;
+// i18n.js 需要的最小 stub（訊息已 key 化，載 i18n.js 才能還原 zh 文字給下方 regex 斷言）
+global.localStorage = { getItem: () => null, setItem: () => { } };
+global.document = { readyState: 'loading', addEventListener: () => { } };
 const fs = require('fs');
+eval(fs.readFileSync('C:/Users/User/Documents/Web/i18n.js', 'utf8'));
 eval(fs.readFileSync('C:/Users/User/Documents/Web/pcb-drc.js', 'utf8'));
 eval(fs.readFileSync('C:/Users/User/Documents/Web/pcb-rules.js', 'utf8'));
 

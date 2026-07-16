@@ -18,6 +18,9 @@
     return net.toLowerCase().includes(pattern.toLowerCase());
   };
 
+  // i18n：I18N 未載（純 node harness）時回 key
+  const T = (k, vars) => (typeof window !== 'undefined' && window.I18N) ? window.I18N.t(k, vars) : k;
+
   const NetRules = {
     load() {
       try {
@@ -52,14 +55,14 @@
           const bad = traces.filter(t => t.net === net && (t.width || 0.3) < r.minW - 1e-9);
           if (bad.length) {
             const minSeen = Math.min(...bad.map(t => t.width || 0.3));
-            res.push({ type: 'error', message: `規則線寬：${net} 有 ${bad.length} 段 < ${r.minW}mm（最細 ${minSeen}mm，規則「${r.pattern}」）` });
+            res.push({ type: 'error', message: T('rule_minw', { net, n: bad.length, minW: r.minW, minSeen, pattern: r.pattern }) });
           }
         }
         // 2) 線長上限
         if (r.maxLen > 0) {
           const L = this.netLength(traces, net);
           if (L > r.maxLen + 1e-9)
-            res.push({ type: 'error', message: `規則線長：${net} 總長 ${L.toFixed(2)}mm > ${r.maxLen}mm（規則「${r.pattern}」）` });
+            res.push({ type: 'error', message: T('rule_maxlen', { net, len: L.toFixed(2), maxLen: r.maxLen, pattern: r.pattern }) });
         }
       }
       // 3) 差分對長度差：pairTol>0 的規則，命中 net 依基底名配對（去尾 P/N/+/-/_P/_N）
@@ -76,7 +79,7 @@
           const L0 = this.netLength(traces, g[0]), L1 = this.netLength(traces, g[1]);
           const d = Math.abs(L0 - L1);
           if (d > r.pairTol + 1e-9)
-            res.push({ type: 'warning', message: `差分對長度差：${g[0]}(${L0.toFixed(2)}mm) vs ${g[1]}(${L1.toFixed(2)}mm) 差 ${d.toFixed(2)}mm > ${r.pairTol}mm` });
+            res.push({ type: 'warning', message: T('rule_pairlen', { a: g[0], la: L0.toFixed(2), b: g[1], lb: L1.toFixed(2), d: d.toFixed(2), tol: r.pairTol }) });
         }
       }
       // 4) 差分對間距/耦合：gap>0 的規則（目標邊到邊 gap，容差 ±max(25%, 0.05mm)）
@@ -119,10 +122,10 @@
           }
           if (total < 1e-9) continue;
           if (tooClose > 1e-9)
-            res.push({ type: 'error', message: `差分對間距過近：${g[0]}/${g[1]} 有 ${tooClose.toFixed(2)}mm 段間距 ${Math.max(0, worstClose).toFixed(3)}mm < 目標 ${r.gap}±${tol.toFixed(2)}mm（過近會改變差動阻抗）` });
+            res.push({ type: 'error', message: T('rule_gap_close', { a: g[0], b: g[1], len: tooClose.toFixed(2), worst: Math.max(0, worstClose).toFixed(3), gap: r.gap, tol: tol.toFixed(2) }) });
           const unc = total - coupled - tooClose;
           if (unc > total * 0.2 + 1e-9)
-            res.push({ type: 'warning', message: `差分對耦合不足：${g[0]}/${g[1]} 未耦合 ${unc.toFixed(2)}mm／${total.toFixed(2)}mm（${Math.round(unc / total * 100)}%）＞20%（目標 gap ${r.gap}±${tol.toFixed(2)}mm，同層才計耦合）` });
+            res.push({ type: 'warning', message: T('rule_gap_uncoupled', { a: g[0], b: g[1], unc: unc.toFixed(2), total: total.toFixed(2), pct: Math.round(unc / total * 100), gap: r.gap, tol: tol.toFixed(2) }) });
         }
       }
       return res;
@@ -258,7 +261,7 @@
       const W = state.boardWidth || 100, H = state.boardHeight || 80;
       const g = opt.grid, ox = -W / 2, oy = -H / 2;
       const nx = Math.floor(W / g) + 1, ny = Math.floor(H / g) + 1;
-      if (nx * ny > opt.maxCells) return { ok: false, reason: '網格過大（板太大或格太細）' };
+      if (nx * ny > opt.maxCells) return { ok: false, reason: T('rule_grid_too_big') };
       const blocked = new Uint8Array(nx * ny);
       const idx = (ix, iy) => iy * nx + ix;
       const inb = (ix, iy) => ix >= 0 && iy >= 0 && ix < nx && iy < ny;
@@ -293,8 +296,8 @@
       });
       const toCell = (x, y) => [Math.round((x - ox) / g), Math.round((y - oy) / g)];
       const [sx, sy] = toCell(line.x1, line.y1), [ex, ey] = toCell(line.x2, line.y2);
-      if (!inb(sx, sy) || !inb(ex, ey)) return { ok: false, reason: '端點在板框外' };
-      if (blocked[idx(sx, sy)] || blocked[idx(ex, ey)]) return { ok: false, reason: '端點被異網障礙包住' };
+      if (!inb(sx, sy) || !inb(ex, ey)) return { ok: false, reason: T('rule_ep_outside') };
+      if (blocked[idx(sx, sy)] || blocked[idx(ex, ey)]) return { ok: false, reason: T('rule_ep_blocked') };
       // A*（binary heap）
       const gc = new Float32Array(nx * ny).fill(Infinity);
       const par = new Int32Array(nx * ny).fill(-1);
@@ -323,7 +326,7 @@
           if (ng < gc[ni] - 1e-9) { gc[ni] = ng; par[ni] = cur; push(ng + h(ix, iy), ni); }
         }
       }
-      if (!found) return { ok: false, reason: '找不到路徑（單層擁擠或被隔斷）' };
+      if (!found) return { ok: false, reason: T('rule_no_path') };
       // 回溯 + 共線合併
       const cells = [];
       for (let cur = goal; cur !== -1; cur = par[cur]) cells.push([cur % nx, Math.floor(cur / nx)]);
