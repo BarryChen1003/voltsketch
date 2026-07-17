@@ -209,9 +209,9 @@
         usedIn: 'Motor phase-current sensing, supply current/voltage sensing, isolated measurements feeding single-ended ADCs.',
         desc: '±250mV input, fixed-gain, single-ended-output (with REFIN) reinforced isolated amplifier (SOIC-8).',
         specs: [
-          { k: 'Function', v: 'Fixed-gain isolated amplifier, single-ended output + REFIN' },
+          { k: 'Function', v: 'Isolated amplifier (ratiometric gain via REFIN), single-ended output' },
           { k: 'Input range', v: '±250 mV' },
-          { k: 'Fixed gain', v: 'see datasheet (exact value TBD)' },
+          { k: 'Gain', v: 'Ratiometric VREFIN/(2×0.32V) = 1.5625×VREFIN (≈3.91 V/V at REFIN=2.5V)' },
           { k: 'Isolation', v: 'Reinforced' },
           { k: 'Supply', v: 'VDD1 / VDD2 each 3.0–5.5 V' },
           { k: 'Package', v: 'SOIC-8 (D)' }
@@ -224,9 +224,9 @@
         usedIn: 'モータ相電流検出、電源電流/電圧センシング、シングルエンド ADC へ接続する絶縁計測。',
         desc: '±250mV 入力・固定ゲイン・シングルエンド出力（REFIN 付）の強化絶縁アンプ（SOIC-8）。',
         specs: [
-          { k: '機能', v: '固定ゲイン絶縁アンプ・シングルエンド出力＋REFIN' },
+          { k: '機能', v: '絶縁アンプ（レシオメトリックゲイン、REFIN で出力中心設定）・シングルエンド出力' },
           { k: '入力範囲', v: '±250 mV' },
-          { k: '固定ゲイン', v: 'datasheet 参照（精値未確認）' },
+          { k: 'ゲイン', v: 'レシオメトリック VREFIN/(2×0.32V)＝1.5625×VREFIN（REFIN=2.5V 時 約3.91 V/V）' },
           { k: '絶縁', v: '強化 (Reinforced)' },
           { k: '電源', v: 'VDD1 / VDD2 各 3.0~5.5 V' },
           { k: 'パッケージ', v: 'SOIC-8 (D)' }
@@ -239,9 +239,9 @@
         usedIn: '모터 상전류 검출, 전원 전류/전압 센싱, 싱글엔드 ADC에 연결하는 절연 계측.',
         desc: '±250mV 입력·고정 이득·싱글엔드 출력(REFIN 포함)의 강화 절연 앰프(SOIC-8).',
         specs: [
-          { k: '기능', v: '고정 이득 절연 앰프·싱글엔드 출력+REFIN' },
+          { k: '기능', v: '절연 앰프(레시오메트릭 이득, REFIN로 출력 중심 설정)·싱글엔드 출력' },
           { k: '입력 범위', v: '±250 mV' },
-          { k: '고정 이득', v: 'datasheet 참조(정확값 미확인)' },
+          { k: '이득', v: '레시오메트릭 VREFIN/(2×0.32V)=1.5625×VREFIN(REFIN=2.5V 시 약 3.91 V/V)' },
           { k: '절연', v: '강화(Reinforced)' },
           { k: '전원', v: 'VDD1 / VDD2 각 3.0~5.5 V' },
           { k: '패키지', v: 'SOIC-8 (D)' }
@@ -258,7 +258,7 @@
         specs: [
           { k: 'Function', v: 'Fixed-gain isolated amplifier, differential output' },
           { k: 'Input range', v: '±50 mV' },
-          { k: 'Fixed gain', v: 'see datasheet (exact value TBD)' },
+          { k: 'Fixed gain', v: '41 V/V' },
           { k: 'Isolation', v: 'Reinforced' },
           { k: 'Supply', v: 'VDD1 / VDD2 each 3.0–5.5 V' },
           { k: 'Package', v: 'SOIC-8 (D)' }
@@ -273,7 +273,7 @@
         specs: [
           { k: '機能', v: '固定ゲイン絶縁アンプ・差動出力' },
           { k: '入力範囲', v: '±50 mV' },
-          { k: '固定ゲイン', v: 'datasheet 参照（精値未確認）' },
+          { k: '固定ゲイン', v: '41 V/V' },
           { k: '絶縁', v: '強化 (Reinforced)' },
           { k: '電源', v: 'VDD1 / VDD2 各 3.0~5.5 V' },
           { k: 'パッケージ', v: 'SOIC-8 (D)' }
@@ -288,7 +288,7 @@
         specs: [
           { k: '기능', v: '고정 이득 절연 앰프·차동 출력' },
           { k: '입력 범위', v: '±50 mV' },
-          { k: '고정 이득', v: 'datasheet 참조(정확값 미확인)' },
+          { k: '고정 이득', v: '41 V/V' },
           { k: '절연', v: '강화(Reinforced)' },
           { k: '전원', v: 'VDD1 / VDD2 각 3.0~5.5 V' },
           { k: '패키지', v: 'SOIC-8 (D)' }

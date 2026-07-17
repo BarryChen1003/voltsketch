@@ -230,8 +230,8 @@ window.IC_DATA = [
     ],
     thermalPad: null,
     specs: [
-      { k: '功能', v: '固定增益隔離放大器、單端輸出 + REFIN' },
-      { k: '輸入範圍', v: '±250 mV' }, { k: '固定增益', v: '見 datasheet（精值待補）' },
+      { k: '功能', v: '隔離放大器（比例式增益，REFIN 設定輸出中心）、單端輸出' },
+      { k: '輸入範圍', v: '±250 mV' }, { k: '增益', v: '比例式 VREFIN/(2×0.32V)＝1.5625×VREFIN（REFIN=2.5V 時約 3.91 V/V）' },
       { k: '隔離', v: '加強 (Reinforced)' }, { k: '供電', v: 'VDD1 / VDD2 各 3.0~5.5 V' },
       { k: '封裝', v: 'SOIC-8 (D)' }
     ],
@@ -259,7 +259,7 @@ window.IC_DATA = [
     thermalPad: null,
     specs: [
       { k: '功能', v: '固定增益隔離放大器、差動輸出' }, { k: '輸入範圍', v: '±50 mV' },
-      { k: '固定增益', v: '見 datasheet（精值待補）' }, { k: '隔離', v: '加強 (Reinforced)' },
+      { k: '固定增益', v: '41 V/V' }, { k: '隔離', v: '加強 (Reinforced)' },
       { k: '供電', v: 'VDD1 / VDD2 各 3.0~5.5 V' }, { k: '封裝', v: 'SOIC-8 (D)' }
     ],
     secondSource: ['封裝 + pinout 相容（SOIC-8、差動輸出）', '輸入範圍相同（±50mV）、固定增益相同', '隔離等級涵蓋', '供電範圍涵蓋', '失調/增益誤差/漂移/非線性 同等或更佳', '工作溫度涵蓋'],
