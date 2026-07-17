@@ -702,7 +702,37 @@ window.I18N = (function () {
     iv_fail_t: { zh: '讀取失敗', en: 'Load failed', ja: '読み込み失敗', ko: '불러오기 실패' },
     iv_fail_d: { zh: '無法取得題庫，請稍後再試或確認後端設定。', en: 'Could not fetch the bank; try again later or check the backend setup.', ja: 'バンクを取得できません。時間をおいて再試行するかバックエンド設定を確認してください。', ko: '뱅크를 가져올 수 없음. 잠시 후 재시도하거나 백엔드 설정을 확인하세요.' },
     iv_empty_t: { zh: '題庫為空', en: 'Bank is empty', ja: 'バンクが空です', ko: '뱅크가 비어 있음' },
-    iv_empty_d: { zh: '後端尚未匯入題目（見 SETUP-AUTH.md 匯入步驟）。', en: 'No questions imported on the backend yet (see SETUP-AUTH.md for import steps).', ja: 'バックエンドに問題が未インポート（手順は SETUP-AUTH.md 参照）。', ko: '백엔드에 문제가 아직 미가져옴(가져오기 절차는 SETUP-AUTH.md 참조).' }
+    iv_empty_d: { zh: '後端尚未匯入題目（見 SETUP-AUTH.md 匯入步驟）。', en: 'No questions imported on the backend yet (see SETUP-AUTH.md for import steps).', ja: 'バックエンドに問題が未インポート（手順は SETUP-AUTH.md 参照）。', ko: '백엔드에 문제가 아직 미가져옴(가져오기 절차는 SETUP-AUTH.md 참조).' },
+
+    // --- architecture.html（架構圖編輯器）---
+    ar_addblk: { zh: '＋ 方塊', en: '+ Block', ja: '＋ ブロック', ko: '+ 블록' },
+    ar_wire:   { zh: '連線模式', en: 'Wire mode', ja: '配線モード', ko: '배선 모드' },
+    ar_delsel: { zh: '刪除選取', en: 'Delete selected', ja: '選択を削除', ko: '선택 삭제' },
+    ar_fmt_json: { zh: 'VoltSketch JSON（可再匯入）', en: 'VoltSketch JSON (re-importable)', ja: 'VoltSketch JSON（再インポート可）', ko: 'VoltSketch JSON(재가져오기 가능)' },
+    ar_fmt_dsn: { zh: 'Specctra DSN（placement + net，文字格式）', en: 'Specctra DSN (placement + net, text format)', ja: 'Specctra DSN（placement + net、テキスト形式）', ko: 'Specctra DSN(placement+net, 텍스트 형식)' },
+    ar_exgo:   { zh: '匯出', en: 'Export', ja: 'エクスポート', ko: '내보내기' },
+    ar_imgo:   { zh: '匯入 JSON', en: 'Import JSON', ja: 'JSON をインポート', ko: 'JSON 가져오기' },
+    ar_props:  { zh: '屬性', en: 'Properties', ja: 'プロパティ', ko: '속성' },
+    ar_hint:   { zh: '選一個方塊來編輯；「連線模式」下點兩個接點建 net。', en: 'Select a block to edit; in wire mode, click two ports to create a net.', ja: 'ブロックを選択して編集。配線モードでは 2 つのポートをクリックして net を作成。', ko: '블록을 선택해 편집; 배선 모드에서 포트 두 개를 클릭해 net 생성.' },
+    ar_stats:  { zh: '統計', en: 'Statistics', ja: '統計', ko: '통계' },
+    ar_stats_n: { zh: '方塊 {b}・net {n}', en: 'Blocks {b} / nets {n}', ja: 'ブロック {b}・net {n}', ko: '블록 {b}·net {n}' },
+    ar_blk:    { zh: '方塊：{name}', en: 'Block: {name}', ja: 'ブロック：{name}', ko: '블록: {name}' },
+    ar_name:   { zh: '名稱', en: 'Name', ja: '名前', ko: '이름' },
+    ar_part:   { zh: '料號（可綁 IC 元件庫）', en: 'Part number (linkable to the IC library)', ja: '型番（IC ライブラリと連携可）', ko: '부품 번호(IC 라이브러리 연동 가능)' },
+    ar_qty:    { zh: '數量', en: 'Qty', ja: '数量', ko: '수량' },
+    ar_wh:     { zh: '寬 × 高', en: 'W × H', ja: '幅 × 高さ', ko: '폭 × 높이' },
+    ar_delblk: { zh: '刪除此方塊', en: 'Delete this block', ja: 'このブロックを削除', ko: '이 블록 삭제' },
+    ar_nets_h: { zh: '連到此方塊的 net', en: 'Nets connected to this block', ja: 'このブロックに接続された net', ko: '이 블록에 연결된 net' },
+    ar_none:   { zh: '無', en: 'none', ja: 'なし', ko: '없음' },
+    ar_netname_prompt: { zh: 'net 名稱：', en: 'Net name:', ja: 'net 名：', ko: 'net 이름:' },
+    ar_blk_default: { zh: '方塊 {n}', en: 'Block {n}', ja: 'ブロック {n}', ko: '블록 {n}' },
+    ar_login:  { zh: '請先登入', en: 'Sign in first', ja: '先にログインしてください', ko: '먼저 로그인하세요' },
+    ar_quota:  { zh: '已達本月上限', en: 'Monthly limit reached', ja: '今月の上限に達しました', ko: '이번 달 상한 도달' },
+    ar_exported_n: { zh: '已匯出，本月剩 {n} 次', en: 'Exported; {n} left this month', ja: 'エクスポート完了。今月あと {n} 回', ko: '내보냄, 이번 달 {n}회 남음' },
+    ar_exported: { zh: '已匯出', en: 'Exported', ja: 'エクスポート完了', ko: '내보냄' },
+    ar_notjson: { zh: '非 VoltSketch JSON', en: 'Not a VoltSketch JSON', ja: 'VoltSketch JSON ではありません', ko: 'VoltSketch JSON이 아님' },
+    ar_imported: { zh: '已匯入', en: 'Imported', ja: 'インポート完了', ko: '가져옴' },
+    ar_imfail: { zh: '匯入失敗：', en: 'Import failed: ', ja: 'インポート失敗：', ko: '가져오기 실패: ' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';

@@ -52,25 +52,25 @@
         </nav>
     </header>
     <div class="tools">
-      <button class="small-button" id="addBlk">＋ 方塊</button>
-      <button class="small-button" id="wireMode">連線模式</button>
-      <button class="small-button" id="delSel">刪除選取</button>
+      <button class="small-button" id="addBlk" data-i18n="ar_addblk">＋ 方塊</button>
+      <button class="small-button" id="wireMode" data-i18n="ar_wire">連線模式</button>
+      <button class="small-button" id="delSel" data-i18n="ar_delsel">刪除選取</button>
       <span style="flex:1"></span>
       <select id="exFmt" style="padding:5px 8px;border:1px solid #e2e8f0;border-radius:5px;font-size:13px">
-        <option value="json">VoltSketch JSON（可再匯入）</option>
+        <option value="json" data-i18n="ar_fmt_json">VoltSketch JSON（可再匯入）</option>
         <option value="bom">BOM CSV</option>
-        <option value="dsn">Specctra DSN（placement + net，文字格式）</option>
+        <option value="dsn" data-i18n="ar_fmt_dsn">Specctra DSN（placement + net，文字格式）</option>
       </select>
-      <button class="small-button" id="exGo">匯出</button>
-      <button class="small-button" id="imGo">匯入 JSON</button>
+      <button class="small-button" id="exGo" data-i18n="ar_exgo">匯出</button>
+      <button class="small-button" id="imGo" data-i18n="ar_imgo">匯入 JSON</button>
       <input type="file" id="imFile" accept=".json" style="display:none" />
       <span id="msg"></span>
     </div>
     <div class="arch">
       <div class="cv"><svg id="cv" width="1600" height="1000" xmlns="http://www.w3.org/2000/svg"></svg></div>
       <div class="side" id="side">
-        <h3>屬性</h3>
-        <p style="color:#94a3b8">選一個方塊來編輯；「連線模式」下點兩個接點建 net。</p>
+        <h3 data-i18n="ar_props">屬性</h3>
+        <p style="color:#94a3b8" data-i18n="ar_hint">選一個方塊來編輯；「連線模式」下點兩個接點建 net。</p>
       </div>
     </div>
   </div>
@@ -81,8 +81,10 @@
   <script src="./ic-data.js?v=43"></script>
   <script src="./vs-model.js"></script>
   <script src="./export-gate.js"></script>
+  <script src="./i18n.js?v=2026-07-17a"></script>
   <script>
     // ===== 架構圖編輯器：方塊 + port 連線 = 產品層級拓樸（非腳位級線路圖）=====
+    const T = (k, v) => window.I18N ? window.I18N.t(k, v) : k;  // i18n.js 已先載
     const GRID = 20;
     const snap = v => Math.round(v / GRID) * GRID;
     const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -137,18 +139,18 @@
     function renderSide() {
       const el = document.getElementById('side');
       const b = state.blocks.find(x => x.id === selId);
-      if (!b) { el.innerHTML = `<h3>屬性</h3><p style="color:#94a3b8">選一個方塊來編輯；「連線模式」下點兩個接點建 net。</p>
-        <h3 style="margin-top:16px">統計</h3><p>方塊 ${state.blocks.length}・net ${state.nets.length}</p>`; return; }
+      if (!b) { el.innerHTML = `<h3>${T('ar_props')}</h3><p style="color:#94a3b8">${T('ar_hint')}</p>
+        <h3 style="margin-top:16px">${T('ar_stats')}</h3><p>${T('ar_stats_n', { b: state.blocks.length, n: state.nets.length })}</p>`; return; }
       const opts = (window.IC_DATA || []).map(ic => `<option value="${esc(ic.part)}"></option>`).join('');
-      el.innerHTML = `<h3>方塊：${esc(b.name)}</h3>
-        <label>名稱</label><input id="pName" value="${esc(b.name)}"/>
-        <label>料號（可綁 IC 元件庫）</label><input id="pPart" list="parts" value="${esc(b.part || '')}"/><datalist id="parts">${opts}</datalist>
-        <label>數量</label><input id="pQty" type="number" min="1" value="${b.qty || 1}"/>
-        <label>寬 × 高</label>
+      el.innerHTML = `<h3>${T('ar_blk', { name: esc(b.name) })}</h3>
+        <label>${T('ar_name')}</label><input id="pName" value="${esc(b.name)}"/>
+        <label>${T('ar_part')}</label><input id="pPart" list="parts" value="${esc(b.part || '')}"/><datalist id="parts">${opts}</datalist>
+        <label>${T('ar_qty')}</label><input id="pQty" type="number" min="1" value="${b.qty || 1}"/>
+        <label>${T('ar_wh')}</label>
         <div style="display:flex;gap:6px"><input id="pW" type="number" step="${GRID}" value="${b.w}"/><input id="pH" type="number" step="${GRID}" value="${b.h}"/></div>
-        <p style="margin-top:12px"><button class="small-button" id="pDel">刪除此方塊</button></p>
-        <h3 style="margin-top:16px">連到此方塊的 net</h3>
-        <ul style="padding-left:16px;color:#334155">${state.nets.filter(n => n.from.block === b.id || n.to.block === b.id).map(n => `<li>${esc(n.name)}</li>`).join('') || '<li style="color:#94a3b8">無</li>'}</ul>`;
+        <p style="margin-top:12px"><button class="small-button" id="pDel">${T('ar_delblk')}</button></p>
+        <h3 style="margin-top:16px">${T('ar_nets_h')}</h3>
+        <ul style="padding-left:16px;color:#334155">${state.nets.filter(n => n.from.block === b.id || n.to.block === b.id).map(n => `<li>${esc(n.name)}</li>`).join('') || `<li style="color:#94a3b8">${T('ar_none')}</li>`}</ul>`;
       const upd = () => {
         b.name = document.getElementById('pName').value || b.name;
         b.part = document.getElementById('pPart').value.trim();
@@ -188,7 +190,7 @@
           const cur = { block: el.dataset.block, port: el.dataset.port };
           if (!armedPort) { armedPort = cur; render(); return; }
           if (armedPort.block === cur.block && armedPort.port === cur.port) { armedPort = null; render(); return; }
-          const name = prompt('net 名稱：', 'NET' + state.netSeq) || ('NET' + state.netSeq);
+          const name = prompt(T('ar_netname_prompt'), 'NET' + state.netSeq) || ('NET' + state.netSeq);
           state.nets.push({ id: 'n' + state.netSeq++, name, from: armedPort, to: cur });
           armedPort = null; render();
         });
@@ -210,7 +212,7 @@
 
     document.getElementById('addBlk').addEventListener('click', () => {
       const id = 'b' + state.seq;
-      state.blocks.push({ id, x: snap(120 + (state.seq % 5) * 40), y: snap(120 + (state.seq % 5) * 30), w: 160, h: 80, name: '方塊 ' + state.seq, part: '', qty: 1 });
+      state.blocks.push({ id, x: snap(120 + (state.seq % 5) * 40), y: snap(120 + (state.seq % 5) * 30), w: 160, h: 80, name: T('ar_blk_default', { n: state.seq }), part: '', qty: 1 });
       state.seq++; selId = id; render();
     });
     document.getElementById('wireMode').addEventListener('click', e => {
@@ -276,11 +278,11 @@ ${nets}
     document.getElementById('exGo').addEventListener('click', async () => {
       const fmt = document.getElementById('exFmt').value, msg = document.getElementById('msg');
       const g = await gate('arch-' + fmt);
-      if (!g.allowed) { msg.style.color = '#b91c1c'; msg.textContent = g.reason === 'not_authenticated' ? '請先登入' : g.reason === 'quota_exceeded' ? '已達本月上限' : g.reason; return; }
+      if (!g.allowed) { msg.style.color = '#b91c1c'; msg.textContent = g.reason === 'not_authenticated' ? T('ar_login') : g.reason === 'quota_exceeded' ? T('ar_quota') : g.reason; return; }
       if (fmt === 'json') dl('architecture.vs.json', JSON.stringify(toDesign(), null, 2), 'application/json');
       else if (fmt === 'bom') dl('architecture-bom.csv', toBOM(), 'text/csv');
       else if (fmt === 'dsn') dl('architecture.dsn', toDSN());
-      msg.style.color = '#15803d'; msg.textContent = g.remaining >= 0 ? ('已匯出，本月剩 ' + g.remaining + ' 次') : '已匯出';
+      msg.style.color = '#15803d'; msg.textContent = g.remaining >= 0 ? T('ar_exported_n', { n: g.remaining }) : T('ar_exported');
     });
     document.getElementById('imGo').addEventListener('click', () => document.getElementById('imFile').click());
     document.getElementById('imFile').addEventListener('change', e => {
@@ -298,16 +300,16 @@ ${nets}
               if (a && b) state.nets.push({ id: 'n' + (i + 1), name: n.name, from: { block: a.split('-')[0], port: a.split('-')[1] || 'R' }, to: { block: b.split('-')[0], port: b.split('-')[1] || 'L' } });
             });
             state.netSeq = state.nets.length + 1;
-          } else throw new Error('非 VoltSketch JSON');
+          } else throw new Error(T('ar_notjson'));
           selId = null; render();
-          document.getElementById('msg').textContent = '已匯入';
-        } catch (err) { document.getElementById('msg').style.color = '#b91c1c'; document.getElementById('msg').textContent = '匯入失敗：' + err.message; }
+          document.getElementById('msg').textContent = T('ar_imported');
+        } catch (err) { document.getElementById('msg').style.color = '#b91c1c'; document.getElementById('msg').textContent = T('ar_imfail') + err.message; }
       };
       rd.readAsText(f); e.target.value = '';
     });
 
     load(); render();
+    document.addEventListener('vs-lang-change', () => { renderSide(); render(); });
   </script>
-  <script src="./i18n.js?v=2026-07-17a"></script>
 </body>
 </html>
