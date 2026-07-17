@@ -37,7 +37,7 @@
 
 | # | 項目 | 內容 | 狀態 |
 |---|---|---|---|
-| F1 | 知識卡付費內容不可見 | 站主反映看不到付費卡內容——查因：owner 帳號未登入？owner-grant 未跑？KB_LOCK 邏輯把 owner 也鎖？demo 模式判斷？ | ⬜ 先診斷 |
+| F1 | 知識卡付費內容不可見 | ✅ 診斷完＝權限鏈非 bug：Supabase 已配置（非 demo）→ 解鎖需登入＋（有效方案 OR admin）。**站主動作**：用 smallshark1003@gmail.com 在站上註冊/登入 → Supabase SQL Editor 跑 `owner-grant.sql`（email 不同先改 SQL）→ 付費主題全開 | 🔄 等站主跑 owner-grant |
 | F2 | 知識卡內容明確性 | 部分卡片表達不夠明確——需站主指出卡片清單，逐張複審改寫 | ⬜ 待站主列卡 |
 | F3 | IC symbol 文字/圖重疊 | 診斷結果：**幾何重疊＝0**（195 顆全掃，含 transform 的視覺框驗證；先前 getBBox 對旋轉腳名假陽性）。真因＝巨型單一 symbol 縮到 4–7px 字（觀感如重疊）→ 由 F4 根治 | ✅ 併入 F4 解決（79c95fb） |
 | F4 | 多 pin IC 拆 multi-unit symbol | ✅ `ICSymbol.renderMulti`（>80 腳自動拆：訊號 unit 左右兩欄＋電源/接地 unit 同名聚合 ×N），ic-library/ic-preview 皆上；AWRL6844/DAC39RF20 由 4–7px → 14px。**（線路圖畫布擺放仍為單一符號，屬另一渲染器，要拆再議）** | ✅ 79c95fb |
