@@ -683,7 +683,7 @@ window.I18N = (function () {
 
     // --- interview.html ---
     iv_hero_t: { zh: '硬體面試考題庫', en: 'Hardware Interview Question Bank', ja: 'ハードウェア面接問題バンク', ko: '하드웨어 면접 문제 뱅크' },
-    iv_hero_d: { zh: '類比/電源/數位/PCB/EMC 面試題與解析。完整題庫為付費解鎖。', en: 'Analog / power / digital / PCB / EMC interview questions with solutions. The full bank is a paid unlock.', ja: 'アナログ/電源/デジタル/PCB/EMC の面接問題と解説。完全バンクは有料解放。', ko: '아날로그/전원/디지털/PCB/EMC 면접 문제와 해설. 전체 뱅크는 유료 해제.' },
+    iv_hero_d: { zh: '題目來自實際面試過的公司考題，並依題型自我延伸補強。涵蓋類比/電源/數位/PCB/EMC，附詳解與電路圖。完整題庫為付費解鎖。', en: 'Questions collected from real company interviews the author has taken, extended with same-type variations. Covers analog / power / digital / PCB / EMC with worked solutions and schematics. The full bank is a paid unlock.', ja: '著者が実際に受けた企業面接の出題をもとに、同型問題を自作で拡張。アナログ/電源/デジタル/PCB/EMC を網羅し、詳解と回路図付き。完全バンクは有料解放。', ko: '저자가 실제로 면접 본 회사들의 기출문제를 바탕으로 같은 유형을 자체 확장. 아날로그/전원/디지털/PCB/EMC를 다루며 상세 해설과 회로도 포함. 전체 뱅크는 유료 해제.' },
     iv_free_t: { zh: '免費試閱（2 題）', en: 'Free preview (2 questions)', ja: '無料プレビュー（2 問）', ko: '무료 미리보기(2문항)' },
     iv_q1:     { zh: 'Q1. 去耦電容為何要靠近 IC 電源腳？', en: 'Q1. Why must decoupling capacitors sit close to the IC power pins?', ja: 'Q1. デカップリングコンデンサはなぜ IC 電源ピンの近くに置くのか？', ko: 'Q1. 디커플링 커패시터는 왜 IC 전원 핀 가까이에 두는가?' },
     iv_q1a:    { zh: '縮短電流迴路降低寄生電感，瞬態電流由近端電容供應、減少電源軌壓降與雜訊；小容值最靠腳、大容值稍遠。', en: 'A shorter current loop lowers parasitic inductance; transient current comes from the nearby capacitor, reducing rail droop and noise. Smallest value closest to the pin, larger values a bit farther.', ja: '電流ループを短くして寄生インダクタンスを下げ、過渡電流を近くのコンデンサから供給してレール電圧降下とノイズを減らす。小容量を最もピン近くに、大容量はやや遠くに。', ko: '전류 루프를 짧게 해 기생 인덕턴스를 낮추고, 과도 전류를 가까운 커패시터가 공급해 레일 강하와 노이즈를 줄인다. 작은 용량이 핀에 가장 가깝게, 큰 용량은 조금 멀리.' },
