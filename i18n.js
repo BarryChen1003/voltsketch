@@ -666,7 +666,20 @@ window.I18N = (function () {
     up_demo_nosponsor: { zh: '本機 demo 模式（未設定 Supabase），無法贊助。', en: 'Local demo mode (Supabase not configured); sponsorship unavailable.', ja: 'ローカル demo モード（Supabase 未設定）のためスポンサーできません。', ko: '로컬 demo 모드(Supabase 미설정)로 후원 불가.' },
     up_sp_creating: { zh: '建立贊助訂單中…', en: 'Creating sponsorship order…', ja: 'スポンサー注文を作成中…', ko: '후원 주문 생성 중…' },
     up_sp_fail: { zh: '建立贊助訂單失敗：', en: 'Sponsorship order failed: ', ja: 'スポンサー注文に失敗：', ko: '후원 주문 실패: ' },
-    up_sp_nosupport: { zh: '後端尚未支援贊助，請稍後再試', en: 'the backend does not support sponsorship yet; try again later', ja: 'バックエンドが未対応です。時間をおいて再試行してください', ko: '백엔드가 아직 미지원, 잠시 후 다시 시도하세요' }
+    up_sp_nosupport: { zh: '後端尚未支援贊助，請稍後再試', en: 'the backend does not support sponsorship yet; try again later', ja: 'バックエンドが未対応です。時間をおいて再試行してください', ko: '백엔드가 아직 미지원, 잠시 후 다시 시도하세요' },
+
+    // --- login.html ---
+    lg_login:  { zh: '登入', en: 'Sign in', ja: 'ログイン', ko: '로그인' },
+    lg_signup: { zh: '註冊', en: 'Sign up', ja: '新規登録', ko: '회원가입' },
+    lg_forgot: { zh: '忘記密碼', en: 'Forgot password', ja: 'パスワードを忘れた', ko: '비밀번호 찾기' },
+    lg_send_reset: { zh: '寄送重設信', en: 'Send reset email', ja: 'リセットメールを送信', ko: '재설정 메일 보내기' },
+    lg_demo:   { zh: '⚠ 尚未設定 Supabase（auth-config.js）。目前為本機 demo 模式，無法真正登入。', en: '⚠ Supabase not configured (auth-config.js). Running in local demo mode; real sign-in is unavailable.', ja: '⚠ Supabase 未設定（auth-config.js）。ローカル demo モードのため実際のログインはできません。', ko: '⚠ Supabase 미설정(auth-config.js). 로컬 demo 모드라 실제 로그인 불가.' },
+    lg_pw_ph:  { zh: '密碼（至少 6 碼）', en: 'Password (6+ characters)', ja: 'パスワード（6 文字以上）', ko: '비밀번호(6자 이상)' },
+    lg_cfg:    { zh: '請先設定 Supabase（auth-config.js）', en: 'Configure Supabase first (auth-config.js)', ja: '先に Supabase を設定してください（auth-config.js）', ko: '먼저 Supabase를 설정하세요(auth-config.js)' },
+    lg_ok:     { zh: '登入成功，導向…', en: 'Signed in; redirecting…', ja: 'ログイン成功。移動中…', ko: '로그인 성공, 이동 중…' },
+    lg_signup_ok: { zh: '註冊成功，請收信驗證後再登入', en: 'Signed up - check your email to verify, then sign in', ja: '登録成功。確認メールを開いて認証後にログインしてください', ko: '가입 성공 - 메일 인증 후 로그인하세요' },
+    lg_reset_ok: { zh: '重設密碼信已寄出，請收信', en: 'Password reset email sent - check your inbox', ja: 'リセットメールを送信しました。受信箱を確認してください', ko: '재설정 메일 발송됨 - 받은편지함 확인' },
+    lg_fail:   { zh: '失敗', en: 'Failed', ja: '失敗しました', ko: '실패' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';

@@ -36,17 +36,17 @@
 
       <div class="auth-wrap">
         <div class="auth-tabs">
-          <button class="auth-tab active" data-mode="login">登入</button>
-          <button class="auth-tab" data-mode="signup">註冊</button>
-          <button class="auth-tab" data-mode="forgot">忘記密碼</button>
+          <button class="auth-tab active" data-mode="login" data-i18n="lg_login">登入</button>
+          <button class="auth-tab" data-mode="signup" data-i18n="lg_signup">註冊</button>
+          <button class="auth-tab" data-mode="forgot" data-i18n="lg_forgot">忘記密碼</button>
         </div>
 
-        <div id="demoNote" class="muted" hidden style="margin-bottom:10px;color:#b45309">
+        <div id="demoNote" class="muted" hidden style="margin-bottom:10px;color:#b45309" data-i18n="lg_demo">
           ⚠ 尚未設定 Supabase（auth-config.js）。目前為本機 demo 模式，無法真正登入。
         </div>
 
         <input id="email" type="email" placeholder="email" autocomplete="email" />
-        <input id="password" type="password" placeholder="密碼（至少 6 碼）" autocomplete="current-password" />
+        <input id="password" type="password" placeholder="密碼（至少 6 碼）" data-i18n-placeholder="lg_pw_ph" autocomplete="current-password" />
         <button class="primary-button" id="submitBtn" style="width:100%;margin-top:6px">登入</button>
 
         <div id="msg" class="auth-msg"></div>
@@ -58,37 +58,43 @@
     <script src="./auth.js?v=2026-07-04b"></script>
     <script>
       const $ = id => document.getElementById(id);
+      const T = (k, v) => window.I18N ? window.I18N.t(k, v) : k;  // i18n.js 稍後載入；互動時已可用
       let mode = 'login';
       const msg = (t, ok) => { const m = $('msg'); m.textContent = t; m.style.color = ok ? '#16a34a' : '#dc2626'; };
 
       if (!Auth.enabled()) $('demoNote').hidden = false;
 
+      // 送出鈕標籤依 mode＋語言（不能掛 data-i18n，否則切語言會蓋掉非 login 模式的標籤）
+      const updateBtn = () => { $('submitBtn').textContent = mode === 'login' ? T('lg_login') : mode === 'signup' ? T('lg_signup') : T('lg_send_reset'); };
+      setTimeout(updateBtn, 0);  // i18n.js 於本 script 之後載入，延到下一輪
+      document.addEventListener('vs-lang-change', updateBtn);
+
       document.querySelectorAll('.auth-tab').forEach(b => b.addEventListener('click', () => {
         document.querySelectorAll('.auth-tab').forEach(x => x.classList.remove('active'));
         b.classList.add('active'); mode = b.dataset.mode;
         $('password').style.display = (mode === 'forgot') ? 'none' : '';
-        $('submitBtn').textContent = mode === 'login' ? '登入' : mode === 'signup' ? '註冊' : '寄送重設信';
+        updateBtn();
         msg('');
       }));
 
       $('submitBtn').addEventListener('click', async () => {
-        if (!Auth.enabled()) { msg('請先設定 Supabase（auth-config.js）'); return; }
+        if (!Auth.enabled()) { msg(T('lg_cfg')); return; }
         const email = $('email').value.trim(), pw = $('password').value;
         try {
           if (mode === 'login') {
             const { error } = await Auth.signIn(email, pw);
-            if (error) throw error; msg('登入成功，導向…', true);
+            if (error) throw error; msg(T('lg_ok'), true);
             const nx = new URLSearchParams(location.search).get('next');
             const dest = (nx && /^[\w-]+\.html$/.test(nx)) ? nx : 'index.html';  // 白名單：站內頁檔名
             setTimeout(() => location.href = dest, 800);
           } else if (mode === 'signup') {
             const { error } = await Auth.signUp(email, pw);
-            if (error) throw error; msg('註冊成功，請收信驗證後再登入', true);
+            if (error) throw error; msg(T('lg_signup_ok'), true);
           } else {
             const { error } = await Auth.reset(email);
-            if (error) throw error; msg('重設密碼信已寄出，請收信', true);
+            if (error) throw error; msg(T('lg_reset_ok'), true);
           }
-        } catch (e) { msg(e.message || '失敗'); }
+        } catch (e) { msg(e.message || T('lg_fail')); }
       });
 
       // Google / 手機登入已移除（2026-07-04 站主指示）：僅 email。要恢復見 git 歷史 + SETUP-AUTH.md。
