@@ -35,9 +35,17 @@ Deno.serve(async (req) => {
     const { data: { user } } = await userClient.auth.getUser();
     if (!user) return json({ error: "not_authenticated" }, 401);
 
-    // 2) 方案（後端型錄）
-    const { plan } = await req.json();
-    const p = PLANS[plan];
+    // 2) 方案（後端型錄）；sponsor＝自訂金額贊助（不含 VIP 權益，webhook 只入帳不升級）
+    const { plan, amount } = await req.json();
+    let p: { amount: number; desc: string } | undefined;
+    if (plan === "sponsor") {
+      // 金額只信後端驗證後的值：整數、30–30000（與前端 UI 同界；改界請兩端同步）
+      const amt = Number(amount);
+      if (!Number.isInteger(amt) || amt < 30 || amt > 30000) return json({ error: "bad_sponsor_amount" }, 400);
+      p = { amount: amt, desc: "VoltSketch 贊助" };
+    } else {
+      p = PLANS[plan];
+    }
     if (!p) return json({ error: "unknown_plan" }, 400);
 
     // 3) 建訂單（service_role；client 無 insert 權限）

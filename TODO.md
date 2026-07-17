@@ -18,7 +18,7 @@
 
 | # | 項目 | 內容 | 狀態 |
 |---|---|---|---|
-| B1 | 贊助後端 | `create-order` 支援 `plan:'sponsor'`：後端驗 amount（整數/上下限）再簽章；沙盒測一筆；前端 UI 已上線（upgrade.html） | ⬜ 下一批 |
+| B1 | 贊助後端 | ✅ 程式碼完成（create-order sponsor 分支：後端驗 30–30000 整數；webhook sponsor 只入帳不升級＋未知方案安全 fallback）。**待站主部署**：`supabase functions deploy create-order` ＋ `supabase functions deploy ecpay-webhook --no-verify-jwt`，再走沙盒贊助測試（SETUP-PAYMENT.md） | 🔄 code-ready，卡部署 |
 | B2 | PCB JS 動態字串 i18n 殘量 | 站主 2026-07-16 視翻譯為完結；並行 session 已做 pcb-practice（54c9f7e）。做 B4 時順手核對殘量（pcb.js toast/pcb-drc 訊息），不另開專輪 | 🔄 併入 B4 |
 | B3 | 剩餘頁面內文 i18n | upgrade.html VIP 方案卡文字、interview/login/terms/privacy/architecture 內文逐頁盤點（nav/brand 已全站自動翻） | ⬜ |
 | B4 | **PCB 企業級四模組** | ①Constraint Manager（net class/間距矩陣/銳角 DRC）✅e3f108f ②鋪銅實算（thermal relief/避讓/動態填充/KiCad zone 匯出）✅ed37bc4 ③佈線強化（差分對佈線+等長蛇形+即時間距提示）✅28fe289（push&shove 結構性不追） ④疊層編輯器＋via padstack＋backdrill（Gerber 背鑽檔/Status 列）✅6663490 | ✅ 四模組全數完成 |

@@ -8,6 +8,7 @@
 | `vip_3m`  | NT$750  | 3 個月  | 同上（250/月） |
 | `vip_6m`  | NT$1500 | 6 個月  | 同上（250/月） |
 | `vip_12m` | NT$3000 | 12 個月 | 同上（250/月）+ **面試題庫**（interview_paid）+ **PCB 權限**（pcb_access，unlock_all） |
+| `sponsor` | 自訂 NT$30–30000 | — | **純贊助，不含任何 VIP 權益**。金額由後端驗證（create-order），webhook 只入帳不升級 |
 
 免費版：匯出 3 次/月、知識庫付費主題鎖定、面試題僅 2 題試閱。方案有 `plan_expires_at`，過期自動回落 free(3 次)。
 改價格：`create-order/index.ts` 的 `PLANS` + `ecpay-webhook/index.ts` 的 `PLAN_RULES` **兩處同步**（後端唯一真相，前端只送方案代號）。
@@ -58,6 +59,10 @@ upgrade.html 按付款
    - ic-library 匯出訊息顯示「本月剩 29 次」。
    - 用假資料 POST webhook（錯的 CheckMacValue）→ 回 `0|CheckMacValue Error`、不入帳。
    - 同一筆通知重送 → 回 `1|OK` 但不重複入帳（冪等）。
+   - **贊助**：upgrade 頁贊助卡輸入金額 → 付款 → `orders` 出現 `plan='sponsor'` 且 `paid`，
+     但 `user_plans` **不得**出現/變更該使用者（贊助不發權益）；金額 <30 或 >30000 → 回 `bad_sponsor_amount`。
+   - 2026-07-17 起 webhook 對未知方案只入帳不升級（舊版 fallback 會誤發 1 個月 VIP，已移除）；
+     改過 create-order / ecpay-webhook 後記得重新 `supabase functions deploy` 兩支。
 
 ## 注意
 

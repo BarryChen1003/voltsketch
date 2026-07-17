@@ -55,7 +55,11 @@ Deno.serve(async (req) => {
       status: "paid", ecpay_trade_no: params.TradeNo ?? null, paid_at: new Date().toISOString(),
     }).eq("id", order.id);
 
-    const rule = PLAN_RULES[order.plan] ?? { limit: 30, months: 1, unlockAll: false };
+    // 贊助：只入帳、不發任何權益
+    if (order.plan === "sponsor") return text("1|OK");
+    // 未知方案：入帳但不升級（安全 fallback——舊版預設發 1 個月 VIP，已移除）
+    const rule = PLAN_RULES[order.plan];
+    if (!rule) return text("1|OK");
     const expires = new Date();
     expires.setMonth(expires.getMonth() + rule.months);
     await admin.from("user_plans").upsert({
