@@ -679,7 +679,30 @@ window.I18N = (function () {
     lg_ok:     { zh: '登入成功，導向…', en: 'Signed in; redirecting…', ja: 'ログイン成功。移動中…', ko: '로그인 성공, 이동 중…' },
     lg_signup_ok: { zh: '註冊成功，請收信驗證後再登入', en: 'Signed up - check your email to verify, then sign in', ja: '登録成功。確認メールを開いて認証後にログインしてください', ko: '가입 성공 - 메일 인증 후 로그인하세요' },
     lg_reset_ok: { zh: '重設密碼信已寄出，請收信', en: 'Password reset email sent - check your inbox', ja: 'リセットメールを送信しました。受信箱を確認してください', ko: '재설정 메일 발송됨 - 받은편지함 확인' },
-    lg_fail:   { zh: '失敗', en: 'Failed', ja: '失敗しました', ko: '실패' }
+    lg_fail:   { zh: '失敗', en: 'Failed', ja: '失敗しました', ko: '실패' },
+
+    // --- interview.html ---
+    iv_hero_t: { zh: '硬體面試考題庫', en: 'Hardware Interview Question Bank', ja: 'ハードウェア面接問題バンク', ko: '하드웨어 면접 문제 뱅크' },
+    iv_hero_d: { zh: '類比/電源/數位/PCB/EMC 面試題與解析。完整題庫為付費解鎖。', en: 'Analog / power / digital / PCB / EMC interview questions with solutions. The full bank is a paid unlock.', ja: 'アナログ/電源/デジタル/PCB/EMC の面接問題と解説。完全バンクは有料解放。', ko: '아날로그/전원/디지털/PCB/EMC 면접 문제와 해설. 전체 뱅크는 유료 해제.' },
+    iv_free_t: { zh: '免費試閱（2 題）', en: 'Free preview (2 questions)', ja: '無料プレビュー（2 問）', ko: '무료 미리보기(2문항)' },
+    iv_q1:     { zh: 'Q1. 去耦電容為何要靠近 IC 電源腳？', en: 'Q1. Why must decoupling capacitors sit close to the IC power pins?', ja: 'Q1. デカップリングコンデンサはなぜ IC 電源ピンの近くに置くのか？', ko: 'Q1. 디커플링 커패시터는 왜 IC 전원 핀 가까이에 두는가?' },
+    iv_q1a:    { zh: '縮短電流迴路降低寄生電感，瞬態電流由近端電容供應、減少電源軌壓降與雜訊；小容值最靠腳、大容值稍遠。', en: 'A shorter current loop lowers parasitic inductance; transient current comes from the nearby capacitor, reducing rail droop and noise. Smallest value closest to the pin, larger values a bit farther.', ja: '電流ループを短くして寄生インダクタンスを下げ、過渡電流を近くのコンデンサから供給してレール電圧降下とノイズを減らす。小容量を最もピン近くに、大容量はやや遠くに。', ko: '전류 루프를 짧게 해 기생 인덕턴스를 낮추고, 과도 전류를 가까운 커패시터가 공급해 레일 강하와 노이즈를 줄인다. 작은 용량이 핀에 가장 가깝게, 큰 용량은 조금 멀리.' },
+    iv_q2:     { zh: 'Q2. 開漏輸出為何要上拉電阻？', en: 'Q2. Why does an open-drain output need a pull-up resistor?', ja: 'Q2. オープンドレイン出力にはなぜプルアップ抵抗が要るのか？', ko: 'Q2. 오픈 드레인 출력에는 왜 풀업 저항이 필요한가?' },
+    iv_q2a:    { zh: '開漏只能拉低、不能輸出高電位，需外接上拉到目標邏輯電壓才有高準位；阻值權衡速度(RC)與耗電。', en: 'Open-drain can only pull low; an external pull-up to the target logic voltage provides the high level. The value trades speed (RC) against power.', ja: 'オープンドレインは Low にしか駆動できず、目標ロジック電圧への外付けプルアップで High レベルを得る。抵抗値は速度（RC）と消費電力のトレードオフ。', ko: '오픈 드레인은 Low로만 구동 가능해 목표 로직 전압으로의 외부 풀업이 High 레벨을 만든다. 저항값은 속도(RC)와 소비 전력의 트레이드오프.' },
+    iv_loading: { zh: '載入中…', en: 'Loading…', ja: '読み込み中…', ko: '불러오는 중…' },
+    iv_bank_t: { zh: '完整題庫（{n} 題）', en: 'Full question bank ({n} questions)', ja: '完全問題バンク（{n} 問）', ko: '전체 문제 뱅크({n}문항)' },
+    iv_lock12_t: { zh: '完整題庫（12 個月方案解鎖）', en: 'Full bank (unlocked by the 12-month plan)', ja: '完全バンク（12 ヶ月プランで解放）', ko: '전체 뱅크(12개월 플랜으로 해제)' },
+    iv_lock12_d: { zh: '27+ 題含電路圖與詳解，涵蓋類比/電源/數位/PCB/EMC。訂閱 12 個月方案即可解鎖完整題庫。', en: '27+ questions with circuit diagrams and detailed solutions across analog / power / digital / PCB / EMC. Subscribe to the 12-month plan to unlock the full bank.', ja: '回路図と詳解付き 27 問以上（アナログ/電源/デジタル/PCB/EMC）。12 ヶ月プランの購読で完全バンクを解放。', ko: '회로도와 상세 해설이 있는 27문항 이상(아날로그/전원/디지털/PCB/EMC). 12개월 플랜 구독으로 전체 뱅크 해제.' },
+    iv_plan_btn: { zh: '查看方案', en: 'View plans', ja: 'プランを見る', ko: '플랜 보기' },
+    iv_devmode: { zh: '開發模式（未連資料庫）：完整題庫 {n} 題（正式版由後端 RLS 控管）。', en: 'Dev mode (no database): full bank of {n} questions (production is gated by backend RLS).', ja: '開発モード（DB 未接続）：完全バンク {n} 問（本番はバックエンド RLS で管理）。', ko: '개발 모드(DB 미연결): 전체 뱅크 {n}문항(정식판은 백엔드 RLS로 관리).' },
+    iv_lockpay_t: { zh: '完整題庫（付費解鎖）', en: 'Full bank (paid unlock)', ja: '完全バンク（有料解放）', ko: '전체 뱅크(유료 해제)' },
+    iv_login_d: { zh: '請先登入，付費帳號可解鎖完整題庫。', en: 'Sign in first; paid accounts unlock the full bank.', ja: '先にログインしてください。有料アカウントで完全バンクを解放できます。', ko: '먼저 로그인하세요. 유료 계정은 전체 뱅크를 해제할 수 있습니다.' },
+    iv_login_btn: { zh: '前往登入', en: 'Go to sign in', ja: 'ログインへ', ko: '로그인하러 가기' },
+    iv_nopriv_d: { zh: '此帳號尚未解鎖。付費後由金流/管理者設定權限即可閱覽。', en: 'This account is not unlocked yet. After payment, access is granted by the payment flow or an admin.', ja: 'このアカウントは未解放です。支払い後、決済フローまたは管理者が権限を設定すると閲覧できます。', ko: '이 계정은 아직 해제되지 않았습니다. 결제 후 결제 흐름 또는 관리자가 권한을 설정하면 열람 가능합니다.' },
+    iv_fail_t: { zh: '讀取失敗', en: 'Load failed', ja: '読み込み失敗', ko: '불러오기 실패' },
+    iv_fail_d: { zh: '無法取得題庫，請稍後再試或確認後端設定。', en: 'Could not fetch the bank; try again later or check the backend setup.', ja: 'バンクを取得できません。時間をおいて再試行するかバックエンド設定を確認してください。', ko: '뱅크를 가져올 수 없음. 잠시 후 재시도하거나 백엔드 설정을 확인하세요.' },
+    iv_empty_t: { zh: '題庫為空', en: 'Bank is empty', ja: 'バンクが空です', ko: '뱅크가 비어 있음' },
+    iv_empty_d: { zh: '後端尚未匯入題目（見 SETUP-AUTH.md 匯入步驟）。', en: 'No questions imported on the backend yet (see SETUP-AUTH.md for import steps).', ja: 'バックエンドに問題が未インポート（手順は SETUP-AUTH.md 参照）。', ko: '백엔드에 문제가 아직 미가져옴(가져오기 절차는 SETUP-AUTH.md 참조).' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';
