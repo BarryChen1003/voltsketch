@@ -632,7 +632,41 @@ window.I18N = (function () {
     bd_drc:     { zh: 'Backdrill：{n} 處已標記背鑽（匯出製造包生效）', en: 'Backdrill: {n} marked for backdrilling (applied in fab export)', ja: 'バックドリル：{n} 箇所を指定（製造出力に反映）', ko: '백드릴: {n}곳 지정(제조 출력에 반영)' },
     bd_drc_stale: { zh: 'Backdrill 已過期：板況變更後未重算（{n} 處），請按「更新 Backdrill」', en: 'Backdrill out of date: board changed since last compute ({n}); press "Update Backdrill"', ja: 'バックドリルが古い：計算後に基板が変更（{n} 箇所）。「バックドリル更新」を押してください', ko: '백드릴이 오래됨: 계산 후 보드 변경({n}곳). "백드릴 업데이트"를 누르세요' },
     st_bd:      { zh: '背鑽（過期＝板況已變）', en: 'Backdrills (yellow = out of date)', ja: 'バックドリル（黄＝要更新）', ko: '백드릴(노랑=업데이트 필요)' },
-    st_update_bd: { zh: '更新 Backdrill', en: 'Update Backdrill', ja: 'バックドリル更新', ko: '백드릴 업데이트' }
+    st_update_bd: { zh: '更新 Backdrill', en: 'Update Backdrill', ja: 'バックドリル更新', ko: '백드릴 업데이트' },
+
+    // --- upgrade.html（VIP 方案卡＋贊助＋付款訊息）---
+    up_best:    { zh: '最划算・全解鎖', en: 'Best value / full unlock', ja: '最もお得・全解放', ko: '최고 가성비·전체 해제' },
+    up_p1_t:    { zh: 'VIP 1 個月', en: 'VIP 1 month', ja: 'VIP 1 ヶ月', ko: 'VIP 1개월' },
+    up_p1_u:    { zh: '/ 月', en: '/ month', ja: '/ 月', ko: '/ 월' },
+    up_p3_t:    { zh: 'VIP 3 個月', en: 'VIP 3 months', ja: 'VIP 3 ヶ月', ko: 'VIP 3개월' },
+    up_p3_u:    { zh: '/ 3 個月（250/月）', en: '/ 3 months (250/mo)', ja: '/ 3 ヶ月（250/月）', ko: '/ 3개월(월 250)' },
+    up_p6_t:    { zh: 'VIP 6 個月', en: 'VIP 6 months', ja: 'VIP 6 ヶ月', ko: 'VIP 6개월' },
+    up_p6_u:    { zh: '/ 6 個月（250/月）', en: '/ 6 months (250/mo)', ja: '/ 6 ヶ月（250/月）', ko: '/ 6개월(월 250)' },
+    up_p12_t:   { zh: 'VIP 12 個月', en: 'VIP 12 months', ja: 'VIP 12 ヶ月', ko: 'VIP 12개월' },
+    up_p12_u:   { zh: '/ 12 個月（250/月）', en: '/ 12 months (250/mo)', ja: '/ 12 ヶ月（250/月）', ko: '/ 12개월(월 250)' },
+    up_f_kb:    { zh: '硬體知識庫付費主題全解鎖（電子紙 / 車用電子 / AI 伺服器 / 手機 / 筆電 / 智慧手錶），每月上線新內容', en: 'All paid knowledge topics unlocked (e-paper / automotive / AI server / phone / laptop / smartwatch), new content every month', ja: '有料ナレッジ全テーマ解放（電子ペーパー/車載/AI サーバー/スマホ/ノート PC/スマートウォッチ）、毎月新コンテンツ追加', ko: '유료 지식 주제 전체 해제(전자종이/차량/AI 서버/휴대폰/노트북/스마트워치), 매월 신규 콘텐츠' },
+    up_f_export: { zh: '.OLB / .DSN / .BRD 等格式匯出 30 次/月（免費版 3 次）', en: '.OLB / .DSN / .BRD exports 30 times/month (free tier: 3)', ja: '.OLB / .DSN / .BRD などのエクスポート月 30 回（無料版 3 回）', ko: '.OLB/.DSN/.BRD 등 내보내기 월 30회(무료판 3회)' },
+    up_f_formats: { zh: 'KiCad / OLB pin 清單 / Tcl / SKILL 全格式', en: 'All formats: KiCad / OLB pin list / Tcl / SKILL', ja: 'KiCad / OLB ピンリスト / Tcl / SKILL 全形式', ko: 'KiCad/OLB 핀 리스트/Tcl/SKILL 전체 형식' },
+    up_f_all:   { zh: '月付方案全部內容', en: 'Everything in the monthly plan', ja: '月額プランの全内容', ko: '월간 플랜의 모든 내용' },
+    up_f_once3: { zh: '一次付清 3 個月、免月月續', en: 'Pay once for 3 months, no monthly renewals', ja: '3 ヶ月分を一括払い、毎月の更新不要', ko: '3개월 일괄 결제, 매월 갱신 불필요' },
+    up_f_once6: { zh: '一次付清 6 個月、免月月續', en: 'Pay once for 6 months, no monthly renewals', ja: '6 ヶ月分を一括払い、毎月の更新不要', ko: '6개월 일괄 결제, 매월 갱신 불필요' },
+    up_f_all12: { zh: '月付方案全部內容（知識庫 + 匯出 30 次/月）', en: 'Everything in the monthly plan (knowledge base + 30 exports/month)', ja: '月額プランの全内容（ナレッジ＋月 30 回エクスポート）', ko: '월간 플랜의 모든 내용(지식 베이스+월 30회 내보내기)' },
+    up_f_interview: { zh: '面試考題完整題庫（僅 12 個月方案）', en: 'Full interview question bank (12-month plan only)', ja: '面接問題の完全バンク（12 ヶ月プラン限定）', ko: '면접 문제 전체 뱅크(12개월 플랜 한정)' },
+    up_f_pcb:   { zh: 'PCB 工具權限（pcb_access）', en: 'PCB tool access (pcb_access)', ja: 'PCB ツール権限（pcb_access）', ko: 'PCB 도구 권한(pcb_access)' },
+    up_buy:     { zh: '前往付款', en: 'Proceed to payment', ja: '支払いへ進む', ko: '결제하러 가기' },
+    up_sp_t:    { zh: '☕ 贊助支持', en: '☕ Sponsor us', ja: '☕ 応援スポンサー', ko: '☕ 후원하기' },
+    up_sp_desc: { zh: 'VoltSketch 是免費開放的硬體工具站。若這些內容對你有幫助，歡迎自訂金額贊助，支持持續開發與新內容上線。贊助屬純支持，不含 VIP 權益。', en: 'VoltSketch is a free, open hardware tool site. If it helps you, a sponsorship of any amount supports continued development and new content. Sponsorship is pure support and does not include VIP benefits.', ja: 'VoltSketch は無料公開のハードウェアツールサイトです。役に立ったなら任意の金額でのスポンサー支援を歓迎します。継続開発と新コンテンツの支えになります。スポンサーは純粋な支援で、VIP 特典は含まれません。', ko: 'VoltSketch는 무료 공개 하드웨어 도구 사이트입니다. 도움이 되었다면 원하는 금액으로 후원해 지속 개발과 신규 콘텐츠를 지원해 주세요. 후원은 순수 지원이며 VIP 혜택은 포함되지 않습니다.' },
+    up_sp_btn:  { zh: '前往贊助', en: 'Sponsor', ja: 'スポンサーする', ko: '후원하기' },
+    up_note:    { zh: '付款由綠界 ECPay 處理，本站不經手、不儲存您的卡號。金額以付款頁為準。', en: 'Payment is handled by ECPay; this site never touches or stores your card number. The amount on the payment page is final.', ja: '決済は ECPay が処理し、本サイトはカード番号に触れず保存もしません。金額は決済ページの表示が優先です。', ko: '결제는 ECPay가 처리하며 본 사이트는 카드 번호를 다루거나 저장하지 않습니다. 금액은 결제 페이지 기준입니다.' },
+    up_demo_nopay: { zh: '本機 demo 模式（未設定 Supabase），無法付款。', en: 'Local demo mode (Supabase not configured); payment unavailable.', ja: 'ローカル demo モード（Supabase 未設定）のため決済できません。', ko: '로컬 demo 모드(Supabase 미설정)로 결제 불가.' },
+    up_creating: { zh: '建立訂單中…', en: 'Creating order…', ja: '注文を作成中…', ko: '주문 생성 중…' },
+    up_fail:    { zh: '建立訂單失敗：', en: 'Order creation failed: ', ja: '注文作成に失敗：', ko: '주문 생성 실패: ' },
+    up_retry:   { zh: '請稍後再試', en: 'please try again later', ja: '時間をおいて再試行してください', ko: '잠시 후 다시 시도하세요' },
+    up_amt_range: { zh: '請輸入 30–30000 之間的整數金額。', en: 'Enter a whole amount between 30 and 30000.', ja: '30〜30000 の整数金額を入力してください。', ko: '30-30000 사이의 정수 금액을 입력하세요.' },
+    up_demo_nosponsor: { zh: '本機 demo 模式（未設定 Supabase），無法贊助。', en: 'Local demo mode (Supabase not configured); sponsorship unavailable.', ja: 'ローカル demo モード（Supabase 未設定）のためスポンサーできません。', ko: '로컬 demo 모드(Supabase 미설정)로 후원 불가.' },
+    up_sp_creating: { zh: '建立贊助訂單中…', en: 'Creating sponsorship order…', ja: 'スポンサー注文を作成中…', ko: '후원 주문 생성 중…' },
+    up_sp_fail: { zh: '建立贊助訂單失敗：', en: 'Sponsorship order failed: ', ja: 'スポンサー注文に失敗：', ko: '후원 주문 실패: ' },
+    up_sp_nosupport: { zh: '後端尚未支援贊助，請稍後再試', en: 'the backend does not support sponsorship yet; try again later', ja: 'バックエンドが未対応です。時間をおいて再試行してください', ko: '백엔드가 아직 미지원, 잠시 후 다시 시도하세요' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';
