@@ -2154,7 +2154,10 @@ const app = {
               // 腳名：框外。L/R 在線上方(水平)；T/B 在線左邊(垂直，向外延伸)
               if (p.name) {
                 if (p.side === 'L' || p.side === 'R') {
-                  inner += Sym.txt((p.bx + p.x) / 2, p.by - 5, p.name, { size: F, anchor: 'middle' });
+                  // 腳名錨在框邊、往外延伸（超出部分對外不對內），長名不再壓進框內
+                  const nx2 = p.side === 'L' ? p.bx - 4 : p.bx + 4;
+                  const anc = p.side === 'L' ? 'end' : 'start';
+                  inner += Sym.txt(nx2, p.by - 5, p.name, { size: F, anchor: anc });
                 } else {
                   const lx = p.bx - 6, anc = p.side === 'T' ? 'start' : 'end';  // T 向上、B 向下延伸
                   inner += `<g transform="rotate(-90 ${lx} ${p.by})">` + Sym.txt(lx, p.by, p.name, { size: F, anchor: anc }) + `</g>`;
