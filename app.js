@@ -707,6 +707,9 @@ const app = {
   },
 
   // 把 IC 庫的元件放到畫布（ICManager pins:{number,name,type} → icPins）
+  // 超大 IC（>150 腳）拆成多個 unit symbol（同顆共用 refdes，後綴 A/B/C），一次全放、格狀排開。
+  IC_SPLIT_THRESHOLD: 150,
+  IC_UNIT_MAX_PINS: 40,
   placeLibraryIc(ic) {
     const pins = (ic.pins || []).filter(p => (p.type || '') !== 'nc' || true).map(p => ({
       num: p.number, name: p.name, type: p.type || '', side: p.side || ''
@@ -714,6 +717,12 @@ const app = {
     if (!pins.length) { this.showToast('此 IC 無 pin 定義'); return; }
     this.saveUndo();
     const vb = this.getViewBox();
+    if (pins.length > this.IC_SPLIT_THRESHOLD) {
+      const n = this.placeSplitIc(ic, pins, vb);
+      this.render();
+      this.showToast(`已放置 ${ic.name}（${pins.length} 腳拆成 ${n} 個 unit）`);
+      return;
+    }
     const id = 'c' + (++this.state.componentIdCounter);
     this.state.components.push({
       id, type: 'ic', name: ic.name || 'IC',
@@ -724,6 +733,45 @@ const app = {
     this.setSelection([id]);
     this.render();
     this.showToast(`已放置 ${ic.name}`);
+  },
+
+  // 拆多 unit：依原腳序每 IC_UNIT_MAX_PINS 一組，組內左右分欄；所有腳保留可接線。
+  // 同一顆物理 IC 共用一個 refdes 數字（如 U37），各 unit 後綴 A/B/C…；BOM 以 icRef 聚合成 1 顆。
+  placeSplitIc(ic, allPins, vb) {
+    const nUnits = Math.ceil(allPins.length / this.IC_UNIT_MAX_PINS);
+    const per = Math.ceil(allPins.length / nUnits);
+    const num = ++this.state.componentIdCounter;   // 一顆 IC 只消耗一個 refdes 數字
+    const base = 'U' + num;
+    const suffix = i => String.fromCharCode(65 + i);   // A,B,C…
+    const units = [];
+    for (let i = 0; i < nUnits; i++) {
+      const chunk = allPins.slice(i * per, (i + 1) * per);
+      const half = Math.ceil(chunk.length / 2);
+      units.push(chunk.map((p, j) => ({ num: p.num, name: p.name, type: p.type, side: j < half ? 'L' : 'R' })));
+    }
+    // 量各 unit 尺寸 → 取最大當統一格寬高
+    const sizes = units.map(icPins => (window.CircuitEngine
+      ? window.CircuitEngine.icLayout({ icPins, name: ic.name }) : { w: 140, h: 400 }));
+    const cellW = Math.max(...sizes.map(s => s.w)) + 160;
+    const cellH = Math.max(...sizes.map(s => s.h)) + 120;
+    const cols = Math.max(1, Math.min(nUnits, Math.floor(vb.w / cellW) || 1, 4));
+    const x0 = this.snapG(vb.x + cellW / 2 + 40);
+    const y0 = this.snapG(vb.y + cellH / 2 + 40);
+    const ids = [];
+    units.forEach((icPins, i) => {
+      const r = Math.floor(i / cols), col = i % cols;
+      const id = 'c' + num + suffix(i).toLowerCase();
+      this.state.components.push({
+        id, type: 'ic', name: ic.name || 'IC',
+        x: this.snapG(x0 + col * cellW), y: this.snapG(y0 + r * cellH),
+        rotation: 0, label: base + suffix(i), icPins,
+        icRef: base, icPinsFull: allPins.length, icFirst: i === 0,
+        color: this.state.activeColor, scale: this.state.activeSize
+      });
+      ids.push(id);
+    });
+    this.setSelection(ids);
+    return nUnits;
   },
 
   filterParts(q) {
@@ -1305,12 +1353,20 @@ const app = {
   generateBom() {
     const skip = new Set(['ground']);
     const map = {};
+    const seenRef = {};   // 多 unit IC：同一 icRef 只計一顆
     this.state.components.forEach(c => {
       if (skip.has(c.type)) return;
       const params = c.params || {};
       const key = [c.type, c.value, JSON.stringify(params), c.name || ''].join('|');
       if (!map[key]) map[key] = { type: c.type, value: c.value, params, name: c.name, pinCount: (c.icPins || []).length, refs: [] };
-      map[key].refs.push(c.label || c.type);
+      if (c.icRef) {
+        if (seenRef[c.icRef]) return;               // 其餘 unit 不重複計
+        seenRef[c.icRef] = true;
+        map[key].pinCount = c.icPinsFull || map[key].pinCount;   // 用完整腳數
+        map[key].refs.push(c.icRef);                // refdes 顯示 U37（非 U37A/B/C）
+      } else {
+        map[key].refs.push(c.label || c.type);
+      }
     });
     return Object.values(map).map((g, i) => ({
       item: i + 1,
@@ -2139,8 +2195,10 @@ const app = {
           const lay = window.CircuitEngine ? window.CircuitEngine.icLayout(c) : { w: 110, h: 86, pins: [] };
           const F = 11;  // 統一字級
           inner = `<rect x="${-lay.w / 2}" y="${-lay.h / 2}" width="${lay.w}" height="${lay.h}" rx="3" fill="#fff" stroke="${cc}" stroke-width="${sw}"/>`;
-          // pin1 圓點記號（左上內側）
-          inner += `<circle cx="${-lay.w / 2 + 10}" cy="${-lay.h / 2 + 10}" r="3" fill="none" stroke="${cc}" stroke-width="1.2"/>`;
+          // pin1 圓點記號（左上內側）：多 unit 時只畫在第一個 unit（A）
+          if (!c.icRef || c.icFirst) {
+            inner += `<circle cx="${-lay.w / 2 + 10}" cy="${-lay.h / 2 + 10}" r="3" fill="none" stroke="${cc}" stroke-width="1.2"/>`;
+          }
           if (window.Sym) {
             lay.pins.forEach(p => {
               inner += Sym.line(p.bx, p.by, p.x, p.y, { color: sc || undefined });  // 等長細引線
