@@ -745,7 +745,7 @@ const pcbApp = {
     const text = s.kicad
       ? window.KicadIO.exportText(s.kicad, s)          // 零落差：整樹回寫
       : window.KicadIO.buildNew(s);                    // 從零：基本檔（元件無 pad，見文件）
-    const name = s.kicad ? s.kicad.fileName.replace(/\.kicad_pcb$/i, '') + '-voltsketch.kicad_pcb' : 'voltsketch.kicad_pcb';
+    const name = s.kicad ? s.kicad.fileName.replace(/\.kicad_pcb$/i, '') + '-hardwareai.kicad_pcb' : 'hardwareai.kicad_pcb';
     const blob = new Blob([text], { type: 'text/plain' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -760,7 +760,7 @@ const pcbApp = {
 
   exportGerber() {
     const s = this.state;
-    const base = s.kicad ? s.kicad.fileName : 'voltsketch';
+    const base = s.kicad ? s.kicad.fileName : 'hardwareai';
     const r = window.GerberExport.downloadZip(s, this.padAbs.bind(this), base);
     const el = document.getElementById('kicadIoMsg');
     if (el) {

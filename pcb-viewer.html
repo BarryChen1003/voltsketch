@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PCB 檢視器 - VoltSketch</title>
+  <title>PCB 檢視器 - HardwareAI</title>
   <meta name="description" content="PCB 板面檢視器。">
   <meta name="robots" content="noindex">
   <link rel="canonical" href="https://barrychen1003.github.io/voltsketch/pcb-viewer.html">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <meta property="og:site_name" content="VoltSketch">
-  <meta property="og:title" content="PCB 檢視器 - VoltSketch">
+  <meta property="og:site_name" content="HardwareAI">
+  <meta property="og:title" content="PCB 檢視器 - HardwareAI">
   <meta property="og:description" content="PCB 板面檢視器。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://barrychen1003.github.io/voltsketch/pcb-viewer.html">
@@ -46,7 +46,7 @@
   <style>.vs-embed .topbar { display: none !important; }</style>
   <div class="app-shell">
     <header class="topbar">
-      <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>VoltSketch 硬體實驗室</h1><p>PCB 檢視器（vs-board-extract）</p></div></div>
+      <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>HardwareAI 硬體實驗室</h1><p>PCB 檢視器（vs-board-extract）</p></div></div>
       <nav class="main-nav">
         <a href="index.html" class="nav-link">線路圖</a>
         <a href="ic-library.html" class="nav-link">IC 元件庫</a>
@@ -313,7 +313,7 @@
       if (!board) { alert('先載入板面資料'); return; }
       const rows = board.components.map(c =>
         `  ("${c.refdes}" "${c.footprint}" ${c.x.toFixed(3)} ${c.y.toFixed(3)} ${c.rot || 0} "${c.layer}")`).join('\n');
-      const il = `; ===== VoltSketch 佈局重放腳本（由 pcb-viewer 產生）=====
+      const il = `; ===== HardwareAI 佈局重放腳本（由 pcb-viewer 產生）=====
 ; 用途：在 Allegro 內依本板資料放置/移動元件（refdes footprint x y rot layer）。
 ; ★ .brd 為 Cadence 專有二進位，無法由外部直接寫出 —— 正確做法即本腳本：
 ;   Allegro File > Script 或命令列 skill load 執行，由 Allegro 自己改 .brd。

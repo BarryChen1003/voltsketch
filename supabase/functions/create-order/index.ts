@@ -1,4 +1,4 @@
-// create-order — 建立綠界付款訂單（VoltSketch VIP）
+// create-order — 建立綠界付款訂單（HardwareAI VIP）
 // 部署：supabase functions deploy create-order
 // 流程：驗 JWT → 方案/金額「後端型錄」決定（不信前端）→ 寫 orders(pending)
 //       → 產綠界 AioCheckOut 參數 + CheckMacValue → 回傳 {action, fields} 給前端組 form POST。
@@ -9,10 +9,10 @@ import { checkMacValue, ecpayEnv } from "../_shared/ecpay.ts";
 
 // ---- 方案型錄（唯一真相：金額/額度/期限都在後端；價格可調，webhook 的 PLAN_RULES 需同步）----
 const PLANS: Record<string, { amount: number; desc: string }> = {
-  vip_1m:  { amount: 300,  desc: "VoltSketch VIP 1 個月" },
-  vip_3m:  { amount: 750,  desc: "VoltSketch VIP 3 個月" },   // 250/月
-  vip_6m:  { amount: 1500, desc: "VoltSketch VIP 6 個月" },   // 250/月
-  vip_12m: { amount: 3000, desc: "VoltSketch VIP 12 個月(含面試題庫+PCB)" },  // 250/月＝最划算檔
+  vip_1m:  { amount: 300,  desc: "HardwareAI VIP 1 個月" },
+  vip_3m:  { amount: 750,  desc: "HardwareAI VIP 3 個月" },   // 250/月
+  vip_6m:  { amount: 1500, desc: "HardwareAI VIP 6 個月" },   // 250/月
+  vip_12m: { amount: 3000, desc: "HardwareAI VIP 12 個月(含面試題庫+PCB)" },  // 250/月＝最划算檔
 };
 
 const cors = {
@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
       // 金額只信後端驗證後的值：整數、30–30000（與前端 UI 同界；改界請兩端同步）
       const amt = Number(amount);
       if (!Number.isInteger(amt) || amt < 30 || amt > 30000) return json({ error: "bad_sponsor_amount" }, 400);
-      p = { amount: amt, desc: "VoltSketch 贊助" };
+      p = { amount: amt, desc: "HardwareAI 贊助" };
     } else {
       p = PLANS[plan];
     }

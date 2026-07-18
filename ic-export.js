@@ -45,7 +45,7 @@ window.ICExport = (function () {
     g.T.forEach((p, i) => { const x = -(nT - 1) / 2 * PITCH + i * PITCH; pins += pinS(p, x, +(halfH + LEAD), 270); });
     g.B.forEach((p, i) => { const x = -(nB - 1) / 2 * PITCH + i * PITCH; pins += pinS(p, x, -(halfH + LEAD), 90); });
     const nm = ic.part;
-    return `(kicad_symbol_lib (version 20211014) (generator voltsketch)
+    return `(kicad_symbol_lib (version 20211014) (generator hardwareai)
   (symbol "${nm}" (in_bom yes) (on_board yes)
     (property "Reference" "U" (at 0 ${r2(halfH + LEAD + 1.27)} 0) (effects (font (size 1.27 1.27))))
     (property "Value" "${nm}" (at 0 ${r2(-halfH - LEAD - 1.27)} 0) (effects (font (size 1.27 1.27))))
@@ -77,7 +77,7 @@ ${pins}    )
   function orcadTcl(ic) {
     const rows = (ic.pins || []).slice().sort((a, b) => (a.num || 0) - (b.num || 0))
       .map(p => `  {${p.num} "${plain(p.name)}" ${etype(p)} ${p.side}}`).join('\n');
-    return `# OrCAD Capture Tcl 樣板 — 由 VoltSketch 產生
+    return `# OrCAD Capture Tcl 樣板 — 由 HardwareAI 產生
 # 用法：Capture → 開啟/新建 .olb → 主選單 scripting/Tcl console → source 本檔
 # 注意：實際建 pin 的 API 依 OrCAD 版本(17.x / OrCAD X)不同，下方 pinData 為資料，
 #       create_part 內請改成你版本的符號建立 API（或把 pinData 交給 lib 產生工具）。

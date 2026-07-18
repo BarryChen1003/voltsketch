@@ -1,5 +1,5 @@
 -- ============================================================
--- VoltSketch 後端 schema（Supabase）— SQL Editor 一次貼上執行
+-- HardwareAI 後端 schema（Supabase）— SQL Editor 一次貼上執行
 -- 安全核心：所有表開 RLS；解鎖旗標(pcb_access/interview_paid/role)前端「不可」自行寫入。
 -- ============================================================
 

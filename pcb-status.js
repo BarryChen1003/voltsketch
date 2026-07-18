@@ -1,4 +1,4 @@
-/* pcb-status.js — Allegro-style board Status panel for the VoltSketch PCB tool.
+/* pcb-status.js — Allegro-style board Status panel for the HardwareAI PCB tool.
  * Reads live metrics from pcbApp.state (symbols/nets/connections/shapes) + runDrc()
  * + Ratsnest, plus a cumulative editing-time tracker. All labels go through i18n.js
  * (st_* keys) so the panel follows the language selector. No fake numbers — every

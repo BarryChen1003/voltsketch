@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>產品架構圖 - VoltSketch</title>
+  <title>產品架構圖 - HardwareAI</title>
   <meta name="description" content="產品架構方塊圖編輯器：拖拉方塊、net 連線、綁定 IC 料號，匯出 BOM CSV 與 Specctra DSN。">
   <link rel="canonical" href="https://barrychen1003.github.io/voltsketch/architecture.html">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <meta property="og:site_name" content="VoltSketch">
-  <meta property="og:title" content="產品架構圖 - VoltSketch">
+  <meta property="og:site_name" content="HardwareAI">
+  <meta property="og:title" content="產品架構圖 - HardwareAI">
   <meta property="og:description" content="產品架構方塊圖編輯器：拖拉方塊、net 連線、綁定 IC 料號，匯出 BOM CSV 與 Specctra DSN。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://barrychen1003.github.io/voltsketch/architecture.html">
@@ -40,7 +40,7 @@
 <body class="editor-lock">
   <div class="app-shell">
     <header class="topbar">
-      <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>VoltSketch 硬體實驗室</h1><p>產品架構圖</p></div></div>
+      <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>HardwareAI 硬體實驗室</h1><p>產品架構圖</p></div></div>
       <nav class="main-nav">
         <a href="index.html" class="nav-link">線路圖</a>
         <a href="ic-library.html" class="nav-link">IC 元件庫</a>
@@ -57,7 +57,7 @@
       <button class="small-button" id="delSel" data-i18n="ar_delsel">刪除選取</button>
       <span style="flex:1"></span>
       <select id="exFmt" style="padding:5px 8px;border:1px solid #e2e8f0;border-radius:5px;font-size:13px">
-        <option value="json" data-i18n="ar_fmt_json">VoltSketch JSON（可再匯入）</option>
+        <option value="json" data-i18n="ar_fmt_json">HardwareAI JSON（可再匯入）</option>
         <option value="bom">BOM CSV</option>
         <option value="dsn" data-i18n="ar_fmt_dsn">Specctra DSN（placement + net，文字格式）</option>
       </select>
@@ -232,7 +232,7 @@
       a.download = name; document.body.appendChild(a); a.click();
       setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 100);
     }
-    // VoltSketchDesign v1（components + nets；schematic/board 留空）
+    // HardwareAIDesign v1（components + nets；schematic/board 留空）
     function toDesign() {
       const d = VSModel.newDesign();
       d.sources.push({ type: 'architecture-editor', savedAt: new Date().toISOString() });
@@ -263,7 +263,7 @@
         `    (component "BLOCK-${b.name.replace(/["\s]/g, '_')}"\n      (place ${b.id} ${mil(b.x)} ${-mil(b.y)} front 0))`).join('\n');
       let nets = state.nets.map(n =>
         `    (net "${n.name}"\n      (pins ${n.from.block}-${n.from.port} ${n.to.block}-${n.to.port}))`).join('\n');
-      return `(pcb "voltsketch_architecture"
+      return `(pcb "hardwareai_architecture"
   (parser (string_quote ")(space_in_quoted_tokens on))
   (resolution mil 10)
   (placement

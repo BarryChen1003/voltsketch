@@ -7,7 +7,7 @@ window.SkillSwap = (function () {
   function genSkill(srcPart, tgtPart, footprint, refdesList) {
     const refs = (refdesList || []).map(s => String(s).trim()).filter(Boolean);
     const refLisp = refs.length ? refs.map(r => '"' + r + '"').join(' ') : '"U?"';
-    return `; ===== Allegro SKILL 換料腳本（VoltSketch 自動產生）=====
+    return `; ===== Allegro SKILL 換料腳本（HardwareAI 自動產生）=====
 ; 來源料 : ${srcPart}
 ; 目標料 : ${tgtPart}
 ; footprint: ${footprint}   ← pin-to-pin 相容、同 footprint → 可直換

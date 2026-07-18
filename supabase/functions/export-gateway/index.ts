@@ -1,4 +1,4 @@
-// export-gateway — 匯出閘門 Edge Function（VoltSketch）
+// export-gateway — 匯出閘門 Edge Function（HardwareAI）
 // 部署：supabase functions deploy export-gateway
 // 目前額度核心在 Postgres RPC（consume_export_quota，見 supabase/sql/export-quota.sql），
 // 前端可直呼 RPC。本 Function 提供同介面的後端入口，供之後把「檔案生成」搬進來：

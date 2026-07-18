@@ -1,4 +1,4 @@
-# VoltSketch TODO / 待辦總表
+# HardwareAI TODO / 待辦總表
 
 > 更新：2026-07-16。狀態：✅完成 🔄進行中 ⬜未開始 ❌卡外部 ⏸依指示暫緩。
 > 原始願景見 `PROJECT_ROADMAP.md`；金流/帳號部署步驟見 `SETUP-PAYMENT.md`、`SETUP-AUTH.md`、`SETUP-EXPORT-QUOTA.md`。

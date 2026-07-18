@@ -1,9 +1,9 @@
-// VoltSketch Circuit Lab Application
+// HardwareAI Circuit Lab Application
 const app = {
   // i18n translations
   i18n: {
     zh: {
-      appTitle: 'VoltSketch 硬體實驗室',
+      appTitle: 'HardwareAI 硬體實驗室',
       appSubtitle: '繪製、分析並保存你的直流線路圖',
       drawTools: '繪圖工具',
       select: '選取',
@@ -87,7 +87,7 @@ const app = {
       importShort: '匯入'
     },
     en: {
-      appTitle: 'VoltSketch Hardware Lab',
+      appTitle: 'HardwareAI Hardware Lab',
       appSubtitle: 'Draw, analyze and save your DC circuits',
       drawTools: 'Drawing Tools',
       select: 'Select',
@@ -171,7 +171,7 @@ const app = {
       importShort: 'Import'
     },
     ja: {
-      appTitle: 'VoltSketch ハードウェアラボ',
+      appTitle: 'HardwareAI ハードウェアラボ',
       appSubtitle: '直流回路図の作成・解析・保存',
       drawTools: '描画ツール',
       select: '選択',
@@ -255,7 +255,7 @@ const app = {
       importShort: 'インポート'
     },
     ko: {
-      appTitle: 'VoltSketch 하드웨어 랩',
+      appTitle: 'HardwareAI 하드웨어 랩',
       appSubtitle: 'DC 회로도 작성·해석·저장',
       drawTools: '그리기 도구',
       select: '선택',
@@ -1277,7 +1277,7 @@ const app = {
       `<html><head><title>線路圖</title><style>@page{size:A4 ${land ? 'landscape' : 'portrait'};margin:8mm}` +
       `body{font-family:system-ui;margin:0}.hdr{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid #888;font-size:12px}` +
       `.wrap{padding:8px 10px}svg{width:100%;height:auto}</style></head><body>` +
-      `<div class="hdr"><b>VoltSketch 線路圖</b><span>${date}　元件 ${this.state.components.length}・導線 ${this.state.wires.length}</span></div>` +
+      `<div class="hdr"><b>HardwareAI 線路圖</b><span>${date}　元件 ${this.state.components.length}・導線 ${this.state.wires.length}</span></div>` +
       `<div class="wrap">${xml}</div><script>setTimeout(function(){window.print();},300);<\/script></body></html>`
     );
     w.document.close(); w.focus();

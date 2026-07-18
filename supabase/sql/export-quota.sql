@@ -1,5 +1,5 @@
 -- ============================================================
--- export-quota.sql — 匯出額度閘門（VoltSketch）
+-- export-quota.sql — 匯出額度閘門（HardwareAI）
 -- 用法：Supabase Dashboard → SQL Editor → 貼上執行（可重跑，冪等）。
 -- 安全設計：
 --   1. RLS 全開；client 只能 SELECT 自己的列，不能 INSERT/UPDATE。

@@ -455,7 +455,7 @@ window.KicadIO = (function () {
       ...(appState.userZones || []).map(z => z.net)
     ].filter(Boolean))];
     const tree = ['kicad_pcb',
-      ['version', '20240108'], ['generator', { q: true, v: 'voltsketch' }],
+      ['version', '20240108'], ['generator', { q: true, v: 'hardwareai' }],
       ['general', ['thickness', '1.6']],
       ['paper', { q: true, v: 'A4' }],
       ['layers', ...cu],
@@ -472,7 +472,7 @@ window.KicadIO = (function () {
     // 元件：有 pads（footprint-gen 產生或匯入映射）→ 出真 pad；無 pads → fab 外框示意（誠實標註）
     for (const c of appState.components) {
       const w = c.w || 4, h = c.h || 3;
-      const fp = ['footprint', { q: true, v: 'VoltSketch:' + (c.part || c.type || 'block') },
+      const fp = ['footprint', { q: true, v: 'HardwareAI:' + (c.part || c.type || 'block') },
         ['layer', { q: true, v: c.side === 'bottom' ? 'B.Cu' : 'F.Cu' }],
         c.rot ? ['at', fmt(c.x + ox), fmt(c.y + oy), fmt(c.rot)] : ['at', fmt(c.x + ox), fmt(c.y + oy)],
         ['property', { q: true, v: 'Reference' }, { q: true, v: c.ref || c.label || '' },

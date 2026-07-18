@@ -39,9 +39,9 @@ window.VSAdapters = (function () {
 
   // ============ Adapters ============
 
-  // 1) VoltSketch JSON（native）—— 中繼基準格式，100% 無損
+  // 1) HardwareAI JSON（native）—— 中繼基準格式，100% 無損
   register({
-    id: 'json', label: 'VoltSketch JSON', ext: '.vs.json', mime: 'application/json',
+    id: 'json', label: 'HardwareAI JSON', ext: '.vs.json', mime: 'application/json',
     kind: 'native', note: '本站標準模型，100% 無損、可再匯入',
     exportSymbol(model) {
       return { filename: model.partNumber + '.vs.json', text: JSON.stringify(model, null, 2) };

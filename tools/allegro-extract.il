@@ -1,13 +1,13 @@
 ; ============================================================
-; allegro-extract.il — VoltSketch 板面資料匯出（Allegro SKILL）
+; allegro-extract.il — HardwareAI 板面資料匯出（Allegro SKILL）
 ; 用途：在 Allegro PCB Editor 內執行，把目前開啟的 .brd 匯出成
 ;       vs-board-extract JSON（components / pins / nets / vias），
-;       給 VoltSketch pcb-viewer.html 讀取（分層/搜尋/找料/換料/co-lay）。
+;       給 HardwareAI pcb-viewer.html 讀取（分層/搜尋/找料/換料/co-lay）。
 ; 用法：
 ;   1. Allegro 開啟 .brd
 ;   2. 命令列輸入：  skill load("allegro-extract.il")
 ;   3. 再輸入：      vsExtract()
-;   4. 產出 vsboard.json（在 .brd 同目錄），拖進 VoltSketch「PCB 檢視器」
+;   4. 產出 vsboard.json（在 .brd 同目錄），拖進 HardwareAI「PCB 檢視器」
 ; 注意：
 ;   - axl* API 名稱依 Allegro 版本（17.2 / 17.4 / X）可能微調；
 ;     讀不到的欄位會寫空字串，不會中斷。

@@ -1,5 +1,5 @@
 /**
- * i18n.js — VoltSketch 四語系（繁中 zh / 英 en / 日 ja / 韓 ko）
+ * i18n.js — HardwareAI 四語系（繁中 zh / 英 en / 日 ja / 韓 ko）
  * 電子電機專業術語版：譯名採業界標準用語（非逐字直譯），例：
  *   示波器→oscilloscope/オシロスコープ/오실로스코프、電子負載→electronic load/電子負荷/전자 부하。
  * 用法：
@@ -14,7 +14,7 @@ window.I18N = (function () {
 
   const D = {
     // ---- 站名/導覽（nav 依 href 自動套）----
-    brand_title:    { zh: 'VoltSketch 硬體實驗室', en: 'VoltSketch Hardware Lab', ja: 'VoltSketch ハードウェアラボ', ko: 'VoltSketch 하드웨어 랩' },
+    brand_title:    { zh: 'HardwareAI 硬體實驗室', en: 'HardwareAI Hardware Lab', ja: 'HardwareAI ハードウェアラボ', ko: 'HardwareAI 하드웨어 랩' },
     nav_schematic:  { zh: '線路圖', en: 'Schematic', ja: '回路図', ko: '회로도' },
     nav_arch:       { zh: '架構圖', en: 'Block Diagram', ja: 'ブロック図', ko: '블록 다이어그램' },
     nav_iclib:      { zh: 'IC 元件庫', en: 'IC Library', ja: 'ICライブラリ', ko: 'IC 라이브러리' },
@@ -655,7 +655,7 @@ window.I18N = (function () {
     up_f_pcb:   { zh: 'PCB 工具權限（pcb_access）', en: 'PCB tool access (pcb_access)', ja: 'PCB ツール権限（pcb_access）', ko: 'PCB 도구 권한(pcb_access)' },
     up_buy:     { zh: '前往付款', en: 'Proceed to payment', ja: '支払いへ進む', ko: '결제하러 가기' },
     up_sp_t:    { zh: '☕ 贊助支持', en: '☕ Sponsor us', ja: '☕ 応援スポンサー', ko: '☕ 후원하기' },
-    up_sp_desc: { zh: 'VoltSketch 是免費開放的硬體工具站。若這些內容對你有幫助，歡迎自訂金額贊助，支持持續開發與新內容上線。贊助屬純支持，不含 VIP 權益。', en: 'VoltSketch is a free, open hardware tool site. If it helps you, a sponsorship of any amount supports continued development and new content. Sponsorship is pure support and does not include VIP benefits.', ja: 'VoltSketch は無料公開のハードウェアツールサイトです。役に立ったなら任意の金額でのスポンサー支援を歓迎します。継続開発と新コンテンツの支えになります。スポンサーは純粋な支援で、VIP 特典は含まれません。', ko: 'VoltSketch는 무료 공개 하드웨어 도구 사이트입니다. 도움이 되었다면 원하는 금액으로 후원해 지속 개발과 신규 콘텐츠를 지원해 주세요. 후원은 순수 지원이며 VIP 혜택은 포함되지 않습니다.' },
+    up_sp_desc: { zh: 'HardwareAI 是免費開放的硬體工具站。若這些內容對你有幫助，歡迎自訂金額贊助，支持持續開發與新內容上線。贊助屬純支持，不含 VIP 權益。', en: 'HardwareAI is a free, open hardware tool site. If it helps you, a sponsorship of any amount supports continued development and new content. Sponsorship is pure support and does not include VIP benefits.', ja: 'HardwareAI は無料公開のハードウェアツールサイトです。役に立ったなら任意の金額でのスポンサー支援を歓迎します。継続開発と新コンテンツの支えになります。スポンサーは純粋な支援で、VIP 特典は含まれません。', ko: 'HardwareAI는 무료 공개 하드웨어 도구 사이트입니다. 도움이 되었다면 원하는 금액으로 후원해 지속 개발과 신규 콘텐츠를 지원해 주세요. 후원은 순수 지원이며 VIP 혜택은 포함되지 않습니다.' },
     up_sp_btn:  { zh: '前往贊助', en: 'Sponsor', ja: 'スポンサーする', ko: '후원하기' },
     up_note:    { zh: '付款由綠界 ECPay 處理，本站不經手、不儲存您的卡號。金額以付款頁為準。', en: 'Payment is handled by ECPay; this site never touches or stores your card number. The amount on the payment page is final.', ja: '決済は ECPay が処理し、本サイトはカード番号に触れず保存もしません。金額は決済ページの表示が優先です。', ko: '결제는 ECPay가 처리하며 본 사이트는 카드 번호를 다루거나 저장하지 않습니다. 금액은 결제 페이지 기준입니다.' },
     up_demo_nopay: { zh: '本機 demo 模式（未設定 Supabase），無法付款。', en: 'Local demo mode (Supabase not configured); payment unavailable.', ja: 'ローカル demo モード（Supabase 未設定）のため決済できません。', ko: '로컬 demo 모드(Supabase 미설정)로 결제 불가.' },
@@ -708,7 +708,7 @@ window.I18N = (function () {
     ar_addblk: { zh: '＋ 方塊', en: '+ Block', ja: '＋ ブロック', ko: '+ 블록' },
     ar_wire:   { zh: '連線模式', en: 'Wire mode', ja: '配線モード', ko: '배선 모드' },
     ar_delsel: { zh: '刪除選取', en: 'Delete selected', ja: '選択を削除', ko: '선택 삭제' },
-    ar_fmt_json: { zh: 'VoltSketch JSON（可再匯入）', en: 'VoltSketch JSON (re-importable)', ja: 'VoltSketch JSON（再インポート可）', ko: 'VoltSketch JSON(재가져오기 가능)' },
+    ar_fmt_json: { zh: 'HardwareAI JSON（可再匯入）', en: 'HardwareAI JSON (re-importable)', ja: 'HardwareAI JSON（再インポート可）', ko: 'HardwareAI JSON(재가져오기 가능)' },
     ar_fmt_dsn: { zh: 'Specctra DSN（placement + net，文字格式）', en: 'Specctra DSN (placement + net, text format)', ja: 'Specctra DSN（placement + net、テキスト形式）', ko: 'Specctra DSN(placement+net, 텍스트 형식)' },
     ar_exgo:   { zh: '匯出', en: 'Export', ja: 'エクスポート', ko: '내보내기' },
     ar_imgo:   { zh: '匯入 JSON', en: 'Import JSON', ja: 'JSON をインポート', ko: 'JSON 가져오기' },
@@ -730,7 +730,7 @@ window.I18N = (function () {
     ar_quota:  { zh: '已達本月上限', en: 'Monthly limit reached', ja: '今月の上限に達しました', ko: '이번 달 상한 도달' },
     ar_exported_n: { zh: '已匯出，本月剩 {n} 次', en: 'Exported; {n} left this month', ja: 'エクスポート完了。今月あと {n} 回', ko: '내보냄, 이번 달 {n}회 남음' },
     ar_exported: { zh: '已匯出', en: 'Exported', ja: 'エクスポート完了', ko: '내보냄' },
-    ar_notjson: { zh: '非 VoltSketch JSON', en: 'Not a VoltSketch JSON', ja: 'VoltSketch JSON ではありません', ko: 'VoltSketch JSON이 아님' },
+    ar_notjson: { zh: '非 HardwareAI JSON', en: 'Not a HardwareAI JSON', ja: 'HardwareAI JSON ではありません', ko: 'HardwareAI JSON이 아님' },
     ar_imported: { zh: '已匯入', en: 'Imported', ja: 'インポート完了', ko: '가져옴' },
     ar_imfail: { zh: '匯入失敗：', en: 'Import failed: ', ja: 'インポート失敗：', ko: '가져오기 실패: ' },
 
@@ -739,7 +739,7 @@ window.I18N = (function () {
     legal_zh_prevails: { zh: '本頁譯文僅供參考；若譯文與中文版有歧異，以中文版為準。', en: 'Translations on this page are for reference only; if a translation conflicts with the Chinese version, the Chinese version prevails.', ja: '本ページの訳文は参考用です。訳文と中国語版に相違がある場合は中国語版が優先します。', ko: '이 페이지의 번역문은 참고용이며, 번역문과 중국어판이 상충할 경우 중국어판이 우선합니다.' },
     tm_h1:  { zh: '使用條款', en: 'Terms of Service', ja: '利用規約', ko: '이용약관' },
     tm_s1:  { zh: '一、服務內容', en: '1. The Service', ja: '第1条（サービス内容）', ko: '제1조(서비스 내용)' },
-    tm_s1p: { zh: 'VoltSketch 提供瀏覽器內的 IC 元件庫、線路圖繪製、PCB 規劃與多格式匯出（JSON、KiCad 符號、OLB 用 pin 清單、OrCAD Tcl、Allegro SKILL 腳本等）。部分格式（如 .olb/.brd）為第三方專有二進位格式，本站提供的是「供官方工具生成所需的資料與腳本」，非直接產出該二進位檔。', en: 'VoltSketch provides an in-browser IC library, schematic drawing, PCB planning and multi-format export (JSON, KiCad symbols, pin lists for OLB, OrCAD Tcl, Allegro SKILL scripts, etc.). Some formats (e.g. .olb/.brd) are third-party proprietary binaries; this site provides the data and scripts for the official tools to generate them, not the binary files themselves.', ja: 'VoltSketch はブラウザ内の IC ライブラリ、回路図作成、PCB プランニング、多形式エクスポート（JSON、KiCad シンボル、OLB 用ピンリスト、OrCAD Tcl、Allegro SKILL スクリプト等）を提供します。一部の形式（.olb/.brd 等）は第三者の専有バイナリ形式であり、本サイトが提供するのは「公式ツールで生成するためのデータとスクリプト」であって、当該バイナリそのものではありません。', ko: 'VoltSketch는 브라우저 내 IC 라이브러리, 회로도 작성, PCB 계획, 다중 형식 내보내기(JSON, KiCad 심벌, OLB용 핀 리스트, OrCAD Tcl, Allegro SKILL 스크립트 등)를 제공합니다. 일부 형식(.olb/.brd 등)은 서드파티 전용 바이너리 형식으로, 본 사이트가 제공하는 것은 공식 도구로 생성하기 위한 데이터와 스크립트이며 해당 바이너리 파일 자체가 아닙니다.' },
+    tm_s1p: { zh: 'HardwareAI 提供瀏覽器內的 IC 元件庫、線路圖繪製、PCB 規劃與多格式匯出（JSON、KiCad 符號、OLB 用 pin 清單、OrCAD Tcl、Allegro SKILL 腳本等）。部分格式（如 .olb/.brd）為第三方專有二進位格式，本站提供的是「供官方工具生成所需的資料與腳本」，非直接產出該二進位檔。', en: 'HardwareAI provides an in-browser IC library, schematic drawing, PCB planning and multi-format export (JSON, KiCad symbols, pin lists for OLB, OrCAD Tcl, Allegro SKILL scripts, etc.). Some formats (e.g. .olb/.brd) are third-party proprietary binaries; this site provides the data and scripts for the official tools to generate them, not the binary files themselves.', ja: 'HardwareAI はブラウザ内の IC ライブラリ、回路図作成、PCB プランニング、多形式エクスポート（JSON、KiCad シンボル、OLB 用ピンリスト、OrCAD Tcl、Allegro SKILL スクリプト等）を提供します。一部の形式（.olb/.brd 等）は第三者の専有バイナリ形式であり、本サイトが提供するのは「公式ツールで生成するためのデータとスクリプト」であって、当該バイナリそのものではありません。', ko: 'HardwareAI는 브라우저 내 IC 라이브러리, 회로도 작성, PCB 계획, 다중 형식 내보내기(JSON, KiCad 심벌, OLB용 핀 리스트, OrCAD Tcl, Allegro SKILL 스크립트 등)를 제공합니다. 일부 형식(.olb/.brd 등)은 서드파티 전용 바이너리 형식으로, 본 사이트가 제공하는 것은 공식 도구로 생성하기 위한 데이터와 스크립트이며 해당 바이너리 파일 자체가 아닙니다.' },
     tm_s2:  { zh: '二、方案與匯出額度', en: '2. Plans and Export Quota', ja: '第2条（プランとエクスポート枠）', ko: '제2조(플랜과 내보내기 한도)' },
     tm_s2a: { zh: '免費方案：每月每格式 3 次匯出。', en: 'Free plan: 3 exports per format per month.', ja: '無料プラン：形式ごとに月 3 回のエクスポート。', ko: '무료 플랜: 형식별 월 3회 내보내기.' },
     tm_s2b: { zh: 'VIP 方案：依購買頁面說明之額度與價格；付款由綠界 ECPay 處理。', en: 'VIP plans: quota and pricing as described on the purchase page; payment is processed by ECPay.', ja: 'VIP プラン：枠と価格は購入ページの記載に従います。決済は ECPay が処理します。', ko: 'VIP 플랜: 한도와 가격은 구매 페이지 안내를 따르며, 결제는 ECPay가 처리합니다.' },
@@ -757,9 +757,9 @@ window.I18N = (function () {
     tm_s5b: { zh: '繞過額度限制、逆向本站付費機制。', en: 'Circumventing quota limits or reverse-engineering the site\'s payment mechanisms.', ja: '枠制限の回避、本サイト課金機構のリバースエンジニアリング。', ko: '한도 제한 우회, 본 사이트 결제 메커니즘의 역공학.' },
     tm_s5c: { zh: '上傳含惡意程式之檔案或干擾服務運作。', en: 'Uploading files containing malware or interfering with service operation.', ja: 'マルウェアを含むファイルのアップロードやサービス運用の妨害。', ko: '악성 프로그램이 포함된 파일 업로드 또는 서비스 운영 방해.' },
     tm_s6:  { zh: '六、條款變更與聯絡', en: '6. Changes and Contact', ja: '第6条（規約の変更と連絡先）', ko: '제6조(약관 변경과 연락처)' },
-    tm_s6p: { zh: '本站得修訂本條款並於本頁公告。重大變更將於網站明顯處通知。聯絡：legal@voltsketch.example（上線前請換成實際信箱）。', en: 'This site may revise these terms and post them on this page. Material changes will be announced prominently on the site. Contact: legal@voltsketch.example (replace with the real address before launch).', ja: '本サイトは本規約を改訂し本ページで告知することがあります。重要な変更はサイトの目立つ場所で通知します。連絡先：legal@voltsketch.example（公開前に実際のアドレスに差し替え）。', ko: '본 사이트는 본 약관을 개정해 본 페이지에 공고할 수 있습니다. 중대한 변경은 사이트의 눈에 띄는 곳에 알립니다. 연락처: legal@voltsketch.example(공개 전 실제 주소로 교체).' },
+    tm_s6p: { zh: '本站得修訂本條款並於本頁公告。重大變更將於網站明顯處通知。聯絡：legal@hardwareai.example（上線前請換成實際信箱）。', en: 'This site may revise these terms and post them on this page. Material changes will be announced prominently on the site. Contact: legal@hardwareai.example (replace with the real address before launch).', ja: '本サイトは本規約を改訂し本ページで告知することがあります。重要な変更はサイトの目立つ場所で通知します。連絡先：legal@hardwareai.example（公開前に実際のアドレスに差し替え）。', ko: '본 사이트는 본 약관을 개정해 본 페이지에 공고할 수 있습니다. 중대한 변경은 사이트의 눈에 띄는 곳에 알립니다. 연락처: legal@hardwareai.example(공개 전 실제 주소로 교체).' },
     pv_h1:  { zh: '隱私權政策', en: 'Privacy Policy', ja: 'プライバシーポリシー', ko: '개인정보 처리방침' },
-    pv_intro: { zh: 'VoltSketch（下稱「本站」）在您登入、建立專案、匯入/匯出檔案、購買方案或使用 AI 輔助功能時，會處理必要之個人資料。本政策說明我們收集什麼、如何使用與保護。', en: 'VoltSketch ("this site") processes necessary personal data when you sign in, create projects, import/export files, purchase plans or use AI-assisted features. This policy explains what we collect and how we use and protect it.', ja: 'VoltSketch（以下「本サイト」）は、ログイン、プロジェクト作成、ファイルのインポート/エクスポート、プラン購入、AI 支援機能の利用時に必要な個人データを処理します。本ポリシーでは収集内容と利用・保護の方法を説明します。', ko: 'VoltSketch(이하 "본 사이트")는 로그인, 프로젝트 생성, 파일 가져오기/내보내기, 플랜 구매, AI 보조 기능 사용 시 필요한 개인정보를 처리합니다. 본 방침은 수집 항목과 이용·보호 방법을 설명합니다.' },
+    pv_intro: { zh: 'HardwareAI（下稱「本站」）在您登入、建立專案、匯入/匯出檔案、購買方案或使用 AI 輔助功能時，會處理必要之個人資料。本政策說明我們收集什麼、如何使用與保護。', en: 'HardwareAI ("this site") processes necessary personal data when you sign in, create projects, import/export files, purchase plans or use AI-assisted features. This policy explains what we collect and how we use and protect it.', ja: 'HardwareAI（以下「本サイト」）は、ログイン、プロジェクト作成、ファイルのインポート/エクスポート、プラン購入、AI 支援機能の利用時に必要な個人データを処理します。本ポリシーでは収集内容と利用・保護の方法を説明します。', ko: 'HardwareAI(이하 "본 사이트")는 로그인, 프로젝트 생성, 파일 가져오기/내보내기, 플랜 구매, AI 보조 기능 사용 시 필요한 개인정보를 처리합니다. 본 방침은 수집 항목과 이용·보호 방법을 설명합니다.' },
     pv_s1:  { zh: '一、我們收集的資料', en: '1. Data We Collect', ja: '第1条（収集するデータ）', ko: '제1조(수집하는 데이터)' },
     pv_s1a: { zh: '帳號資料：Email、使用者 ID、登入狀態（由 Supabase Auth 管理）。', en: 'Account data: email, user ID, sign-in state (managed by Supabase Auth).', ja: 'アカウントデータ：Email、ユーザー ID、ログイン状態（Supabase Auth が管理）。', ko: '계정 데이터: 이메일, 사용자 ID, 로그인 상태(Supabase Auth 관리).' },
     pv_s1b: { zh: '專案資料：您建立的線路圖、IC 元件、pin 定義、BOM、匯入與匯出設定。', en: 'Project data: schematics you create, IC parts, pin definitions, BOMs, import and export settings.', ja: 'プロジェクトデータ：作成した回路図、IC 部品、ピン定義、BOM、インポート/エクスポート設定。', ko: '프로젝트 데이터: 작성한 회로도, IC 부품, 핀 정의, BOM, 가져오기·내보내기 설정.' },
@@ -784,7 +784,7 @@ window.I18N = (function () {
     pv_s6b: { zh: '您可隨時要求刪除帳號：帳號、專案、使用量與訂單之個資將一併刪除（法律要求保存之交易紀錄除外）。', en: 'You may request account deletion at any time: account, project, usage and order personal data are deleted together (except transaction records the law requires us to keep).', ja: 'アカウント削除はいつでも請求できます。アカウント、プロジェクト、利用量、注文の個人データは一括削除されます（法律で保存が求められる取引記録を除く）。', ko: '언제든 계정 삭제를 요청할 수 있습니다: 계정, 프로젝트, 사용량, 주문의 개인정보가 함께 삭제됩니다(법률상 보관 의무가 있는 거래 기록 제외).' },
     pv_s6c: { zh: '刪除請求與其他個資權利行使（查詢、更正、停止利用），請聯絡下方信箱。', en: 'For deletion requests and other data rights (access, correction, cease of use), contact the address below.', ja: '削除請求やその他の個人データ権利行使（照会、訂正、利用停止）は下記メールアドレスへご連絡ください。', ko: '삭제 요청과 기타 개인정보 권리 행사(조회, 정정, 이용 정지)는 아래 메일로 연락하세요.' },
     pv_s7:  { zh: '七、聯絡方式', en: '7. Contact', ja: '第7条（連絡先）', ko: '제7조(연락처)' },
-    pv_s7p: { zh: '隱私相關問題請聯絡：legal@voltsketch.example（上線前請換成實際信箱）。', en: 'For privacy questions contact: legal@voltsketch.example (replace with the real address before launch).', ja: 'プライバシーに関するお問い合わせ：legal@voltsketch.example（公開前に実際のアドレスに差し替え）。', ko: '개인정보 관련 문의: legal@voltsketch.example(공개 전 실제 주소로 교체).' }
+    pv_s7p: { zh: '隱私相關問題請聯絡：legal@hardwareai.example（上線前請換成實際信箱）。', en: 'For privacy questions contact: legal@hardwareai.example (replace with the real address before launch).', ja: 'プライバシーに関するお問い合わせ：legal@hardwareai.example（公開前に実際のアドレスに差し替え）。', ko: '개인정보 관련 문의: legal@hardwareai.example(공개 전 실제 주소로 교체).' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';

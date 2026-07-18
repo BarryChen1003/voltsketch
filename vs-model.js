@@ -1,9 +1,9 @@
 /**
- * vs-model.js — VoltSketch 標準資料模型 v1
- *  A) VoltSketchSymbolModel：單顆 IC 符號的正式模型（pin 座標、標準電氣型別、graphics、preserved）。
+ * vs-model.js — HardwareAI 標準資料模型 v1
+ *  A) HardwareAISymbolModel：單顆 IC 符號的正式模型（pin 座標、標準電氣型別、graphics、preserved）。
  *     由 ic-data.js 的 entry 正規化（normalizeIC）而來；所有匯出 adapter（vs-adapters.js）
  *     一律吃這個模型，不直接吃 ic-data —— 之後擴格式只動 adapter，不動資料。
- *  B) VoltSketchDesign v1：整體設計檔中繼格式（sources/components/schematic/board/preserved）。
+ *  B) HardwareAIDesign v1：整體設計檔中繼格式（sources/components/schematic/board/preserved）。
  *     preserved 原則：不認識的資料原樣保存、匯出時合併回去，不 silent loss。
  *  單位：內部座標 mil，格線 100 mil（與 KiCad/OrCAD 格線相容；KiCad adapter 再換算 mm）。
  */
@@ -37,7 +37,7 @@ window.VSModel = (function () {
     return 'passive';
   }
 
-  // ---- ic-data entry → VoltSketchSymbolModel ----
+  // ---- ic-data entry → HardwareAISymbolModel ----
   // 座標系：符號中心 (0,0)；L/R 腳依陣列順序上→下、T/B 左→右（同 ic-symbol.js / ic-export.js 慣例）。
   const KNOWN_FIELDS = ['part', 'mfr', 'category', 'subcategory', 'package', 'whatIs', 'func',
     'usedIn', 'desc', 'datasheet', 'pins', 'thermalPad', 'specs', 'secondSource', 'dropIn'];
@@ -140,7 +140,7 @@ window.VSModel = (function () {
     };
   }
 
-  // ---- VoltSketchDesign v1 骨架 ----
+  // ---- HardwareAIDesign v1 骨架 ----
   function newDesign() {
     return {
       schemaVersion: SCHEMA_VERSION,
