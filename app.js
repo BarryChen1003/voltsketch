@@ -2160,7 +2160,8 @@ const app = {
                   inner += Sym.txt(nx2, p.by - 5, p.name, { size: F, anchor: anc });
                 } else {
                   const lx = p.bx - 6, anc = p.side === 'T' ? 'start' : 'end';  // T 向上、B 向下延伸
-                  inner += `<g transform="rotate(-90 ${lx} ${p.by})">` + Sym.txt(lx, p.by, p.name, { size: F, anchor: anc }) + `</g>`;
+                  const ny = p.side === 'T' ? p.by - 6 : p.by + 6;  // 往外空一格，名字不貼框（同 L/R 手感）
+                  inner += `<g transform="rotate(-90 ${lx} ${ny})">` + Sym.txt(lx, ny, p.name, { size: F, anchor: anc }) + `</g>`;
                 }
               }
             });
