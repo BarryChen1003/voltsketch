@@ -597,6 +597,7 @@ const app = {
     document.getElementById('zoomOut').addEventListener('click', () => this.zoomBy(1.25));
     document.getElementById('zoomIn').addEventListener('click', () => this.zoomBy(0.8));
     document.getElementById('fitAll').addEventListener('click', () => this.fitAll());
+    this.bindPanPad();
 
     // 自訂 IC 建立
     document.getElementById('openIcBuilder').addEventListener('click', () => this.openIcBuilder());
@@ -862,6 +863,32 @@ const app = {
     if (nw < 200 || nw > 8000) return;
     const cx = v.x + v.w / 2, cy = v.y + v.h / 2, nh = v.h * f;
     this.setViewBox({ x: cx - nw / 2, y: cy - nh / 2, w: nw, h: nh });
+  },
+
+  // 平移：把視框依畫面比例位移（fx/fy 為視框寬高的倍數，正=往該方向看）
+  panBy(fx, fy) {
+    const v = this.getViewBox();
+    this.setViewBox({ x: v.x + v.w * fx, y: v.y + v.h * fy, w: v.w, h: v.h });
+  },
+
+  // 綁定右下角方向盤：點一下跳一步、長按連續平移；中間鍵＝全覽
+  bindPanPad() {
+    const pad = document.getElementById('panPad');
+    if (!pad) return;
+    const dir = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+    pad.querySelectorAll('.pan-btn').forEach(btn => {
+      const key = btn.dataset.pan;
+      if (key === 'fit') { btn.addEventListener('click', () => this.fitAll()); return; }
+      const [dx, dy] = dir[key];
+      let holdTimer = null, repeat = null;
+      const stop = () => { clearTimeout(holdTimer); clearInterval(repeat); holdTimer = repeat = null; };
+      btn.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        this.panBy(dx * 0.28, dy * 0.28);                        // 即點即移
+        holdTimer = setTimeout(() => { repeat = setInterval(() => this.panBy(dx * 0.12, dy * 0.12), 45); }, 300); // 長按連續
+      });
+      ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
+    });
   },
 
   // 全覽：把所有元件/導線縮到畫布內（解決線路太大塞不進）

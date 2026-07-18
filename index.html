@@ -15,7 +15,7 @@
   <meta property="og:locale" content="zh_TW">
   <meta name="twitter:card" content="summary">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"HardwareAI","url":"https://barrychen1003.github.io/voltsketch/","inLanguage":"zh-Hant","description":"免費線上電路圖編輯器與硬體工程師知識庫"}</script>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=2" />
   </head>
   <body class="editor-lock">
     <div class="app-shell">
@@ -305,6 +305,13 @@
               <g id="overlayLayer"></g>
               <g id="selectionLayer"></g>
             </svg>
+            <div id="panPad" class="pan-pad" role="group" aria-label="平移畫布" title="平移畫布（點一下移動，長按連續移動）">
+              <button class="pan-btn pan-up" type="button" data-pan="up" aria-label="上移">▲</button>
+              <button class="pan-btn pan-left" type="button" data-pan="left" aria-label="左移">◀</button>
+              <button class="pan-btn pan-fit" type="button" data-pan="fit" aria-label="全覽" title="全覽（縮到所有線路）">⤢</button>
+              <button class="pan-btn pan-right" type="button" data-pan="right" aria-label="右移">▶</button>
+              <button class="pan-btn pan-down" type="button" data-pan="down" aria-label="下移">▼</button>
+            </div>
           </div>
         </section>
 
@@ -569,7 +576,7 @@
     <script src="./schematic-symbols.js?v=30"></script>
     <script src="./circuit-engine.js?v=34"></script>
     <script src="./ic-data.js?v=43"></script>
-    <script src="./app.js?v=45"></script>
+    <script src="./app.js?v=46"></script>
     <script src="./instruments.js"></script>
     <script src="./sim-bench.js"></script>
     <script src="./sheets.js?v=2026-07-12a"></script>
