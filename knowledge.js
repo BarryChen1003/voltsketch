@@ -1391,7 +1391,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-17-paid2';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-19-circuits';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -1459,6 +1459,18 @@ const knowledgeApp = {
         item.circuits[0].svg = svg;
       }
     });
+    // 補圖庫（knowledge-circuits2.js）：只補 circuits 為空的卡，不動已有圖
+    if (window.CIRCUITS2) {
+      data.forEach(item => {
+        if (Array.isArray(item.circuits) && item.circuits.length) return;
+        const fn2 = window.CIRCUITS2[item.id];
+        if (!fn2) return;
+        try {
+          const r = fn2();
+          if (r && r.svg) item.circuits = [{ type: 'diagram', description: r.d || item.title, svg: r.svg }];
+        } catch (e) { /* 單張畫失敗不擋整頁 */ }
+      });
+    }
     return data;
   },
 
