@@ -4287,8 +4287,9 @@ const knowledgeApp = {
         (['emc', 'emi'].includes(this.currentCategory) && item.category === 'emi-emc');
       const matchesTopo = !this.currentTopo || this.currentTopo === 'all' || this.itemTopo(item) === this.currentTopo;
       const prods = item.products || ['通用'];
+      // 指定產品只顯示該產品專屬卡（點了畫面才會變、才有內容）；「全部」看全部、「通用」看通用卡
       const matchesProduct = !this.currentProduct || this.currentProduct === 'all' ||
-        prods.includes(this.currentProduct) || prods.includes('通用');
+        prods.includes(this.currentProduct);
       const matchesSearch = !this.searchQuery ||
         item.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
         item.description?.toLowerCase().includes(this.searchQuery.toLowerCase());
@@ -4301,9 +4302,13 @@ const knowledgeApp = {
     if (!container) return;
 
     const filtered = this.getFilteredItems();
-    // 卡片依分類分組排序（同類排一起，卡多的分類在前）；同類內維持原順序
+    // 卡片排序：先依小分類分組（卡多的分類在前），同類內再依英文 id A–Z（看起來順眼）
     const rank = this.categoryRank();
-    filtered.sort((a, b) => (rank[a.category] ?? 999) - (rank[b.category] ?? 999));
+    filtered.sort((a, b) => {
+      const dc = (rank[a.category] ?? 999) - (rank[b.category] ?? 999);
+      if (dc !== 0) return dc;
+      return String(a.id || '').localeCompare(String(b.id || ''));
+    });
 
     // 熱門主題付費鎖：選到鎖定主題且未解鎖 → 顯示升級卡，不出內容
     const kbLock = window.KB_LOCK && !window.KB_LOCK.unlocked;
