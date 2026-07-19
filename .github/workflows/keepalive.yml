@@ -1,0 +1,29 @@
+name: Supabase keep-alive
+
+# 免費 Supabase 專案閒置 7 天會被暫停。此排程每週一、四 ping 一次
+# （間隔 <7 天），打到 Postgres 保持活動 → 開發期不會再被暫停。
+# 也可到 Actions 頁按 "Run workflow" 手動觸發測試。
+# 若 ping 非 200（專案被暫停/刪除）job 會失敗 → GitHub 寄信通知你。
+on:
+  schedule:
+    - cron: '17 6 * * 1,4'   # 每週一、四 06:17 UTC
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST (touches Postgres)
+        run: |
+          BASE="https://dmkxjawjrmltmrmkebbs.supabase.co"
+          # anon 公開金鑰：本來就在 auth-config.js 公開出貨，放這裡無安全疑慮。
+          ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRta3hqYXdqcm1sdG1ybWtlYmJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxMTQ2ODEsImV4cCI6MjA5ODY5MDY4MX0.KSXRiToPtFSWfLli_yYCSizFZpM22JVIft9zAaMMRXA"
+          code=$(curl -sS -o /dev/null -w "%{http_code}" \
+            "$BASE/rest/v1/profiles?select=id&limit=1" \
+            -H "apikey: $ANON" -H "Authorization: Bearer $ANON" --max-time 30)
+          echo "Supabase REST ping -> HTTP $code"
+          if [ "$code" != "200" ]; then
+            echo "::error::Keep-alive ping failed (HTTP $code). 專案可能被暫停或刪除。"
+            exit 1
+          fi
+          echo "OK — 專案活著，已刷新閒置計時。"
