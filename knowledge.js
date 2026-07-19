@@ -1386,6 +1386,7 @@ const knowledgeApp = {
     this.renderCards();
     this.bindEvents();
     this.updateCounts();
+    this.renderCategoryNav();
   },
 
   async loadFromStorage() {
@@ -4300,6 +4301,9 @@ const knowledgeApp = {
     if (!container) return;
 
     const filtered = this.getFilteredItems();
+    // 卡片依分類分組排序（同類排一起，卡多的分類在前）；同類內維持原順序
+    const rank = this.categoryRank();
+    filtered.sort((a, b) => (rank[a.category] ?? 999) - (rank[b.category] ?? 999));
 
     // 熱門主題付費鎖：選到鎖定主題且未解鎖 → 顯示升級卡，不出內容
     const kbLock = window.KB_LOCK && !window.KB_LOCK.unlocked;
@@ -4370,7 +4374,9 @@ const knowledgeApp = {
       'analog': '類比電路',
       'data-conversion': '資料轉換',
       'measurement': '量測儀器',
-      'embedded': '嵌入式系統'
+      'embedded': '嵌入式系統',
+      'pcb-design': 'PCB 設計',
+      'automotive': '車用電子'
     };
     return names[category] || category;
   },
@@ -4380,6 +4386,47 @@ const knowledgeApp = {
     const sfx = { zh: ' 個主題', en: ' topics', ja: '件', ko: '개 주제' };
     const l = (window.I18N && I18N.lang) || 'zh';
     document.querySelector('#totalCount').textContent = `${total}${sfx[l] || sfx.zh}`;
+  },
+
+  // 各分類卡數 → 排名（卡多的排前），供卡片分組排序與側欄排序共用
+  categoryRank() {
+    const counts = {};
+    this.items.forEach(it => { counts[it.category] = (counts[it.category] || 0) + 1; });
+    const rank = {};
+    Object.keys(counts).sort((a, b) => counts[b] - counts[a]).forEach((c, i) => { rank[c] = i; });
+    return rank;
+  },
+
+  // 分類側欄：標各類張數、隱藏 0 卡分類、依卡數多寡重排（全部主題永遠置頂）
+  renderCategoryNav() {
+    const list = document.getElementById('categoryList');
+    if (!list) return;
+    const counts = {};
+    this.items.forEach(it => { counts[it.category] = (counts[it.category] || 0) + 1; });
+    const items = [...list.querySelectorAll('.category-item')];
+    items.forEach(el => {
+      const cat = el.dataset.category;
+      let n = cat === 'all' ? this.items.length
+        : (cat === 'emc' || cat === 'emi') ? (counts['emi-emc'] || counts[cat] || 0)
+        : (counts[cat] || 0);
+      el.dataset.count = n;
+      if (cat === 'all') return;                 // 全部主題不加 badge、不隱藏
+      let badge = el.querySelector('.cat-cnt');
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'cat-cnt';
+        badge.style.cssText = 'margin-left:auto;font-size:11px;font-weight:600;color:#94a3b8';
+        el.appendChild(badge);
+      }
+      badge.textContent = n;
+      el.style.display = n === 0 ? 'none' : '';   // 0 卡自動隱藏
+    });
+    // 依卡數多寡重排；全部主題插回最前
+    items.filter(el => el.dataset.category !== 'all')
+      .sort((a, b) => (+b.dataset.count) - (+a.dataset.count))
+      .forEach(el => list.appendChild(el));
+    const allItem = list.querySelector('.category-item[data-category="all"]');
+    if (allItem) list.insertBefore(allItem, list.firstChild);
   },
 
   // 公式下標（HTML）：Vout→V<sub>out</sub>、Rds_on→Rds<sub>on</sub>、R1→R<sub>1</sub>
@@ -4499,7 +4546,11 @@ const knowledgeApp = {
   renderProductFilter() {
     const host = document.querySelector('#productFilter');
     if (!host) return;
-    const prods = ['all', '通用', '筆電', '手機', '平板', '智慧手錶', '車用電子', '電子紙', 'AI 伺服器', '網通', 'WiFi 路由器', 'IoT', '耳機', '滑鼠', '硬碟', '風扇', '電器', '音訊', '感測', '控制', '電源', 'MCU'];
+    // 依「專屬卡數」隱藏 0 卡產品鈕（all/通用 永遠保留）：避免點了只顯示通用卡、畫面沒變的死鈕
+    const ownCount = {};
+    this.items.forEach(it => (it.products || []).forEach(p => { ownCount[p] = (ownCount[p] || 0) + 1; }));
+    const prods = ['all', '通用', '筆電', '手機', '平板', '智慧手錶', '車用電子', '電子紙', 'AI 伺服器', '網通', 'WiFi 路由器', 'IoT', '耳機', '滑鼠', '硬碟', '風扇', '電器', '音訊', '感測', '控制', '電源', 'MCU']
+      .filter(p => p === 'all' || p === '通用' || (ownCount[p] || 0) > 0);
     // 熱門主題付費解鎖（軟鎖；權限由 plan.js 查 user_plans/profiles，KB_LOCK 由 knowledge.html 設定）
     const kbLock = window.KB_LOCK && !window.KB_LOCK.unlocked;
     const lockedProds = (window.KB_LOCK && window.KB_LOCK.prods) || [];
