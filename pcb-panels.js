@@ -15,6 +15,8 @@
 (function () {
   const LS = 'vs-pcb-panels';
   const Z_BASE = 40;
+  // 這些面板太常用，除了選單再給工具列一顆直達鈕（否則使用者找不到）
+  const QUICK = [['colors', '🎨 配色', '整體配色：背景／板框／銅層／元件底色']];
   let zTop = Z_BASE;
   const panels = new Map();      // key → { key, title, win, section, btn }
 
@@ -209,6 +211,21 @@
     const right = bar.lastElementChild;
     if (right && right !== bar.firstElementChild) right.insertBefore(wrap, right.firstChild);
     else bar.appendChild(wrap);
+
+    // 常用面板另外給工具列直達按鈕（埋在選單裡等於看不到）
+    QUICK.forEach(([key, label, title]) => {
+      const p = panels.get(key);
+      if (!p) return;
+      const q = document.createElement('button');
+      q.className = 'small-button';
+      q.type = 'button';
+      q.id = 'pcbQuick-' + key;
+      q.textContent = label;
+      q.title = title || label;
+      q.addEventListener('click', () => setOpen(key, p.win.hidden));
+      if (right && right !== bar.firstElementChild) right.insertBefore(q, wrap);
+      else bar.appendChild(q);
+    });
 
     // 還原上次開著的面板
     panels.forEach(p => { if ((st[p.key] || {}).open) setOpen(p.key, true, false); else setOpen(p.key, false, false); });
