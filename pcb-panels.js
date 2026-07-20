@@ -25,7 +25,7 @@
   function injectCss() {
     if (document.getElementById('pcbPanelCss')) return;
     const css = `
-    .pcb-float{position:fixed;z-index:${Z_BASE};width:300px;max-width:calc(100vw - 24px);
+    .pcb-float{position:absolute;z-index:${Z_BASE};width:300px;max-width:calc(100vw - 24px);
       background:#fff;border:1px solid var(--line);border-radius:10px;
       box-shadow:0 10px 30px rgba(15,23,42,.18);display:flex;flex-direction:column;overflow:hidden}
     .pcb-float[hidden]{display:none}
@@ -68,15 +68,17 @@
       if (e.target.closest('.pcb-float-x')) return;
       moving = true; bringFront(win);
       sx = e.clientX; sy = e.clientY;
-      const r = win.getBoundingClientRect(); ox = r.left; oy = r.top;
+      // 視窗是 position:absolute（文件座標），所以要把捲動量加回去
+      const r = win.getBoundingClientRect();
+      ox = r.left + window.scrollX; oy = r.top + window.scrollY;
       head.setPointerCapture(e.pointerId);
       e.preventDefault();
     });
     head.addEventListener('pointermove', e => {
       if (!moving) return;
-      const maxX = window.innerWidth - 60, maxY = window.innerHeight - 40;
+      const maxX = Math.max(4, document.documentElement.scrollWidth - 60);
       const x = Math.max(4, Math.min(maxX, ox + e.clientX - sx));
-      const y = Math.max(4, Math.min(maxY, oy + e.clientY - sy));
+      const y = Math.max(4, oy + e.clientY - sy);   // 可往下拖進留白停放區
       win.style.left = x + 'px'; win.style.top = y + 'px'; win.style.right = 'auto';
     });
     const end = e => {
@@ -120,8 +122,9 @@
       if (!p.win.style.left) {
         const c = document.querySelector('.pcb-canvas-container');
         const r = c ? c.getBoundingClientRect() : { right: window.innerWidth - 300, top: 90 };
-        p.win.style.left = Math.max(8, r.right - 320) + 'px';
-        p.win.style.top = Math.max(8, r.top + 12 + panels.size % 5 * 22) + 'px';
+        const open = [...panels.values()].filter(q => !q.win.hidden).length;
+        p.win.style.left = Math.max(8, r.right - 320 + window.scrollX) + 'px';
+        p.win.style.top = Math.max(8, r.top + window.scrollY + 12 + (open % 5) * 26) + 'px';
       }
     }
     if (p.btn) p.btn.querySelector('.tick').textContent = open ? '✓' : '';

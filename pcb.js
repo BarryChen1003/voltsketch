@@ -33,7 +33,9 @@ const pcbApp = {
     ratsnest: null,      // 飛線快取（null=待重算）
     netRules: [],        // Layout 規則（NetRules）
     userZones: [],       // 使用者畫的鋪銅 {layer,net,pts,clearance}
-    zoneDraw: null       // 進行中 zone {pts, net, cursor:[x,y]}
+    zoneDraw: null,      // 進行中 zone {pts, net, cursor:[x,y]}
+    showPinNums: true,   // pad 上顯示 pin number（Allegro 慣例，預設開）
+    showPinNames: true   // pad 下方顯示腳名/網路（夠大才畫）
   },
   gridSize: 1, // 1mm
 
@@ -42,6 +44,8 @@ const pcbApp = {
     this.ctx = this.canvas.getContext('2d');
     this.state.layerStack = this.buildLayerStack(this.state.layers);
     this.state.visibleLayers = this.state.layerStack.map(l => l.id);
+    this.loadPalette();
+    this.renderPalettePanel();
     this.resizeCanvas();
     this.watchCanvasSize();
     this.bindEvents();
@@ -109,6 +113,63 @@ const pcbApp = {
     this.render();
   },
 
+  // 全域配色：背景／板框／各銅層／元件底色。存 localStorage，重載沿用。
+  PALETTE_LS: 'vs-pcb-palette',
+  paletteDefaults() {
+    return {
+      bg: '#1a1a2e', board: '#2d5a3d', grid: '#3d5a4e',
+      'F.Cu': '#e74c3c', 'B.Cu': '#3498db',
+      compTop: '#34495e', compBottom: '#1f3a5f'
+    };
+  },
+  loadPalette() {
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(this.PALETTE_LS)) || {}; } catch (e) {}
+    this.state.palette = Object.assign(this.paletteDefaults(), saved);
+    this.applyPalette();
+  },
+  savePalette() {
+    try { localStorage.setItem(this.PALETTE_LS, JSON.stringify(this.state.palette)); } catch (e) {}
+  },
+  // 把配色推進 layerStack（走線/pad 取層色），其餘由 compFill / render 直接讀 palette
+  applyPalette() {
+    const p = this.state.palette || {};
+    (this.state.layerStack || []).forEach(l => { if (p[l.id]) l.color = p[l.id]; });
+  },
+  renderPalettePanel() {
+    const host = document.getElementById('paletteRows');
+    if (!host) return;
+    const p = this.state.palette || this.paletteDefaults();
+    const rows = [
+      ['bg', '畫布背景'], ['board', '板框'], ['grid', '格線'],
+      ['F.Cu', '正面銅（F.Cu）'], ['B.Cu', '背面銅（B.Cu）'],
+      ['compTop', '正面元件底色'], ['compBottom', '背面元件底色']
+    ];
+    host.innerHTML = rows.map(([k, label]) =>
+      `<label style="display:flex;align-items:center;gap:8px;justify-content:space-between">
+         <span>${label}</span>
+         <input type="color" data-pal="${k}" value="${p[k] || '#000000'}"
+                style="width:44px;height:24px;padding:0;border:1px solid var(--line);border-radius:4px;background:none;cursor:pointer">
+       </label>`).join('');
+    host.querySelectorAll('input[data-pal]').forEach(inp => {
+      inp.addEventListener('input', e => {
+        this.state.palette[inp.dataset.pal] = e.target.value;
+        this.applyPalette();
+        this.savePalette();
+        this.renderLayerList();
+        this.render();
+      });
+    });
+    document.getElementById('paletteReset')?.addEventListener('click', () => {
+      this.state.palette = this.paletteDefaults();
+      this.applyPalette();
+      this.savePalette();
+      this.renderPalettePanel();
+      this.renderLayerList();
+      this.render();
+    }, { once: true });
+  },
+
   // 板面平移方向盤：點一下移動、長按連續移動；中間鍵＝適合視窗
   bindPanPad() {
     const pad = document.getElementById('pcbPanPad');
@@ -150,8 +211,8 @@ const pcbApp = {
     const { ctx, canvas, state } = this;
     const { zoom, panX, panY, boardWidth, boardHeight } = state;
 
-    // Clear canvas
-    ctx.fillStyle = '#1a1a2e';
+    // Clear canvas（背景色可由「整體配色」面板設定）
+    ctx.fillStyle = (state.palette && state.palette.bg) || '#1a1a2e';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Calculate scale (1mm = 10px at 100% zoom)
@@ -307,7 +368,43 @@ const pcbApp = {
         ctx.fill();
       }
       ctx.restore();
+      // pin number（＋可選 pin 名/網路）標在 pad 上，讓人看得出接的是第幾腳
+      this.drawPadLabel(pad, sx, sy, w, h, scale);
     });
+  },
+
+  // pad 標註：號碼畫在 pad 中央；放大到看得清時再加腳名/網路在下方。
+  // 標註不隨 pad 旋轉（永遠正向可讀），太小就不畫避免糊成一團。
+  drawPadLabel(pad, sx, sy, w, h, scale) {
+    if (!this.state.showPinNums) return;
+    const num = pad.num == null ? '' : String(pad.num);
+    if (!num) return;
+    const box = Math.min(w, h);
+    if (box < 7) return;                       // 太小畫了也看不清
+    const { ctx } = this;
+    ctx.save();
+    ctx.translate(sx, sy);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const fs = Math.max(6, Math.min(11, box * 0.62));
+    ctx.font = `600 ${fs}px ui-monospace,SFMono-Regular,Menlo,monospace`;
+    ctx.lineWidth = Math.max(2, fs * 0.28);
+    ctx.strokeStyle = 'rgba(10,14,32,.85)';    // 描邊：任何 pad 顏色上都讀得到
+    ctx.lineJoin = 'round';
+    ctx.strokeText(num, 0, 0);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(num, 0, 0);
+    // 腳名／網路：只在夠大時顯示，避免蓋住旁邊的 pad
+    const sub = this.state.showPinNames ? (pad.name || pad.net || '') : '';
+    if (sub && box >= 16) {
+      const f2 = Math.max(6, Math.min(9, box * 0.34));
+      ctx.font = `500 ${f2}px ui-sans-serif,system-ui,sans-serif`;
+      ctx.lineWidth = Math.max(2, f2 * 0.3);
+      ctx.strokeText(sub, 0, h / 2 + f2 * 0.9);
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillText(sub, 0, h / 2 + f2 * 0.9);
+    }
+    ctx.restore();
   },
 
   drawGrid(scale) {
@@ -319,7 +416,7 @@ const pcbApp = {
     const endX = startX + boardWidth * scale;
     const endY = startY + boardHeight * scale;
 
-    ctx.strokeStyle = '#3d5a4e';
+    ctx.strokeStyle = (state.palette && state.palette.grid) || '#3d5a4e';
     ctx.lineWidth = 0.5;
 
     // Vertical lines
@@ -341,8 +438,12 @@ const pcbApp = {
 
   // kind → 填色（top 面）；bottom 面統一偏藍且僅在 B.Cu 可見時畫
   compFill(comp) {
-    if (comp.side === 'bottom') return '#1f3a5f';
-    return { ic: '#34495e', passive: '#3f5561', conn: '#6e5b1e', mech: '#4a4a55' }[comp.kind] || '#34495e';
+    if (comp.color) return comp.color;                       // 個別元件上色優先
+    const pal = this.state.palette || {};
+    if (comp.side === 'bottom') return pal.compBottom || '#1f3a5f';
+    return (pal.kind && pal.kind[comp.kind])
+      || { ic: '#34495e', passive: '#3f5561', conn: '#6e5b1e', mech: '#4a4a55' }[comp.kind]
+      || pal.compTop || '#34495e';
   },
 
   compVisible(comp) {
@@ -439,7 +540,8 @@ const pcbApp = {
       const lid = trace.layer || 'F.Cu';
       if (!state.visibleLayers.includes(lid)) return;
       const ldef = layerOf(lid);
-      ctx.strokeStyle = ldef ? ldef.color : '#e74c3c';
+      // 個別走線可覆蓋顏色（trace.color），沒設就用該層顏色
+      ctx.strokeStyle = trace.color || (ldef ? ldef.color : '#e74c3c');
       ctx.lineWidth = Math.max(1, (trace.width || 0.3) * scale);
       ctx.globalAlpha = lid === 'F.Cu' ? 1 : 0.85;
       ctx.beginPath();
@@ -1175,6 +1277,9 @@ const pcbApp = {
       if (el && document.activeElement !== el) el.value = Math.round(v * 1000) / 1000;
     };
     set('selX', c.x); set('selY', c.y); set('selRot', c.rot || 0);
+    // 顏色欄反映目前生效色（自訂色優先，否則顯示預設色）
+    const col = document.getElementById('selColor');
+    if (col && document.activeElement !== col) col.value = c.color || this.compFill(c) || '#34495e';
   },
 
   toast(msg, kind) {
@@ -1768,6 +1873,31 @@ const pcbApp = {
     document.getElementById('ratsnestToggle')?.addEventListener('change', (e) => {
       this.state.showRatsnest = e.target.checked;
       this.state.ratsnest = null;
+      this.render();
+    });
+
+    // 選取物件上色（元件或走線皆可；空值＝回到層/種類預設色）
+    document.getElementById('selColor')?.addEventListener('input', (e) => {
+      const t = this.state.selected;
+      if (!t) return;
+      t.color = e.target.value;
+      this.render();
+    });
+    document.getElementById('selColorClear')?.addEventListener('click', () => {
+      const t = this.state.selected;
+      if (!t) return;
+      delete t.color;
+      this.render();
+      this.syncSelPanel();
+    });
+
+    // pin number / 腳名 顯示開關
+    document.getElementById('pinNumToggle')?.addEventListener('change', (e) => {
+      this.state.showPinNums = e.target.checked;
+      this.render();
+    });
+    document.getElementById('pinNameToggle')?.addEventListener('change', (e) => {
+      this.state.showPinNames = e.target.checked;
       this.render();
     });
 

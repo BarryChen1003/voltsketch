@@ -17,23 +17,21 @@
     <link rel="stylesheet" href="./styles.css" />
     <style>
       .pcb-page {
-        height: 100vh;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
-        overflow: hidden;              /* 整頁不捲；捲動交給各欄自己 */
       }
 
-      /* 主區吃滿剩餘高度；min-height:0 讓 grid 子項可以縮而不是被內容撐爆
-         （側欄內容很長時，之前會把整列拉到數千 px，連帶 canvas 顯示尺寸失真） */
+      /* 編輯區固定一個視窗高——canvas 才不會被側欄內容撐長（會造成滑鼠座標失真）。
+         頁面本身仍可往下捲，下方留白區可停放浮動面板。 */
       .pcb-main {
-        flex: 1;
-        min-height: 0;
+        flex: 0 0 auto;
+        height: calc(100vh - 172px);
+        min-height: 460px;
         display: grid;
-        grid-template-columns: 220px 1fr 280px;
+        grid-template-columns: 252px 1fr 292px;
         gap: 12px;
         padding: 12px;
-        overflow: hidden;
       }
 
       .pcb-sidebar,
@@ -44,10 +42,46 @@
         min-height: 0;
         overflow-y: auto;              /* 各自內部捲動 */
         overflow-x: hidden;
-        padding-right: 4px;
+        padding-right: 6px;
       }
       .pcb-sidebar > *,
       .pcb-inspector > * { flex-shrink: 0; }
+
+      /* grid/flex 子項預設 min-width:auto，長標籤會把欄撐爆而被裁掉。
+         一律允許縮小，輸入類填滿欄寬 → 文字不再被吃掉。 */
+      .pcb-sidebar *,
+      .pcb-inspector * { min-width: 0; }
+      .pcb-sidebar input, .pcb-sidebar select, .pcb-sidebar textarea, .pcb-sidebar button,
+      .pcb-inspector input, .pcb-inspector select, .pcb-inspector textarea, .pcb-inspector button {
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      .pcb-sidebar input:not([type=checkbox]), .pcb-sidebar select, .pcb-sidebar textarea,
+      .pcb-inspector input:not([type=checkbox]), .pcb-inspector select, .pcb-inspector textarea {
+        width: 100%;
+      }
+      .pcb-sidebar label, .pcb-inspector label { overflow-wrap: anywhere; }
+
+      /* 下方留白：把浮動面板拖來這裡暫放 */
+      .pcb-parking {
+        flex: 0 0 auto;
+        min-height: 68vh;
+        margin: 0 12px 16px;
+        border: 1px dashed var(--line);
+        border-radius: 12px;
+        background: repeating-linear-gradient(45deg, #fafbfe, #fafbfe 12px, #f4f6fb 12px, #f4f6fb 24px);
+        display: flex; align-items: flex-start; justify-content: center;
+        padding-top: 14px; color: var(--muted); font-size: 12.5px;
+      }
+
+      /* 分頁鈕：icon-button 是固定寬的圖示鈕，中文標籤會被裁掉 → 專用樣式 */
+      .pcb-tab {
+        padding: 8px 22px; font-size: 14px; white-space: nowrap;
+        flex-shrink: 0; width: auto;
+        border: 1px solid var(--line); border-radius: var(--radius);
+        background: #fff; color: var(--ink); cursor: pointer;
+      }
+      .pcb-tab:hover { border-color: var(--accent); background: var(--accent-soft); }
       
       .pcb-tool-grid {
         display: grid;
@@ -460,7 +494,7 @@
       }
     </style>
   </head>
-  <body class="editor-lock">
+  <body>
     <!-- PCB 邀請碼門面（前端門面；正式硬鎖 = profiles.pcb_access 後端 RLS，12 個月方案自動開通） -->
     <div id="pcbGate" style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.96);display:flex;align-items:center;justify-content:center;padding:16px">
       <div style="background:#fff;border-radius:14px;padding:32px 28px;max-width:380px;width:100%;text-align:center">
@@ -534,8 +568,8 @@
       <!-- PCB 雙分頁：Layout 編輯（本頁工具）｜板面檢視（pcb-viewer 內嵌，共用邀請碼旗標） -->
       <div id="pcbTabs" style="display:flex;gap:8px;margin:12px 16px 0;align-items:center;flex-wrap:wrap">
         <button id="tabLayout" type="button" class="primary-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" data-i18n="pcb_tab_layout">🛠 Layout 編輯</button>
-        <button id="tabViewer" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" title="板面檢視（Allegro 匯入）" data-i18n="pcb_tab_viewer">🔍 板面檢視</button>
-        <button id="tabRefs" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" data-i18n="pcb_tab_refs">📐 開源公版</button>
+        <button id="tabViewer" type="button" class="pcb-tab" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" title="板面檢視（Allegro 匯入）" data-i18n="pcb_tab_viewer">🔍 板面檢視</button>
+        <button id="tabRefs" type="button" class="pcb-tab" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" data-i18n="pcb_tab_refs">📐 開源公版</button>
       </div>
       <div id="pcbViewerPane" style="display:none;flex:1;padding:12px 16px">
         <iframe id="pcbViewerFrame" title="PCB 檢視器" data-i18n-title="pcbf_viewer_title" style="width:100%;height:100%;min-height:72vh;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe>
@@ -558,9 +592,9 @@
             main.style.display = which === 'layout' ? '' : 'none';
             vpane.style.display = which === 'viewer' ? 'flex' : 'none';
             rpane.style.display = which === 'refs' ? 'flex' : 'none';
-            tl.className = which === 'layout' ? 'primary-button' : 'icon-button';
-            tv.className = which === 'viewer' ? 'primary-button' : 'icon-button';
-            tr.className = which === 'refs' ? 'primary-button' : 'icon-button';
+            tl.className = which === 'layout' ? 'primary-button' : 'pcb-tab';
+            tv.className = which === 'viewer' ? 'primary-button' : 'pcb-tab';
+            tr.className = which === 'refs' ? 'primary-button' : 'pcb-tab';
             try { localStorage.setItem('vs-pcb-tab', which); } catch (e) {}
           }
           tl.addEventListener('click', function () { pick('layout'); });
@@ -626,6 +660,8 @@
                 <div id="tuneMsg" style="font-size:11px;color:var(--muted);line-height:1.5"></div>
               </div>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ratsnestToggle"><span data-i18n="pcbf_ratsnest">顯示飛線（未連線）</span></label>
+              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="pinNumToggle" checked><span data-i18n="pcbf_pinnum">顯示 pin number</span></label>
+              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="pinNameToggle" checked><span data-i18n="pcbf_pinname">顯示腳名 / 網路</span></label>
               <button class="small-button" id="autoRouteBtn" data-i18n="pcb_autoroute" style="grid-column:1/-1">⚡ 自動佈線未連線（單層試驗）</button>
               <button class="small-button" id="syncNetlistBtn" data-i18n="pcb_syncnet" style="grid-column:1/-1" title="讀取線路圖頁自動存檔，建立元件與網路，飛線引導佈局">⇪ 從線路圖同步 netlist</button>
               <button class="small-button" id="view3dBtn" data-i18n="pcb_3d" style="grid-column:1/-1" title="教學級近似：元件方塊+pad+走線；Three.js 開啟時才載入">🧊 3D 檢視</button>
@@ -773,6 +809,7 @@
               <label style="display:grid;gap:2px"><span data-i18n="pcbf_angle">角度 (°)</span><input type="number" id="selRot" step="90" style="padding:3px"></label>
               <label style="display:grid;gap:2px"><span data-i18n="pcbf_grid">格點 (mm)</span><input type="number" id="gridSnap" value="0.05" step="0.05" min="0" style="padding:3px"></label>
               <button class="small-button" id="selRotBtn" data-i18n="pcb_rot90" style="grid-column:1/-1">旋轉 90°（R）</button>
+              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center"><span data-i18n="pcbf_selcolor" style="white-space:nowrap">顏色</span><input type="color" id="selColor" value="#34495e" style="width:44px;height:26px;padding:0;border:1px solid var(--line);border-radius:4px;background:none;cursor:pointer"><button class="small-button" id="selColorClear" data-i18n="pcbf_colorclear" style="flex:1">還原預設</button></label>
             </div>
           </section>
 
@@ -827,6 +864,13 @@
             <div id="thermalResults" style="margin-top:8px;font-size:12px;"></div>
           </section>
 
+          <section class="panel-section" data-panel="colors" data-panel-title="整體配色">
+            <h2 data-i18n="pcb_colors">🎨 整體配色</h2>
+            <p style="font-size:11px;color:var(--muted);margin:0 0 8px" data-i18n="pcbf_h_colors">改的是全域預設色。單一走線／元件可在「選取元件」面板單獨上色，會蓋過這裡。</p>
+            <div id="paletteRows" style="display:grid;gap:6px;font-size:12px"></div>
+            <button class="small-button" id="paletteReset" data-i18n="pcbf_palreset" style="margin-top:8px;width:100%">還原預設配色</button>
+          </section>
+
           <section class="panel-section" data-panel="netlist" data-panel-title="Netlist">
             <h2>Netlist</h2>
             <div id="netlistContent" style="font-size: 13px; max-height: 200px; overflow-y: auto;">
@@ -842,6 +886,8 @@
           </section>
         </aside>
       </main>
+
+      <div class="pcb-parking" id="pcbParking">可把「▤ 面板」開出的視窗拖到這片空白區暫放</div>
     </div>
 
     <template id="toastTemplate">
@@ -865,11 +911,11 @@
     <script src="./pcb-drc.js?v=4"></script>
     <script src="./pcb-rules.js?v=4"></script>
     <script src="./pcb-3d.js?v=1"></script>
-    <script src="./pcb.js?v=23"></script>
+    <script src="./pcb.js?v=25"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-07-16a"></script>
     <script src="./pcb-stackup.js?v=2026-07-16a"></script>
     <!-- 面板停靠：設定型 section 從側欄搬進可拖曳浮動視窗，由「▤ 面板」選單開關 -->
-    <script src="./pcb-panels.js?v=1"></script>
+    <script src="./pcb-panels.js?v=2"></script>
 </body>
 </html>
