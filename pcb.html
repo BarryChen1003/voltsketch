@@ -17,24 +17,37 @@
     <link rel="stylesheet" href="./styles.css" />
     <style>
       .pcb-page {
+        height: 100vh;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        overflow: hidden;              /* 整頁不捲；捲動交給各欄自己 */
       }
-      
+
+      /* 主區吃滿剩餘高度；min-height:0 讓 grid 子項可以縮而不是被內容撐爆
+         （側欄內容很長時，之前會把整列拉到數千 px，連帶 canvas 顯示尺寸失真） */
       .pcb-main {
         flex: 1;
+        min-height: 0;
         display: grid;
         grid-template-columns: 220px 1fr 280px;
         gap: 12px;
         padding: 12px;
+        overflow: hidden;
       }
-      
-      .pcb-sidebar {
+
+      .pcb-sidebar,
+      .pcb-inspector {
         display: flex;
         flex-direction: column;
         gap: 12px;
+        min-height: 0;
+        overflow-y: auto;              /* 各自內部捲動 */
+        overflow-x: hidden;
+        padding-right: 4px;
       }
+      .pcb-sidebar > *,
+      .pcb-inspector > * { flex-shrink: 0; }
       
       .pcb-tool-grid {
         display: grid;
@@ -70,6 +83,7 @@
       .pcb-canvas-container {
         display: flex;
         flex-direction: column;
+        min-height: 0;
         background: white;
         border: 1px solid var(--line);
         border-radius: var(--radius);
@@ -109,12 +123,6 @@
         width: 100%;
         height: 100%;
         cursor: crosshair;
-      }
-      
-      .pcb-inspector {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
       }
       
       .drc-results {
@@ -452,7 +460,7 @@
       }
     </style>
   </head>
-  <body>
+  <body class="editor-lock">
     <!-- PCB 邀請碼門面（前端門面；正式硬鎖 = profiles.pcb_access 後端 RLS，12 個月方案自動開通） -->
     <div id="pcbGate" style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.96);display:flex;align-items:center;justify-content:center;padding:16px">
       <div style="background:#fff;border-radius:14px;padding:32px 28px;max-width:380px;width:100%;text-align:center">
@@ -524,7 +532,7 @@
       </header>
 
       <!-- PCB 雙分頁：Layout 編輯（本頁工具）｜板面檢視（pcb-viewer 內嵌，共用邀請碼旗標） -->
-      <div id="pcbTabs" style="display:flex;gap:8px;margin:12px 16px 0;align-items:center;overflow-x:auto;white-space:nowrap">
+      <div id="pcbTabs" style="display:flex;gap:8px;margin:12px 16px 0;align-items:center;flex-wrap:wrap">
         <button id="tabLayout" type="button" class="primary-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" data-i18n="pcb_tab_layout">🛠 Layout 編輯</button>
         <button id="tabViewer" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" title="板面檢視（Allegro 匯入）" data-i18n="pcb_tab_viewer">🔍 板面檢視</button>
         <button id="tabRefs" type="button" class="icon-button" style="padding:8px 22px;font-size:14px;white-space:nowrap;flex-shrink:0" data-i18n="pcb_tab_refs">📐 開源公版</button>
@@ -731,8 +739,15 @@
               <span id="zoomLevel" style="font-size: 12px; color: var(--muted);">100%</span>
             </div>
           </div>
-          <div class="pcb-canvas">
+          <div class="pcb-canvas" style="position:relative">
             <canvas id="pcbCanvas"></canvas>
+            <div id="pcbPanPad" class="pan-pad" role="group" aria-label="平移板面" title="平移板面（點一下移動，長按連續移動）">
+              <button class="pan-btn pan-up" type="button" data-pan="up" aria-label="上移">▲</button>
+              <button class="pan-btn pan-left" type="button" data-pan="left" aria-label="左移">◀</button>
+              <button class="pan-btn pan-fit" type="button" data-pan="fit" aria-label="適合視窗" title="適合視窗">⤢</button>
+              <button class="pan-btn pan-right" type="button" data-pan="right" aria-label="右移">▶</button>
+              <button class="pan-btn pan-down" type="button" data-pan="down" aria-label="下移">▼</button>
+            </div>
           </div>
         </div>
 
@@ -820,56 +835,6 @@
           </section>
 
           <section class="panel-section">
-            <h2 data-i18n="pcb_tutorial">📚 教學模式</h2>
-            <div id="tutorialList" style="font-size: 13px; max-height: 250px; overflow-y: auto;">
-              <!-- Tutorial list will be rendered here -->
-            </div>
-            <div id="tutorialContent" style="margin-top: 12px; font-size: 13px;">
-              <p style="color: var(--muted);" data-i18n="pcb_pick_tutorial">選擇一個課程開始學習</p>
-            </div>
-          </section>
-
-          <section class="panel-section">
-            <h2 data-i18n="pcb_practice">🎯 練習模式</h2>
-            <div id="practiceList" style="font-size: 13px; max-height: 250px; overflow-y: auto;">
-              <!-- Practice list will be rendered here -->
-            </div>
-            <div id="practiceContent" style="margin-top: 12px; font-size: 13px;">
-              <p style="color: var(--muted);" data-i18n="pcb_pick_practice">選擇一個練習開始實作</p>
-            </div>
-          </section>
-
-          <section class="panel-section">
-            <h2 data-i18n="pcb_interview">📝 PCB Layout 面試題</h2>
-            <div style="font-size: 13px; max-height: 320px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;">
-              <details>
-                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q1">電源去耦電容怎麼放？</summary>
-                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a1">越靠近 IC 電源腳越好，小容值(0.1µF/1nF)最靠腳、大容值(10µF)稍遠；過孔直接打到電源/地平面，縮短迴路電感。每個電源腳至少一顆。</p>
-              </details>
-              <details>
-                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q2">高速差分對走線要點？</summary>
-                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a2">等長(長度匹配控制 skew)、等距(維持差分阻抗如 90Ω/100Ω)、同層走線、少過孔、避免急轉(用 45°或弧線)、遠離噪聲源、參考完整地平面。</p>
-              </details>
-              <details>
-                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q3">為什麼要完整的地平面(return path)？</summary>
-                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a3">高頻回流電流走訊號正下方的地，路徑斷裂(跨分割/挖空)會迫使繞路 → 增大迴路面積、EMI 與串擾。換層時鄰近放回流過孔。</p>
-              </details>
-              <details>
-                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q4">開關電源(SW 節點)佈局注意？</summary>
-                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a4">SW 節點銅面要小(降 EMI 又要散熱權衡)、高頻迴路(Vin-開關-二極體-Cin)面積最小、輸入電容最靠 IC、回授走線遠離 SW、單點接地。</p>
-              </details>
-              <details>
-                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q5">疊層怎麼選(4 層)？</summary>
-                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a5">常見 訊號-地-電源-訊號：訊號層緊鄰完整地平面以控阻抗與回流；電源地相鄰形成平面電容；高速線走在靠地的外層或內層 stripline。</p>
-              </details>
-              <details>
-                <summary style="cursor:pointer;font-weight:600;" data-i18n="pcbf_q6">散熱怎麼處理？</summary>
-                <p style="color:var(--muted);margin-top:6px;" data-i18n="pcbf_a6">熱源下方加散熱過孔陣列接內層/底層大銅面、加大銅厚與銅面、必要時鋁基板或散熱片、考慮氣流方向、功率元件分散避免熱集中。</p>
-              </details>
-            </div>
-          </section>
-
-          <section class="panel-section">
             <h2 data-i18n="pcb_props">屬性</h2>
             <div id="pcbInspectorContent" style="font-size: 13px;">
               <p style="color: var(--muted);" data-i18n="pcb_no_sel">尚未選取元件</p>
@@ -888,8 +853,8 @@
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./auth.js?v=2026-07-04b"></script>
     <script src="./i18n.js?v=2026-07-17b"></script>
-    <script src="./pcb-tutorial.js?v=6"></script>
-    <script src="./pcb-practice.js?v=6"></script>
+    <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
+         pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
     <script src="./circuit-engine.js?v=34"></script>
     <script src="./ic-data.js?v=43"></script>
@@ -900,18 +865,7 @@
     <script src="./pcb-drc.js?v=4"></script>
     <script src="./pcb-rules.js?v=4"></script>
     <script src="./pcb-3d.js?v=1"></script>
-    <script src="./pcb.js?v=22"></script>
-    <script>
-      // Initialize tutorial and practice after page load
-      document.addEventListener('DOMContentLoaded', () => {
-        if (typeof PCBTutorial !== 'undefined') {
-          PCBTutorial.renderTutorialList();
-        }
-        if (typeof PCBPractice !== 'undefined') {
-          PCBPractice.renderExerciseList();
-        }
-      });
-    </script>
+    <script src="./pcb.js?v=23"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-07-16a"></script>
     <script src="./pcb-stackup.js?v=2026-07-16a"></script>

@@ -43,6 +43,7 @@ const pcbApp = {
     this.state.layerStack = this.buildLayerStack(this.state.layers);
     this.state.visibleLayers = this.state.layerStack.map(l => l.id);
     this.resizeCanvas();
+    this.watchCanvasSize();
     this.bindEvents();
     this.renderLayerList();
     this.renderPartsList();
@@ -101,9 +102,48 @@ const pcbApp = {
 
   resizeCanvas() {
     const container = this.canvas.parentElement;
-    this.canvas.width = container.clientWidth;
-    this.canvas.height = container.clientHeight;
+    const w = Math.max(1, container.clientWidth), h = Math.max(1, container.clientHeight);
+    if (this.canvas.width === w && this.canvas.height === h) return;   // 無變化不重畫
+    this.canvas.width = w;
+    this.canvas.height = h;
     this.render();
+  },
+
+  // 板面平移方向盤：點一下移動、長按連續移動；中間鍵＝適合視窗
+  bindPanPad() {
+    const pad = document.getElementById('pcbPanPad');
+    if (!pad) return;
+    const dir = { up: [0, 1], down: [0, -1], left: [1, 0], right: [-1, 0] };  // panX/panY 與視線方向相反
+    pad.querySelectorAll('.pan-btn').forEach(btn => {
+      const key = btn.dataset.pan;
+      if (key === 'fit') { btn.addEventListener('click', () => this.zoomFit()); return; }
+      const [dx, dy] = dir[key];
+      let hold = null, rep = null;
+      const step = k => {
+        this.state.panX += dx * this.canvas.width * k;
+        this.state.panY += dy * this.canvas.height * k;
+        this.render();
+      };
+      const stop = () => { clearTimeout(hold); clearInterval(rep); hold = rep = null; };
+      btn.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        step(0.25);
+        hold = setTimeout(() => { rep = setInterval(() => step(0.10), 45); }, 300);
+      });
+      ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
+    });
+  },
+
+  // 容器尺寸一變（視窗縮放／側欄展開）就同步 canvas buffer，
+  // 否則 buffer 與顯示尺寸脫節 → 滑鼠座標偏移、命中判定失準。
+  watchCanvasSize() {
+    const container = this.canvas?.parentElement;
+    if (!container) return;
+    if (typeof ResizeObserver !== 'undefined') {
+      this._ro = new ResizeObserver(() => this.resizeCanvas());
+      this._ro.observe(container);
+    }
+    window.addEventListener('resize', () => this.resizeCanvas());
   },
 
   render() {
@@ -1063,11 +1103,16 @@ const pcbApp = {
     this.render();
   },
 
+  // 滑鼠事件是 CSS px，繪圖座標是 canvas buffer px。兩者尺寸可能不同
+  // （容器被撐大／視窗改變而 buffer 未同步）→ 必須換算，否則點擊位置與畫面偏移，
+  // 連帶 compHit 命中不到元件（零件拖不動）。
   getMousePos(e) {
     const rect = this.canvas.getBoundingClientRect();
+    const sx = rect.width ? this.canvas.width / rect.width : 1;
+    const sy = rect.height ? this.canvas.height / rect.height : 1;
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      x: (e.clientX - rect.left) * sx,
+      y: (e.clientY - rect.top) * sy
     };
   },
 
@@ -1695,6 +1740,7 @@ const pcbApp = {
     document.querySelector('#zoomIn')?.addEventListener('click', () => this.zoomIn());
     document.querySelector('#zoomOut')?.addEventListener('click', () => this.zoomOut());
     document.querySelector('#zoomFit')?.addEventListener('click', () => this.zoomFit());
+    this.bindPanPad();
 
     // DRC
     document.querySelector('#runDrc')?.addEventListener('click', () => this.runDrc());
