@@ -450,18 +450,12 @@
                   <div class="category-count">Transient, Load Dump</div>
                 </div>
               </div>
-              <div class="category-item" data-category="emc">
+              <!-- EMC/EMI 原為兩個入口指到同一批 emi-emc 卡，2026-07-21 合併為一 -->
+              <div class="category-item" data-category="emi-emc">
                 <div class="category-icon">🛰️</div>
                 <div>
-                  <div class="category-name" data-i18n="kb_emc">EMC 設計</div>
-                  <div class="category-count" data-i18n="kb_c_emc">抗擾、接地、遮蔽</div>
-                </div>
-              </div>
-              <div class="category-item" data-category="emi">
-                <div class="category-icon">📻</div>
-                <div>
-                  <div class="category-name" data-i18n="kb_emi">EMI 對策</div>
-                  <div class="category-count" data-i18n="kb_c_emi">濾波、共模扼流、佈局</div>
+                  <div class="category-name" data-i18n="kb_emiemc">EMI/EMC</div>
+                  <div class="category-count" data-i18n="kb_c_emiemc">濾波、接地、遮蔽、共模</div>
                 </div>
               </div>
               <div class="category-item" data-category="interview">
@@ -519,14 +513,14 @@
     <script src="./schematic-symbols.js?v=79e-concepts"></script>
     <script src="./circuit-animation.js?v=79e-concepts"></script>
     <script src="./knowledge-extra.js"></script>
-    <script src="./knowledge-paid.js?v=2026-07-04b"></script>
+    <script src="./knowledge-paid.js?v=2026-07-21a"></script>
     <script src="./knowledge-paid2.js?v=2026-07-17a"></script>
     <script src="./knowledge-video.js?v=2026-07-04a"></script>
     <script src="./knowledge-extra2.js?v=2026-07-10a"></script>
     <script src="./knowledge-extra3.js?v=2026-07-11a"></script>
     <script src="./knowledge-extra4.js?v=2026-07-17a"></script>
     <script src="./knowledge-circuits2.js?v=2026-07-19a"></script>
-    <script src="./knowledge.js?v=2026-07-19c"></script>
+    <script src="./knowledge.js?v=2026-07-21a"></script>
     <script src="./knowledge-i18n.js?v=2026-07-17a"></script>
     <script src="./knowledge-i18n-detail.js?v=2026-07-04c"></script>
     <script src="./knowledge-i18n-detail2.js?v=2026-07-12g"></script>
@@ -543,6 +537,6 @@
         document.addEventListener('vs-lang-change', () => { if (typeof knowledgeApp !== 'undefined') { knowledgeApp.renderTopoFilter(); knowledgeApp.renderCards(); knowledgeApp.updateCounts(); } });
       })();
     </script>
-    <script src="./i18n.js?v=2026-07-17b"></script>
+    <script src="./i18n.js?v=2026-07-21a"></script>
 </body>
 </html>

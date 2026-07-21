@@ -992,13 +992,24 @@ const pcbApp = {
   },
 
   // 公版元件來源：schema v2 用 components（含尺寸/正反面），舊資料退回 blocks
+  // pcb-ref-fp.js 解析器有配到 footprint 時掛真 pad（pin number/腳名），body 以 footprint 為準
   refBoardParts(b) {
     if (b.components && b.components.length) {
-      return b.components.map((c, i) => ({
-        id: `ref-${b.id}-${i}`, type: 'ic', x: c.x, y: c.y, w: c.w, h: c.h,
-        side: c.side || 'top', kind: c.kind || 'ic', ref: c.ref, part: c.part,
-        label: c.ref || c.part || ''
-      }));
+      return b.components.map((c, i) => {
+        const comp = {
+          id: `ref-${b.id}-${i}`, type: 'ic', x: c.x, y: c.y, w: c.w, h: c.h,
+          side: c.side || 'top', kind: c.kind || 'ic', ref: c.ref, part: c.part,
+          label: c.ref || c.part || ''
+        };
+        const fp = (window.RefFP && window.RefFP.resolve) ? window.RefFP.resolve(c) : null;
+        if (fp && fp.ok) {
+          comp.pads = fp.pads; comp.w = fp.body.w; comp.h = fp.body.h;
+          if (comp.side === 'bottom') comp.pads.forEach(p => { if (p.side === 'F') p.side = 'B'; });
+          if (fp.pkg) comp.package = fp.pkg;
+          comp.fpMeta = fp.meta;
+        }
+        return comp;
+      });
     }
     return (b.blocks || []).map((blk, i) => ({ id: `ref-${b.id}-${i}`, type: 'ic', x: blk.x, y: blk.y, label: blk.label }));
   },

@@ -187,7 +187,7 @@
       keyFormulas: ['Load dump 峰值：非箝位 ~87V、箝位型 ~35V（12V 系統）', '冷啟動：電壓掉到 ~6V（pulse 4）→ 下游要能低壓運作或前級升壓', 'TVS 箝位電壓 < 下游耐壓、> 正常工作最高電壓', '能量 = ½ L I²（發電機電感儲能決定 load dump 能量）'],
       designNotes: ['輸入前級：TVS 吸收 load dump + pre-boost/buck 穩壓', '冷啟動用升壓 pre-regulator 維持下游供電（不然掉壓重啟）', 'TVS 選車規 load-dump 專用（大能量、對的箝位電壓）', '反向電池保護串前級（見 reverse-battery-auto）', '元件選車規 AEC-Q（溫域/可靠度），非商規', 'ISO 7637 脈衝要做測試驗證，不能只算'],
       commonMistakes: ['用商規元件扛車用瞬態 → load dump 一來就炸', 'TVS 箝位電壓選太高 → 下游還是超壓損壞', '沒管冷啟動掉壓 → 引擎啟動時系統重開機', '只做 load dump 忘了快速瞬態叢波（3a/3b）→ EMC 過不了'],
-      examples: [{ title: '車用 ECU 前級', application: '電池 → 反接保護 → TVS → pre-boost（冷啟動撐住）→ buck 供 MCU', circuit: 'load-dump TVS + LM74xxx pre-boost + 車規 buck' }],
+      examples: [{ title: '車用 ECU 前級', application: '電池 → 反接保護 → TVS → pre-boost（冷啟動撐住）→ buck 供 MCU', circuit: 'load-dump TVS + LM74700-Q1 理想二極體反接保護 + LM5122-Q1 pre-boost + 車規 buck' }],
       relatedTopics: ['reverse-battery-auto', 'auto-power-arch', 'tvd-selection'], sourcePdf: null, createdAt: T, updatedAt: T
     },
     {

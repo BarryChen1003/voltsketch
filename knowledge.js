@@ -4295,8 +4295,7 @@ const knowledgeApp = {
 
   getFilteredItems() {
     return this.items.filter(item => {
-      const matchesCategory = this.currentCategory === 'all' || item.category === this.currentCategory ||
-        (['emc', 'emi'].includes(this.currentCategory) && item.category === 'emi-emc');
+      const matchesCategory = this.currentCategory === 'all' || item.category === this.currentCategory;
       const matchesTopo = !this.currentTopo || this.currentTopo === 'all' || this.itemTopo(item) === this.currentTopo;
       const prods = item.products || ['通用'];
       // 指定產品只顯示該產品專屬卡（點了畫面才會變、才有內容）；「全部」看全部、「通用」看通用卡
@@ -4423,9 +4422,7 @@ const knowledgeApp = {
     const items = [...list.querySelectorAll('.category-item')];
     items.forEach(el => {
       const cat = el.dataset.category;
-      let n = cat === 'all' ? this.items.length
-        : (cat === 'emc' || cat === 'emi') ? (counts['emi-emc'] || counts[cat] || 0)
-        : (counts[cat] || 0);
+      let n = cat === 'all' ? this.items.length : (counts[cat] || 0);
       el.dataset.count = n;
       if (cat === 'all') return;                 // 全部主題不加 badge、不隱藏
       let badge = el.querySelector('.cat-cnt');

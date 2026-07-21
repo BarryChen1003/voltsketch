@@ -126,6 +126,8 @@ window.I18N = (function () {
     kb_auto:       { zh: '車用電子', en: 'Automotive', ja: '車載エレクトロニクス', ko: '차량용 전자' },
     kb_emc:        { zh: 'EMC 設計', en: 'EMC design', ja: 'EMC設計', ko: 'EMC 설계' },
     kb_emi:        { zh: 'EMI 對策', en: 'EMI countermeasures', ja: 'EMI対策', ko: 'EMI 대책' },
+    kb_emiemc:     { zh: 'EMI/EMC', en: 'EMI/EMC', ja: 'EMI/EMC', ko: 'EMI/EMC' },
+    kb_c_emiemc:   { zh: '濾波、接地、遮蔽、共模', en: 'Filtering, Grounding, Shielding, CM choke', ja: 'フィルタ, 接地, シールド, コモンモード', ko: '필터링, 접지, 차폐, 공통 모드' },
     kb_interview:  { zh: '面試題目', en: 'Interview questions', ja: '面接問題', ko: '면접 문제' },
     kb_c_pcb:      { zh: '走線, 叠層, Via', en: 'Routing, Stackup, Via', ja: '配線, 積層, ビア', ko: '배선, 적층, Via' },
     kb_c_emc:      { zh: '抗擾、接地、遮蔽', en: 'Immunity, Grounding, Shielding', ja: 'イミュニティ, 接地, シールド', ko: '내성, 접지, 차폐' },
