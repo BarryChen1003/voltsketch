@@ -41,7 +41,13 @@ const pcbApp = {
     dims: [],            // 尺寸標註 {x1,y1,x2,y2}
     keepouts: [],        // 禁止區 {layer,pts}
     dimDraw: null,       // 進行中尺寸標註 {x1,y1,cx,cy}
-    keepoutDraw: null    // 進行中禁止區 {pts, cursor:[x,y]}
+    keepoutDraw: null,   // 進行中禁止區 {pts, cursor:[x,y]}
+    selectedSet: [],     // 多選元件（Shift+點 加選、Shift+拖 框選）
+    dragEndpoint: null,  // 走線端點拖曳 {trace, end:'a'|'b'}
+    dragGroup: null,     // 群組拖曳快照 [{c, ox, oy}]＋dragAnchor
+    dragAnchor: null,    // 群組拖曳起點（board 座標）
+    boxSel: null,        // 進行中框選 {x1,y1,x2,y2}
+    clipboard: []        // 複製暫存（Ctrl+C/V）
   },
   gridSize: 1, // 1mm
 
@@ -274,6 +280,7 @@ const pcbApp = {
     this.drawTexts(scale);
     this.drawDims(scale);
     this.drawDimPreview(scale);
+    this.drawBoxSel(scale);
 
     // Restore context
     ctx.restore();
@@ -362,6 +369,24 @@ const pcbApp = {
   drawDimPreview(scale) {
     const d = this.state.dimDraw;
     if (d && d.cx != null) this.drawDimLine(d.x1, d.y1, d.cx, d.cy, scale, true);
+  },
+
+  // 框選橡皮筋矩形（Shift+拖空白）
+  drawBoxSel(scale) {
+    const bs = this.state.boxSel;
+    if (!bs) return;
+    const { ctx } = this;
+    const toX = v => this.canvas.width / 2 + v * scale, toY = v => this.canvas.height / 2 + v * scale;
+    const x = toX(Math.min(bs.x1, bs.x2)), y = toY(Math.min(bs.y1, bs.y2));
+    const w = Math.abs(bs.x2 - bs.x1) * scale, h = Math.abs(bs.y2 - bs.y1) * scale;
+    ctx.save();
+    ctx.fillStyle = 'rgba(243,156,18,0.10)';
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = '#f39c12';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 3]);
+    ctx.strokeRect(x, y, w, h);
+    ctx.restore();
   },
 
   drawBoard(scale) {
@@ -585,7 +610,8 @@ const pcbApp = {
     state.components.forEach(comp => {
       if (!this.compVisible(comp)) return;
       const r = this.compRect(comp, scale);
-      const sel = state.selected === comp;
+      // 多選集內成員一律以選取色高亮（state.selected 只是集內錨點）
+      const sel = state.selected === comp || (state.selectedSet && state.selectedSet.includes(comp));
 
       if (comp.pads && comp.pads.length) {
         // KiCad 精確元件：畫 pad 幾何 + 旋轉外形框，不畫實心方塊
@@ -1445,6 +1471,33 @@ const pcbApp = {
     this.render();
   },
 
+  // 貼上剪貼簿元件：每顆給新 id/新 refdes、位置 +2mm，貼完選取這批
+  pasteClipboard() {
+    const clip = this.state.clipboard || [];
+    if (!clip.length) return;
+    this.hist();
+    const now = Date.now();
+    const pasted = clip.map((snap, i) => {
+      const c = JSON.parse(JSON.stringify(snap));
+      c.id = `paste-${now}-${i}`;
+      c.x = (c.x || 0) + 2; c.y = (c.y || 0) + 2;
+      const pre = (String(c.ref || 'U').match(/^[A-Za-z]+/) || ['U'])[0];
+      c.ref = this.nextRef(pre);
+      c.label = c.ref;
+      this.state.components.push(c);   // push 逐顆，讓 nextRef 看得到剛加的、不撞號
+      return c;
+    });
+    this.state.selectedSet = pasted;
+    this.state.selected = pasted[pasted.length - 1];
+    this.state.selectedTrace = null;
+    this.state.ratsnest = null;
+    this.toast(pcbT('pj_pasted', { n: pasted.length }), 'info');
+    this.renderPartsList();
+    this.populateEmiSelects();
+    this.syncSelPanel();
+    this.render();
+  },
+
   syncSelPanel() {
     const c = this.state.selected;
     const fields = document.getElementById('selFields'), info = document.getElementById('selInfo');
@@ -1514,6 +1567,28 @@ const pcbApp = {
       if (d <= r && (!best || d < best.d)) best = { t, d };
     }
     return best ? best.t : null;
+  },
+
+  // 走線端點命中：靠近某條走線的端點（可見層）→ 回 {trace, end:'a'|'b'} 供拖曳
+  traceEndpointHit(bx, by, tol) {
+    tol = tol || 0.6;
+    let best = null;
+    for (const t of this.state.traces) {
+      if (!this.state.visibleLayers.includes(t.layer || 'F.Cu')) continue;
+      const da = Math.hypot(bx - t.x1, by - t.y1), db = Math.hypot(bx - t.x2, by - t.y2);
+      if (da <= tol && (!best || da < best.d)) best = { trace: t, end: 'a', d: da };
+      if (db <= tol && (!best || db < best.d)) best = { trace: t, end: 'b', d: db };
+    }
+    return best ? { trace: best.trace, end: best.end } : null;
+  },
+
+  // 依前綴取下一個未用的 refdes（複製貼上時避免撞號）
+  nextRef(prefix) {
+    prefix = prefix || 'U';
+    let n = 0;
+    const re = new RegExp('^' + prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\\d+)$');
+    for (const c of this.state.components) { const m = re.exec(c.ref || ''); if (m) n = Math.max(n, +m[1]); }
+    return prefix + (n + 1);
   },
 
   // ---- 差分對佈線 / 等長調諧（B4-③）----
@@ -2199,13 +2274,43 @@ const pcbApp = {
 
       if (this.state.tool === 'select') {
         const b = this.screenToBoard(e);
+        // 1) 走線端點拖曳優先（比元件更靠近端點時才搶）
+        const epHit = this.traceEndpointHit(b.x, b.y);
+        if (epHit && !this.compHit(b.x, b.y)) {
+          this.hist();
+          this.state.dragEndpoint = epHit;
+          this.state.selectedTrace = epHit.trace;
+          this.state.selected = null;
+          this.canvas.style.cursor = 'move';
+          this.render();
+          return;
+        }
         const hit = this.compHit(b.x, b.y);
         if (hit) {
+          if (e.shiftKey) {
+            // Shift+點：加入/移出多選集
+            const set = this.state.selectedSet;
+            const i = set.indexOf(hit);
+            if (i >= 0) set.splice(i, 1); else set.push(hit);
+            this.state.selected = set.length ? set[set.length - 1] : null;
+            this.state.selectedTrace = null;
+            this.renderPartsList();
+            this.syncSelPanel();
+            this.render();
+            return;
+          }
           this.hist(); // 拖曳前的位置可 Ctrl+Z 回復
-          this.state.selected = hit;
           this.state.selectedTrace = null;
-          this.state.dragComp = hit;
-          this.state.dragOff = { x: hit.x - b.x, y: hit.y - b.y };
+          // 抓到多選集內成員 → 群組拖曳；否則單選
+          if (this.state.selectedSet.includes(hit) && this.state.selectedSet.length > 1) {
+            this.state.dragGroup = this.state.selectedSet.map(c => ({ c, ox: c.x, oy: c.y }));
+            this.state.dragAnchor = { x: b.x, y: b.y };
+          } else {
+            this.state.selectedSet = [hit];
+            this.state.dragComp = hit;
+            this.state.dragOff = { x: hit.x - b.x, y: hit.y - b.y };
+          }
+          this.state.selected = hit;
           this.canvas.style.cursor = 'move';
           this.renderPartsList();
           this.syncSelPanel();
@@ -2216,14 +2321,22 @@ const pcbApp = {
           if (tHit) {
             this.state.selectedTrace = tHit;
             this.state.selected = null;
+            this.state.selectedSet = [];
             this.renderPartsList();
             this.syncSelPanel();
             this.render();
             return;
           }
-          if (this.state.selected || this.state.selectedTrace) {
+          // Shift+拖空白 = 框選；一般拖空白 = 平移
+          if (e.shiftKey) {
+            this.state.boxSel = { x1: b.x, y1: b.y, x2: b.x, y2: b.y };
+            this.render();
+            return;
+          }
+          if (this.state.selected || this.state.selectedTrace || this.state.selectedSet.length) {
             this.state.selected = null;
             this.state.selectedTrace = null;
+            this.state.selectedSet = [];
             this.renderPartsList();
             this.syncSelPanel();
             this.render();
@@ -2408,6 +2521,32 @@ const pcbApp = {
         this.render();
         return;
       }
+      if (this.state.dragEndpoint) {
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        const { trace, end } = this.state.dragEndpoint;
+        const nx = this.snap(b.x, g), ny = this.snap(b.y, g);
+        if (end === 'a') { trace.x1 = nx; trace.y1 = ny; } else { trace.x2 = nx; trace.y2 = ny; }
+        this.state.ratsnest = null;
+        this.render();
+        return;
+      }
+      if (this.state.dragGroup) {
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        const ddx = this.snap(b.x - this.state.dragAnchor.x, g);
+        const ddy = this.snap(b.y - this.state.dragAnchor.y, g);
+        this.state.dragGroup.forEach(s => { s.c.x = s.ox + ddx; s.c.y = s.oy + ddy; });
+        this.syncSelPanel();
+        this.render();
+        return;
+      }
+      if (this.state.boxSel) {
+        const b = this.screenToBoard(e);
+        this.state.boxSel.x2 = b.x; this.state.boxSel.y2 = b.y;
+        this.render();
+        return;
+      }
       if (this.state.dragComp) {
         const b = this.screenToBoard(e);
         const g = this.gridStep();
@@ -2426,6 +2565,45 @@ const pcbApp = {
     });
 
     this.canvas?.addEventListener('mouseup', (e) => {
+      // 走線端點拖曳收尾：靠近 pad/via/走線端點就吸附＋接該 net
+      if (this.state.dragEndpoint) {
+        const { trace, end } = this.state.dragEndpoint;
+        const ex = end === 'a' ? trace.x1 : trace.x2, ey = end === 'a' ? trace.y1 : trace.y2;
+        const snapT = this.snapTarget(ex, ey);
+        if (snapT) {
+          if (end === 'a') { trace.x1 = snapT.x; trace.y1 = snapT.y; } else { trace.x2 = snapT.x; trace.y2 = snapT.y; }
+          if (snapT.net) trace.net = snapT.net;
+        }
+        this.state.dragEndpoint = null;
+        this.state.ratsnest = null;
+        this.checkTraceRules(trace);
+        this.render();
+        return;
+      }
+      if (this.state.dragGroup) {
+        this.state.dragGroup = null;
+        this.state.dragAnchor = null;
+        this.state.ratsnest = null;
+        this.renderPartsList();
+        this.render();
+        return;
+      }
+      if (this.state.boxSel) {
+        const bs = this.state.boxSel;
+        this.state.boxSel = null;
+        const x0 = Math.min(bs.x1, bs.x2), x1 = Math.max(bs.x1, bs.x2);
+        const y0 = Math.min(bs.y1, bs.y2), y1 = Math.max(bs.y1, bs.y2);
+        if (Math.abs(x1 - x0) > 0.5 || Math.abs(y1 - y0) > 0.5) {
+          this.state.selectedSet = this.state.components.filter(c => c.x >= x0 && c.x <= x1 && c.y >= y0 && c.y <= y1);
+          this.state.selected = this.state.selectedSet.length ? this.state.selectedSet[this.state.selectedSet.length - 1] : null;
+          this.state.selectedTrace = null;
+          this.toast(pcbT('pj_boxsel', { n: this.state.selectedSet.length }), 'info');
+          this.renderPartsList();
+          this.syncSelPanel();
+        }
+        this.render();
+        return;
+      }
       if (this.state.traceDraw && this.state.traceDraw.diff) {
         // 差分對收尾：中心線 → 兩條平行走線＋起點（及終點）fanout
         const td = this.state.traceDraw;
@@ -2512,8 +2690,29 @@ const pcbApp = {
       } else if ((e.ctrlKey || e.metaKey) && (k === 'y' || (k === 'z' && e.shiftKey))) {
         e.preventDefault();
         if (!(window.PcbHistory && PcbHistory.redo(this))) this.toast(pcbT('pj_hist_none'), 'warn');
+      } else if ((e.ctrlKey || e.metaKey) && k === 'c') {
+        const set = this.state.selectedSet.length ? this.state.selectedSet : (this.state.selected ? [this.state.selected] : []);
+        if (set.length) {
+          e.preventDefault();
+          this.state.clipboard = set.map(c => JSON.parse(JSON.stringify(c)));
+          this.toast(pcbT('pj_copied', { n: set.length }), 'info');
+        }
+      } else if ((e.ctrlKey || e.metaKey) && k === 'v') {
+        if (this.state.clipboard && this.state.clipboard.length) {
+          e.preventDefault();
+          this.pasteClipboard();
+        }
       } else if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (this.state.selected) {
+        if (this.state.selectedSet.length > 1) {
+          e.preventDefault();
+          this.hist();
+          const del = new Set(this.state.selectedSet);
+          this.state.components = this.state.components.filter(c => !del.has(c));
+          this.state.selectedSet = []; this.state.selected = null;
+          this.state.ratsnest = null;
+          this.toast(pcbT('pj_del_n', { n: del.size }), 'info');
+          this.renderPartsList(); this.populateEmiSelects(); this.syncSelPanel(); this.render();
+        } else if (this.state.selected) {
           e.preventDefault();
           this.deleteSelected();
         } else if (this.state.selectedTrace) {
@@ -2542,9 +2741,13 @@ const pcbApp = {
         } else if (this.state.traceDraw) {
           this.state.traceDraw = null;
           this.render();
-        } else if (this.state.selected || this.state.selectedTrace) {
+        } else if (this.state.boxSel) {
+          this.state.boxSel = null;
+          this.render();
+        } else if (this.state.selected || this.state.selectedTrace || this.state.selectedSet.length) {
           this.state.selected = null;
           this.state.selectedTrace = null;
+          this.state.selectedSet = [];
           this.renderPartsList();
           this.syncSelPanel();
           this.render();
