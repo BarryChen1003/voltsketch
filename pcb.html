@@ -647,6 +647,14 @@
                 <span>Net Label</span>
               </button>
             </div>
+            <!-- 復原/重做/版面檔（pcb-history.js） -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+              <button class="small-button" id="undoBtn" title="Ctrl+Z"><span data-i18n="pcb_undo">↩ 復原</span></button>
+              <button class="small-button" id="redoBtn" title="Ctrl+Y / Ctrl+Shift+Z"><span data-i18n="pcb_redo">↪ 重做</span></button>
+              <button class="small-button" id="saveBoardBtn"><span data-i18n="pcb_save_json">💾 匯出版面</span></button>
+              <button class="small-button" id="loadBoardBtn"><span data-i18n="pcb_load_json">📂 匯入版面</span></button>
+              <input type="file" id="loadBoardFile" accept=".json,application/json" hidden>
+            </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-top:8px">
               <label style="display:grid;gap:2px"><span data-i18n="pcbf_tracew">線寬 (mm)</span><input type="number" id="traceWidth" value="0.3" step="0.05" min="0.05" style="padding:3px"></label>
               <label style="display:grid;gap:2px"><span data-i18n="pcbf_layer">層</span><select id="traceLayer" style="padding:3px"></select></label>
@@ -666,7 +674,7 @@
               <button class="small-button" id="syncNetlistBtn" data-i18n="pcb_syncnet" style="grid-column:1/-1" title="讀取線路圖頁自動存檔，建立元件與網路，飛線引導佈局">⇪ 從線路圖同步 netlist</button>
               <button class="small-button" id="view3dBtn" data-i18n="pcb_3d" style="grid-column:1/-1" title="教學級近似：元件方塊+pad+走線；Three.js 開啟時才載入">🧊 3D 檢視</button>
             </div>
-            <p style="font-size:11px;color:var(--muted);margin:6px 0 0" data-i18n="pcbf_h_trace">走線：拖曳畫線（0/45/90 吸角，Shift=自由角度，Esc 取消）；起點碰 pad/走線自動接該網路。銅箔工具：逐點點擊畫鋪銅、雙擊收尾（避讓 0.3mm 於 Gerber 生效）。</p>
+            <p style="font-size:11px;color:var(--muted);margin:6px 0 0" data-i18n="pcbf_h_trace">走線：拖曳畫線（0/45/90 吸角，Shift=自由角度，Esc 取消）；起點碰 pad/走線自動接該網路。銅箔/禁止區：逐點點擊、雙擊收尾。選取工具可點走線，Delete 刪除；Ctrl+Z 復原。</p>
           </section>
 
           <section class="panel-section" data-panel="rules" data-panel-title="Layout 規則">
@@ -898,7 +906,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./auth.js?v=2026-07-04b"></script>
-    <script src="./i18n.js?v=2026-07-17b"></script>
+    <script src="./i18n.js?v=2026-07-21a"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
@@ -907,12 +915,13 @@
     <script src="./footprint-gen.js?v=3"></script>
     <script src="./parts-lib.js?v=1"></script>
     <script src="./pcb-ref-fp.js?v=1"></script>
+    <script src="./pcb-history.js?v=1"></script>
     <script src="./kicad-io.js?v=9"></script>
     <script src="./gerber-export.js?v=5"></script>
     <script src="./pcb-drc.js?v=4"></script>
     <script src="./pcb-rules.js?v=4"></script>
     <script src="./pcb-3d.js?v=1"></script>
-    <script src="./pcb.js?v=26"></script>
+    <script src="./pcb.js?v=27"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-07-16a"></script>
     <script src="./pcb-stackup.js?v=2026-07-16a"></script>

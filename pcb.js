@@ -35,7 +35,13 @@ const pcbApp = {
     userZones: [],       // 使用者畫的鋪銅 {layer,net,pts,clearance}
     zoneDraw: null,      // 進行中 zone {pts, net, cursor:[x,y]}
     showPinNums: true,   // pad 上顯示 pin number（Allegro 慣例，預設開）
-    showPinNames: true   // pad 下方顯示腳名/網路（夠大才畫）
+    showPinNames: true,  // pad 下方顯示腳名/網路（夠大才畫）
+    selectedTrace: null, // 選取中的走線（select 工具點走線；Delete 可刪）
+    texts: [],           // 絲印文字 {x,y,text,layer,size}
+    dims: [],            // 尺寸標註 {x1,y1,x2,y2}
+    keepouts: [],        // 禁止區 {layer,pts}
+    dimDraw: null,       // 進行中尺寸標註 {x1,y1,cx,cy}
+    keepoutDraw: null    // 進行中禁止區 {pts, cursor:[x,y]}
   },
   gridSize: 1, // 1mm
 
@@ -57,8 +63,13 @@ const pcbApp = {
     this.populatePartsPicker();
     this.state.netRules = window.NetRules ? window.NetRules.load() : [];
     this.renderNetRules();
+    // 自動存檔還原（有上次版面就接續；空版面不還原）
+    if (window.PcbHistory && PcbHistory.boot(this)) this.toast(pcbT('pj_hist_restored'), 'info');
     this.render();
   },
+
+  // 變更動作前呼叫：現狀進復原疊（Ctrl+Z 可回）
+  hist() { if (window.PcbHistory) PcbHistory.push(this.state); },
 
   // 依層數產生疊層：F.Cu(頂) + In1..In(n-2) + B.Cu(底) + 絲印/板框
   buildLayerStack(n) {
@@ -258,8 +269,99 @@ const pcbApp = {
     // Backdrill 標記（虛線圈疊加在 via 上）
     if (window.Backdrill) Backdrill.draw(this, scale);
 
+    // 禁止區／絲印文字／尺寸標註／進行中預覽
+    this.drawKeepouts(scale);
+    this.drawTexts(scale);
+    this.drawDims(scale);
+    this.drawDimPreview(scale);
+
     // Restore context
     ctx.restore();
+
+    // 資料有動就會走到這裡：debounce 自動存檔
+    if (window.PcbHistory) PcbHistory.saveSoon(this);
+  },
+
+  // ---- 禁止區（keepout）：斜線填充多邊形 ----
+  drawKeepouts(scale) {
+    const { ctx, state } = this;
+    const toS = p => [this.canvas.width / 2 + p[0] * scale, this.canvas.height / 2 + p[1] * scale];
+    const drawPoly = (pts, closed) => {
+      ctx.beginPath();
+      pts.forEach((p, i) => { const [sx, sy] = toS(p); i ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy); });
+      if (closed) ctx.closePath();
+    };
+    (state.keepouts || []).forEach(k => {
+      if (!state.visibleLayers.includes(k.layer)) return;
+      ctx.save();
+      drawPoly(k.pts, true);
+      ctx.globalAlpha = 0.12; ctx.fillStyle = '#e74c3c'; ctx.fill();
+      ctx.globalAlpha = 0.8; ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 4]); ctx.stroke();
+      // ⊘ 記號在質心
+      const cx = k.pts.reduce((s, p) => s + p[0], 0) / k.pts.length;
+      const cy = k.pts.reduce((s, p) => s + p[1], 0) / k.pts.length;
+      const [sx, sy] = toS([cx, cy]);
+      ctx.setLineDash([]); ctx.font = '14px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#e74c3c'; ctx.globalAlpha = 0.9; ctx.fillText('⊘', sx, sy);
+      ctx.restore();
+    });
+    // 進行中
+    if (state.keepoutDraw && state.keepoutDraw.pts.length) {
+      ctx.save();
+      const pts = state.keepoutDraw.pts.concat(state.keepoutDraw.cursor ? [state.keepoutDraw.cursor] : []);
+      drawPoly(pts, false);
+      ctx.strokeStyle = '#e74c3c'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]); ctx.globalAlpha = 0.9; ctx.stroke();
+      ctx.restore();
+    }
+  },
+
+  // ---- 絲印文字 ----
+  drawTexts(scale) {
+    const { ctx, state } = this;
+    (state.texts || []).forEach(t => {
+      if (!state.visibleLayers.includes(t.layer || 'F.SilkS')) return;
+      const sx = this.canvas.width / 2 + t.x * scale, sy = this.canvas.height / 2 + t.y * scale;
+      ctx.save();
+      ctx.font = `${Math.max(8, (t.size || 1.5) * scale)}px sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = (t.layer === 'B.SilkS') ? '#b7950b' : '#f1c40f';
+      ctx.fillText(t.text, sx, sy);
+      ctx.restore();
+    });
+  },
+
+  // ---- 尺寸標註：兩端刻度線＋mm 標籤 ----
+  drawDimLine(x1, y1, x2, y2, scale, preview) {
+    const { ctx } = this;
+    const toX = v => this.canvas.width / 2 + v * scale, toY = v => this.canvas.height / 2 + v * scale;
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    if (len < 1e-6) return;
+    const ux = (x2 - x1) / len, uy = (y2 - y1) / len, px = -uy, py = ux;
+    const tick = 4; // px
+    ctx.save();
+    ctx.strokeStyle = preview ? '#f39c12' : '#aab7c4';
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.lineWidth = 1;
+    if (preview) ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(toX(x1), toY(y1)); ctx.lineTo(toX(x2), toY(y2));
+    [[x1, y1], [x2, y2]].forEach(([x, y]) => {
+      ctx.moveTo(toX(x) + px * tick, toY(y) + py * tick);
+      ctx.lineTo(toX(x) - px * tick, toY(y) - py * tick);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '11px monospace'; ctx.textAlign = 'center';
+    ctx.fillText(`${len.toFixed(2)}mm`, toX((x1 + x2) / 2) + px * 12, toY((y1 + y2) / 2) + py * 12);
+    ctx.restore();
+  },
+  drawDims(scale) {
+    (this.state.dims || []).forEach(d => this.drawDimLine(d.x1, d.y1, d.x2, d.y2, scale, false));
+  },
+  drawDimPreview(scale) {
+    const d = this.state.dimDraw;
+    if (d && d.cx != null) this.drawDimLine(d.x1, d.y1, d.cx, d.cy, scale, true);
   },
 
   drawBoard(scale) {
@@ -549,6 +651,17 @@ const pcbApp = {
       ctx.lineTo(this.canvas.width / 2 + trace.x2 * scale, this.canvas.height / 2 + trace.y2 * scale);
       ctx.stroke();
     });
+    // 選取中的走線：橘色外框高亮（Delete 可刪）
+    const sel = state.selectedTrace;
+    if (sel && state.traces.includes(sel)) {
+      ctx.strokeStyle = '#f39c12';
+      ctx.globalAlpha = 0.9;
+      ctx.lineWidth = Math.max(3, (sel.width || 0.3) * scale + 4);
+      ctx.beginPath();
+      ctx.moveTo(this.canvas.width / 2 + sel.x1 * scale, this.canvas.height / 2 + sel.y1 * scale);
+      ctx.lineTo(this.canvas.width / 2 + sel.x2 * scale, this.canvas.height / 2 + sel.y2 * scale);
+      ctx.stroke();
+    }
     ctx.restore();
   },
 
@@ -687,6 +800,40 @@ const pcbApp = {
           results.push({ type: d < rules.compSpacing / 2 ? 'error' : 'warning', message: pcbT('pj_drc_comp_close', { a: comps[i].label, b: comps[j].label, d: d.toFixed(2), lim: rules.compSpacing }) });
       }
 
+    // 禁止區：同層走線/via 闖入 → error
+    if ((this.state.keepouts || []).length) {
+      const inPoly = (x, y, pts) => {
+        let ins = false;
+        for (let a = 0, b = pts.length - 1; a < pts.length; b = a++) {
+          const [xa, ya] = pts[a], [xb, yb] = pts[b];
+          if ((ya > y) !== (yb > y) && x < (xb - xa) * (y - ya) / (yb - ya) + xa) ins = !ins;
+        }
+        return ins;
+      };
+      const segX = (x1, y1, x2, y2, x3, y3, x4, y4) => {
+        const d = (x2 - x1) * (y4 - y3) - (y2 - y1) * (x4 - x3);
+        if (Math.abs(d) < 1e-12) return false;
+        const t = ((x3 - x1) * (y4 - y3) - (y3 - y1) * (x4 - x3)) / d;
+        const u = ((x3 - x1) * (y2 - y1) - (y3 - y1) * (x2 - x1)) / d;
+        return t >= 0 && t <= 1 && u >= 0 && u <= 1;
+      };
+      this.state.keepouts.forEach((k, ki) => {
+        this.state.traces.forEach((t, ti) => {
+          if ((t.layer || 'F.Cu') !== k.layer) return;
+          let bad = inPoly(t.x1, t.y1, k.pts) || inPoly(t.x2, t.y2, k.pts);
+          for (let a = 0; !bad && a < k.pts.length; a++) {
+            const [xa, ya] = k.pts[a], [xb, yb] = k.pts[(a + 1) % k.pts.length];
+            bad = segX(t.x1, t.y1, t.x2, t.y2, xa, ya, xb, yb);
+          }
+          if (bad) results.push({ type: 'error', message: pcbT('pj_drc_keepout', { i: ti + 1, layer: k.layer, k: ki + 1 }) });
+        });
+        this.state.vias.forEach((v, vi) => {
+          if (inPoly(v.x, v.y, k.pts))
+            results.push({ type: 'error', message: pcbT('pj_drc_keepout_via', { i: vi + 1, k: ki + 1 }) });
+        });
+      });
+    }
+
     // Cin → IC 距離（沿用 EMI 角色指派）
     const byId = {}; comps.forEach(c => { byId[c.id] = c; });
     const cinSel = document.querySelector('.emi-role[data-role="cin"]'), icSel = document.querySelector('.emi-role[data-role="ic"]');
@@ -802,6 +949,7 @@ const pcbApp = {
       y,
       label: `${type}${this.state.components.length + 1}`
     };
+    this.hist();
     this.state.components.push(comp);
     this.populateEmiSelects();
     this.renderPartsList();
@@ -833,6 +981,7 @@ const pcbApp = {
 
   // ---- KiCad 匯入/匯出（kicad-io.js）----
   importKicad(text, fileName) {
+    this.hist();
     let parsed;
     try { parsed = window.KicadIO.importText(text); }
     catch (err) { alert(pcbT('pj_kicad_parse_fail', { err: err.message })); return false; }
@@ -940,6 +1089,7 @@ const pcbApp = {
       comp = Object.assign(base, { w: 6, h: 4 });
       say(pcbT('pj_ic_placed_box', { ref, part: ic.part, reason: r.reason }));
     }
+    this.hist();
     this.state.components.push(comp);
     this.state.selected = comp;
     this.renderPartsList();
@@ -983,6 +1133,7 @@ const pcbApp = {
       x: (n % 5) * 8 - 16, y: Math.floor(n / 5) * 8 - 8,
       w: r.body.w, h: r.body.h, pads: r.pads
     };
+    this.hist();
     this.state.components.push(comp);
     this.state.selected = comp;
     this.renderPartsList();
@@ -1017,6 +1168,7 @@ const pcbApp = {
   loadRefBoard(id) {
     const b = (window.PCB_REFBOARDS || []).find(x => x.id === id);
     if (!b) return;
+    this.hist();
     this.state.boardWidth = b.w;
     this.state.boardHeight = b.h;
     this.state.layers = Math.max(1, Math.min(40, b.layers));
@@ -1266,10 +1418,27 @@ const pcbApp = {
   rotateSelected(delta) {
     const c = this.state.selected;
     if (!c) return;
+    this.hist();
     const norm = a => ((a % 360) + 360) % 360;
     c.rot = norm((c.rot || 0) + delta);
     (c.pads || []).forEach(p => { p.rot = norm((p.rot || 0) + delta); });
     this.state.ratsnest = null;
+    this.syncSelPanel();
+    this.render();
+  },
+
+  // 刪除選取元件（Delete 鍵；Ctrl+Z 可回復）
+  deleteSelected() {
+    const c = this.state.selected;
+    if (!c) return;
+    this.hist();
+    const i = this.state.components.indexOf(c);
+    if (i >= 0) this.state.components.splice(i, 1);
+    this.state.selected = null;
+    this.state.ratsnest = null;
+    this.toast(pcbT('pj_del_comp', { ref: c.ref || c.label || '?' }), 'info');
+    this.renderPartsList();
+    this.populateEmiSelects();
     this.syncSelPanel();
     this.render();
   },
@@ -1307,26 +1476,42 @@ const pcbApp = {
   // 畫線附著點：pad 中心（半徑+0.1mm 內）/ via / 走線端點（0.5mm 內）→ {x,y,net}
   snapTarget(bx, by) {
     let best = null;
-    const consider = (x, y, net, d) => { if (!best || d < best.d) best = { x, y, net: net || '', d }; };
+    // extra 帶命中物件參照（pad/via/trace），netlabel 等要「改到原物件」時用
+    const consider = (x, y, net, d, extra) => { if (!best || d < best.d) best = Object.assign({ x, y, net: net || '', d }, extra || {}); };
     for (const c of this.state.components) {
       for (const p of (c.pads || [])) {
         if (p.cu === false) continue;
         const a = this.padAbs(c, p);
         const d = Math.hypot(bx - a.x, by - a.y);
-        if (d <= Math.max(p.w || 0.5, p.h || 0.5) / 2 + 0.1) consider(a.x, a.y, p.net, d);
+        if (d <= Math.max(p.w || 0.5, p.h || 0.5) / 2 + 0.1) consider(a.x, a.y, p.net, d, { pad: p });
       }
     }
     for (const v of this.state.vias) {
       const d = Math.hypot(bx - v.x, by - v.y);
-      if (d <= (v.od || 0.6) / 2 + 0.1) consider(v.x, v.y, v.net, d);
+      if (d <= (v.od || 0.6) / 2 + 0.1) consider(v.x, v.y, v.net, d, { via: v });
     }
     for (const t of this.state.traces) {
       for (const [x, y] of [[t.x1, t.y1], [t.x2, t.y2]]) {
         const d = Math.hypot(bx - x, by - y);
-        if (d <= 0.5) consider(x, y, t.net, d);
+        if (d <= 0.5) consider(x, y, t.net, d, { trace: t });
       }
     }
     return best;
+  },
+
+  // 走線命中：點到線段距離 ≤ 半寬＋0.3mm（可見層才算）
+  traceHit(bx, by) {
+    let best = null;
+    for (const t of this.state.traces) {
+      if (!this.state.visibleLayers.includes(t.layer || 'F.Cu')) continue;
+      const dx = t.x2 - t.x1, dy = t.y2 - t.y1;
+      const L2 = dx * dx + dy * dy;
+      const u = L2 ? Math.max(0, Math.min(1, ((bx - t.x1) * dx + (by - t.y1) * dy) / L2)) : 0;
+      const d = Math.hypot(bx - (t.x1 + u * dx), by - (t.y1 + u * dy));
+      const r = (t.width || 0.3) / 2 + 0.3;
+      if (d <= r && (!best || d < best.d)) best = { t, d };
+    }
+    return best ? best.t : null;
   },
 
   // ---- 差分對佈線 / 等長調諧（B4-③）----
@@ -1418,6 +1603,7 @@ const pcbApp = {
       pts.push([cx, cy]);
     }
     pts.push([seg.x2, seg.y2]);
+    this.hist();
     this.state.traces.splice(this.state.traces.indexOf(seg), 1);
     pts.forEach((p, i) => {
       if (i === 0) return;
@@ -1695,6 +1881,7 @@ const pcbApp = {
   // netlist 同步：讀線路圖（localStorage voltsketch-project）→ 建 PCB 元件+pad net，飛線引導佈線
   syncFromSchematic() {
     if (!window.CircuitEngine) { this.toast(pcbT('pj_sync_noeng'), 'error'); return; }
+    this.hist();
     let proj = null;
     try { proj = JSON.parse(localStorage.getItem('voltsketch-project') || 'null'); } catch (e) {}
     const sComps = (proj && proj.components || []).filter(c => c && c.type);
@@ -1771,6 +1958,7 @@ const pcbApp = {
     if (!window.Ratsnest || !window.AutoRoute) return;
     const lines = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
     if (!lines.length) { this.toast(pcbT('pj_ar_none'), 'info'); return; }
+    this.hist();
     const cap = 30;
     const todo = lines.slice(0, cap);
     let okN = 0, failN = 0;
@@ -1991,6 +2179,7 @@ const pcbApp = {
 
     // Board settings
     document.querySelector('#applyBoardSettings')?.addEventListener('click', () => {
+      this.hist();
       this.state.boardWidth = parseInt(document.querySelector('#boardWidth').value) || 100;
       this.state.boardHeight = parseInt(document.querySelector('#boardHeight').value) || 80;
       const n = Math.max(1, Math.min(40, parseInt(document.querySelector('#boardLayers').value) || 2));
@@ -2010,7 +2199,9 @@ const pcbApp = {
         const b = this.screenToBoard(e);
         const hit = this.compHit(b.x, b.y);
         if (hit) {
+          this.hist(); // 拖曳前的位置可 Ctrl+Z 回復
           this.state.selected = hit;
+          this.state.selectedTrace = null;
           this.state.dragComp = hit;
           this.state.dragOff = { x: hit.x - b.x, y: hit.y - b.y };
           this.canvas.style.cursor = 'move';
@@ -2018,8 +2209,19 @@ const pcbApp = {
           this.syncSelPanel();
           this.render();
         } else {
-          if (this.state.selected) {
+          // 沒點到元件 → 試點走線（可選取、Delete 刪）
+          const tHit = this.traceHit(b.x, b.y);
+          if (tHit) {
+            this.state.selectedTrace = tHit;
             this.state.selected = null;
+            this.renderPartsList();
+            this.syncSelPanel();
+            this.render();
+            return;
+          }
+          if (this.state.selected || this.state.selectedTrace) {
+            this.state.selected = null;
+            this.state.selectedTrace = null;
             this.renderPartsList();
             this.syncSelPanel();
             this.render();
@@ -2027,6 +2229,55 @@ const pcbApp = {
           this.state.isPanning = true;
           this.canvas.style.cursor = 'grabbing';
         }
+      } else if (this.state.tool === 'text') {
+        const b = this.screenToBoard(e);
+        const txt = prompt(pcbT('pj_text_prompt'), '');
+        if (txt && txt.trim()) {
+          this.hist();
+          const layer = this.state.traceLayer === 'B.Cu' ? 'B.SilkS' : 'F.SilkS';
+          this.state.texts.push({ x: b.x, y: b.y, text: txt.trim(), layer, size: 1.5 });
+          this.render();
+        }
+      } else if (this.state.tool === 'dimension') {
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        const px = this.snap(b.x, g), py = this.snap(b.y, g);
+        if (!this.state.dimDraw) {
+          this.state.dimDraw = { x1: px, y1: py, cx: px, cy: py };
+        } else {
+          const d = this.state.dimDraw;
+          this.state.dimDraw = null;
+          if (Math.hypot(px - d.x1, py - d.y1) >= 0.05) {
+            this.hist();
+            this.state.dims.push({ x1: d.x1, y1: d.y1, x2: px, y2: py });
+          }
+          this.render();
+        }
+      } else if (this.state.tool === 'netlabel') {
+        const b = this.screenToBoard(e);
+        const hit = this.snapTarget(b.x, b.y);   // pad / 走線端點（帶所屬 net）
+        const tHit = hit ? null : this.traceHit(b.x, b.y);
+        if (!hit && !tHit) { this.toast(pcbT('pj_netlabel_miss'), 'warn'); return; }
+        const cur = hit ? (hit.net || '') : (tHit.net || '');
+        const name = prompt(pcbT('pj_netlabel_prompt'), cur);
+        if (name == null) return;
+        this.hist();
+        const target = hit ? (hit.pad || hit.via || hit.trace) : tHit;
+        if (target) target.net = name.trim();
+        this.state.ratsnest = null;
+        this.toast(pcbT('pj_netlabel_done', { net: name.trim() || '(-)' }), 'info');
+        this.render();
+      } else if (this.state.tool === 'keepout') {
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        const px = this.snap(b.x, g), py = this.snap(b.y, g);
+        if (!this.state.keepoutDraw) {
+          this.state.keepoutDraw = { pts: [[px, py]], cursor: [px, py] };
+          this.toast(pcbT('pj_keepout_start'), 'info');
+        } else {
+          this.state.keepoutDraw.pts.push([px, py]);
+        }
+        this.render();
       } else if (this.state.tool === 'trace') {
         const b = this.screenToBoard(e);
         const g = this.gridStep();
@@ -2054,6 +2305,7 @@ const pcbApp = {
         const g = this.gridStep();
         const hit = this.snapTarget(b.x, b.y);
         const psDef = window.Padstack ? Padstack.load() : { od: 0.6, drill: 0.3 };
+        this.hist();
         this.state.vias.push({
           x: hit ? hit.x : this.snap(b.x, g), y: hit ? hit.y : this.snap(b.y, g),
           od: psDef.od, id: psDef.drill, net: hit ? hit.net : '', user: true
@@ -2078,6 +2330,22 @@ const pcbApp = {
       }
     });
 
+    // 雙擊：收尾禁止區多邊形
+    this.canvas?.addEventListener('dblclick', () => {
+      const kd = this.state.keepoutDraw;
+      if (!kd) return;
+      this.state.keepoutDraw = null;
+      if (kd.pts.length >= 2) {
+        const [ax, ay] = kd.pts[kd.pts.length - 1], [bx2, by2] = kd.pts[kd.pts.length - 2];
+        if (Math.hypot(ax - bx2, ay - by2) < 1e-9) kd.pts.pop();
+      }
+      if (kd.pts.length < 3) { this.toast(pcbT('pj_zone_min3'), 'warn'); this.render(); return; }
+      this.hist();
+      this.state.keepouts.push({ layer: this.state.traceLayer || 'F.Cu', pts: kd.pts });
+      this.toast(pcbT('pj_keepout_done', { layer: this.state.traceLayer || 'F.Cu' }), 'info');
+      this.render();
+    });
+
     // 雙擊：收尾鋪銅多邊形
     this.canvas?.addEventListener('dblclick', () => {
       const zd = this.state.zoneDraw;
@@ -2090,6 +2358,7 @@ const pcbApp = {
       }
       if (zd.pts.length < 3) { this.toast(pcbT('pj_zone_min3'), 'warn'); this.render(); return; }
       const thermal = document.getElementById('zoneThermal') ? document.getElementById('zoneThermal').checked : true;
+      this.hist();
       this.state.userZones.push({ layer: this.state.traceLayer || 'F.Cu', net: zd.net || '', pts: zd.pts, clearance: 0.3, thermal, user: true });
       this.state.ratsnest = null;
       this.toast(pcbT('pj_zone_done', { net: zd.net || pcbT('drc_nonet'), layer: this.state.traceLayer }), 'info');
@@ -2101,6 +2370,21 @@ const pcbApp = {
         const b = this.screenToBoard(e);
         const g = this.gridStep();
         this.state.zoneDraw.cursor = [this.snap(b.x, g), this.snap(b.y, g)];
+        this.render();
+        return;
+      }
+      if (this.state.keepoutDraw) {
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        this.state.keepoutDraw.cursor = [this.snap(b.x, g), this.snap(b.y, g)];
+        this.render();
+        return;
+      }
+      if (this.state.dimDraw) {
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        this.state.dimDraw.cx = this.snap(b.x, g);
+        this.state.dimDraw.cy = this.snap(b.y, g);
         this.render();
         return;
       }
@@ -2171,6 +2455,7 @@ const pcbApp = {
             mk(td.x2 + ox, td.y2 + oy, aEnd.x, aEnd.y, td.diff.netA);
             mk(td.x2 - ox, td.y2 - oy, bEnd.x, bEnd.y, td.diff.netB);
           }
+          this.hist();
           this.state.traces.push(...segs);
           this.state.ratsnest = null;
           segs.slice(2, 4).forEach(t => this.checkTraceRules(t));
@@ -2194,6 +2479,7 @@ const pcbApp = {
             x1: td.x1, y1: td.y1, x2: td.x2, y2: td.y2,
             width: this.state.traceWidth || 0.3, layer: this.state.traceLayer || 'F.Cu', net
           };
+          this.hist();
           this.state.traces.push(tr);
           this.state.ratsnest = null;
           this.checkTraceRules(tr);
@@ -2214,26 +2500,77 @@ const pcbApp = {
       }
     });
 
-    // 鍵盤：R=旋轉 90°、Esc=取消選取（輸入框聚焦時不攔截）
+    // 鍵盤：R=旋轉 90°、Delete=刪選取、Ctrl+Z/Y=復原/重做、Esc=取消（輸入框聚焦時不攔截）
     document.addEventListener('keydown', (e) => {
       if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '')) return;
-      if ((e.key === 'r' || e.key === 'R') && this.state.selected) {
+      const k = e.key.toLowerCase();
+      if ((e.ctrlKey || e.metaKey) && k === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        if (!(window.PcbHistory && PcbHistory.undo(this))) this.toast(pcbT('pj_hist_none'), 'warn');
+      } else if ((e.ctrlKey || e.metaKey) && (k === 'y' || (k === 'z' && e.shiftKey))) {
+        e.preventDefault();
+        if (!(window.PcbHistory && PcbHistory.redo(this))) this.toast(pcbT('pj_hist_none'), 'warn');
+      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (this.state.selected) {
+          e.preventDefault();
+          this.deleteSelected();
+        } else if (this.state.selectedTrace) {
+          e.preventDefault();
+          this.hist();
+          const i = this.state.traces.indexOf(this.state.selectedTrace);
+          if (i >= 0) this.state.traces.splice(i, 1);
+          this.state.selectedTrace = null;
+          this.state.ratsnest = null;
+          this.renderPartsList();
+          this.render();
+        }
+      } else if ((e.key === 'r' || e.key === 'R') && this.state.selected) {
         e.preventDefault();
         this.rotateSelected(90);
       } else if (e.key === 'Escape') {
         if (this.state.zoneDraw) {
           this.state.zoneDraw = null;
           this.render();
+        } else if (this.state.keepoutDraw) {
+          this.state.keepoutDraw = null;
+          this.render();
+        } else if (this.state.dimDraw) {
+          this.state.dimDraw = null;
+          this.render();
         } else if (this.state.traceDraw) {
           this.state.traceDraw = null;
           this.render();
-        } else if (this.state.selected) {
+        } else if (this.state.selected || this.state.selectedTrace) {
           this.state.selected = null;
+          this.state.selectedTrace = null;
           this.renderPartsList();
           this.syncSelPanel();
           this.render();
         }
       }
+    });
+
+    // 復原/重做/匯出/匯入按鈕
+    document.getElementById('undoBtn')?.addEventListener('click', () => {
+      if (!(window.PcbHistory && PcbHistory.undo(this))) this.toast(pcbT('pj_hist_none'), 'warn');
+    });
+    document.getElementById('redoBtn')?.addEventListener('click', () => {
+      if (!(window.PcbHistory && PcbHistory.redo(this))) this.toast(pcbT('pj_hist_none'), 'warn');
+    });
+    document.getElementById('saveBoardBtn')?.addEventListener('click', () => {
+      if (window.PcbHistory) PcbHistory.exportBoard(this);
+    });
+    document.getElementById('loadBoardBtn')?.addEventListener('click', () => document.getElementById('loadBoardFile')?.click());
+    document.getElementById('loadBoardFile')?.addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const rd = new FileReader();
+      rd.onload = () => {
+        const ok = window.PcbHistory && PcbHistory.importBoard(this, String(rd.result));
+        this.toast(pcbT(ok ? 'pj_board_loaded' : 'pj_board_bad'), ok ? 'info' : 'error');
+      };
+      rd.readAsText(f);
+      e.target.value = '';
     });
 
     // 選取元件屬性面板：座標/角度直接輸入
@@ -2243,6 +2580,7 @@ const pcbApp = {
         if (!c) return;
         const v = parseFloat(document.getElementById(id).value);
         if (isNaN(v)) { this.syncSelPanel(); return; }
+        this.hist();
         if (id === 'selX') c.x = v;
         else if (id === 'selY') c.y = v;
         else {
