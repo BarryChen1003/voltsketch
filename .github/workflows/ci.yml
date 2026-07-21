@@ -1,0 +1,73 @@
+name: CI (品質關卡)
+
+# push / PR 到 main 時擋壞檔：全 JS 語法檢查 + 幾何/資料檢查器 + JSON/SQL 冒煙。
+# 任何一步失敗 → job 紅 → 你在 Actions 頁與 email 看得到，別讓壞檔上線給用戶。
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 1) 全站根目錄 .js 語法檢查（node --check）。壞括號/漏逗號一律擋下。
+      #    只掃根目錄產品檔，排除第三方（Ref/、rtk/、node_modules 等子目錄）。
+      - name: node --check all root JS
+        run: |
+          set -e
+          fail=0
+          for f in ./*.js; do
+            if ! node --check "$f"; then
+              echo "::error file=$f::語法錯誤（node --check 未過）"
+              fail=1
+            fi
+          done
+          if [ "$fail" = "1" ]; then exit 1; fi
+          echo "全部根目錄 JS 語法 OK"
+
+      # 2) 公版 footprint 幾何檢查器（213 料件：覆蓋率/pad 唯一/無 NaN/環寬>0）
+      - name: reffp-check（公版 footprint 幾何）
+        run: node reffp-check.js
+
+      # 3) JSON 設定檔冒煙：能 parse 才算數
+      - name: JSON parse 冒煙
+        run: |
+          set -e
+          for f in skills-lock.json manifest.json; do
+            if [ -f "$f" ]; then
+              node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" \
+                && echo "$f OK" \
+                || { echo "::error file=$f::JSON parse 失敗"; exit 1; }
+            fi
+          done
+
+      # 4) 關鍵 HTML script 引用完整性：pcb.html / index.html / knowledge.html
+      #    引用的本地 .js（含 ?v= 版本參數）檔案必須真的存在，避免 404。
+      - name: HTML script 引用存在性
+        run: |
+          node -e '
+            const fs = require("fs");
+            const pages = ["index.html","pcb.html","knowledge.html","interview.html","upgrade.html","login.html"];
+            let bad = 0;
+            for (const p of pages) {
+              if (!fs.existsSync(p)) continue;
+              const html = fs.readFileSync(p, "utf8");
+              const re = /<script[^>]+src=["\x27]\.\/([^"\x27?]+)(?:\?[^"\x27]*)?["\x27]/g;
+              let m;
+              while ((m = re.exec(html))) {
+                const f = m[1];
+                if (!fs.existsSync(f)) { console.error(`::error file=${p}::引用不存在的檔 ${f}`); bad = 1; }
+              }
+            }
+            if (bad) process.exit(1);
+            console.log("HTML script 引用全部存在");
+          '

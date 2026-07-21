@@ -1,0 +1,63 @@
+name: Supabase 備份（pg_dump → artifact）
+
+# 免費 Supabase 無自動備份。此排程每週 dump 整個 public schema，
+# 上傳為 GitHub Actions artifact（僅 repo 協作者可下載，保留 90 天）。
+# 重要：dump 含用戶 email 等 PII，"絕不" commit 進這個公開 repo；只放 artifact。
+#
+# 【你要做的事，只做一次】
+#   Supabase → Project Settings → Database → Connection string → URI（含密碼）
+#   複製後到 GitHub repo → Settings → Secrets and variables → Actions → New secret
+#     Name:  SUPABASE_DB_URL
+#     Value: postgresql://postgres:<你的密碼>@db.dmkxjawjrmltmrmkebbs.supabase.co:5432/postgres
+#   加好後此 workflow 才會真的 dump；沒加會 skip（不報錯）。
+on:
+  schedule:
+    - cron: '31 5 * * 0'      # 每週日 05:31 UTC
+  workflow_dispatch: {}        # 也可手動觸發（金流上線前先跑一次驗證）
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 檢查 secret 是否已設
+        id: guard
+        run: |
+          if [ -z "${{ secrets.SUPABASE_DB_URL }}" ]; then
+            echo "::warning::未設 SUPABASE_DB_URL secret，跳過備份。見本檔頂部說明加 secret。"
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 安裝 Postgres 17 client（對齊 Supabase 版本）
+        if: steps.guard.outputs.ok == 'true'
+        run: |
+          sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
+
+      - name: pg_dump public schema
+        if: steps.guard.outputs.ok == 'true'
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          set -e
+          STAMP=$(date -u +%Y%m%d-%H%M)
+          OUT="supabase-dump-${STAMP}.sql"
+          # --no-owner/--no-privileges：還原到新專案不卡權限；只 dump public schema。
+          pg_dump "$DB_URL" \
+            --schema=public --no-owner --no-privileges \
+            --file="$OUT"
+          gzip -9 "$OUT"
+          ls -lh "${OUT}.gz"
+          echo "DUMP_FILE=${OUT}.gz" >> "$GITHUB_ENV"
+
+      - name: 上傳 artifact（僅協作者可下載，保留 90 天）
+        if: steps.guard.outputs.ok == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: supabase-dump
+          path: ${{ env.DUMP_FILE }}
+          retention-days: 90
+          if-no-files-found: error

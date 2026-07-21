@@ -14,6 +14,11 @@ node_modules/
 .env.*
 __pycache__/
 
+# DB 備份（含用戶 PII，絕不進公開 repo）
+backups/
+*.sql.gz
+supabase-dump-*.sql
+
 # ic i18n tool outputs (regenerate with tools/ic-i18n-coverage.js)
 tools/pin-todo.json
 tools/ss-todo.json
