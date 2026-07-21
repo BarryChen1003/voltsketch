@@ -564,6 +564,7 @@ window.I18N = (function () {
     fg_odd:     { zh: '腳數 {n} 非偶數，右列少一腳', en: 'Odd pin count {n}; right row has one fewer pin', ja: 'ピン数 {n} が奇数のため右列が 1 本少ない', ko: '핀 수 {n}이 홀수여서 오른쪽 열이 1핀 적음' },
     fg_rows:    { zh: '球號列字母超出支援序列', en: 'Ball row letters outside supported sequences', ja: 'ボール行文字がサポート範囲外', ko: '볼 행 문자가 지원 범위 밖' },
     fg_lga_perim: { zh: '數字腳 LGA 以四邊周邊近似（實際 land pattern 依原廠）', en: 'Numeric-pinned LGA approximated as quad perimeter (actual land pattern per vendor)', ja: '数値ピン LGA を四辺周辺配置で近似（実際の land pattern はメーカー準拠）', ko: '숫자 핀 LGA를 사변 둘레로 근사(실제 land pattern은 제조사 기준)' },
+    fg_sideapprox: { zh: '封裝家族未知，依腳位 side（L/R/T/B）通用近似置腳；量產以原廠 land pattern 為準', en: 'Package family unknown; pads placed by pin side (L/R/T/B) as a generic approximation; verify against vendor land pattern for production', ja: 'パッケージファミリ不明。ピンの side（L/R/T/B）による汎用近似配置。量産はメーカーの land pattern 準拠', ko: '패키지 패밀리 불명, 핀 side(L/R/T/B) 기반 범용 근사 배치; 양산은 제조사 land pattern 기준' },
     fg_padcount: { zh: 'pad 數 {a} ≠ 條目腳數 {b}', en: 'Pad count {a} ≠ entry pin count {b}', ja: 'pad 数 {a} ≠ エントリのピン数 {b}', ko: 'pad 수 {a} ≠ 항목 핀 수 {b}' },
     fg_r_fam:   { zh: '封裝家族無法辨識：{p}', en: 'Package family not recognized: {p}', ja: 'パッケージファミリを認識できません：{p}', ko: '패키지 패밀리 인식 불가: {p}' },
     fg_r_err:   { zh: '產生失敗：{err}', en: 'Generation failed: {err}', ja: '生成失敗：{err}', ko: '생성 실패: {err}' },

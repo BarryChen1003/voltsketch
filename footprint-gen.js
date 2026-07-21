@@ -203,13 +203,41 @@ window.FootprintGen = (function () {
     return { pads, body: { w: bw, h: bh }, meta: { family: tht ? 'PGA' : 'GRID', pitch, rows, cols } };
   }
 
+  // ---- 依腳位 side（L/R/T/B）通用近似 ----
+  // 家族關鍵字辨識不出（"4-pin"/"Die" 等）或數字腳 LGA/module（grid 失敗）落此路徑。
+  // 依 datasheet 已標的 side 把腳排到對應四邊——side 是真資訊、非亂猜；pad 幾何仍為近似。
+  function sideBased(ic, pk, warn) {
+    const ep = epPin(ic);
+    const pins = (ic.pins || []).filter(p => !p.ep);
+    if (!pins.length) return null;
+    const G = { L: [], R: [], T: [], B: [] };
+    pins.forEach(p => { const s = String(p.side || 'L').toUpperCase(); (G[s] || G.L).push(p); });
+    const maxV = Math.max(G.L.length, G.R.length);
+    const maxH = Math.max(G.T.length, G.B.length);
+    const pitch = pk.pitch || (pins.length <= 8 ? 1.27 : pins.length <= 24 ? 0.8 : 0.5);
+    let bw = pk.bw, bh = pk.bh;
+    if (!bh) bh = r2(Math.max(maxV, 1) * pitch + pitch);
+    if (!bw) bw = maxH ? r2(Math.max(maxH, 1) * pitch + pitch) : r2(Math.max(2, pitch * 3));
+    const padLong = r2(Math.min(0.9, Math.max(0.4, pitch * 1.2)));
+    const padShort = r2(Math.min(0.6, Math.max(0.28, pitch * 0.55)));
+    // 沿邊平均分佈（n 腳鋪滿該邊，非固定 pitch）→ 大尺寸 LGA 不會擠在中央
+    const along = (len, n, i) => n > 1 ? (i - (n - 1) / 2) * ((len - pitch) / (n - 1)) : 0;
+    const pads = [];
+    G.L.forEach((p, i) => pads.push(mkPad(p.num, p.name, -bw / 2, along(bh, G.L.length, i), padLong, padShort)));
+    G.R.forEach((p, i) => pads.push(mkPad(p.num, p.name, bw / 2, along(bh, G.R.length, i), padLong, padShort)));
+    G.T.forEach((p, i) => pads.push(mkPad(p.num, p.name, along(bw, G.T.length, i), -bh / 2, padShort, padLong)));
+    G.B.forEach((p, i) => pads.push(mkPad(p.num, p.name, along(bw, G.B.length, i), bh / 2, padShort, padLong)));
+    if (ep) pads.push(mkPad(ep.num, ep.name, 0, 0, r2(bw * 0.4), r2(bh * 0.4), { shape: 'rect', rr: 0 }));
+    warn.push(T('fg_sideapprox'));
+    return { pads, body: { w: bw, h: bh }, meta: { family: pk.fam || 'GENERIC', pitch } };
+  }
+
   function fromIC(ic) {
     const warn = [];
     const pk = parsePackage(ic.package);
-    if (!pk.fam) return { ok: false, reason: T('fg_r_fam', { p: ic.package || '(-)' }) };
     let r = null;
     try {
-      if (GRID.includes(pk.fam)) {
+      if (pk.fam && GRID.includes(pk.fam)) {
         r = grid(ic, pk, warn, pk.fam === 'PGA');
         // 數字腳小型 LGA（如 TI ZFP）：無球號 → 四邊周邊近似
         if (!r) {
@@ -220,11 +248,13 @@ window.FootprintGen = (function () {
           }
         }
       }
-      else if (QUAD_NL.includes(pk.fam)) r = quadNoLead(ic, pk, warn);
-      else if (QUAD_GW.includes(pk.fam)) r = quadGullwing(ic, pk, warn);
-      else if (DUAL_GW.includes(pk.fam) || DUAL_NL.includes(pk.fam) || THT_DUAL.includes(pk.fam)) r = dualGullwing(ic, pk, warn);
+      else if (pk.fam && QUAD_NL.includes(pk.fam)) r = quadNoLead(ic, pk, warn);
+      else if (pk.fam && QUAD_GW.includes(pk.fam)) r = quadGullwing(ic, pk, warn);
+      else if (pk.fam && (DUAL_GW.includes(pk.fam) || DUAL_NL.includes(pk.fam) || THT_DUAL.includes(pk.fam))) r = dualGullwing(ic, pk, warn);
     } catch (e) { return { ok: false, reason: T('fg_r_err', { err: e.message }) }; }
-    if (!r || !r.pads.length) return { ok: false, reason: T('fg_r_pins') };
+    // 家族路徑失敗（含無 family 關鍵字）→ 依 side 通用近似
+    if (!r || !r.pads.length) { try { r = sideBased(ic, pk, warn); } catch (e) { r = null; } }
+    if (!r || !r.pads.length) return { ok: false, reason: T(pk.fam ? 'fg_r_pins' : 'fg_r_fam', { p: ic.package || '(-)' }) };
     // 腳數核對：條目所有腳（含 EP）都該有對應 pad
     const expect = (ic.pins || []).length;
     if (r.pads.length !== expect) warn.push(T('fg_padcount', { a: r.pads.length, b: expect }));
