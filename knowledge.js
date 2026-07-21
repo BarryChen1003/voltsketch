@@ -4454,6 +4454,7 @@ const knowledgeApp = {
   showDetail(id) {
     let item = this.items.find(i => i.id === id);
     if (!item) return;
+    try { window.Observe && window.Observe.track('card:' + id); } catch (e) { }  // 哪些知識卡最常被看
     // 內容層 i18n：卡片帶 item.i18n[lang] 就覆蓋（缺欄位自動 fallback 中文）
     const _L = (window.I18N && I18N.lang) || 'zh';
     if (_L !== 'zh' && item.i18n && item.i18n[_L]) item = Object.assign({}, item, item.i18n[_L]);

@@ -18,12 +18,15 @@ window.Auth = (function () {
   }
   init();
 
+  // analytics：註冊/登入是漏斗頂端；成功才記（靜默失敗、不含 email）
+  const obs = n => { try { window.Observe && window.Observe.track(n); } catch (e) { } };
+
   return {
     enabled() { return ready; },
     raw() { return client; },
-    async signUp(email, pw) { return client.auth.signUp({ email, password: pw }); },
-    async signIn(email, pw) { return client.auth.signInWithPassword({ email, password: pw }); },
-    async oauth(provider) { return client.auth.signInWithOAuth({ provider, options: { redirectTo: location.origin + location.pathname } }); },
+    async signUp(email, pw) { const r = await client.auth.signUp({ email, password: pw }); if (r && !r.error) obs('signup'); return r; },
+    async signIn(email, pw) { const r = await client.auth.signInWithPassword({ email, password: pw }); if (r && !r.error) obs('login'); return r; },
+    async oauth(provider) { obs('oauth:' + provider); return client.auth.signInWithOAuth({ provider, options: { redirectTo: location.origin + location.pathname } }); },
     async reset(email) { return client.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/login.html' }); },
     async updatePassword(pw) { return client.auth.updateUser({ password: pw }); },
     async signOut() { try { return await client.auth.signOut(); } catch (e) { } },

@@ -105,14 +105,16 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./auth-config.js?v=2026-07-04a"></script>
   <script src="./observe.js?v=1"></script>
-  <script src="./auth.js?v=2026-07-04b"></script>
+  <script src="./auth.js?v=2026-07-21a"></script>
   <script>
     const T = (k, v) => window.I18N ? window.I18N.t(k, v) : k;  // i18n.js 稍後載入；點擊時已可用
+    const obs = n => { try { window.Observe && window.Observe.track(n); } catch (e) { } };  // 購買意圖漏斗
     const msg = document.getElementById('msg');
     document.querySelectorAll('.buy').forEach(btn => btn.addEventListener('click', async () => {
+      obs('buy:' + btn.dataset.plan);
       if (!window.Auth || !window.Auth.enabled()) { msg.style.color = '#b45309'; msg.textContent = T('up_demo_nopay'); return; }
       const u = await window.Auth.user();
-      if (!u) { location.href = 'login.html?next=upgrade.html'; return; }
+      if (!u) { obs('buy:login_wall'); location.href = 'login.html?next=upgrade.html'; return; }
       msg.style.color = '#64748b'; msg.textContent = T('up_creating');
       // 金額/方案由後端型錄決定；前端只送方案代號
       const r = await window.Auth.callFn('create-order', { plan: btn.dataset.plan });
@@ -136,9 +138,10 @@
     if (sBtn) sBtn.addEventListener('click', async () => {
       const amt = parseInt(document.getElementById('sponsorAmt').value, 10);
       if (!Number.isInteger(amt) || amt < 30 || amt > 30000) { sMsg.style.color = '#b45309'; sMsg.textContent = T('up_amt_range'); return; }
+      obs('sponsor');
       if (!window.Auth || !window.Auth.enabled()) { sMsg.style.color = '#b45309'; sMsg.textContent = T('up_demo_nosponsor'); return; }
       const u = await window.Auth.user();
-      if (!u) { location.href = 'login.html?next=upgrade.html'; return; }
+      if (!u) { obs('sponsor:login_wall'); location.href = 'login.html?next=upgrade.html'; return; }
       sMsg.style.color = '#64748b'; sMsg.textContent = T('up_sp_creating');
       const r = await window.Auth.callFn('create-order', { plan: 'sponsor', amount: amt });
       if (!r || r.error || !r.action || !r.fields) { sMsg.style.color = '#b91c1c'; sMsg.textContent = T('up_sp_fail') + (r && r.error || T('up_sp_nosupport')); return; }

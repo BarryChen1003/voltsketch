@@ -1076,6 +1076,7 @@ const pcbApp = {
     const say = t => { if (msg) msg.textContent = t; };
     const ic = (window.IC_DATA || []).find(x => x.part === partName);
     if (!ic) { say(pcbT('pj_ic_notfound', { part: partName })); return; }
+    try { window.Observe && window.Observe.track('pcb:ic_place'); } catch (e) { }
     const n = this.state.components.length;
     const ref = 'U' + (this.state.components.filter(c => /^U\d+$/.test(c.ref || '')).length + 1);
     const base = { id: `lib-${Date.now()}`, type: 'ic', ref, part: ic.part, package: ic.package || '', label: ref, side: 'top', kind: 'ic', rot: 0, x: (n % 5) * 8 - 16, y: Math.floor(n / 5) * 8 - 8 };
@@ -1168,6 +1169,7 @@ const pcbApp = {
   loadRefBoard(id) {
     const b = (window.PCB_REFBOARDS || []).find(x => x.id === id);
     if (!b) return;
+    try { window.Observe && window.Observe.track('refboard:' + id); } catch (e) { }  // 哪些公版最常被載
     this.hist();
     this.state.boardWidth = b.w;
     this.state.boardHeight = b.h;
