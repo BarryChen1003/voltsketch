@@ -38,6 +38,10 @@ jobs:
       - name: reffp-check（公版 footprint 幾何）
         run: node reffp-check.js
 
+      # 2b) PCB 編輯器邏輯層回歸測試（nextRef/snapTarget/history/貼上/多選刪除…）
+      - name: pcb-logic.test（編輯器邏輯回歸）
+        run: node pcb-logic.test.js
+
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
         run: |
