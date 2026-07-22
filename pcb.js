@@ -1442,14 +1442,88 @@ const pcbApp = {
     return null;
   },
 
-  // 旋轉選取元件：comp.rot 與每 pad.rot（總角度）必須同步加
-  rotateSelected(delta) {
-    const c = this.state.selected;
-    if (!c) return;
-    this.hist();
+  // 目前作用選集：多選集優先，否則單選（給對齊/分佈/微調/旋轉共用）
+  selectionList() {
+    const set = this.state.selectedSet || [];
+    if (set.length) return set.slice();
+    return this.state.selected ? [this.state.selected] : [];
+  },
+
+  // 單顆旋轉（角度同步到 pad）
+  rotateOne(c, delta) {
     const norm = a => ((a % 360) + 360) % 360;
     c.rot = norm((c.rot || 0) + delta);
     (c.pads || []).forEach(p => { p.rot = norm((p.rot || 0) + delta); });
+  },
+
+  // 旋轉選取：多選＝繞群組中心公轉＋各自自轉；單選＝原地自轉
+  rotateSelected(delta) {
+    const sel = this.selectionList();
+    if (!sel.length) return;
+    this.hist();
+    if (sel.length > 1) {
+      // 群組中心（各元件中心的平均）
+      const cx = sel.reduce((s, c) => s + c.x, 0) / sel.length;
+      const cy = sel.reduce((s, c) => s + c.y, 0) / sel.length;
+      const th = delta * Math.PI / 180, co = Math.cos(th), si = Math.sin(th);
+      sel.forEach(c => {
+        const dx = c.x - cx, dy = c.y - cy;
+        c.x = Math.round((cx + dx * co - dy * si) * 1e6) / 1e6;
+        c.y = Math.round((cy + dx * si + dy * co) * 1e6) / 1e6;
+        this.rotateOne(c, delta);
+      });
+    } else {
+      this.rotateOne(sel[0], delta);
+    }
+    this.state.ratsnest = null;
+    this.syncSelPanel();
+    this.render();
+  },
+
+  // 方向鍵微調：把選集平移 (dx,dy) mm（Ctrl/⌘＝細步）
+  nudgeSelected(dx, dy) {
+    const sel = this.selectionList();
+    if (!sel.length) return;
+    this.hist();
+    sel.forEach(c => { c.x = Math.round((c.x + dx) * 1e6) / 1e6; c.y = Math.round((c.y + dy) * 1e6) / 1e6; });
+    this.state.ratsnest = null;
+    this.syncSelPanel();
+    this.render();
+  },
+
+  // 對齊：left/right/top/bottom/centerH(垂直中線,對齊 x)/centerV(水平中線,對齊 y)
+  alignSelected(mode) {
+    const sel = this.selectionList();
+    if (sel.length < 2) { this.toast(pcbT('pj_need2'), 'warn'); return; }
+    this.hist();
+    const L = c => c.x - (c.w || 0) / 2, R = c => c.x + (c.w || 0) / 2;
+    const T = c => c.y - (c.h || 0) / 2, B = c => c.y + (c.h || 0) / 2;
+    const minL = Math.min(...sel.map(L)), maxR = Math.max(...sel.map(R));
+    const minT = Math.min(...sel.map(T)), maxB = Math.max(...sel.map(B));
+    sel.forEach(c => {
+      if (mode === 'left') c.x = minL + (c.w || 0) / 2;
+      else if (mode === 'right') c.x = maxR - (c.w || 0) / 2;
+      else if (mode === 'top') c.y = minT + (c.h || 0) / 2;
+      else if (mode === 'bottom') c.y = maxB - (c.h || 0) / 2;
+      else if (mode === 'centerH') c.x = (minL + maxR) / 2;
+      else if (mode === 'centerV') c.y = (minT + maxB) / 2;
+      c.x = Math.round(c.x * 1e6) / 1e6; c.y = Math.round(c.y * 1e6) / 1e6;
+    });
+    this.state.ratsnest = null;
+    this.syncSelPanel();
+    this.render();
+  },
+
+  // 分佈：≥3 顆，沿 axis('h'|'v') 讓「中心」等距（首尾固定）
+  distributeSelected(axis) {
+    const sel = this.selectionList();
+    if (sel.length < 3) { this.toast(pcbT('pj_need3'), 'warn'); return; }
+    this.hist();
+    const key = axis === 'v' ? 'y' : 'x';
+    const sorted = sel.slice().sort((a, b) => a[key] - b[key]);
+    const first = sorted[0][key], last = sorted[sorted.length - 1][key];
+    const gap = (last - first) / (sorted.length - 1);
+    sorted.forEach((c, i) => { c[key] = Math.round((first + gap * i) * 1e6) / 1e6; });
     this.state.ratsnest = null;
     this.syncSelPanel();
     this.render();
@@ -2725,9 +2799,15 @@ const pcbApp = {
           this.renderPartsList();
           this.render();
         }
-      } else if ((e.key === 'r' || e.key === 'R') && this.state.selected) {
+      } else if ((e.key === 'r' || e.key === 'R') && (this.state.selected || this.state.selectedSet.length)) {
         e.preventDefault();
         this.rotateSelected(90);
+      } else if (/^Arrow(Up|Down|Left|Right)$/.test(e.key) && (this.state.selected || this.state.selectedSet.length)) {
+        // 方向鍵微調選集：預設一格；Ctrl/⌘＝0.1mm 細步
+        e.preventDefault();
+        const step = (e.ctrlKey || e.metaKey) ? 0.1 : this.gridStep();
+        const d = { ArrowUp: [0, -step], ArrowDown: [0, step], ArrowLeft: [-step, 0], ArrowRight: [step, 0] }[e.key];
+        this.nudgeSelected(d[0], d[1]);
       } else if (e.key === 'Escape') {
         if (this.state.zoneDraw) {
           this.state.zoneDraw = null;
@@ -2777,6 +2857,12 @@ const pcbApp = {
       rd.readAsText(f);
       e.target.value = '';
     });
+
+    // 對齊 / 分佈按鈕（事件委派，作用於當前選集）
+    document.querySelectorAll('[data-align]').forEach(btn =>
+      btn.addEventListener('click', () => this.alignSelected(btn.dataset.align)));
+    document.querySelectorAll('[data-distribute]').forEach(btn =>
+      btn.addEventListener('click', () => this.distributeSelected(btn.dataset.distribute)));
 
     // 選取元件屬性面板：座標/角度直接輸入
     ['selX', 'selY', 'selRot'].forEach(id => {

@@ -655,6 +655,20 @@
               <button class="small-button" id="loadBoardBtn"><span data-i18n="pcb_load_json">📂 匯入版面</span></button>
               <input type="file" id="loadBoardFile" accept=".json,application/json" hidden>
             </div>
+            <!-- 對齊 / 分佈（作用於多選集；≥2 才對齊、≥3 才分佈）。方向鍵微調、R 旋轉整組。 -->
+            <div style="margin-top:8px">
+              <div style="font-size:11px;color:var(--muted);margin-bottom:4px" data-i18n="pcb_align_hint">多選後：對齊／分佈｜方向鍵微調｜R 旋轉整組</div>
+              <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px">
+                <button class="small-button" data-align="left" title="左對齊">⇤</button>
+                <button class="small-button" data-align="centerH" title="水平置中">⇔</button>
+                <button class="small-button" data-align="right" title="右對齊">⇥</button>
+                <button class="small-button" data-align="top" title="上對齊">⤒</button>
+                <button class="small-button" data-align="centerV" title="垂直置中">⇕</button>
+                <button class="small-button" data-align="bottom" title="下對齊">⤓</button>
+                <button class="small-button" data-distribute="h" title="水平等距分佈" style="grid-column:span 3">⋯ 水平分佈</button>
+                <button class="small-button" data-distribute="v" title="垂直等距分佈" style="grid-column:span 3">⋮ 垂直分佈</button>
+              </div>
+            </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin-top:8px">
               <label style="display:grid;gap:2px"><span data-i18n="pcbf_tracew">線寬 (mm)</span><input type="number" id="traceWidth" value="0.3" step="0.05" min="0.05" style="padding:3px"></label>
               <label style="display:grid;gap:2px"><span data-i18n="pcbf_layer">層</span><select id="traceLayer" style="padding:3px"></select></label>
@@ -907,7 +921,7 @@
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./observe.js?v=1"></script>
     <script src="./auth.js?v=2026-07-21a"></script>
-    <script src="./i18n.js?v=2026-07-21a"></script>
+    <script src="./i18n.js?v=2026-07-22a"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
@@ -922,7 +936,7 @@
     <script src="./pcb-drc.js?v=4"></script>
     <script src="./pcb-rules.js?v=4"></script>
     <script src="./pcb-3d.js?v=1"></script>
-    <script src="./pcb.js?v=28"></script>
+    <script src="./pcb.js?v=29"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-07-16a"></script>
     <script src="./pcb-stackup.js?v=2026-07-16a"></script>

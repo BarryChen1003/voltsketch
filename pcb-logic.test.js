@@ -137,5 +137,43 @@ if (window.PcbHistory) {
   eq(boxes, 0, `IC footprint 覆蓋率：${ics.length - boxes}/${ics.length}，不應有方框`);
 }
 
+// 8) 對齊 / 分佈 / 微調 / 群組旋轉（A：編輯器手感）
+{
+  const mk = (id, x, y, w, h) => ({ id, ref: id, x, y, w: w || 2, h: h || 2, rot: 0, pads: [] });
+  // 對齊 left：三顆不同 x → 左緣對齊
+  let g = [mk('A', 0, 0, 2, 2), mk('B', 10, 5, 4, 2), mk('C', 20, -5, 2, 2)];
+  app.state.components = g.slice();
+  app.state.selectedSet = g.slice(); app.state.selected = g[2];
+  app.alignSelected('left');
+  const leftEdge = Math.min(...g.map(c => c.x - c.w / 2));
+  ok(g.every(c => Math.abs((c.x - c.w / 2) - leftEdge) < 1e-6), '對齊 left：左緣一致');
+  // 對齊 centerH：x 全等
+  app.alignSelected('centerH');
+  ok(g.every(c => Math.abs(c.x - g[0].x) < 1e-6), '對齊 centerH：x 一致');
+
+  // 分佈 h：中心等距
+  g = [mk('A', 0, 0), mk('B', 3, 0), mk('C', 30, 0)];
+  app.state.components = g.slice(); app.state.selectedSet = g.slice();
+  app.distributeSelected('h');
+  const xs = g.map(c => c.x).sort((a, b) => a - b);
+  ok(Math.abs((xs[1] - xs[0]) - (xs[2] - xs[1])) < 1e-6, '分佈 h：相鄰間距相等');
+  eq(xs[0], 0, '分佈保留首'); eq(xs[2], 30, '分佈保留尾');
+
+  // 微調：全體 +1,-1
+  g = [mk('A', 5, 5), mk('B', 8, 8)];
+  app.state.components = g.slice(); app.state.selectedSet = g.slice(); app.state.selected = g[1];
+  app.nudgeSelected(1, -1);
+  ok(Math.abs(g[0].x - 6) < 1e-6 && Math.abs(g[0].y - 4) < 1e-6 && Math.abs(g[1].x - 9) < 1e-6, '微調：全體同步平移');
+
+  // 群組旋轉 90°：繞群組中心，兩顆對調象限
+  g = [mk('A', -10, 0), mk('B', 10, 0)];
+  app.state.components = g.slice(); app.state.selectedSet = g.slice(); app.state.selected = g[1];
+  app.rotateSelected(90);
+  // 中心 (0,0)，90° 後 (-10,0)->(0,-10)、(10,0)->(0,10)
+  ok(Math.abs(g[0].x) < 1e-6 && Math.abs(g[0].y - (-10)) < 1e-4, '群組旋轉：A 公轉到 (0,-10)');
+  ok(Math.abs(g[1].x) < 1e-6 && Math.abs(g[1].y - 10) < 1e-4, '群組旋轉：B 公轉到 (0,10)');
+  eq(g[0].rot, 90, '群組旋轉：各自自轉 90');
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
