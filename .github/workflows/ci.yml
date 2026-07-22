@@ -46,6 +46,10 @@ jobs:
       - name: gerber-check（匯出正確性）
         run: node gerber-check.js
 
+      # 2d) i18n key 完整性：pcbT/I18N.t 用到的 key 必須有定義（防 UI 顯示原始 key）
+      - name: i18n-check（key 完整性）
+        run: node i18n-check.js
+
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
         run: |
