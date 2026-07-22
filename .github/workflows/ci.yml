@@ -42,6 +42,10 @@ jobs:
       - name: pcb-logic.test（編輯器邏輯回歸）
         run: node pcb-logic.test.js
 
+      # 2c) Gerber/Excellon 匯出正確性（跨 8 片公版：表頭/座標界內/鑽孔對齊 pad…）
+      - name: gerber-check（匯出正確性）
+        run: node gerber-check.js
+
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
         run: |
