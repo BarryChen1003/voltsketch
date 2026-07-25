@@ -58,6 +58,11 @@ jobs:
       - name: circuit-check（電路圖接線）
         run: node circuit-check.js --strict
 
+      # 2g) 鐵律：圖表文字不得壓到圖形或別的文字。
+      #     目前尚有 30 處待逐張排版；先用 --max 鎖住現況，只准降不准升。清完改 --strict。
+      - name: svg-overlap-check（圖字不重疊 · 棘輪）
+        run: node svg-overlap-check.js --max=30
+
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
         run: |

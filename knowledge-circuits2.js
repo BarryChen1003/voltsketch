@@ -213,7 +213,7 @@
     g += A(90, 46, 122, 46, '脈衝點亮');
     g += `<circle cx="150" cy="46" r="9" fill="#dcfce7" stroke="${C}" stroke-width="1.4"/>` + T(150, 49, 'LED', { size: 6.5 });
     // 皮膚
-    g += `<path d="M 120 78 Q 175 96 230 78" fill="none" stroke="${ORG}" stroke-width="2.2"/>` + T(175, 100, '皮膚/血流（AC 調變 << DC 背景）', { size: 8, fill: MUT });
+    g += `<path d="M 120 78 Q 175 96 230 78" fill="none" stroke="${ORG}" stroke-width="2.2"/>` + T(175, 91, '皮膚/血流（AC 調變 << DC 背景）', { size: 8, fill: MUT });
     g += DEC(A(155, 55, 172, 74, null, { color: ORG, w: 1 }) + A(180, 74, 197, 56, null, { color: ORG, w: 1 }));
     g += `<rect x="190" y="36" width="22" height="18" rx="2" fill="#fff" stroke="${C}" stroke-width="1.4"/>` + T(201, 48, 'PD', { size: 7.5 });
     g += A(212, 45, 240, 45, '光電流');
@@ -483,7 +483,7 @@
     g += T(280, 72, '靜音：±200RPM/s 斜率', { size: 8.5, anchor: 'start' });
     g += T(280, 88, '＋3~5°C 溫度遲滯', { size: 8.5, anchor: 'start' });
     g += T(280, 110, '噪音 ∝ RPM^5~6', { size: 8.5, anchor: 'start', fill: MUT });
-    g += T(190, 170, 'TACH 開汲極 → 上拉接 EC IO 電壓域（跨域接錯讀不到）', { size: 8.5, fill: RED });
+    g += T(190, 179, 'TACH 開汲極 → 上拉接 EC IO 電壓域（跨域接錯讀不到）', { size: 8.5, fill: RED });
     return { d: '風扇閉環：PWM 調速＋TACH 回授＋失速偵測', svg: W(400, 182, g) };
   };
 
@@ -677,8 +677,8 @@
   M['pmbus-telemetry'] = () => {
     let g = '';
     g += B(60, 60, 76, 44, 'BMC', ['輪詢＋告警']);
-    g += L(98, 52, 380, 52) + T(390, 56, 'SCL/SDA', { size: 8, anchor: 'end' });
-    g += L(98, 68, 380, 68, { color: ORG }) + T(390, 80, 'ALERT#（開汲極，主動報障）', { size: 8, anchor: 'end', fill: ORG });
+    g += L(98, 52, 380, 52) + T(390, 47, 'SCL/SDA', { size: 8, anchor: 'end' });
+    g += L(98, 68, 380, 68, { color: ORG }) + T(390, 102, 'ALERT#（開汲極，主動報障）', { size: 8, anchor: 'end', fill: ORG });
     [[150, 'VRM', '0x40'], [230, 'IBC', '0x41'], [310, 'Hot-swap', '0x42'], [372, 'PSU', '0x58']].forEach(([x, name, addr]) => {
       g += L(x, 52, x, 92) ;
       g += B(x, 112, 64, 38, name, [addr]);
@@ -734,7 +734,7 @@
     g += res(128, 52, { horizontal: true, label: 'Rsense', value: 'Kelvin' });
     g += L(152, 52, 226, 52);   // 直達 NMOS source 端點 (226,52)
     g += mos(200, 72, { showPins: false, bodyDiode: true });
-    g += T(200, 118, 'SOA 強化 MOSFET', { size: 8, fill: MUT });
+    g += T(176, 118, 'SOA 強化 MOSFET', { size: 8, fill: MUT });
     g += L(226, 52, 268, 52) + A(268, 52, 292, 52);
     g += B(322, 52, 60, 36, '板內 VRM', []);
     g += cap(268, 74, { horizontal: false }) + gnd(268, 110, {});
@@ -761,7 +761,7 @@
     // 整流輸出軌一路接到一次側繞組頂端。用 LR（不吸附）：繞組是客製 VC 路徑、
     // 沒登錄腳位點，走 L 會停在 148 而與繞組(160) 斷開。
     g += LR(116, 56, 160, 56) + s.junction(132, 56);
-    g += cap(132, 78, { horizontal: false }) + gnd(132, 114, {}) + T(112, 80, 'bulk', { size: 7.5, fill: MUT });
+    g += cap(132, 78, { horizontal: false }) + gnd(132, 114, {}) + T(110, 88, 'bulk', { size: 7.5, fill: MUT });
     // 變壓器：客製垂直線圈（Sym 電感無垂直版）；鐵芯雙槓為符號裝飾
     const VC = (x, y0, n, sweep) => { let d = `M ${x} ${y0}`; for (let i = 0; i < n; i++) d += ` A 4.5 4.5 0 1 ${sweep} ${x} ${y0 + (i + 1) * 9}`; return `<path d="${d}" fill="none" stroke="${C}" stroke-width="2"/>`; };
     g += VC(160, 56, 4, 1);
@@ -791,9 +791,10 @@
     g += B(238, 158, 68, 26, '光耦＋TL431', ['隔離回授']);
     g += L(300, 56, 300, 158) + L(300, 158, 272, 158);
     g += A(204, 158, 112, 138, null, { color: ACC, w: 1 });
-    g += T(196, 172, '開關閉合：能量存一次側；斷開：極性反轉、二極體導通放能到輸出', { size: 8.5 });
-    g += T(196, 188, '一二次側「地」隔離（安規）；回授過光耦', { size: 8.5, fill: ORG });
-    return { d: '返馳式：變壓器儲能＋光耦隔離回授', svg: W(400, 198, g) };
+    // 說明文字帶：必須整條低於光耦方塊底緣(y=171)，畫布同步加高（鐵律：圖與字不得重疊）
+    g += T(196, 190, '開關閉合：能量存一次側；斷開：極性反轉、二極體導通放能到輸出', { size: 8.5 });
+    g += T(196, 206, '一二次側「地」隔離（安規）；回授過光耦', { size: 8.5, fill: ORG });
+    return { d: '返馳式：變壓器儲能＋光耦隔離回授', svg: W(400, 214, g) };
   };
 
   M['regulator-ldo-vs-buck'] = () => {
@@ -844,7 +845,7 @@
     const s = S();
     let g = '';
     g += B(44, 70, 56, 72, 'USB-C', ['VBUS', 'CC1/CC2']);
-    g += L(72, 48, 112, 48) + T(88, 40, 'VBUS 5~20V', { size: 7.5, fill: MUT });
+    g += L(72, 48, 112, 48) + T(88, 31, 'VBUS 5~20V', { size: 7.5, fill: MUT });
     // 背靠背 NFET（方塊表示，含方向註記）
     g += B(134, 48, 44, 28, 'Q1', ['NFET']);
     g += B(190, 48, 44, 28, 'Q2', ['NFET']);
@@ -910,7 +911,7 @@
     g += L(144, 48, 202, 48, { w: 3 }) + s.junction(202, 48);
     // sense 抽頭（從電阻焊盤內側）
     g += L(102, 56, 102, 84, { color: ACC, w: 1.2 }) + L(138, 56, 138, 84, { color: ACC, w: 1.2 });
-    g += T(120, 76, '感測線（不走大電流）', { size: 7.5, fill: ACC });
+    g += T(120, 91, '感測線（不走大電流）', { size: 7.5, fill: ACC });
     g += B(120, 106, 88, 36, '差動放大', ['→ ADC']);
     g += T(120, 140, '走線壓降不進量測 → mΩ 級才量得準', { size: 8, fill: GRN });
     // 低邊 vs 高邊
@@ -929,8 +930,8 @@
     let g = '';
     g += B(64, 70, 88, 52, 'GaN 驅動器', ['LMG1020 類', '開/關分離輸出']);
     // 開/關分離路徑匯合到閘極端點 G=(148,76)
-    g += L(108, 56, 132, 56) + T(120, 48, 'Rg_on 小', { size: 7.5, fill: MUT });
-    g += L(108, 84, 132, 84) + T(122, 96, 'Rg_off 更小', { size: 7.5, fill: MUT });
+    g += L(108, 56, 132, 56) + T(120, 39, 'Rg_on 小', { size: 7.5, fill: MUT });
+    g += L(108, 84, 132, 84) + T(122, 114, 'Rg_off 更小', { size: 7.5, fill: MUT });
     g += L(132, 56, 132, 84) + L(132, 76, 148, 76) + s.junction(132, 76);
     g += mos(178, 76, { showPins: false });
     g += T(178, 122, 'GaN FET（ns 級邊沿）', { size: 8, fill: MUT });
@@ -1173,7 +1174,7 @@
     g += T(140, 26, '訊號換層 via', { size: 7.5 });
     g += L(158, 54, 158, 126, { w: 2, color: ACC }) + `<circle cx="158" cy="54" r="3" fill="${ACC}"/>` + `<circle cx="158" cy="126" r="3" fill="${ACC}"/>`;
     g += T(196, 96, '≤1.5mm 內放 stitching via', { size: 7.5, fill: ACC, anchor: 'start' });
-    g += T(196, 108, '（回流跟著換層）', { size: 7.5, fill: ACC, anchor: 'start' });
+    g += T(196, 99, '（回流跟著換層）', { size: 7.5, fill: ACC, anchor: 'start' });
     g += T(165, 158, '換層＝回流也要換參考層：沒 stitching via 回流繞遠、跨層腔體被激勵共振', { size: 8.5, fill: ORG });
     return { d: '六層疊層：換層 via＋回流 stitching', svg: W(430, 168, g) };
   };
