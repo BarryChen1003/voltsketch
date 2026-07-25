@@ -50,6 +50,10 @@ jobs:
       - name: i18n-check（key 完整性）
         run: node i18n-check.js
 
+      # 2e) 知識卡原理說明排版器：分段只改排版、內容零丟失
+      - name: knowledge-format.test（排版不改內容）
+        run: node knowledge-format.test.js
+
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
         run: |

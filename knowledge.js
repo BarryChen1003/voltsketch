@@ -4443,6 +4443,44 @@ const knowledgeApp = {
     if (allItem) list.insertBefore(allItem, list.firstChild);
   },
 
+  // 原理說明排版：長段落自動切成可掃讀的段落，不改任何內容文字。
+  //   ① 依句切段，每段落在 60–130 字（超長單句再依分號/逗號軟切）
+  //   ② 句首「詞：」定義句 → 詞加粗（開關導通：／穩壓：／診斷：…）
+  //   ③ 短文（<120 字）維持單段不切碎；括號註解、破折號原樣保留
+  formatPrinciples(text) {
+    const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // 定義句加粗（所有回傳路徑共用，短文也要加粗）
+    const bold = html => html.replace(/(^|[。！？；;])([^。！？，、：；;]{2,14})：/g,
+      (mm, lead, word) => `${lead}<strong>${word}：</strong>`);
+    const P = s => `<p style="margin:0 0 12px">${bold(esc(s.trim()))}</p>`;
+    const raw = String(text || '').trim();
+    if (!raw) return '<p>無說明</p>';
+    if (raw.length < 120) return P(raw);
+    // 切句：句號/驚嘆/問號後斷開（保留標點）；超長單句再依分號、必要時逗號軟切，避免單句成牆
+    let sentences = raw.split(/(?<=[。！？])\s*/).filter(s => s.trim());
+    sentences = sentences.flatMap(s => s.length > 130 ? s.split(/(?<=[；;])\s*/).filter(Boolean) : [s]);
+    sentences = sentences.flatMap(s => {
+      if (s.length <= 160) return [s];
+      // 仍過長：在逗號處切成約 100 字的塊
+      const parts = s.split(/(?<=[，,])\s*/).filter(Boolean);
+      const out = []; let b = '';
+      for (const p of parts) { b += p; if (b.length >= 100) { out.push(b); b = ''; } }
+      if (b) { if (b.length < 30 && out.length) out[out.length - 1] += b; else out.push(b); }
+      return out;
+    });
+    if (sentences.length < 3) return P(raw);
+    // 長度導向分段：段長落在 60–130 字之間才斷，短句累積不落單、長句不成牆
+    const MIN = 60;
+    const paras = [];
+    let buf = '';
+    for (const s of sentences) {
+      buf += s;
+      if (buf.length >= MIN) { paras.push(buf); buf = ''; }
+    }
+    if (buf) { if (paras.length) paras[paras.length - 1] += buf; else paras.push(buf); }
+    return paras.map(P).join('');
+  },
+
   // 公式下標（HTML）：Vout→V<sub>out</sub>、Rds_on→Rds<sub>on</sub>、R1→R<sub>1</sub>
   subHtml(s) {
     return String(s)
@@ -4455,6 +4493,7 @@ const knowledgeApp = {
     let item = this.items.find(i => i.id === id);
     if (!item) return;
     try { window.Observe && window.Observe.track('card:' + id); } catch (e) { }  // 哪些知識卡最常被看
+    // （排版見 formatPrinciples：長段自動分段、定義句標題化）
     // 內容層 i18n：卡片帶 item.i18n[lang] 就覆蓋（缺欄位自動 fallback 中文）
     const _L = (window.I18N && I18N.lang) || 'zh';
     if (_L !== 'zh' && item.i18n && item.i18n[_L]) item = Object.assign({}, item, item.i18n[_L]);
@@ -4473,7 +4512,7 @@ const knowledgeApp = {
     body.innerHTML = `
       <div class="detail-section">
         <h3>原理說明</h3>
-        <p>${item.principles || '無說明'}</p>
+        ${this.formatPrinciples(item.principles)}
       </div>
 
       ${(item.circuits || []).map(circuit => `

@@ -57,3 +57,4 @@ if (jsMissing.length) {
 }
 console.log('PASS：所有 pcbT/I18N.t 字面 key 都有定義');
 process.exit(0);
+
