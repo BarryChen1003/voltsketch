@@ -1,8 +1,10 @@
 // === 電路圖建構器（用 schematic-symbols.js 真實符號，避免框框/文字壓圖）===
 // 回傳純 SVG 字串，可正常存入 localStorage。
 const CircuitSVG = {
-  wrap(w, h, inner) {
-    return `<svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:${w}px">${inner}</svg>`;
+  // pad：畫布邊距（負 viewBox 原點）。用來納入超出 0,0 的標籤，元件座標完全不動。
+  wrap(w, h, inner, pad) {
+    const l = (pad && pad.l) || 0, t = (pad && pad.t) || 0;
+    return `<svg viewBox="${-l} ${-t} ${w + l} ${h + t}" width="100%" style="max-width:${w + l}px">${inner}</svg>`;
   },
 
   // Level Shift（BSS138 雙向電平轉換）
@@ -623,7 +625,7 @@ const CircuitSVG = {
     g += S.line(123, 67, 137, 67, { w: 2.4 }); g += S.line(130, 67, 130, xoY);
     g += S.txt(130, 44, 'XTAL', { size: 8, fill: '#64748b' });
     // 負載電容（左右分開，各自到地）
-    g += this.capToGnd(S, 100, xiY, 'CL1');
+    g += this.capToGnd(S, 100, xiY, 'CL1', 'right');
     g += this.capToGnd(S, 156, xoY, 'CL2', 'right'); // 標籤靠右避開晶體
     return this.wrap(216, 170, g);
   },
@@ -841,7 +843,7 @@ const CircuitSVG = {
     g += S.line(leadR, bY, 210, bY); g += S.junction(210, bY); g += S.line(210, bY, 210, 102);
     g += S.resistor(210, 78, { horizontal: false, label: '120Ω', labelSide: 'right' }); // 54..102
     g += S.txt(125, aY - 6, 'A', { size: 8, fill: '#64748b' }); g += S.txt(125, bY + 12, 'B', { size: 8, fill: '#64748b' });
-    return this.wrap(258, 150, g);
+    return this.wrap(258, 150, g, { l: 8 });
   },
 
   // 繼電器驅動（低端 NMOS + 線圈 + 飛輪二極體）
@@ -884,7 +886,7 @@ const CircuitSVG = {
     // 差動輸出
     g += S.line(60, 80, 36, 80); g += S.txt(34, 83, 'Vo+', { anchor: 'end', size: 8, fill: '#64748b' });
     g += S.line(160, 80, 184, 80); g += S.txt(186, 83, 'Vo−', { anchor: 'start', size: 8, fill: '#64748b' });
-    return this.wrap(220, 188, g);
+    return this.wrap(220, 188, g, { t: 12 });
   },
 
   // 電流鏡（NPN，Q1 二極體接法 + Q2 鏡像）
@@ -1073,7 +1075,7 @@ const CircuitSVG = {
     // 輸出
     g += S.line(130, 45, 185, 45); g += S.txt(187, 37, 'Vout', { anchor: 'end', size: 9, fill: '#64748b' });
     g += S.txt(110, 95, 'Vout = −I_PD × Rf', { anchor: 'middle', size: 8, fill: '#64748b' });
-    return this.wrap(210, 128, g);
+    return this.wrap(210, 128, g, { t: 12 });
   },
 
   // 儀表放大器（3-opamp INA）：兩級輸入緩衝(A1/A2)+Rg 設增益，A3 差動級除共模。
@@ -1391,7 +1393,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-22-no-overlap2';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-22-no-overlapF';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -2846,7 +2848,7 @@ const knowledgeApp = {
             type: 'simple-delay',
             description: 'RC 延遲上電電路',
             svg: `<svg viewBox="0 0 200 70" width="200" height="70">
-              <text x="10" y="15" font-size="8">Power_EN</text>
+              <text x="10" y="11" font-size="8">Power_EN</text>
               <line x1="10" y1="20" x2="30" y2="20" stroke="#1d2943" stroke-width="1.5"/>
               <rect x="30" y="15" width="20" height="10" fill="white" stroke="#1d2943" stroke-width="1"/>
               <text x="40" y="23" text-anchor="middle" font-size="6">R</text>
@@ -3283,19 +3285,19 @@ const knowledgeApp = {
           {
             type: 'via-types',
             description: 'Via 類型比較',
-            svg: `<svg viewBox="0 0 250 80" width="250" height="80">
+            svg: `<svg viewBox="0 0 250 92" width="250" height="92">
               <rect x="10" y="5" width="50" height="70" fill="none" stroke="#1d2943" stroke-width="1.5" stroke-dasharray="3"/>
               <line x1="35" y1="10" x2="35" y2="70" stroke="#1d2943" stroke-width="3"/>
-              <text x="35" y="78" text-anchor="middle" font-size="6">通孔</text>
+              <text x="35" y="86" text-anchor="middle" font-size="6">通孔</text>
               <rect x="70" y="5" width="50" height="70" fill="none" stroke="#1d2943" stroke-width="1.5" stroke-dasharray="3"/>
               <line x1="95" y1="10" x2="95" y2="40" stroke="#1d2943" stroke-width="3"/>
-              <text x="95" y="78" text-anchor="middle" font-size="6">盲孔</text>
+              <text x="95" y="86" text-anchor="middle" font-size="6">盲孔</text>
               <rect x="130" y="5" width="50" height="70" fill="none" stroke="#1d2943" stroke-width="1.5" stroke-dasharray="3"/>
               <line x1="155" y1="25" x2="155" y2="55" stroke="#1d2943" stroke-width="3"/>
-              <text x="155" y="78" text-anchor="middle" font-size="6">埋孔</text>
+              <text x="155" y="86" text-anchor="middle" font-size="6">埋孔</text>
               <rect x="190" y="5" width="50" height="70" fill="none" stroke="#1d2943" stroke-width="1.5" stroke-dasharray="3"/>
               <line x1="215" y1="10" x2="215" y2="30" stroke="#1d2943" stroke-width="2"/>
-              <text x="215" y="78" text-anchor="middle" font-size="6">微孔</text>
+              <text x="215" y="86" text-anchor="middle" font-size="6">微孔</text>
             </svg>`
           }
         ],

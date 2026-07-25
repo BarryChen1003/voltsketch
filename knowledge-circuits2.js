@@ -89,7 +89,9 @@
     let g = L(x1, y1, x2, y2, { color: o.color || C, w: o.w || 1.3 });
     const ang = Math.atan2(y2 - y1, x2 - x1), a = 5.5;
     g += `<polygon points="${x2},${y2} ${x2 - a * Math.cos(ang - 0.42)},${y2 - a * Math.sin(ang - 0.42)} ${x2 - a * Math.cos(ang + 0.42)},${y2 - a * Math.sin(ang + 0.42)}" fill="${o.color || C}"/>`;
-    if (lbl) g += T((x1 + x2) / 2 + (o.dx || 0), (y1 + y2) / 2 - 4 + (o.dy || 0), lbl, { size: 7.5, fill: o.lc || MUT });
+    // 標籤預設置中在箭頭中點上方。箭頭短、標籤長時置中必然溢進兩端方塊 →
+    // 用 o.anchor 讓文字從錨點往單邊長（start 往右、end 往左），錨點不動＝語意保留。
+    if (lbl) g += T((x1 + x2) / 2 + (o.dx || 0), (y1 + y2) / 2 - 4 + (o.dy || 0), lbl, { size: 7.5, fill: o.lc || MUT, anchor: o.anchor || 'middle' });
     return g;
   }
   // 裝飾群組（波形/座標軸/示意線——合法懸空，檢查器跳過）
@@ -98,7 +100,7 @@
   // 電源旗標
   // 電源旗標。內部線一律走 LR（不吸附）：F 常畫在已登錄的腳位上（如電阻上端），
   // 用 L 會把旗桿與橫槓兩端全吸到那個腳位 → 整個符號塌成一點、畫面上什麼都沒有。
-  function F(x, y, lbl) { return LR(x, y, x, y - 8) + LR(x - 7, y - 8, x + 7, y - 8) + T(x, y - 13, lbl, { size: 7.5, fill: MUT }); }
+  function F(x, y, lbl, lift) { return LR(x, y, x, y - 8) + LR(x - 7, y - 8, x + 7, y - 8) + T(x, y - 13 - (lift || 0), lbl, { size: 7.5, fill: MUT }); }
   // 紅叉（錯誤示意，裝飾）
   function X(x, y, r) { r = r || 6; return DEC(L(x - r, y - r, x + r, y + r, { color: RED, w: 2 }) + L(x - r, y + r, x + r, y - r, { color: RED, w: 2 })); }
   // 勾（正確示意，裝飾）
@@ -138,8 +140,8 @@
   M['epd-tcon'] = () => {
     let g = '';
     g += B(48, 60, 72, 48, 'MCU', ['SPI 主機']);
-    g += A(84, 50, 128, 50, 'SPI(CS/CLK/MOSI)');
-    g += A(128, 70, 84, 70, 'BUSY（更新中）', { color: ORG });
+    g += A(84, 50, 128, 50, 'SPI(CS/CLK/MOSI)', { anchor: 'start' });
+    g += A(128, 70, 84, 70, 'BUSY（更新中）', { anchor: 'start', color: ORG });
     g += B(186, 60, 112, 64, 'Driver＋TCON', ['影像 RAM（新/舊）', 'waveform LUT']);
     g += A(242, 45, 274, 45, '源極驅動');
     g += A(242, 75, 274, 75, '閘極掃描');
@@ -203,7 +205,7 @@
     g += B(178, 90, 120, 120, 'PMU', ['充電器＋電量計', 'buck×2（PFM）', 'LDO×2（低噪）', '負載開關×N', 'Iq：µA 級']);
     const outs = [[40, 'buck → SoC 核心'], [70, 'buck → 記憶體'], [100, 'LDO → 感測/AFE'], [130, 'LDO → RF/BLE'], [160, '負載開關 → 螢幕/GPS（不用就斷電）']];
     outs.forEach(([y, lbl]) => { g += L(238, 90, 254, 90) + L(254, y, 254, 90) + A(254, y, 276, y) + T(281, y + 3, lbl, { size: 8, anchor: 'start' }); });
-    g += T(190, 172, '續航 = 容量 / 平均電流：睡眠佔絕大多數 → 輕載效率與 Iq 決定一切', { size: 8.5, fill: ORG });
+    g += T(190, 182, '續航 = 容量 / 平均電流：睡眠佔絕大多數 → 輕載效率與 Iq 決定一切', { anchor: 'middle', size: 8.5, fill: ORG });
     return { d: '穿戴 PMU 電源樹：多軌＋負載開關＋µA 級待機', svg: W(440, 184, g) };
   };
 
@@ -254,7 +256,7 @@
     g += A(276, 70, 304, 70);
     g += B(342, 70, 72, 48, '充電 IC', ['CC-CV']);
     g += L(342, 94, 342, 112) + B(342, 128, 66, 32, '鋰電池', []);
-    g += T(200, 150, 'FOD 異物偵測：功率損失超標 → 停充（金屬異物會被加熱）', { size: 8.5, fill: ORG });
+    g += T(200, 160, 'FOD 異物偵測：功率損失超標 → 停充（金屬異物會被加熱）', { anchor: 'middle', size: 8.5, fill: ORG });
     return { d: 'Qi RX 鏈：線圈→ferrite→同步整流→充電 IC', svg: W(400, 162, g) };
   };
 
@@ -371,7 +373,7 @@
     g += B(46, 84, 64, 96, 'USB-C 座', ['CC1', 'CC2', 'SSTX/RX ×2組']);
     g += A(78, 52, 118, 52, 'CC1/CC2');
     g += B(196, 84, 132, 96, 'HD3SS3220', ['CC 邏輯：方向/角色', '(DFP/UFP/DRP)', 'SuperSpeed 2:1 Mux']);
-    g += A(78, 106, 118, 106, 'SSTX/RX（正反兩組）');
+    g += A(78, 106, 118, 106, 'SSTX/RX（正反兩組）', { anchor: 'start' });
     g += A(262, 84, 300, 84, '單組 USB3');
     g += B(342, 84, 72, 48, 'SoC/USB3', []);
     g += T(196, 148, '插入方向由 CC 判定 → mux 選對應那組差分對', { size: 8.5 });
@@ -445,7 +447,7 @@
     g += T(292, 40, 'LED 串（N 顆串聯）', { size: 8, fill: MUT });
     g += L(258 + 2 * 34 + 16, 60, 372, 60) + L(372, 60, 372, 92) + A(372, 92, 180, 92, '電流回授', { color: ACC });
     g += L(180, 92, 180, 86);
-    g += A(120, 106, 150, 92, 'PWM 調光', { color: ORG });
+    g += A(120, 106, 150, 92, 'PWM 調光', { dy: -7, color: ORG });
     g += T(120, 122, 'PWM 頻率避開可聞頻帶與可見閃爍；低亮度混合類比調光', { size: 8.5, anchor: 'start' });
     g += T(120, 138, 'VLCD 與背光上電時序照面板規範（避免開機閃白）', { size: 8, anchor: 'start', fill: MUT });
     return { d: '背光驅動：boost 恆流推 LED 串＋混合調光', svg: W(400, 148, g) };
@@ -465,7 +467,7 @@
     chart += L(340, 100, 340, 130);
     g += DEC(chart);
     g += T(180, 132, 'PGOOD 串鏈：前一軌穩了才開下一軌', { size: 8.5 });
-    g += T(340, 142, '全就緒 → 釋放 PLTRST# → 平台跑', { size: 8.5, fill: GRN });
+    g += T(324, 142, '全就緒 → 釋放 PLTRST# → 平台跑', { anchor: 'middle', size: 8.5, fill: GRN });
     g += T(250, 160, 'DDR 有專屬順序（VDD→VDDQ→VTT/VREF）；錯序 = 開不了機或閂鎖', { size: 8.5, fill: RED });
     return { d: '上電時序：階梯開軌＋PGOOD 交握', svg: W(400, 170, g) };
   };
@@ -473,8 +475,8 @@
   M['laptop-fan-control'] = () => {
     let g = '';
     g += B(60, 70, 76, 56, 'EC', ['查表/PI 迴路', '斜率限幅']);
-    g += A(98, 56, 140, 56, 'PWM 25kHz');
-    g += A(140, 84, 98, 84, 'TACH（2 脈衝/轉）', { color: ACC });
+    g += A(98, 56, 140, 56, 'PWM 25kHz', { anchor: 'start' });
+    g += A(140, 84, 98, 84, 'TACH（2 脈衝/轉）', { anchor: 'start', color: ACC });
     g += B(190, 70, 100, 56, '4 線風扇', ['內建驅動換相', '電源不斬波']);
     g += B(60, 150, 90, 40, 'NTC×N＋DTS', ['溫度來源']);
     g += A(60, 130, 60, 98);
@@ -505,7 +507,7 @@
     g += B(252, 158, 80, 34, 'Pre-Boost', ['冷啟動 6V 撐住']);
     g += A(292, 158, 316, 158);
     g += B(352, 158, 64, 34, '車規 Buck', ['→ MCU']);
-    g += T(300, 120, 'ISO 7637-2：pulse 1/2a/3a/3b/4/5', { size: 8, anchor: 'start', fill: MUT });
+    g += T(300, 120, 'ISO 7637-2：pulse 1/2a/3a/3b/4/5', { size: 8, anchor: 'middle', fill: MUT });
     return { d: 'Load dump 箝位波形＋ECU 前級保護鏈', svg: W(420, 186, g) };
   };
 
@@ -532,7 +534,7 @@
     let g = '';
     // 匯流排幹線（兩端止於終端電阻，主幹用 LR 不吸附）
     g += LR(70, 70, 346, 70, { w: 2 }) + LR(70, 96, 346, 96, { w: 2 });
-    g += T(40, 74, 'CANH', { size: 8.5, anchor: 'start' }) + T(40, 100, 'CANL', { size: 8.5, anchor: 'start' });
+    g += T(40, 74, 'CANH', { size: 8.5, anchor: 'end' }) + T(40, 100, 'CANL', { size: 8.5, anchor: 'end' });
     // 兩端終端 120Ω（跨接 CANH–CANL）
     [70, 346].forEach(x => {
       g += `<rect x="${x - 9}" y="74" width="18" height="18" fill="#fff" stroke="${C}" stroke-width="1.4"/>`;
@@ -625,10 +627,10 @@
       g += `<circle cx="${x}" cy="${y}" r="8" fill="${(r === 1 && c === 2) ? '#f1f5f9' : '#fef9c3'}" stroke="${C}" stroke-width="1.2"/>`;
       if (r === 1 && c === 2) g += X(x, y, 4);
     }
-    g += T(306, 132, '矩陣管理 IC：每顆 LED 可獨立旁路（關掉）', { size: 8, fill: MUT });
-    g += T(306, 146, '→ ADB 遮蔽對向來車、其餘保持遠光', { size: 8, fill: ACC });
+    g += T(328, 132, '矩陣管理 IC：每顆 LED 可獨立旁路（關掉）', { size: 8, fill: MUT });
+    g += T(306, 153, '→ ADB 遮蔽對向來車、其餘保持遠光', { size: 8, fill: ACC });
     g += B(120, 140, 110, 36, '相機/演算法', ['偵測對向車']);
-    g += A(175, 140, 250, 82, '旁路命令', { dy: 8 });
+    g += A(175, 140, 250, 82, '旁路命令', { dx: -14, dy: -12 });
     return { d: '矩陣大燈：升壓＋每顆 LED 獨立旁路（ADB）', svg: W(420, 160, g) };
   };
 
@@ -731,7 +733,7 @@
     let g = '';
     g += B(44, 60, 60, 44, '背板', ['12V 帶電']);
     g += L(74, 52, 106, 52);
-    g += res(128, 52, { horizontal: true, label: 'Rsense', value: 'Kelvin' });
+    g += res(128, 52, { horizontal: true, label: 'Rsense' }) + T(142, 74, 'Kelvin', { size: 7.5, fill: MUT, anchor: 'start' });
     g += L(152, 52, 226, 52);   // 直達 NMOS source 端點 (226,52)
     g += mos(200, 72, { showPins: false, bodyDiode: true });
     g += T(176, 118, 'SOA 強化 MOSFET', { size: 8, fill: MUT });
@@ -740,7 +742,7 @@
     g += cap(268, 74, { horizontal: false }) + gnd(268, 110, {});
     g += T(288, 78, '數 mF bulk', { size: 7.5, anchor: 'start', fill: MUT });
     g += B(140, 130, 120, 40, '熱插拔控制器', ['dV/dt 限流啟動', 'UV/OV/OC＋PMBus']);
-    g += L(128, 62, 128, 110) + A(200, 110, 200, 92, '閘極斜率');
+    g += L(128, 62, 128, 110) + A(200, 110, 200, 92, '閘極斜率', { dx: -22 });
     // inrush 曲線（圖表，裝飾群組）
     g += DEC(L(310, 120, 310, 180) + L(310, 180, 420, 180)
       + PL('310,175 330,130 344,168 420,172', { color: RED, w: 1.4, dash: '4 3' })
@@ -803,7 +805,7 @@
     g += T(60, 24, 'LDO（線性）', { size: 9, weight: '600', anchor: 'start' });
     g += L(40, 48, 74, 48) + T(36, 42, '5V', { size: 8 });
     g += B(104, 48, 60, 30, 'LDO', []);
-    g += L(134, 48, 172, 48) + T(178, 52, '3.3V', { size: 8, anchor: 'start' });
+    g += L(134, 48, 172, 48) + T(178, 65, '3.3V', { size: 8, anchor: 'middle' });
     g += T(104, 82, '壓差×電流全變熱', { size: 8, fill: RED });
     g += T(104, 94, '效率 = Vout/Vin = 66%', { size: 8, fill: MUT });
     g += T(104, 108, '✚ 無漣波、便宜、快', { size: 8, fill: GRN });
@@ -830,13 +832,13 @@
     g += T(131, 164, '隔離柵（CMTI kV/µs）', { size: 7.5, fill: ORG });
     g += B(196, 70, 100, 60, '隔離閘極驅動', ['DESAT 檢測', '米勒箝位', 'UVLO']);
     g += L(138, 70, 146, 70);
-    g += A(246, 56, 282, 56, '開通(Rg_on)');
-    g += A(246, 84, 282, 84, '關斷(Rg_off)');
+    g += A(246, 56, 282, 56, '開通(Rg_on)', { anchor: 'start' });
+    g += A(246, 84, 282, 84, '關斷(Rg_off)', { dy: -8, dx: -14, anchor: 'start' });
     // SiC/IGBT
     g += mos(312, 76, { showPins: false }) + T(312, 122, 'SiC/IGBT（高壓側）', { size: 8, fill: MUT });
     g += L(338, 56, 356, 56) + F(356, 56, 'HV+');
     g += L(338, 96, 356, 96) + T(362, 100, '→ 負載', { size: 8, anchor: 'start' });
-    g += A(338, 96, 240, 100, 'DESAT 回檢', { color: RED });
+    g += A(338, 96, 240, 100, 'DESAT 回檢', { dy: 15, color: RED });
     g += T(200, 176, 'CMTI：橋臂 dV/dt 打穿隔離會誤觸發；米勒箝位防寄生導通（直通炸橋）', { size: 8.5, fill: RED });
     return { d: '隔離閘驅：隔離柵＋DESAT＋米勒箝位', svg: W(420, 186, g) };
   };
@@ -850,11 +852,11 @@
     g += B(134, 48, 44, 28, 'Q1', ['NFET']);
     g += B(190, 48, 44, 28, 'Q2', ['NFET']);
     g += L(156, 48, 168, 48);
-    g += T(163, 78, '背靠背（雙向斷）', { size: 8, fill: MUT });
+    g += T(149, 64, '背靠背（雙向斷）', { size: 8, fill: MUT });
     g += L(212, 48, 268, 48) + A(268, 48, 292, 48) + T(298, 52, '系統/充電器', { size: 8.5, anchor: 'start' });
     g += B(150, 150, 110, 52, 'PD Sink 控制器', ['TPS25730 類', 'CC 協商', '閘極驅動＋OVP']);
-    g += A(72, 88, 100, 140, 'CC');
-    g += A(140, 124, 134, 64, '閘控') + A(180, 124, 190, 64, null);
+    g += A(72, 88, 100, 140, 'CC', { dx: -12, dy: -2 });
+    g += A(140, 124, 134, 64, '閘控', { dx: 14 }) + A(180, 124, 190, 64, null);
     g += T(300, 100, 'Dead-battery：Rd 讓', { size: 8, anchor: 'start', fill: MUT });
     g += T(300, 112, '空電池也能被供電啟動', { size: 8, anchor: 'start', fill: MUT });
     g += T(300, 132, 'OVP：協商前只認 5V，', { size: 8, anchor: 'start', fill: ORG });
@@ -911,7 +913,7 @@
     g += L(144, 48, 202, 48, { w: 3 }) + s.junction(202, 48);
     // sense 抽頭（從電阻焊盤內側）
     g += L(102, 56, 102, 84, { color: ACC, w: 1.2 }) + L(138, 56, 138, 84, { color: ACC, w: 1.2 });
-    g += T(120, 91, '感測線（不走大電流）', { size: 7.5, fill: ACC });
+    g += T(120, 101, '感測線（不走大電流）', { anchor: 'start', size: 7.5, fill: ACC });
     g += B(120, 106, 88, 36, '差動放大', ['→ ADC']);
     g += T(120, 140, '走線壓降不進量測 → mΩ 級才量得準', { size: 8, fill: GRN });
     // 低邊 vs 高邊
@@ -931,13 +933,13 @@
     g += B(64, 70, 88, 52, 'GaN 驅動器', ['LMG1020 類', '開/關分離輸出']);
     // 開/關分離路徑匯合到閘極端點 G=(148,76)
     g += L(108, 56, 132, 56) + T(120, 39, 'Rg_on 小', { size: 7.5, fill: MUT });
-    g += L(108, 84, 132, 84) + T(122, 114, 'Rg_off 更小', { size: 7.5, fill: MUT });
+    g += L(108, 84, 132, 84) + T(122, 114, 'Rg_off 更小', { anchor: 'end', size: 7.5, fill: MUT });
     g += L(132, 56, 132, 84) + L(132, 76, 148, 76) + s.junction(132, 76);
     g += mos(178, 76, { showPins: false });
-    g += T(178, 122, 'GaN FET（ns 級邊沿）', { size: 8, fill: MUT });
+    g += T(178, 122, 'GaN FET（ns 級邊沿）', { anchor: 'start', size: 8, fill: MUT });
     g += L(204, 56, 224, 56) + F(224, 56, 'VBUS');
     g += L(204, 96, 224, 96) + T(230, 100, '→ 功率迴路', { size: 8, anchor: 'start' });
-    g += A(204, 96, 64, 104, 'Kelvin source 獨立回線', { color: ACC });
+    g += A(204, 96, 64, 104, 'Kelvin source 獨立回線', { dy: 15, anchor: 'start', color: ACC });
     g += T(230, 140, '驅動迴路面積 = 一切：', { size: 8.5, anchor: 'start' });
     g += T(230, 154, '幾 nH 寄生電感 × ns 邊沿 = 振鈴/誤開', { size: 8, anchor: 'start', fill: RED });
     g += T(230, 170, '閘極耐壓僅 ~6V，過衝就打壞', { size: 8, anchor: 'start', fill: ORG });
@@ -964,11 +966,11 @@
       g += LR(x, 83, x + 24, 83) + S().junction(x + 24, 83) + T(x + 30, 86, phase[i] + ' 相', { size: 8, anchor: 'start' });
     });
     // 閘極驅動（示意：驅動 → 首相橋）
-    g += A(110, 92, 129, 108, '6 路閘極');
+    g += A(110, 92, 129, 108, '6 路閘極', { anchor: 'end' });
     // 電流感測
     g += LR(230, 138, 230, 150) + res(230, 170, { horizontal: false, label: 'Rs', labelSide: 'right' }) + gnd(230, 206);
-    g += A(230, 148, 110, 120, 'Rs 回授', { color: ACC });
-    g += T(210, 224, '換相依 Hall/BEMF 回授；Rs 電流回授做 FOC；死區不足＝上下管直通', { size: 8.5, fill: ORG });
+    g += A(230, 148, 110, 120, 'Rs 回授', { dy: -7, color: ACC });
+    g += T(210, 231, '換相依 Hall/BEMF 回授；Rs 電流回授做 FOC；死區不足＝上下管直通', { size: 8.5, fill: ORG });
     return { d: '三相 BLDC：三半橋＋電流感測＋智慧閘驅', svg: W(430, 236, g) };
   };
 
@@ -997,13 +999,13 @@
     // 隔離柵
     g += `<rect x="150" y="78" width="12" height="40" fill="#fef9c3" stroke="${ORG}" stroke-width="1.2" stroke-dasharray="4 3"/>`;
     g += T(156, 130, '隔離柵', { size: 7.5, fill: ORG });
-    g += A(162, 96, 196, 96, '差動輸出');
+    g += A(162, 96, 196, 96, '差動輸出', { anchor: 'end' });
     g += B(238, 96, 76, 36, 'MCU/ADC', ['低壓側']);
     g += T(102, 148, '浮動供電：高壓側要', { size: 8, fill: MUT });
     g += T(102, 160, '隔離電源（自舉/隔離 DC-DC）', { size: 8, fill: MUT });
     g += T(300, 52, '用途：馬達相電流、', { size: 8.5, anchor: 'start' });
     g += T(300, 66, '母線監控、太陽能', { size: 8.5, anchor: 'start' });
-    g += T(300, 148, 'ΔΣ 位元流版本由 MCU 端 sinc 濾波重建，延遲可控', { size: 8, anchor: 'start', fill: MUT });
+    g += T(300, 148, 'ΔΣ 位元流版本由 MCU 端 sinc 濾波重建，延遲可控', { size: 8, anchor: 'middle', fill: MUT });
     return { d: '隔離電流量測：高壓 shunt＋隔離放大器', svg: W(430, 172, g) };
   };
 
@@ -1013,7 +1015,7 @@
     g += A(135, 56, 176, 56, 'HRPWM');
     g += B(226, 56, 90, 40, '功率級', ['橋式/圖騰柱']);
     g += A(271, 56, 300, 56) + T(310, 60, 'Vout', { size: 8.5, anchor: 'start' });
-    g += L(300, 56, 300, 108) + A(300, 108, 135, 108, '電壓/電流取樣（ADC 與 PWM 同步）', { color: ACC });
+    g += L(300, 56, 300, 108) + A(300, 108, 135, 108, '電壓/電流取樣（ADC 與 PWM 同步）', { dy: -26, color: ACC });
     g += A(226, 76, 226, 120) + L(226, 120, 135, 120);
     g += T(268, 132, 'CMPSS 硬體快保護：過流直接砍 PWM（不等軟體迴圈）', { size: 8.5, fill: RED });
     g += T(220, 160, '控制迴路全數位：2p2z/3p3z 補償器跑在 ISR；HRPWM 解析度決定極限佔空比精度', { size: 8.5 });
@@ -1027,7 +1029,7 @@
       g += B(48, y, 60, 26, lbl, []);
       g += A(78, y, 108, y);
     });
-    g += T(48, 128, '（高阻源）', { size: 8, fill: MUT });
+    g += T(48, 138, '（高阻源）', { anchor: 'start', size: 8, fill: MUT });
     g += B(146, 74, 60, 92, 'MUX', ['通道掃描']);
     g += A(176, 74, 204, 74);
     g += B(238, 74, 56, 40, 'PGA', ['增益/檔']);
@@ -1079,9 +1081,9 @@
     g += L(60, 70, 60, 100);
     g += B(230, 50, 76, 40, '電源鏈', ['各軌 VRM']);
     g += B(230, 120, 76, 40, 'EC', ['時序總管']);
-    g += A(98, 120, 192, 120, 'SLP_S3#/S4#/S5#（睡眠狀態）');
+    g += A(98, 120, 192, 120, 'SLP_S3#/S4#/S5#（睡眠狀態）', { anchor: 'start' });
     g += A(192, 128, 98, 128, null, { color: MUT });
-    g += A(230, 100, 230, 70, 'PWROK（軌穩定）');
+    g += A(230, 100, 230, 70, 'PWROK（軌穩定）', { dy: -11 });
     g += A(98, 50, 192, 50, 'PLTRST#（平台重置釋放）');
     g += T(150, 170, '交握順序：EC 開軌 → 各 PWROK → PCH 確認 → 釋放 PLTRST# → 平台跑', { size: 8.5 });
     g += T(150, 186, '每根 sideband 都有時序窗（平台設計指南），錯序 = 不開機', { size: 8.5, fill: ORG });
@@ -1094,14 +1096,16 @@
     g += B(64, 76, 84, 56, 'PCH / SoC', ['SPI 主機']);
     g += B(240, 76, 84, 60, 'TPM 2.0', ['dTPM 晶片', '金鑰不出晶片']);
     const sigs = [['CS#', 52], ['CLK', 68], ['MOSI', 84], ['MISO', 100]];
-    sigs.forEach(([lbl, y]) => { g += (lbl === 'MISO' ? A(198, y, 106, y, lbl) : A(106, y, 198, y, lbl)); });
+    // 標籤避開 x=150 的上拉電阻引線（鐵律：字不可被線穿過）
+    const off = { 'CS#': { dy: -7 }, 'CLK': { dx: 14 } };
+    sigs.forEach(([lbl, y]) => { const o = off[lbl] || {}; g += (lbl === 'MISO' ? A(198, y, 106, y, lbl, o) : A(106, y, 198, y, lbl, o)); });
     // CS# 上拉到 3.3V
     g += res(150, 34, { horizontal: false, label: '上拉', labelSide: 'left' });
     g += F(150, 10, '3.3V');
     g += LR(150, 58, 150, 52) + s.junction(150, 52);
     g += T(196, 148, 'CS# 要上拉（未選時不浮動）；SPI 走線短、遠離開關雜訊', { size: 8.5 });
     g += T(196, 164, '防拆/防探測：TPM 貼近 PCH、避免飛線可攔截匯流排', { size: 8.5, fill: ORG });
-    return { d: 'TPM SPI 接線：CS/CLK/MOSI/MISO＋上拉', svg: W(400, 174, g) };
+    return { d: 'TPM SPI 接線：CS/CLK/MOSI/MISO＋上拉', svg: W(400, 188, `<g transform="translate(0,14)">${g}</g>`) };
   };
 
   // ================= PCB / 佈局 / 高速 =================
@@ -1141,7 +1145,7 @@
     g += T(105, 130, '線滿天飛、四向交叉、無流向', { size: 7.5, fill: MUT });
     g += T(310, 22, '✅ 好讀', { size: 9, fill: GRN });
     g += `<rect x="240" y="32" width="150" height="86" fill="#fff" stroke="${GRN}" stroke-width="1.2"/>`;
-    g += DEC(F(260, 48, 'V3V3')) + T(370, 44, '電源上、地下', { size: 7, fill: MUT });
+    g += DEC(F(260, 48, 'V3V3', 8)) + T(370, 44, '電源上、地下', { size: 7, fill: MUT });
     g += B(280, 70, 44, 24, 'IN', []) + DEC(A(302, 70, 330, 70)) + B(352, 70, 44, 24, 'OUT', []);
     g += T(315, 100, '訊號左→右；net label 取代長線', { size: 7.5, fill: MUT });
     g += T(215, 150, '慣例：一頁一功能塊、關鍵參數標在旁、去耦畫在 IC 邊、reviewer 十分鐘能講完', { size: 8.5 });
@@ -1272,7 +1276,7 @@
     g += `<rect x="78" y="58" width="54" height="54" fill="#fde68a" stroke="${C}" stroke-width="1.2"/>` + T(105, 78, 'EP', { size: 9 });
     // via 陣列
     for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) g += `<circle cx="${88 + c * 17}" cy="${68 + r * 17}" r="2.6" fill="none" stroke="${ACC}" stroke-width="1.4"/>`;
-    g += T(105, 148, 'EP 鋪滿＋via 陣列（0.3mm、1~1.2mm 間距）直下內層 GND', { size: 8, fill: ACC });
+    g += T(105, 148, 'EP 鋪滿＋via 陣列（0.3mm、1~1.2mm 間距）直下內層 GND', { anchor: 'start', size: 8, fill: ACC });
     g += T(300, 50, '鋼網開窗「田字」', { size: 8.5, anchor: 'start' });
     g += T(300, 64, '60~80% 覆蓋：滿開', { size: 8, anchor: 'start', fill: MUT });
     g += T(300, 76, '錫過多 → 浮件/空洞', { size: 8, anchor: 'start', fill: ORG });
@@ -1299,7 +1303,7 @@
     g += A(286, 54, 306, 54) + T(312, 58, 'VOUT', { size: 8.5, anchor: 'start' });
     // 迴路標示
     g += PL('70,44 110,44 110,94 70,92', { color: RED, w: 1.6, dash: '4 3' });
-    g += T(90, 108, '高 di/dt 迴路：面積越小 EMI 越低', { size: 8, fill: RED });
+    g += T(90, 115, '高 di/dt 迴路：面積越小 EMI 越低', { size: 8, fill: RED });
     g += T(210, 130, '翻晶封裝寄生電感 ~1nH 級（傳統引線 3~5 倍降）：Cin 貼 pin、同層短迴路', { size: 8.5 });
     g += T(210, 146, '代價：裸晶朝下散熱路徑改走 PCB → 佈銅/via 承擔 θJA', { size: 8.5, fill: MUT });
     return { d: '翻晶功率佈局：最小 di/dt 迴路', svg: W(430, 156, g) };
@@ -1373,11 +1377,11 @@
   M['jesd204-converter-clocking'] = () => {
     let g = '';
     g += B(60, 80, 84, 56, '時脈 IC', ['LMK 系', 'DCLK＋SYSREF', '成對輸出']);
-    g += A(102, 62, 160, 46, 'DCLK（差分）') + A(102, 92, 160, 60, 'SYSREF');
+    g += A(102, 62, 160, 46, 'DCLK（差分）', { dy: -7 }) + A(102, 92, 160, 60, 'SYSREF', { dx: -36 });
     g += B(196, 50, 72, 32, 'ADC/DAC', []);
     g += A(102, 70, 240, 128, null, { color: MUT }) + A(102, 98, 246, 140, null, { color: MUT });
     g += B(288, 134, 76, 36, 'FPGA', ['收發器']);
-    g += A(232, 54, 262, 120, '高速 lane（8b/10b→64b/66b）');
+    g += A(232, 54, 262, 120, '高速 lane（8b/10b→64b/66b）', { dx: -26, dy: -14 });
     g += T(310, 50, 'SYSREF 對齊：', { size: 8.5, anchor: 'start' });
     g += T(310, 64, '兩端同拍取樣', { size: 8, anchor: 'start', fill: MUT });
     g += T(310, 76, '→ 確定性延遲', { size: 8, anchor: 'start', fill: MUT });
@@ -1389,14 +1393,14 @@
   M['dlp-dmd-display-interface'] = () => {
     let g = '';
     g += B(70, 70, 96, 64, 'DLPC 控制器', ['影像格式化', '時序產生']);
-    g += A(118, 52, 184, 52, 'sub-LVDS 資料匯流排×N 對');
-    g += A(118, 88, 184, 88, 'DMD 控制（載入/復位）');
+    g += A(118, 52, 184, 52, 'sub-LVDS 資料匯流排×N 對', { anchor: 'start' });
+    g += A(118, 88, 184, 88, 'DMD 控制（載入/復位）', { anchor: 'start' });
     g += B(238, 70, 108, 72, 'DMD', ['微鏡陣列', '每鏡 ±12° 翻轉']);
     g += B(238, 158, 108, 40, '微鏡復位驅動', ['偏壓序列產生']);
     g += A(238, 138, 238, 106);
     g += T(360, 56, '對數不夠 = 頻寬不夠', { size: 8, anchor: 'start', fill: MUT });
-    g += T(360, 70, '（解析度×灰階×幀率）', { size: 8, anchor: 'start', fill: MUT });
-    g += T(360, 96, '控制器-DMD 綁定配對', { size: 8, anchor: 'start', fill: ORG });
+    g += T(360, 70, '（解析度×灰階×幀率）', { size: 8, anchor: 'middle', fill: MUT });
+    g += T(360, 96, '控制器-DMD 綁定配對', { size: 8, anchor: 'middle', fill: ORG });
     g += T(360, 110, '（型號/波形匹配）', { size: 8, anchor: 'start', fill: ORG });
     g += T(210, 220, 'sub-LVDS 等長差分；復位偏壓軌（如 ±26V 級）時序照規範，錯序傷微鏡', { size: 8.5 });
     return { d: 'DMD 介面：sub-LVDS 資料＋微鏡復位驅動', svg: W(440, 230, g) };
@@ -1405,10 +1409,10 @@
   M['ethernet-phy-layout'] = () => {
     let g = '';
     g += B(52, 70, 64, 40, 'MAC/SoC', []);
-    g += A(84, 60, 120, 60, 'RGMII（等長組）');
-    g += A(120, 82, 84, 82, 'MDIO/MDC', { color: MUT });
+    g += A(84, 60, 120, 60, 'RGMII（等長組）', { anchor: 'start' });
+    g += A(120, 82, 84, 82, 'MDIO/MDC', { anchor: 'start', color: MUT });
     g += B(158, 70, 72, 48, 'PHY', ['RGMII 延遲', '內建/外配']);
-    g += A(194, 70, 226, 70, 'MDI 差分×4 對');
+    g += A(194, 70, 226, 70, 'MDI 差分×4 對', { anchor: 'start' });
     g += B(262, 70, 68, 48, '磁隔離', ['變壓器', 'Bob Smith']);
     g += A(296, 70, 324, 70);
     g += B(356, 70, 60, 44, 'RJ45', ['或整合磁']);
@@ -1427,7 +1431,7 @@
     g += F(238, 30, '3.3V');
     g += L(238, 30, 238, 44);
     g += res(292, 40, { horizontal: false, label: '上拉×3', labelSide: 'right' });
-    g += T(348, 60, 'CS#/WP#/HOLD# 上拉：', { size: 8, anchor: 'start' });
+    g += T(348, 60, 'CS#/WP#/HOLD# 上拉：', { size: 8, anchor: 'middle' });
     g += T(348, 74, '未初始化時不可浮動', { size: 8, anchor: 'start', fill: ORG });
     g += T(348, 96, 'Quad 模式後 WP/HOLD', { size: 8, anchor: 'start', fill: MUT });
     g += T(348, 108, '變 IO2/IO3（上拉仍在）', { size: 8, anchor: 'start', fill: MUT });

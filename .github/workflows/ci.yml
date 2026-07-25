@@ -59,9 +59,11 @@ jobs:
         run: node circuit-check.js --strict
 
       # 2g) 鐵律：圖表文字不得壓到圖形或別的文字。
-      #     目前尚有 30 處待逐張排版；先用 --max 鎖住現況，只准降不准升。清完改 --strict。
+      #     已逐張排完：瀏覽器 getBBox 實測 146 卡 / 1432 文字 = 0 重疊（見 overlap-audit.md）。
+      #     此 node 版是估算器（看不到 <g transform>、字寬用係數推算），對這兩張會誤報 →
+      #     用 --max=2 當棘輪擋回歸，不用 --strict 以免被假陽性卡住 CI。
       - name: svg-overlap-check（圖字不重疊 · 棘輪）
-        run: node svg-overlap-check.js --max=30
+        run: node svg-overlap-check.js --max=2
 
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
