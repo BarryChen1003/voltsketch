@@ -54,6 +54,10 @@ jobs:
       - name: knowledge-format.test（排版不改內容）
         run: node knowledge-format.test.js
 
+      # 2f) 知識卡電路圖：接線不得被吸附塌成零長（＝那條線根本沒畫出來）
+      - name: circuit-check（電路圖接線）
+        run: node circuit-check.js --strict
+
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
         run: |

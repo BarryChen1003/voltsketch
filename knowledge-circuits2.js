@@ -96,7 +96,9 @@
   function DEC(g) { return `<g data-deco="1">${g}</g>`; }
 
   // 電源旗標
-  function F(x, y, lbl) { return L(x, y, x, y - 8) + L(x - 7, y - 8, x + 7, y - 8) + T(x, y - 13, lbl, { size: 7.5, fill: MUT }); }
+  // 電源旗標。內部線一律走 LR（不吸附）：F 常畫在已登錄的腳位上（如電阻上端），
+  // 用 L 會把旗桿與橫槓兩端全吸到那個腳位 → 整個符號塌成一點、畫面上什麼都沒有。
+  function F(x, y, lbl) { return LR(x, y, x, y - 8) + LR(x - 7, y - 8, x + 7, y - 8) + T(x, y - 13, lbl, { size: 7.5, fill: MUT }); }
   // 紅叉（錯誤示意，裝飾）
   function X(x, y, r) { r = r || 6; return DEC(L(x - r, y - r, x + r, y + r, { color: RED, w: 2 }) + L(x - r, y + r, x + r, y - r, { color: RED, w: 2 })); }
   // 勾（正確示意，裝飾）
@@ -127,7 +129,8 @@
     g += B(190, 100, 110, 128, 'EPD PMIC', ['TPS65185 類', '升壓＋電荷泵', '內建時序/溫感']);
     const ys = [40, 70, 100, 130, 160];
     const names = ['VGH +22V（閘極開）', 'VPOS +15V（源極+）', 'VCOM（可調偏壓）', 'VNEG −15V（源極−）', 'VGL −20V（閘極關）'];
-    ys.forEach((y, i) => { g += L(245, 100, 262, 100) + L(262, y, 262, 100) + A(262, y, 285, y) + T(290, y + 3, names[i], { size: 8, anchor: 'start' }); });
+    // 匯出分支：垂直支線用 LR——y 與匯流排 y=100 相距 <12px 的那條會被吸成同一點而消失
+    ys.forEach((y, i) => { g += L(245, 100, 262, 100) + (y !== 100 ? LR(262, y, 262, 100) : '') + A(262, y, 285, y) + T(290, y + 3, names[i], { size: 8, anchor: 'start' }); });
     g += T(190, 185, '上電順序：VNEG 先於 VPOS、VGL 先於 VGH（PMIC 狀態機控管）', { size: 8, fill: ORG });
     return { d: 'EPD 多軌電源：PMIC 一次生成 ±15V/VGH/VGL/VCOM', svg: W(400, 196, g) };
   };
@@ -274,7 +277,7 @@
     g += A(81, 96, 112, 96);
     g += B(176, 96, 124, 128, '主 PMIC', ['buck×10+（DVS）', 'LDO×N', '充電＋電量計', '上電時序狀態機']);
     const outs = [[36, '多相 buck → CPU 大核（DVFS 調壓）'], [66, 'buck → GPU / NPU'], [96, 'buck → DDR'], [126, 'LDO → 類比/感測/RF'], [156, '副 PMIC → 相機/顯示']];
-    outs.forEach(([y, lbl]) => { g += L(238, 96, 252, 96) + L(252, y, 252, 96) + A(252, y, 272, y) + T(277, y + 3, lbl, { size: 8, anchor: 'start' }); });
+    outs.forEach(([y, lbl]) => { g += L(238, 96, 252, 96) + (y !== 96 ? LR(252, y, 252, 96) : '') + A(252, y, 272, y) + T(277, y + 3, lbl, { size: 8, anchor: 'start' }); });
     g += A(176, 160, 176, 178) + T(176, 190, 'SPMI ← SoC 即時命令調壓（DVFS）', { size: 8.5, fill: ACC });
     return { d: '手機 PMIC：數十軌整合＋SPMI 動態調壓', svg: W(450, 200, g) };
   };
@@ -601,7 +604,7 @@
     [200, 310].forEach((x, i) => {
       g += F(x, 76, 'VBAT');
       g += res(x, 100, { horizontal: false, label: '30kΩ', labelSide: i ? 'right' : 'left' });
-      g += L(x, 124, x, 128);
+      g += LR(x, 124, x, 128);
       g += B(x, 170, 92, 40, `從節點 ${i + 1}`, ['RC 振盪即可', 'INH→LDO EN']);
       g += L(x, 128, x, 150);
     });
@@ -755,7 +758,9 @@
     g += T(36, 40, 'AC', { size: 9 }) + `<circle cx="36" cy="56" r="10" fill="none" stroke="${C}" stroke-width="1.6"/>` + `<path d="M 30 56 q 3 -5 6 0 q 3 5 6 0" fill="none" stroke="${C}" stroke-width="1.2"/>`;
     g += L(46, 56, 66, 56);
     g += B(92, 56, 48, 36, '橋式', ['整流']);
-    g += L(116, 56, 148, 56) + s.junction(132, 56);
+    // 整流輸出軌一路接到一次側繞組頂端。用 LR（不吸附）：繞組是客製 VC 路徑、
+    // 沒登錄腳位點，走 L 會停在 148 而與繞組(160) 斷開。
+    g += LR(116, 56, 160, 56) + s.junction(132, 56);
     g += cap(132, 78, { horizontal: false }) + gnd(132, 114, {}) + T(112, 80, 'bulk', { size: 7.5, fill: MUT });
     // 變壓器：客製垂直線圈（Sym 電感無垂直版）；鐵芯雙槓為符號裝飾
     const VC = (x, y0, n, sweep) => { let d = `M ${x} ${y0}`; for (let i = 0; i < n; i++) d += ` A 4.5 4.5 0 1 ${sweep} ${x} ${y0 + (i + 1) * 9}`; return `<path d="${d}" fill="none" stroke="${C}" stroke-width="2"/>`; };
@@ -764,14 +769,19 @@
     g += VC(188, 56, 4, 0);
     g += T(150, 46, 'Np', { size: 7.5, fill: MUT }) + T(198, 46, 'Ns', { size: 7.5, fill: MUT });
     g += `<circle cx="152" cy="60" r="2" fill="${C}"/>` + `<circle cx="196" cy="90" r="2" fill="${C}"/>`;
-    // 一次側 MOSFET＋PWM（S 端點 (164,108)、G 端點 (108,128)）
-    g += L(160, 92, 160, 108) + L(160, 108, 164, 108);
-    g += mos(138, 128, { showPins: false });
-    g += L(164, 148, 164, 156) + gnd(164, 156, {});
-    g += B(84, 128, 56, 34, 'PWM', ['控制器']);
-    g += L(112, 128, 108, 128);
-    // 二次側：二極體＋輸出電容（接地對齊電容底腳）
-    g += L(188, 92, 188, 100) + gnd(188, 114, {});
+    // 安規隔離邊界：核心上下各補虛線，明示一次側/二次側是兩個獨立的地
+    const ISO = (y1, y2) => `<line x1="174" y1="${y1}" x2="174" y2="${y2}" stroke="${ORG}" stroke-width="1" stroke-dasharray="4 3"/>`;
+    g += ISO(32, 52) + ISO(100, 150) + T(174, 26, '隔離邊界', { size: 7, fill: ORG });
+    // 一次側 MOSFET：低側開關必須 Drain 接變壓器、Source 接地。
+    // nmos 預設 s 在上(y-20)、d 在下(y+20)，故加 flip 讓上=Drain、下=Source。
+    // 走線用 LR 走直角（L 會被吸附成斜線＋零長線段）。
+    g += LR(160, 92, 160, 108) + LR(160, 108, 164, 108);
+    g += mos(138, 128, { showPins: false, flip: true });
+    // gnd 自帶 stem（y-14→y）已覆蓋 Source 引線末端 (164,148)，不再補線（補了只會變零長線段）
+    g += gnd(164, 156, {}) + T(146, 160, 'PGND', { size: 7, fill: MUT, anchor: 'end' });
+    g += B(80, 128, 56, 34, 'PWM', ['控制器']);   // 右緣 x=108＝閘極引線起點，直接相接
+    // 二次側：繞組底端→接地（LR：gnd 腳位登錄在 y-14，走 L 兩端會被吸成同一點）
+    g += LR(188, 92, 188, 100) + gnd(188, 114, {}) + T(206, 120, 'SGND', { size: 7, fill: MUT, anchor: 'start' });
     g += L(188, 56, 214, 56);
     g += dio(230, 56, { horizontal: true });
     g += L(246, 56, 300, 56) + s.junction(272, 56);
@@ -1087,7 +1097,7 @@
     // CS# 上拉到 3.3V
     g += res(150, 34, { horizontal: false, label: '上拉', labelSide: 'left' });
     g += F(150, 10, '3.3V');
-    g += L(150, 58, 150, 52) + s.junction(150, 52);
+    g += LR(150, 58, 150, 52) + s.junction(150, 52);
     g += T(196, 148, 'CS# 要上拉（未選時不浮動）；SPI 走線短、遠離開關雜訊', { size: 8.5 });
     g += T(196, 164, '防拆/防探測：TPM 貼近 PCH、避免飛線可攔截匯流排', { size: 8.5, fill: ORG });
     return { d: 'TPM SPI 接線：CS/CLK/MOSI/MISO＋上拉', svg: W(400, 174, g) };
@@ -1244,7 +1254,7 @@
     g += A(86, 80, 116, 80);
     g += B(158, 80, 76, 56, 'Fanout Buffer', ['LVPECL/LVDS', '低加性抖動']);
     [[40, 'FPGA'], [80, 'ADC'], [120, 'SerDes']].forEach(([y, lbl]) => {
-      g += L(196, 80, 212, 80) + L(212, y, 212, 80) + L(212, y, 236, y);
+      g += L(196, 80, 212, 80) + (y !== 80 ? LR(212, y, 212, 80) : '') + L(212, y, 236, y);
       g += res(254, y, { horizontal: true, label: '', value: '' });
       g += A(272, y, 292, y) + B(322, y, 56, 26, lbl, []);
     });
@@ -1284,7 +1294,7 @@
     g += L(180, 54, 214, 54) + T(200, 46, 'SW', { size: 8 });
     g += ind(232, 54, { horizontal: true });
     g += L(256, 54, 286, 54) + s.junction(272, 54);
-    g += cap(272, 72, { horizontal: false }) + L(272, 86, 272, 92) + gnd(272, 92, {});
+    g += cap(272, 72, { horizontal: false }) + LR(272, 86, 272, 92) + gnd(272, 92, {});
     g += A(286, 54, 306, 54) + T(312, 58, 'VOUT', { size: 8.5, anchor: 'start' });
     // 迴路標示
     g += PL('70,44 110,44 110,94 70,92', { color: RED, w: 1.6, dash: '4 3' });
