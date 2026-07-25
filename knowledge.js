@@ -1393,7 +1393,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-22-no-overlapF';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-22-no-anim';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -4506,11 +4506,7 @@ const knowledgeApp = {
 
     title.textContent = item.title;
 
-    // 只有明確對應的主題才顯示動畫（避免瞎配）
-    const hasAnim = typeof CircuitAnimation !== 'undefined'
-      && CircuitAnimation.topicAnimationMap
-      && !!CircuitAnimation.topicAnimationMap[item.id];
-
+    // 電路動畫已於 2026-07-22 全數移除（動畫內容不正確，錯的教學圖比沒有更糟）
     body.innerHTML = `
       <div class="detail-section">
         <h3>原理說明</h3>
@@ -4564,28 +4560,7 @@ const knowledgeApp = {
         </div>
       ` : ''}
 
-      ${hasAnim ? `
-      <div class="detail-section">
-        <h3>電路動畫</h3>
-        <div id="animationContainer" style="border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; min-height: 180px;">
-          <div id="animationTitle" style="font-size: 13px; color: var(--accent-strong); font-weight: 600; margin-bottom: 8px;"></div>
-          <div id="animationDisplay" style="min-height: 150px; display: flex; align-items: center; justify-content: center; color: var(--muted);"></div>
-        </div>
-      </div>` : ''}
     `;
-
-    // 僅在有「明確且相關」對應時顯示動畫（不瞎配無關動畫）
-    if (hasAnim) {
-      const animDisplay = document.querySelector('#animationDisplay');
-      const animTitle = document.querySelector('#animationTitle');
-      if (animDisplay && typeof CircuitAnimation !== 'undefined') {
-        const animId = CircuitAnimation.topicAnimationMap[item.id];
-        const anim = CircuitAnimation.animations[animId];
-        animDisplay.innerHTML = '';
-        CircuitAnimation.createAnimation('#animationDisplay', animId);
-        if (animTitle && anim) animTitle.textContent = `▶ ${anim.name}`;
-      }
-    }
 
     modal.hidden = false;
   },
