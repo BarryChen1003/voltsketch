@@ -325,18 +325,35 @@ const CircuitSVG = {
     return this.wrap(150, 235, g);
   },
 
-  // 電池充電
+  // 電池充電（簡化接線：VBUS→CIN→充電 IC→COUT→電池；ISET 電阻設定充電電流）
+  // 刻意省略 NTC/TS 與 STAT 指示，卡片圖說已標明；STAT 若要畫必須配上拉＋限流，不畫懸空腳。
   batteryCharger() {
     const S = window.Sym; if (!S) return '';
-    const leadL = S.pins.icLeadL(100, 74), leadR = S.pins.icLeadR(100, 74); // 49 / 151
-    const batY = S.icPinY(65, 2, 0); // 56
+    const leadL = S.pins.icLeadL(155, 86), leadR = S.pins.icLeadR(155, 86);  // 98 / 212
+    const yVin = S.icPinY(72, 2, 0), yIset = S.icPinY(72, 2, 1);             // 63 / 81
     let g = '';
-    g += S.line(20, 65, leadL, 65); g += S.txt(18, 57, 'VBUS', { anchor: 'start', size: 9, fill: '#64748b' });
-    g += S.ic(100, 65, { width: 74, height: 70, label: '充電 IC', pinsLeft: ['VIN'], pinsRight: ['BAT', 'STAT'] });
-    g += S.line(leadR, batY, 190, batY); g += S.junction(190, batY);
-    g += S.line(190, batY, 190, 76); g += S.source(190, 100, { label: 'Batt' }); // 電池上端 76
-    g += S.line(190, 124, 190, 132); g += S.ground(190, 146, {});
-    return this.wrap(230, 170, g);
+    // 輸入側：VBUS →（CIN 對地）→ VIN
+    g += S.txt(20, 55, 'VBUS', { anchor: 'start', size: 9, fill: '#64748b' });
+    g += S.line(20, yVin, leadL, yVin);
+    g += S.junction(44, yVin);
+    g += S.line(44, yVin, 44, 68);
+    g += S.capacitor(44, 90, { label: 'C_IN' });   // 引線 68..112
+    g += S.ground(44, 126, {});                    // 接地引線 112..126
+    g += S.ic(155, 72, { width: 86, height: 60, label: '充電 IC', pinsLeft: ['VIN', 'ISET'], pinsRight: ['BAT'] });
+    // 充電電流設定：ISET → R_ISET → GND（K 值依 datasheet）
+    g += S.line(leadL, yIset, 76, yIset);
+    g += S.line(76, yIset, 76, 96);
+    g += S.resistor(76, 120, { horizontal: false, label: 'R_ISET', labelSide: 'right' }); // 96..144
+    g += S.ground(76, 158, {});                    // 接地引線 144..158
+    // 輸出側：BAT →（COUT 對地）→ 電池
+    g += S.line(leadR, 72, 310, 72);
+    g += S.junction(250, 72);
+    g += S.capacitor(250, 94, { label: 'C_OUT', labelSide: 'right' }); // 引線 72..116
+    g += S.ground(250, 130, {});                   // 接地引線 116..130
+    g += S.line(310, 72, 310, 81);
+    g += S.source(310, 105, { label: 'Batt' });    // 引線 81..129
+    g += S.ground(310, 143, {});                   // 接地引線 129..143
+    return this.wrap(400, 180, g);
   },
 
   // 電流偵測（高側分流 + 放大）
@@ -1393,7 +1410,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-26-no-examples';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-26-charger-fix';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -1450,15 +1467,21 @@ const knowledgeApp = {
       'adc-dac-basics': () => CircuitSVG.adcDac(),
       'embedded-power-design': () => CircuitSVG.embeddedPower()
     };
+    // 少數卡的自動圖不是第一張：battery-charger 第一張是充電曲線，接線圖排第二，
+    // 直接蓋 [0] 會讓「CC-CV 充電曲線」標題底下出現接線圖（標題與圖不符）。
+    const artIndex = { 'battery-charger': 1 };
     data.forEach(item => {
       const fn = map[item.id];
       if (!fn) return;
       const svg = fn();
       if (!svg) return;
+      const idx = artIndex[item.id] || 0;
       if (!Array.isArray(item.circuits) || item.circuits.length === 0) {
         item.circuits = [{ type: 'schematic', description: item.title + ' 電路', svg }];
+      } else if (item.circuits[idx]) {
+        item.circuits[idx].svg = svg;
       } else {
-        item.circuits[0].svg = svg;
+        item.circuits.push({ type: 'schematic', description: item.title + ' 典型接線', svg });
       }
     });
     // 補圖庫（knowledge-circuits2.js）：只補 circuits 為空的卡，不動已有圖
@@ -3283,46 +3306,65 @@ const knowledgeApp = {
         title: '電池充電電路設計',
         category: 'power-management',
         description: '鋰電池充電管理電路與充電IC選型。',
-        principles: '鋰電池充電需遵循 CC-CV（恆流-恆壓）曲線：先以恆流充電至4.2V，再以恆壓充電至電流降至0.05C。充電IC需具備過充、過放、過流保護。',
+        principles: '預充（涓流）：電池電壓低於約 3.0V 時只灌約 0.1C 的小電流把電芯喚醒，深放電的電芯直接吃大電流會受損。CC 恆流：過了預充門檻改用 0.5C~1C 定電流充，端電壓一路被推到 4.2V。CV 恆壓：電壓鉗在 4.2V 不再上升，電流自然衰減，掉到設定的截止電流（0.05C~0.1C）就停充。保護分工：充電 IC 管的是過充、充電過流、輸入過壓，以及靠 NTC/TS 腳做的溫度分區；過放電保護不在充電 IC，是電池保護板（PCM/BMS）的職責，兩層要分開設計。',
         circuits: [
           {
             type: 'cc-cv',
-            description: 'CC-CV 充電曲線',
-            svg: `<svg viewBox="0 0 200 80" width="200" height="80">
-              <line x1="20" y1="70" x2="180" y2="70" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="100" y="78" text-anchor="middle" font-size="7">時間</text>
-              <line x1="20" y1="70" x2="20" y2="10" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="10" y="40" text-anchor="middle" font-size="7" transform="rotate(-90,10,40)">電壓/電流</text>
-              <line x1="20" y1="20" x2="80" y2="20" stroke="#e74c3c" stroke-width="2"/>
-              <line x1="80" y1="20" x2="150" y2="20" stroke="#e74c3c" stroke-width="2" stroke-dasharray="4"/>
-              <text x="50" y="15" font-size="6" fill="#e74c3c">Vbat (4.2V)</text>
-              <line x1="20" y1="50" x2="80" y2="30" stroke="#3498db" stroke-width="2"/>
-              <line x1="80" y1="30" x2="150" y2="65" stroke="#3498db" stroke-width="2"/>
-              <text x="50" y="45" font-size="6" fill="#3498db">Icharge</text>
-              <text x="40" y="60" font-size="6">CC 階段</text>
-              <text x="110" y="45" font-size="6">CV 階段</text>
+            description: 'CC-CV 三階段充電曲線',
+            svg: `<svg viewBox="0 0 400 190" width="100%" style="max-width:400px">
+              <line x1="70" y1="22" x2="86" y2="22" stroke="#e74c3c" stroke-width="2.5"/>
+              <text x="90" y="25" font-size="10" fill="#475569">電池電壓</text>
+              <line x1="170" y1="22" x2="186" y2="22" stroke="#3498db" stroke-width="2.5"/>
+              <text x="190" y="25" font-size="10" fill="#475569">充電電流</text>
+              <text x="396" y="25" font-size="9" fill="#94a3b8" text-anchor="end">示意，非等比例</text>
+              <line x1="70" y1="30" x2="70" y2="156" stroke="#1d2943" stroke-width="1.5"/>
+              <line x1="70" y1="156" x2="356" y2="156" stroke="#1d2943" stroke-width="1.5"/>
+              <text x="213" y="176" font-size="10" fill="#475569" text-anchor="middle">時間</text>
+              <line x1="128" y1="36" x2="128" y2="156" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 3"/>
+              <line x1="248" y1="36" x2="248" y2="156" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 3"/>
+              <text x="99" y="48" font-size="10" fill="#475569" text-anchor="middle">預充</text>
+              <text x="188" y="48" font-size="10" fill="#475569" text-anchor="middle">CC 恆流</text>
+              <text x="302" y="48" font-size="10" fill="#475569" text-anchor="middle">CV 恆壓</text>
+              <polyline points="70,146 128,140 248,64 356,64" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linejoin="round"/>
+              <text x="64" y="67" font-size="9" fill="#e74c3c" text-anchor="end">4.2V</text>
+              <text x="64" y="149" font-size="9" fill="#e74c3c" text-anchor="end">3.0V</text>
+              <polyline points="70,130 128,130 128,90 248,90" fill="none" stroke="#3498db" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M248,90 C280,90 292,132 356,146" fill="none" stroke="#3498db" stroke-width="2.5"/>
+              <text x="362" y="93" font-size="9" fill="#3498db">1C</text>
+              <text x="362" y="133" font-size="9" fill="#3498db">0.1C</text>
+              <text x="362" y="149" font-size="9" fill="#3498db">0.05C</text>
             </svg>`
+          },
+          {
+            type: 'schematic',
+            description: '典型接線（簡化：未畫 NTC/TS 與 STAT 指示）',
+            svg: ''   // 由 applyCircuitArt 填入 CircuitSVG.batteryCharger()
           }
         ],
         keyFormulas: [
-          'CC 階段：I = 恆定（0.5C~1C）',
-          'CV 階段：V = 4.2V（±50mV）',
-          '充電時間 ≈ 2~3 小時',
-          '截止電流 = 0.05C'
+          '預充：I_pre ≈ 0.1C（V_bat 低於約 3.0V 時）',
+          'CC：I_cc = 0.5C~1C 恆定，V_bat 隨時間上升',
+          'CV：V_bat 鉗在 4.2V（精度需 ±1% 以內），I 逐漸衰減',
+          '截止：I_term = 0.05C~0.1C（設得越小，CV 尾段拖越久）',
+          'CC 段時間 t_cc ≈ (C_bat × ΔSOC) / I_cc',
+          '充電電流設定 I_chg = K_iset / R_iset（K 值查該顆 IC 的 datasheet）',
+          '線性充電 IC 功耗 P = (V_in − V_bat) × I_chg（散熱依據）'
         ],
         designNotes: [
-          '選擇帶 CC-CV 的充電 IC',
-          '充電電流選擇（0.5C~1C）',
-          '電池保護電路（過充/過放/過流）',
-          '溫度監控（充電時禁止低溫）',
-          '充電指示 LED 設計'
+          '充電電流用 ISET/PROG 電阻設定，K 值依該顆 IC 的 datasheet 算，別沿用別顆的公式',
+          'TS/NTC 腳接電池上的熱敏電阻做溫度分區（JEITA）：低溫降流、高溫降壓或暫停',
+          'STAT 多為開汲極輸出：需外加上拉電阻，驅動 LED 要再串限流電阻，不可懸空使用',
+          '線性充電 IC 的壓差全變成熱：(V_in − V_bat) × I_chg 過大就改用開關式（Buck）充電 IC',
+          'VIN 端要有輸入過壓保護與輸入電容，BAT 端電容依 datasheet，兩顆都不要省',
+          '電池保護板（過放、二次過充、短路）與充電 IC 各管一段，兩層都要有'
         ],
         commonMistakes: [
-          '充電電流過大導致電池壽命縮短',
-          'CV 電壓不精準導致過充',
-          '未加溫度保護',
-          '未加電池反接保護',
-          '充電 IC 散熱不足'
+          '拿固定 4.2V 電源或 LDO 直接充：沒有 CC 段限流與截止判斷，會過充',
+          '把過放電保護算成充電 IC 的功能：那是電池保護板的事',
+          'STAT 直接串 LED 不加限流電阻，或忘了上拉',
+          '低於 0°C 仍照常充電：鋰析出使電芯永久劣化（違反 JEITA 分區）',
+          'CV 精度劣於 ±1%：長期偏高即過充，循環壽命下降',
+          '線性充電 IC 散熱銅箔不足，觸發熱回退後充不滿，被誤判成電池壞'
         ],
         relatedTopics: ['power-supply', 'protection', 'embedded'],
         sourcePdf: null,
