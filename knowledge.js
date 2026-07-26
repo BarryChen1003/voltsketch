@@ -1393,7 +1393,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-22-no-anim';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-22-example-diagram2';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -4550,13 +4550,18 @@ const knowledgeApp = {
       ${(item.examples || []).length > 0 ? `
         <div class="detail-section">
           <h3>範例應用</h3>
-          ${item.examples.map(ex => `
+          ${item.examples.map(ex => {
+            // 訊號鏈自動畫成方塊圖（兩段以上才畫；單段是一句話，畫框沒有資訊量）
+            const dia = (window.ExampleDiagram && ExampleDiagram.build(ex.circuit)) || '';
+            return `
             <div style="padding: 12px; background: var(--panel-soft); border-radius: var(--radius); margin-bottom: 8px;">
               <strong>${ex.title}</strong>
               <p style="font-size: 14px; color: var(--muted); margin-top: 4px;">${ex.application}</p>
-              <p style="font-size: 13px; margin-top: 4px;">${ex.circuit}</p>
-            </div>
-          `).join('')}
+              ${dia
+                ? `<div style="margin-top: 10px; padding: 14px 10px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow-x: auto;">${dia}</div>`
+                : `<p style="font-size: 13px; margin-top: 4px;">${ex.circuit}</p>`}
+            </div>`;
+          }).join('')}
         </div>
       ` : ''}
 

@@ -65,6 +65,10 @@ jobs:
       - name: svg-overlap-check（圖字不重疊 · 棘輪）
         run: node svg-overlap-check.js --max=2
 
+      # 2h) 範例應用方塊鏈圖：分段規則、中文禁則、版面不溢出
+      - name: example-diagram.test（範例鏈圖）
+        run: node example-diagram.test.js
+
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
         run: |
