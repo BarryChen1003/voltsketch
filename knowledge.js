@@ -1393,7 +1393,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-22-example-diagram2';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-22-example-schematic3';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -4551,15 +4551,21 @@ const knowledgeApp = {
         <div class="detail-section">
           <h3>範例應用</h3>
           ${item.examples.map(ex => {
-            // 訊號鏈自動畫成方塊圖（兩段以上才畫；單段是一句話，畫框沒有資訊量）
-            const dia = (window.ExampleDiagram && ExampleDiagram.build(ex.circuit)) || '';
+            // ① 範例指名料號、且本卡有 IC 拓樸圖 → 畫真接線圖（沿用已驗證拓樸，IC 標成該料號）
+            const sch = (window.ExampleSchematic && ExampleSchematic.build(item, ex)) || null;
+            // ② 否則退回訊號鏈方塊圖（兩段以上才畫；單段是一句話，畫框沒有資訊量）
+            const dia = sch ? '' : ((window.ExampleDiagram && ExampleDiagram.build(ex.circuit)) || '');
+            const boxCss = 'margin-top: 10px; padding: 14px 10px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow-x: auto;';
             return `
             <div style="padding: 12px; background: var(--panel-soft); border-radius: var(--radius); margin-bottom: 8px;">
               <strong>${ex.title}</strong>
               <p style="font-size: 14px; color: var(--muted); margin-top: 4px;">${ex.application}</p>
-              ${dia
-                ? `<div style="margin-top: 10px; padding: 14px 10px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow-x: auto;">${dia}</div>`
-                : `<p style="font-size: 13px; margin-top: 4px;">${ex.circuit}</p>`}
+              ${sch ? `
+                <div style="${boxCss}">${sch.svg}</div>
+                <p style="font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.6;">${sch.note}</p>
+                <p style="font-size: 13px; margin-top: 6px;">${ex.circuit}</p>`
+              : dia ? `<div style="${boxCss}">${dia}</div>`
+              : `<p style="font-size: 13px; margin-top: 4px;">${ex.circuit}</p>`}
             </div>`;
           }).join('')}
         </div>
