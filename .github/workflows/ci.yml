@@ -69,6 +69,10 @@ jobs:
       - name: example-diagram.test（範例鏈圖）
         run: node example-diagram.test.js
 
+      # 2i) 範例應用電路：不得與卡片主圖重複、電壓方向須符合拓樸、資料不足不硬畫
+      - name: example-schematic.test（範例應用電路）
+        run: node example-schematic.test.js
+
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
         run: |
