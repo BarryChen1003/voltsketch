@@ -16,7 +16,6 @@
       keyFormulas: ['色溫混光：暖佔比 = I_warm/(I_warm+I_cool)（近似線性內插）', 'PWM 頻閃：調光頻率 > 1kHz 基本無感（IEEE 1789 建議越高越好）', '最低亮度步階 = 滿亮度/2^n（n=調光位元數，12bit→4096 階）', '側入式均勻度靠導光板網點設計，電路端只管電流精度'],
       designNotes: ['調光 PWM 頻率避開相機拍攝頻閃帶（>2kHz 較保險），且勿與 EPD 更新期間的電源突波疊加', '兩路 LED 共用升壓時注意一路關斷瞬間的電壓過衝打到另一路', '低亮度端改用類比調光（降電流）可消 PWM 頻閃，但 LED 色點會隨電流漂——雙色溫混光時要補償', '前光 FPC 與 EPD 高壓軌（±15V）走線分開，調光 PWM 別耦合進 VCOM', '亮度記憶與漸亮漸暗（fade）在 MCU 端做，避免開燈瞬間刺眼'],
       commonMistakes: ['PWM 頻率取幾百 Hz → 低亮度肉眼頻閃、拍照有滾動條紋', '兩路色溫直接並聯共享一路電流 → 色溫無法獨立調', '低亮度只靠縮 PWM 佔空比 → 最低亮度跳階、閃爍', '前光走線貼著 VCOM → 調光雜訊變成畫面淡紋'],
-      examples: [{ title: '閱讀器夜讀模式', application: '冷暖雙路 LED 各 12bit PWM，混光實現 2700K~6500K 連續色溫', circuit: '升壓 LED driver ×2 路 + MCU PWM/I2C 調光' }],
       relatedTopics: ['epd-power-rails', 'epd-partial-refresh', 'laptop-backlight'], sourcePdf: null, createdAt: T, updatedAt: T,
       i18n: {
         en: {
@@ -50,7 +49,6 @@
       keyFormulas: ['主節點上拉 1kΩ＋二極體；從節點 30kΩ（內建）', '匯流排時間常數 τ = R_total × C_bus ≤ 5µs（規範）', '速率 ≤ 20kbps；斜率控制壓 EMI', '休眠電流：整節點 <100µA 級（收發器 sleep + INH 關 LDO）'],
       designNotes: ['收發器 TXD 有短路超時保護，但 MCU UART 腳位設定錯（極性反）會整條匯流排卡顯性——開機預設腳位先確認', '匯流排線對電池短路/對地短路是常態測試項——收發器要選耐 ±40V 級', 'C_bus 總量管制：每節點 ESD 電容 + 線纜電容加總不可讓 τ 超標，節點多時每站電容要縮', 'INH 腳直接控制節點 LDO 的 EN＝休眠時整站斷電，喚醒鏈路要驗證「誰能叫醒誰」', '離車架地遠的節點注意地偏移：LIN 顯性/隱性門檻以各自 VBAT 比例判定，地差大會誤判'],
       commonMistakes: ['主節點忘了串二極體 → KL30 掉電時 ECU 從匯流排被反向供電', '把 LIN 當一般 UART 直連不經收發器 → 位準不對、無斜率控制、EMI 炸', '休眠設計只關 MCU 不關收發器/LDO → 整車暗電流超標（車廠常要求整站 <100µA）', '從節點用晶振而非 RC → 白花成本（sync 場本來就會校時）'],
-      examples: [{ title: '車窗升降模組', application: '門控主節點輪詢 4 個 LIN 從站（馬達/開關/防夾），點火 OFF 全站休眠', circuit: 'MCU UART ↔ LIN 收發器 ↔ 單線匯流排；INH → LDO EN' }],
       relatedTopics: ['can-fd-automotive', 'auto-power-arch', 'reverse-battery-auto'], sourcePdf: null, createdAt: T, updatedAt: T,
       i18n: {
         en: {
@@ -84,7 +82,6 @@
       keyFormulas: ['inrush I = C × dV/dt（控制 dV/dt 即控制浪湧）', '啟動能量 E ≈ ½CV²（全部落在 MOSFET 上，對照 SOA）', 'SOA 檢查點：VDS × ID × 啟動時間 vs datasheet 脈衝曲線', 'ORing 導通損 = I²×RDS(on) ≪ 二極體 I×Vf'],
       designNotes: ['dV/dt 設定要同時滿足：inrush 夠低（背板容忍）且啟動時間夠短（SOA 撐得住）——兩者相反，先算 SOA 再定斜率', '熱插拔 MOSFET 選「linear mode 強化」料（SOA 標到 10ms 級），一般低 RDS(on) 開關管在線性區很脆', '感流電阻功率與 Kelvin 接法：mΩ 級電阻走大電流，四線感測否則 OC 門檻漂', '插槽引腳長短設計（先地、後電源、再訊號）配合控制器的 present/短腳偵測', '故障重試策略要定：hiccup 重試次數、還是鎖死等 PMBus 清除——資料中心通常要遙測+鎖死', 'ORing 控制器的反向關斷速度（µs 級）決定母線倒灌深度，背靠背 MOSFET 才能雙向斷'],
       commonMistakes: ['MOSFET 只看 RDS(on) 不查 SOA → 啟動線性區燒管（最常見的熱插拔炸點）', 'dV/dt 設太慢 → 啟動超過 SOA 時間窗，一樣燒', '感流電阻沒 Kelvin → OC 誤跳或不跳', '用肖特基做 ORing → 大電流下 Vf 損耗與熱都不可接受'],
-      examples: [{ title: 'GPU 板 12V 熱插拔', application: '12V/60A 板卡：熱插拔控制器 + 2 並聯 SOA 強化 MOSFET，dV/dt 2ms 啟動，PMBus 上報', circuit: '背板 12V → 熱插拔控制器/MOSFET → 板內 VRM；ORing 於雙電源輸入' }],
       relatedTopics: ['server-48v-power', 'vrm-multiphase', 'pmbus-telemetry'], sourcePdf: null, createdAt: T, updatedAt: T,
       i18n: {
         en: {
@@ -118,7 +115,6 @@
       keyFormulas: ['AVDD 雜訊 → 影像條紋：行頻與雜訊頻率拍頻可見', 'LDO PSRR @ 開關頻率 決定 buck 前級殘紋抑制', 'AF VCM 突波 ~數百 mA；驅動迴路獨立供電', '時序間隔依 datasheet（常見各軌 0~數 ms 順序窗）'],
       designNotes: ['AVDD 用高 PSRR LDO 且輸入接乾淨 buck 軌，去耦電容放模組連接器 3mm 內', 'AF/OIS 驅動器獨立 2.8V，別與 AVDD 共 LDO——對焦瞬間的壓降會變成影像亮度階', 'MIPI 走線與相機電源 FPC 分層，IOVDD 域的回流路徑完整', '斷電順序同樣有規定（常為上電反序），kill switch 直接全斷會累積損傷', '多鏡頭共 PMIC 時注意「開 A 鏡頭瞬間 B 鏡頭在串流」的軌間耦合——分軌或加大去耦', 'privacy/斷電需求（實體開關）要斷在模組電源側而非只斷 I2C'],
       commonMistakes: ['DVDD/AVDD 上電順序照抄別家模組 → 新 CIS 閂鎖或初始化偶發失敗', 'AF 與 AVDD 共軌 → 對焦時影像出現橫紋/亮度跳', 'AVDD 直接掛 buck 省 LDO → 開關殘紋進影像', '斷電直接全拉 → 長期使用後模組偶發不啟動'],
-      examples: [{ title: '三鏡頭手機', application: '相機 PMIC 一顆管主鏡頭 4 軌＋超廣角/長焦各 3 軌，I2C 設時序', circuit: 'PMIC(多 LDO+buck) → CIS AVDD/DVDD/IOVDD + VCM 2.8V' }],
       relatedTopics: ['mobile-pmic', 'ppg-afe', 'power-sequencing'], sourcePdf: null, createdAt: T, updatedAt: T,
       i18n: {
         en: {
@@ -152,7 +148,6 @@
       keyFormulas: ['RPM = 60 × f_TACH / 每轉脈衝數（常見 2）', 'PWM 頻率 25kHz（Intel 4-wire 規範）', '風量 ∝ RPM、噪音 ∝ RPM^5~6 級（小降速大降噪）', '遲滯：升速門檻 > 降速門檻（防振盪）'],
       designNotes: ['TACH 是開汲極，上拉到 EC IO 電壓；跨電源域（風扇 5V、EC 1.8V/3.3V）注意上拉接對邊', '起轉衝轉（spin-up boost）必做：低目標轉速直接給低 PWM 會起不來，先滿速再回', '失速重試策略：斷電>1s 再試（讓驅動 IC 復位），3 次失敗上報 OS/使用者', '風扇電源 5V 軌的突波（起轉瞬間數百 mA）別跟音訊/相機共軌', 'RPM 斜率限幅（如 ±200RPM/s）+ 溫度遲滯（如 3~5°C）是安靜筆電的核心參數', '塵堵老化：同 PWM 下 RPM 逐年降，韌體可用 PWM-RPM 曲線漂移做壽命預警'],
       commonMistakes: ['低轉速直接給低 PWM 不衝轉 → 風扇停轉但韌體以為在轉（沒讀 TACH 就更慘）', 'TACH 上拉接錯電壓域 → EC 讀不到或風扇端過壓', '無遲滯無斜率限制 → 溫度臨界點風扇忽快忽慢、用戶聽得一清二楚', '失速only靠 RPM=0 判定但 TACH 線斷路沒偵測 → 過熱關機才發現'],
-      examples: [{ title: '雙風扇電競本', application: 'EC 讀 CPU/GPU DTS + 3 顆板上 NTC，查表+PI 分控雙扇，斜率限幅防呼吸聲', circuit: 'EC PWM×2 → 風扇；TACH×2 → EC；NTC → EC ADC' }],
       relatedTopics: ['ec-controller', 'laptop-power-seq', 'ntc-sensing'], sourcePdf: null, createdAt: T, updatedAt: T,
       i18n: {
         en: {

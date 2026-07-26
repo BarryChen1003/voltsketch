@@ -1393,7 +1393,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-22-example-app2';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-26-no-examples';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -1507,18 +1507,6 @@ const knowledgeApp = {
           '未考慮溫度對 MOSFET 參數的影響',
           '選擇不適合的 MOSFET 類型'
         ],
-        examples: [
-          {
-            title: 'I2C Level Shift',
-            application: '3.3V MCU 與 5V Sensor 通訊',
-            circuit: '使用 BSS138 MOSFET 的雙向 I2C Level Shift'
-          },
-          {
-            title: 'UART Level Shift',
-            application: '3.3V MCU 與 5V GPS 模組通訊',
-            circuit: '使用專用 Level Shift IC（如 TXS0102）'
-          }
-        ],
         relatedTopics: ['i2c', 'uart', 'mosfet'],
         sourcePdf: null,
         createdAt: '2026-06-02T10:00:00Z',
@@ -1553,13 +1541,6 @@ const knowledgeApp = {
           '散熱不足導致過熱保護',
           '輸入電壓過低導致無法穩壓',
           '未考慮負載電流變化'
-        ],
-        examples: [
-          {
-            title: '3.3V 穩壓',
-            application: '從 5V USB 電源產生 3.3V',
-            circuit: '使用 AMS1117-3.3 的典型應用電路'
-          }
         ],
         relatedTopics: ['buck', 'boost', 'power-supply'],
         sourcePdf: null,
@@ -1634,13 +1615,6 @@ const knowledgeApp = {
           '未考慮輕載效率',
           '輸出電容 ESR 過高'
         ],
-        examples: [
-          {
-            title: '5V to 3.3V Buck',
-            application: '從 5V 電源產生 3.3V',
-            circuit: '使用 MP2315 的高效 Buck 轉換器'
-          }
-        ],
         relatedTopics: ['boost', 'ldo', 'power-supply'],
         sourcePdf: null,
         createdAt: '2026-06-02T10:00:00Z',
@@ -1708,13 +1682,6 @@ const knowledgeApp = {
           '上拉電阻值選擇不當',
           '未考慮總線電容限制',
           '地址衝突未處理'
-        ],
-        examples: [
-          {
-            title: '溫度感測器讀取',
-            application: '讀取 AHT20 溫度感測器',
-            circuit: 'I2C 連接 AHT20，讀取溫濕度資料'
-          }
         ],
         relatedTopics: ['spi', 'uart', 'level-shift'],
         sourcePdf: null,
@@ -1805,18 +1772,6 @@ const knowledgeApp = {
           '電感選擇不當導致進入 DCM 模式',
           '未考慮輕載效率優化'
         ],
-        examples: [
-          {
-            title: '12V to 3.3V Buck',
-            application: '從 12V 電源產生 3.3V 給 MCU 供電',
-            circuit: '使用 TPS54331 的 3A Buck 轉換器'
-          },
-          {
-            title: '5V to 1.2V Buck',
-            application: '從 5V USB 電源產生 1.2V 給核心供電',
-            circuit: '使用 TPS62085 的高效 Buck 轉換器'
-          }
-        ],
         relatedTopics: ['ldo', 'boost', 'emi-filter'],
         sourcePdf: 'power-design.html',
         createdAt: '2026-06-02T10:00:00Z',
@@ -1891,18 +1846,6 @@ const knowledgeApp = {
           '輸入電壓過低導致無法穩壓',
           '忽略負載瞬態響應'
         ],
-        examples: [
-          {
-            title: 'RF 電路供電',
-            application: '為 RF 放大器提供低噪聲電源',
-            circuit: '使用 TPS7A4700 超低噪聲 LDO'
-          },
-          {
-            title: '類比電路供電',
-            application: '為精密運放提供低噪聲電源',
-            circuit: '使用 ADP7118 低噪聲 LDO'
-          }
-        ],
         relatedTopics: ['buck', 'power-supply', 'analog'],
         sourcePdf: 'power-design.html',
         createdAt: '2026-06-02T10:00:00Z',
@@ -1952,18 +1895,6 @@ const knowledgeApp = {
           '未考慮傳輸線效應（電長度 > λ/6）',
           '忽略返回路徑的不連續',
           '差分對 Skew 未控制'
-        ],
-        examples: [
-          {
-            title: 'DDR4 資料線匹配',
-            application: 'DDR4 記憶體介面的阻抗匹配',
-            circuit: '使用 On-Die Termination (ODT) 和串聯匹配'
-          },
-          {
-            title: 'USB 3.0 差分對',
-            application: 'USB 3.0 SuperSpeed 訊號匹配',
-            circuit: '差分阻抗 90Ω，使用 AC 耦合電容'
-          }
         ],
         relatedTopics: ['transmission-line', 'crosstalk', 'eye-diagram'],
         sourcePdf: 'si-pi.html',
@@ -2044,18 +1975,6 @@ const knowledgeApp = {
           '過孔數量不足導致高頻阻抗過高',
           '電源平面不完整導致阻抗不連續'
         ],
-        examples: [
-          {
-            title: 'FPGA PDN 設計',
-            application: '為大規模 FPGA 設計 PDN',
-            circuit: '多級電容配置 + 完整電源平面'
-          },
-          {
-            title: 'DDR4 PDN 設計',
-            application: 'DDR4 記憶體介面的電源分配',
-            circuit: '專用電源層 + 去耦電容陣列'
-          }
-        ],
         relatedTopics: ['decoupling', 'power-integrity', 'emi'],
         sourcePdf: 'si-pi.html',
         createdAt: '2026-06-02T10:00:00Z',
@@ -2104,18 +2023,6 @@ const knowledgeApp = {
           '未考慮返回路徑',
           '疊層不平衡導致翹曲'
         ],
-        examples: [
-          {
-            title: '4 層板設計',
-            application: '一般數位電路',
-            circuit: 'Signal-GND-Power-Signal'
-          },
-          {
-            title: '6 層板設計',
-            application: '高速訊號電路',
-            circuit: 'Signal-GND-Signal-Signal-Power-Signal'
-          }
-        ],
         relatedTopics: ['impedance', 'emi', 'signal-integrity'],
         sourcePdf: 'pcb-layout.html',
         createdAt: '2026-06-02T10:00:00Z',
@@ -2147,18 +2054,6 @@ const knowledgeApp = {
           '走線跨分割平面',
           '未考慮返回路徑',
           'stub 過長導致諧振'
-        ],
-        examples: [
-          {
-            title: 'DDR4 走線',
-            application: 'DDR4 記憶體介面',
-            circuit: '資料線組內 Skew < 5mil，組間 Skew < 50mil'
-          },
-          {
-            title: 'USB 3.0 走線',
-            application: 'USB 3.0 SuperSpeed',
-            circuit: '差分阻抗 90Ω，Skew < 5mil'
-          }
         ],
         relatedTopics: ['impedance', 'crosstalk', 'emi'],
         sourcePdf: 'pcb-layout.html',
@@ -2217,18 +2112,6 @@ const knowledgeApp = {
           '接地路徑過長',
           '元件放置位置不當',
           '未考慮溫度效應'
-        ],
-        examples: [
-          {
-            title: '電源 EMI 濾波',
-            application: 'DC-DC 轉換器輸出濾波',
-            circuit: '鐵氧體磁珠 + 旁路電容'
-          },
-          {
-            title: '訊號線 EMI 濾波',
-            application: '高速訊號線濾波',
-            circuit: 'LC 濾波器 + 共模扼流圈'
-          }
         ],
         relatedTopics: ['emi', 'shielding', 'grounding'],
         sourcePdf: 'bus-emc.html',
@@ -2309,13 +2192,6 @@ const knowledgeApp = {
           'VBUS 濾波不足',
           '走線跨分割平面'
         ],
-        examples: [
-          {
-            title: 'USB Type-C 設計',
-            application: 'USB Type-C 連接器',
-            circuit: '差分對匹配 + ESD 保護 + CC 腳位'
-          }
-        ],
         relatedTopics: ['usb', 'esd', 'impedance'],
         sourcePdf: 'bus-emc.html',
         createdAt: '2026-06-02T10:00:00Z',
@@ -2366,13 +2242,6 @@ const knowledgeApp = {
           '未考慮訊號完整性',
           '接線錯誤（MOSI/MISO 交叉）'
         ],
-        examples: [
-          {
-            title: 'SPI Flash 連接',
-            application: '連接 SPI Flash 記憶體',
-            circuit: '4 線 SPI 連接 + CS 控制'
-          }
-        ],
         relatedTopics: ['i2c', 'uart', 'spi'],
         sourcePdf: 'bus-emc.html',
         createdAt: '2026-06-02T10:00:00Z',
@@ -2415,18 +2284,6 @@ const knowledgeApp = {
           '壓擺率 SR 不足導致失真',
           '微分器未加限頻導致振盪'
         ],
-        examples: [
-          {
-            title: '反相放大器',
-            application: '訊號放大',
-            circuit: 'Rf=100k, Rin=10k, Av=-10'
-          },
-          {
-            title: 'Sallen-Key 低通濾波器',
-            application: '音訊濾波',
-            circuit: '二階 Butterworth 低通'
-          }
-        ],
         relatedTopics: ['ldo', 'analog', 'filter'],
         sourcePdf: null,
         createdAt: '2026-06-03T10:00:00Z',
@@ -2463,13 +2320,6 @@ const knowledgeApp = {
           '並聯 MOSFET 未均流',
           '熱設計不足導致熱失控'
         ],
-        examples: [
-          {
-            title: 'Buck 同步整流',
-            application: 'DC-DC 轉換器',
-            circuit: '高側 + 低側 MOSFET 互補開關'
-          }
-        ],
         relatedTopics: ['buck', 'ldo', 'power-supply'],
         sourcePdf: null,
         createdAt: '2026-06-03T10:00:00Z',
@@ -2499,13 +2349,6 @@ const knowledgeApp = {
           '參考電源噪聲影響精度',
           '數位回流路徑干擾類比訊號',
           '未加抗混疊濾波器'
-        ],
-        examples: [
-          {
-            title: '溫度量測',
-            application: 'RTD/熱電偶訊號調理',
-            circuit: 'Delta-Sigma ADC + PGA + 參考源'
-          }
         ],
         relatedTopics: ['analog', 'signal-processing', 'power-supply'],
         sourcePdf: null,
@@ -2537,18 +2380,6 @@ const knowledgeApp = {
           '未考慮保護元件的電容對高速訊號的影響',
           '只做器件級不做系統級 ESD'
         ],
-        examples: [
-          {
-            title: 'USB Type-C ESD',
-            application: 'USB 介面保護',
-            circuit: 'TVS 陣列 + 共模濾波'
-          },
-          {
-            title: '按鍵 ESD',
-            application: '使用者接觸介面',
-            circuit: '壓敏電阻 + 濾波電容'
-          }
-        ],
         relatedTopics: ['usb', 'protection', 'emi'],
         sourcePdf: null,
         createdAt: '2026-06-03T10:00:00Z',
@@ -2579,13 +2410,6 @@ const knowledgeApp = {
           '觸發設定不當導致波形不穩定',
           '未校準儀器導致量測誤差'
         ],
-        examples: [
-          {
-            title: '電源漣波量測',
-            application: 'DC-DC 轉換器輸出品質',
-            circuit: '使用差分探棒 + 20MHz 帶寬限制'
-          }
-        ],
         relatedTopics: ['signal-processing', 'analog', 'power-supply'],
         sourcePdf: null,
         createdAt: '2026-06-03T10:00:00Z',
@@ -2615,13 +2439,6 @@ const knowledgeApp = {
           '電源暫態響應不足導致 MCU 重置',
           '未考慮負載電流變化導致電壓跌落',
           '類比電源與數位電源未隔離'
-        ],
-        examples: [
-          {
-            title: 'STM32 電源設計',
-            application: 'ARM Cortex-M MCU',
-            circuit: '3.3V LDO + 1.2V 內核電源 + 上電順序控制'
-          }
         ],
         relatedTopics: ['ldo', 'power-supply', 'fpga'],
         sourcePdf: null,
@@ -2688,18 +2505,6 @@ const knowledgeApp = {
           'PCB layout 不良導致 EMI 問題',
           '未考慮輕載時的 DCM 模式'
         ],
-        examples: [
-          {
-            title: '3.3V to 5V Boost',
-            application: '從 3.3V 電池產生 5V USB 電源',
-            circuit: '使用 MT3608 的 2A Boost 轉換器'
-          },
-          {
-            title: '12V to 24V Boost',
-            application: 'LED 驅動電源',
-            circuit: '使用 LM2587 的 5A Boost 轉換器'
-          }
-        ],
         relatedTopics: ['buck', 'buck-boost', 'power-supply'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -2757,13 +2562,6 @@ const knowledgeApp = {
           '開關頻率過低導致電感體積過大',
           '未考慮輕載效率'
         ],
-        examples: [
-          {
-            title: '5V to ±12V',
-            application: '運放正負電源',
-            circuit: '使用 TPS65133 的雙輸出 Buck-Boost'
-          }
-        ],
         relatedTopics: ['buck', 'boost', 'power-supply'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -2820,18 +2618,6 @@ const knowledgeApp = {
           '散熱設計不足',
           '輸出電容 ESR 不符合規格'
         ],
-        examples: [
-          {
-            title: '3.3V to 1.8V',
-            application: 'MCU 核心電源',
-            circuit: '選擇 TPS7A20（低噪聲、高 PSRR）'
-          },
-          {
-            title: '5V to 3.3V',
-            application: '感測器電源',
-            circuit: '選擇 AMS1117（低成本、大電流）'
-          }
-        ],
         relatedTopics: ['buck', 'ldo', 'power-supply'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -2886,13 +2672,6 @@ const knowledgeApp = {
           '延遲時間不足',
           '監控電壓閾值設置不當',
           '未考慮負載影響上電時間'
-        ],
-        examples: [
-          {
-            title: 'FPGA 上電順序',
-            application: 'Xilinx Artix-7 FPGA',
-            circuit: 'VCCINT(1.0V) → VCCAUX(1.8V) → VCCO(3.3V)'
-          }
         ],
         relatedTopics: ['ldo', 'power-supply', 'embedded'],
         sourcePdf: null,
@@ -2961,13 +2740,6 @@ const knowledgeApp = {
           '過孔數量不足',
           '未考慮溫度對容值的影響'
         ],
-        examples: [
-          {
-            title: 'MCU 去耦',
-            application: 'ARM Cortex-M MCU',
-            circuit: '每腳 100nF + 共用 10µF'
-          }
-        ],
         relatedTopics: ['pdn', 'power-supply', 'emi'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -3030,13 +2802,6 @@ const knowledgeApp = {
           '放置位置不當',
           '磁芯材料選擇不當'
         ],
-        examples: [
-          {
-            title: 'USB 共模濾波',
-            application: 'USB 2.0/3.0 EMI 濾波',
-            circuit: '共模扼流圈 + 差模電容'
-          }
-        ],
         relatedTopics: ['emi', 'usb', 'filter'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -3087,13 +2852,6 @@ const knowledgeApp = {
           '未考慮電源平面的高頻特性',
           'connector 處未加濾波'
         ],
-        examples: [
-          {
-            title: '高速訊號 Layout',
-            application: 'USB 3.0、HDMI 等',
-            circuit: '訊號層緊鄰 GND 平面，保持完整參考平面'
-          }
-        ],
         relatedTopics: ['emi', 'pcb', 'signal-integrity'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -3143,13 +2901,6 @@ const knowledgeApp = {
           '電容過大影響高速訊號',
           '接地路徑過長',
           '未考慮功率額定值'
-        ],
-        examples: [
-          {
-            title: 'USB TVS',
-            application: 'USB 介面 ESD 保護',
-            circuit: '選擇 USBLC6-2SC6（低電容、0402 封裝）'
-          }
         ],
         relatedTopics: ['esd', 'usb', 'protection'],
         sourcePdf: null,
@@ -3202,13 +2953,6 @@ const knowledgeApp = {
           '未考慮反向漏電流',
           '散熱設計不足',
           '選擇不適合的保護方案'
-        ],
-        examples: [
-          {
-            title: '電池防反接',
-            application: '電池供電設備',
-            circuit: 'P-MOS 防反接 + 過流保護'
-          }
         ],
         relatedTopics: ['protection', 'power-supply', 'automotive'],
         sourcePdf: null,
@@ -3263,13 +3007,6 @@ const knowledgeApp = {
           '散熱片方向不當',
           '未進行熱仿真驗證'
         ],
-        examples: [
-          {
-            title: 'LDO 散熱',
-            application: 'AMS1117 3.3V LDO',
-            circuit: 'SOT223 封裝 + 散熱過孔 + 銅皮散熱'
-          }
-        ],
         relatedTopics: ['pcb', 'power-supply', 'thermal'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -3320,13 +3057,6 @@ const knowledgeApp = {
           'via 孔徑過小導致製程困難',
           '未提供返回路徑',
           '未考慮 via 的熱效應'
-        ],
-        examples: [
-          {
-            title: '高速 via 設計',
-            application: '10Gbps+ 訊號',
-            circuit: '反鑽 + 接地過孔陣列'
-          }
         ],
         relatedTopics: ['pcb', 'signal-integrity', 'emi'],
         sourcePdf: null,
@@ -3385,13 +3115,6 @@ const knowledgeApp = {
           '接地路徑過長',
           '未考慮高頻接地特性'
         ],
-        examples: [
-          {
-            title: '混合訊號接地',
-            application: 'ADC 電路接地',
-            circuit: '類比分區 + 數位分區 + 單點連接'
-          }
-        ],
         relatedTopics: ['pcb', 'emi', 'analog'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -3439,13 +3162,6 @@ const knowledgeApp = {
           '差分對之間插入其他走線',
           '未考慮返回路徑',
           '阻抗不匹配'
-        ],
-        examples: [
-          {
-            title: 'USB 3.0 差分對',
-            application: 'USB 3.0 SuperSpeed',
-            circuit: '差分阻抗 90Ω，Skew < 5mil'
-          }
         ],
         relatedTopics: ['impedance', 'usb', 'signal-integrity'],
         sourcePdf: null,
@@ -3500,13 +3216,6 @@ const knowledgeApp = {
           '接地路徑過長',
           '未考慮冷啟動低壓',
           '濾波不足導致 EMI'
-        ],
-        examples: [
-          {
-            title: '12V 汽車電源',
-            application: '車載電子設備',
-            circuit: 'TVS + 共模扼流圈 + DC-DC'
-          }
         ],
         relatedTopics: ['automotive', 'protection', 'emi'],
         sourcePdf: null,
@@ -3564,13 +3273,6 @@ const knowledgeApp = {
           '散熱不足導致 LED 壽命縮短',
           '驅動電路效率過低'
         ],
-        examples: [
-          {
-            title: '3W LED 驅動',
-            application: '照明應用',
-            circuit: 'LM3404 恆流驅動 + 電感'
-          }
-        ],
         relatedTopics: ['power-supply', 'buck', 'automotive'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -3621,13 +3323,6 @@ const knowledgeApp = {
           '未加溫度保護',
           '未加電池反接保護',
           '充電 IC 散熱不足'
-        ],
-        examples: [
-          {
-            title: '18650 充電',
-            application: '單節鋰電池充電',
-            circuit: 'TP4056 + DW01 保護'
-          }
         ],
         relatedTopics: ['power-supply', 'protection', 'embedded'],
         sourcePdf: null,
@@ -3687,13 +3382,6 @@ const knowledgeApp = {
           'GBW 不足導致帶寬不夠',
           'SR 不足導致大訊號失真'
         ],
-        examples: [
-          {
-            title: '光電流轉換',
-            application: '光二極體訊號調理',
-            circuit: '跨阻放大器（I-V 轉換）'
-          }
-        ],
         relatedTopics: ['analog', 'adc', 'filter'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -3746,13 +3434,6 @@ const knowledgeApp = {
           '走線引入額外阻抗',
           '放大器偏置電壓影響精度'
         ],
-        examples: [
-          {
-            title: 'Buck 電流限制',
-            application: 'DC-DC 轉換器過流保護',
-            circuit: '低側 Rs + 差分放大器'
-          }
-        ],
         relatedTopics: ['analog', 'power-supply', 'protection'],
         sourcePdf: null,
         createdAt: '2026-06-12T10:00:00Z',
@@ -3768,7 +3449,6 @@ const knowledgeApp = {
         keyFormulas: ['Vout = Vin × (Ns/Np) × D/(1-D)', '需考慮漏感造成的電壓尖峰', '匝比 n = Np/Ns'],
         designNotes: ['一次側需 RCD 箝位吸收漏感能量', '注意變壓器飽和與磁滯損耗', '光耦 + TL431 做隔離回授', 'Y 電容跨接一二次地降低共模噪聲'],
         commonMistakes: ['漏感箝位不足燒毀開關', '變壓器設計未留磁通裕度', '輸出二極體耐壓不足'],
-        examples: [{ title: '12V 隔離電源', application: '工業 AC-DC', circuit: '使用 UC3842 控制的 Flyback' }],
         relatedTopics: ['buck', 'transformer', 'optocoupler'], sourcePdf: 'hardware-pdfs (BUCK-BOOST/隔離)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3781,7 +3461,6 @@ const knowledgeApp = {
         keyFormulas: ['Vsw 平均 = V+ × D', '死區時間 tdead 防直通', '自舉電壓 ≈ V+ − Vf'],
         designNotes: ['務必加死區時間避免上下臂直通', '高側用自舉電容或隔離電源', 'SW 節點走線短、減少振鈴', '考慮 body diode 反向恢復損耗'],
         commonMistakes: ['死區不足導致直通燒管', '自舉電容容量不足高側驅動失效', '閘極電阻過小造成振鈴'],
-        examples: [{ title: '同步 Buck', application: 'DC-DC', circuit: '半橋 + 電感輸出' }],
         relatedTopics: ['gate-driver', 'mosfet', 'buck'], sourcePdf: 'hardware-pdfs (half-bridge)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3794,7 +3473,6 @@ const knowledgeApp = {
         keyFormulas: ['Qg 總閘極電荷決定驅動電流', 'tsw ≈ Qg / Idrive', 'Cboot ≥ 10 × Qg/ΔV'],
         designNotes: ['自舉二極體選快恢復、耐壓足', '閘極電阻調開關速度與 EMI', '驅動 IC 靠近 MOSFET 放置'],
         commonMistakes: ['自舉電容太小高側掉電', '無米勒箝位導致誤導通'],
-        examples: [{ title: '半橋驅動', application: '馬達/DC-DC', circuit: 'IR2110 自舉驅動' }],
         relatedTopics: ['half-bridge', 'mosfet'], sourcePdf: 'hardware-pdfs (gate driver)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3807,7 +3485,6 @@ const knowledgeApp = {
         keyFormulas: ['VH = VTH − VTL', 'VTH/VTL 由 Rf 與 R1 分壓決定'],
         designNotes: ['遲滯量需大於噪聲振幅', '開漏輸出需加上拉', '高速應用注意傳播延遲'],
         commonMistakes: ['誤用運放當比較器導致振盪', '遲滯不足輸出抖動'],
-        examples: [{ title: '電壓監測', application: 'UVLO', circuit: 'LM393 遲滯比較' }],
         relatedTopics: ['op-amp', 'voltage-reference'], sourcePdf: 'hardware-pdfs (comparator)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3820,7 +3497,6 @@ const knowledgeApp = {
         keyFormulas: ['比較器：Vout = (V+ > V−) ? VOH : VOL', '運放(負回授)：Vout = A(V+ − V−)，虛短 V+≈V−', '遲滯：VH = VTH − VTL'],
         designNotes: ['比較器開漏輸出要加上拉到邏輯電壓', '比較器加正回授(遲滯)抗噪，勿加負回授', '運放需負回授+補償，別無回授當比較器', '注意比較器傳播延遲、運放 GBW/SR', '輸出要接邏輯時選比較器(準位明確)'],
         commonMistakes: ['用運放當比較器→慢/振盪/準位不明', '比較器接負回授→線性區震盪', '比較器忘了上拉(開漏浮接)', '混淆兩者輸出特性'],
-        examples: [{ title: '過壓偵測', application: '門檻判斷→數位旗標', circuit: '比較器 + 遲滯 + 上拉' }],
         relatedTopics: ['comparator-hysteresis', 'op-amp-basics', 'opamp-configurations'], sourcePdf: '使用者需求 (comparator vs op-amp)', createdAt: '2026-06-17T10:00:00Z', updatedAt: '2026-06-17T10:00:00Z'
       },
       {
@@ -3833,7 +3509,6 @@ const knowledgeApp = {
         keyFormulas: ['Vka = 2.5 × (1 + R1/R2)', 'Ika 需 > 1mA 以維持調節'],
         designNotes: ['限流電阻確保最小工作電流', '回授常配光耦做隔離', '注意電容負載穩定性'],
         commonMistakes: ['工作電流不足無法穩壓', '相位補償不當振盪'],
-        examples: [{ title: '隔離電源回授', application: 'Flyback', circuit: 'TL431 + 光耦' }],
         relatedTopics: ['flyback', 'optocoupler', 'ldo'], sourcePdf: 'hardware-pdfs (voltage reference)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3846,7 +3521,6 @@ const knowledgeApp = {
         keyFormulas: ['fc = 1/(2πRC)', '−3dB @ fc', '相移 45° @ fc'],
         designNotes: ['ADC 前置抗混疊濾波', 'R 太大受輸入阻抗影響', '考慮電容介質吸收'],
         commonMistakes: ['截止頻率設計錯誤', '源/負載阻抗未納入計算'],
-        examples: [{ title: 'ADC 抗混疊', application: '量測', circuit: 'RC 前置濾波' }],
         relatedTopics: ['adc', 'emi-filter'], sourcePdf: 'hardware-pdfs (RC filter)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3859,7 +3533,6 @@ const knowledgeApp = {
         keyFormulas: ['CL = (C1×C2)/(C1+C2) + Cstray', 'f 由晶體與 CL 決定'],
         designNotes: ['負載電容匹配晶體規格', '走線短、加地保護環', '避免相鄰高速訊號干擾'],
         commonMistakes: ['負載電容值錯誤頻率偏移', '佈線過長無法起振'],
-        examples: [{ title: 'MCU 主時脈', application: '嵌入式', circuit: '8MHz 晶體 + 2×18pF' }],
         relatedTopics: ['emi', 'pcb-layout'], sourcePdf: 'hardware-pdfs (oscillator)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3872,7 +3545,6 @@ const knowledgeApp = {
         keyFormulas: ['1/T = A + B·ln(R) + C·ln(R)³', 'Vadc = Vcc × Rntc/(Rpu+Rntc)'],
         designNotes: ['選上拉值使目標溫區解析度最佳', '自熱效應降低量測電流', '加 RC 濾波抗噪'],
         commonMistakes: ['自熱造成讀值偏高', '線性化未做誤差大'],
-        examples: [{ title: '電池溫度監測', application: '充電保護', circuit: '10k NTC + 10k 上拉' }],
         relatedTopics: ['adc', 'rc-filter'], sourcePdf: 'hardware-pdfs (thermistor/NTC)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3885,7 +3557,6 @@ const knowledgeApp = {
         keyFormulas: ['Ilimit = Vsense_th / Rsense', 'SOA 需涵蓋啟動時 V×I', 'dV/dt 由閘極電容設定'],
         designNotes: ['MOSFET 須落在安全工作區 (SOA)', '緩啟動電容設定 inrush 斜率', '加去耦電容於負載端'],
         commonMistakes: ['MOSFET 超出 SOA 燒毀', 'inrush 過大觸發上游保護'],
-        examples: [{ title: '伺服器板卡', application: '帶電插拔', circuit: 'LTC4215 熱插拔' }],
         relatedTopics: ['inrush', 'load-switch', 'mosfet'], sourcePdf: 'hardware-pdfs (hot-swap/inrush)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3898,7 +3569,6 @@ const knowledgeApp = {
         keyFormulas: ['CTR = Ic/If (電流傳輸比)', 'If 由限流電阻設定'],
         designNotes: ['考慮 CTR 隨溫度/老化衰退', '隔離爬電距離符合安規', '頻寬有限不適合高速'],
         commonMistakes: ['CTR 餘量不足回授失效', '一二次地未正確分離'],
-        examples: [{ title: '隔離電源回授', application: 'Flyback', circuit: 'PC817 + TL431' }],
         relatedTopics: ['flyback', 'tl431'], sourcePdf: 'hardware-pdfs (optocoupler)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3911,7 +3581,6 @@ const knowledgeApp = {
         keyFormulas: ['Ploss = I² × Rds_on (理想二極體)', '蕭特基壓降 ≈ 0.3~0.5V'],
         designNotes: ['理想二極體控制器防回灌', '注意切換瞬間電壓跌落', '大電流用低 Rds_on MOSFET'],
         commonMistakes: ['二極體壓降造成發熱', '無回灌保護損壞電源'],
-        examples: [{ title: '雙電源備援', application: '伺服器', circuit: 'LM5050 理想二極體' }],
         relatedTopics: ['load-switch', 'hot-swap'], sourcePdf: 'hardware-pdfs (ORing/ideal diode)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3924,7 +3593,6 @@ const knowledgeApp = {
         keyFormulas: ['Vout ≈ N × Vin (理想)', 'Rout ≈ 1/(f×Cfly)', '輸出阻抗隨頻率下降'],
         designNotes: ['飛跨電容值與頻率決定輸出電流', '低 ESR 電容降低漣波', '僅適合輕載'],
         commonMistakes: ['負載過重電壓崩潰', '電容選太小漣波大'],
-        examples: [{ title: 'LCD 偏壓', application: '顯示器', circuit: '倍壓電荷泵' }],
         relatedTopics: ['boost', 'ldo'], sourcePdf: 'hardware-pdfs (charge pump)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3937,7 +3605,6 @@ const knowledgeApp = {
         keyFormulas: ['Vdc ≈ Vpk − 2×Vf', '紋波 ΔV ≈ Iload/(f×C)', 'f = 2×fline (全波)'],
         designNotes: ['二極體耐壓 > Vpk', '電容耐壓與紋波電流足夠', '注意湧入電流加 NTC/限流'],
         commonMistakes: ['電容耐壓不足爆裂', '無限流啟動湧入過大'],
-        examples: [{ title: 'AC-DC 前級', application: '電源供應器', circuit: '橋式整流 + 470µF' }],
         relatedTopics: ['flyback', 'inrush'], sourcePdf: 'hardware-pdfs (bridge rectifier)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3950,7 +3617,6 @@ const knowledgeApp = {
         keyFormulas: ['Vmotor = V+ × (D正 − D反)', '需死區時間防直通'],
         designNotes: ['加飛輪/body diode 續流', '電流取樣保護堵轉', 'PWM 頻率避開可聞噪聲'],
         commonMistakes: ['上下臂直通燒管', '無續流路徑反電動勢損壞'],
-        examples: [{ title: '直流馬達調速', application: '機器人', circuit: 'DRV8871 H 橋' }],
         relatedTopics: ['half-bridge', 'gate-driver', 'mosfet'], sourcePdf: 'hardware-pdfs (motor driver/H-bridge)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3963,7 +3629,6 @@ const knowledgeApp = {
         keyFormulas: ['Vgs(on) = −(Vin − Ven_low)', 'dV/dt 由閘極 RC 決定'],
         designNotes: ['閘極上拉確保預設關閉', '加 RC 緩開降低 inrush', '反向保護避免回灌'],
         commonMistakes: ['無上拉導致誤導通', '開啟太快 inrush 過大'],
-        examples: [{ title: '子系統電源閘控', application: '省電', circuit: 'PMOS + EN 控制' }],
         relatedTopics: ['hot-swap', 'oring', 'mosfet'], sourcePdf: 'hardware-pdfs (load switch)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3976,7 +3641,6 @@ const knowledgeApp = {
         keyFormulas: ['Rs ≈ √(Lpar/Cpar)', 'Cs ≥ Cpar', 'Ploss = Cs×V²×f'],
         designNotes: ['先量測振鈴頻率再算寄生值', 'Rs 兼顧阻尼與損耗', '電阻功率額定足夠'],
         commonMistakes: ['Cs 過大損耗發熱', '未量測憑感覺選值'],
-        examples: [{ title: 'Flyback 一次側', application: '隔離電源', circuit: 'RCD/RC 箝位' }],
         relatedTopics: ['flyback', 'emi', 'half-bridge'], sourcePdf: 'hardware-pdfs (snubber)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -3989,7 +3653,6 @@ const knowledgeApp = {
         keyFormulas: ['Vout = Vin × (Ns/Np) × D', 'D < 0.5（需磁復位時間）', 'L 維持 CCM'],
         designNotes: ['需第三繞組或 RCD 做磁復位', 'D1 整流 / D2 續流二極體耐流足', '輸出 LC 決定漣波', '比 Flyback 適合較大功率'],
         commonMistakes: ['未磁復位導致變壓器飽和', '占空比超過 0.5', '續流二極體選錯'],
-        examples: [{ title: '中功率隔離電源', application: '工業/通訊', circuit: '單端正激 + 磁復位繞組' }],
         relatedTopics: ['flyback', 'half-bridge', 'transformer'], sourcePdf: 'hardware-pdfs (forward converter)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -4002,7 +3665,6 @@ const knowledgeApp = {
         keyFormulas: ['終端 = 兩端各 120Ω（並聯 60Ω）', '差分電壓：顯性 ~2V / 隱性 ~0V', '速率 ≤ 1Mbps (CAN)'],
         designNotes: ['僅匯流排兩端放終端，中間節點不放', 'CANH/CANL 走差分對等長', '加共模扼流圈抑制 EMI', 'TVS 做匯流排 ESD 保護'],
         commonMistakes: ['每個節點都加終端造成負載過重', '終端漏放導致反射', '差分對不等長'],
-        examples: [{ title: '車用 CAN 網路', application: '汽車電子', circuit: 'TJA1050 收發器 + 120Ω' }],
         relatedTopics: ['rs485-transceiver', 'common-mode-choke', 'esd-protection'], sourcePdf: 'hardware-pdfs (CAN)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -4015,7 +3677,6 @@ const knowledgeApp = {
         keyFormulas: ['終端 = 兩端各 120Ω', '差分門檻 ±200mV', '最多 32 單位負載 (標準)'],
         designNotes: ['半雙工需控制 DE/RE 方向', '偏壓電阻維持空閒顯性', '長線兩端終端、避免反射', 'failsafe 偏壓避免懸空誤觸'],
         commonMistakes: ['方向控制時序錯造成匯流排衝突', '無偏壓懸空誤碼', '終端位置錯誤'],
-        examples: [{ title: '工業 Modbus', application: '工控網路', circuit: 'MAX485 + 120Ω + 偏壓' }],
         relatedTopics: ['can-transceiver', 'differential-pair'], sourcePdf: 'hardware-pdfs (RS-485)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -4028,7 +3689,6 @@ const knowledgeApp = {
         keyFormulas: ['反電動勢 V = −L·di/dt', '飛輪二極體耐流 ≥ 線圈電流', '釋放時間隨二極體類型'],
         designNotes: ['飛輪二極體務必反並聯於線圈', '快速釋放可加齊納（耐壓較高）', 'MOSFET/BJT 需足夠電流驅動', '注意接點電弧與壽命'],
         commonMistakes: ['漏接飛輪二極體燒毀開關', '二極體極性接反', '驅動電流不足繼電器不動作'],
-        examples: [{ title: 'MCU 控繼電器', application: '家電/工控', circuit: 'NMOS 低端 + 1N4148 飛輪' }],
         relatedTopics: ['mosfet-switching', 'reverse-polarity'], sourcePdf: 'hardware-pdfs (relay/flyback diode)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -4041,7 +3701,6 @@ const knowledgeApp = {
         keyFormulas: ['平衡：R1/R3 = R2/R4', 'Vo = Vex × (ΔR/R)/4（單臂）', '半橋/全橋提升靈敏度'],
         designNotes: ['用儀表放大器讀差動小訊號', '激勵電壓穩定、考慮自熱', '導線電阻用三/四線補償', '溫漂用對稱配置抵消'],
         commonMistakes: ['共模未抑制誤差大', '激勵不穩定影響讀值', '導線電阻未補償'],
-        examples: [{ title: '應變規/秤重', application: '量測', circuit: '全橋應變規 + INA' }],
         relatedTopics: ['current-sensing', 'op-amp-basics', 'ntc-thermistor'], sourcePdf: 'hardware-pdfs (Wheatstone/strain)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -4054,7 +3713,6 @@ const knowledgeApp = {
         keyFormulas: ['I_out = I_ref × (面積比)', 'I_ref = (Vcc − Vbe)/Rref', '受 Early 效應與 Vbe 匹配影響'],
         designNotes: ['Q1、Q2 須匹配並熱耦合', '加射極退化電阻改善匹配', '考慮 Early 效應（輸出阻抗）', 'Wilson/cascode 提升精度'],
         commonMistakes: ['電晶體未匹配導致鏡像誤差', '忽略 Early 效應', '熱梯度造成不對稱'],
-        examples: [{ title: '偏置電流源', application: '類比 IC', circuit: '基本兩管電流鏡' }],
         relatedTopics: ['op-amp-basics', 'bjt-switch'], sourcePdf: 'hardware-pdfs (current mirror)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -4067,7 +3725,6 @@ const knowledgeApp = {
         keyFormulas: ['Ib ≥ Ic / β（飽和需過驅動）', 'Rb = (Vin − Vbe)/Ib', 'Vce(sat) ≈ 0.2V'],
         designNotes: ['基極電阻確保飽和（過驅動 2~5×）', '感性負載加飛輪二極體', '高速可加基極—射極洩放電阻', '功率損耗 = Vce(sat) × Ic'],
         commonMistakes: ['基極電流不足未飽和、發熱', '感性負載漏接飛輪二極體', '基極電阻過大開關慢'],
-        examples: [{ title: '驅動 LED/繼電器', application: '通用開關', circuit: 'NPN + 基極電阻' }],
         relatedTopics: ['mosfet-switching', 'relay-driver', 'current-mirror'], sourcePdf: 'hardware-pdfs (BJT switch)', createdAt: '2026-06-13T10:00:00Z', updatedAt: '2026-06-13T10:00:00Z'
       },
       {
@@ -4080,7 +3737,6 @@ const knowledgeApp = {
         keyFormulas: ['Vout ≈ (Ns/Np) × Vin × D × 2（全波）', '開關耐壓 ≥ 2×Vin（加漏感尖峰）', '需死區避免直通'],
         designNotes: ['兩開關務必交替、加死區，避免同時導通燒管', '開關 Vds 至少 2×Vin，留漏感尖峰裕度', '變壓器中心抽頭對稱、減少磁通不平衡', '加磁通平衡/電流模式避免偏磁飽和'],
         commonMistakes: ['偏磁(磁通不平衡)導致飽和', '開關耐壓不足(2×Vin)', '無死區造成直通'],
-        examples: [{ title: '中功率隔離電源', application: '通訊/工業', circuit: '推挽 + 中心抽頭全波整流' }],
         relatedTopics: ['flyback', 'forward-converter', 'full-bridge-converter', 'half-bridge'], sourcePdf: 'hardware-pdfs (push-pull)', createdAt: '2026-06-14T10:00:00Z', updatedAt: '2026-06-14T10:00:00Z'
       },
       {
@@ -4093,7 +3749,6 @@ const knowledgeApp = {
         keyFormulas: ['Vout ≈ (Ns/Np) × Vin × D', '開關耐壓 ≈ Vin（優於推挽的 2×Vin）', '需死區時間防同臂直通'],
         designNotes: ['對角開關成對導通，務必加死區避免同臂直通', '高側需自舉或隔離驅動', '可用移相控制(phase-shift)達 ZVS 軟切換', '一次側加隔直電容防偏磁'],
         commonMistakes: ['同臂上下直通燒管', '高側驅動供電不足', '偏磁未處理導致飽和'],
-        examples: [{ title: '大功率隔離電源', application: '伺服器/充電樁', circuit: '移相全橋 + 同步整流' }],
         relatedTopics: ['half-bridge', 'push-pull-converter', 'gate-driver', 'h-bridge-motor'], sourcePdf: 'hardware-pdfs (full-bridge)', createdAt: '2026-06-14T10:00:00Z', updatedAt: '2026-06-14T10:00:00Z'
       },
       {
@@ -4106,7 +3761,6 @@ const knowledgeApp = {
         keyFormulas: ['D = Vctrl / Vramp_pk', 'fsw = 鋸齒波頻率', 'Vout = Vin × D (Buck)'],
         designNotes: ['鋸齒波線性度影響調變精度', '加斜率補償避免電流模式次諧波振盪', '比較器需快、低延遲', '注意最小/最大占空比限制'],
         commonMistakes: ['誤差放大器補償不當導致振盪', '占空比飽和失去調節', '雜訊耦合到比較器誤觸發'],
-        examples: [{ title: 'Buck 控制環', application: 'DC-DC', circuit: '電壓模式 PWM' }],
         relatedTopics: ['buck-converter', 'comparator-hysteresis', 'op-amp-basics'], sourcePdf: 'hardware-pdfs (PWM)', createdAt: '2026-06-14T10:00:00Z', updatedAt: '2026-06-14T10:00:00Z'
       },
       {
@@ -4119,7 +3773,6 @@ const knowledgeApp = {
         keyFormulas: ['Rt = Z0（匹配特性阻抗）', 'VTT = Vdd/2', 'VTT 穩壓器需 source/sink 電流'],
         designNotes: ['VTT 軌需大量去耦、低阻抗', '終端電阻靠近接收端', '善用 ODT 減少外部元件', 'VTT 走線寬、短，雙向電流'],
         commonMistakes: ['VTT 去耦不足造成跳動', '終端位置錯誤殘留反射', '用一般 LDO 當 VTT(不能灌電流)'],
-        examples: [{ title: 'DDR3/DDR4 匯流排', application: '記憶體', circuit: 'VTT 終端 + ODT' }],
         relatedTopics: ['impedance-matching', 'differential-pair', 'decoupling-capacitor'], sourcePdf: 'hardware-pdfs (DDR/VTT)', createdAt: '2026-06-14T10:00:00Z', updatedAt: '2026-06-14T10:00:00Z'
       },
       {
@@ -4132,7 +3785,6 @@ const knowledgeApp = {
         keyFormulas: ['Rs = (Vin − Vz)/(Iz + Iload)', 'Iz 需維持在 Izk ~ Izm 之間', 'P_zener = Vz × Iz'],
         designNotes: ['限流電阻確保 Zener 工作電流', '負載電流變化大時穩壓差', '注意 Zener 功耗與溫度係數', '大電流場合改用 LDO'],
         commonMistakes: ['Rs 選錯使 Iz 不足或過大', '忽略 Zener 功耗燒毀', '當大電流穩壓器用(效率差)'],
-        examples: [{ title: '簡易基準/箝位', application: '保護/偏壓', circuit: 'Rs + Zener' }],
         relatedTopics: ['ldo-regulator', 'tl431-reference', 'tvd-selection'], sourcePdf: 'hardware-pdfs (zener)', createdAt: '2026-06-14T10:00:00Z', updatedAt: '2026-06-14T10:00:00Z'
       },
       {
@@ -4145,7 +3797,6 @@ const knowledgeApp = {
         keyFormulas: ['Vout = −I_PD × Rf', '頻寬 ∝ 1/(Rf × Cin)', '回授加 Cf 補償穩定'],
         designNotes: ['Rf 大→增益高但頻寬低、噪聲高', '加回授電容 Cf 補償避免振盪', '低偏置電流運放、低輸入電容', 'PCB 保護環降低漏電流'],
         commonMistakes: ['無 Cf 補償導致振盪', '運放偏置電流造成誤差', '佈線漏電流影響微小電流'],
-        examples: [{ title: '光感測前端', application: '光通訊/感測', circuit: '光電二極體 + TIA' }],
         relatedTopics: ['op-amp-basics', 'current-sensing'], sourcePdf: 'hardware-pdfs (transimpedance/TIA)', createdAt: '2026-06-14T10:00:00Z', updatedAt: '2026-06-14T10:00:00Z'
       },
       {
@@ -4158,7 +3809,6 @@ const knowledgeApp = {
         keyFormulas: ['Vout = (1 + 2R1/Rg) × (R3/R2) × (V2 − V1)', '前級增益 = 1 + 2R1/Rg', '後級增益 = R3/R2', 'CMRR 取決於 R2/R3 比例匹配'],
         designNotes: ['Rg 改增益不影響 CMRR，前級對稱免電阻匹配', '後級 R2/R3 需精密匹配(0.1%)以保 CMRR', '用低偏壓、低漂移運放降低失調', 'Ref 腳可接虛擬地做電平位移', '直接用整合式 INA(INA128/AD620)省匹配麻煩'],
         commonMistakes: ['後級電阻不匹配使 CMRR 劣化', 'Rg 容差直接變成增益誤差', 'Ref 腳由高阻抗源驅動破壞 CMRR', '輸入偏壓電流無回流路徑導致飽和'],
-        examples: [{ title: '橋式感測讀取', application: '稱重/壓力/應變', circuit: '惠斯通電橋 + INA + ADC' }],
         relatedTopics: ['op-amp-basics', 'opamp-configurations', 'wheatstone-bridge', 'current-sensing'], sourcePdf: 'hardware-pdfs (儀表放大器, 35 篇)', createdAt: '2026-06-15T10:00:00Z', updatedAt: '2026-06-15T10:00:00Z'
       },
       {
@@ -4171,7 +3821,6 @@ const knowledgeApp = {
         keyFormulas: ['每級反相：Vout 高 ⇔ 閘極低', 'LR_L 低→RTC_CLR_G 高→OD_L 拉低(有效)', '待機電流 ≈ VSTBY / R_pullup(100k→~33µA 最壞)', '開汲極輸出：只吸電流(low)、釋放時高阻'],
         designNotes: ['上拉接常開 STBY 軌、用大阻值(100k)壓低靜態電流', '開汲極輸出防止對未上電域反灌(防漏核心)', 'BSS138 體二極體方向需與防反灌一致', '閘極 DC 不耗流、無漏電路徑', '邊緣較慢(R×C)，適合靜態 reset/clear 訊號'],
         commonMistakes: ['上拉接到會斷電的主軌→失去防漏意義', '用主動推挽輸出取代開汲極→對未上電域反灌', '極性(兩次反相)算錯', '上拉阻值過小→待機電流過大', '長走線 + 大上拉→抗噪差/上升慢'],
-        examples: [{ title: 'RTC_CLR 跨域', application: 'RTC/STBY 域 reset 隔離', circuit: 'BSS138×2(SOT363) + 10k/100k 上拉' }],
         relatedTopics: ['level-shift', 'esd-protection', 'reverse-polarity', 'mosfet-switch'], sourcePdf: '使用者實例 (PREVENT LEAKAGE)', createdAt: '2026-06-15T10:00:00Z', updatedAt: '2026-06-15T10:00:00Z'
       },
       {
@@ -4187,7 +3836,6 @@ const knowledgeApp = {
         keyFormulas: ['Vref = VBE + M·VT·ln(N) ≈ 1.2V', 'VT = kT/q ≈ 26mV @300K', 'ΔVBE = VT·ln(N)（面積比 N）', 'VBE 約 −2mV/°C；PTAT 項調到 +2mV/°C 抵消'],
         designNotes: ['面積比 N 常取 8（佈局成 3×3 共質心）', 'R 比決定 M，需精密匹配與共質心佈局', '運放失調電壓直接成基準誤差→用 chopper/auto-zero', '加啟動電路避免落在零電流穩態', '輸出加緩衝與去耦；曲率補償可再降溫漂'],
         commonMistakes: ['無啟動電路→卡在 0V 簡併點', 'R/BJT 不匹配→溫漂與初始誤差大', '運放失調未處理→基準偏移', '負載直接拉基準節點→壓降/不穩', '忽略曲率(高階溫度項)導致中溫凸起'],
-        examples: [{ title: '片上 1.2V 基準', application: 'ADC/DAC/LDO 參考', circuit: '運放型 bandgap + 啟動電路' }],
         relatedTopics: ['ldo-selection', 'tl431-reference', 'adc-dac-basics', 'current-mirror'], sourcePdf: 'hardware-pdfs (bandgap, 5 篇)', createdAt: '2026-06-15T10:00:00Z', updatedAt: '2026-06-15T10:00:00Z'
       },
       {
@@ -4200,7 +3848,6 @@ const knowledgeApp = {
         keyFormulas: ['VCC < Vth → /RST = 低(有效)', '釋放條件：VCC > Vth + Vhys 且過延時 tRST', '門檻常見：4.63/2.93/2.63/1.67V 等', '開汲極：Rpu 接 MCU 域電壓'],
         designNotes: ['/RST 是開汲極→務必加上拉(到 MCU I/O 電壓)', 'Vth 選在 MCU 最低工作電壓之上、留遲滯', '延時要夠長覆蓋電源/晶振穩定', '旁路電容靠近 VCC 腳濾雜訊避免誤觸發', '多監控源可 wired-AND 共用 /RST 線', '看門狗款需 MCU 定期踢 WDI'],
         commonMistakes: ['/RST 忘了上拉→浮接亂 reset', '門檻太低→MCU 在欠壓區仍跑', '延時太短→電源未穩就放行', 'VCC 腳無去耦→雜訊誤觸發', '上拉接錯電壓域→電平不符'],
-        examples: [{ title: 'MCU 上電復位', application: '嵌入式系統開機', circuit: 'MAX809/TPS3823 + Rpu + 旁路電容' }],
         relatedTopics: ['bandgap-reference', 'prevent-leakage-fet', 'embedded-power-design', 'decoupling-capacitor'], sourcePdf: 'hardware-pdfs (supervisor/reset)', createdAt: '2026-06-15T10:00:00Z', updatedAt: '2026-06-15T10:00:00Z'
       },
       {
@@ -4214,7 +3861,6 @@ const knowledgeApp = {
         keyFormulas: ['fc = 1/(2πRC)', '高於 fc 通過、低於 fc 衰減', '−20dB/decade 滾降', '相位 +45° @fc'],
         designNotes: ['交流耦合隔直：C 取夠大使 fc 低於訊號最低頻', '輸入阻抗受 R 影響，注意負載', '與低通串接成帶通'],
         commonMistakes: ['C 太小→低頻被砍', 'R 太小→負載重', '忽略後級輸入電容改變 fc'],
-        examples: [{ title: '音訊交流耦合', application: '隔直流偏壓', circuit: 'C 串聯 + R 對地' }],
         relatedTopics: ['rc-lowpass', 'op-amp-basics'], sourcePdf: null, createdAt: '2026-06-19T10:00:00Z', updatedAt: '2026-06-19T10:00:00Z'
       },
       {
@@ -4228,7 +3874,6 @@ const knowledgeApp = {
         keyFormulas: ['Vc(t) = Vin(1 − e^(−t/RC))', 'τ = RC（63%）', '到 50%≈0.69RC', 'td = RC·ln(Vin/(Vin−Vth))'],
         designNotes: ['後接 Schmitt 觸發避免邊緣抖動', 'C 漏電與運放偏壓電流影響長延遲精度', '需精確延遲改用計時 IC(555)或 MCU'],
         commonMistakes: ['直接接邏輯閘→緩變邊緣造成抖動/穿透電流', '用電解電容→容差/漏電大', '忽略放電路徑'],
-        examples: [{ title: '上電延遲致能', application: '電源時序', circuit: 'R+C → 比較器 → EN' }],
         relatedTopics: ['rc-lowpass', 'power-sequencing', 'comparator-hysteresis'], sourcePdf: null, createdAt: '2026-06-19T10:00:00Z', updatedAt: '2026-06-19T10:00:00Z'
       },
       {
@@ -4242,7 +3887,6 @@ const knowledgeApp = {
         keyFormulas: ['Vout = −1/(RC)∫Vin dt', '方波→三角波', '單位增益頻率 = 1/(2πRC)', '並聯 Rf 設低頻增益上限'],
         designNotes: ['C 並聯大 Rf 防直流飽和/偏移累積', '低偏壓電流運放、補償輸入偏置', '重置開關清除初始電荷'],
         commonMistakes: ['無 Rf→偏移累積到飽和', '忽略運放失調被積分放大', 'C 漏電造成漂移'],
-        examples: [{ title: '三角波產生', application: '波形/PWM', circuit: '方波→積分器→三角波' }],
         relatedTopics: ['op-differentiator', 'opamp-configurations', 'rc-lowpass'], sourcePdf: null, createdAt: '2026-06-19T10:00:00Z', updatedAt: '2026-06-19T10:00:00Z'
       },
       {
@@ -4256,7 +3900,6 @@ const knowledgeApp = {
         keyFormulas: ['Vout = −RC·dVin/dt', '三角波→方波', '高頻增益 ∝ f（需限頻）', '加 Rs 串 C：fz=1/(2πRsC)'],
         designNotes: ['輸入串小電阻 Rs + 回授並小 Cf 限高頻增益防振盪', '低噪聲運放', '注意對高頻噪聲敏感'],
         commonMistakes: ['未限頻→高頻噪聲被放大/振盪', '直接微分含噪訊號', 'GBW 不足相位餘裕不夠'],
-        examples: [{ title: '邊緣/變化率偵測', application: '訊號處理/控制', circuit: '三角波→微分器→方波' }],
         relatedTopics: ['op-integrator', 'opamp-configurations'], sourcePdf: null, createdAt: '2026-06-19T10:00:00Z', updatedAt: '2026-06-19T10:00:00Z'
       }
     ];
@@ -4506,7 +4149,8 @@ const knowledgeApp = {
 
     title.textContent = item.title;
 
-    // 電路動畫已於 2026-07-22 全數移除（動畫內容不正確，錯的教學圖比沒有更糟）
+    // 電路動畫已於 2026-07-22 全數移除；「範例應用」（文字＋自動圖）於 2026-07-26 全數移除。
+    // 兩者同一個理由：內容不正確，錯的教學內容比沒有更糟。
     body.innerHTML = `
       <div class="detail-section">
         <h3>原理說明</h3>
@@ -4544,30 +4188,6 @@ const knowledgeApp = {
           <ul class="note-list mistake-list">
             ${item.commonMistakes.map(m => `<li>${m}</li>`).join('')}
           </ul>
-        </div>
-      ` : ''}
-
-      ${(item.examples || []).length > 0 ? `
-        <div class="detail-section">
-          <h3>範例應用</h3>
-          ${item.examples.map(ex => {
-            // ① 範例指名料號、且本卡有 IC 拓樸圖 → 畫真接線圖（沿用已驗證拓樸，IC 標成該料號）
-            const sch = (window.ExampleSchematic && ExampleSchematic.build(item, ex)) || null;
-            // ② 否則退回訊號鏈方塊圖（兩段以上才畫；單段是一句話，畫框沒有資訊量）
-            const dia = sch ? '' : ((window.ExampleDiagram && ExampleDiagram.build(ex.circuit)) || '');
-            const boxCss = 'margin-top: 10px; padding: 14px 10px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow-x: auto;';
-            return `
-            <div style="padding: 12px; background: var(--panel-soft); border-radius: var(--radius); margin-bottom: 8px;">
-              <strong>${ex.title}</strong>
-              <p style="font-size: 14px; color: var(--muted); margin-top: 4px;">${ex.application}</p>
-              ${sch ? `
-                <div style="${boxCss}">${sch.svg}</div>
-                <p style="font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.6;">${sch.note}</p>
-                <p style="font-size: 13px; margin-top: 6px;">${ex.circuit}</p>`
-              : dia ? `<div style="${boxCss}">${dia}</div>`
-              : `<p style="font-size: 13px; margin-top: 4px;">${ex.circuit}</p>`}
-            </div>`;
-          }).join('')}
         </div>
       ` : ''}
 

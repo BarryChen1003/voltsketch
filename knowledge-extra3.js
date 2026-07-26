@@ -36,13 +36,6 @@
       "差分資料對繞線不等長或誤用緊耦合，高速資料 eye 崩、封包錯誤",
       "只抄天線圖案沒對疊層/介電常數，實際頻率偏移或阻抗跑掉"
     ],
-    "examples": [
-      {
-        "title": "車用角雷達",
-        "application": "77/60GHz 角雷達以 AWRL6844 4TX/4RX 做到約 3.75cm 距離解析＋波束成形盲點偵測",
-        "circuit": "chirp 合成 → TX 天線陣列 → 目標反射 → RX 混頻去斜 → IF ADC → LVDS/CSI-2 原始資料 → 處理器 FFT"
-      }
-    ],
     "relatedTopics": ["aop-radar-layout", "large-bga-power-integrity", "jesd204-converter-clocking"],
     "i18n": {
       "en": {
@@ -131,13 +124,6 @@
       "封裝下方地面被電源分割或訊號走線切開，天線參考地不連續，效率與方向性劣化",
       "套用方形對稱 BGA 扇出習慣處理雙側 bank，逃逸繞線擠不開或誤接",
       "忽略外殼/radome 影響，PCB 單獨量測好但裝進機構就頻偏、增益掉"
-    ],
-    "examples": [
-      {
-        "title": "AoP 存在感測/手勢雷達",
-        "application": "IWRL6432AOP 60GHz AoP 單晶片做智慧居家存在感測，免板上天線與 60GHz 走線",
-        "circuit": "封裝內天線陣列 ⇄ 收發前端 → 內建 M4F/HWA 處理 → 低速介面輸出點雲/存在旗標"
-      }
     ],
     "relatedTopics": ["fmcw-radar-frontend", "large-bga-power-integrity", "qfn-ep-thermal"],
     "i18n": {
@@ -228,13 +214,6 @@
       "密間距 BGA 用 dog-bone 打孔，焊盤旁擠不下、via 電感大，電流分配不均",
       "類比/PLL 電源與數位共用 rail，時脈抖動與轉換雜訊惡化"
     ],
-    "examples": [
-      {
-        "title": "車用/工業 Sitara MCU 供電",
-        "application": "AM2611-Q1 293-ball BGA 多域供電：核心/IO/類比各自平面對＋via-in-pad＋分頻段去耦",
-        "circuit": "PMIC/多路 DC-DC+LDO → 電源平面 → BGA 電源球陣列；地球陣列 via 導內層地平面兼散熱"
-      }
-    ],
     "relatedTopics": ["hbm-power-decoupling", "aop-radar-layout", "qfn-ep-thermal"],
     "i18n": {
       "en": {
@@ -323,13 +302,6 @@
       "時脈供電和數位/開關電源共用，相位雜訊惡化，高頻輸入 SNR 大幅下降",
       "差分時脈/SYSREF/lane 走線不等長，建立保持違例或封包錯誤",
       "差分對極性接反（把 P/N 對調），相位反轉或鏈路不通"
-    ],
-    "examples": [
-      {
-        "title": "相位陣列/儀器 RF 前端",
-        "application": "多顆 DAC39RF20/ADC32RF72 以 LMK 時脈＋SYSREF 同步，JESD204C 對 FPGA，做相位陣列波束成形",
-        "circuit": "LMK 時脈產生器 → DEVCLK+SYSREF 等長分配 → 各 RF DAC/ADC → JESD204C 差分 lane → FPGA"
-      }
     ],
     "relatedTopics": ["clock-tree-fanout", "large-bga-power-integrity", "retimer-redriver"],
     "i18n": {
@@ -420,13 +392,6 @@
       "復位波形時序與位元平面載入不同步，殘影、翻轉錯誤或對比下降",
       "DMD 與控制器/PMIC 混搭不同 chipset 世代，偏壓/時序不相容"
     ],
-    "examples": [
-      {
-        "title": "4K 投影/車用 HUD",
-        "application": "DLP800XE 4K+ DMD 配 DLPC 控制器＋DLPA PMIC 做超短焦投影或車用抬頭顯示",
-        "circuit": "影像源 → DLPC 控制器 → sub-LVDS 位元平面 → DMD 微鏡；DLPA 供偏壓/復位高壓＋MBRST"
-      }
-    ],
     "relatedTopics": ["large-bga-power-integrity", "jesd204-converter-clocking", "clock-tree-fanout"],
     "i18n": {
       "en": {
@@ -515,13 +480,6 @@
       "過流保護只寫在軟體中斷，回應太慢，短路時功率級已炸",
       "ADC 隨意取樣沒和 PWM 同步，取到開關雜訊尖峰，回授失真、迴路不穩",
       "類比回授緊貼開關節點走線，切換雜訊耦合進 ADC，量測值跳動"
-    ],
-    "examples": [
-      {
-        "title": "數位控制 PFC/DC-DC 或馬達驅動",
-        "application": "TMS320F28P551SG 以 HRPWM＋CMPSS＋同步 ADC 做數位 PFC/LLC 或 FOC 馬達控制，硬體快保護",
-        "circuit": "電流/電壓感測 → 同步 ADC → C28x 補償器運算 → HRPWM → 閘極驅動 → 功率級；CMPSS 硬體跳脫"
-      }
     ],
     "relatedTopics": ["isolated-gate-driver", "vrm-multiphase", "current-sense-kelvin"],
     "i18n": {
@@ -612,13 +570,6 @@
       "忽略參考去耦與精度，滿刻度飄、雜訊底抬高",
       "以為整合 AFE 就不用抗混疊，帶外雜訊摺回落在訊號帶內"
     ],
-    "examples": [
-      {
-        "title": "工業多通道資料擷取",
-        "application": "ADS8688W 8 通道整合 AFE 直接量多路感測器（±10V/電流環等），省外部運放與保護",
-        "circuit": "多路感測器 → 高阻輸入＋PGA → 內部多工掃描 → SAR ADC → SPI → MCU；外接精密 REF＋去耦"
-      }
-    ],
     "relatedTopics": ["current-sense-kelvin", "jesd204-converter-clocking"],
     "i18n": {
       "en": {
@@ -708,13 +659,6 @@
       "上下電序列沒管，多域亂序上電造成閂鎖或大漏電",
       "用商規/一般精密電阻做閾值分壓，輻射下阻值漂移使閾值跑掉",
       "忽略 SEL 額定，單粒子閂鎖造成大電流永久損壞元件"
-    ],
-    "examples": [
-      {
-        "title": "衛星載荷電源安全網",
-        "application": "TPS7H3034-SP 監控 FPGA/處理器多路供電＋看門狗，SEE 加固，自主復原無需地面介入",
-        "circuit": "各供電軌 → 分壓 → 四路 UV/OV 監控 → RESET/中斷；處理器週期餵狗 → 看門狗逾時 reset"
-      }
     ],
     "relatedTopics": ["space-grade-power", "large-bga-power-integrity", "c2000-digital-power-control"],
     "i18n": {

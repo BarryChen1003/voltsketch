@@ -24,16 +24,16 @@
 | **PCB Layout** `pcb.html` | 接近桌面 EDA：undo/redo、自動存檔、匯出匯入、刪除、多選/框選/群組拖曳/端點拖曳/複製貼上、對齊分佈、方向鍵微調、文字/尺寸/netlabel/禁止區、Gerber 匯出、3D |
 | IC 元件庫 | footprint 覆蓋 **195/195**（0 方框） |
 | 公版參考庫 | 8 板 213 料件全有 footprint/pin |
-| 知識庫 `knowledge.html` | 146 卡；原理說明自動分段；電路圖 0 重疊；範例應用有自動圖 |
+| 知識庫 `knowledge.html` | 146 卡；原理說明自動分段；電路圖 0 重疊；**無「範例應用」段**（2026-07-26 全數移除，內容與圖都不正確） |
 | 觀測性 | `observe.js` 錯誤監控＋analytics（11 頁），**待跑 SQL 才會有資料** |
 | 金流 | 前後端碼齊全，**待部署** |
 
-## 2. CI（12 關，push/PR 觸發）
+## 2. CI（10 關，push/PR 觸發）
 
 ```
 node --check 全 JS → reffp-check → pcb-logic.test → gerber-check → i18n-check
 → knowledge-format.test → circuit-check --strict → svg-overlap-check --max=2
-→ example-diagram.test → example-schematic.test → JSON parse → HTML 引用存在性
+→ JSON parse → HTML 引用存在性
 ```
 
 本機跑全套（gerber 較慢，分批跑避免逾時）：
@@ -41,7 +41,6 @@ node --check 全 JS → reffp-check → pcb-logic.test → gerber-check → i18n
 for f in ./*.js; do node --check "$f" || echo "FAIL $f"; done
 node reffp-check.js && node pcb-logic.test.js && node knowledge-format.test.js
 node circuit-check.js --strict && node i18n-check.js
-node example-diagram.test.js && node example-schematic.test.js
 node svg-overlap-check.js --max=2
 node gerber-check.js
 ```
@@ -73,7 +72,6 @@ node gerber-check.js
 ## 5. 工程面待辦（我能做，等指示）
 
 - **F：footprint/知識擴充** — 需使用者指定方向。加公版板要真實 github 板檔；IC 補腳名要 datasheet，不憑印象。
-- 範例應用電路目前只支援 LDO/Buck/Boost（9 張）。要擴充到 Flyback 等，**需先有可驗證的「怎樣算對」判準**或使用者提供 datasheet 典型應用圖。
 - 知識卡逐張審內容（需使用者在場定調）。
 - 前端 analytics 事件已埋（`Observe.track`），等 SQL 跑完才看得到資料。
 
@@ -81,7 +79,8 @@ node gerber-check.js
 
 ## 6. 這個 session 學到的（別重蹈）
 
-- **「換個標籤」不算新內容**：範例應用第一版把卡片主圖複製一份只改 IC 名 → 同頁兩張一樣的圖，使用者直接指出沒有意義。範例圖要有主圖沒有的東西（實際電壓、回授分壓）。
+- **沒有可驗證判準就別產教學內容**：範例應用（文字＋自動圖）2026-07-26 整段砍掉，理由與電路動畫同一個——內容與圖都不正確。這是同型錯誤第二次；先有「怎樣算對」的檢查方法，再產內容。
+- **「換個標籤」不算新內容**：範例應用第一版把卡片主圖複製一份只改 IC 名 → 同頁兩張一樣的圖，使用者直接指出沒有意義（該段現已刪除）。
 - **自動吸附會吃掉接線**：`knowledge-circuits2.js` 的 `L()` 會把端點吸到 12–14px 內的腳位，兩端吸到同一點時線就塌成零長＝那條線根本沒畫。符號內部一律用 `LR()`（不吸附）。`circuit-check.js` 專抓這個。
 - **拓樸方向要驗**：曾把 LDO 畫成 `3.3V→5V`（升壓，物理不可能）。凡是有方向的東西都要對照拓樸檢查。
 - **中文排版禁則**：收尾標點不可置行首（曾把「）」單獨丟到第二行）。

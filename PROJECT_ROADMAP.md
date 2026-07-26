@@ -30,7 +30,8 @@
 
 - 批次讀取 `hardware-pdfs/` 內的 PDF。
 - 將 PDF 內容轉成主題知識卡，例如 Level Shift、LDO、Buck、Boost、Op Amp、MOSFET Gate Driver、ESD、EMI、UART/I2C/SPI/CAN/USB。
-- 每個主題包含：原理說明、典型電路圖、關鍵公式、設計注意事項、常見錯誤、範例應用。
+- 每個主題包含：原理說明、典型電路圖、關鍵公式、設計注意事項、常見錯誤。
+  （「範例應用」2026-07-26 移除：內容與自動圖都不正確，錯的教學內容比沒有更糟。要重做需先有可驗證的正確性判準。）
 - 能把 PDF 中的重要圖片擷取出來，插入知識頁。
 - 未來若需要動圖，可用 SVG/canvas 動畫呈現電流方向、電壓變化、開關週期、layout return path。
 

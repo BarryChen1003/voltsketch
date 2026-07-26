@@ -36,13 +36,6 @@
       "去飽和保護RC濾波時間設太長，短路偵測慢過功率開關短路耐受時間（SiC通常僅數µs）",
       "忽略隔離側供電去耦，開關瞬間電流跌落造成VDD跌破UVLO，開機或切換中斷驅動"
     ],
-    "examples": [
-      {
-        "title": "SiC逆變器閘極驅動",
-        "application": "牽引逆變器/OBC以UCC21711-Q1驅動1700V SiC MOSFET，DESAT+OC雙重保護搭配主動米勒箝位",
-        "circuit": "MCU PWM → 隔離閘極驅動器 → 閘極電阻 → SiC MOSFET，OC腳接SenseFET或分流電阻"
-      }
-    ],
     "relatedTopics": [
       "regulator-ldo-vs-buck",
       "acdc-flyback",
@@ -139,13 +132,6 @@
       "忽略dead-battery情境測試，電池完全放電後USB-C根本無法識別、無法充電開機",
       "CC腳直接短接或未做PHY OVP，插入異常電壓源時控制器燒毀"
     ],
-    "examples": [
-      {
-        "title": "筆電/工具機Type-C受電埠",
-        "application": "以TPS25730AS驅動外部背對背NFET，支援dead-battery啟動與OVP/RCP",
-        "circuit": "Type-C CC1/CC2 → PD控制器 → GATE_VSYS/GATE_VBUS驅動外部NFET → 系統VSYS"
-      }
-    ],
     "relatedTopics": [
       "usb-pd-fastcharge",
       "laptop-battery-charger",
@@ -240,13 +226,6 @@
       "端接電阻值套錯VCC電壓版本(2.5V電路套3.3V端接表)，輸出直流偏壓不在正確工作範圍",
       "扇出輸出直接並聯多顆負載當作分支，而不是每路獨立端接，造成阻抗不連續與skew暴增",
       "忽略電源去耦與雜訊隔離，附加抖動被電源雜訊放大，拖垮高速ADC/SerDes的時序餘裕"
-    ],
-    "examples": [
-      {
-        "title": "AI伺服器多顆FPGA共用主時脈",
-        "application": "單顆晶振經CDCLVP111-SEP 1:10扇出，各輸出等長端接送到FPGA/ADC參考時脈輸入",
-        "circuit": "OSC → LVPECL扇出緩衝器 → 10路差動端接輸出 → 各下游元件CLK腳"
-      }
     ],
     "relatedTopics": [
       "retimer-redriver",
@@ -344,13 +323,6 @@
       "PVDD只放一顆去耦電容應付所有頻段，結果高頻雜訊或低頻脈衝其中一項處理不到位",
       "類比小訊號走線與Class-D開關輸出(OUT_P/OUT_N)平行佈線太近，耦合雜訊進前級電路"
     ],
-    "examples": [
-      {
-        "title": "手機/筆電內建喇叭驅動",
-        "application": "TAS2320以edge-rate control免濾波直驅喇叭，PVDD雙級去耦(0.1µF+10µF)",
-        "circuit": "I2S音訊 → Class-D放大器 → OUT_P/OUT_N → 喇叭(近場，選配LC濾波)"
-      }
-    ],
     "relatedTopics": [
       "qfn-ep-thermal",
       "regulator-ldo-vs-buck",
@@ -444,13 +416,6 @@
       "只看TID數字沒看LET範圍，結果元件耐得住累積劑量卻在單一粒子事件下閂鎖燒毀",
       "混用工程樣品(EM)與飛行等級(V/P)料號，工程樣品成本低但未經完整輻射鑑定流程，誤用在飛行硬體上",
       "降額只做電壓沒做電流/功耗/溫度，單一維度降額無法涵蓋輻射環境加上熱真空的複合應力"
-    ],
-    "examples": [
-      {
-        "title": "衛星酬載點負載電源",
-        "application": "同步降壓TPS7H4010-SEP供應FPGA/ADC點負載，SEL/SEB/SEGR免疫至LET 43，TID 20~30krad(Si)",
-        "circuit": "衛星匯流排電壓 → TPS7H4010-SEP同步降壓 → FPGA/ASIC點負載，關鍵訊號鏈另評估QMLV等級控制器"
-      }
     ],
     "relatedTopics": [
       "regulator-ldo-vs-buck",
@@ -547,13 +512,6 @@
       "把逐週期valley current sensing的粗略保護精度當成計量級電流讀值使用，拿去做精確功耗計算",
       "高邊感測用的運放共模輸入範圍不夠，滿載或突波時運放飽和，電流讀值失真甚至損壞"
     ],
-    "examples": [
-      {
-        "title": "伺服器電源模組電流限制與遙測",
-        "application": "TPS544B28用低邊RDS(on) valley sensing做逐週期電流限制，搭配Kelvin接法的差動遠端電壓感測維持輸出精度",
-        "circuit": "功率MOSFET Vds取樣 → 電流限制比較器；VOS/GOS差動線Kelvin接到負載端"
-      }
-    ],
     "relatedTopics": [
       "wqfn-hotrod-layout",
       "vrm-multiphase",
@@ -649,13 +607,6 @@
       "只看資料表θJA數字就估算系統散熱，沒有對照自己板子的層數與銅面積，結果實際運作溫度遠超預期",
       "via陣列孔距太密導致鑽孔可靠度下降，或孔距太疏使熱阻改善有限，兩者都要跟PCB廠製程能力核對"
     ],
-    "examples": [
-      {
-        "title": "手機Class-D功放EP散熱",
-        "application": "HR-QFN 26pin封裝EP下方滿版via陣列搭配填孔電鍍，鋼網切分50~70%覆蓋率格子降低空洞",
-        "circuit": "IC EP → via陣列 → 內層/底層散熱銅面 → 機構散熱路徑"
-      }
-    ],
     "relatedTopics": [
       "classd-output-filter",
       "wqfn-hotrod-layout",
@@ -750,13 +701,6 @@
       "只用JEDEC標準測試板的θJA數字做熱設計，沒有依實際多層板佈局重新評估，結果散熱裕度嚴重不足",
       "SW節點走線又長又細(遷就佈線方便)，振鈴與EMI超標，效率也因寄生電感loss下降",
       "多顆PGND/VIN腳位各自獨立去耦、內層沒有低阻抗連通，造成腳位間電位不一致，影響電流分配與雜訊表現"
-    ],
-    "examples": [
-      {
-        "title": "伺服器多相/單相同步降壓模組",
-        "application": "TPS544B28以WQFN-HR封裝驅動20A輸出，VIN/PGND腳位就近去耦+滿版過孔，SW節點短寬處理",
-        "circuit": "VIN去耦電容(緊貼腳位) → WQFN-HR IC → SW節點(短寬) → 電感 → 輸出"
-      }
     ],
     "relatedTopics": [
       "qfn-ep-thermal",

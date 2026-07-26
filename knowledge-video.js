@@ -33,18 +33,6 @@
         "回流平面上有大孔、切割或不連續，使場失去邊界並向外輻射",
         "忽略「無回流平面時大地會變成回流路徑」的後果，直到 EMC 測試才發現超標"
       ],
-      "examples": [
-        {
-          "title": "單導體 vs 雙導體場型",
-          "application": "教學可視化",
-          "circuit": "單導體電場放射狀發散；加入回流導體後電場改為導體間直線連接、磁場集中於兩導體之間"
-        },
-        {
-          "title": "無回流平面的雙訊號層板",
-          "application": "簡易消費性電子雙層板",
-          "circuit": "兩訊號層皆無專屬參考平面，量測輻射發射時明顯超標，因大地被迫充當回流路徑"
-        }
-      ],
       "relatedTopics": [
         "grounding-design",
         "pcb叠层設计",
@@ -84,18 +72,6 @@
         "reset 線路設計不慎，未接電阻時電容會被開關拉到接地造成瞬間短路",
         "USB 線路缺乏 EMI 濾波/保護元件，長纜線容易耦合雜訊進出板子"
       ],
-      "examples": [
-        {
-          "title": "CM4 Minima 載板 USB 電源輸入",
-          "application": "USB-C 供電＋大電容儲能",
-          "circuit": "電路圖需標注 shield 接法、CC1/CC2 保護與差動資料線阻抗"
-        },
-        {
-          "title": "reset 電路缺陷",
-          "application": "STM32F4 自製板 SWD/reset",
-          "circuit": "電阻未焊時，按鍵按下會把去耦電容對地短路"
-        }
-      ],
       "relatedTopics": [
         "differential-pair",
         "decoupling-capacitor",
@@ -132,18 +108,6 @@
         "屏蔽直接短接回流平面又同時想加共模濾波器，導致濾波器被旁路完全失效",
         "乙太網連接器磁性元件的接地腳位誤接回流平面而非機殼，使內建磁性元件失去作用",
         "CC1/CC2 等直接對外的線路缺乏保護，成為干擾入侵 CM4/CM5 模組的破口"
-      ],
-      "examples": [
-        {
-          "title": "USB-C 電源輸入屏蔽",
-          "application": "CM4 Minima 載板",
-          "circuit": "確認 shield 是否直接接回流平面，避免未來加裝共模扼流圈時被旁路"
-        },
-        {
-          "title": "乙太網 1000Base-T 連接器",
-          "application": "Gigabit Ethernet 介面",
-          "circuit": "MP1/MP2 經 0 歐姆電阻接 GND，須留意是否繞過內建磁性元件並改接機殼"
-        }
       ],
       "relatedTopics": [
         "common-mode-choke",
@@ -184,18 +148,6 @@
         "M.2 3.3V via 與訊號 via 之間缺乏鄰近的接地回流過孔，迫使回流電流走高阻抗路徑",
         "把電源平面當回流參考平面使用，電源平面常見分割（split），訊號跨越分割機率大幅提高"
       ],
-      "examples": [
-        {
-          "title": "CM4 Minima 六層疊層",
-          "application": "高速載板疊層設計",
-          "circuit": "訊號-回流-訊號-電源-回流-訊號，前後三層對稱"
-        },
-        {
-          "title": "Simbeor 模擬驗證",
-          "application": "PCIe RX 差動對阻抗與串擾檢查",
-          "circuit": "匯出 ODB++ 後模擬參考完整性違規，證實 layer 3 誤耦合至 layer 4 電源層"
-        }
-      ],
       "relatedTopics": [
         "pcb叠层設计",
         "via-design",
@@ -232,18 +184,6 @@
         "子板與母板堆疊形成的空腔未經評估，可能與訊號諧波共振而增加輻射",
         "使用鉭質電容而非陶瓷電容，犧牲可靠性與安全性",
         "連接器屏蔽與纜線屏蔽之間形成厚實但高阻抗的連接，破壞法拉第籠延續性"
-      ],
-      "examples": [
-        {
-          "title": "CM5 模組堆疊空腔",
-          "application": "子板疊在載板上方的連接器架構",
-          "circuit": "評估空腔尺寸是否與訊號諧波共振，必要時加 EMI 吸收材料"
-        },
-        {
-          "title": "連接器集中單側布局",
-          "application": "多介面載板（USB/HDMI/Ethernet/M.2）",
-          "circuit": "所有對外連接器排列在板子同一邊而非分散四周"
-        }
       ],
       "relatedTopics": [
         "emi-layout",
@@ -283,18 +223,6 @@
         "誤以為省一層回流平面只是製造成本問題，忽略了後續 EMC/SI 測試失敗的隱藏代價",
         "疊層前後三層雖然層數對稱，但介質厚度分配不當，導致對稱疊層依然無法保證正確的訊號-回流耦合"
       ],
-      "examples": [
-        {
-          "title": "iMX8 SOM 六層疊層",
-          "application": "訊號-回流-訊號-電源-回流-訊號",
-          "circuit": "layer 4 電源層供 DRAM，但正確回流平面被夾在額外介質之後，能量須跨兩段介質"
-        },
-        {
-          "title": "訊號跨越電源層 split",
-          "application": "高速訊號回流路徑",
-          "circuit": "回流電流被迫透過位移電流跨越電源/接地層之間的阻抗，產生壓降雜訊並輻射"
-        }
-      ],
       "relatedTopics": [
         "pcb叠层設计",
         "pdn-design",
@@ -333,18 +261,6 @@
         "同一走線不同區段寬度不一致（0.08mm→0.1mm），造成特性阻抗不連續與訊號反射",
         "訊號換層時缺乏回流參考過孔（return reference via），迫使場沿整個疊層擴散並在平面上產生共振與輻射",
         "時鐘訊號與相鄰走線間距過近（幾乎僅一個線寬），造成明顯串擾風險"
-      ],
-      "examples": [
-        {
-          "title": "孤立銅泊天線圖形",
-          "application": "iMX8 SOM layer 1 佈局",
-          "circuit": "狹長銅泊僅靠一根 stitching via 連接回流平面，遠端形成電壓降並輻射"
-        },
-        {
-          "title": "訊號跨越 GND 平面切割",
-          "application": "iMX8 SOM layer 2 回流平面",
-          "circuit": "上層訊號跨越兩塊 GND polygon 之間的間隙，場在空腔中擴散並形成共振輻射"
-        }
       ],
       "relatedTopics": [
         "via-design",
@@ -386,18 +302,6 @@
         "reset 電路設計缺陷：電阻未焊時開關按下會讓去耦電容對地短路",
         "USB 高速差動線缺乏濾波與保護元件，且走線刻意繞經連接器造成不必要的路徑",
         "微控制器旁缺乏去耦電容，在高需求應用下可能造成供電不穩"
-      ],
-      "examples": [
-        {
-          "title": "STM32F4 自製板疊層",
-          "application": "六層板 USB/SWD/GPIO",
-          "circuit": "僅 GND 層為官方回流平面，layer 4/6 借用電源層回流，建議改四層板疊層更划算"
-        },
-        {
-          "title": "USB 差動線佈局",
-          "application": "USB OTG 介面",
-          "circuit": "走線繞經連接器且缺乏濾波保護，建議直接路徑並加保護元件"
-        }
       ],
       "relatedTopics": [
         "pcb走線规则",

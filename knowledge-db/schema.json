@@ -60,18 +60,6 @@
         "type": "string"
       }
     },
-    "examples": {
-      "type": "array",
-      "description": "範例應用",
-      "items": {
-        "type": "object",
-        "properties": {
-          "title": {"type": "string"},
-          "application": {"type": "string"},
-          "circuit": {"type": "string"}
-        }
-      }
-    },
     "relatedTopics": {
       "type": "array",
       "description": "相關主題",

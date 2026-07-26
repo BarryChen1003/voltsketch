@@ -37,13 +37,6 @@
       "strap 腳被外部電路在 reset 期間拉錯，PHY 位址/模式開機讀錯，MDIO 掃不到",
       "變壓器中心抽頭接法照抄別家 PHY（電流模式 vs 電壓模式不同），驅動幅度錯、眼圖崩"
     ],
-    "examples": [
-      {
-        "title": "嵌入式 GbE 介面",
-        "application": "SoC MAC ←RGMII→ KSZ9031RNX ←MDI 4 對→ 變壓器 → RJ45，MDIO/MDC 管理匯流排設定 PHY",
-        "circuit": "SoC ←RGMII(12 線)→ PHY ←100Ω 差分×4→ magnetics（中心抽頭＋Bob Smith）→ RJ45"
-      }
-    ],
     "relatedTopics": ["differential-pair", "em-fields-return-path", "clock-tree-fanout"],
     "i18n": {
       "en": {
@@ -131,13 +124,6 @@
       "CS# 沒上拉，主控開機 IO 三態期間 Flash 被雜訊誤選，開機資料流錯亂",
       "Quad 模式沒在 Flash 狀態暫存器啟用（QE 位元）就切四線，IO2/IO3 沒反應",
       "時脈線過長無阻尼，ringing 造成雙重取樣，讀出資料位移"
-    ],
-    "examples": [
-      {
-        "title": "MCU XIP 開機",
-        "application": "MCU 從 W25Q128JV Quad-SPI 直接執行（XIP），133MHz 四線讀取餵指令快取",
-        "circuit": "MCU QSPI 控制器 ←CS#/CLK/IO0-3（各上拉）→ W25Q128JV，VCC 0.1µF 去耦"
-      }
     ],
     "relatedTopics": ["spi-design", "power-sequencing", "decoupling-capacitor"],
     "sourcePdf": "datasheets/w25q128jv.pdf",
@@ -228,13 +214,6 @@
       "高壓側隔離電源漣波大又沒濾，量測底噪抬高、SNR 掉一截",
       "CMTI 不足的料用在 SiC 高 dv/dt 半橋，開關瞬間位元流錯亂、電流讀值跳針"
     ],
-    "examples": [
-      {
-        "title": "馬達相電流回授",
-        "application": "三相變頻器每相 shunt＋隔離 ΔΣ 調變器，MCU sinc3 濾波重建相電流做 FOC",
-        "circuit": "相腳 shunt(1mΩ Kelvin) → AMC0303 調變 → 隔離屏障 → MCU SDFM 介面（CLK/DATA）"
-      }
-    ],
     "relatedTopics": ["current-sense-kelvin", "current-sensing", "isolated-gate-driver"],
     "sourcePdf": "IC-spec/amc0303m2510.pdf",
     "i18n": {
@@ -323,13 +302,6 @@
       "驅動迴路繞遠路（驅動器放板另一角），nH 級電感讓閘極振鈴超窗，FET 慢性劣化",
       "共源極電感沒用 Kelvin 分離，功率 di/dt 回灌閘極造成誤導通、半橋直通",
       "只看效率上頻率，磁性元件與驅動損耗沒跟上，MHz 下反而更熱"
-    ],
-    "examples": [
-      {
-        "title": "MHz LLC / LiDAR 脈衝",
-        "application": "LMG1020 驅動 e-mode GaN 做 ns 脈衝雷射驅動或 MHz 級 LLC，邊沿 <1ns",
-        "circuit": "PWM → LMG1020（OUTH/OUTL 分離 Rg）→ GaN 閘極；VDD 5V 就地去耦；Kelvin source 回線"
-      }
     ],
     "relatedTopics": ["gate-driver", "isolated-gate-driver", "mosfet-switching"],
     "sourcePdf": "IC-spec/lmg1020-q1.pdf",
@@ -420,13 +392,6 @@
       "死區時間照預設沒對 FET 特性調，輕載波形交越失真或重載直通發熱",
       "電荷幫浦電容漏配或值錯，低速/滿占空比時高邊閘壓塌掉、FET 半開燒毀"
     ],
-    "examples": [
-      {
-        "title": "48V 車用風扇/泵",
-        "application": "MCF8329HS 無感 FOC 直驅 48V BLDC 泵，程式碼免寫，I2C 調參數",
-        "circuit": "電池 → 母線電容 → 3×半橋（6 FET）→ 馬達三相；驅動器整合電荷幫浦＋CSA＋保護"
-      }
-    ],
     "relatedTopics": ["h-bridge-motor", "isolated-current-sense", "gate-driver"],
     "sourcePdf": "IC-spec/mcf8329hs.pdf",
     "i18n": {
@@ -515,13 +480,6 @@
       "鎖存型當開關型用（或反過來），磁鐵極性設計錯，行為完全不對",
       "取樣型霍爾用在快速事件，事件落在取樣間隙漏偵測",
       "感測器旁邊後加金屬支架，磁路被分流，量產後靈敏度集體漂移"
-    ],
-    "examples": [
-      {
-        "title": "手錶錶蓋偵測",
-        "application": "低功耗開關型霍爾＋小 NdFeB 磁鐵做開合偵測，平均電流 µA 級",
-        "circuit": "磁鐵（蓋側）→ 霍爾開關（本體側，占空比取樣）→ GPIO 喚醒 MCU"
-      }
     ],
     "relatedTopics": ["wearable-lowpower", "bldc-three-phase-drive", "ntc-thermistor"],
     "sourcePdf": "IC-spec/tmag5134.pdf",
@@ -612,13 +570,6 @@
       "旁路 FET 熱沒算（全亮時旁路不導通沒事，半亮時一半電流走 FET），部分調光工況過熱",
       "單 LED 開路沒被診斷攔住，恆流源把整串電壓推到 OVP，整燈熄滅而非單像素失效"
     ],
-    "examples": [
-      {
-        "title": "ADB 自適應遠光",
-        "application": "偵測對向來車後熄滅對應像素——TPS99002S-Q1 類管理器控制數十像素獨立調光",
-        "circuit": "電池 → 升壓恆流（40–60V/1A）→ LED 串 ×N → 每顆並聯旁路 FET（矩陣管理器）→ CAN/UART 收像素命令"
-      }
-    ],
     "relatedTopics": ["led-driver", "boost-converter", "auto-load-dump"],
     "sourcePdf": "IC-spec/tps99002s-q1.pdf",
     "i18n": {
@@ -707,13 +658,6 @@
       "只接 CC1 沒接 CC2（或反了），正插能用反插死機——正反插測試各角度都要跑",
       "mux 省掉直接把兩組對併聯到 SoC，stub 效應在 5Gbps 就把眼圖吃掉",
       "AC 耦合電容放錯側或用大封裝，10Gbps 回損超標、相容性測試翻車"
-    ],
-    "examples": [
-      {
-        "title": "筆電 Type-C 埠",
-        "application": "HD3SS3220 做 DRP：接手機變主機、接塢站變裝置，SuperSpeed 正反插自動切換",
-        "circuit": "Type-C 接頭 CC1/CC2 → HD3SS3220（Rp/Rd 輪替＋方向偵測）→ mux 切 TX/RX 對 → SoC USB3 PHY"
-      }
     ],
     "relatedTopics": ["usbc-pd-sink-path", "usb-design", "differential-pair"],
     "sourcePdf": "IC-spec/hd3ss3220l.pdf",
