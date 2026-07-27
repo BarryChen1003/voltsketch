@@ -136,6 +136,76 @@ const CircuitSVG = {
     return this.wrap(320, swY + 95, g);
   },
 
+  // ---- 方塊圖小工具（給控制環用；電路符號一律走 Sym）----
+  blk(S, x, y, w, h, lines, opt) {
+    const o = opt || {};
+    let g = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" fill="#fff" stroke="${o.color || S.color}" stroke-width="1.6"${o.dash ? ` stroke-dasharray="${o.dash}"` : ''}/>`;
+    const L = [].concat(lines || []);
+    const lh = 12, top = y + h / 2 - ((L.length - 1) * lh) / 2 + 3;
+    L.forEach((s, i) => { g += S.txt(x + w / 2, top + i * lh, s, { size: o.size || 9 }); });
+    return g;
+  },
+  // 只支援水平/垂直的箭頭線（箭頭是 polygon，不會被當成接線）
+  arw(S, x1, y1, x2, y2) {
+    let g = S.line(x1, y1, x2, y2);
+    const a = 4, t = 7;
+    if (y1 === y2) { const d = x2 > x1 ? -1 : 1; g += `<polygon points="${x2},${y2} ${x2 + d * t},${y2 - a} ${x2 + d * t},${y2 + a}" fill="${S.color}"/>`; }
+    else { const d = y2 > y1 ? -1 : 1; g += `<polygon points="${x2},${y2} ${x2 - a},${y2 + d * t} ${x2 + a},${y2 + d * t}" fill="${S.color}"/>`; }
+    return g;
+  },
+
+  // 電流模式（峰值）同步 Buck：與「基本 Buck」圖的差異全部畫出來
+  // A 功率級：下管改 FET（同步整流）＋ HS 需 C_BOOT；B 控制環：電流感測→斜率補償→
+  // PWM 比較器（電壓模式這裡是固定鋸齒波）、EA→COMP 只需 Type II（Rc+Cc）、CLK→SR 定頻。
+  currentModeBuck() {
+    const S = window.Sym; if (!S) return '';
+    let g = '';
+    // ── A. 功率級 ──
+    g += S.txt(14, 13, 'A. 功率級：同步整流', { anchor: 'start', size: 9.5, weight: 'bold' });
+    g += S.line(14, 34, 156, 34); g += S.txt(14, 26, 'Vin', { anchor: 'start', size: 9, fill: '#64748b' });
+    g += S.junction(50, 34); g += this.capToGnd(S, 50, 34, 'Cin');          // 電容 48..92、地 96
+    g += this.blk(S, 130, 46, 52, 30, ['HS'], { size: 10 });
+    g += S.line(156, 34, 156, 46);
+    g += S.line(156, 76, 156, 100); g += S.junction(156, 93);               // SW 節點
+    g += this.blk(S, 130, 100, 52, 30, ['LS'], { size: 10 });
+    g += S.txt(186, 123, '同步整流', { anchor: 'start', size: 8.5, fill: '#64748b' });
+    g += S.line(156, 130, 156, 142); g += S.ground(156, 156, {});           // 接地引線 142..156
+    // C_BOOT：BOOT ↔ SW，抬高側閘極（電容自帶引線 49..93，上端剛好進 HS 左緣、下端落在 SW 節點）
+    g += S.capacitor(108, 71, {});
+    g += S.line(108, 49, 130, 49);
+    g += S.line(108, 93, 156, 93);
+    g += S.txt(108, 108, 'C_BOOT', { size: 8.5, fill: '#64748b' });
+    // SW → L → Vout
+    g += S.line(156, 93, 196, 93); g += S.inductor(220, 93, { label: 'L' });
+    g += S.line(244, 93, 268, 93); g += S.junction(268, 93);
+    g += this.capToGnd(S, 268, 93, 'Cout');                                 // 電容 107..151、地 155
+    g += S.txt(272, 80, 'Vout', { anchor: 'end', size: 9, fill: '#64748b' });
+    g += S.txt(150, 190, '下管換成 FET（同步整流），HS 靠 C_BOOT 抬閘極', { size: 9, fill: '#64748b' });
+    // ── B. 峰值電流模式控制環 ──
+    g += S.txt(310, 16, 'B. 峰值電流模式控制環', { anchor: 'start', size: 9.5, weight: 'bold' });
+    g += this.blk(S, 310, 28, 120, 36, ['電阻分壓 R1/R2', '（取自 Vout）'], { size: 9 });
+    g += this.blk(S, 310, 84, 120, 28, ['EA 誤差放大器']);
+    g += this.arw(S, 370, 64, 370, 84);
+    g += this.blk(S, 310, 132, 120, 36, ['COMP 補償網路', '（Type II：Rc+Cc）']);
+    g += this.arw(S, 370, 112, 370, 132);
+    g += this.blk(S, 460, 28, 130, 36, ['電流感測', '（HS RDS(on)）']);
+    g += this.blk(S, 460, 84, 130, 28, ['斜率補償']);
+    g += this.arw(S, 525, 64, 525, 84);
+    g += this.blk(S, 350, 196, 150, 30, ['PWM 比較器']);
+    g += this.arw(S, 370, 168, 370, 196);                                   // COMP → 比較器
+    g += S.line(525, 112, 525, 180); g += S.line(525, 180, 460, 180);       // 斜率補償 → 比較器
+    g += this.arw(S, 460, 180, 460, 196);
+    g += this.blk(S, 350, 258, 150, 30, ['SR 閂鎖（定頻）']);
+    g += this.arw(S, 425, 226, 425, 258);
+    g += this.blk(S, 520, 258, 70, 30, ['CLK 時脈']);
+    g += this.arw(S, 520, 273, 500, 273);
+    g += this.blk(S, 350, 318, 150, 30, ['閘極驅動 → HS / LS']);
+    g += this.arw(S, 425, 288, 425, 318);
+    g += S.txt(300, 372, '差異：下管 FET 同步整流（＋C_BOOT）；電流感測回授進比較器（電壓模式這裡是固定鋸齒波）', { size: 9, fill: '#64748b' });
+    g += S.txt(300, 388, '斜率補償擋 D>0.5 的次諧波振盪；電感極點被電流環吃掉，外環只需 Type II（Rc+Cc）', { size: 9, fill: '#64748b' });
+    return this.wrap(600, 400, g);
+  },
+
   // 反相 Buck-Boost（降壓 IC 當反相器用的標準接法）
   // 拓樸：SW → 電感對「系統地」；二極體陰極在 SW、陽極在 −Vout；IC 的 GND 腳接 −Vout。
   // 導通時 Vin→SW→L→GND 儲能；關斷時電感電流續流，改由 −Vout 經二極體灌回 SW，
@@ -1450,7 +1520,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-27-buckboost-art';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-currentmode-art';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -1481,7 +1551,8 @@ const knowledgeApp = {
     if (typeof CircuitSVG === 'undefined' || !window.Sym) return;
     const map = {
       'buck-converter': () => CircuitSVG.switcher({ ic: 'Buck', icPins: { l: ['VIN', 'EN'], r: ['SW', 'FB'] } }),
-      'buck-converter-advanced': () => CircuitSVG.switcher({ ic: 'Buck IC', icPins: { l: ['VIN', 'EN'], r: ['SW', 'FB'] } }),
+      // 進階卡不能沿用 switcher（會跟基本 Buck 卡畫出同一張圖，只有 IC 標籤不同）
+      'buck-converter-advanced': () => CircuitSVG.currentModeBuck(),
       // 反相 Buck-Boost 不能沿用 switcher（那是 Buck 骨架，畫出來與 Buck 卡一模一樣，只有 IC 標籤不同）
       'buck-boost-converter': () => CircuitSVG.invertingBuckBoost(),
       'boost-converter': () => CircuitSVG.boost(),
@@ -1763,55 +1834,8 @@ const knowledgeApp = {
           {
             type: 'current-mode',
             description: '電流模式 Buck 轉換器',
-            svg: `<svg viewBox="0 0 300 130" width="300" height="130">
-              <!-- Controller -->
-              <rect x="10" y="35" width="60" height="50" fill="white" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="40" y="65" text-anchor="middle" font-size="9">Controller</text>
-              <!-- Gate drive lines -->
-              <line x1="70" y1="50" x2="95" y2="50" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="82" y="44" font-size="6">GH</text>
-              <line x1="70" y1="70" x2="95" y2="70" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="82" y="78" font-size="6">GL</text>
-              <!-- High-Side MOSFET -->
-              <rect x="95" y="30" width="45" height="25" fill="white" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="117" y="47" text-anchor="middle" font-size="7">High-Side</text>
-              <!-- Low-Side MOSFET -->
-              <rect x="95" y="65" width="45" height="25" fill="white" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="117" y="82" text-anchor="middle" font-size="7">Low-Side</text>
-              <!-- Vin to High-Side -->
-              <line x1="5" y1="20" x2="95" y2="20" stroke="#1d2943" stroke-width="2"/>
-              <line x1="95" y1="20" x2="95" y2="30" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="5" y="14" font-size="8">Vin</text>
-              <!-- SW node -->
-              <line x1="117" y1="55" x2="117" y2="65" stroke="#1d2943" stroke-width="1.5"/>
-              <line x1="117" y1="55" x2="150" y2="55" stroke="#1d2943" stroke-width="2"/>
-              <!-- Inductor -->
-              <path d="M150,55 Q155,45 160,55 Q165,65 170,55 Q175,45 180,55 Q185,65 190,55" fill="none" stroke="#1d2943" stroke-width="2"/>
-              <text x="170" y="42" text-anchor="middle" font-size="8">L</text>
-              <!-- L to Cout node -->
-              <line x1="190" y1="55" x2="220" y2="55" stroke="#1d2943" stroke-width="2"/>
-              <!-- Cout to GND -->
-              <line x1="220" y1="55" x2="220" y2="70" stroke="#1d2943" stroke-width="1.5"/>
-              <line x1="210" y1="70" x2="230" y2="70" stroke="#1d2943" stroke-width="2"/>
-              <line x1="210" y1="74" x2="230" y2="74" stroke="#1d2943" stroke-width="2"/>
-              <line x1="220" y1="74" x2="220" y2="85" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="220" y="68" text-anchor="middle" font-size="7">Cout</text>
-              <!-- GND -->
-              <line x1="212" y1="85" x2="228" y2="85" stroke="#1d2943" stroke-width="1.5"/>
-              <line x1="215" y1="89" x2="225" y2="89" stroke="#1d2943" stroke-width="1"/>
-              <!-- Low-Side to GND -->
-              <line x1="117" y1="90" x2="117" y2="100" stroke="#1d2943" stroke-width="1.5"/>
-              <line x1="110" y1="100" x2="220" y2="100" stroke="#1d2943" stroke-width="1.5"/>
-              <!-- Vout -->
-              <line x1="220" y1="55" x2="265" y2="55" stroke="#1d2943" stroke-width="2"/>
-              <text x="270" y="50" font-size="8">Vout</text>
-              <!-- Current sense -->
-              <rect x="95" y="100" width="30" height="10" fill="#e8f4f8" stroke="#1d2943" stroke-width="1"/>
-              <text x="110" y="108" text-anchor="middle" font-size="6">Rs</text>
-              <line x1="70" y1="85" x2="70" y2="100" stroke="#1d2943" stroke-width="1" stroke-dasharray="3"/>
-              <line x1="70" y1="100" x2="95" y2="100" stroke="#1d2943" stroke-width="1" stroke-dasharray="3"/>
-              <text x="70" y="115" font-size="6">Isense</text>
-            </svg>`
+            svg: ''   // 由 applyCircuitArt 填入 CircuitSVG.currentModeBuck()
+                      //（原本內嵌的手繪圖用外部 Rs 感測、控制環只有一個 Controller 方塊，已移除）
           }
         ],
         keyFormulas: [
