@@ -66,6 +66,14 @@ jobs:
       - name: wire-gap-check（接線缺口/多出線頭 · 棘輪）
         run: node wire-gap-check.js --strict
 
+      # 2f3) 元件不得互疊：兩個元件符號／方塊壓在一起（電容疊電容、電感戳進方塊…）。
+      #      三條判準：筆畫真交叉、方塊互疊 >2px、bbox 重疊 ≥ 較小者 35%。
+      #      旋轉符號（橋式整流 45°）、串接引線、虛線容器框都有豁免，誤報為 0。
+      - name: symbol-overlap-check 自我測試
+        run: node symbol-overlap-check.js --selftest
+      - name: symbol-overlap-check（元件不互疊 · 棘輪）
+        run: node symbol-overlap-check.js --strict
+
       # 2g) 鐵律：圖表文字不得壓到圖形或別的文字。
       #     2026-07-27 把「框標題」判定從「文字中心在框內」改成「整個字框在框內」：
       #     原本騎在框邊上的標籤（背靠背（雙向斷）、CC…）會被誤認成框自己的標題而漏報。

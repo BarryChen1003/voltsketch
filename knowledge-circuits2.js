@@ -388,22 +388,22 @@
     let g = '';
     g += T(30, 22, '天線', { size: 8.5 });
     g += L(30, 28, 30, 44) + L(22, 28, 38, 28) + L(24, 24, 36, 24, { w: 1 });
-    g += L(30, 44, 58, 44);
-    g += B(84, 44, 52, 36, '調諧器', ['可調電容']);
-    g += A(110, 44, 136, 44);
-    g += B(168, 44, 64, 40, '開關/雙工', ['頻段切換']);
+    g += L(30, 44, 30, 52) + L(30, 52, 58, 52);
+    g += B(84, 52, 52, 36, '調諧器', ['可調電容']);
+    g += A(110, 52, 136, 52);
+    g += B(168, 52, 64, 44, '開關/雙工', ['頻段切換']);
     // 收發兩鏈
-    g += L(200, 36, 222, 36) + A(222, 36, 244, 36);
-    g += B(272, 36, 56, 30, 'LNA', ['NF 主導']);
-    g += A(300, 36, 330, 36) ;
-    g += A(244, 58, 222, 58) + L(222, 58, 200, 58);
-    g += B(272, 58, 56, 30, 'PA', ['ET 供電']);
-    g += L(330, 58, 300, 58);
-    g += B(358, 47, 52, 52, '收發器', []);
-    g += T(120, 92, '接收 NF 由第一級決定（Friis）→ LNA 前損耗要最小', { size: 8.5 });
-    g += T(120, 108, '手握失配 → VSWR↑ → 調諧器補匹配（近接感測觸發）', { size: 8.5, fill: MUT });
-    g += T(120, 124, '控制走 MIPI RFFE；TDD 收發窗時序對齊', { size: 8, fill: MUT });
-    return { d: 'RF 前端鏈：天線→調諧→開關→LNA/PA→收發器', svg: W(400, 134, g) };
+    g += L(200, 30, 222, 30) + A(222, 30, 244, 30);
+    g += B(272, 30, 56, 30, 'LNA', ['NF 主導']);            // 框 15..45
+    g += A(300, 30, 330, 30) ;
+    g += A(244, 74, 222, 74) + L(222, 74, 200, 74);
+    g += B(272, 74, 56, 30, 'PA', ['ET 供電']);             // 框 59..89（與 LNA 留 14px）
+    g += L(330, 74, 300, 74);
+    g += B(358, 52, 52, 52, '收發器', []);
+    g += T(120, 104, '接收 NF 由第一級決定（Friis）→ LNA 前損耗要最小', { size: 8.5 });
+    g += T(120, 120, '手握失配 → VSWR↑ → 調諧器補匹配（近接感測觸發）', { size: 8.5, fill: MUT });
+    g += T(120, 136, '控制走 MIPI RFFE；TDD 收發窗時序對齊', { size: 8, fill: MUT });
+    return { d: 'RF 前端鏈：天線→調諧→開關→LNA/PA→收發器', svg: W(400, 146, g) };
   };
 
   M['mobile-camera-power'] = () => {
@@ -1269,13 +1269,13 @@
   M['minima-connector-placement-cavity-resonance'] = () => {
     let g = '';
     g += T(105, 22, '❌ 兩側對放', { size: 9, fill: RED });
-    g += `<rect x="40" y="34" width="130" height="70" fill="#fff" stroke="${C}" stroke-width="1.4"/>`;
-    g += `<rect x="34" y="52" width="12" height="30" fill="#cbd5e1" stroke="${C}"/>` + `<rect x="164" y="52" width="12" height="30" fill="#cbd5e1" stroke="${C}"/>`;
+    g += DEC(`<rect x="40" y="34" width="130" height="70" fill="#fff" stroke="${C}" stroke-width="1.4"/>`
+      + `<rect x="34" y="52" width="12" height="30" fill="#cbd5e1" stroke="${C}"/>` + `<rect x="164" y="52" width="12" height="30" fill="#cbd5e1" stroke="${C}"/>`);
     g += DEC(PL('52,70 70,56 88,84 106,56 124,84 142,56 158,70', { color: RED, w: 1.2, dash: '3 2' }));
     g += T(105, 118, '線纜-板-線纜構成腔體 → 駐波共振', { size: 7.5, fill: RED });
     g += T(320, 22, '✅ 單側集中', { size: 9, fill: GRN });
-    g += `<rect x="250" y="34" width="130" height="70" fill="#fff" stroke="${C}" stroke-width="1.4"/>`;
-    [46, 66, 86].forEach(y => { g += `<rect x="244" y="${y - 6}" width="12" height="14" fill="#cbd5e1" stroke="${C}"/>`; });
+    g += DEC(`<rect x="250" y="34" width="130" height="70" fill="#fff" stroke="${C}" stroke-width="1.4"/>`
+      + [46, 66, 86].map(y => `<rect x="244" y="${y - 6}" width="12" height="14" fill="#cbd5e1" stroke="${C}"/>`).join(''));
     g += T(315, 118, '共用一個乾淨接地邊、迴路小', { size: 7.5, fill: GRN });
     g += T(215, 146, 'I/O 全放同一板邊＋該邊完整地：線纜間共模電位差最小，EMC 過關率大增', { size: 8.5 });
     return { d: '連接器擺位：單側集中 vs 兩側腔體', svg: W(430, 156, g) };
@@ -1382,7 +1382,7 @@
     g += L(180, 54, 214, 54) + T(200, 46, 'SW', { size: 8 });
     g += ind(232, 54, { horizontal: true });
     g += L(256, 54, 286, 54) + s.junction(272, 54);
-    g += cap(272, 72, { horizontal: false }) + LR(272, 86, 272, 92) + gnd(272, 92, {});
+    g += cap(272, 72, { horizontal: false }) + gnd(272, 96, {});   // 接地 stem 82..96 已蓋住電容引線末端 94
     g += A(286, 54, 306, 54) + T(312, 58, 'VOUT', { size: 8.5, anchor: 'start' });
     // 迴路標示
     g += PL('70,44 110,44 110,94 70,92', { color: RED, w: 1.6, dash: '4 3' });
