@@ -715,21 +715,38 @@ const CircuitSVG = {
     return this.wrap(200, 148, g);
   },
 
-  // TL431 並聯基準
+  // TL431 可調分流基準（三腳：K 陰極／A 陽極／REF 參考）
+  // 舊版問題：REF 那條線是一截 L 形空接（沒接到任何東西）、沒有外部分壓、也沒有 Vout 節點，
+  // 用 2 腳二極體符號當 3 腳元件畫。改成方塊＋三支腳，接線全部接實，最後整組放大 1.25×。
   tl431() {
     const S = window.Sym; if (!S) return '';
+    const MUT = '#64748b';
     let g = '';
-    g += S.rail(60, 15, 'Vcc'); g += S.line(60, 15, 60, 30);
-    g += S.resistor(60, 55, { horizontal: false, label: 'R1' });
-    g += S.line(60, 79, 60, 95); g += S.junction(60, 95);
-    g += S.txt(78, 98, 'Vref=2.5V', { anchor: 'start', size: 8, fill: '#64748b' });
-    // TL431 以分流符號示意
-    g += S.line(60, 95, 60, 110);
-    g += `<g transform="rotate(180 60 125)">${S.diode(60, 125, {})}</g>`;
-    g += S.line(45, 110, 45, 95); g += S.line(45, 95, 60, 95); // 參考腳回授
-    g += S.line(60, 140, 60, 150); g += S.ground(60, 150, {});
-    g += S.txt(60, 175, 'TL431 可調分流基準', { size: 8, fill: '#64748b' });
-    return this.wrap(180, 185, g);
+    // 被穩壓的輸出軌
+    g += S.txt(38, 32, 'Vout（被穩壓端）', { anchor: 'start', size: 9, fill: MUT });
+    g += S.line(40, 40, 170, 40);        // 右端止於分壓上端，不要多伸出線頭
+    g += S.junction(78, 40);
+    // 兩條支路的引線：電阻端子在 y=48，軌在 y=40 → 這 8px 要補，不然兩邊都沒接上
+    g += S.line(78, 40, 78, 48); g += S.line(170, 40, 170, 48);
+    // 左支路：R_bias → K（陰極）
+    g += S.resistor(78, 72, { horizontal: false, label: 'R_bias' });      // 端子 48..96
+    g += S.line(78, 96, 78, 108);
+    g += `<rect x="52" y="108" width="52" height="44" rx="3" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
+    g += S.txt(78, 134, 'TL431', { size: 10, weight: 'bold' });
+    g += S.txt(84, 104, 'K', { anchor: 'start', size: 8.5 });
+    g += S.txt(84, 168, 'A', { anchor: 'start', size: 8.5 });
+    g += S.line(78, 152, 78, 184); g += S.ground(78, 198, {});
+    // REF ← 外部分壓中點（走方塊右側，不穿過方塊）
+    g += S.line(104, 130, 170, 130); g += S.junction(170, 130);
+    g += S.txt(137, 124, 'REF', { size: 8.5, fill: MUT });
+    // 右支路：R1/R2 分壓設定 Vout
+    g += S.resistor(170, 72, { horizontal: false, label: 'R1', labelSide: 'right' });   // 48..96
+    g += S.line(170, 96, 170, 130);
+    g += S.resistor(170, 154, { horizontal: false, label: 'R2', labelSide: 'right' });  // 130..178
+    g += S.line(170, 178, 170, 184); g += S.ground(170, 198, {});
+    g += S.txt(150, 224, 'Vout = 2.5V × (1 + R1/R2)：REF 到 2.5V 時陰極開始分流', { size: 9, fill: MUT });
+    g += S.txt(150, 240, 'K 腳最小工作電流約 1mA：R_bias 要讓最輕載時 TL431 仍導通', { size: 9, fill: MUT });
+    return this.wrap(375, 315, `<g transform="scale(1.25)">${g}</g>`);
   },
 
   // RC 低通濾波
@@ -1556,7 +1573,7 @@ const knowledgeApp = {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
     // 注意：自動圖（applyCircuitArt / CIRCUITS2）也算「內容」。快取命中時走的是 localStorage 裡
     // 序列化好的 svg 字串，重畫的新圖不會生效 → 改圖一律要連這行一起遞增。
-    const BUILTIN_VERSION = '2026-07-27-optocoupler';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-tl431-ldobuck';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');

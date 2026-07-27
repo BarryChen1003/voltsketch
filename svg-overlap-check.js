@@ -129,9 +129,9 @@ function check(id, svg) {
   const { texts, rects, lines } = parse(svg);
   const out = [];
   texts.forEach((t, i) => {
-    const cx = (t.x0 + t.x1) / 2, cy = (t.y0 + t.y1) / 2;
-    // 方塊自己的標題：文字中心落在框內 → 合法，該文字整個跳過（含與該框的線）
-    const ownBox = rects.find(r => cx > r.x0 && cx < r.x1 && cy > r.y0 && cy < r.y1);
+    // 方塊自己的標題：文字必須**整個**在框內才算（原本只看中心點，導致
+    // 「背靠背（雙向斷）」這種騎在框邊上的標籤被誤判為框標題而漏報）。
+    const ownBox = rects.find(r => t.x0 >= r.x0 - 1 && t.x1 <= r.x1 + 1 && t.y0 >= r.y0 - 1 && t.y1 <= r.y1 + 1);
     if (ownBox) return;
     const at = `@(${Math.round((t.x0 + t.x1) / 2)},${Math.round(t.y1 - (t.y1 - t.y0) * 0.26)})`;
     rects.forEach(r => { if (hit(t, r)) out.push(`「${t.str}」${at} 壓到方塊`); });

@@ -9,20 +9,26 @@
   const C = '#1d2943';
   const S = () => window.Sym;
   const W = (w, h, g) => `<svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:${w}px">${g}</svg>`;
-  const T = (x, y, s, o) => S().txt(x, y, s, o || {});
+  // T：文字。同時登錄字框，讓 A() 的標籤自動閃避時知道哪裡已經有字。
+  const T = (x, y, s, o) => {
+    o = o || {};
+    TXT.push(_lblBox(x, y, s, o.size || 11, o.anchor || 'middle'));
+    return S().txt(x, y, s, o);
+  };
   // L：基礎連線，兩端自動吸附到最近方塊邊或已登錄的元件腳位（14px 內），保證線貼上圖形
   const L = (x1, y1, x2, y2, o) => {
     const p1 = _snap(x2, y2, x1, y1);
     const p2 = _snap(p1[0], p1[1], x2, y2);
+    LNS.push([p1[0], p1[1], p2[0], p2[1]]);
     return S().line(p1[0], p1[1], p2[0], p2[1], o || {});
   };
   // 原始線（不吸附）——供符號內部/裝飾用
-  const LR = (x1, y1, x2, y2, o) => S().line(x1, y1, x2, y2, o || {});
+  const LR = (x1, y1, x2, y2, o) => { LNS.push([x1, y1, x2, y2]); return S().line(x1, y1, x2, y2, o || {}); };
 
   // ── 連線吸附框架 ──
   // B() 登錄方塊、元件 helper 登錄腳位點。L()/A() 端點在 14px 內就精確吸附到
   // 方塊邊或腳位點 → 保證線貼上圖形，手算座標誤差自動歸零。
-  let REG = [], PTS = [];
+  let REG = [], PTS = [], TXT = [], LNS = [];
   function _snap(qx, qy, px, py) {
     let best = null, bestD = 12;
     // 1) 先吸元件腳位點（優先，最精確）
@@ -92,8 +98,43 @@
     g += `<polygon points="${x2},${y2} ${x2 - a * Math.cos(ang - 0.42)},${y2 - a * Math.sin(ang - 0.42)} ${x2 - a * Math.cos(ang + 0.42)},${y2 - a * Math.sin(ang + 0.42)}" fill="${o.color || C}"/>`;
     // 標籤預設置中在箭頭中點上方。箭頭短、標籤長時置中必然溢進兩端方塊 →
     // 用 o.anchor 讓文字從錨點往單邊長（start 往右、end 往左），錨點不動＝語意保留。
-    if (lbl) g += T((x1 + x2) / 2 + (o.dx || 0), (y1 + y2) / 2 - 4 + (o.dy || 0), lbl, { size: 7.5, fill: o.lc || MUT, anchor: o.anchor || 'middle' });
+    // 沒指定 o.dy 時自動閃避：標籤壓到任何已登錄方塊就往上/下挪，挑第一個乾淨的位置。
+    if (lbl) {
+      const size = o.size || 7.5, anchor = o.anchor || 'middle';
+      const bx = (x1 + x2) / 2 + (o.dx || 0), by = (y1 + y2) / 2 - 4;
+      const y = o.dy !== undefined ? by + o.dy : by + _dodgeDy(bx, by, lbl, size, anchor);
+      g += T(bx, y, lbl, { size, fill: o.lc || MUT, anchor });
+    }
     return g;
+  }
+  /** 估標籤 bbox 與 REG 方塊的碰撞，回傳需要的 y 位移（0 表示原位就乾淨）。 */
+  function _lblBox(x, y, s, size, anchor) {
+    let w = 0;
+    for (const ch of String(s)) w += /[⺀-꓏가-힣豈-﫿︰-﹯＀-｠]/.test(ch) ? size : size * 0.52;
+    const x0 = anchor === 'start' ? x : anchor === 'end' ? x - w : x - w / 2;
+    return [x0, y - size * 0.82, x0 + w, y + size * 0.26];
+  }
+  function _dodgeDy(x, y, s, size, anchor) {
+    const base = _lblBox(x, y, s, size, anchor);
+    const sameAsSelf = b => Math.abs(b[0] - base[0]) < 0.6 && Math.abs(b[1] - base[1]) < 0.6;
+    const segHits = (b, [ax, ay, bx, by]) => {       // 線段取樣是否落在字框內
+      const n = Math.max(2, Math.ceil(Math.hypot(bx - ax, by - ay) / 2));
+      for (let i = 0; i <= n; i++) {
+        const t = i / n, px = ax + (bx - ax) * t, py = ay + (by - ay) * t;
+        if (px > b[0] + 0.5 && px < b[2] - 0.5 && py > b[1] + 0.5 && py < b[3] - 0.5) return true;
+      }
+      return false;
+    };
+    const clear = dy => {
+      const b = _lblBox(x, y + dy, s, size, anchor);
+      if (REG.some(([rx, ry, rw, rh]) => b[0] < rx + rw - 0.5 && b[2] > rx + 0.5 && b[1] < ry + rh - 0.5 && b[3] > ry + 0.5)) return false;
+      if (LNS.some(l => segHits(b, l))) return false;
+      if (TXT.some(o => !sameAsSelf(o) && b[0] < o[2] - 0.5 && b[2] > o[0] + 0.5 && b[1] < o[3] - 0.5 && b[3] > o[1] + 0.5)) return false;
+      return true;
+    };
+    if (clear(0)) return 0;
+    for (const dy of [-12, 13, -22, 24, -32, 34, -42, 44]) if (clear(dy)) return dy;
+    return 0;
   }
   // 裝飾群組（波形/座標軸/示意線——合法懸空，檢查器跳過）
   function DEC(g) { return `<g data-deco="1">${g}</g>`; }
@@ -808,24 +849,29 @@
   M['regulator-ldo-vs-buck'] = () => {
     const s = S();
     let g = '';
+    // 兩邊都補上輸入/輸出電容：舊版只有 Buck 有 Cout，LDO 側一顆電容都沒畫，
+    // 但 LDO 的 Cout 是穩定性必需品（省掉會震盪），並排比較時容易誤導。
     g += T(60, 24, 'LDO（線性）', { size: 9, weight: '600', anchor: 'start' });
-    g += L(40, 48, 74, 48) + T(36, 42, '5V', { size: 8 });
+    g += L(40, 48, 74, 48) + T(36, 42, '5V', { size: 8 }) + s.junction(56, 48);
+    g += cap(56, 70, { horizontal: false }) + gnd(56, 106, {}) + T(38, 74, 'Cin', { size: 7.5, anchor: 'end', fill: MUT });
     g += B(104, 48, 60, 30, 'LDO', []);
-    g += L(134, 48, 172, 48) + T(178, 65, '3.3V', { size: 8, anchor: 'middle' });
-    g += T(104, 82, '壓差×電流全變熱', { size: 8, fill: RED });
-    g += T(104, 94, '效率 = Vout/Vin = 66%', { size: 8, fill: MUT });
-    g += T(104, 108, '✚ 無漣波、便宜、快', { size: 8, fill: GRN });
+    g += L(134, 48, 172, 48) + T(178, 42, '3.3V', { size: 8, anchor: 'middle' }) + s.junction(152, 48);
+    g += cap(152, 70, { horizontal: false }) + gnd(152, 106, {}) + T(170, 74, 'Cout', { size: 7.5, anchor: 'start', fill: MUT });
+    g += T(104, 132, '壓差×電流全變熱', { size: 8, fill: RED });
+    g += T(104, 144, '效率 = Vout/Vin = 66%', { size: 8, fill: MUT });
+    g += T(104, 158, '✚ 無漣波、便宜、快', { size: 8, fill: GRN });
     g += T(250, 24, 'Buck（開關）', { size: 9, weight: '600', anchor: 'start' });
-    g += L(228, 48, 252, 48) + T(224, 42, '5V', { size: 8 });
+    g += L(228, 48, 252, 48) + T(224, 42, '5V', { size: 8 }) + s.junction(240, 48);
+    g += cap(240, 70, { horizontal: false }) + gnd(240, 106, {}) + T(222, 74, 'Cin', { size: 7.5, anchor: 'end', fill: MUT });
     g += B(280, 48, 52, 30, 'SW', ['PWM']);
     g += ind(330, 48, { horizontal: true });
     g += L(354, 48, 386, 48) + s.junction(366, 48) + T(392, 52, '3.3V', { size: 8, anchor: 'start' });
-    g += cap(366, 70, { horizontal: false }) + gnd(366, 106, {});
-    g += T(310, 108, '效率 90%+，發熱小', { size: 8, fill: GRN });
-    g += T(310, 120, '✚ 大壓差/大電流首選', { size: 8, fill: MUT });
-    g += T(310, 134, '− 開關漣波、EMI、成本', { size: 8, fill: ORG });
-    g += T(210, 160, '選型：壓差小/怕噪選 LDO；壓差大/電流大選 Buck；常見 Buck→LDO 兩級', { size: 8.5 });
-    return { d: 'LDO vs Buck：效率與噪聲取捨', svg: W(430, 170, g) };
+    g += cap(366, 70, { horizontal: false }) + gnd(366, 106, {}) + T(384, 74, 'Cout', { size: 7.5, anchor: 'start', fill: MUT });
+    g += T(310, 132, '效率 90%+，發熱小', { size: 8, fill: GRN });
+    g += T(310, 144, '✚ 大壓差/大電流首選', { size: 8, fill: MUT });
+    g += T(310, 158, '− 開關漣波、EMI、成本', { size: 8, fill: ORG });
+    g += T(215, 186, '選型：壓差小/怕噪選 LDO；壓差大/電流大選 Buck；常見 Buck→LDO 兩級', { size: 8.5 });
+    return { d: 'LDO vs Buck：效率與噪聲取捨', svg: W(440, 200, g) };
   };
 
   M['isolated-gate-driver'] = () => {
@@ -858,10 +904,11 @@
     g += B(134, 48, 44, 28, 'Q1', ['NFET']);
     g += B(190, 48, 44, 28, 'Q2', ['NFET']);
     g += L(156, 48, 168, 48);
-    g += T(149, 64, '背靠背（雙向斷）', { size: 8, fill: MUT });
+    // 舊位置 (149,64) 騎在 Q1/Q2 兩個方塊上（框底 y=62）並被閘控箭頭穿過 → 移到 FET 列上方
+    g += T(172, 26, '背靠背（雙向斷）', { size: 8, anchor: 'start', fill: MUT });
     g += L(212, 48, 268, 48) + A(268, 48, 292, 48) + T(298, 52, '系統/充電器', { size: 8.5, anchor: 'start' });
     g += B(150, 150, 110, 52, 'PD Sink 控制器', ['TPS25730 類', 'CC 協商', '閘極驅動＋OVP']);
-    g += A(72, 88, 100, 140, 'CC', { dx: -12, dy: -2 });
+    g += A(72, 88, 100, 140, 'CC');   // 不給 dx/dy：原本 dx:-12 把字推進 USB-C 框裡，交給自動閃避
     g += A(140, 124, 134, 64, '閘控', { dx: 14 }) + A(180, 124, 190, 64, null);
     g += T(300, 100, 'Dead-battery：Rd 讓', { size: 8, anchor: 'start', fill: MUT });
     g += T(300, 112, '空電池也能被供電啟動', { size: 8, anchor: 'start', fill: MUT });
@@ -1471,7 +1518,7 @@
   const OUT = {};
   Object.keys(M).forEach(id => {
     OUT[id] = () => {
-      REG = []; PTS = [];
+      REG = []; PTS = []; TXT = []; LNS = [];
       M[id]();            // pass 1：登錄方塊/腳位
       return M[id]();     // pass 2：draw-time 吸附繪製
 

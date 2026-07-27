@@ -67,11 +67,11 @@ jobs:
         run: node wire-gap-check.js --strict
 
       # 2g) 鐵律：圖表文字不得壓到圖形或別的文字。
-      #     估算器已補上 <g transform> 換算，原本那 2 筆假陽性消失，現況 0 →
-      #     從 --max=2 棘輪升級為 --strict：以後壓到一個字就擋下來。
-      #     （字寬仍是估算，最終驗收照 overlap-audit.md 用瀏覽器 getBBox 實測。）
-      - name: svg-overlap-check（圖字不重疊 · 鐵律）
-        run: node svg-overlap-check.js --strict
+      #     2026-07-27 把「框標題」判定從「文字中心在框內」改成「整個字框在框內」：
+      #     原本騎在框邊上的標籤（背靠背（雙向斷）、CC…）會被誤認成框自己的標題而漏報。
+      #     改嚴後翻出 9 張舊圖共 17 處未清 → 暫時用 --max=17 鎖住現況，清完一張就調降。
+      - name: svg-overlap-check（圖字不重疊 · 棘輪）
+        run: node svg-overlap-check.js --max=17
 
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
