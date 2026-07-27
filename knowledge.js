@@ -136,6 +136,44 @@ const CircuitSVG = {
     return this.wrap(320, swY + 95, g);
   },
 
+  // 反相 Buck-Boost（降壓 IC 當反相器用的標準接法）
+  // 拓樸：SW → 電感對「系統地」；二極體陰極在 SW、陽極在 −Vout；IC 的 GND 腳接 −Vout。
+  // 導通時 Vin→SW→L→GND 儲能；關斷時電感電流續流，改由 −Vout 經二極體灌回 SW，
+  // 所以輸出對系統地為負。與 Buck 的差別就在電感接地、二極體反向、IC 地浮在 −Vout。
+  invertingBuckBoost() {
+    const S = window.Sym; if (!S) return '';
+    const cx = 95, cy = 70, ww = 70;
+    const leadL = S.pins.icLeadL(cx, ww), leadR = S.pins.icLeadR(cx, ww);   // 46 / 144
+    const swY = S.icPinY(cy, 2, 0), gndY = S.icPinY(cy, 2, 1);              // 61 / 79
+    const A = 168;                                                          // SW 節點
+    let g = '';
+    g += S.line(10, swY, leadL, swY); g += S.txt(8, swY - 8, 'Vin', { anchor: 'start', size: 9, fill: '#64748b' });
+    g += this.capToGnd(S, 30, swY, 'Cin'); g += S.junction(30, swY);
+    g += S.ic(cx, cy, { width: ww, height: 74, label: '反相 Buck-Boost', pinsLeft: ['VIN', 'EN'], pinsRight: ['SW', 'GND'] });
+    g += S.line(leadL, gndY, 40, gndY); g += S.line(40, gndY, 40, swY);      // EN 拉到 VIN
+    g += S.junction(40, swY);
+    // SW 節點：電感往下對系統地（Buck 是往右串到輸出，這裡是關鍵差異）
+    g += S.line(leadR, swY, A, swY); g += S.junction(A, swY);
+    g += S.line(A, swY, A, 76);
+    g += `<g transform="rotate(90 ${A} 100)">${S.inductor(A, 100, {})}</g>`; // 垂直，76..124
+    g += S.txt(A + 12, 104, 'L', { anchor: 'start', size: 9, fill: '#64748b' });
+    g += S.line(A, 124, A, 126); g += S.ground(A, 140, {});
+    // 二極體：陰極在 SW 節點、陽極在 −Vout（rotate 180 把陰極翻到左邊）
+    g += S.line(A, swY, 178, swY);
+    g += `<g transform="rotate(180 200 ${swY})">${S.diode(200, swY, {})}</g>`;
+    g += S.txt(200, swY - 12, 'D', { size: 9, fill: '#64748b' });
+    g += S.line(222, swY, 300, swY);
+    g += this.capToGnd(S, 262, swY, 'Cout'); g += S.junction(262, swY);
+    g += S.txt(302, swY - 8, '−Vout', { anchor: 'end', size: 9, fill: '#64748b' });
+    // IC 的 GND 腳不接系統地，接到負輸出
+    g += S.line(leadR, gndY, 152, gndY); g += S.line(152, gndY, 152, 176);
+    g += S.line(152, 176, 300, 176); g += S.line(300, 176, 300, swY); g += S.junction(300, swY);
+    // 圖說寫在最底部的文字帶（不要放在 x=300 那條回流線旁邊，會被線穿過）
+    g += S.txt(165, 196, 'IC 的 GND 腳接 −Vout（不接系統地）；Vout = −Vin·D/(1−D)', { size: 9, fill: '#64748b' });
+    g += S.txt(165, 212, 'IC 的 VIN−GND 實際承受 Vin+|Vout|，選耐壓要含這一項', { size: 9, fill: '#64748b' });
+    return this.wrap(330, 228, g);
+  },
+
   boost() {
     const S = window.Sym; if (!S) return '';
     const p = S.pins.nmos(150, 90); // s=[176,70]上, d=[176,110]下, g=[120,90]
@@ -1412,7 +1450,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-27-fig-fixes';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-buckboost-art';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -1444,7 +1482,8 @@ const knowledgeApp = {
     const map = {
       'buck-converter': () => CircuitSVG.switcher({ ic: 'Buck', icPins: { l: ['VIN', 'EN'], r: ['SW', 'FB'] } }),
       'buck-converter-advanced': () => CircuitSVG.switcher({ ic: 'Buck IC', icPins: { l: ['VIN', 'EN'], r: ['SW', 'FB'] } }),
-      'buck-boost-converter': () => CircuitSVG.switcher({ ic: 'Buck-Boost', icPins: { l: ['VIN', 'EN'], r: ['SW', 'FB'] } }),
+      // 反相 Buck-Boost 不能沿用 switcher（那是 Buck 骨架，畫出來與 Buck 卡一模一樣，只有 IC 標籤不同）
+      'buck-boost-converter': () => CircuitSVG.invertingBuckBoost(),
       'boost-converter': () => CircuitSVG.boost(),
       'i2c-communication': () => CircuitSVG.i2cBus(),
       'spi-design': () => CircuitSVG.spiBus(),
@@ -2545,26 +2584,8 @@ const knowledgeApp = {
           {
             type: 'inverting',
             description: '反相 Buck-Boost 電路',
-            svg: `<svg viewBox="0 0 220 90" width="220" height="90">
-              <line x1="10" y1="30" x2="30" y2="30" stroke="#1d2943" stroke-width="2"/>
-              <text x="10" y="22" font-size="8">Vin</text>
-              <rect x="30" y="18" width="35" height="24" fill="white" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="47" y="34" text-anchor="middle" font-size="7">SW</text>
-              <line x1="65" y1="30" x2="85" y2="30" stroke="#1d2943" stroke-width="2"/>
-              <path d="M85,30 Q90,20 95,30 Q100,40 105,30" fill="none" stroke="#1d2943" stroke-width="2"/>
-              <text x="95" y="18" text-anchor="middle" font-size="7">L</text>
-              <line x1="105" y1="30" x2="130" y2="30" stroke="#1d2943" stroke-width="2"/>
-              <line x1="130" y1="30" x2="130" y2="42" stroke="#1d2943" stroke-width="1.5"/>
-              <line x1="120" y1="42" x2="140" y2="42" stroke="#1d2943" stroke-width="2"/>
-              <line x1="120" y1="47" x2="140" y2="47" stroke="#1d2943" stroke-width="2"/>
-              <line x1="130" y1="47" x2="130" y2="58" stroke="#1d2943" stroke-width="1.5"/>
-              <text x="130" y="40" text-anchor="middle" font-size="6">C</text>
-              <line x1="122" y1="58" x2="138" y2="58" stroke="#1d2943" stroke-width="1.5"/>
-              <line x1="125" y1="62" x2="135" y2="62" stroke="#1d2943" stroke-width="1"/>
-              <line x1="130" y1="30" x2="190" y2="30" stroke="#1d2943" stroke-width="2"/>
-              <text x="195" y="22" font-size="8">Vout</text>
-              <text x="100" y="78" text-anchor="middle" font-size="7">Vout = -Vin * D/(1-D)</text>
-            </svg>`
+            svg: ''   // 由 applyCircuitArt 填入 CircuitSVG.invertingBuckBoost()
+                      //（原本內嵌的手繪 SVG 少了二極體、也沒畫出反相，已移除）
           }
         ],
         keyFormulas: [
