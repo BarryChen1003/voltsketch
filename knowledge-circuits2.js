@@ -8,7 +8,10 @@
   const MUT = '#64748b', ACC = '#1f4fd1', RED = '#dc2626', GRN = '#16a34a', ORG = '#d97706';
   const C = '#1d2943';
   const S = () => window.Sym;
-  const W = (w, h, g) => `<svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:${w}px">${g}</svg>`;
+  // 全圖統一放大係數。以「光耦隔離回授」那張的觀感為基準（圖形與字都 ×1.3）：
+  // 等比放大不會改變任何相對位置，所以不會製造新的圖字重疊。
+  const K = 1.3;
+  const W = (w, h, g) => `<svg viewBox="0 0 ${w * K} ${h * K}" width="100%" style="max-width:${Math.round(w * K)}px"><g transform="scale(${K})">${g}</g></svg>`;
   // T：文字。同時登錄字框，讓 A() 的標籤自動閃避時知道哪裡已經有字。
   const T = (x, y, s, o) => {
     o = o || {};
@@ -102,19 +105,24 @@
     if (lbl) {
       const size = o.size || 7.5, anchor = o.anchor || 'middle';
       const bx = (x1 + x2) / 2 + (o.dx || 0), by = (y1 + y2) / 2 - 4;
-      const y = o.dy !== undefined ? by + o.dy : by + _dodgeDy(bx, by, lbl, size, anchor);
-      g += T(bx, y, lbl, { size, fill: o.lc || MUT, anchor });
+      const d = (o.dx !== undefined || o.dy !== undefined)
+        ? { dx: 0, dy: o.dy || 0 }                       // 作者手動指定就照他的
+        : _dodge(bx, by, lbl, size, anchor);
+      g += T(bx + d.dx, by + d.dy, lbl, { size, fill: o.lc || MUT, anchor });
     }
     return g;
   }
-  /** 估標籤 bbox 與 REG 方塊的碰撞，回傳需要的 y 位移（0 表示原位就乾淨）。 */
+  /** 估標籤 bbox（字寬用與 svg-overlap-check 相同的係數）。 */
   function _lblBox(x, y, s, size, anchor) {
     let w = 0;
     for (const ch of String(s)) w += /[⺀-꓏가-힣豈-﫿︰-﹯＀-｠]/.test(ch) ? size : size * 0.52;
     const x0 = anchor === 'start' ? x : anchor === 'end' ? x - w : x - w / 2;
     return [x0, y - size * 0.82, x0 + w, y + size * 0.26];
   }
-  function _dodgeDy(x, y, s, size, anchor) {
+  /** 自動閃避：標籤壓到方塊/線/別的字時，回傳把它挪開的 {dx,dy}。 */
+  function _dodge(x, y, s, size, anchor) {
+    const pad = 1.12;   // 估算偏窄 → 放寬後再判乾淨，才不會挑到擦邊的位置
+    const _box = (xx, yy) => { const b = _lblBox(xx, yy, s, size, anchor); const w = (b[2] - b[0]) * (pad - 1) / 2, h = (b[3] - b[1]) * (pad - 1) / 2; return [b[0] - w, b[1] - h, b[2] + w, b[3] + h]; };
     const base = _lblBox(x, y, s, size, anchor);
     const sameAsSelf = b => Math.abs(b[0] - base[0]) < 0.6 && Math.abs(b[1] - base[1]) < 0.6;
     const segHits = (b, [ax, ay, bx, by]) => {       // 線段取樣是否落在字框內
@@ -125,16 +133,17 @@
       }
       return false;
     };
-    const clear = dy => {
-      const b = _lblBox(x, y + dy, s, size, anchor);
+    const clear = (dx, dy) => {
+      const b = _box(x + dx, y + dy);
       if (REG.some(([rx, ry, rw, rh]) => b[0] < rx + rw - 0.5 && b[2] > rx + 0.5 && b[1] < ry + rh - 0.5 && b[3] > ry + 0.5)) return false;
       if (LNS.some(l => segHits(b, l))) return false;
       if (TXT.some(o => !sameAsSelf(o) && b[0] < o[2] - 0.5 && b[2] > o[0] + 0.5 && b[1] < o[3] - 0.5 && b[3] > o[1] + 0.5)) return false;
       return true;
     };
-    if (clear(0)) return 0;
-    for (const dy of [-12, 13, -22, 24, -32, 34, -42, 44]) if (clear(dy)) return dy;
-    return 0;
+    if (clear(0, 0)) return { dx: 0, dy: 0 };
+    // 只上下挪：dx 平移會讓標籤離開它該標的那條箭頭（語意跑掉），實測也會製造新的字壓字。
+    for (const dy of [-12, 13, -22, 24, -32, 34, -42, 44, -54, 56]) if (clear(0, dy)) return { dx: 0, dy };
+    return { dx: 0, dy: 0 };
   }
   // 裝飾群組（波形/座標軸/示意線——合法懸空，檢查器跳過）
   function DEC(g) { return `<g data-deco="1">${g}</g>`; }
@@ -416,11 +425,11 @@
     g += B(46, 84, 64, 96, 'USB-C 座', ['CC1', 'CC2', 'SSTX/RX ×2組']);
     g += A(78, 52, 118, 52, 'CC1/CC2');
     g += B(196, 84, 132, 96, 'HD3SS3220', ['CC 邏輯：方向/角色', '(DFP/UFP/DRP)', 'SuperSpeed 2:1 Mux']);
-    g += A(78, 106, 118, 106, 'SSTX/RX（正反兩組）', { anchor: 'start' });
+    g += A(78, 106, 118, 106, 'SSTX/RX ×2');
     g += A(262, 84, 300, 84, '單組 USB3');
     g += B(342, 84, 72, 48, 'SoC/USB3', []);
     g += T(196, 148, '插入方向由 CC 判定 → mux 選對應那組差分對', { size: 8.5 });
-    g += T(196, 163, 'CC 上拉/下拉值決定角色與供電能力廣告', { size: 8, fill: MUT });
+    g += T(196, 163, 'CC 上拉/下拉值決定角色與供電能力廣告；SSTX/RX 正反兩組只有一組會被接出去', { size: 8, fill: MUT });
     return { d: 'Type-C 正反插：CC 偵測＋SuperSpeed mux 切換', svg: W(400, 172, g) };
   };
 
@@ -460,7 +469,7 @@
     let g = '';
     g += B(190, 92, 96, 84, 'EC', ['常駐 MCU', 'S5 也醒著']);
     const io = [
-      [60, 34, 'PCH/SoC', 'sideband：PWROK/PLTRST#', true],
+      [60, 34, 'PCH/SoC', 'sideband：PWROK', true],
       [60, 92, '充電器/PD', 'I2C：選源/充電', true],
       [60, 150, '電源鍵/LID', '喚醒事件', false],
       [330, 34, '風扇', 'PWM＋TACH', true],
@@ -677,7 +686,7 @@
     g += T(328, 132, '矩陣管理 IC：每顆 LED 可獨立旁路（關掉）', { size: 8, fill: MUT });
     g += T(306, 153, '→ ADB 遮蔽對向來車、其餘保持遠光', { size: 8, fill: ACC });
     g += B(120, 140, 110, 36, '相機/演算法', ['偵測對向車']);
-    g += A(175, 140, 250, 82, '旁路命令', { dx: -14, dy: -12 });
+    g += A(175, 140, 250, 82, '旁路命令', { dy: 46 });   // 實測乾淨位（估算會挑到被斜箭頭穿過的位置）
     return { d: '矩陣大燈：升壓＋每顆 LED 獨立旁路（ADB）', svg: W(420, 160, g) };
   };
 
@@ -727,7 +736,7 @@
     let g = '';
     g += B(60, 60, 76, 44, 'BMC', ['輪詢＋告警']);
     g += L(98, 52, 380, 52) + T(390, 47, 'SCL/SDA', { size: 8, anchor: 'end' });
-    g += L(98, 68, 380, 68, { color: ORG }) + T(390, 102, 'ALERT#（開汲極，主動報障）', { size: 8, anchor: 'end', fill: ORG });
+    g += L(98, 68, 380, 68, { color: ORG }) + T(220, 144, 'ALERT#（開汲極，主動報障）', { size: 8, fill: ORG });
     [[150, 'VRM', '0x40'], [230, 'IBC', '0x41'], [310, 'Hot-swap', '0x42'], [372, 'PSU', '0x58']].forEach(([x, name, addr]) => {
       g += L(x, 52, x, 92) ;
       g += B(x, 112, 64, 38, name, [addr]);
@@ -783,7 +792,7 @@
     g += res(128, 52, { horizontal: true, label: 'Rsense' }) + T(142, 74, 'Kelvin', { size: 7.5, fill: MUT, anchor: 'start' });
     g += L(152, 52, 226, 52);   // 直達 NMOS source 端點 (226,52)
     g += mos(200, 72, { showPins: false, bodyDiode: true });
-    g += T(176, 118, 'SOA 強化 MOSFET', { size: 8, fill: MUT });
+    g += T(200, 32, 'SOA 強化 MOSFET', { size: 8, fill: MUT });
     g += L(226, 52, 268, 52) + A(268, 52, 292, 52);
     g += B(322, 52, 60, 36, '板內 VRM', []);
     g += cap(268, 74, { horizontal: false }) + gnd(268, 110, {});
@@ -972,7 +981,7 @@
     g += L(144, 48, 202, 48, { w: 3 }) + s.junction(202, 48);
     // sense 抽頭（從電阻焊盤內側）
     g += L(102, 56, 102, 84, { color: ACC, w: 1.2 }) + L(138, 56, 138, 84, { color: ACC, w: 1.2 });
-    g += T(120, 101, '感測線（不走大電流）', { anchor: 'start', size: 7.5, fill: ACC });
+    g += T(170, 80, '感測線（不走大電流）', { anchor: 'start', size: 7.5, fill: ACC });
     g += B(120, 106, 88, 36, '差動放大', ['→ ADC']);
     g += T(120, 140, '走線壓降不進量測 → mΩ 級才量得準', { size: 8, fill: GRN });
     // 低邊 vs 高邊
@@ -1000,7 +1009,7 @@
     c += T(178, 122, 'GaN FET（ns 級邊沿）', { anchor: 'start', size: 8, fill: MUT });
     c += L(204, 56, 224, 56) + F(224, 56, 'VBUS');
     c += L(204, 96, 224, 96) + T(230, 100, '→ 功率迴路', { size: 8, anchor: 'start' });
-    c += A(204, 96, 64, 104, 'Kelvin source 獨立回線', { dy: 15, anchor: 'start', color: ACC });
+    c += A(204, 96, 64, 104, 'Kelvin source 獨立回線', { dy: 38, anchor: 'start', color: ACC });   // 實測乾淨位
     // 電路放大 1.3×，佔 x 190..544 / y 40..165
     let g = `<g transform="translate(164,1) scale(1.3)">${c}</g>`;
     // 左欄：佈局
@@ -1035,7 +1044,7 @@
     g += A(110, 92, 129, 108, '6 路閘極', { anchor: 'end' });
     // 電流感測
     g += LR(230, 138, 230, 150) + res(230, 170, { horizontal: false, label: 'Rs', labelSide: 'right' }) + gnd(230, 206);
-    g += A(230, 148, 110, 120, 'Rs 回授', { dy: -7, color: ACC });
+    g += A(230, 148, 110, 120, 'Rs 回授', { color: ACC });
     g += T(210, 231, '換相依 Hall/BEMF 回授；Rs 電流回授做 FOC；死區不足＝上下管直通', { size: 8.5, fill: ORG });
     return { d: '三相 BLDC：三半橋＋電流感測＋智慧閘驅', svg: W(430, 236, g) };
   };
@@ -1152,7 +1161,7 @@
     g += B(230, 120, 76, 40, 'EC', ['時序總管']);
     g += A(98, 120, 192, 120, 'SLP_S3#/S4#/S5#（睡眠狀態）', { anchor: 'start' });
     g += A(192, 128, 98, 128, null, { color: MUT });
-    g += A(230, 100, 230, 70, 'PWROK（軌穩定）', { dy: -11 });
+    g += A(230, 100, 230, 70, 'PWROK（軌穩定）', { anchor: 'start', dx: 8 });
     g += A(98, 50, 192, 50, 'PLTRST#（平台重置釋放）');
     g += T(150, 170, '交握順序：EC 開軌 → 各 PWROK → PCH 確認 → 釋放 PLTRST# → 平台跑', { size: 8.5 });
     g += T(150, 186, '每根 sideband 都有時序窗（平台設計指南），錯序 = 不開機', { size: 8.5, fill: ORG });
@@ -1214,7 +1223,7 @@
     g += T(105, 130, '線滿天飛、四向交叉、無流向', { size: 7.5, fill: MUT });
     g += T(310, 22, '✅ 好讀', { size: 9, fill: GRN });
     g += `<rect x="240" y="32" width="150" height="86" fill="#fff" stroke="${GRN}" stroke-width="1.2"/>`;
-    g += DEC(F(260, 48, 'V3V3', 8)) + T(370, 44, '電源上、地下', { size: 7, fill: MUT });
+    g += DEC(F(260, 48, 'V3V3', 8)) + T(358, 44, '電源上、地下', { size: 7, fill: MUT })  // 右緣原本剛好越出綠框 1px;
     g += B(280, 70, 44, 24, 'IN', []) + DEC(A(302, 70, 330, 70)) + B(352, 70, 44, 24, 'OUT', []);
     g += T(315, 100, '訊號左→右；net label 取代長線', { size: 7.5, fill: MUT });
     g += T(215, 150, '慣例：一頁一功能塊、關鍵參數標在旁、去耦畫在 IC 邊、reviewer 十分鐘能講完', { size: 8.5 });
@@ -1246,8 +1255,8 @@
     g += L(140, 36, 140, 76, { w: 2.5, color: C }) + `<circle cx="140" cy="36" r="3.5" fill="${C}"/>` + `<circle cx="140" cy="76" r="3.5" fill="${C}"/>`;
     g += T(140, 26, '訊號換層 via', { size: 7.5 });
     g += L(158, 54, 158, 126, { w: 2, color: ACC }) + `<circle cx="158" cy="54" r="3" fill="${ACC}"/>` + `<circle cx="158" cy="126" r="3" fill="${ACC}"/>`;
-    g += T(196, 96, '≤1.5mm 內放 stitching via', { size: 7.5, fill: ACC, anchor: 'start' });
-    g += T(196, 99, '（回流跟著換層）', { size: 7.5, fill: ACC, anchor: 'start' });
+    g += T(266, 92, '≤1.5mm 內放 stitching via', { size: 7.5, fill: ACC, anchor: 'start' });
+    g += T(266, 106, '（回流跟著換層）', { size: 7.5, fill: ACC, anchor: 'start' });
     g += T(165, 158, '換層＝回流也要換參考層：沒 stitching via 回流繞遠、跨層腔體被激勵共振', { size: 8.5, fill: ORG });
     return { d: '六層疊層：換層 via＋回流 stitching', svg: W(430, 168, g) };
   };
@@ -1446,16 +1455,18 @@
   M['jesd204-converter-clocking'] = () => {
     let g = '';
     g += B(60, 80, 84, 56, '時脈 IC', ['LMK 系', 'DCLK＋SYSREF', '成對輸出']);
-    g += A(102, 62, 160, 46, 'DCLK（差分）', { dy: -7 }) + A(102, 92, 160, 60, 'SYSREF', { dx: -36 });
+    g += A(102, 62, 160, 46, 'DCLK（差分）', { dy: -7 }) + A(102, 92, 160, 60, 'SYSREF');
     g += B(196, 50, 72, 32, 'ADC/DAC', []);
     g += A(102, 70, 240, 128, null, { color: MUT }) + A(102, 98, 246, 140, null, { color: MUT });
     g += B(288, 134, 76, 36, 'FPGA', ['收發器']);
-    g += A(232, 54, 262, 120, '高速 lane（8b/10b→64b/66b）', { dx: -26, dy: -14 });
+    g += A(232, 54, 262, 120, null);
+    // 這一帶三條斜箭頭交錯，標籤怎麼上下挪都會被線穿 → 固定放到箭頭右側的空白處
+    g += T(268, 98, '高速 lane', { size: 7.5, anchor: 'start', fill: MUT });
     g += T(310, 50, 'SYSREF 對齊：', { size: 8.5, anchor: 'start' });
     g += T(310, 64, '兩端同拍取樣', { size: 8, anchor: 'start', fill: MUT });
     g += T(310, 76, '→ 確定性延遲', { size: 8, anchor: 'start', fill: MUT });
     g += T(212, 190, 'SYSREF 相對 DCLK 的 setup/hold 是整鏈成敗：走線等長、同源分配', { size: 8.5, fill: ORG });
-    g += T(212, 206, '多器件同步（相控陣/MIMO）靠同一顆時脈 IC 樹狀分發', { size: 8.5, fill: MUT });
+    g += T(212, 206, '多器件同步（相控陣/MIMO）靠同一顆時脈 IC 樹狀分發；lane 編碼 8b/10b→64b/66b', { size: 8.5, fill: MUT });
     return { d: 'JESD204C 時脈：DCLK＋SYSREF 確定性延遲', svg: W(430, 216, g) };
   };
 

@@ -2,9 +2,13 @@
 // 回傳純 SVG 字串，可正常存入 localStorage。
 const CircuitSVG = {
   // pad：畫布邊距（負 viewBox 原點）。用來納入超出 0,0 的標籤，元件座標完全不動。
+  // 全圖統一放大 K 倍（以「光耦隔離回授」那張的圖形/字級觀感為基準）。
+  // 等比放大不動相對位置 → 不會製造新的圖字重疊。
   wrap(w, h, inner, pad) {
+    const K = 1.3;
     const l = (pad && pad.l) || 0, t = (pad && pad.t) || 0;
-    return `<svg viewBox="${-l} ${-t} ${w + l} ${h + t}" width="100%" style="max-width:${w + l}px">${inner}</svg>`;
+    const vw = (w + l) * K, vh = (h + t) * K;
+    return `<svg viewBox="${-l * K} ${-t * K} ${vw} ${vh}" width="100%" style="max-width:${Math.round(vw)}px"><g transform="scale(${K})">${inner}</g></svg>`;
   },
 
   // Level Shift（BSS138 雙向電平轉換）
@@ -746,7 +750,7 @@ const CircuitSVG = {
     g += S.line(170, 178, 170, 184); g += S.ground(170, 198, {});
     g += S.txt(150, 224, 'Vout = 2.5V × (1 + R1/R2)：REF 到 2.5V 時陰極開始分流', { size: 9, fill: MUT });
     g += S.txt(150, 240, 'K 腳最小工作電流約 1mA：R_bias 要讓最輕載時 TL431 仍導通', { size: 9, fill: MUT });
-    return this.wrap(375, 315, `<g transform="scale(1.25)">${g}</g>`);
+    return this.wrap(290, 252, g);   // 全域 wrap 已統一 ×1.3
   },
 
   // RC 低通濾波
@@ -854,7 +858,7 @@ const CircuitSVG = {
     g += S.txt(270, 170, '輸出側（光電晶體）', { size: 9, fill: MUT });
     g += S.txt(200, 190, 'CTR = Ic/If 決定回授增益；CTR 隨溫度與老化衰減，要留餘裕', { size: 9, fill: MUT });
     g += S.txt(200, 206, '隔離電源回授：LED 側配 TL431 取樣 Vout，光電晶體側接控制器 FB；兩側地不可相連', { size: 9, fill: MUT });
-    return this.wrap(520, 284, `<g transform="scale(1.3)">${g}</g>`);
+    return this.wrap(400, 218, g);   // 全域 wrap 已統一 ×1.3
   },
 
   // ORing / 理想二極體
@@ -1573,7 +1577,7 @@ const knowledgeApp = {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
     // 注意：自動圖（applyCircuitArt / CIRCUITS2）也算「內容」。快取命中時走的是 localStorage 裡
     // 序列化好的 svg 字串，重畫的新圖不會生效 → 改圖一律要連這行一起遞增。
-    const BUILTIN_VERSION = '2026-07-27-tl431-ldobuck';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-scale13-all2';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -1661,7 +1665,28 @@ const knowledgeApp = {
         } catch (e) { /* 單張畫失敗不擋整頁 */ }
       });
     }
+    // 統一尺寸：卡片內嵌的手寫 SVG 沒走 wrap()，字級只有 5–8px、還帶固定 width/height，
+    // 跟其他圖差一截。這裡補上與 wrap() 相同的 ×1.3 包裝與 100% 寬度合約（等比放大，
+    // 相對位置完全不變 → 不會製造新的圖字重疊）。
+    data.forEach(item => (item.circuits || []).forEach(c => { if (c && c.svg) c.svg = this.normalizeSvgScale(c.svg); }));
     return data;
+  },
+
+  normalizeSvgScale(svg) {
+    const s = String(svg).trim();
+    if (!/^<svg/.test(s)) return svg;
+    const head = s.slice(0, s.indexOf('>') + 1);
+    if (/<g transform="scale\(/.test(s.slice(head.length, head.length + 40))) return svg;   // 已經包過
+    const vb = (head.match(/viewBox="([^"]*)"/) || [])[1];
+    if (!vb) return svg;
+    const [x, y, w, h] = vb.trim().split(/\s+/).map(Number);
+    if (![x, y, w, h].every(Number.isFinite)) return svg;
+    const K = 1.3;
+    const newHead = head
+      .replace(/viewBox="[^"]*"/, `viewBox="${x * K} ${y * K} ${w * K} ${h * K}"`)
+      .replace(/\s(?:width|height|style)="[^"]*"/g, '')
+      .replace(/\s*>$/, ` width="100%" style="max-width:${Math.round(w * K)}px">`);
+    return newHead + `<g transform="scale(${K})">` + s.slice(head.length, s.lastIndexOf('</svg>')) + '</g></svg>';
   },
 
   getSampleKnowledge() {
@@ -2955,7 +2980,7 @@ const knowledgeApp = {
               <text x="115" y="40" font-size="7">返回路徑（平面層）</text>
               <rect x="60" y="50" width="100" height="20" fill="#f0f0f0" stroke="#1d2943" stroke-width="1"/>
               <text x="110" y="64" text-anchor="middle" font-size="7">GND Plane</text>
-              <text x="125" y="55" font-size="6" fill="green">小迴路面積 = 低 EMI</text>
+              <text x="165" y="64" font-size="6" fill="green">小迴路面積 = 低 EMI</text>
             </svg>`
           }
         ],

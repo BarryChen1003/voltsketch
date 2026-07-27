@@ -160,7 +160,8 @@
     const color = opt.color || C, w = opt.w || 2;
     let g = ln(x, y, x, y + 12, { color, w });
     g += ln(x - 8, y, x + 8, y, { color, w });
-    if (label) g += txt(x, y - 6, label, { size: 9, fill: '#64748b' });
+    // y-6 時字框上緣會超出畫布約 1px（整圖放大後放大成 1.6px）→ 改 y-4
+    if (label) g += txt(x, y - 4, label, { size: 9, fill: '#64748b' });
     return g;
   }
 

@@ -69,9 +69,9 @@ jobs:
       # 2g) 鐵律：圖表文字不得壓到圖形或別的文字。
       #     2026-07-27 把「框標題」判定從「文字中心在框內」改成「整個字框在框內」：
       #     原本騎在框邊上的標籤（背靠背（雙向斷）、CC…）會被誤認成框自己的標題而漏報。
-      #     改嚴後翻出 9 張舊圖共 17 處未清 → 暫時用 --max=17 鎖住現況，清完一張就調降。
-      - name: svg-overlap-check（圖字不重疊 · 棘輪）
-        run: node svg-overlap-check.js --max=17
+      #     改嚴後翻出的 17 處已於 2026-07-27 全部清完 → 回到 --strict：壓到一個字就擋。
+      - name: svg-overlap-check（圖字不重疊 · 鐵律）
+        run: node svg-overlap-check.js --strict
 
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙

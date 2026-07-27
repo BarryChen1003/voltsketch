@@ -90,7 +90,10 @@ function parse(svg) {
     const top = stack[stack.length - 1];
     if (tagName === 'g' || tagName === 'svg') {
       if (close) { if (stack.length > 1) stack.pop(); continue; }
-      const tr = attr(body, 'transform');
+      let tr = attr(body, 'transform');
+      // 最外層那個純 scale() 是全圖統一放大（wrap/W 加的）。門檻（TOUCH/GAP_MAX）是絕對 px，
+      // 所以這裡把它當恆等式忽略 → 一律在「原始座標」上量，放大倍率改了也不會影響判定。
+      if (tr && stack.length === 2 && /^\s*scale\([^)]*\)\s*$/.test(tr)) tr = null;
       // data-sym：元件符號內部筆畫；data-deco：裝飾/註解線（紅叉、座標軸、指示箭頭）
       const isSym = attr(body, 'data-sym') !== null || attr(body, 'data-deco') !== null;
       stack.push({ m: tr ? mul(top.m, parseTransform(tr)) : top.m, sym: top.sym || isSym });
