@@ -269,14 +269,15 @@ const CircuitSVG = {
     const S = window.Sym; if (!S) return '';
     const xs = [56, 116, 176], vals = ['10µF', '100nF', '1nF'];
     let g = '';
-    g += S.line(56, 30, 236, 30);                                 // VCC 匯流排
+    // 匯流排止於 x=192（IC 方框左緣 216 之前），不越過方框；再折下去接 VCC 腳引線末端 (202,62)
+    g += S.line(56, 30, 192, 30);                                 // VCC 匯流排
     g += S.line(116, 16, 116, 30); g += S.line(106, 16, 126, 16); g += S.txt(116, 11, 'VCC', { size: 9, fill: '#64748b' });
     xs.forEach((x, i) => {
       g += this.capToGnd(S, x, 30); g += S.junction(x, 30);
       g += S.txt(x, 120, vals[i], { size: 9, fill: '#64748b' });  // 值置電容下方
     });
-    g += S.ic(236, 62, { width: 40, height: 50, label: 'IC', pinsLeft: ['VCC'] });
-    g += S.line(216, 52, 216, 30); g += S.junction(216, 30);
+    g += S.ic(236, 62, { width: 40, height: 50, label: 'IC', pinsLeft: ['VCC'] }); // 腳引線 202..216 @y=62
+    g += S.line(192, 30, 192, 62); g += S.line(192, 62, 202, 62);
     return this.wrap(280, 144, g);
   },
 
@@ -722,8 +723,9 @@ const CircuitSVG = {
     // 飛跨電容（時脈驅動）
     g += this.capToGnd(S, 110, 40, 'Cfly');
     g += this.capToGnd(S, 195, 40, 'Cout');
-    g += S.txt(110, 120, '時脈切換泵升電壓', { size: 8, fill: '#64748b' });
-    return this.wrap(240, 130, g);
+    // 圖說壓在接地符號上（接地最下緣 y=112）→ 下移到 134 並放大到 10
+    g += S.txt(110, 134, '時脈切換泵升電壓', { size: 10, fill: '#64748b' });
+    return this.wrap(240, 148, g);
   },
 
   // 整流橋（菱形，二極體陰極朝 V+、陽極朝 V−）
@@ -1410,7 +1412,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-26-charger-fix';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-fig-fixes';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');

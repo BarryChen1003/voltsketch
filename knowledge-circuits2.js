@@ -69,9 +69,10 @@
     REG.push([x - w / 2, y - h / 2, w, h]);
     let g = `<rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="4" fill="${o.fill || '#fff'}" stroke="${o.color || C}" stroke-width="${o.sw || 1.6}"${o.dash ? ` stroke-dasharray="${o.dash}"` : ''}/>`;
     const lines = [].concat(sub || []);
-    const cy = y - (lines.length ? (lines.length * 9) / 2 : 0);
+    const lh = o.ss ? o.ss + 2 : 9;            // o.ss：副標字級（預設 7.5，行距隨字級加大）
+    const cy = y - (lines.length ? (lines.length * lh) / 2 : 0);
     g += T(x, cy + 3, name, { size: o.ts || 9.5, weight: '600' });
-    lines.forEach((s, i) => { g += T(x, cy + 14 + i * 9, s, { size: 7.5, fill: MUT }); });
+    lines.forEach((s, i) => { g += T(x, cy + 14 + i * lh, s, { size: o.ss || 7.5, fill: MUT }); });
     return g;
   }
   // 接線（兩端都吸附）
@@ -867,25 +868,30 @@
   M['classd-output-filter'] = () => {
     const s = S();
     let g = '';
-    g += B(52, 70, 72, 56, 'Class-D', ['H 橋輸出', 'PWM 數百kHz']);
-    // BTL 兩路 LC
-    [[48, 'OUT+'], [92, 'OUT−']].forEach(([y, lbl]) => {
-      g += L(88, y, 112, y) + T(100, y - 6, lbl, { size: 7.5, fill: MUT });
-      g += ind(134, y, { horizontal: true });
-      g += L(158, y, 210, y) + s.junction(184, y);
-      g += cap(184, y + 22, { horizontal: false }) + gnd(184, y + 58, {});
-    });
-    // 喇叭（膜片高度涵蓋兩條輸出線 y=48..92）
-    g += `<rect x="210" y="40" width="12" height="56" fill="#fff" stroke="${C}" stroke-width="1.4"/>`;
-    g += `<polygon points="222,40 240,28 240,108 222,96" fill="#fff" stroke="${C}" stroke-width="1.4"/>`;
-    g += T(230, 110, '喇叭', { size: 8 });
-    g += T(320, 48, 'LC 截止 ≈ 30~60kHz：', { size: 8.5, anchor: 'start' });
-    g += T(320, 62, '通音頻、擋開關載波', { size: 8, anchor: 'start', fill: MUT });
-    g += T(320, 82, '近場短線可免濾波', { size: 8.5, anchor: 'start' });
-    g += T(320, 96, '（靠喇叭電感），長線', { size: 8, anchor: 'start', fill: MUT });
-    g += T(320, 108, '必上 LC 否則 EMI 超標', { size: 8, anchor: 'start', fill: ORG });
-    g += T(210, 172, 'BTL 兩端都要濾；L 選飽和電流夠的功率電感，C 用低失真 C0G/薄膜', { size: 8.5 });
-    return { d: 'Class-D BTL 輸出 LC 濾波', svg: W(430, 180, g) };
+    g += B(58, 96, 80, 60, 'Class-D', ['H 橋輸出', 'PWM 數百 kHz'], { ts: 10, ss: 9 });
+    // BTL 兩路 LC。舊版兩顆並聯電容同 x 疊在一起（上路電容 48..92 直接壓到下路輸出線
+    // y=92，接地符號又壓到下路電容）→ 上路電容改往上接地、下路往下，兩路完全分開。
+    g += L(98, 76, 116, 76) + T(102, 64, 'OUT+', { size: 9, anchor: 'start', fill: MUT });
+    g += ind(140, 76, { horizontal: true });                       // 116..164
+    g += L(164, 76, 218, 76) + s.junction(188, 76);
+    g += cap(188, 42, { horizontal: false });                      // 引線 20..64
+    g += LR(188, 64, 188, 76);
+    g += LR(176, 20, 200, 20) + LR(180, 15, 196, 15) + LR(184, 10, 192, 10);  // 朝上的接地
+    g += L(98, 116, 116, 116) + T(102, 104, 'OUT−', { size: 9, anchor: 'start', fill: MUT });
+    g += ind(140, 116, { horizontal: true });
+    g += L(164, 116, 218, 116) + s.junction(188, 116);
+    g += cap(188, 138, { horizontal: false }) + gnd(188, 174, {}); // 引線 116..160
+    // 喇叭（膜片高度涵蓋兩條輸出線 y=76..116）
+    g += `<rect x="218" y="68" width="12" height="56" fill="#fff" stroke="${C}" stroke-width="1.4"/>`;
+    g += `<polygon points="230,68 250,54 250,138 230,124" fill="#fff" stroke="${C}" stroke-width="1.4"/>`;
+    g += T(240, 152, '喇叭', { size: 9.5 });
+    g += T(272, 74, 'LC 截止 ≈ 30~60kHz：', { size: 9.5, anchor: 'start' });
+    g += T(272, 90, '通音頻、擋開關載波', { size: 9, anchor: 'start', fill: MUT });
+    g += T(272, 114, '近場短線可免濾波', { size: 9.5, anchor: 'start' });
+    g += T(272, 130, '（靠喇叭電感），長線', { size: 9, anchor: 'start', fill: MUT });
+    g += T(272, 146, '必上 LC 否則 EMI 超標', { size: 9, anchor: 'start', fill: ORG });
+    g += T(235, 200, 'BTL 兩端都要濾；L 選飽和電流夠的功率電感，C 用低失真 C0G/薄膜', { size: 9.5 });
+    return { d: 'Class-D BTL 輸出 LC 濾波', svg: W(470, 214, g) };
   };
 
   M['space-grade-power'] = () => {
