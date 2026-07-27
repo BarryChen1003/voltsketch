@@ -26,8 +26,8 @@
   },
   "auto-lin-bus": {
     "gap": 0,
-    "over": 1,
-    "free": 0
+    "over": 0,
+    "free": 1
   },
   "pmbus-telemetry": {
     "gap": 0,

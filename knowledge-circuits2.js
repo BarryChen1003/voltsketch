@@ -651,11 +651,15 @@
   M['auto-lin-bus'] = () => {
     const s = S();
     let g = '';
-    g += F(80, 40, 'VBAT 12V');
-    g += dio(80, 52, { horizontal: false });
-    g += res(80, 88, { horizontal: false, label: '1kΩ', labelSide: 'left' });
-    g += T(56, 60, '防倒灌', { size: 7.5, anchor: 'start', fill: ORG });
-    g += L(80, 112, 80, 128) + LR(80, 128, 360, 128, { w: 2 }) + T(376, 132, 'LIN', { size: 9 });
+    // Sym.diode 只有水平版，horizontal:false 不存在 → 舊版畫出一顆橫躺的二極體，
+    // 兩腳在 (58,52)/(102,52)，跟垂直的上拉支路完全沒接上（左上角看起來斷掉）。
+    // 這裡用 rotate(90) 轉成垂直（陽極上、陰極下＝擋 VBAT 掉電時的倒灌）。
+    g += F(80, 30, 'VBAT 12V');
+    g += LR(80, 30, 80, 36);
+    g += `<g transform="rotate(90 80 58)">${S().diode(80, 58, {})}</g>`;   // S().diode 自己已帶 data-sym   // 引線 36..80
+    g += res(80, 104, { horizontal: false, label: '1kΩ', labelSide: 'left' });              // 引線 80..128
+    g += T(68, 58, '防倒灌', { size: 7.5, anchor: 'end', fill: ORG });
+    g += LR(80, 128, 360, 128, { w: 2 }) + T(368, 132, 'LIN', { size: 9, anchor: 'start' });
     g += B(80, 170, 96, 40, '主節點', ['MCU＋收發器']);
     g += L(80, 128, 80, 150);
     // 從節點×2

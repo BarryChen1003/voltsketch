@@ -1082,12 +1082,14 @@ const CircuitSVG = {
     g += S.ic(70, 70, { width: 70, height: 64, label: 'CAN 收發器', pinsLeft: ['TXD', 'RXD'], pinsRight: ['CANH', 'CANL'] });
     g += S.line(leadL, txdY, 20, txdY); g += S.txt(18, txdY + 3, 'TXD', { anchor: 'end', size: 8, fill: '#64748b' });
     g += S.line(leadL, rxdY, 20, rxdY); g += S.txt(18, rxdY + 3, 'RXD', { anchor: 'end', size: 8, fill: '#64748b' });
-    // 匯流排 CANH/CANL → 120Ω 終端
-    g += S.line(leadR, hY, 210, hY); g += S.junction(210, hY); g += S.line(210, hY, 210, 46);
-    g += S.line(leadR, lY, 210, lY); g += S.junction(210, lY); g += S.line(210, lY, 210, 94);
-    g += S.resistor(210, 70, { horizontal: false, label: '120Ω', labelSide: 'right' }); // 引線 46..94
-    g += S.txt(125, hY - 6, 'CANH', { size: 8, fill: '#64748b' }); g += S.txt(125, lY + 12, 'CANL', { size: 8, fill: '#64748b' });
-    return this.wrap(258, 140, g);
+    // 匯流排 CANH/CANL → 120Ω 終端。垂直電阻高 48px，但 CANH/CANL 只差 18px：
+    // 舊版硬塞在兩線之間，電阻本體與兩條線的引線整段重疊（畫面上像兩截半個電阻）。
+    // 改成 CANH 直接進電阻上端子、CANL 往下繞到下端子。
+    g += S.line(leadR, hY, 250, hY);
+    g += S.resistor(250, hY + 24, { horizontal: false, label: '120Ω', labelSide: 'right' }); // 引線 61..109
+    g += S.line(leadR, lY, 228, lY); g += S.line(228, lY, 228, hY + 48); g += S.line(228, hY + 48, 250, hY + 48);
+    g += S.txt(150, hY - 6, 'CANH', { size: 8, fill: '#64748b' }); g += S.txt(150, lY + 12, 'CANL', { size: 8, fill: '#64748b' });
+    return this.wrap(300, 140, g);
   },
 
   // RS-485 收發器（半雙工，120Ω 終端）
@@ -1098,11 +1100,12 @@ const CircuitSVG = {
     let g = '';
     g += S.ic(70, 78, { width: 70, height: 80, label: 'RS-485', pinsLeft: ['DI', 'RO', 'DE/RE'], pinsRight: ['A', 'B'] });
     ['DI', 'RO', 'DE/RE'].forEach((nm, i) => { const y = S.icPinY(78, 3, i); g += S.line(leadL, y, 20, y); g += S.txt(18, y + 3, nm, { anchor: 'end', size: 7, fill: '#64748b' }); });
-    g += S.line(leadR, aY, 210, aY); g += S.junction(210, aY); g += S.line(210, aY, 210, 54);
-    g += S.line(leadR, bY, 210, bY); g += S.junction(210, bY); g += S.line(210, bY, 210, 102);
-    g += S.resistor(210, 78, { horizontal: false, label: '120Ω', labelSide: 'right' }); // 54..102
-    g += S.txt(125, aY - 6, 'A', { size: 8, fill: '#64748b' }); g += S.txt(125, bY + 12, 'B', { size: 8, fill: '#64748b' });
-    return this.wrap(258, 150, g, { l: 8 });
+    // 終端接法與 CAN 同：A 直接進電阻上端子、B 往下繞到下端子（垂直電阻塞不進 18px 的腳距）
+    g += S.line(leadR, aY, 250, aY);
+    g += S.resistor(250, aY + 24, { horizontal: false, label: '120Ω', labelSide: 'right' }); // 引線 69..117
+    g += S.line(leadR, bY, 228, bY); g += S.line(228, bY, 228, aY + 48); g += S.line(228, aY + 48, 250, aY + 48);
+    g += S.txt(150, aY - 6, 'A', { size: 8, fill: '#64748b' }); g += S.txt(150, bY + 12, 'B', { size: 8, fill: '#64748b' });
+    return this.wrap(300, 160, g, { l: 8 });
   },
 
   // 繼電器驅動（低端 NMOS + 線圈 + 飛輪二極體）
@@ -1318,28 +1321,31 @@ const CircuitSVG = {
   },
 
   // 光電二極體跨阻放大 (TIA)
+  // 舊版：光二極體的三角形（x 32..48）與 + 端接地符號的橫槓（x 48..72、y 78）
+  // 剛好貼在一起，看起來像二極體和接地黏成一塊。整張往下重排，兩個接地分開放。
   photodiodeTia() {
     const S = window.Sym; if (!S) return '';
+    const MUT = '#64748b';
     let g = '';
-    // 光電二極體 → − 輸入
-    g += `<g transform="rotate(90 40 70)">${S.diode(40, 70, {})}</g>`; // 垂直光電二極體
-    g += S.txt(14, 73, 'PD光', { anchor: 'start', size: 8, fill: '#64748b' });
-    g += S.line(40, 92, 40, 110); g += S.ground(40, 110, {}); // 陽極接地(反偏)
-    g += S.line(40, 48, 40, 35); g += S.line(40, 35, 75, 35); // 陰極 → − 節點
+    // 光二極體：陽極（上）→ 虛地（− 端），陰極（下）→ 地 ⇒ 光電流灌進 − 節點，Vout 為負
+    g += `<g transform="rotate(90 40 82)">${S.diode(40, 82, {})}</g>`;   // 垂直，引線 60..104，陰極朝下
+    g += S.txt(14, 78, 'PD 光', { anchor: 'start', size: 8, fill: MUT });
+    g += S.line(40, 104, 40, 120); g += S.ground(40, 134, {});           // 陰極 → 地
+    g += S.line(40, 60, 40, 40); g += S.line(40, 40, 75, 40);            // 陽極 → − 節點
     // 運放
-    g += `<polygon points="75,20 75,70 130,45" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
-    g += S.txt(83, 40, '−', { size: 11, raw: true }); g += S.txt(83, 62, '+', { size: 11, raw: true });
-    g += S.junction(75, 35);
-    // + 接地
-    g += S.line(75, 58, 60, 58); g += S.line(60, 58, 60, 78); g += S.ground(60, 78, {});
+    g += `<polygon points="75,27 75,77 130,52" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
+    g += S.txt(83, 45, '−', { size: 11, raw: true }); g += S.txt(83, 68, '+', { size: 11, raw: true });
+    g += S.junction(75, 40);
+    // + 端接地（往下繞，離光二極體與它的接地都有距離）
+    g += S.line(75, 64, 62, 64); g += S.line(62, 64, 62, 103); g += S.ground(62, 117, {});
     // Rf 回授（− → 輸出）
-    g += S.line(75, 35, 75, 20); g += S.line(75, 20, 91, 20);
-    g += S.resistor(115, 20, { horizontal: true, label: 'Rf' }); // 91..139
-    g += S.line(139, 20, 155, 20); g += S.line(155, 20, 155, 45); g += S.junction(155, 45);
+    g += S.line(75, 40, 75, 22); g += S.line(75, 22, 91, 22);
+    g += S.resistor(115, 22, { horizontal: true, label: 'Rf' });         // 91..139
+    g += S.line(139, 22, 160, 22); g += S.line(160, 22, 160, 52); g += S.junction(160, 52);
     // 輸出
-    g += S.line(130, 45, 185, 45); g += S.txt(187, 37, 'Vout', { anchor: 'end', size: 9, fill: '#64748b' });
-    g += S.txt(110, 95, 'Vout = −I_PD × Rf', { anchor: 'middle', size: 8, fill: '#64748b' });
-    return this.wrap(210, 128, g, { t: 12 });
+    g += S.line(130, 52, 195, 52); g += S.txt(197, 44, 'Vout', { anchor: 'end', size: 9, fill: MUT });
+    g += S.txt(110, 162, 'Vout = −I_PD × Rf（− 端虛地：零偏壓光伏模式）', { size: 9, fill: MUT });
+    return this.wrap(215, 176, g);
   },
 
   // 儀表放大器（3-opamp INA）：兩級輸入緩衝(A1/A2)+Rg 設增益，A3 差動級除共模。
@@ -1659,7 +1665,7 @@ const knowledgeApp = {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
     // 注意：自動圖（applyCircuitArt / CIRCUITS2）也算「內容」。快取命中時走的是 localStorage 裡
     // 序列化好的 svg 字串，重畫的新圖不會生效 → 改圖一律要連這行一起遞增。
-    const BUILTIN_VERSION = '2026-07-27-opamp-merge';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-tia-can485';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
