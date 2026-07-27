@@ -449,10 +449,11 @@
     g += T(292, 40, 'LED 串（N 顆串聯）', { size: 8, fill: MUT });
     g += L(258 + 2 * 34 + 16, 60, 372, 60) + L(372, 60, 372, 92) + A(372, 92, 180, 92, '電流回授', { color: ACC });
     g += L(180, 92, 180, 86);
-    g += A(120, 106, 150, 92, 'PWM 調光', { dy: -7, color: ORG });
-    g += T(120, 122, 'PWM 頻率避開可聞頻帶與可見閃爍；低亮度混合類比調光', { size: 8.5, anchor: 'start' });
-    g += T(120, 138, 'VLCD 與背光上電時序照面板規範（避免開機閃白）', { size: 8, anchor: 'start', fill: MUT });
-    return { d: '背光驅動：boost 恆流推 LED 串＋混合調光', svg: W(400, 148, g) };
+    // 調光輸入從下方垂直進 Boost；標籤靠左單邊延伸，說明文字整塊往右下讓位，避免壓到方塊與回授線
+    g += A(150, 126, 150, 86, 'PWM 調光', { anchor: 'end', dx: -5, color: ORG });
+    g += T(150, 142, 'PWM 頻率避開可聞頻帶與可見閃爍；低亮度混合類比調光', { size: 8.5, anchor: 'start' });
+    g += T(150, 158, 'VLCD 與背光上電時序照面板規範（避免開機閃白）', { size: 8, anchor: 'start', fill: MUT });
+    return { d: '背光驅動：boost 恆流推 LED 串＋混合調光', svg: W(400, 170, g) };
   };
 
   M['laptop-power-seq'] = () => {
@@ -477,8 +478,11 @@
   M['laptop-fan-control'] = () => {
     let g = '';
     g += B(60, 70, 76, 56, 'EC', ['查表/PI 迴路', '斜率限幅']);
-    g += A(98, 56, 140, 56, 'PWM 25kHz', { anchor: 'start' });
-    g += A(140, 84, 98, 84, 'TACH（2 脈衝/轉）', { anchor: 'start', color: ACC });
+    // 兩個標籤都比 EC↔風扇的 42px 間隙寬 → 移出間隙（PWM 擺箭頭上方、TACH 擺兩框下方），不壓框
+    g += A(98, 56, 140, 56);
+    g += T(119, 46, 'PWM 25kHz', { size: 7, fill: MUT });
+    g += A(140, 84, 98, 84, null, { color: ACC });
+    g += T(119, 112, 'TACH（2 脈衝/轉）', { size: 7, fill: ACC });
     g += B(190, 70, 100, 56, '4 線風扇', ['內建驅動換相', '電源不斬波']);
     g += B(60, 150, 90, 40, 'NTC×N＋DTS', ['溫度來源']);
     g += A(60, 130, 60, 98);
@@ -1383,7 +1387,7 @@
     g += DEC(LR(240, 108, 420, 108) + LR(240, 108, 240, 34)
       + PL('240,50 268,46 292,58 316,44 344,60 372,50 404,88', { color: ACC, w: 1.6 })
       + LR(240, 70, 420, 70, { color: RED, w: 1, dash: '4 3' }));
-    g += T(426, 74, '目標阻抗', { size: 7, anchor: 'end', fill: RED });
+    g += T(418, 64, '目標阻抗', { size: 7, anchor: 'end', fill: RED }); // 放紅虛線上方，別讓線槓過字
     g += T(262, 120, 'VRM', { size: 7, fill: MUT }) + T(306, 120, 'bulk', { size: 7, fill: MUT }) + T(348, 120, 'MLCC', { size: 7, fill: MUT }) + T(394, 120, '封裝/die', { size: 7, fill: MUT });
     g += T(230, 162, 'via-in-pad 縮短去耦迴路；每對電源球就近 MLCC；阻抗曲線整段壓在目標下', { size: 8.5 });
     return { d: 'BGA PI：球陣配對＋PDN 目標阻抗', svg: W(440, 172, g) };
@@ -1424,10 +1428,13 @@
   M['ethernet-phy-layout'] = () => {
     let g = '';
     g += B(52, 70, 64, 40, 'MAC/SoC', []);
-    g += A(84, 60, 120, 60, 'RGMII（等長組）', { anchor: 'start' });
-    g += A(120, 82, 84, 82, 'MDIO/MDC', { anchor: 'start', color: MUT });
+    // 長標籤放到框列上方；只有短的 MDIO/MDC 塞得進框間空隙
+    g += A(84, 60, 120, 60);
+    g += T(103, 38, 'RGMII（等長組）', { size: 7, fill: MUT });
+    g += A(120, 82, 84, 82, 'MDIO/MDC', { color: MUT });
     g += B(158, 70, 72, 48, 'PHY', ['RGMII 延遲', '內建/外配']);
-    g += A(194, 70, 226, 70, 'MDI 差分×4 對', { anchor: 'start' });
+    g += A(194, 70, 226, 70);
+    g += T(210, 38, 'MDI 差分×4 對', { size: 7, fill: MUT });
     g += B(262, 70, 68, 48, '磁隔離', ['變壓器', 'Bob Smith']);
     g += A(296, 70, 324, 70);
     g += B(356, 70, 60, 44, 'RJ45', ['或整合磁']);

@@ -42,8 +42,8 @@ const CircuitSVG = {
     const S = window.Sym; if (!S) return '';
     let g = '';
     // Vin → pass PMOS 源極(156,30)
-    g += S.line(20, 30, 156, 30); g += S.txt(18, 23, 'Vin', { anchor: 'start', size: 9, fill: '#64748b' });
-    g += S.junction(50, 30); g += this.capToGnd(S, 50, 30, 'Cin');
+    g += S.line(14, 30, 156, 30); g += S.txt(12, 23, 'Vin', { anchor: 'start', size: 9, fill: '#64748b' });
+    g += S.junction(34, 30); g += this.capToGnd(S, 34, 30, 'Cin'); // 左移，讓出晶片虛線框的左邊界
     g += S.nmos(130, 50, { p: true, showPins: false }); // src=156,30 / drain=156,70 / gate=100,50
     g += S.txt(130, 96, 'pass MOSFET', { size: 8, fill: '#64748b' });
     g += S.txt(98, 42, 'G', { anchor: 'end', size: 9 });    // 閘極
@@ -62,13 +62,21 @@ const CircuitSVG = {
     g += `<polygon points="62,126 98,126 80,93" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
     g += S.line(80, 93, 80, 50); g += S.line(80, 50, 100, 50);
     g += S.txt(104, 116, 'EA', { anchor: 'start', size: 8, fill: '#64748b' });
-    // − 回授：分壓抽頭(248,124) 沿最底部繞到 EA −（不壓任何電容）
-    g += S.line(248, 124, 230, 124); g += S.line(230, 124, 230, 200); g += S.line(230, 200, 72, 200); g += S.line(72, 200, 72, 126);
+    // − 回授：分壓抽頭(248,124) 沿最底部繞到 EA −（走 y=234，從晶片框下緣當 FB 腳進來）
+    g += S.line(248, 124, 230, 124); g += S.line(230, 124, 230, 234); g += S.line(230, 234, 72, 234); g += S.line(72, 234, 72, 126);
     g += S.txt(64, 123, '−', { anchor: 'end', size: 10, raw: true });
-    // + 基準
-    g += S.line(88, 126, 88, 150); g += S.txt(96, 150, 'Vref', { anchor: 'start', size: 8, fill: '#64748b' });
+    // + 基準：畫成 IC 內部基準方塊接地。原本只有一截懸空短線＋Vref 字，新手會讀成「這裡沒接」
+    g += S.line(88, 126, 88, 152);
+    g += `<rect x="84" y="152" width="66" height="32" fill="#fff" stroke="${S.color}" stroke-width="1.5" rx="3"/>`;
+    g += S.txt(117, 166, '內部基準', { size: 8 });
+    g += S.txt(117, 178, 'Vref ≈1.2V', { size: 7, fill: '#64748b' });
+    g += S.line(117, 184, 117, 196); g += S.ground(117, 210, {});
     g += S.txt(92, 123, '+', { anchor: 'start', size: 10, raw: true });
-    return this.wrap(300, 214, g);
+    // 晶片邊界：框內是 LDO 內部做好的，框外的 Cin/Cout/R1/R2 才是使用者要焊的
+    g += `<rect x="50" y="12" width="140" height="214" fill="none" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="5 4" rx="6"/>`;
+    g += S.txt(50, 8, 'LDO 晶片內部（虛線框內不用外接）', { anchor: 'start', size: 8, fill: '#64748b' });
+    g += S.txt(78, 222, 'FB', { anchor: 'start', size: 7, fill: '#64748b' });
+    return this.wrap(300, 248, g);
   },
 
   // MOSFET 低端開關
@@ -1562,7 +1570,7 @@ const knowledgeApp = {
       'i2c-communication': () => CircuitSVG.i2cBus(),
       'spi-design': () => CircuitSVG.spiBus(),
       'ldo-noise': () => CircuitSVG.ldoNoise(),
-      'ldo-selection': () => CircuitSVG.ldoBasic(),
+      // ldo-selection 不掛自動圖：它要的是選型流程，掛 ldoBasic 會跟「LDO 穩壓器」卡畫出同一張圖
       'op-amp-basics': () => CircuitSVG.opamp(),
       'opamp-configurations': () => CircuitSVG.opamp(),
       'current-sensing': () => CircuitSVG.currentSensing(),
@@ -2651,23 +2659,27 @@ const knowledgeApp = {
             type: 'selection-guide',
             description: 'LDO 選型決策流程',
             svg: `<svg viewBox="0 0 280 120" width="280" height="120">
-              <rect x="10" y="10" width="60" height="25" fill="#e8f4f8" stroke="#1d2943" stroke-width="1.5" rx="3"/>
-              <text x="40" y="27" text-anchor="middle" font-size="7">確認需求</text>
-              <line x1="40" y1="35" x2="40" y2="45" stroke="#1d2943" stroke-width="1.5"/>
-              <polygon points="35,50 45,50 40,45" fill="#1d2943"/>
-              <rect x="10" y="50" width="60" height="25" fill="#e8f4f8" stroke="#1d2943" stroke-width="1.5" rx="3"/>
-              <text x="40" y="67" text-anchor="middle" font-size="7">Vin/Vout/Iout</text>
-              <line x1="70" y1="62" x2="100" y2="62" stroke="#1d2943" stroke-width="1.5"/>
-              <rect x="100" y="50" width="70" height="25" fill="#e8f4f8" stroke="#1d2943" stroke-width="1.5" rx="3"/>
-              <text x="135" y="67" text-anchor="middle" font-size="7">計算功耗</text>
-              <text x="135" y="77" text-anchor="middle" font-size="6">Pd=(Vin-Vout)*Iout</text>
-              <line x1="170" y1="62" x2="200" y2="62" stroke="#1d2943" stroke-width="1.5"/>
-              <rect x="200" y="50" width="70" height="25" fill="#e8f4f8" stroke="#1d2943" stroke-width="1.5" rx="3"/>
-              <text x="235" y="67" text-anchor="middle" font-size="7">選擇封裝</text>
-              <text x="235" y="77" text-anchor="middle" font-size="6">SOT23/SOT89/QFN</text>
-              <line x1="235" y1="75" x2="235" y2="85" stroke="#1d2943" stroke-width="1.5"/>
-              <rect x="180" y="85" width="110" height="25" fill="#d4edda" stroke="#1d2943" stroke-width="1.5" rx="3"/>
-              <text x="235" y="102" text-anchor="middle" font-size="7">驗證熱阻 θJA</text>
+              <rect x="10" y="8" width="60" height="25" fill="#e8f4f8" stroke="#1d2943" stroke-width="1.5" rx="3"/>
+              <text x="40" y="24" text-anchor="middle" font-size="7">確認需求</text>
+              <line x1="40" y1="33" x2="40" y2="43" stroke="#1d2943" stroke-width="1.5"/>
+              <polygon points="36,43 44,43 40,47" fill="#1d2943"/>
+              <rect x="10" y="47" width="60" height="31" fill="#e8f4f8" stroke="#1d2943" stroke-width="1.5" rx="3"/>
+              <text x="40" y="60" text-anchor="middle" font-size="7">確認電氣規格</text>
+              <text x="40" y="72" text-anchor="middle" font-size="6">Vin/Vout/Iout</text>
+              <line x1="70" y1="62" x2="92" y2="62" stroke="#1d2943" stroke-width="1.5"/>
+              <polygon points="92,58 92,66 96,62" fill="#1d2943"/>
+              <rect x="96" y="47" width="74" height="31" fill="#e8f4f8" stroke="#1d2943" stroke-width="1.5" rx="3"/>
+              <text x="133" y="60" text-anchor="middle" font-size="7">計算功耗</text>
+              <text x="133" y="72" text-anchor="middle" font-size="6">Pd=(Vin-Vout)*Iout</text>
+              <line x1="170" y1="62" x2="192" y2="62" stroke="#1d2943" stroke-width="1.5"/>
+              <polygon points="192,58 192,66 196,62" fill="#1d2943"/>
+              <rect x="196" y="47" width="74" height="31" fill="#e8f4f8" stroke="#1d2943" stroke-width="1.5" rx="3"/>
+              <text x="233" y="60" text-anchor="middle" font-size="7">選擇封裝</text>
+              <text x="233" y="72" text-anchor="middle" font-size="6">SOT23/SOT89/QFN</text>
+              <line x1="233" y1="78" x2="233" y2="86" stroke="#1d2943" stroke-width="1.5"/>
+              <polygon points="229,86 237,86 233,90" fill="#1d2943"/>
+              <rect x="168" y="90" width="102" height="24" fill="#d4edda" stroke="#1d2943" stroke-width="1.5" rx="3"/>
+              <text x="219" y="105" text-anchor="middle" font-size="7">驗證熱阻 θJA：Tj &lt; 125°C</text>
             </svg>`
           }
         ],
