@@ -58,9 +58,9 @@ window.KNOWLEDGE_I18N = Object.assign(window.KNOWLEDGE_I18N || {}, {
   ja: { title: 'SPI インターフェース設計', description: 'SPI ハードウェア設計の要点：クロック周波数、信号品質など。' },
   ko: { title: 'SPI 인터페이스 설계', description: 'SPI 하드웨어 설계 요점: 클럭 주파수, 신호 무결성 등.' } },
  'op-amp-basics': {
-  en: { title: 'Op-Amp Fundamentals', description: 'Core op-amp concepts: virtual short/open, and the nine classic application circuits.' },
-  ja: { title: 'オペアンプの基礎', description: 'バーチャルショート/オープンの原理と九大応用回路。' },
-  ko: { title: '연산 증폭기 기초', description: '가상 단락/개방 원리와 9대 응용 회로.' } },
+  en: { title: 'Op-Amp Fundamentals & the Nine Configurations', description: 'Virtual short and virtual open, and the nine configurations that follow from them.' },
+  ja: { title: 'オペアンプの基礎と九大基本回路', description: 'バーチャルショート/オープンの二原則と、そこから導かれる九つの基本回路。' },
+  ko: { title: '연산 증폭기 기초와 9대 기본 구성', description: '가상 단락·가상 개방 두 원칙과 거기서 나오는 9가지 기본 구성.' } },
  'mosfet-switching': {
   en: { title: 'MOSFET Switching', description: 'Power-MOSFET switching behavior, gate-drive circuits and loss analysis.' },
   ja: { title: 'MOSFET スイッチング設計', description: 'パワー MOSFET のスイッチング特性、駆動回路、損失解析。' },
@@ -145,10 +145,6 @@ window.KNOWLEDGE_I18N = Object.assign(window.KNOWLEDGE_I18N || {}, {
   en: { title: 'Battery-Charger Design', description: 'Li-ion charge-management circuits and charger-IC selection.' },
   ja: { title: 'バッテリ充電回路設計', description: 'リチウムイオン充電管理回路と充電 IC 選定。' },
   ko: { title: '배터리 충전 회로 설계', description: '리튬 이온 충전 관리 회로와 충전 IC 선정.' } },
- 'opamp-configurations': {
-  en: { title: 'Nine Op-Amp Configurations', description: 'The nine fundamental op-amp circuit configurations and their uses.' },
-  ja: { title: 'オペアンプ九大基本回路', description: 'オペアンプの九つの基本回路構成と応用。' },
-  ko: { title: '연산 증폭기 9대 기본 구성', description: '연산 증폭기의 9가지 기본 회로 구성과 응용.' } },
  'current-sensing': {
   en: { title: 'Current Sensing', description: 'Current-measurement methods: shunt resistor, Hall sensor, current transformer.' },
   ja: { title: '電流検出回路', description: '電流検出の方式：シャント抵抗、ホールセンサ、変流器。' },

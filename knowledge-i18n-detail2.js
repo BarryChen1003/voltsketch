@@ -270,13 +270,13 @@
     'op-amp-basics': {
       en: {
         principles: 'Two ideal op-amp rules: virtual short (the + and - inputs sit at the same potential) and virtual open (no current flows into either input). Every op-amp circuit analysis starts from these two rules.',
-        keyFormulas: ['Inverting gain A_V = -Rf / Rin', 'Non-inverting gain A_V = 1 + Rf / Rin', 'Difference amp Vout = (Rf/R1)(V2-V1)', 'GBW = Gain x Bandwidth', 'SR ≥ 2π*f*Vp'],
+        keyFormulas: ['Inverting gain A_V = -Rf / Rin', 'Non-inverting gain A_V = 1 + Rf / Rin', 'Difference amp Vout = (Rf/R1)(V2-V1)', 'Integrator Vout = -(1/RC)∫Vin dt', 'Differentiator Vout = -RC*dVin/dt', 'GBW = Gain x Bandwidth', 'SR ≥ 2π*f*Vp'],
         designNotes: ['Add a compensation resistor Rb = R1 ∥ Rf on the + input (balances bias current)', 'Usable bandwidth ≈ GBW / closed-loop gain', 'A single-supply op-amp needs a VCC/2 virtual ground', '0.1μF decoupling capacitor close to the supply pin'],
         commonMistakes: ['Using a general-purpose op-amp as a comparator (use a dedicated comparator IC)', 'Insufficient GBW giving inadequate bandwidth', 'Insufficient slew rate causing distortion', 'A differentiator without band-limiting oscillating']
       },
       ja: {
         principles: '理想オペアンプの二大原則：バーチャルショート（＋端子と－端子が同電位）とバーチャルオープン（両入力端子に流れ込む電流はゼロ）。すべてのオペアンプ回路解析はこの 2 原則から始まる。',
-        keyFormulas: ['反転増幅 A_V = -Rf / Rin', '非反転増幅 A_V = 1 + Rf / Rin', '差動増幅 Vout = (Rf/R1)(V2-V1)', 'GBW = 利得 x 帯域幅', 'SR ≥ 2π*f*Vp'],
+        keyFormulas: ['反転増幅 A_V = -Rf / Rin', '非反転増幅 A_V = 1 + Rf / Rin', '差動増幅 Vout = (Rf/R1)(V2-V1)', '積分器 Vout = -(1/RC)∫Vin dt', '微分器 Vout = -RC*dVin/dt', 'GBW = 利得 x 帯域幅', 'SR ≥ 2π*f*Vp'],
         designNotes: ['＋端子に補償抵抗 Rb = R1 ∥ Rf を接続（バイアス電流を平衡）', '実用帯域幅 ≈ GBW / 閉ループ利得', '単電源オペアンプは VCC/2 の仮想グランドが必要', '0.1μF デカップリングコンデンサを電源ピンの近くに'],
         commonMistakes: ['汎用オペアンプをコンパレータに使う（専用コンパレータ IC を使うべき）', 'GBW 不足で帯域幅が足りない', 'スルーレート不足で歪む', '微分器に帯域制限がなく発振']
       },
@@ -705,26 +705,6 @@
         keyFormulas: ['예비 충전: I_pre ≈ 0.1C (V_bat 약 3.0V 미만)', 'CC: I_cc = 0.5C~1C 일정, V_bat 상승', 'CV: V_bat 4.2V 고정(정확도 ±1% 이내 필요), I 감소', '종료: I_term = 0.05C~0.1C (작게 잡을수록 CV 꼬리가 길어짐)', 'CC 구간 시간 t_cc ≈ (C_bat × ΔSOC) / I_cc', '충전 전류 설정 I_chg = K_iset / R_iset (K는 해당 IC 데이터시트)', '선형 충전 IC 손실 P = (V_in − V_bat) × I_chg (방열 근거)'],
         designNotes: ['충전 전류는 ISET/PROG 저항으로 설정하고 K 값은 해당 IC 데이터시트를 따른다. 다른 부품 공식을 그대로 쓰지 않는다', 'TS/NTC는 팩의 서미스터에 연결해 JEITA 온도 구간을 구현: 저온에서는 전류를, 고온에서는 전압을 낮추거나 일시 정지', 'STAT는 보통 오픈 드레인: 풀업이 필요하고 LED에는 별도 직렬 저항을 둔다. 미연결 상태로 쓰지 않는다', '선형 충전 IC는 전압 차가 전부 열: (V_in − V_bat) × I_chg가 크면 스위칭(벅) 충전 IC로 바꾼다', '입력단에 과전압 보호와 입력 커패시터, BAT단 커패시터는 데이터시트대로. 둘 다 생략하지 않는다', '배터리 보호 회로(과방전·2차 과충전·단락)와 충전 IC는 담당 영역이 다르므로 둘 다 필요하다'],
         commonMistakes: ['고정 4.2V 전원이나 LDO로 직접 충전: CC 구간 전류 제한도 종료 판정도 없어 과충전된다', '과방전 보호를 충전 IC 기능으로 착각. 보호 회로의 역할이다', 'STAT에 LED를 직접 달고 제한 저항이 없거나 풀업을 빠뜨림', '0°C 미만에서도 정상 충전: 리튬 석출로 셀이 영구 열화(JEITA 구간 위반)', 'CV 정확도가 ±1%보다 나쁨: 상시 과충전으로 사이클 수명 저하', '선형 충전 IC 방열 동박 부족: 열 폴드백으로 완충되지 않는데 배터리 불량으로 오진']
-      }
-    },
-    'opamp-configurations': {
-      en: {
-        principles: 'Based on the virtual-short and virtual-open rules, an op-amp can implement: inverting amp, non-inverting amp, difference amp, integrator, differentiator, voltage follower, current-to-voltage converter, comparator and instrumentation amp.',
-        keyFormulas: ['Inverting: Av = -Rf/Rin', 'Non-inverting: Av = 1 + Rf/Rin', 'Difference: Vout = (Rf/R1)(V2-V1)', 'Integrator: Vout = -1/(RC)∫Vin dt', 'Differentiator: Vout = -RC * dVin/dt'],
-        designNotes: ['Compensation resistor Rb = Rin ∥ Rf on the + input (balances bias current)', 'A single supply needs a VCC/2 virtual ground', 'An integrator needs clamping to prevent saturation', 'A differentiator needs band-limiting to prevent oscillation', '0.1µF decoupling capacitor close to the supply pin'],
-        commonMistakes: ['No compensation resistor causing DC offset', 'Integrator without clamping saturating', 'Differentiator oscillating', 'Insufficient GBW giving inadequate bandwidth', 'Insufficient SR causing large-signal distortion']
-      },
-      ja: {
-        principles: 'バーチャルショート・バーチャルオープンの原則に基づき、オペアンプは次を実現できる：反転増幅、非反転増幅、差動増幅、積分器、微分器、ボルテージフォロワ、電流-電圧変換、コンパレータ、計装増幅器。',
-        keyFormulas: ['反転：Av = -Rf/Rin', '非反転：Av = 1 + Rf/Rin', '差動：Vout = (Rf/R1)(V2-V1)', '積分：Vout = -1/(RC)∫Vin dt', '微分：Vout = -RC * dVin/dt'],
-        designNotes: ['＋端子に補償抵抗 Rb = Rin ∥ Rf（バイアス電流を平衡）', '単電源は VCC/2 の仮想グランドが必要', '積分器は飽和防止のクランプが必要', '微分器は発振防止の帯域制限が必要', '0.1µF デカップリングコンデンサを電源ピンの近くに'],
-        commonMistakes: ['補償抵抗なしで DC オフセット', '積分器がクランプなしで飽和', '微分器が発振', 'GBW 不足で帯域幅が足りない', 'SR 不足で大信号が歪む']
-      },
-      ko: {
-        principles: '가상 단락·가상 개방 원칙에 기반해 op-amp는 다음을 구현할 수 있다: 반전 증폭, 비반전 증폭, 차동 증폭, 적분기, 미분기, 전압 팔로워, 전류-전압 변환, 비교기, 계장 증폭기.',
-        keyFormulas: ['반전: Av = -Rf/Rin', '비반전: Av = 1 + Rf/Rin', '차동: Vout = (Rf/R1)(V2-V1)', '적분: Vout = -1/(RC)∫Vin dt', '미분: Vout = -RC * dVin/dt'],
-        designNotes: ['+단자에 보상 저항 Rb = Rin ∥ Rf(바이어스 전류 평형)', '단일 전원은 VCC/2 가상 접지 필요', '적분기는 포화 방지 클램프 필요', '미분기는 발진 방지 대역 제한 필요', '0.1µF 디커플링 커패시터를 전원 핀 가까이'],
-        commonMistakes: ['보상 저항 없어 DC 오프셋', '적분기가 클램프 없이 포화', '미분기 발진', 'GBW 부족으로 대역폭 미달', 'SR 부족으로 대신호 왜곡']
       }
     },
     'current-sensing': {

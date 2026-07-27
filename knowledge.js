@@ -478,19 +478,31 @@ const CircuitSVG = {
   },
 
   // 電流偵測（高側分流 + 放大）
+  // 低側電流偵測：分流電阻在回流路徑上，INA 量它兩端的壓差
+  // 舊版畫成高側（Vbus—Rshunt—負載），與卡片圖說「低側」不符；而且 INA 的兩條輸入線
+  // 一條停在三角形左邊 10px 外、一條插進三角形裡，等於整個放大器沒接。整張重畫。
   currentSensing() {
     const S = window.Sym; if (!S) return '';
+    const MUT = '#64748b';
     let g = '';
+    // V_bus → 負載 → 回流 → Rshunt → 地
+    g += S.txt(18, 32, 'V_bus', { anchor: 'start', size: 9, fill: MUT });
     g += S.line(20, 40, 60, 40);
-    g += S.txt(20, 32, 'Vbus', { anchor: 'start', size: 9, fill: '#64748b' });
-    g += S.resistor(85, 40, { horizontal: true, label: 'Rshunt' });
-    g += S.line(110, 40, 160, 40); g += S.txt(162, 32, '負載', { anchor: 'end', size: 9, fill: '#64748b' });
-    g += S.junction(60, 40); g += S.junction(110, 40);
-    g += S.line(60, 40, 60, 75); g += S.line(110, 40, 110, 65);
-    g += `<polygon points="70,60 70,100 120,80" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
-    g += S.line(120, 80, 152, 80);
-    g += S.txt(135, 72, 'INA', { anchor: 'start', size: 9, fill: '#64748b' });
-    return this.wrap(180, 130, g);
+    g += this.blk(S, 60, 26, 62, 28, ['負載'], { size: 9.5 });
+    g += S.line(122, 40, 150, 40); g += S.line(150, 40, 150, 70);
+    g += S.junction(150, 70);
+    g += S.resistor(150, 94, { horizontal: false, label: 'Rshunt' });   // 引線 70..118
+    g += S.junction(150, 118); g += S.ground(150, 132, {});
+    // INA 量分流電阻兩端（+ 接負載側、− 接地側）
+    g += `<polygon points="210,58 210,112 258,85" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
+    g += S.txt(216, 76, '+', { size: 11 }); g += S.txt(216, 104, '−', { size: 11 });
+    g += S.txt(232, 90, 'INA', { size: 9, fill: MUT });
+    g += S.line(150, 70, 210, 70);
+    g += S.line(150, 118, 190, 118); g += S.line(190, 118, 190, 100); g += S.line(190, 100, 210, 100);
+    g += S.line(258, 85, 292, 85); g += S.txt(296, 89, '→ ADC', { anchor: 'start', size: 9, fill: MUT });
+    g += S.txt(170, 158, '低側：共模電壓接近 0，放大器便宜；代價是負載地被 Rshunt 抬起', { size: 9, fill: MUT });
+    g += S.txt(170, 174, '高側則把 Rshunt 放在 V_bus 側：地乾淨，但要能吃高共模的 INA', { size: 9, fill: MUT });
+    return this.wrap(360, 188, g);
   },
 
   // 差分對 + 終端
@@ -720,19 +732,51 @@ const CircuitSVG = {
   },
 
   // 遲滯比較器（Schmitt）
+  // 運放九種基本組態一覽（原本是卡片內嵌的 250×100 小表、字級 6px）
+  opampConfigs() {
+    const S = window.Sym; if (!S) return '';
+    const MUT = '#64748b';
+    const rows = [
+      [['反相放大', 'Av = −Rf/Rin'], ['同相放大', 'Av = 1 + Rf/Rin'], ['差分放大', 'Vout = (Rf/R1)(V2−V1)']],
+      [['積分器', 'Vout = −(1/RC)∫Vin dt'], ['微分器', 'Vout = −RC·dVin/dt'], ['電壓隨耦器', 'Av = 1（高阻抗緩衝）']],
+      [['I-V 轉換', 'Vout = −Iin·Rf'], ['比較器', '開環比較（宜用專用 IC）'], ['儀器放大器', '高共模抑制的差分前端']]
+    ];
+    let g = '';
+    rows.forEach((row, r) => row.forEach(([name, f], c) => {
+      const x = 14 + c * 122, y = 20 + r * 50;
+      g += `<rect x="${x}" y="${y}" width="112" height="40" rx="4" fill="#fff" stroke="${S.color}" stroke-width="1.4"/>`;
+      g += S.txt(x + 56, y + 17, name, { size: 9.5, weight: '600' });
+      g += S.txt(x + 56, y + 31, f, { size: 8, fill: MUT });
+    }));
+    g += S.txt(190, 186, '九種都是「虛短＋虛斷」推出來的；差別只在回授網路怎麼接', { size: 9, fill: MUT });
+    return this.wrap(380, 198, g);
+  },
+
+  // 遲滯比較器（反相輸入＋同相端正回授分壓）
+  // 舊版兩條輸入線都停在 x=50、三角形左緣卻在 x=60 → 差 10px 沒接上（看起來線不見了）；
+  // 同相端也只有 Rf、沒有對地電阻，門檻分壓根本不成立。整張重接。
   comparator() {
     const S = window.Sym; if (!S) return '';
+    const MUT = '#64748b';
     let g = '';
-    g += S.line(20, 55, 50, 55); g += S.txt(20, 47, 'Vin', { anchor: 'start', size: 9, fill: '#64748b' });
     g += `<polygon points="60,30 60,80 120,55" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
-    g += S.txt(74, 50, '−', { size: 12 }); g += S.txt(74, 72, '+', { size: 12 });
-    g += S.line(120, 55, 175, 55); g += S.txt(177, 47, 'Vout', { anchor: 'end', size: 9, fill: '#64748b' });
-    // 正回授 Rf 形成遲滯（標籤放電阻下方，避免壓到三角）
-    g += S.line(150, 55, 150, 95); g += S.junction(150, 55);
-    g += S.resistor(105, 95, { horizontal: true }); g += S.txt(105, 113, 'Rf', { size: 9, fill: '#64748b' });
-    g += S.line(70, 95, 55, 95); g += S.line(55, 95, 55, 72); g += S.line(55, 72, 50, 72);
-    g += S.txt(110, 132, '正回授 → 遲滯', { size: 9, fill: '#64748b' });
-    return this.wrap(200, 148, g);
+    g += S.txt(74, 48, '−', { size: 12 }); g += S.txt(74, 72, '+', { size: 12 });
+    // 反相端：Vin（線一路接到三角左緣 x=60）
+    g += S.txt(18, 36, 'Vin', { anchor: 'start', size: 9, fill: MUT });
+    g += S.line(20, 44, 60, 44);
+    // 輸出
+    g += S.line(120, 55, 178, 55); g += S.txt(180, 47, 'Vout', { anchor: 'end', size: 9, fill: MUT });
+    g += S.junction(155, 55);
+    // 同相端節點（三角左緣 y=66）→ 左側匯出，接 Rf（來自輸出）與 R2（對地）
+    g += S.line(60, 66, 46, 66); g += S.junction(46, 66);
+    g += S.line(46, 66, 46, 110); g += S.line(46, 110, 86, 110);
+    g += S.resistor(110, 110, { horizontal: true }); g += S.txt(110, 128, 'Rf', { size: 9, fill: MUT });
+    g += S.line(134, 110, 155, 110); g += S.line(155, 110, 155, 55);
+    g += S.line(46, 66, 30, 66); g += S.line(30, 66, 30, 72);
+    g += S.resistor(30, 96, { horizontal: false, label: 'R2' });   // 引線 72..120
+    g += S.ground(30, 134, {});
+    g += S.txt(115, 158, '正回授 → 遲滯；VTH−VTL = Vout 擺幅 × R2/(R2+Rf)', { size: 9, fill: MUT });
+    return this.wrap(230, 172, g);
   },
 
   // RC 延遲上電（電源上電順序）。卡片原本內嵌的小圖畫布只有 200×70、字級 5–8px，
@@ -1109,11 +1153,12 @@ const CircuitSVG = {
     const S = window.Sym; if (!S) return '';
     const q1 = S.pins.bjt(90, 105), q2 = S.pins.bjt(170, 105); // b/c/e
     let g = '';
-    // Vcc 軌
-    g += S.rail(130, 14, 'Vcc'); g += S.line(130, 14, 130, 20); g += S.line(98, 20, 178, 20);
-    // Rref → Q1 集極；Rload → Q2 集極
-    g += S.resistor(98, 45, { horizontal: false, label: 'Rref' }); g += S.line(98, 21, 98, 20); g += S.line(98, 69, q1.c[0], q1.c[1]); // 69→(98,75)
-    g += S.resistor(178, 45, { horizontal: false, label: 'Rload' }); g += S.line(178, 21, 178, 20); g += S.line(178, 69, q2.c[0], q2.c[1]);
+    // Vcc 軌。rail(x,y) 的桿子是 y→y+12：桿子末端必須剛好落在橫軌上，
+    // 舊版 rail(130,14) 桿子到 26、橫軌畫在 20 → 桿子往下突出 6px。
+    g += S.rail(130, 9, 'Vcc'); g += S.line(98, 21, 178, 21);
+    // Rref → Q1 集極；Rload → Q2 集極（電阻上引線頂端 = 21，與橫軌同高）
+    g += S.resistor(98, 45, { horizontal: false, label: 'Rref' }); g += S.line(98, 69, q1.c[0], q1.c[1]); // 69→(98,75)
+    g += S.resistor(178, 45, { horizontal: false, label: 'Rload' }); g += S.line(178, 69, q2.c[0], q2.c[1]);
     g += S.txt(196, 48, 'I_out', { anchor: 'start', size: 8, fill: '#64748b' });
     // 電晶體
     g += S.npn(90, 105, { showPins: false }); g += S.npn(170, 105, { showPins: false });
@@ -1125,7 +1170,7 @@ const CircuitSVG = {
     // 射極 → 地
     g += S.line(q1.e[0], q1.e[1], 98, 152); g += S.line(q2.e[0], q2.e[1], 178, 152);
     g += S.line(98, 152, 178, 152); g += S.ground(138, 166, {});
-    return this.wrap(230, 196, g);
+    return this.wrap(230, 196, g, { t: 8 });   // Vcc 旗標的字在 y=5，畫布往上讓 8px
   },
 
   // NPN 低端開關
@@ -1480,7 +1525,7 @@ const CircuitSVG = {
     g += S.line(50, 40, 50, 30); g += S.line(42, 30, 58, 30); g += S.txt(50, 24, 'VCC', { size: 8, fill: '#64748b' });
     // 監控 IC
     g += S.ic(160, 100, { width: 92, pinsLeft: ['VCC', 'GND'], pinsRight: ['/RST'], label: 'Supervisor' });
-    g += S.txt(160, 160, 'MAX809 / TPS3823', { size: 8, fill: '#64748b' });
+    g += S.txt(110, 176, 'MAX809 / TPS3823', { size: 8, fill: '#64748b' });
     // VCC 腳 → 軌 + 旁路電容
     g += S.line(100, 91, 50, 91); g += S.line(50, 91, 50, 40);
     g += S.junction(72, 91); g += this.capToGnd(S, 72, 91, 'C1');
@@ -1614,7 +1659,7 @@ const knowledgeApp = {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
     // 注意：自動圖（applyCircuitArt / CIRCUITS2）也算「內容」。快取命中時走的是 localStorage 裡
     // 序列化好的 svg 字串，重畫的新圖不會生效 → 改圖一律要連這行一起遞增。
-    const BUILTIN_VERSION = '2026-07-27-diffpair';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-opamp-merge';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -1655,7 +1700,6 @@ const knowledgeApp = {
       'ldo-noise': () => CircuitSVG.ldoNoise(),
       // ldo-selection 不掛自動圖：它要的是選型流程，掛 ldoBasic 會跟「LDO 穩壓器」卡畫出同一張圖
       'op-amp-basics': () => CircuitSVG.opamp(),
-      'opamp-configurations': () => CircuitSVG.opamp(),
       'current-sensing': () => CircuitSVG.currentSensing(),
       'esd-protection': () => CircuitSVG.esdTVS(),
       'tvd-selection': () => CircuitSVG.tvsSelect(),
@@ -1677,6 +1721,8 @@ const knowledgeApp = {
     // 少數卡的自動圖不是第一張：battery-charger 第一張是充電曲線，接線圖排第二，
     // 直接蓋 [0] 會讓「CC-CV 充電曲線」標題底下出現接線圖（標題與圖不符）。
     const artIndex = { 'battery-charger': 1 };
+    // 一張卡兩張圖：第二張另外填（op-amp-basics 的九種組態表）
+    const artSecond = { 'op-amp-basics': () => CircuitSVG.opampConfigs() };
     data.forEach(item => {
       const fn = map[item.id];
       if (!fn) return;
@@ -1690,6 +1736,8 @@ const knowledgeApp = {
       } else {
         item.circuits.push({ type: 'schematic', description: item.title + ' 典型接線', svg });
       }
+      const fn2nd = artSecond[item.id];
+      if (fn2nd && item.circuits[1]) { const s2 = fn2nd(); if (s2) item.circuits[1].svg = s2; }
     });
     // 補圖庫（knowledge-circuits2.js）：只補 circuits 為空的卡，不動已有圖
     if (window.CIRCUITS2) {
@@ -2453,26 +2501,28 @@ const knowledgeApp = {
       },
       {
         id: 'op-amp-basics',
-        title: '運算放大器基礎',
+        title: '運算放大器基礎與九種組態',
         category: 'analog',
-        description: '運放的核心原理：虛短虛斷、九大類應用電路',
-        principles: '理想運放兩大原則：虛短（同相端與反相端電位相等）和虛斷（流入兩輸入端的電流為零）。所有運放電路分析都從這兩條原則出發。',
+        description: '虛短虛斷兩條原則，以及由它們推出的九種基本組態。',
+        principles: '理想運放兩大原則：虛短（同相端與反相端電位相等）和虛斷（流入兩輸入端的電流為零）。所有運放電路分析都從這兩條原則出發。九種基本組態：反相放大、同相放大、差分放大、積分器、微分器、電壓隨耦器、電流-電壓轉換、比較器、儀器放大器——差別只在回授網路怎麼接。',
         circuits: [
           {
             type: 'inverting',
-            description: '反相放大器',
-            svg: null
+            description: '運放基本接法（虛短虛斷）',
+            svg: null    // 由 applyCircuitArt 填入 CircuitSVG.opamp()
           },
           {
-            type: 'non-inverting',
-            description: '同相放大器',
-            svg: null
+            type: 'configs-table',
+            description: '九種組態與公式',
+            svg: null    // 由 applyCircuitArt 填入 CircuitSVG.opampConfigs()
           }
         ],
         keyFormulas: [
           '反相放大 A_V = −Rf / Rin',
           '同相放大 A_V = 1 + Rf / Rin',
           '差分放大 Vout = (Rf/R1)(V2−V1)',
+          '積分器 Vout = −(1/RC)∫Vin dt',
+          '微分器 Vout = −RC·dVin/dt',
           'GBW = Gain × Bandwidth',
           'SR ≥ 2π·f·Vp'
         ],
@@ -2480,15 +2530,17 @@ const knowledgeApp = {
           '同相端接補償電阻 Rb = R1 ∥ Rf（平衡偏置電流）',
           '實際可用帶寬 ≈ GBW / 閉環增益',
           '單電源運放必須建立 VCC/2 虛擬地',
+          '積分器要加限幅防飽和；微分器要加限頻防振盪',
           '去耦電容 0.1μF 靠近電源腳'
         ],
         commonMistakes: [
           '用通用運放做比較器（應使用專用比較器 IC）',
+          '未加補償電阻導致 DC 偏置',
           'GBW 不足導致帶寬不夠',
           '壓擺率 SR 不足導致失真',
-          '微分器未加限頻導致振盪'
+          '微分器未加限頻導致振盪；積分器未限幅而飽和'
         ],
-        relatedTopics: ['ldo', 'analog', 'filter'],
+        relatedTopics: ['ldo', 'analog', 'filter', 'adc', 'comparator-hysteresis'],
         sourcePdf: null,
         createdAt: '2026-06-03T10:00:00Z',
         updatedAt: '2026-06-03T10:00:00Z'
@@ -3539,64 +3591,6 @@ const knowledgeApp = {
         updatedAt: '2026-06-12T10:00:00Z'
       },
       {
-        id: 'opamp-configurations',
-        title: '運放九種基本組態',
-        category: 'analog',
-        description: '運算放大器的九種基本電路組態與應用。',
-        principles: '基於虛短虛斷原則，運放可實現：反相放大、同相放大、差分放大、積分器、微分器、電壓隨耦器、電流-電壓轉換、比較器、儀器放大器。',
-        circuits: [
-          {
-            type: 'configs-table',
-            description: '九種組態比較',
-            svg: `<svg viewBox="0 0 250 100" width="250" height="100">
-              <rect x="5" y="5" width="75" height="20" fill="#e8f4f8" stroke="#1d2943" stroke-width="1"/>
-              <text x="42" y="18" text-anchor="middle" font-size="6">反相放大</text>
-              <rect x="85" y="5" width="75" height="20" fill="#e8f4f8" stroke="#1d2943" stroke-width="1"/>
-              <text x="122" y="18" text-anchor="middle" font-size="6">同相放大</text>
-              <rect x="165" y="5" width="75" height="20" fill="#e8f4f8" stroke="#1d2943" stroke-width="1"/>
-              <text x="202" y="18" text-anchor="middle" font-size="6">差分放大</text>
-              <rect x="5" y="30" width="75" height="20" fill="#d4edda" stroke="#1d2943" stroke-width="1"/>
-              <text x="42" y="43" text-anchor="middle" font-size="6">積分器</text>
-              <rect x="85" y="30" width="75" height="20" fill="#d4edda" stroke="#1d2943" stroke-width="1"/>
-              <text x="122" y="43" text-anchor="middle" font-size="6">微分器</text>
-              <rect x="165" y="30" width="75" height="20" fill="#d4edda" stroke="#1d2943" stroke-width="1"/>
-              <text x="202" y="43" text-anchor="middle" font-size="6">電壓隨耦器</text>
-              <rect x="5" y="55" width="75" height="20" fill="#fff3cd" stroke="#1d2943" stroke-width="1"/>
-              <text x="42" y="68" text-anchor="middle" font-size="6">I-V 轉換</text>
-              <rect x="85" y="55" width="75" height="20" fill="#fff3cd" stroke="#1d2943" stroke-width="1"/>
-              <text x="122" y="68" text-anchor="middle" font-size="6">比較器</text>
-              <rect x="165" y="55" width="75" height="20" fill="#fff3cd" stroke="#1d2943" stroke-width="1"/>
-              <text x="202" y="68" text-anchor="middle" font-size="6">儀器放大器</text>
-            </svg>`
-          }
-        ],
-        keyFormulas: [
-          '反相：Av = -Rf/Rin',
-          '同相：Av = 1 + Rf/Rin',
-          '差分：Vout = (Rf/R1)(V2-V1)',
-          '積分：Vout = -1/(RC)∫Vin dt',
-          '微分：Vout = -RC × dVin/dt'
-        ],
-        designNotes: [
-          '同相端補償電阻 Rb = Rin ∥ Rf（平衡偏置電流）',
-          '單電源需建 VCC/2 虛擬地',
-          '積分器需加限幅防止飽和',
-          '微分器需加限頻防止振盪',
-          '去耦電容 0.1µF 靠近電源腳'
-        ],
-        commonMistakes: [
-          '未加補償電阻導致 DC 偏置',
-          '積分器未限幅導致飽和',
-          '微分器振盪',
-          'GBW 不足導致帶寬不夠',
-          'SR 不足導致大訊號失真'
-        ],
-        relatedTopics: ['analog', 'adc', 'filter'],
-        sourcePdf: null,
-        createdAt: '2026-06-12T10:00:00Z',
-        updatedAt: '2026-06-12T10:00:00Z'
-      },
-      {
         id: 'current-sensing',
         title: '電流偵測電路',
         category: 'analog',
@@ -3706,7 +3700,7 @@ const knowledgeApp = {
         keyFormulas: ['比較器：Vout = (V+ > V−) ? VOH : VOL', '運放(負回授)：Vout = A(V+ − V−)，虛短 V+≈V−', '遲滯：VH = VTH − VTL'],
         designNotes: ['比較器開漏輸出要加上拉到邏輯電壓', '比較器加正回授(遲滯)抗噪，勿加負回授', '運放需負回授+補償，別無回授當比較器', '注意比較器傳播延遲、運放 GBW/SR', '輸出要接邏輯時選比較器(準位明確)'],
         commonMistakes: ['用運放當比較器→慢/振盪/準位不明', '比較器接負回授→線性區震盪', '比較器忘了上拉(開漏浮接)', '混淆兩者輸出特性'],
-        relatedTopics: ['comparator-hysteresis', 'op-amp-basics', 'opamp-configurations'], sourcePdf: '使用者需求 (comparator vs op-amp)', createdAt: '2026-06-17T10:00:00Z', updatedAt: '2026-06-17T10:00:00Z'
+        relatedTopics: ['comparator-hysteresis', 'op-amp-basics'], sourcePdf: '使用者需求 (comparator vs op-amp)', createdAt: '2026-06-17T10:00:00Z', updatedAt: '2026-06-17T10:00:00Z'
       },
       {
         id: 'tl431-reference',
@@ -4018,7 +4012,7 @@ const knowledgeApp = {
         keyFormulas: ['Vout = (1 + 2R1/Rg) × (R3/R2) × (V2 − V1)', '前級增益 = 1 + 2R1/Rg', '後級增益 = R3/R2', 'CMRR 取決於 R2/R3 比例匹配'],
         designNotes: ['Rg 改增益不影響 CMRR，前級對稱免電阻匹配', '後級 R2/R3 需精密匹配(0.1%)以保 CMRR', '用低偏壓、低漂移運放降低失調', 'Ref 腳可接虛擬地做電平位移', '直接用整合式 INA(INA128/AD620)省匹配麻煩'],
         commonMistakes: ['後級電阻不匹配使 CMRR 劣化', 'Rg 容差直接變成增益誤差', 'Ref 腳由高阻抗源驅動破壞 CMRR', '輸入偏壓電流無回流路徑導致飽和'],
-        relatedTopics: ['op-amp-basics', 'opamp-configurations', 'wheatstone-bridge', 'current-sensing'], sourcePdf: 'hardware-pdfs (儀表放大器, 35 篇)', createdAt: '2026-06-15T10:00:00Z', updatedAt: '2026-06-15T10:00:00Z'
+        relatedTopics: ['op-amp-basics', 'wheatstone-bridge', 'current-sensing'], sourcePdf: 'hardware-pdfs (儀表放大器, 35 篇)', createdAt: '2026-06-15T10:00:00Z', updatedAt: '2026-06-15T10:00:00Z'
       },
       {
         id: 'prevent-leakage-fet',
@@ -4096,7 +4090,7 @@ const knowledgeApp = {
         keyFormulas: ['Vout = −1/(RC)∫Vin dt', '方波→三角波', '單位增益頻率 = 1/(2πRC)', '並聯 Rf 設低頻增益上限'],
         designNotes: ['C 並聯大 Rf 防直流飽和/偏移累積', '低偏壓電流運放、補償輸入偏置', '重置開關清除初始電荷'],
         commonMistakes: ['無 Rf→偏移累積到飽和', '忽略運放失調被積分放大', 'C 漏電造成漂移'],
-        relatedTopics: ['op-differentiator', 'opamp-configurations', 'rc-lowpass'], sourcePdf: null, createdAt: '2026-06-19T10:00:00Z', updatedAt: '2026-06-19T10:00:00Z'
+        relatedTopics: ['op-differentiator', 'op-amp-basics', 'rc-lowpass'], sourcePdf: null, createdAt: '2026-06-19T10:00:00Z', updatedAt: '2026-06-19T10:00:00Z'
       },
       {
         id: 'op-differentiator',
@@ -4109,7 +4103,7 @@ const knowledgeApp = {
         keyFormulas: ['Vout = −RC·dVin/dt', '三角波→方波', '高頻增益 ∝ f（需限頻）', '加 Rs 串 C：fz=1/(2πRsC)'],
         designNotes: ['輸入串小電阻 Rs + 回授並小 Cf 限高頻增益防振盪', '低噪聲運放', '注意對高頻噪聲敏感'],
         commonMistakes: ['未限頻→高頻噪聲被放大/振盪', '直接微分含噪訊號', 'GBW 不足相位餘裕不夠'],
-        relatedTopics: ['op-integrator', 'opamp-configurations'], sourcePdf: null, createdAt: '2026-06-19T10:00:00Z', updatedAt: '2026-06-19T10:00:00Z'
+        relatedTopics: ['op-integrator', 'op-amp-basics'], sourcePdf: null, createdAt: '2026-06-19T10:00:00Z', updatedAt: '2026-06-19T10:00:00Z'
       }
     ];
     if (window.KNOWLEDGE_EXTRA) __data.push(...window.KNOWLEDGE_EXTRA);   // 特殊線路卡（knowledge-extra.js）
