@@ -370,18 +370,33 @@ const CircuitSVG = {
   },
 
   // 防反接（PMOS）
+  // 防反接（P-MOS 高側「理想二極體」接法）
+  // 舊版只有一顆閘極接地的 MOS，看不出保護在哪：沒有負載、沒有迴路、也沒說明正接/反接的行為。
+  // 這裡畫完整迴路，並標出關鍵：汲極朝電源、源極朝負載 → 反接時體二極體逆偏＋通道關斷。
   reversePolarity() {
     const S = window.Sym; if (!S) return '';
-    const p = S.pins.nmos(110, 55); // s=[136,35]上, d=[136,75]下, g=[80,55]
+    const MUT = '#64748b';
     let g = '';
-    // V+輸入 → 源極(上) ；汲極(下) → 系統（串聯，body diode 防反接）
-    g += S.txt(136, 16, 'V+輸入', { size: 9, fill: '#64748b' }); g += S.line(136, 20, 136, 35);
-    g += S.nmos(110, 55, { p: true, showPins: false });
-    g += S.line(136, 75, 136, 100); g += S.txt(150, 98, '系統', { anchor: 'start', size: 9, fill: '#64748b' });
-    // 閘極接地（P-MOS 正常極性導通）
-    g += S.line(p.g[0], p.g[1], 50, 55); g += S.line(50, 55, 50, 86); g += S.ground(50, 100, {});
-    g += S.txt(110, 120, 'P-MOS 防反接（閘極接地）', { size: 8, fill: '#64748b' });
-    return this.wrap(220, 132, g);
+    // P-MOS：flip 讓上=汲極（接電源）、下=源極（接負載），體二極體陰極因此落在源極側
+    g += S.txt(142, 24, 'V+ 輸入（可能反接）', { anchor: 'start', size: 9, fill: MUT });
+    g += S.line(136, 18, 136, 40);
+    g += S.nmos(110, 60, { p: true, flip: true, showPins: false });
+    g += S.txt(140, 38, 'D', { anchor: 'start', size: 9 });
+    g += S.txt(140, 88, 'S', { anchor: 'start', size: 9 });
+    g += S.txt(78, 52, 'G', { anchor: 'end', size: 9 });   // 放線上方，別被閘極線穿過
+    g += S.txt(110, 100, 'P-MOS', { size: 9, fill: MUT });
+    // 汲極（上）接電源、源極（下）接負載，負載回流接地 → 完整迴路
+    g += S.line(136, 80, 136, 116);
+    g += this.blk(S, 106, 116, 60, 28, ['負載'], { size: 9.5 });
+    g += S.line(136, 144, 136, 166); g += S.ground(136, 180, {});
+    // 閘極經 Rg 接地
+    g += S.line(80, 60, 56, 60); g += S.line(56, 60, 56, 66);
+    g += S.resistor(56, 90, { horizontal: false, label: 'Rg', labelSide: 'left' });   // 引線 66..114
+    g += S.line(56, 114, 56, 122); g += S.ground(56, 136, {});
+    g += S.txt(170, 168, '正接：體二極體先導通 → Vgs = −V+ → 通道全開，壓降只剩 I×Rds(on)', { anchor: 'start', size: 8.5, fill: MUT });
+    g += S.txt(170, 184, '反接：Vgs ≥ 0 通道關斷，體二極體同時逆偏 → 負載端零電流', { anchor: 'start', size: 8.5, fill: '#dc2626' });
+    g += S.txt(170, 200, '輸入電壓高時要加 Zener 夾 Vgs（多數 FET 上限 ±20V）', { anchor: 'start', size: 8.5, fill: MUT });
+    return this.wrap(560, 214, g);
   },
 
   // 去耦電容配置
@@ -1134,7 +1149,7 @@ const CircuitSVG = {
     const S = window.Sym; if (!S) return '';
     let g = '';
     // 上節點 V+ (y=20)，下節點 GND (y=140)，左中(60,80) 右中(160,80)
-    g += S.rail(110, 12, 'V+'); g += S.line(60, 20, 160, 20); g += S.line(110, 12, 110, 20);
+    g += S.rail(110, 8, 'V+'); g += S.line(60, 20, 160, 20);   // 桿子 8→20 剛好落在橫軌上
     g += S.line(60, 20, 60, 26); g += S.line(160, 20, 160, 26);
     g += S.resistor(60, 50, { horizontal: false, label: 'R1' });  // 26..74
     g += S.resistor(160, 50, { horizontal: false, label: 'R2' });
@@ -1214,7 +1229,8 @@ const CircuitSVG = {
     // 二次側中心抽頭（水平）+ 鐵芯耦合
     g += S.inductor(135, 86, {}); g += S.inductor(185, 86, {}); // 111..159 / 161..209
     g += S.line(159, 86, 161, 86); g += S.junction(160, 86);
-    g += S.line(111, 62, 209, 62, { w: 1 }); g += S.line(111, 70, 209, 70, { w: 1 }); // 鐵芯
+    // 鐵芯雙槓是符號裝飾（兩端本來就自由）→ 包 data-deco
+    g += `<g data-deco="1">${S.line(111, 62, 209, 62, { w: 1 })}${S.line(111, 70, 209, 70, { w: 1 })}</g>`;
     g += S.txt(105, 89, 'Ns', { anchor: 'end', size: 8, fill: '#64748b' });
     // D1 / D2 全波整流 → +Vout
     g += S.line(111, 86, 111, 105); g += `<g transform="rotate(90 111 127)">${S.diode(111, 127, {})}</g>`; g += S.line(111, 149, 111, 165);
@@ -1413,7 +1429,7 @@ const CircuitSVG = {
     const S = window.Sym; if (!S) return '';
     let g = '';
     // VCC_3V3_STBY 軌 + 旗標
-    g += S.line(64, 34, 300, 34);
+    g += S.line(64, 34, 182, 34);   // 舊版畫到 300：右端多出 118px 空線頭
     g += S.line(182, 34, 182, 22); g += S.line(173, 22, 191, 22);
     g += S.txt(182, 16, 'VCC_3V3_STBY', { size: 8, fill: '#64748b' });
     g += S.junction(64, 34); g += S.junction(182, 34);
@@ -1433,7 +1449,9 @@ const CircuitSVG = {
     g += S.txt(140, 188, 'D', { anchor: 'start', size: 9 });
     g += S.txt(140, 234, 'S', { anchor: 'start', size: 9 });
     g += S.txt(108, 256, 'M1', { size: 8, fill: '#64748b' });
-    g += S.line(136, 190, 136, 150);                       // 汲 → N_G
+    // 汲極 → RTC_CLR_G 網。舊版只畫到 (136,150) 就停，而該網在 x=182，中間 46px 是空的
+    // ＝M1 的汲極其實沒接上（畫面上看起來線斷掉）。補上水平段。
+    g += S.line(136, 190, 136, 150); g += S.line(136, 150, 182, 150);
     g += S.line(136, 230, 136, 262); g += S.ground(136, 262, {}); // 源 → GND
     // RTC_CLR_G 節點 → M2 閘
     g += S.txt(150, 141, 'RTC_CLR_G', { size: 8, fill: '#64748b' });
@@ -1665,7 +1683,7 @@ const knowledgeApp = {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
     // 注意：自動圖（applyCircuitArt / CIRCUITS2）也算「內容」。快取命中時走的是 localStorage 裡
     // 序列化好的 svg 字串，重畫的新圖不會生效 → 改圖一律要連這行一起遞增。
-    const BUILTIN_VERSION = '2026-07-27-tia-can485';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-revpol';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');

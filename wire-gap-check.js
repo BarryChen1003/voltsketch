@@ -166,7 +166,7 @@ function barLike(w, geom, dots) {
 
 function checkFigure(svg) {
   const { wires, geom, dots, texts } = parse(svg);
-  const gaps = [], overs = [], frees = [];
+  const gaps = [], overs = [], frees = [], bares = [];
   // 標籤在旁邊的自由端＝輸入/輸出腳（Vin、SW、→ 功率迴路），不是畫壞
   const labelled = p => texts.some(t => dist(p, t) <= 16);
   const nearest = (p, self) => {
@@ -200,10 +200,13 @@ function checkFigure(svg) {
         if (!best || dist(q, p) < dist(best, p)) best = q;
       }
       if (best && !labelled(p)) { overs.push(`${at} 超出接點 ${dist(best, p).toFixed(1)}px`); return; }
-      frees.push(at);                                            // 輸入/輸出腳這類合法自由端
+      // 自由端：旁邊有腳位標籤＝合法的輸入/輸出腳；沒標籤的多半是「兩段網忘了接」
+      // （雙 FET 防漏那張：汲極停在 x=136、網在 x=182，中間 46px 空著，距離 >GAP_MAX
+      //  所以不算缺口，但確實是斷線）→ 單獨列一類盯著。
+      if (labelled(p)) frees.push(at); else bares.push(at);
     });
   });
-  return { gaps, overs, frees, wires: wires.length };
+  return { gaps, overs, frees, bares, wires: wires.length };
 }
 
 // ── 自我測試：證明這支檢查真的抓得到那兩種缺陷（不是空轉）──
@@ -238,20 +241,25 @@ const BASE = './wire-gap-baseline.json';
 const baseline = fs.existsSync(BASE) ? JSON.parse(fs.readFileSync(BASE, 'utf8')) : {};
 
 const rows = [];
-let gapTotal = 0, overTotal = 0, freeTotal = 0, errored = 0;
+let gapTotal = 0, overTotal = 0, freeTotal = 0, bareTotal = 0, errored = 0;
 for (const [id, svg, err] of figures) {
   if (err) { rows.push({ id, err }); errored++; continue; }
   const r = checkFigure(svg);
-  gapTotal += r.gaps.length; overTotal += r.overs.length; freeTotal += r.frees.length;
-  if (r.gaps.length || r.overs.length || r.frees.length) rows.push({ id, ...r });
+  gapTotal += r.gaps.length; overTotal += r.overs.length; freeTotal += r.frees.length; bareTotal += r.bares.length;
+  if (r.gaps.length || r.overs.length || r.frees.length || r.bares.length) rows.push({ id, ...r });
 }
 
-console.log(`wire-gap-check: 掃 ${figures.length} 張圖 → 沒接上 ${gapTotal} 處、多出線頭 ${overTotal} 處、自由端 ${freeTotal} 處`);
+console.log(`wire-gap-check: 掃 ${figures.length} 張圖 → 沒接上 ${gapTotal} 處、多出線頭 ${overTotal} 處、無標籤自由端 ${bareTotal} 處、有標籤的腳 ${freeTotal} 處`);
 
 const gapRows = rows.filter(r => r.gaps && r.gaps.length);
 if (gapRows.length) {
   console.log('\n沒接上（端點前方幾 px 就有圖形，線畫短了）：');
   gapRows.forEach(r => console.log(`  ✗ ${r.id}: ${r.gaps.join(' ')}`));
+}
+const bareRows = rows.filter(r => r.bares && r.bares.length);
+if (bareRows.length) {
+  console.log('\n無標籤自由端（線頭懸空又沒有腳位標籤 → 多半是兩段網忘了接起來）：');
+  bareRows.slice(0, 12).forEach(r => console.log(`  ~ ${r.id}: ${r.bares.slice(0, 4).join(' ')}`));
 }
 const overRows = rows.filter(r => r.overs && r.overs.length);
 if (overRows.length) {
@@ -264,8 +272,8 @@ rows.filter(r => r.err).forEach(r => console.log(`  ✗ ${r.id}: 產生失敗 ${
 const now = {};
 rows.forEach(r => {
   if (r.err) return;
-  const v = { gap: r.gaps.length, over: r.overs.length, free: r.frees.length };
-  if (v.gap || v.over || v.free) now[r.id] = v;
+  const v = { gap: r.gaps.length, over: r.overs.length, bare: r.bares.length, free: r.frees.length };
+  if (v.gap || v.over || v.bare || v.free) now[r.id] = v;
 });
 if (update) {
   fs.writeFileSync(BASE, JSON.stringify(now, null, 2) + '\n');
@@ -273,8 +281,8 @@ if (update) {
 }
 const regressions = [];
 for (const id of Object.keys(now)) {
-  const was = baseline[id] || { gap: 0, over: 0, free: 0 };
-  ['gap', 'over', 'free'].forEach(k => {
+  const was = baseline[id] || { gap: 0, over: 0, bare: 0, free: 0 };
+  ['gap', 'over', 'bare', 'free'].forEach(k => {
     if (now[id][k] > (was[k] || 0)) regressions.push(`${id} ${k}: ${was[k] || 0} → ${now[id][k]}`);
   });
 }
@@ -283,8 +291,8 @@ if (regressions.length) {
   regressions.forEach(r => console.log(`  ✗ ${r}`));
 }
 const improved = Object.keys(baseline).filter(id => {
-  const b = baseline[id], n = now[id] || { gap: 0, over: 0, free: 0 };
-  return (n.gap < (b.gap || 0)) || (n.over < (b.over || 0)) || (n.free < (b.free || 0));
+  const b = baseline[id], n = now[id] || { gap: 0, over: 0, bare: 0, free: 0 };
+  return (n.gap < (b.gap || 0)) || (n.over < (b.over || 0)) || (n.bare < (b.bare || 0)) || (n.free < (b.free || 0));
 });
 if (improved.length) console.log(`\n（有 ${improved.length} 張圖比基線更好，修完可跑 --update 收緊棘輪）`);
 

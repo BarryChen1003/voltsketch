@@ -834,7 +834,8 @@
     g += T(150, 46, 'Np', { size: 7.5, fill: MUT }) + T(198, 46, 'Ns', { size: 7.5, fill: MUT });
     g += `<circle cx="152" cy="60" r="2" fill="${C}"/>` + `<circle cx="196" cy="90" r="2" fill="${C}"/>`;
     // 安規隔離邊界：核心上下各補虛線，明示一次側/二次側是兩個獨立的地
-    const ISO = (y1, y2) => `<line x1="174" y1="${y1}" x2="174" y2="${y2}" stroke="${ORG}" stroke-width="1" stroke-dasharray="4 3"/>`;
+    // 隔離邊界是標示線不是接線 → 包 data-deco，幾何檢查才不會把它的端點當成斷線
+    const ISO = (y1, y2) => DEC(`<line x1="174" y1="${y1}" x2="174" y2="${y2}" stroke="${ORG}" stroke-width="1" stroke-dasharray="4 3"/>`);
     g += ISO(32, 52) + ISO(100, 150) + T(174, 26, '隔離邊界', { size: 7, fill: ORG });
     // 一次側 MOSFET：低側開關必須 Drain 接變壓器、Source 接地。
     // nmos 預設 s 在上(y-20)、d 在下(y+20)，故加 flip 讓上=Drain、下=Source。
