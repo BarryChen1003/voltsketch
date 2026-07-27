@@ -1098,8 +1098,9 @@ const CircuitSVG = {
     const q1 = S.pins.nmos(60, 60), q3 = S.pins.nmos(200, 60);
     const q2 = S.pins.nmos(60, 120), q4 = S.pins.nmos(200, 120);
     let g = '';
-    // V+ 匯流排（上臂汲極）
-    g += S.rail(130, 14, 'V+'); g += S.line(40, 28, 220, 28); g += S.line(130, 18, 130, 28);
+    // V+ 匯流排（上臂汲極）：兩端剛好落在 Q1/Q3 的上端子 x=86 / x=226。
+    // 舊版畫 40..220：左邊多出 46px 懸空線頭，右邊少 6px 導致 Q3 上端子沒接上。
+    g += S.rail(130, 14, 'V+'); g += S.line(86, 28, 226, 28); g += S.line(130, 26, 130, 28);
     g += S.nmos(60, 60, { showPins: false, flip: true }); g += S.nmos(200, 60, { showPins: false, flip: true });
     g += S.nmos(60, 120, { showPins: false, flip: true }); g += S.nmos(200, 120, { showPins: false, flip: true });
     g += S.line(q1.s[0], 28, q1.s[0], q1.s[1]); g += S.line(q3.s[0], 28, q3.s[0], q3.s[1]);
@@ -1108,7 +1109,7 @@ const CircuitSVG = {
     g += S.line(q3.d[0], q3.d[1], q4.s[0], q4.s[1]); g += S.junction(226, 90);
     // 變壓器一次側（A—B 之間，水平）
     g += S.line(86, 90, 110, 90); g += S.inductor(134, 90, { label: 'Np' }); // 110..158
-    g += S.line(158, 90, 226, 90); g += S.junction(226, 90);
+    g += S.line(158, 90, 226, 90);
     // 下臂源極 → 地
     g += S.line(q2.d[0], q2.d[1], 86, 158); g += S.line(q4.d[0], q4.d[1], 226, 158);
     g += S.line(86, 158, 226, 158); g += S.ground(156, 172, {});
@@ -1520,7 +1521,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-27-currentmode-art';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-fullbridge-fix';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
