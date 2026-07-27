@@ -43,20 +43,72 @@ function textBox(x, y, str, size, anchor) {
 const decode = s => s.replace(/<\/?tspan[^>]*>/g, '')
   .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 
+// ── transform 支援（2026-07-27 補）──
+// 舊版是平面 regex，看不到 <g transform>：圖被 scale/translate 之後座標全錯，
+// 會憑原始座標誤報「互壓」（gan-gate-drive 放大置中後就中了這個坑）。
+const IDENT = [1, 0, 0, 1, 0, 0];
+const mul = (m, n) => [
+  m[0] * n[0] + m[2] * n[1], m[1] * n[0] + m[3] * n[1],
+  m[0] * n[2] + m[2] * n[3], m[1] * n[2] + m[3] * n[3],
+  m[0] * n[4] + m[2] * n[5] + m[4], m[1] * n[4] + m[3] * n[5] + m[5]
+];
+const xy = (m, x, y) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
+const scaleOf = m => Math.sqrt(Math.abs(m[0] * m[3] - m[1] * m[2])) || 1;
+function tmat(str) {
+  let m = IDENT, t;
+  const re = /(translate|scale|rotate|matrix)\s*\(([^)]*)\)/g;
+  while ((t = re.exec(str))) {
+    const v = t[2].trim().split(/[\s,]+/).map(Number);
+    if (t[1] === 'translate') m = mul(m, [1, 0, 0, 1, v[0] || 0, v.length > 1 ? v[1] : 0]);
+    else if (t[1] === 'scale') m = mul(m, [v[0], 0, 0, v.length > 1 ? v[1] : v[0], 0, 0]);
+    else if (t[1] === 'matrix') m = mul(m, v);
+    else {
+      const r = (v[0] || 0) * Math.PI / 180, c = Math.cos(r), s = Math.sin(r);
+      const rot = [c, s, -s, c, 0, 0];
+      m = v.length >= 3
+        ? mul(mul(mul(m, [1, 0, 0, 1, v[1], v[2]]), rot), [1, 0, 0, 1, -v[1], -v[2]])
+        : mul(m, rot);
+    }
+  }
+  return m;
+}
+
 function parse(svg) {
   const texts = [], rects = [], lines = [];
-  let m;
-  const reT = /<text x="(-?[\d.]+)" y="(-?[\d.]+)" text-anchor="(\w+)" font-size="([\d.]+)"[^>]*>([\s\S]*?)<\/text>/g;
-  while ((m = reT.exec(svg))) {
-    const str = decode(m[5]).trim();
-    if (str) texts.push(textBox(+m[1], +m[2], str, +m[4], m[3]));
-  }
-  const reR = /<rect x="(-?[\d.]+)" y="(-?[\d.]+)" width="([\d.]+)" height="([\d.]+)"/g;
-  while ((m = reR.exec(svg))) rects.push({ x0: +m[1], y0: +m[2], x1: +m[1] + +m[3], y1: +m[2] + +m[4] });
-  const reL = /<line x1="(-?[\d.]+)" y1="(-?[\d.]+)" x2="(-?[\d.]+)" y2="(-?[\d.]+)"[^>]*stroke-width="([\d.]+)"/g;
-  while ((m = reL.exec(svg))) {
-    if (+m[5] < 1.2) continue;                       // 裝飾細線不算
-    lines.push([+m[1], +m[2], +m[3], +m[4]]);
+  const stack = [IDENT];
+  const re = /<(\/?)(g|svg|text|rect|line)\b([^>]*?)(\/?)>/g;
+  let t;
+  while ((t = re.exec(svg))) {
+    const close = t[1] === '/', tag = t[2], body = t[3], self = t[4] === '/';
+    const m = stack[stack.length - 1];
+    if (tag === 'g' || tag === 'svg') {
+      if (close) { if (stack.length > 1) stack.pop(); continue; }
+      const tr = (body.match(/transform="([^"]*)"/) || [])[1];
+      stack.push(tr ? mul(m, tmat(tr)) : m);
+      if (self) stack.pop();
+      continue;
+    }
+    if (close) continue;
+    const A = n => { const v = (body.match(new RegExp(n + '="(-?[\\d.]+)"')) || [])[1]; return v === undefined ? null : +v; };
+    if (tag === 'text') {
+      const end = svg.indexOf('</text>', re.lastIndex);
+      const str = decode(svg.slice(re.lastIndex, end < 0 ? re.lastIndex : end)).trim();
+      if (!str) continue;
+      const anchor = (body.match(/text-anchor="(\w+)"/) || [])[1] || 'start';
+      const size = A('font-size') || 10;
+      const [px, py] = xy(m, A('x') || 0, A('y') || 0);
+      texts.push(textBox(px, py, str, size * scaleOf(m), anchor));
+    } else if (tag === 'rect') {
+      const x = A('x'), y = A('y'), w = A('width'), h = A('height');
+      const p = [xy(m, x, y), xy(m, x + w, y), xy(m, x + w, y + h), xy(m, x, y + h)];
+      rects.push({ x0: Math.min(...p.map(q => q[0])), y0: Math.min(...p.map(q => q[1])),
+                   x1: Math.max(...p.map(q => q[0])), y1: Math.max(...p.map(q => q[1])) });
+    } else if (tag === 'line') {
+      const w = A('stroke-width');
+      if (w !== null && w < 1.2) continue;                       // 裝飾細線不算
+      const a = xy(m, A('x1'), A('y1')), b = xy(m, A('x2'), A('y2'));
+      lines.push([a[0], a[1], b[0], b[1]]);
+    }
   }
   return { texts, rects, lines };
 }

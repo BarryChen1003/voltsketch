@@ -631,8 +631,10 @@ const CircuitSVG = {
     // 引腳
     g += S.line(x - 14, y - 24, x - 14, y - 30); g += S.line(x - 14, y + 24, x - 14, y + 30);
     g += S.line(x + 14, y - 24, x + 14, y - 30); g += S.line(x + 14, y + 24, x + 14, y + 30);
-    if (opt.ratio) g += S.txt(x, y + 44, opt.ratio, { size: 8, fill: '#64748b' });
-    return g;
+    const lbl = opt.ratio ? S.txt(x, y + 44, opt.ratio, { size: 8, fill: '#64748b' }) : '';
+    // 變壓器是一個符號（鐵芯兩條線、線圈弧的自由端都是符號本體）→ 標 data-sym，
+    // 讓 wire-gap-check.js 不把它的內部筆畫當成接線。
+    return `<g data-sym="transformer">${g}</g>` + lbl;
   },
 
   // Flyback 返馳式隔離轉換器
@@ -1521,7 +1523,7 @@ const knowledgeApp = {
 
   async loadFromStorage() {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
-    const BUILTIN_VERSION = '2026-07-27-fullbridge-fix';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-gan-layout';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');

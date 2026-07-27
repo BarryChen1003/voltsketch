@@ -101,7 +101,8 @@
   // 電源旗標
   // 電源旗標。內部線一律走 LR（不吸附）：F 常畫在已登錄的腳位上（如電阻上端），
   // 用 L 會把旗桿與橫槓兩端全吸到那個腳位 → 整個符號塌成一點、畫面上什麼都沒有。
-  function F(x, y, lbl, lift) { return LR(x, y, x, y - 8) + LR(x - 7, y - 8, x + 7, y - 8) + T(x, y - 13 - (lift || 0), lbl, { size: 7.5, fill: MUT }); }
+  // 電源旗標（本身是符號：橫槓兩端是合法自由端）→ 標 data-sym 讓 wire-gap-check 不當成接線
+  function F(x, y, lbl, lift) { return `<g data-sym="flag">${LR(x, y, x, y - 8) + LR(x - 7, y - 8, x + 7, y - 8)}</g>` + T(x, y - 13 - (lift || 0), lbl, { size: 7.5, fill: MUT }); }
   // 紅叉（錯誤示意，裝飾）
   function X(x, y, r) { r = r || 6; return DEC(L(x - r, y - r, x + r, y + r, { color: RED, w: 2 }) + L(x - r, y + r, x + r, y - r, { color: RED, w: 2 })); }
   // 勾（正確示意，裝飾）
@@ -876,7 +877,8 @@
     g += L(164, 76, 218, 76) + s.junction(188, 76);
     g += cap(188, 42, { horizontal: false });                      // 引線 20..64
     g += LR(188, 64, 188, 76);
-    g += LR(176, 20, 200, 20) + LR(180, 15, 196, 15) + LR(184, 10, 192, 10);  // 朝上的接地
+    // 朝上的接地（Sym.ground 只畫向下）：三橫槓是符號本體，標 data-sym 免被當接線
+    g += `<g data-sym="ground-up">${LR(176, 20, 200, 20) + LR(180, 15, 196, 15) + LR(184, 10, 192, 10)}</g>`;
     g += L(98, 116, 116, 116) + T(102, 104, 'OUT−', { size: 9, anchor: 'start', fill: MUT });
     g += ind(140, 116, { horizontal: true });
     g += L(164, 116, 218, 116) + s.junction(188, 116);
@@ -935,23 +937,30 @@
 
   M['gan-gate-drive'] = () => {
     const s = S();
-    let g = '';
-    g += B(64, 70, 88, 52, 'GaN 驅動器', ['LMG1020 類', '開/關分離輸出']);
+    // 電路本體（原座標系）。最後整組放大 1.3 倍擺到畫面中間，兩側留給註解文字：
+    // 註解原本擠在圖下方，字小又跟電路搶空間。
+    let c = '';
+    c += B(64, 70, 88, 52, 'GaN 驅動器', ['LMG1020 類', '開/關分離輸出']);
     // 開/關分離路徑匯合到閘極端點 G=(148,76)
-    g += L(108, 56, 132, 56) + T(120, 39, 'Rg_on 小', { size: 7.5, fill: MUT });
-    g += L(108, 84, 132, 84) + T(122, 114, 'Rg_off 更小', { anchor: 'end', size: 7.5, fill: MUT });
-    g += L(132, 56, 132, 84) + L(132, 76, 148, 76) + s.junction(132, 76);
-    g += mos(178, 76, { showPins: false });
-    g += T(178, 122, 'GaN FET（ns 級邊沿）', { anchor: 'start', size: 8, fill: MUT });
-    g += L(204, 56, 224, 56) + F(224, 56, 'VBUS');
-    g += L(204, 96, 224, 96) + T(230, 100, '→ 功率迴路', { size: 8, anchor: 'start' });
-    g += A(204, 96, 64, 104, 'Kelvin source 獨立回線', { dy: 15, anchor: 'start', color: ACC });
-    g += T(230, 140, '驅動迴路面積 = 一切：', { size: 8.5, anchor: 'start' });
-    g += T(230, 154, '幾 nH 寄生電感 × ns 邊沿 = 振鈴/誤開', { size: 8, anchor: 'start', fill: RED });
-    g += T(230, 170, '閘極耐壓僅 ~6V，過衝就打壞', { size: 8, anchor: 'start', fill: ORG });
-    g += T(64, 150, '佈局：驅動器貼著 FET', { size: 8, fill: MUT });
-    g += T(64, 163, '（mm 級），迴路最小化', { size: 8, fill: MUT });
-    return { d: 'GaN 閘驅：分離開關路徑＋Kelvin source', svg: W(420, 182, g) };
+    c += L(108, 56, 132, 56) + T(120, 39, 'Rg_on 小', { size: 7.5, fill: MUT });
+    c += L(108, 84, 132, 84) + T(122, 114, 'Rg_off 更小', { anchor: 'end', size: 7.5, fill: MUT });
+    c += L(132, 56, 132, 84) + L(132, 76, 148, 76) + s.junction(132, 76);
+    c += mos(178, 76, { showPins: false });
+    c += T(178, 122, 'GaN FET（ns 級邊沿）', { anchor: 'start', size: 8, fill: MUT });
+    c += L(204, 56, 224, 56) + F(224, 56, 'VBUS');
+    c += L(204, 96, 224, 96) + T(230, 100, '→ 功率迴路', { size: 8, anchor: 'start' });
+    c += A(204, 96, 64, 104, 'Kelvin source 獨立回線', { dy: 15, anchor: 'start', color: ACC });
+    // 電路放大 1.3×，佔 x 190..544 / y 40..165
+    let g = `<g transform="translate(164,1) scale(1.3)">${c}</g>`;
+    // 左欄：佈局
+    g += T(10, 96, '佈局：驅動器貼著 FET', { size: 9.5, anchor: 'start' });
+    g += T(10, 112, '（mm 級），迴路最小化', { size: 9, anchor: 'start', fill: MUT });
+    // 右欄：迴路面積與閘極耐壓
+    g += T(556, 76, '驅動迴路面積 = 一切：', { size: 9.5, anchor: 'start' });
+    g += T(556, 92, '幾 nH 寄生電感 × ns 邊沿', { size: 9, anchor: 'start', fill: RED });
+    g += T(556, 106, '＝ 振鈴／誤開', { size: 9, anchor: 'start', fill: RED });
+    g += T(556, 128, '閘極耐壓僅 ~6V，過衝就打壞', { size: 9, anchor: 'start', fill: ORG });
+    return { d: 'GaN 閘驅：分離開關路徑＋Kelvin source', svg: W(690, 180, g) };
   };
 
   M['bldc-three-phase-drive'] = () => {

@@ -58,6 +58,14 @@ jobs:
       - name: circuit-check（電路圖接線）
         run: node circuit-check.js --strict
 
+      # 2f2) 接線沒接上（差幾 px）／多出線頭（穿過接點還往外伸）。
+      #      符號內部筆畫靠 data-sym 標記排除，誤報才降到可用。
+      #      selftest 先證明檢查本身抓得到那兩種缺陷，再跑棘輪比對 wire-gap-baseline.json。
+      - name: wire-gap-check 自我測試
+        run: node wire-gap-check.js --selftest
+      - name: wire-gap-check（接線缺口/多出線頭 · 棘輪）
+        run: node wire-gap-check.js --strict
+
       # 2g) 鐵律：圖表文字不得壓到圖形或別的文字。
       #     已逐張排完：瀏覽器 getBBox 實測 146 卡 / 1432 文字 = 0 重疊（見 overlap-audit.md）。
       #     此 node 版是估算器（看不到 <g transform>、字寬用係數推算），對這兩張會誤報 →

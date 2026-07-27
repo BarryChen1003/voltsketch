@@ -396,10 +396,23 @@
     gate: (x, y, oneIn) => oneIn ? ({ in: [x - 28, y], out: [x + 28, y] }) : ({ in1: [x - 28, y - 7], in2: [x - 28, y + 7], out: [x + 28, y] })
   };
 
+  /**
+   * 元件符號輸出包一層 `<g data-sym="名稱">`。
+   * 目的：符號內部本來就有大量合法自由端（電容兩極板、接地三橫槓、二極體三角、
+   * MOSFET 閘極板），跟「接線沒接上」長得一樣。有了這個標記，wire-gap-check.js 才能
+   * 只檢查「接線」（未被標記的 <line>）的端點，把誤報降到零。
+   * group 不帶 transform，對外觀沒有任何影響。
+   */
+  const tag = (name, fn) => function () { return `<g data-sym="${name}">${fn.apply(null, arguments)}</g>`; };
+
   const Sym = {
-    line: ln, poly, tri, circ, txt, junction,
-    resistor, capacitor, ground, diode, inductor, source, rail,
-    nmos, dualnmos, npn, gate, ic, connector,
+    line: ln, poly, tri, circ, txt,
+    junction: tag('junction', junction),
+    resistor: tag('resistor', resistor), capacitor: tag('capacitor', capacitor),
+    ground: tag('ground', ground), diode: tag('diode', diode), inductor: tag('inductor', inductor),
+    source: tag('source', source), rail: tag('rail', rail),
+    nmos: tag('nmos', nmos), dualnmos: tag('dualnmos', dualnmos), npn: tag('npn', npn),
+    gate: tag('gate', gate), ic: tag('ic', ic), connector: tag('connector', connector),
     pins, icPinY,
     color: C
   };
