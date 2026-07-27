@@ -225,9 +225,9 @@
     "free": 2
   },
   "CircuitSVG.optocoupler": {
-    "gap": 2,
-    "over": 3,
-    "free": 4
+    "gap": 0,
+    "over": 0,
+    "free": 5
   },
   "CircuitSVG.oring": {
     "gap": 0,

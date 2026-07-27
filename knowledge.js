@@ -800,21 +800,44 @@ const CircuitSVG = {
   },
 
   // 光耦回授隔離
+  // 光耦隔離：輸入側 LED（含限流電阻）→ 隔離界線 → 輸出側光電晶體（C/E＋接地）
+  // 舊版把兩側塞在同一個方框裡，而且「光電晶體」根本只有兩截短線（沒有電晶體符號），
+  // 也沒畫出隔離界線與兩側各自的地。整張重畫，最後整組放大 1.3×。
   optocoupler() {
     const S = window.Sym; if (!S) return '';
+    const MUT = '#64748b';
     let g = '';
-    g += `<rect x="70" y="35" width="60" height="60" rx="3" fill="none" stroke="${S.color}" stroke-width="2"/>`;
-    // 一次側 LED
-    g += S.line(40, 50, 78, 50);
-    g += `<g transform="rotate(90 90 55)">${S.diode(90, 55, {})}</g>`;
-    g += `<path d="M 96 48 l 6 -6 M 99 48 l 6 -6" stroke="${S.color}" stroke-width="1"/>`;
-    g += S.line(90, 67, 90, 88); g += S.line(40, 88, 90, 88);
-    g += S.txt(30, 53, 'In', { anchor: 'end', size: 8, fill: '#64748b' });
-    // 二次側電晶體
-    g += S.line(110, 42, 110, 55); g += S.line(122, 50, 160, 50); g += S.txt(162, 53, 'Out', { anchor: 'start', size: 8, fill: '#64748b' });
-    g += S.line(110, 70, 110, 95); g += S.line(110, 95, 160, 95);
-    g += S.txt(100, 115, '光耦：一二次側隔離回授', { size: 8, fill: '#64748b' });
-    return this.wrap(200, 130, g);
+    // ── 輸入側：In → Rf 限流 → LED（陽極上、陰極下）→ 返回 ──
+    g += S.txt(18, 46, 'In', { anchor: 'start', size: 9, fill: MUT });
+    g += S.line(20, 54, 36, 54);
+    g += S.resistor(60, 54, { horizontal: true, label: 'Rf 限流' });        // 端子 36..84
+    g += S.line(84, 54, 110, 54);
+    g += `<g transform="rotate(90 110 76)">${S.diode(110, 76, {})}</g>`;    // 引線 54..98，陰極朝下
+    g += S.line(110, 98, 110, 124); g += S.line(110, 124, 20, 124);
+    g += S.txt(18, 134, '返回', { anchor: 'start', size: 9, fill: MUT });
+    // 光耦合（裝飾線：不是接線，標 data-deco）
+    g += `<g data-deco="1">`;
+    [68, 88].forEach(y => {
+      g += S.line(128, y, 166, y, { w: 1.2, color: MUT });
+      g += `<polygon points="166,${y} 159,${y - 3.5} 159,${y + 3.5}" fill="${MUT}"/>`;
+    });
+    g += `</g>`;
+    // ── 隔離界線 ──
+    g += `<line x1="180" y1="24" x2="180" y2="152" stroke="${MUT}" stroke-width="1.4" stroke-dasharray="5 4"/>`;
+    g += S.txt(180, 16, '隔離界線', { size: 8.5, fill: MUT });
+    // ── 輸出側：光電晶體 → Out（集極）／地（射極）──
+    g += S.txt(220, 78, '受光基極', { anchor: 'end', size: 8, fill: MUT });
+    g += S.npn(250, 86, { showPins: false });                              // C 引線止於 (258,56)、E 止於 (258,116)
+    g += S.txt(266, 66, 'C', { anchor: 'start', size: 8.5 });
+    g += S.txt(266, 110, 'E', { anchor: 'start', size: 8.5 });
+    g += S.line(258, 56, 258, 44); g += S.line(258, 44, 320, 44);
+    g += S.txt(324, 40, 'Out', { anchor: 'start', size: 9, fill: MUT });
+    g += S.line(258, 116, 258, 132); g += S.ground(258, 146, {});
+    g += S.txt(100, 170, '輸入側（LED）', { size: 9, fill: MUT });
+    g += S.txt(270, 170, '輸出側（光電晶體）', { size: 9, fill: MUT });
+    g += S.txt(200, 190, 'CTR = Ic/If 決定回授增益；CTR 隨溫度與老化衰減，要留餘裕', { size: 9, fill: MUT });
+    g += S.txt(200, 206, '隔離電源回授：LED 側配 TL431 取樣 Vout，光電晶體側接控制器 FB；兩側地不可相連', { size: 9, fill: MUT });
+    return this.wrap(520, 284, `<g transform="scale(1.3)">${g}</g>`);
   },
 
   // ORing / 理想二極體
@@ -1533,7 +1556,7 @@ const knowledgeApp = {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
     // 注意：自動圖（applyCircuitArt / CIRCUITS2）也算「內容」。快取命中時走的是 localStorage 裡
     // 序列化好的 svg 字串，重畫的新圖不會生效 → 改圖一律要連這行一起遞增。
-    const BUILTIN_VERSION = '2026-07-27-ldo-bga-figures';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-optocoupler';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
