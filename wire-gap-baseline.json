@@ -47,7 +47,7 @@
   "acdc-flyback": {
     "gap": 0,
     "over": 0,
-    "free": 3
+    "free": 4
   },
   "regulator-ldo-vs-buck": {
     "gap": 0,
@@ -203,6 +203,11 @@
     "gap": 0,
     "over": 1,
     "free": 4
+  },
+  "CircuitSVG.rcDelaySeq": {
+    "gap": 0,
+    "over": 0,
+    "free": 1
   },
   "CircuitSVG.tl431": {
     "gap": 0,

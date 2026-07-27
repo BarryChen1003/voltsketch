@@ -719,6 +719,24 @@ const CircuitSVG = {
     return this.wrap(200, 148, g);
   },
 
+  // RC 延遲上電（電源上電順序）。卡片原本內嵌的小圖畫布只有 200×70、字級 5–8px，
+  // 跟全站標準差一截 → 改用 Sym 重畫，走 wrap() 拿到統一的 ×1.3 與 9px 字級。
+  rcDelaySeq() {
+    const S = window.Sym; if (!S) return '';
+    const MUT = '#64748b';
+    let g = '';
+    g += S.txt(16, 44, 'Power_EN', { anchor: 'start', size: 9, fill: MUT });
+    g += S.line(20, 50, 46, 50);
+    g += S.resistor(70, 50, { horizontal: true, label: 'R' });     // 端子 46..94
+    g += S.line(94, 50, 150, 50); g += S.junction(120, 50);
+    g += S.capacitor(120, 72, { label: 'C' });                     // 引線 50..94
+    g += S.ground(120, 108, {});
+    g += this.blk(S, 150, 36, 80, 28, ['LDO_EN'], { size: 9.5 });
+    g += S.txt(160, 128, 'Delay ≈ R × C：EN 緩升到門檻才致能下一軌', { size: 9, fill: MUT });
+    g += S.txt(160, 144, '多軌順序建議交給 supervisor／PMIC 排序，RC 只適合簡單場合', { size: 9, fill: MUT });
+    return this.wrap(330, 160, g);
+  },
+
   // TL431 可調分流基準（三腳：K 陰極／A 陽極／REF 參考）
   // 舊版問題：REF 那條線是一截 L 形空接（沒接到任何東西）、沒有外部分壓、也沒有 Vout 節點，
   // 用 2 腳二極體符號當 3 腳元件畫。改成方塊＋三支腳，接線全部接實，最後整組放大 1.25×。
@@ -1577,7 +1595,7 @@ const knowledgeApp = {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
     // 注意：自動圖（applyCircuitArt / CIRCUITS2）也算「內容」。快取命中時走的是 localStorage 裡
     // 序列化好的 svg 字串，重畫的新圖不會生效 → 改圖一律要連這行一起遞增。
-    const BUILTIN_VERSION = '2026-07-27-scale13-all2';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-fig-collisions';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
@@ -1625,6 +1643,7 @@ const knowledgeApp = {
       'reverse-polarity': () => CircuitSVG.reversePolarity(),
       'automotive-transient': () => CircuitSVG.automotiveTransient(),
       'decoupling-capacitor': () => CircuitSVG.decoupling(),
+      'power-sequencing': () => CircuitSVG.rcDelaySeq(),
       'common-mode-choke': () => CircuitSVG.commonModeChoke(),
       'emi-filtering': () => CircuitSVG.emiFilter(),
       'pdn-design': () => CircuitSVG.pdn(),
