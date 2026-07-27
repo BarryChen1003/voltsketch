@@ -494,18 +494,34 @@ const CircuitSVG = {
   },
 
   // 差分對 + 終端
+  // 差分對走線。舊版只有兩條分開很遠的線＋一顆 Rt：卡片說的四個要點（阻抗、等長、
+  // 緊耦合、對稱）一個都沒畫出來，而阻抗其實是由 w/s/h 決定的 → 補截面圖。
   diffPair() {
     const S = window.Sym; if (!S) return '';
+    const MUT = '#64748b', RED = '#dc2626', ACC = '#1f4fd1';
     let g = '';
-    g += S.line(20, 40, 180, 40, { color: '#dc2626' }); g += S.txt(20, 32, 'D+', { anchor: 'start', size: 9, fill: '#dc2626' });
-    g += S.line(20, 80, 180, 80, { color: '#1f4fd1' }); g += S.txt(20, 100, 'D−', { anchor: 'start', size: 9, fill: '#1f4fd1' });
-    g += S.txt(100, 26, '差分阻抗 ' + '90Ω', { size: 9, fill: '#64748b' });
-    // 終端電阻（差分跨接，旋轉後引線在 200,36 與 200,84）
-    g += S.line(180, 40, 200, 40); g += S.line(200, 40, 200, 36);
-    g += S.line(180, 80, 200, 80); g += S.line(200, 80, 200, 84);
-    g += `<g transform="rotate(90 200 60)">${S.resistor(200, 60, { horizontal: true })}</g>`;
-    g += S.txt(214, 64, 'Rt', { anchor: 'start', size: 9, fill: '#64748b' });
-    return this.wrap(240, 120, g);
+    // ── A. 截面：w／s／h 決定阻抗 ──
+    g += S.txt(20, 20, 'A. 截面：阻抗由 w／s／h 決定', { anchor: 'start', size: 9.5, weight: 'bold' });
+    g += `<rect x="20" y="96" width="180" height="8" fill="#cbd5e1" stroke="${MUT}" stroke-width="1"/>`;
+    g += S.txt(110, 120, '參考層（完整地，不可跨切割）', { size: 8.5, fill: MUT });
+    g += `<rect x="70" y="76" width="20" height="8" fill="#fff" stroke="${RED}" stroke-width="1.6"/>`;
+    g += `<rect x="110" y="76" width="20" height="8" fill="#fff" stroke="${ACC}" stroke-width="1.6"/>`;
+    g += S.txt(80, 70, 'w', { size: 8.5, fill: RED }) + S.txt(100, 70, 's', { size: 8.5 }) + S.txt(120, 70, 'w', { size: 8.5, fill: ACC });
+    g += S.line(160, 84, 160, 96, { w: 1, color: MUT }) + S.txt(166, 92, 'h', { anchor: 'start', size: 8.5, fill: MUT });
+
+    // ── B. 平面：等長、對稱、終端 ──
+    g += S.txt(240, 20, 'B. 平面：等長＋對稱＋終端', { anchor: 'start', size: 9.5, weight: 'bold' });
+    g += S.line(240, 60, 372, 60, { color: RED }) + S.txt(238, 54, 'D+', { anchor: 'end', size: 9, fill: RED });
+    g += S.line(240, 100, 372, 100, { color: ACC }) + S.txt(238, 106, 'D−', { anchor: 'end', size: 9, fill: ACC });
+    g += S.line(372, 60, 388, 60); g += S.line(388, 60, 388, 56);
+    g += S.line(372, 100, 388, 100); g += S.line(388, 100, 388, 104);
+    g += `<g transform="rotate(90 388 80)">${S.resistor(388, 80, { horizontal: true })}</g>`;   // 引線 388,56↔388,104
+    g += S.txt(404, 84, 'Rt', { anchor: 'start', size: 9, fill: MUT });
+    g += S.txt(306, 84, '兩線等長、同層、對稱轉角', { size: 8.5, fill: MUT });
+    // 兩行說明改置中排在最底部（原本兩欄各自 anchor start，會互壓又出界）
+    g += S.txt(215, 146, 's 越小耦合越緊、共模抑制越好；w／s／h 任一改變阻抗就跑掉', { size: 8.5, fill: MUT });
+    g += S.txt(215, 162, 'Rt = 差分阻抗（LVDS/RS-485 外接；USB/PCIe 由收發器內建終端）', { size: 8.5, fill: MUT });
+    return this.wrap(430, 174, g);
   },
 
   // 阻抗匹配（源 + 串聯 R + 線 + 負載）
@@ -1161,7 +1177,10 @@ const CircuitSVG = {
     g += S.line(160, 209, 235, 209); g += S.ground(160, 223, {});
     // Cout（+Vout 軌 ↔ 返回軌）
     g += S.capacitor(235, 187, { label: 'Cout', labelSide: 'right' });
-    return this.wrap(300, 238, g);
+    // 圖說：拓樸本身沒問題，但「兩半繞組要反相」「不可同時導通」看圖看不出來，補文字。
+    g += S.txt(150, 262, '一次側兩半繞組相位相反：Q1/Q2 交替導通才會讓磁通反向', { size: 9, fill: '#64748b' });
+    g += S.txt(150, 278, '兩管絕不可同時導通（等於變壓器短路）→ 驅動要留死區時間', { size: 9, fill: '#dc2626' });
+    return this.wrap(310, 292, g);
   },
 
   // 全橋轉換器（4 開關橋臂驅動變壓器一次側；二次側橋式整流）
@@ -1595,7 +1614,7 @@ const knowledgeApp = {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
     // 注意：自動圖（applyCircuitArt / CIRCUITS2）也算「內容」。快取命中時走的是 localStorage 裡
     // 序列化好的 svg 字串，重畫的新圖不會生效 → 改圖一律要連這行一起遞增。
-    const BUILTIN_VERSION = '2026-07-27-symcheck';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-diffpair';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
