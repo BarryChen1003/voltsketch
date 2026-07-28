@@ -651,7 +651,11 @@ const CircuitSVG = {
     // VREF 旁路電容
     g += S.line(20, vrefY, leadL, vrefY); g += S.junction(40, vrefY); g += S.txt(18, vrefY - 8, 'VREF', { anchor: 'start', size: 8, fill: '#64748b' });
     g += this.capToGnd(S, 40, vrefY, 'Cref');
-    return this.wrap(220, 180, g);
+    // SCLK/SDO 一定要接到 MCU 的 SPI —— 舊版只留兩截空腳，看起來像可以不接
+    g += this.blk(S, 210, 40, 76, 60, ['MCU', 'SPI'], { size: 9.5 });
+    g += S.line(164, ainY, 210, ainY); g += S.line(164, vrefY, 210, vrefY);
+    g += S.txt(170, 168, 'SCLK 由 MCU 給、SDO 回傳資料：兩條都必須接，ADC 不會自己送資料', { size: 9, fill: '#64748b' });
+    return this.wrap(340, 182, g);
   },
 
   // 嵌入式電源樹
@@ -860,24 +864,32 @@ const CircuitSVG = {
   },
 
   // 晶體振盪（皮爾斯）
+  // 皮爾斯晶體振盪（Pierce）
+  // 舊版晶體只有 10x10 的小方塊、兩極板相距 14px，縮圖後根本看不出是晶體。
+  // 這裡把晶體放大（極板間距 18px、本體 18x10）、XI/XO 兩軌上下拉開，負載電容各自落地不交叉。
   crystalOsc() {
     const S = window.Sym; if (!S) return '';
-    const leadR = S.pins.icLeadR(55, 40); // 89
-    const xiY = S.icPinY(60, 2, 0), xoY = S.icPinY(60, 2, 1); // 51 / 69
+    const MUT = '#64748b';
+    const leadR = S.pins.icLeadR(55, 40);                       // 89
+    const xiY = S.icPinY(60, 2, 0), xoY = S.icPinY(60, 2, 1);   // 51 / 69
     let g = '';
     g += S.ic(55, 60, { width: 40, height: 50, label: 'MCU', pinsRight: ['XI', 'XO'] });
-    // XI / XO → 晶體兩端（垂直晶體於 x=130，51..69）
-    g += S.line(leadR, xiY, 130, xiY); g += S.junction(100, xiY);
-    g += S.line(leadR, xoY, 156, xoY); g += S.junction(130, xoY); g += S.junction(156, xoY);
-    // 晶體（兩極板 + 石英）
-    g += S.line(130, xiY, 130, 53); g += S.line(123, 53, 137, 53, { w: 2.4 });
-    g += `<rect x="125" y="55" width="10" height="10" fill="none" stroke="${S.color}" stroke-width="1.5"/>`;
-    g += S.line(123, 67, 137, 67, { w: 2.4 }); g += S.line(130, 67, 130, xoY);
-    g += S.txt(130, 44, 'XTAL', { size: 8, fill: '#64748b' });
-    // 負載電容（左右分開，各自到地）
-    g += this.capToGnd(S, 100, xiY, 'CL1', 'right');
-    g += this.capToGnd(S, 156, xoY, 'CL2', 'right'); // 標籤靠右避開晶體
-    return this.wrap(216, 170, g);
+    // XI → 上軌 y=44；XO → 下軌 y=130（拉開，讓負載電容各自落地不與另一軌交叉）
+    g += S.line(leadR, xiY, 104, xiY); g += S.line(104, xiY, 104, 44); g += S.line(104, 44, 150, 44);
+    g += S.line(leadR, xoY, 104, xoY); g += S.line(104, xoY, 104, 130); g += S.line(104, 130, 150, 130);
+    // 晶體：兩極板 + 石英本體（放大版）
+    g += S.line(150, 44, 150, 78); g += S.line(138, 78, 162, 78, { w: 2.8 });
+    g += `<rect x="141" y="82" width="18" height="10" fill="none" stroke="${S.color}" stroke-width="1.6"/>`;
+    g += S.line(138, 96, 162, 96, { w: 2.8 }); g += S.line(150, 96, 150, 130);
+    g += S.txt(174, 88, 'XTAL', { anchor: 'start', size: 9, fill: MUT });
+    // 負載電容：CL1 掛上軌、CL2 掛下軌，各自對地
+    // CL1 的標籤放電容上方（放左邊會被 XO 那條垂直線穿過）
+    g += S.junction(125, 44); g += this.capToGnd(S, 125, 44, '', 'left');       // 電容 58..102、地 106
+    g += S.txt(125, 36, 'CL1', { size: 9, fill: MUT });
+    g += S.line(150, 130, 195, 130); g += S.junction(195, 130);
+    g += this.capToGnd(S, 195, 130, 'CL2', 'right');                             // 電容 144..188、地 192
+    g += S.txt(120, 218, 'CL1／CL2 決定實際負載電容 CL ≈ (CL1·CL2)/(CL1+CL2) + Cstray，偏了頻率就偏', { anchor: 'start', size: 9, fill: MUT });
+    return this.wrap(560, 232, g);
   },
 
   // NTC 熱敏分壓
@@ -1683,7 +1695,7 @@ const knowledgeApp = {
     // 內建知識版本。改版時遞增 → 強制重新載入內建主題，避免舊 cache 只剩少數主題
     // 注意：自動圖（applyCircuitArt / CIRCUITS2）也算「內容」。快取命中時走的是 localStorage 裡
     // 序列化好的 svg 字串，重畫的新圖不會生效 → 改圖一律要連這行一起遞增。
-    const BUILTIN_VERSION = '2026-07-27-revpol';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
+    const BUILTIN_VERSION = '2026-07-27-xtal-adc';   // 內容/翻譯更新務必遞增，否則舊 cache 蓋住新卡
     const sample = this.getSampleKnowledge();
     const saved = localStorage.getItem('knowledgeBase');
     const savedVer = localStorage.getItem('knowledgeBaseVersion');
