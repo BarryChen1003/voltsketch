@@ -100,6 +100,32 @@
         }
         // 語言選取：zh 預設；en/ja/ko 依 I18N.lang（DB 欄位缺譯時回退 zh）
         const LANG = (window.I18N && ['en', 'ja', 'ko'].indexOf(I18N.lang) >= 0) ? I18N.lang : 'zh';
+        // DB 的 answer 不一定有電路圖：seed 抽取時把 SVG 剝掉（只留空的 exam-diagram-box），
+        // 新畫的圖也要等 SQL 跑完才進 DB。這裡用 interview-bank.js 的圖做前端回填，
+        // 比對 key 一律用 r.question（zh 欄位），與顯示語言無關；圖內標籤是英文/符號，四語共用。
+        const stripKey = s => String(s == null ? '' : s).replace(/<[^>]+>/g, '').replace(/\s+/g, '').slice(0, 24);
+        function diagramFor(questionZh) {
+          const key = stripKey(questionZh);
+          if (key.length < 8) return '';
+          const bank = window.INTERVIEW_BANK || [];
+          for (let i = 0; i < bank.length; i++) {
+            const hit = bank[i].zh.answer.match(/<div class="exam-diagram-box">[\s\S]*?<\/svg><\/div>/);
+            if (!hit) continue;
+            const bk = stripKey(bank[i].zh.text);
+            if (bk.length >= 8 && (key.indexOf(bk.slice(0, 12)) === 0 || bk.indexOf(key.slice(0, 12)) === 0)) return hit[0];
+          }
+          return '';
+        }
+        function withDiagram(answer, questionZh) {
+          const a = String(answer == null ? '' : answer);
+          if (a.indexOf('<svg') >= 0) return a;                 // DB 已有圖就不動
+          const d = diagramFor(questionZh);
+          if (!d) return a;
+          return a.indexOf('<div class="exam-diagram-box"></div>') >= 0
+            ? a.replace('<div class="exam-diagram-box"></div>', d)  // 補進原本的空盒
+            : d + a;
+        }
+
         function renderQuestions(rows) {
           // question/answer 為後端(admin RLS 寫)富文字 → 直接渲染 HTML；分類字串仍逸出
           statusEl.removeAttribute('data-i18n');
@@ -109,7 +135,7 @@
           rows.forEach(r => {
             const cat = (LANG !== 'zh' && r['category_' + LANG]) || r.category;
             const question = (LANG !== 'zh' && r['question_' + LANG]) || r.question;
-            const answer = (LANG !== 'zh' && r['answer_' + LANG]) || r.answer;
+            const answer = withDiagram((LANG !== 'zh' && r['answer_' + LANG]) || r.answer, r.question);
             if (cat !== lastCat) {
               html += '<h4 style="margin:20px 0 8px;color:#b45309;border-bottom:1px solid var(--line);padding-bottom:4px">' + esc(cat) + '</h4>';
               lastCat = cat;
