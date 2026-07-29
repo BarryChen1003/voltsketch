@@ -20,6 +20,13 @@
       #bankList .key-point { background:#fffbeb; border-left:3px solid #b45309; padding:8px 12px; margin:8px 0; border-radius:4px; }
       #bankList details summary { line-height:1.5; }
       #bankList sub, #bankList sup { font-size:0.75em; }
+      /* 電路圖容器：原本全站沒有這條規則，圖是裸 div → 無邊界、窄螢幕會被截掉 */
+      /* 電路圖容器：原本全站沒有這條規則，圖是裸 div → 無邊界、也沒處理窄螢幕 */
+      #bankList .exam-diagram-box { margin:12px 0; padding:8px; background:#0a0a1a; border:1px solid #1e293b; border-radius:6px; max-width:100%; }
+      /* 圖等比縮放（main 有 auto margin → 不能給 svg 固定寬，否則整頁被撐寬出現橫捲）。
+         手機 375px 時縮放約 0.63 倍，所以新圖的字級一律 ≥ 11px、viewBox 寬 ≤ 520。 */
+      #bankList .exam-diagram-box svg { display:block; width:100%; max-width:520px; height:auto; margin:0 auto; }
+      #bankList .exam-diagram-box:empty { display:none; }  /* DB 舊資料留有空盒，別顯示空框 */
     </style>
   </head>
   <body>
@@ -67,7 +74,7 @@
       </main>
     </div>
 
-    <script src="./interview-bank.js?v=2026-07-17a"></script>
+    <script src="./interview-bank.js?v=2026-07-29a"></script>
     <script src="./interview-bank-i18n.js?v=2026-07-21a"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./auth-config.js?v=2026-07-04a"></script>
