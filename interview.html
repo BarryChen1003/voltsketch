@@ -23,9 +23,16 @@
       /* 電路圖容器：原本全站沒有這條規則，圖是裸 div → 無邊界、窄螢幕會被截掉 */
       /* 電路圖容器：原本全站沒有這條規則，圖是裸 div → 無邊界、也沒處理窄螢幕 */
       #bankList .exam-diagram-box { margin:12px 0; padding:8px; background:#0a0a1a; border:1px solid #1e293b; border-radius:6px; max-width:100%; }
-      /* 圖等比縮放（main 有 auto margin → 不能給 svg 固定寬，否則整頁被撐寬出現橫捲）。
-         手機 375px 時縮放約 0.63 倍，所以新圖的字級一律 ≥ 11px、viewBox 寬 ≤ 520。 */
-      #bankList .exam-diagram-box svg { display:block; width:100%; max-width:520px; height:auto; margin:0 auto; }
+      /* 每張圖用自己的自然寬度（svg 帶 width 屬性）：520 的不會被撐成 720，720 的也不會被縮成 520。
+         桌機容器約 730px，所以兩種寬度都是 1:1 顯示。 */
+      #bankList .exam-diagram-box svg { display:block; width:auto; max-width:100%; height:auto; margin:0 auto; }
+      /* 窄螢幕：讓圖自己橫向捲動，不要把 10px 字縮成 4px。
+         main 是 flex item 且帶 auto margin → 必須同時歸零 margin 與 min-width，否則整頁會被撐寬。 */
+      @media (max-width:640px) {
+        .app-shell > main { margin-left:0; margin-right:0; width:100%; min-width:0; }
+        #bankList .exam-diagram-box { overflow-x:auto; min-width:0; }
+        #bankList .exam-diagram-box svg { max-width:none; margin:0; }
+      }
       #bankList .exam-diagram-box:empty { display:none; }  /* DB 舊資料留有空盒，別顯示空框 */
     </style>
   </head>
