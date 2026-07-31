@@ -22,7 +22,8 @@
       #bankList sub, #bankList sup { font-size:0.75em; }
       /* 電路圖容器：原本全站沒有這條規則，圖是裸 div → 無邊界、窄螢幕會被截掉 */
       /* 電路圖容器：原本全站沒有這條規則，圖是裸 div → 無邊界、也沒處理窄螢幕 */
-      #bankList .exam-diagram-box { margin:12px 0; padding:8px; background:#0a0a1a; border:1px solid #1e293b; border-radius:6px; max-width:100%; }
+      /* 底色交給每張 SVG 自己畫：舊圖是深色、改用 schematic-symbols.js 的新圖是白底 */
+      #bankList .exam-diagram-box { margin:12px 0; padding:8px; background:transparent; border:1px solid var(--line); border-radius:6px; max-width:100%; }
       /* 每張圖用自己的自然寬度（svg 帶 width 屬性）：520 的不會被撐成 720，720 的也不會被縮成 520。
          桌機容器約 730px，所以兩種寬度都是 1:1 顯示。 */
       #bankList .exam-diagram-box svg { display:block; width:auto; max-width:100%; height:auto; margin:0 auto; }
