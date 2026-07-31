@@ -81,6 +81,16 @@ jobs:
       - name: svg-overlap-check（圖字不重疊 · 鐵律）
         run: node svg-overlap-check.js --strict
 
+      # 2h) 面試題庫那 38 張圖：同一條鐵律，外加規格（svg 要有 width、viewBox ≤720、字級 ≥10）。
+      #     svg-overlap-check 只掃知識卡的 CIRCUITS2，面試題的圖原本沒有任何守衛。
+      #     node 沒有 DOM，字寬靠內建字元寬度表推算（在瀏覽器實測 1051 個文字節點校正過，
+      #     實測/估算 中位數 1.000）。門檻用 2px 而非瀏覽器版的 0.5px，因為估算本身有 ±4% 誤差。
+      #     先跑自我測試：把標籤推到線上／推出畫布／字級調成 8px，證明抓得到，再跑正式檢查。
+      - name: interview-diagram-check 自我測試
+        run: node interview-diagram-check.test.js
+      - name: interview-diagram-check（面試題圖字不重疊 · 鐵律）
+        run: node interview-diagram-check.js
+
       # 3) JSON 設定檔冒煙：能 parse 才算數
       - name: JSON parse 冒煙
         run: |
