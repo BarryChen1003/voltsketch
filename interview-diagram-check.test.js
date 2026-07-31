@@ -70,20 +70,17 @@ const mutate = (name, fn) => {
     (r.out.match(/OVERLAP.*/) || ['(沒抓到)'])[0].slice(0, 90));
 }
 
-/* 4) 字級掉回 8px（手機上會糊掉） */
+/* 4) 字級掉回 8px（手機上會糊掉）
+      刻意不綁特定那張圖的文案：改第一個 font-size 就好，圖重畫了測試也不會失效。 */
 {
-  const r = mutate('tiny-font', s =>
-    s.replace('<text x=\\"10\\" y=\\"244\\" fill=\\"#888\\" font-size=\\"11\\">forward = positive axis',
-              '<text x=\\"10\\" y=\\"244\\" fill=\\"#888\\" font-size=\\"8\\">forward = positive axis'));
+  const r = mutate('tiny-font', s => s.replace('font-size=\\"11\\"', 'font-size=\\"8\\"'));
   ok('抓到「字級太小」', r.code === 1 && /字級 8 </.test(r.out),
     (r.out.match(/SPEC.*/) || ['(沒抓到)'])[0].slice(0, 90));
 }
 
 /* 5) 拿掉 svg 的 width 屬性（CSS 靠它決定自然寬度） */
 {
-  const r = mutate('no-width', s =>
-    s.replace('<svg width=\\"520\\" height=\\"252\\" viewBox=\\"0 0 520 252\\"',
-              '<svg height=\\"252\\" viewBox=\\"0 0 520 252\\"'));
+  const r = mutate('no-width', s => s.replace(/<svg width=\\"\d+\\" /, '<svg '));
   ok('抓到「svg 缺 width」', r.code === 1 && /缺 width\/height/.test(r.out),
     (r.out.match(/SPEC.*/) || ['(沒抓到)'])[0].slice(0, 90));
 }
