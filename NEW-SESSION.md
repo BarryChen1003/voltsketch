@@ -82,6 +82,7 @@ node circuit-check.js --strict         # 知識卡：接線被吸附塌成零長
 node wire-gap-check.js --selftest && node wire-gap-check.js --strict
 node symbol-overlap-check.js --selftest && node symbol-overlap-check.js --strict
 node svg-overlap-check.js --strict     # 知識卡圖字不重疊
+node knowledge-art-audit.js            # 知識卡圖：接腳真的接上、字離圖形 >=3px
 node i18n-check.js                     # 改 HTML 後跑
 node tools/interview-diagrams/verify-batch11.js   # 電路類 B 的拓樸/數字斷言
 node tools/interview-diagrams/verify-batch12.js   # flyback 的拓樸/極性斷言（66 條）
@@ -202,6 +203,14 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 - **圖上宣稱的東西要畫得出來**：q23 標「等長、等距」，第一版的第二條線是把 y 加 16，
   結果 45 度斜段的垂距變成 19.8 —— 圖自己打自己的臉。改成沿法線平移再求交點，
   驗證器逐段量距離（16.00 / 16.00 / 16.00）與長度差（< 0.5px）。
+
+- **三支知識卡檢查器都會放過「看得出來的斷線」**：wire-gap 只驗接線端點附近有沒有東西，
+  元件自己的接腳沒被接到它不管；svg-overlap 只驗字框相交，擦邊 0.5px 也算過。
+  使用者一眼就看到 SW 與電感差 10px 沒接上。補了 `knowledge-art-audit.js`：
+  元件接腳必須有接線碰到（±2px）、字與任何圖形至少留 3px。改圖後要跑它。
+- **稽核器自己也會有 bug**：第一版把「元件自己的 bbox」也算成合法連接目標，
+  每支腳都落在自己身上 → 永遠通過；虛線註解框也被當成可連接的方塊。
+  寫檢查器時先確認它抓得到你已知的那個缺陷，再相信它的乾淨報告。
 
 **版面 / 資料**
 
