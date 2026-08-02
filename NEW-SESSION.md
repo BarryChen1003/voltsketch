@@ -28,7 +28,7 @@ MOSFET 有體二極體），畫風轉換這件事到此結束。**下一件事�
 | 圖字重疊 | 瀏覽器實測（0.5px、線段真交集）**全庫 0**：76 張、740 個文字 |
 | 畫風轉換 | **38 / 38 完成**（2026-08-01）。8 題純波形/剖面沒有 `data-sym`：本來就沒有離散元件可畫 |
 | CI | 17 關全綠（新增 `interview-diagram-check` 自我測試 + 本體） |
-| 知識卡 | 線上 152 張卡、圖 80 張、重疊 0；2026-08-01 新增 7 張 DC/DC 佈局卡（來源 ROHM TWHB-03e，檔 `knowledge-extra5.js`） |
+| 知識卡 | **145 → 152 張**（2026-08-01 新增 7 張 DC/DC 佈局卡，來源 ROHM TWHB-03e，檔 `knowledge-extra5.js`）；圖 80 張、重疊 0 |
 | 上線阻礙 | **網域未買** → Resend 與正式金流都卡在這 |
 
 ---
@@ -96,6 +96,14 @@ node tools/interview-diagrams/verify-batch14.js   # 表格/剖面的比例與真
 
 知識卡未清完的帳（棘輪鎖住，只准降）：`wire-gap` 沒接上 8、多出線頭 6、無標籤自由端 18。
 
+**卡數要現場數，不要抄文件裡的舊數字**（曾經沿用 2026-07-22 的「146 卡」當基準，實際已經是 145）。
+在 `knowledge.html` 的 console 跑這行，側欄 14 類的加總就是權威值：
+
+```js
+[...document.querySelectorAll('aside *')].filter(e=>e.children.length===0&&/^\d+$/.test(e.textContent.trim()))
+  .reduce((a,e)=>a+ +e.textContent.trim(),0)
+```
+
 ---
 
 ## 5. 待跑的 SQL（只有使用者能跑）
@@ -148,7 +156,7 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 **畫圖**
 
 - **符號庫早就存在，我沒用**：`schematic-symbols.js` 檔頭就寫著「風格參考使用者提供圖片：
-  電阻=鋸齒、NMOS=閘極板+通道+本體箭頭+體二極體」。自己刻方框＝跟知識庫 146 卡完全不同調。
+  電阻=鋸齒、NMOS=閘極板+通道+本體箭頭+體二極體」。自己刻方框＝跟知識庫全部卡片完全不同調。
 - **`Sym` 內建標籤 9–10px**，低於本專案 ≥10 規格 → `showPins:false`，文字自己畫 11px。
 - **符號比方框佔空間**：第一次轉換撞了 14 處。先切帶（標題/電路/說明）再放元件。
 - **`Sym.diode` 只有水平版**：`tools/interview-diagrams/light.js` 有 `diodeV()`（用同一組筆觸自己組），
@@ -157,7 +165,7 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 
 - **`Sym.npn` 的 C/E 是寫死的（上 C 下 E），`pnp:true` 只換箭頭**：latch-up 的寄生 PNP 需要
   射極朝上，剛好相反；而且 pnp 模式那個三角形實際指向與它自己的註解（「朝基極」）不一致。
-  照 `diodeV` 的慣例在 `batch11.js` 自己組了 `pnpUp()`，沒有動共用符號庫（146 張知識卡在用）。
+  照 `diodeV` 的慣例在 `batch11.js` 自己組了 `pnpUp()`，沒有動共用符號庫（全部知識卡都在用）。
 - **`Sym` 的 `opt.label` / `showPins` 一律不能用**：那些字是 8-10px，低於本專案 ≥11。
   `Sym.ic` 的腳位文字是 8px、`Sym.rail(x,y,label)` 的標籤是 9px——要標就自己用 `T()` 畫。
 - **文字中心落在方框內是合法的**（檢查器把它當成該方框的標題），所以 IC 框裡放兩行 11px
