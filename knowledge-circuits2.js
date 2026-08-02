@@ -71,6 +71,16 @@
   function cap(x, y, o) { o = o || {}; pin([x, y - 22], [x, y + 22]); return S().capacitor(x, y, o); }
   function ind(x, y, o) { pin([x - 24, y], [x + 24, y]); return S().inductor(x, y, o || {}); }
   function dio(x, y, o) { pin([x - 22, y], [x + 22, y]); return S().diode(x, y, o || {}); }
+  // 垂直二極體：Sym.diode 只有水平版。用同一組筆觸自己組（包 data-sym，內部筆觸不算接線）。
+  function dioV(x, y, o) {
+    o = o || {}; pin([x, y - 22], [x, y + 22]);
+    const c = o.color || S().color, w = 2, up = o.cathodeUp !== false;
+    let g = LR(x, y - 22, x, y - 8, { color: c, w }) + LR(x, y + 8, x, y + 22, { color: c, w });
+    g += up
+      ? S().tri(`${x - 8},${y + 8} ${x + 8},${y + 8} ${x},${y - 8}`, { color: c, fill: 'none', w }) + LR(x - 8, y - 8, x + 8, y - 8, { color: c, w })
+      : S().tri(`${x - 8},${y - 8} ${x + 8},${y - 8} ${x},${y + 8}`, { color: c, fill: 'none', w }) + LR(x - 8, y + 8, x + 8, y + 8, { color: c, w });
+    return `<g data-sym="diode">${g}</g>`;
+  }
   function gnd(x, y, o) { pin([x, y - 14]); return S().ground(x, y, o || {}); }
   // 方塊：置中標題＋小字副標（可陣列）；同時登錄幾何供吸附
   function B(x, y, w, h, name, sub, o) {
@@ -1533,6 +1543,168 @@
     g += T(348, 108, '變 IO2/IO3（上拉仍在）', { size: 8, anchor: 'start', fill: MUT });
     g += T(220, 182, '開機最怕「有時起不來」：CLK 振鈴（串 22~33Ω）、CS 時序、上拉缺一顆', { size: 8.5, fill: RED });
     return { d: 'QSPI NOR 開機電路：四線＋上拉＋串阻', svg: W(440, 192, g) };
+  };
+
+  // ================= DC/DC 佈局（ROHM TWHB-03e 整理）=================
+  M['buck-layout-current-loops'] = () => {
+    let g = '';
+    g += F(60, 40, 'VIN', 4);
+    g += LW(60, 40, 60, 62) + LW(60, 62, 104, 62);
+    g += cap(60, 84) + T(36, 84, 'CIN', { size: 8, anchor: 'end' });
+    g += cap(104, 84) + T(128, 92, 'CBYPASS', { size: 8, anchor: 'start' });
+    g += LW(104, 62, 150, 62);
+    g += B(176, 62, 52, 26, 'Q1', null, { ts: 9 });
+    g += LW(202, 62, 242, 62);
+    g += T(232, 42, 'SW', { size: 8, fill: MUT });
+    g += dioV(232, 84, { cathodeUp: true });
+    g += ind(266, 62) + T(266, 42, 'L', { size: 8, fill: MUT });
+    g += LW(290, 62, 322, 62);
+    g += cap(322, 84) + T(346, 84, 'CO', { size: 8, anchor: 'start' });
+    g += LW(322, 62, 358, 62) + F(358, 62, 'VOUT', 4);
+    g += LW(60, 106, 322, 106);
+    g += DEC('<rect x="44" y="50" width="204" height="70" rx="5" fill="none" stroke="' + RED + '" stroke-width="1.4" stroke-dasharray="4 3"/>');
+    g += T(180, 142, '差集迴路：每次切換電流都在這圈突變 → 面積要最小', { size: 8.5, fill: RED });
+    g += T(180, 158, 'ON：CBYPASS→CIN→Q1→L→CO　　OFF：L→CO→D1→回 L', { size: 8, fill: MUT });
+    g += T(180, 174, '輸出側串著 L，電流平滑，優先權比輸入側低', { size: 8, fill: MUT });
+    return { d: '降壓轉換器 ON/OFF 電流路徑與差集迴路', svg: W(400, 186, g) };
+  };
+
+  M['sw-node-ringing-parasitics'] = () => {
+    let g = '';
+    g += B(72, 60, 58, 26, 'CBYPASS', null, { ts: 8.5 });
+    g += B(126, 60, 30, 20, 'L3', null, { ts: 8, dash: '3 2', color: MUT });
+    g += B(184, 60, 52, 26, '上管', null, { ts: 9 });
+    g += B(184, 124, 52, 26, '下管', null, { ts: 9 });
+    g += B(126, 124, 30, 20, 'L5', null, { ts: 8, dash: '3 2', color: MUT });
+    g += B(72, 124, 58, 24, 'L4 走線', null, { ts: 8, dash: '3 2', color: MUT });
+    g += LW(101, 60, 111, 60) + LW(141, 60, 158, 60);
+    g += LW(101, 124, 111, 124) + LW(141, 124, 158, 124);
+    g += LW(184, 73, 184, 111);
+    g += T(214, 94, 'SW（C2 對地）', { size: 8, anchor: 'start', fill: ORG });
+    g += T(196, 34, 'L1/L2/C2 由 IC 決定，L3/L5 由佈局決定', { size: 8.5, fill: MUT });
+    g += DEC(L(256, 168, 386, 168)
+      + PL('256,168 274,168 274,120 282,140 290,126 298,136 306,130 318,133 386,133', { color: ACC, w: 1.6 }));
+    g += T(322, 182, '振鈴約 100MHz', { size: 8, fill: MUT });
+    g += T(196, 202, 'I = C·dV/dt：1000pF × 5V / 5ns = 1A　V = L·dI/dt：10nH × 1A / 5ns = 2V', { size: 8.5 });
+    g += T(196, 218, '走線 1nH/mm：10mm 就是 10nH。能自己動的變數只有走線長度', { size: 8, fill: RED });
+    return { d: 'SW 節點振鈴：寄生 L/C 與 100MHz 量級', svg: W(400, 230, g) };
+  };
+
+  M['input-cap-layout-cin-cbypass'] = () => {
+    let g = '';
+    // 好：CBYPASS 直接掛在 IC 腳與地之間
+    g += T(70, 34, '好', { size: 9, weight: '600', fill: GRN });
+    g += B(70, 72, 52, 30, 'IC', null, { ts: 9 });
+    g += LR(70, 87, 70, 96);
+    g += cap(70, 118) + T(42, 118, 'CBYPASS', { size: 8, anchor: 'end' });
+    g += LW(70, 140, 70, 152) + gnd(70, 166);
+    g += OK(70, 190);
+    g += T(70, 214, '同面、貼 VIN/GND 腳', { size: 8, fill: MUT });
+    // 可妥協：CBYPASS 貼腳，CIN 退到 2cm 外
+    g += T(206, 34, '可妥協', { size: 9, weight: '600', fill: ORG });
+    g += B(206, 72, 52, 30, 'IC', null, { ts: 9 });
+    g += LR(206, 87, 206, 96);
+    g += cap(206, 118) + T(178, 118, 'CBYPASS', { size: 8, anchor: 'end' });
+    g += LW(206, 140, 206, 152) + gnd(206, 166);
+    g += LW(206, 96, 268, 96);
+    g += cap(268, 118) + T(292, 118, 'CIN', { size: 8, anchor: 'start' });
+    g += LW(268, 140, 268, 152) + gnd(268, 166);
+    g += T(237, 110, '≤2cm', { size: 8, anchor: 'middle', fill: ORG });
+    g += T(220, 214, 'CBYPASS 到位，CIN 可退', { size: 8, fill: MUT });
+    // 禁止：兩顆都走過孔到背面
+    g += T(352, 34, '禁止', { size: 9, weight: '600', fill: RED });
+    g += B(352, 72, 52, 30, 'IC', null, { ts: 9 });
+    g += LW(352, 87, 352, 119);
+    g += B(352, 132, 68, 26, '背面 CIN+CBYPASS', null, { ts: 8, dash: '3 2', color: RED });
+    g += X(352, 103, 7);
+    g += T(352, 190, '過孔電感放大雜訊', { size: 8, fill: RED });
+    g += T(200, 240, 'CIN 的地與 CO 的地相隔 1–2cm：輸入端數百 MHz 才不會經共用地跑到輸出', { size: 8.5 });
+    return { d: '輸入電容擺放：好／可妥協／禁止', svg: W(400, 252, g) };
+  };
+
+  M['copper-foil-resistance-inductance'] = () => {
+    let g = '';
+    g += DEC('<rect x="64" y="58" width="240" height="26" fill="#e2e8f0" stroke="' + MUT + '" stroke-width="1"/>');
+    g += DEC(L(64, 100, 304, 100) + L(64, 96, 64, 104) + L(304, 96, 304, 104));
+    g += T(184, 116, 'l = 50mm', { size: 8.5, fill: MUT });
+    g += DEC(L(320, 58, 320, 84) + L(316, 58, 324, 58) + L(316, 84, 324, 84));
+    g += T(332, 74, 'w = 3mm', { size: 8.5, anchor: 'start', fill: MUT });
+    g += T(184, 74, '35µm 銅箔（1oz）', { size: 8.5 });
+    g += T(184, 142, 'R = ρ·l/(t·w)×10 → 8.17mΩ；3A 時壓降 24.5mV', { size: 8.5 });
+    g += T(184, 158, '100°C 時電阻 +29% → 31.6mV（ρ 溫度係數 0.00385/°C）', { size: 8, fill: ORG });
+    g += T(184, 176, '電感約 1nH/mm：降電感靠縮短，加寬只降電阻與幫散熱', { size: 8.5, fill: RED });
+    g += T(184, 192, '溫升 ≤20°C：2A 需 0.53mm；建議 1oz ≥1mm、2oz ≥0.7mm', { size: 8, fill: MUT });
+    return { d: '銅箔電阻與電感：線寬、壓降、溫度', svg: W(400, 204, g) };
+  };
+
+  M['thermal-via-placement'] = () => {
+    let g = '';
+    g += B(184, 48, 130, 28, '功率 IC', null, { ts: 9 });
+    g += DEC('<rect x="132" y="68" width="104" height="9" fill="' + ACC + '" stroke="' + ACC + '" stroke-width="1"/>');
+    g += T(268, 58, '散熱片（EP）', { size: 8, anchor: 'start', fill: MUT });
+    g += DEC('<rect x="104" y="77" width="160" height="46" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1"/>');
+    var vias = '';
+    for (var i = 0; i < 7; i++) vias += '<rect x="' + (135 + i * 15) + '" y="77" width="7" height="46" fill="' + ACC + '" opacity="0.85"/>';
+    g += DEC(vias);
+    g += DEC('<rect x="104" y="123" width="160" height="10" fill="' + ACC + '" opacity="0.85"/>');
+    g += T(280, 128, '底層／內層銅面', { size: 8, anchor: 'start', fill: MUT });
+    g += DEC(L(142, 150, 157, 150) + L(142, 146, 142, 154) + L(157, 146, 157, 154));
+    g += T(166, 154, '孔距約 1.2mm', { size: 8, anchor: 'start', fill: ORG });
+    g += T(184, 180, '過孔打在散熱片正下方；不夠時再往 IC 周邊補，仍以越近越好', { size: 8.5 });
+    g += T(184, 196, '過孔要通到有面積的銅面——接到一小片銅等於沒接', { size: 8, fill: RED });
+    return { d: '散熱過孔：EP 正下方、孔距約 1.2mm', svg: W(400, 208, g) };
+  };
+
+  M['inductor-layout-eddy-current'] = () => {
+    let g = '';
+    // 正確：電感底下挖空
+    g += T(100, 30, '正確', { size: 9, weight: '600', fill: GRN });
+    g += F(46, 66, 'SW', 2) + LW(46, 66, 76, 66);
+    g += ind(100, 66) + T(100, 48, 'L', { size: 8, fill: MUT });
+    g += LW(124, 66, 154, 66) + F(154, 66, 'VOUT', 2);
+    g += DEC('<rect x="44" y="102" width="42" height="10" fill="' + ACC + '" opacity="0.5"/>');
+    g += DEC('<rect x="114" y="102" width="42" height="10" fill="' + ACC + '" opacity="0.5"/>');
+    g += T(100, 130, '電感正下方挖空', { size: 8, fill: GRN });
+    g += OK(100, 150);
+    // 錯誤：地鋪到電感底下
+    g += T(296, 30, '錯誤', { size: 9, weight: '600', fill: RED });
+    g += F(242, 66, 'SW', 2) + LW(242, 66, 272, 66);
+    g += ind(296, 66) + T(296, 48, 'L', { size: 8, fill: MUT });
+    g += LW(320, 66, 350, 66) + F(350, 66, 'VOUT', 2);
+    g += DEC('<rect x="240" y="102" width="112" height="10" fill="' + ACC + '" opacity="0.85"/>');
+    g += DEC('<ellipse cx="296" cy="107" rx="26" ry="7" fill="none" stroke="' + RED + '" stroke-width="1.4"/>');
+    g += T(296, 130, '地鋪到電感底下 → 渦流', { size: 8, fill: RED });
+    g += X(296, 150, 7);
+    g += T(198, 180, '渦流抵消磁力線 → 電感值下降、Q 下降（損耗上升）', { size: 8.5, fill: RED });
+    g += T(198, 196, '訊號線走底下：切換雜訊直接耦進訊號', { size: 8, fill: MUT });
+    g += T(198, 212, '兩端子走線不可太近；銅面不要大過需要（會變天線）', { size: 8, fill: MUT });
+    return { d: '電感底下不鋪地：渦流吃掉 L 與 Q', svg: W(400, 224, g) };
+  };
+
+  M['feedback-and-ground-layout'] = () => {
+    let g = '';
+    g += B(80, 74, 62, 34, '電源 IC', ['FB 高阻抗'], { ts: 9, ss: 8 });
+    g += T(80, 40, 'AGND / PGND 兩支腳', { size: 8, fill: MUT });
+    g += LW(111, 60, 182, 60);
+    g += ind(206, 60) + T(206, 40, 'L（雜訊源）', { size: 8, fill: ORG });
+    g += LW(230, 60, 292, 60);
+    g += cap(292, 82) + T(316, 76, 'CO', { size: 8, anchor: 'start' });
+    g += LW(292, 104, 292, 120) + gnd(292, 134);
+    g += LW(292, 60, 344, 60) + F(344, 60, 'VOUT', 4);
+    // 分壓：取樣點在 CO 之後，中點回到 FB
+    g += LW(344, 60, 344, 88);
+    g += res(344, 112, { horizontal: false }) + T(364, 112, 'R1', { size: 8, anchor: 'start' });
+    g += LW(344, 136, 344, 152);
+    g += res(344, 176, { horizontal: false }) + T(364, 176, 'R2', { size: 8, anchor: 'start' });
+    g += LW(344, 200, 344, 208) + gnd(344, 222);
+    // 回授走線：分壓中點 → IC 的 FB 腳（實際接線，不是註解箭頭）
+    g += LW(344, 152, 150, 152) + LW(150, 152, 150, 86) + LW(150, 86, 111, 86);
+    g += T(268, 140, '取樣點在 CO 之後', { size: 8, anchor: 'end', fill: MUT });
+    g += T(196, 172, '回授要短、遠離 L 與 D', { size: 8, fill: GRN });
+    g += LW(80, 91, 80, 110) + gnd(80, 124);
+    g += T(180, 226, 'AGND 與 PGND 分開走、單點相接（位置照 IC 資料手冊）', { size: 8.5 });
+    g += T(180, 244, '內層／背面地平面接到 PGND 的位置要靠近 CO，不可靠近 CIN 或二極體', { size: 8, fill: RED });
+    return { d: '回授走線與 AGND/PGND 單點接地', svg: W(400, 256, g) };
   };
 
   // 兩遍執行：第一遍只為登錄全部方塊（丟棄輸出），第二遍吸附時 REG 已完整

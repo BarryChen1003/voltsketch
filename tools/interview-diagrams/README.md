@@ -18,8 +18,9 @@ node -e "require('fs').writeFileSync('../../_batchN.json', JSON.stringify(requir
 # 4) 語意驗證：畫的內容對不對（工作週期真的 30%？箭頭方向對嗎？）
 node verify-batchN.js
 
-# 5) 寫回題庫（patch 腳本會逐題比對，未指名的題目不准被動到）
-node ../../tools/interview-diagrams/patch-...   # 見各 batch 的說明
+# 5) 寫回題庫（逐題比對，未指名的題目不准被動到）
+node patch-bank.js batchN.js --dry      # 先看會改哪幾題、長度變化
+node patch-bank.js batchN.js            # 確認後寫回；也可只給 q6 q8 這種清單
 
 # 6) 收尾
 cd ../.. && node interview-diagram-check.js && node interview-diagram-check.test.js
@@ -32,9 +33,10 @@ rm -f _batchN.json          # 暫存檔別提交
 |---|---|
 | `light.js` | 共用底層：白底 `BG`、文字 `T`、接線 `wire`、電流高亮 `hl`、垂直二極體 `diodeV`、配色常數 |
 | batch1.js ~ batch6.js | 早期深色手繪版（尚未轉換的題目仍由這些產出） |
-| batch8.js ~ batch10.js | 符號庫版（白底 + `schematic-symbols.js`），新圖一律走這條 |
+| batch8.js ~ batch11.js | 符號庫版（白底 + `schematic-symbols.js`），新圖一律走這條 |
 | `verify-batch*.js` | 各批的語意/幾何斷言 |
-| `gen-*-sql.js` | 產生寫進 Supabase 的 SQL |
+| `patch-bank.js` | 把 batch 的圖寫回 `interview-bank.js`（定點字串替換，不重新序列化整檔） |
+| `gen-*-sql.js` | 產生寫進 Supabase 的 SQL；**圖一律從 `interview-bank.js` 取**，不要綁 batch 檔（題目會被下一批重畫，綁死就永遠吐舊圖） |
 | `add-pcb-entries.js` | 把 `interview-pcb.sql` 的 6 題灌進 bank（題幹從 SQL 解析，不手抄） |
 
 ## 畫圖規矩

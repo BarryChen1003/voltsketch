@@ -5,8 +5,13 @@
  * 送出前會驗：每個 LIKE 樣式在 interview-questions-seed.sql 中恰好命中 1 題。
  */
 const fs = require('fs');
-const D = require('./batch1.js');
-const SEED = fs.readFileSync('C:/Users/User/Documents/Web/interview-questions-seed.sql', 'utf8');
+const WEB = require('path').join(__dirname, '../..');
+// 圖從 interview-bank.js 取，不再從 batch1.js：q19 已改用符號庫（batch11）重畫，
+// 綁死 batch1 會讓這支永遠吐舊圖。寫回後的 bank 才是唯一真相。
+global.window = {};
+require(WEB + '/interview-bank.js');
+const BANK = global.window.INTERVIEW_BANK;
+const SEED = fs.readFileSync(WEB + '/interview-questions-seed.sql', 'utf8');
 
 const T = [
   { id: 'q7',  like: 'SPI Mode 會有幾種格式',            note: 'SPI 四模式時序（CPOL × CPHA）' },
@@ -37,8 +42,11 @@ out.push('-- 冪等：欄位已含 <svg 就跳過，重跑不會插入第二張�
 out.push('');
 
 for (const t of T) {
-  const box = '<div class="exam-diagram-box">' + D[t.id] + '</div>';
-  if (box.includes('$vsq$') || box.includes('$q$')) throw new Error('dollar-quote collision: ' + t.id);
+  const q = BANK.find(x => x.id === t.id);
+  const m = q && q.zh.answer.match(/<div class="exam-diagram-box">[\s\S]*?<\/svg><\/div>/);
+  if (!m) throw new Error('no diagram: ' + t.id);
+  const box = m[0];
+  if (box.includes('$vsq$') || box.includes('$q$') || box.includes('\\')) throw new Error('unsafe payload: ' + t.id);
   out.push(`-- ${t.id}：${t.note}`);
   out.push('update public.interview_questions set');
   for (const col of ['answer', 'answer_en', 'answer_ja', 'answer_ko']) {

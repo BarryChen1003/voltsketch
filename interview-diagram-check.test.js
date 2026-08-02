@@ -37,35 +37,51 @@ const mutate = (name, fn) => {
   return run(file);
 };
 
+/** 取第一張圖裡的第一個 <text> 標籤（連內容），用來做通用變異。 */
+const firstText = s => {
+  const m = s.slice(s.indexOf('<svg ')).match(/<text [^>]*>[^<]*<\/text>/);
+  if (!m) throw new Error('第一張圖裡找不到 <text>，變異無法產生');
+  return m[0];
+};
+
+/** 在第一張圖裡塞一段壓在既有走線上的文字。
+ *  刻意不綁特定圖的文案：q19 重畫過一次，原本綁在它身上的變異就整個失效了。 */
+const injectTextOnLine = s => {
+  const start = s.indexOf('<svg ');
+  const end = s.indexOf('</svg>', start);
+  const m = s.slice(start, end).match(/<line x1=\\"([\d.]+)\\" y1=\\"([\d.]+)\\" x2=\\"([\d.]+)\\" y2=\\"([\d.]+)\\"/);
+  if (!m) throw new Error('第一張圖裡找不到 <line>，變異無法產生');
+  const mx = (+m[1] + +m[3]) / 2, my = (+m[2] + +m[4]) / 2;
+  const tag = `<text x=\\"${mx - 12}\\" y=\\"${my + 4}\\" fill=\\"#b91c1c\\" font-size=\\"11\\">XXXX</text>`;
+  return s.slice(0, end) + tag + s.slice(end);
+};
+
 /* 0) 沒動過的 bank 必須通過 —— 沒有這條，下面全部都沒意義 */
 {
   const r = run(path.join(HERE, 'interview-bank.js'));
   ok('未改動的 bank 通過', r.code === 0 && /PASS/.test(r.out), r.out.trim().split('\n').pop());
 }
 
-/* 1) 把 q19 的 Pd 標籤往左推到那條垂直的散熱箭頭上 */
+/* 1) 在第一張圖的第一條走線上蓋一段文字 */
 {
-  const r = mutate('overlap-line', s =>
-    s.replace('<text x=\\"272\\" y=\\"142\\" fill=\\"#ffc107\\" font-size=\\"11\\">Pd = (5 - 3.3)',
-              '<text x=\\"248\\" y=\\"142\\" fill=\\"#ffc107\\" font-size=\\"11\\">Pd = (5 - 3.3)'));
+  const r = mutate('overlap-line', injectTextOnLine);
   ok('抓到「文字壓到走線」', r.code === 1 && /壓線/.test(r.out),
     (r.out.match(/OVERLAP.*/) || ['(沒抓到)'])[0].slice(0, 90));
 }
 
-/* 2) 把 q14 真值表的一格數字挪到隔壁那格上面 */
+/* 2) 把第一個文字標籤複製一份疊在自己身上 */
 {
-  const r = mutate('overlap-text', s =>
-    s.replace('<text x=\\"195\\" y=\\"100\\" fill=\\"#c8d4ee\\" font-size=\\"12\\" text-anchor=\\"middle\\">0</text>',
-              '<text x=\\"258\\" y=\\"100\\" fill=\\"#c8d4ee\\" font-size=\\"12\\" text-anchor=\\"middle\\">0</text>'));
+  const r = mutate('overlap-text', s => { const t = firstText(s); return s.replace(t, t + t); });
   ok('抓到「文字壓到文字」', r.code === 1 && /壓文字/.test(r.out),
     (r.out.match(/OVERLAP.*/) || ['(沒抓到)'])[0].slice(0, 90));
 }
 
-/* 3) 把 q26 的說明列推出畫布右緣 */
+/* 3) 把第一個文字標籤推出畫布右緣 */
 {
-  const r = mutate('out-of-canvas', s =>
-    s.replace('<text x=\\"10\\" y=\\"214\\" fill=\\"#888\\" font-size=\\"11\\">fc = 1/(2*pi*10k*10n)',
-              '<text x=\\"400\\" y=\\"214\\" fill=\\"#888\\" font-size=\\"11\\">fc = 1/(2*pi*10k*10n)'));
+  const r = mutate('out-of-canvas', s => {
+    const t = firstText(s);
+    return s.replace(t, t.replace(/x=\\"[\d.]+\\"/, 'x=\\"9999\\"'));
+  });
   ok('抓到「文字出界」', r.code === 1 && /出界/.test(r.out),
     (r.out.match(/OVERLAP.*/) || ['(沒抓到)'])[0].slice(0, 90));
 }
@@ -87,8 +103,7 @@ const mutate = (name, fn) => {
 
 /* 6) --max 要真的放行（給已知誤報用），但不能無限放行 */
 {
-  const src = BANK.replace('<text x=\\"272\\" y=\\"142\\" fill=\\"#ffc107\\" font-size=\\"11\\">Pd = (5 - 3.3)',
-                           '<text x=\\"248\\" y=\\"142\\" fill=\\"#ffc107\\" font-size=\\"11\\">Pd = (5 - 3.3)');
+  const src = injectTextOnLine(BANK);
   const file = path.join(tmpDir, 'max-flag.js');
   fs.writeFileSync(file, src);
   let passed = false, code = null;

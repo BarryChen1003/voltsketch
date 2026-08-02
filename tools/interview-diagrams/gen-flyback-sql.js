@@ -1,8 +1,9 @@
 /**
- * gen-flyback-sql.js — q28–q32：把 DB 裡的舊 flyback 圖換成修正版（字級 10、0 重疊）。
- * 這五筆 DB 已經有 <svg>，前端回填會跳過 → 只能靠 SQL 換掉。
- * 幾何完全沒動（已驗），只有字級與 6 個標籤位置變了。
- * 冪等：用 regexp_replace 換掉整個 exam-diagram-box，重跑結果相同。
+ * gen-flyback-sql.js — q28–q32：把 DB 裡的舊 flyback 圖換成 bank 裡的現行版。
+ * 這五筆 DB 已經有 <svg>，前端回填只補「沒有圖」的答案 → 只能靠 SQL 換掉。
+ * 圖一律取自 interview-bank.js（唯一真相），所以重畫過就重跑這支。
+ * 冪等：三種狀態都收斂到同一個 box —— 有舊圖用 regexp_replace 換掉、
+ * 只有空的 exam-diagram-box 就填進去、兩者都沒有就前置。
  */
 const fs = require('fs');
 const WEB = require('path').join(__dirname, '../..');
@@ -28,11 +29,12 @@ for (const t of T) {
 if (bad) process.exit(1);
 
 const out = [];
-out.push('-- interview-flyback-fix.sql — q28–q32 共用底圖：字級 7→10、6 個標籤挪離走線');
+out.push('-- interview-flyback-fix.sql — q28–q32 共用底圖：改用站上的符號庫重畫');
 out.push('-- 為什麼要跑：這五筆 DB 已含舊圖，前端回填只補「沒有圖」的答案，不會覆蓋既有圖。');
-out.push('-- 改了什麼：字級 +3（桌機有效字級 5.1px → 9.9px），Q1/Cps/Cout/400V/VDD/D3 六個標籤移開走線。');
-out.push('--           元件座標與拓樸一字未動（line/rect/polygon/path 逐字比對相同）。');
-out.push('-- 驗證：瀏覽器 getBBox+getCTM 實測，14 張圖 / 281 個文字 / 重疊 0。');
+out.push('-- 改了什麼：整張重畫。元件改用 schematic-symbols.js（電阻鋸齒、MOSFET 有體二極體、');
+out.push('--           繞組是線圈不是方框），白底藍線條，字級 11，四語共用同一張。');
+out.push('-- 驗證：interview-diagram-check 0 發現；verify-batch12.js 66 條拓樸/極性斷言全過；');
+out.push('--       瀏覽器 getBBox+getCTM 實測重疊 0。');
 out.push('-- 用法：Supabase Dashboard → SQL Editor → 全部貼上 → Run。冪等，可重跑。');
 out.push('');
 
@@ -47,8 +49,12 @@ for (const t of T) {
   out.push(`-- ${t.id}：${t.note}`);
   out.push('update public.interview_questions set');
   for (const col of ['answer', 'answer_en', 'answer_ja', 'answer_ko']) {
+    // 三種既有狀態都要收斂：有舊圖 / 只有空的 box（seed 抽題時把 svg 剝掉了）/ 完全沒有
     out.push(`  ${col} = case when ${col} like '%<svg%'`);
     out.push(`    then regexp_replace(${col}, $re$<div class="exam-diagram-box">.*</svg></div>$re$, n.box)`);
+    out.push(`    when ${col} like '%<div class="exam-diagram-box"></div>%'`);
+    out.push(`    then replace(${col}, $re$<div class="exam-diagram-box"></div>$re$, n.box)`);
+    out.push(`    when ${col} is not null then n.box || ${col}`);
     out.push(`    else ${col} end${col === 'answer_ko' ? '' : ','}`);
   }
   out.push(`  from (select $vsq$${box}$vsq$ as box) n`);
@@ -56,10 +62,10 @@ for (const t of T) {
   out.push('');
 }
 
-out.push('-- 驗收：五列都要 zh_font10 = t（新圖字級 10，舊圖是 7）');
+out.push('-- 驗收：五列的四個語言欄位都要 sym = t（新圖有 data-sym，舊圖沒有）');
 out.push("select left(question, 20) as q,");
-out.push(`       answer like '%font-size="10"%' as zh_font10,`);
-out.push(`       answer like '%y="166"%' as q1_label_moved,`);
+out.push(`       answer like '%data-sym%' as zh_sym, answer_en like '%data-sym%' as en_sym,`);
+out.push(`       answer_ja like '%data-sym%' as ja_sym, answer_ko like '%data-sym%' as ko_sym,`);
 out.push("       length(answer) as len");
 out.push('  from public.interview_questions');
 out.push(' where ' + T.map(t => `question like $q$%${t.like}%$q$`).join('\n    or ') + ';');

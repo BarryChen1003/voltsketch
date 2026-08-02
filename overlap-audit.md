@@ -65,32 +65,42 @@ const box=(el,root)=>{const b=el.getBBox();const m=el.getCTM(),rm=root.getCTM();
     .map(([x,y])=>({x:t.a*x+t.c*y+t.e,y:t.b*x+t.d*y+t.f}));const xs=p.map(q=>q.x),ys=p.map(q=>q.y);
   return{x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)};};
 const ov=(a,b)=>a.x<b.x+b.width-0.5&&a.x+a.width>b.x+0.5&&a.y<b.y+b.height-0.5&&a.y+a.height>b.y+0.5;
-const seg=el=>{const pad=Math.max(+(el.getAttribute('stroke-width')||1.5)/2,0.75),out=[];let pts=[];
+// 線段 vs 矩形真交集（Liang-Barsky）。斜線若用 bbox 當障礙會把整個象限都算進去，
+// q18 曾因此誤報三筆；node 版 interview-diagram-check.js 用的也是這個算法。
+const hitsRect=(x1,y1,x2,y2,r,pad)=>{const rx1=r.x-pad,ry1=r.y-pad,rx2=r.x+r.width+pad,ry2=r.y+r.height+pad;
+ if(Math.max(x1,x2)<rx1||Math.min(x1,x2)>rx2||Math.max(y1,y2)<ry1||Math.min(y1,y2)>ry2)return false;
+ const dx=x2-x1,dy=y2-y1;let t0=0,t1=1;
+ const clip=(p,q)=>{if(p===0)return q>=0;const t=q/p;if(p<0){if(t>t1)return false;if(t>t0)t0=t;}else{if(t<t0)return false;if(t<t1)t1=t;}return true;};
+ return clip(-dx,x1-rx1)&&clip(dx,rx2-x1)&&clip(-dy,y1-ry1)&&clip(dy,ry2-y1);};
+// A（圓弧）只取終點：flyback 的變壓器繞組是圓弧，漏了它整段線都不會被算進障礙
+const ptsOf=el=>{let pts=[];
  if(el.tagName!=='PATH'){pts=(el.getAttribute('points')||'').trim().split(/\s+/).map(p=>p.split(',').map(Number));
    if(el.tagName==='POLYGON'&&pts.length)pts.push(pts[0]);}
- else{let cx=0,cy=0;(el.getAttribute('d')||'').replace(/([MHVL])\s*([-\d.,\s]*)/g,(_,c,a)=>{
+ else{let cx=0,cy=0;(el.getAttribute('d')||'').replace(/([MHVLA])\s*([-\d.,\s]*)/g,(_,c,a)=>{
    const n=a.trim().split(/[\s,]+/).filter(s=>s!=='').map(Number);
    if(c==='M'){cx=n[0];cy=n[1];pts.push([cx,cy]);}else if(c==='L'){for(let i=0;i<n.length;i+=2){cx=n[i];cy=n[i+1];pts.push([cx,cy]);}}
-   else if(c==='H'){n.forEach(v=>{cx=v;pts.push([cx,cy]);});}else if(c==='V'){n.forEach(v=>{cy=v;pts.push([cx,cy]);});}return'';});}
- for(let i=1;i<pts.length;i++){const[x1,y1]=pts[i-1],[x2,y2]=pts[i];
-   out.push({x:Math.min(x1,x2)-pad,y:Math.min(y1,y2)-pad,width:Math.abs(x2-x1)+2*pad,height:Math.abs(y2-y1)+2*pad});}
- return out;};
+   else if(c==='H'){n.forEach(v=>{cx=v;pts.push([cx,cy]);});}else if(c==='V'){n.forEach(v=>{cy=v;pts.push([cx,cy]);});}
+   else if(c==='A'){cx=n[5];cy=n[6];pts.push([cx,cy]);}return'';});}
+ return pts;};
 const out=[];let n=0,texts=0;
 w.INTERVIEW_BANK.forEach(q=>['zh','en'].forEach(lang=>{
  const m=q[lang].answer.match(/<svg[\s\S]*?<\/svg>/);if(!m)return;if(lang==='zh')n++;
  host.innerHTML=m[0];const root=host.querySelector('svg');
  const vb=(root.getAttribute('viewBox')||'0 0 520 200').split(/\s+/).map(Number);
  const rects=[...root.querySelectorAll('rect')].map(r=>box(r,root)).filter(r=>!(r.width>=vb[2]-1)); // 排除整張底色
- const st=[];root.querySelectorAll('line').forEach(l=>{if(+(l.getAttribute('stroke-width')||2)<1.2)return;
-   const b=box(l,root);st.push({x:b.x-0.5,y:b.y-0.5,width:Math.max(b.width,1),height:Math.max(b.height,1)});});
- root.querySelectorAll('path,polyline,polygon').forEach(el=>seg(el).forEach(s=>st.push(s)));
+ const segs=[];root.querySelectorAll('line').forEach(l=>{const sw=+(l.getAttribute('stroke-width')||2);if(sw<1.2)return;
+   segs.push([+l.getAttribute('x1'),+l.getAttribute('y1'),+l.getAttribute('x2'),+l.getAttribute('y2'),sw/2]);});
+ root.querySelectorAll('path,polyline,polygon').forEach(el=>{if(+(el.getAttribute('stroke-opacity')||1)<0.5)return;  // 半透明高亮不算障礙
+   const sw=+(el.getAttribute('stroke-width')||1.5),p=ptsOf(el);
+   for(let i=1;i<p.length;i++)segs.push([p[i-1][0],p[i-1][1],p[i][0],p[i][1],Math.max(sw/2,0.75)]);});
  const info=[...root.querySelectorAll('text')].map(t=>({s:t.textContent.trim(),b:box(t,root)})).filter(x=>x.s);
  if(lang==='zh')texts+=info.length;
  const inOwn=b=>{const cx=b.x+b.width/2,cy=b.y+b.height/2;return rects.some(r=>cx>r.x&&cx<r.x+r.width&&cy>r.y&&cy<r.y+r.height);};
  info.forEach((t,i)=>{const b=t.b;if(inOwn(b))return;let h=null;
   if(b.x<vb[0]-1||b.y<vb[1]-1||b.x+b.width>vb[0]+vb[2]+1||b.y+b.height>vb[1]+vb[3]+1)h='出界';
   if(!h&&rects.some(r=>ov(b,r)))h='壓方塊';
-  if(!h&&st.some(l=>ov(b,l)))h='壓線';
+  const shrunk={x:b.x+0.5,y:b.y+0.5,width:Math.max(b.width-1,0.5),height:Math.max(b.height-1,0.5)};
+  if(!h&&segs.some(s=>hitsRect(s[0],s[1],s[2],s[3],shrunk,s[4])))h='壓線';
   if(!h&&info.some((o,j)=>j!==i&&ov(b,o.b)))h='壓文字';
   if(h)out.push(`${q.id}.${lang}|${t.s.slice(0,14)}|${h}`);});
 }));
@@ -111,6 +121,57 @@ host.remove();return{圖數:n,文字數:texts,重疊:out.length,清單:out};})()
 | **合計** | **38 / 38 題** | — | **0** |
 
 zh + en 兩份一起掃：71 張、1051 個文字、重疊 0。
+
+### 2026-08-01 重測（電路類 B 改用符號庫重畫之後）
+
+同一段 snippet，Chromium 實測 38 題（zh+en 71 張、zh 663 個文字）：**重疊 8**。
+
+| 題 | 文字 | 判定 |
+|---|---|---|
+| q18（zh/en 各 3） | `300ns limit (F…` / `Rp 2.2k -> tr…` / `Rp 10k -> tr 8…` | 壓線 |
+| q26（zh/en 各 1） | `-20dB/dec` | 壓線 |
+
+兩題都還是舊的深色手繪版、不在這輪範圍。把 `git show HEAD:interview-bank.js` 餵同一段
+snippet 得到一模一樣的 8 筆，所以是既有的、不是這輪造成的。
+
+**2026-08-01 更正**：這 8 筆多數是 snippet 自己的誤報，不是真的重疊。當時的
+snippet 還在用「線段 bbox」當障礙，一條斜線的 bbox 會把整個象限都算成障礙區
+（node 版早就改成線段真交集了，所以它是乾淨的）。snippet 換成 slab 法之後重測，
+q18 那三筆整組消失，只有 q26 的 `-3dB at fc` 是真的擦邊（1.5px）。詳見下一節。
+
+這輪重畫的 8 題（q6 q8 q11 q19 q21 q25 q33 q36）：**重疊 0**。
+
+### 2026-08-01 收尾（38/38 全部轉成符號庫畫風之後）
+
+**38 題 / zh+en 76 張 / zh 740 個文字 / 重疊 0**（0.5px 門檻、線段真交集）。
+node 版 `interview-diagram-check.js` 同樣 0 發現，兩版第一次完全一致。
+
+各批的語意驗證器（不是只驗重疊）：
+`verify-batch11` 電路類 B、`verify-batch12` flyback 66 條、
+`verify-batch13` 波形 84 條、`verify-batch14` 表格/剖面 62 條。
+
+### 2026-08-01 第三次重測（波形/曲線八題重畫 + snippet 修正之後）
+
+snippet 換成線段真交集之後掃全庫：**38 題 / zh+en 76 張 / zh 731 個文字 / 重疊 0**。
+
+過程中真的抓到兩筆（都在 2px 以下，node 版看不到，所以是 snippet 修好才浮出來的）：
+
+| 題 | 文字 | 距離 | 修法 |
+|---|---|---|---|
+| q26 | `-3dB at fc` | 離幅頻曲線 1.5px | 標籤上移 6px |
+| q28–q32 | `470u`（Cout 值） | 離電容極板 1px | 標籤右移 4px |
+
+判準：**node 版與瀏覽器版對不上時，先確認是哪一版的幾何算錯**，
+再決定是修圖還是修檢查器。這次是檢查器（bbox）錯，圖只有兩處是真的要修。
+
+### 2026-08-01 第二次重測（flyback q28–q32 重畫之後）
+
+38 題 / zh+en **76 張**（flyback 那 5 題的 en 欄位原本沒有圖，這輪一起補上）/ zh 708 個文字。
+重疊仍是同樣那 8 筆（q18 六筆、q26 兩筆），新畫的 13 題全部 0。
+
+掃描 snippet 要多加一行：flyback 的繞組是 `<path>` 的 `A`（圓弧）指令，
+原版 `seg()` 只解析 M/H/V/L，遇到 A 會把弧的終點漏掉。已在這次實測的版本補上
+`else if(c==='A'){cx=n[5];cy=n[6];...}`（用弧的終點，凸起的 4.5px 不計入）。
 
 PCB 那 6 題原本只存在 `interview-pcb.sql`，bank.js 沒有 → 前端回填比對不到題幹，永遠補不上圖。
 已把它們加進 `interview-bank.js`（q33–q38），**題幹逐字從 SQL 解析**而不是手抄，

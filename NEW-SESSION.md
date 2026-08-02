@@ -1,8 +1,7 @@
-# NEW SESSION — 接手指南（2026-07-31）
+# NEW SESSION — 接手指南（2026-08-01）
 
-上一段 session 做的是**面試題庫補圖**：從 5/38 有圖做到 38/38，
-接著被使用者退了一輪畫風（「電阻畫個方框是幹嘛」），正在把 38 張全部改用站上既有的
-符號庫重畫，目前 **9/38**。上線那三軌（網域／綠界／Resend）這段沒動，狀態見 §6。
+面試題庫 38 題全部有圖，而且 **38/38 都已改成符號庫畫風**（白底藍線條、電阻鋸齒、
+MOSFET 有體二極體），畫風轉換這件事到此結束。**下一件事是上線三軌，卡在網域，見 §6。**
 
 先讀本檔，再讀 `HANDOFF.md`（專案硬規矩）。動 `Documents/Web` 前務必讀完這兩份。
 
@@ -21,30 +20,33 @@
 
 ---
 
-## 1. 現況（2026-07-31 收工）
+## 1. 現況（2026-08-01 收工）
 
 | 項目 | 狀態 |
 |---|---|
-| 面試題 | **38 題全部有圖**（起點 5 題） |
-| 圖字重疊 | 瀏覽器實測 **0**（zh+en 共 71 張、1100+ 文字） |
-| 畫風轉換 | **9 / 38**：`q1 q2 q3 q4 q5 q9 q10 q13 q15` |
+| 面試題 | **38 題全部有圖**；zh+en 共 76 張（flyback 那 5 題的 en 原本沒圖，這輪補上） |
+| 圖字重疊 | 瀏覽器實測（0.5px、線段真交集）**全庫 0**：76 張、740 個文字 |
+| 畫風轉換 | **38 / 38 完成**（2026-08-01）。8 題純波形/剖面沒有 `data-sym`：本來就沒有離散元件可畫 |
 | CI | 17 關全綠（新增 `interview-diagram-check` 自我測試 + 本體） |
-| 知識卡 | 146 卡、重疊 0（這段沒動） |
+| 知識卡 | 線上 152 張卡、圖 80 張、重疊 0；2026-08-01 新增 7 張 DC/DC 佈局卡（來源 ROHM TWHB-03e，檔 `knowledge-extra5.js`） |
 | 上線阻礙 | **網域未買** → Resend 與正式金流都卡在這 |
 
 ---
 
-## 2. 下一步：剩 29 題轉成符號庫畫風
+## 2. 畫風轉換（已完成，留著當索引）
 
 使用者原話：「我要你的配色都跟圖二一樣」（圖二 = q3 那張白底藍線條）。
 混著深色手繪版看會很怪，所以要全轉。
 
 | 批次 | 題 | 性質 |
 |---|---|---|
-| 電路類 B | `q6 q8 q11 q19 q21 q25 q36`（q21 與 q33 同圖） | 要重排版面 |
-| flyback | `q28 q29 q30 q31 q32` | 共用底圖、720 寬、37 個標籤，最花時間 |
-| 波形/曲線 | `q7 q12 q16 q17 q18 q24 q26 q27` | 主要是改配色 |
-| 表格/剖面 | `q14 q20 q22 q23 q34 q35 q37 q38` | 主要是改配色 |
+| ~~電路類 B~~ | ~~`q6 q8 q11 q19 q21 q25 q36`~~ | 2026-08-01 完成（batch11.js，q33 跟著 q21 一起轉） |
+| ~~flyback~~ | ~~`q28 q29 q30 q31 q32`~~ | 2026-08-01 完成（batch12.js，共用底圖 720x480） |
+| ~~波形/曲線~~ | ~~`q7 q12 q16 q17 q18 q24 q26 q27`~~ | 2026-08-01 完成（batch13.js） |
+| ~~表格/剖面~~ | ~~`q14 q20 q22 q23 q34 q35 q37 q38`~~ | 2026-08-01 完成（batch14.js，q34 與 q23 同圖） |
+
+`interview-diagram-check.test.js` 的六個案例現在**全部是通用變異**，不再綁任何一張圖的文案，
+重畫剩下那 8 題不會再讓自我測試以 `mutation did nothing` 中止。
 
 **做法與工具全在 `tools/interview-diagrams/README.md`，先讀它再動手。**
 產生器就在那個資料夾；`interview-bank.js` 裡的 SVG 是產生出來的，別直接編輯那串轉義字串。
@@ -81,6 +83,10 @@ node wire-gap-check.js --selftest && node wire-gap-check.js --strict
 node symbol-overlap-check.js --selftest && node symbol-overlap-check.js --strict
 node svg-overlap-check.js --strict     # 知識卡圖字不重疊
 node i18n-check.js                     # 改 HTML 後跑
+node tools/interview-diagrams/verify-batch11.js   # 電路類 B 的拓樸/數字斷言
+node tools/interview-diagrams/verify-batch12.js   # flyback 的拓樸/極性斷言（66 條）
+node tools/interview-diagrams/verify-batch13.js   # 波形/曲線的數值斷言（84 條）
+node tools/interview-diagrams/verify-batch14.js   # 表格/剖面的比例與真值表斷言（62 條）
 ```
 
 `interview-diagram-check.js` 是**估算器**（node 沒有 DOM，字寬靠內建字元寬度表）。
@@ -94,7 +100,7 @@ node i18n-check.js                     # 改 HTML 後跑
 ## 5. 待跑的 SQL（只有使用者能跑）
 
 ```
-supabase/sql/interview-flyback-fix.sql      ← 必跑：那 5 筆前端回填碰不到
+supabase/sql/interview-flyback-fix.sql      ← 必跑：那 5 筆前端回填碰不到（2026-08-01 已重產，內容是新底圖）
 supabase/sql/interview-fix-diagrams.sql        q5/q6/q13
 supabase/sql/interview-batch1-diagrams.sql     q7/q12/q17/q19/q26/q27
 supabase/sql/interview-batch3-diagrams.sql     q1/q2/q4/q14/q15/q16/q22
@@ -104,6 +110,10 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 ```
 
 全部冪等、可重跑。**改完圖要重新產生對應 SQL**（`gen-*-sql.js`），否則 SQL 裡是舊圖。
+2026-08-01 已重新產生全部七支：`flyback-fix`、`fix-diagrams`、`batch1`、`batch3`、`batch4`、`batch5`、`pcb`。
+（38 題散在這七支裡，四批重畫都動到，所以七支全部重產過。）
+順帶修好 `gen-batch1-sql.js`：它原本從 `batch1.js` 取圖，那份沒有後來補上的 `width/height`
+屬性，等於這支 SQL 一直在吐不合規格的圖；現在跟其他支一樣從 `interview-bank.js` 取。
 
 ---
 
@@ -144,7 +154,21 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
   比包 `rotate(90)` 好——檢查器讀不到 transform。
 - **`Sym.rail` 的桿子固定 12px**：橫軌畫在 `y+12`，不然桿子突出。
 
+- **`Sym.npn` 的 C/E 是寫死的（上 C 下 E），`pnp:true` 只換箭頭**：latch-up 的寄生 PNP 需要
+  射極朝上，剛好相反；而且 pnp 模式那個三角形實際指向與它自己的註解（「朝基極」）不一致。
+  照 `diodeV` 的慣例在 `batch11.js` 自己組了 `pnpUp()`，沒有動共用符號庫（146 張知識卡在用）。
+- **`Sym` 的 `opt.label` / `showPins` 一律不能用**：那些字是 8-10px，低於本專案 ≥11。
+  `Sym.ic` 的腳位文字是 8px、`Sym.rail(x,y,label)` 的標籤是 9px——要標就自己用 `T()` 畫。
+- **文字中心落在方框內是合法的**（檢查器把它當成該方框的標題），所以 IC 框裡放兩行 11px
+  說明不會被判重疊；但只要有一個字元探出框外就變成「壓方塊」。
+
 **檢查器**
+
+- **自我測試的變異綁死圖上文案，重畫該圖就整組報廢**：這輪重畫 q19，`interview-diagram-check.test.js`
+  的案例 1、6 直接 `mutation did nothing` 中止。已改成通用變異（在第一張圖的第一條走線上蓋字）。
+- **node 估算器 2px、瀏覽器 0.5px，中間那段只有瀏覽器看得到**：2026-08-01 實測全庫 8 筆
+  「壓線」全落在 q18（3 筆 ×2 語言）與 q26（1 筆 ×2），node 版是乾淨的。
+  比對過改動前的 HEAD 版本，這 8 筆改動前就在，不是這輪造成的；那兩題轉畫風時順手修掉。
 
 - **字元寬度表 3 位數編碼會爆位**：粗體 `M` 是 1.005 em → 整條表往後錯開，粗體字寬全錯
   （誤差 3% → 19%，還誤報 4 筆）。現在 4 位數 + 載入時檢查長度。
@@ -153,6 +177,31 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 - **拿線段 bbox 當障礙，斜線會嚴重誤判**：要用線段 vs 矩形真交集（slab 法）。
 - **驗證器用顏色挑 polyline 會抓錯**：`Sym.resistor` 的鋸齒也是同色 polyline。用起點座標挑。
 - **測試的變異目標別引用特定圖的文案**：重畫一張圖就讓測試靜默失效（已改成通用變異）。
+
+- **一張圖擠 20 個元件時，先畫樓層平面再下筆**：flyback 底圖排了三輪才收斂。
+  規則：每個縱向欄位只給一個網路（C1 一欄、Rst/VDD 一欄、Cvdd 一欄、Q1/Rs 一欄），
+  橫向匯流排只留兩條（HV+ 與 PGND）。不先切欄就會出現「怎麼繞都跨到別人身上」。
+- **IC 的腳名寫在框內**：檢查器把「中心落在方框內的文字」當成該框的標題直接放行，
+  而框外的腳名要跟走線搶那 14px 的巷子。U1 五個腳名移進框內之後，四筆重疊一次消失。
+- **交叉是可以有的，但要挑地方**：底圖只留兩個無點交叉（AUX 引線跨汲極引線、
+  FB 訊號跨一次地匯流排），兩處都在 verify-batch12.js 斷言「不准有接點」。
+- **變壓器/水平電容/反向二極體/保險絲，符號庫都沒有**：照 `diodeV` 的慣例在 batch 檔裡
+  用 `Sym.line/tri` 自己組（`coilV` / `capH` / `diodeHL` / `fuse`），不要包 rotate。
+
+- **瀏覽器 snippet 曾經比圖還不可靠**：它把「線段 bbox」當障礙，一條斜線的 bbox 會蓋掉
+  整個象限——q18 因此誤報三筆。node 版早就用線段真交集（slab）了。
+  規矩：**兩版對不上時先確認哪一版的幾何算錯**，不要急著搬圖上的字去迎合檢查器。
+  snippet 已在 `overlap-audit.md` 換成 slab 版，並補上圓弧（`A`）的解析。
+- **真正的擦邊都在 2px 以下**：node 版容差 2px 看不到，只有瀏覽器版（0.5px）抓得到。
+  這輪抓到兩筆（q26 的 `-3dB at fc` 離曲線 1.5px、flyback 的 `470u` 離極板 1px），都已修。
+
+- **表格的值用算的、不要手打**：q14 的真值表 20 格是 `(a,b)=>a&b` 這類函式吐出來的，
+  驗證器再用同一組函式對一次。手打的表格永遠會有一格錯，而且沒人會發現。
+- **剖面圖要有比例尺**：q22/q37 統一 1mil = 8px，W/S/H/T 的相對關係是真的，
+  驗證器直接回推 rect 的寬高檢查。示意圖畫成不成比例，讀者就學不到「S 比 H 小會怎樣」。
+- **圖上宣稱的東西要畫得出來**：q23 標「等長、等距」，第一版的第二條線是把 y 加 16，
+  結果 45 度斜段的垂距變成 19.8 —— 圖自己打自己的臉。改成沿法線平移再求交點，
+  驗證器逐段量距離（16.00 / 16.00 / 16.00）與長度差（< 0.5px）。
 
 **版面 / 資料**
 
