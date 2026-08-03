@@ -53,6 +53,10 @@ jobs:
       # 2e) 知識卡原理說明排版器：分段只改排版、內容零丟失
       - name: knowledge-format.test（排版不改內容）
         run: node knowledge-format.test.js
+      - name: ds-compare.test（datasheet 比對：抽不到不編造）
+        run: node ds-compare.test.js
+      - name: knowledge-art-audit（知識卡圖：接腳接上、字不貼圖）
+        run: node knowledge-art-audit.js --strict --quiet
 
       # 2f) 知識卡電路圖：接線不得被吸附塌成零長（＝那條線根本沒畫出來）
       - name: circuit-check（電路圖接線）

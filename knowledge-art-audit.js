@@ -199,15 +199,42 @@ function audit(id) {
   return found;
 }
 
+/* ---------- 棘輪基線（沿用 wire-gap / symbol-overlap 的做法：只准降不准升） ----------
+ * 既有那 73 張圖是先前累積的帳，一次清不完。基線鎖住「不准變差」，新畫的圖必須是 0。 */
+const fs = require('fs');
+const BASE = './knowledge-art-baseline.json';
+const baseline = fs.existsSync(BASE) ? JSON.parse(fs.readFileSync(BASE, 'utf8')) : {};
+const quiet = args.includes('--quiet');
+
 const ids = only.length ? only : Object.keys(CIRCUITS);
+const now = {};
 let total = 0;
 console.log(`knowledge-art-audit：掃 ${ids.length} 張圖（字最小間隙 ${CLEAR}px、端點容差 ${TOL}px）\n`);
 for (const id of ids) {
   const f = audit(id);
   if (!f.length) continue;
+  now[id] = f.length;
   total += f.length;
-  console.log(`  ~ ${id}（${f.length}）`);
-  f.slice(0, 10).forEach(x => console.log('      ' + x));
+  if (!quiet) {
+    console.log(`  ~ ${id}（${f.length}）`);
+    f.slice(0, 6).forEach(x => console.log('      ' + x));
+  }
 }
-console.log(total ? `\n共 ${total} 項` : '\n乾淨');
+console.log(total ? `\n共 ${total} 項（${Object.keys(now).length} 張圖）` : '\n乾淨');
+
+if (args.includes('--update')) {
+  fs.writeFileSync(BASE, JSON.stringify(now, null, 2) + '\n');
+  console.log(`已寫入基線 ${BASE}（${Object.keys(now).length} 張圖）`);
+  process.exit(0);
+}
+if (args.includes('--strict')) {
+  const worse = ids.filter(id => (now[id] || 0) > (baseline[id] || 0));
+  const better = Object.keys(baseline).filter(id => (now[id] || 0) < baseline[id]);
+  if (better.length) console.log(`改善：${better.map(id => `${id} ${baseline[id]}→${now[id] || 0}`).join('、')}（跑 --update 收進基線）`);
+  if (worse.length) {
+    console.log(`\n比基線變差：\n${worse.map(id => `  ✗ ${id}: ${baseline[id] || 0} → ${now[id]}`).join('\n')}`);
+    process.exit(1);
+  }
+  console.log('OK：未比基線變差');
+}
 process.exit(0);

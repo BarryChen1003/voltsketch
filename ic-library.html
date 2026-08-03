@@ -84,6 +84,9 @@
   <script src="./ic-crit-i18n-data.js?v=2026-07-14c"></script>
   <script src="./ic-classification.js?v=5"></script>
   <script src="./ic-export.js"></script>
+  <!-- 2nd Source 比對：pdf.js 取文字 + ds-compare.js 比對。檔案只在瀏覽器內解析，不上傳。 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="./ds-compare.js?v=2026-08-02a"></script>
   <script src="./vs-model.js"></script>
   <script src="./vs-adapters.js"></script>
   <script src="./export-gate.js?v=2"></script>
@@ -180,6 +183,17 @@
             <button class="small-button" data-skill="gen" data-part="${esc(ic.part)}">${esc(ui('skillGen'))}</button>
           </div>
           <p style="color:#94a3b8;font-size:12px;margin:6px 0 0">${esc(ui('skillNote'))}</p></div>` : ''}
+        <div class="sec"><h4>${esc(ui('cmpTitle'))}</h4>
+          <p style="color:#64748b;font-size:12.5px;margin:0 0 8px">${esc(ui('cmpIntro'))}</p>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 10px;align-items:center;font-size:13px;max-width:560px">
+            <label for="dsA">${esc(ui('cmpFileA'))}</label><input id="dsA" type="file" accept="application/pdf" style="font-size:12px"/>
+            <label for="dsB">${esc(ui('cmpFileB'))}</label><input id="dsB" type="file" accept="application/pdf" style="font-size:12px"/>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap">
+            <button class="small-button" data-cmp="go" data-part="${esc(ic.part)}">${esc(ui('cmpRun'))}</button>
+            <span id="cmpMsg" style="font-size:12px;color:#94a3b8"></span>
+          </div>
+          <p style="color:#94a3b8;font-size:12px;margin:8px 0 0">${esc(ui('cmpNote'))}</p></div>
         ${pinTable(ic)}
       </div>`;
     }
@@ -231,6 +245,33 @@
             : r.reason === 'quota_exceeded' ? ui('msgQuota')
             : r.reason;
         } else { msg.style.color = '#15803d'; msg.textContent = r.remaining >= 0 ? (ui('exportedLeft') + r.remaining + ui('exportedRight')) : ui('exported'); }
+        return;
+      }
+      const cm = e.target.closest('[data-cmp]');
+      if (cm) {
+        const ic = dataMap[norm(cm.dataset.part)];
+        const msg = document.getElementById('cmpMsg');
+        const fa = document.getElementById('dsA').files[0], fb = document.getElementById('dsB').files[0];
+        const say = (t, c) => { msg.style.color = c || '#94a3b8'; msg.textContent = t; };
+        if (!fa || !fb) { say(ui('cmpNeedTwo'), '#b45309'); return; }
+        if (!window.DSCompare) { say(ui('cmpNoLib'), '#b91c1c'); return; }
+        cm.disabled = true; say(ui('cmpBusy'));
+        try {
+          const [ta, tb] = await Promise.all([DSCompare.extractText(fa), DSCompare.extractText(fb)]);
+          // 圖檔掃描版的 datasheet 抽不到文字 —— 與其產一份全是「未擷取」的報告，不如直接說清楚
+          if ((ta + tb).trim().length < 200) { say(ui('cmpNoText'), '#b91c1c'); return; }
+          const A = DSCompare.parse(ta, fa.name), B = DSCompare.parse(tb, fb.name);
+          const html = DSCompare.reportHTML({
+            A, B, rows: DSCompare.diff(A, B), checks: DSCompare.judge(ic && ic.secondSource, A, B),
+            ic: ic || null, fileA: fa.name, fileB: fb.name,
+          });
+          const w = window.open('', '_blank');
+          if (!w) { say(ui('cmpPopup'), '#b91c1c'); return; }
+          w.document.write(html); w.document.close();
+          say(ui('cmpDone'), '#15803d');
+        } catch (err) {
+          say(ui('cmpFail') + '：' + (err && err.message ? err.message : err), '#b91c1c');
+        } finally { cm.disabled = false; }
         return;
       }
       const sk = e.target.closest('[data-skill]');

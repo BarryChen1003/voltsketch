@@ -29,6 +29,7 @@ MOSFET 有體二極體），畫風轉換這件事到此結束。**下一件事�
 | 畫風轉換 | **38 / 38 完成**（2026-08-01）。8 題純波形/剖面沒有 `data-sym`：本來就沒有離散元件可畫 |
 | CI | 17 關全綠（新增 `interview-diagram-check` 自我測試 + 本體） |
 | 知識卡 | **145 → 152 張**（2026-08-01 新增 7 張 DC/DC 佈局卡，來源 ROHM TWHB-03e，檔 `knowledge-extra5.js`）；圖 80 張、重疊 0 |
+| IC 元件庫 | 195 顆；2026-08-02 新增 **2nd Source 比對**：上傳兩份 datasheet → 參數差異表 + 替換準則逐條判定 → 列印成 PDF（`ds-compare.js`，全在瀏覽器本地跑、檔案不上傳） |
 | 上線阻礙 | **網域未買** → Resend 與正式金流都卡在這 |
 
 ---
@@ -82,7 +83,8 @@ node circuit-check.js --strict         # 知識卡：接線被吸附塌成零長
 node wire-gap-check.js --selftest && node wire-gap-check.js --strict
 node symbol-overlap-check.js --selftest && node symbol-overlap-check.js --strict
 node svg-overlap-check.js --strict     # 知識卡圖字不重疊
-node knowledge-art-audit.js            # 知識卡圖：接腳真的接上、字離圖形 >=3px
+node knowledge-art-audit.js --strict --quiet   # 知識卡圖：接腳接上、字離圖形 >=3px（棘輪）
+node ds-compare.test.js                # datasheet 2nd-source 比對（抽不到不編造）
 node i18n-check.js                     # 改 HTML 後跑
 node tools/interview-diagrams/verify-batch11.js   # 電路類 B 的拓樸/數字斷言
 node tools/interview-diagrams/verify-batch12.js   # flyback 的拓樸/極性斷言（66 條）
@@ -219,6 +221,14 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 - **稽核器自己也會有 bug**：第一版把「元件自己的 bbox」也算成合法連接目標，
   每支腳都落在自己身上 → 永遠通過；虛線註解框也被當成可連接的方塊。
   寫檢查器時先確認它抓得到你已知的那個缺陷，再相信它的乾淨報告。
+
+- **抽取規則一定要拿真 datasheet 驗**：合成測試全過，真檔一跑就四處出錯——TI 的溫度寫成
+  「–40 125 °C」（en-dash、沒有 to、°C 只出現一次）、封裝寫成「RTE (WQFN, 16)」、
+  目錄的「4 Pin Configuration」被當成腳數 4、內部基準的「Output voltage 1.25V」被當成 VOUT。
+  規則寫完先用 `IC-spec/` 裡的真檔跑一遍，再相信它。
+- **一份 datasheet 涵蓋整個系列是常態**（ads112c14.pdf 與 ads122c14.pdf 內容逐字相同）。
+  沒有偵測就會產出「參數全部相同 → 可以換」這種害人的結論。`sameDoc()` 偵測到就把所有判定
+  轉人工並在報告頂端標紅字。
 
 **版面 / 資料**
 
