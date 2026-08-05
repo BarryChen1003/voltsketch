@@ -1,94 +1,102 @@
-# HardwareAI 交接（新 session 從這裡開始）
+# HardwareAI 交接 — 長期規矩與踩過的坑
 
-最後更新 2026-07-22 · repo `Documents/Web` → github.com/BarryChen1003/voltsketch · 分支 `main`
-狀態：工作區乾淨、HEAD == origin/main（`1461dc4`）
+最後更新 2026-08-05 · repo `Documents/Web` → github.com/BarryChen1003/voltsketch · 分支 `main`
 
----
-
-## 0. 三條硬規矩（違反了就是重做）
-
-1. **圖跟字絕對不能疊**（使用者稱「鐵律」）。任何 SVG 交付前用瀏覽器實測驗，不是目視。
-   權威檢查 snippet 在 `overlap-audit.md`；node 版 `svg-overlap-check.js` 只是估算器，擋 CI 回歸用。
-2. **不要憑印象畫電路 / 腳位 / 動畫**。電路動畫整批被砍掉就是因為畫錯——「看起來很確定的錯誤」比沒有更糟。
-   畫不出有把握的就**拒畫**（回 null、退回文字），並在圖說標明依據與界限。
-3. **改任何知識卡內容或圖，一定要遞增 `knowledge.js` 的 `BUILTIN_VERSION`**，
-   否則使用者 localStorage 的舊快取會蓋住新內容（這個坑踩過三次）。
+**分工**：現況數字、本輪做了什麼、待跑 SQL、上線卡點 → 看 `NEW-SESSION.md`（那份會一直被改寫）。
+本檔只放**不太會過期的東西**：硬規矩、開發環境、踩過的坑、使用者偏好。兩份衝突時以 `NEW-SESSION.md` 為準。
 
 ---
 
-## 1. 現況：這站是什麼
+## 0. 硬規矩（違反了就是重做）
 
-| 模組 | 狀態 |
-|---|---|
-| 線路圖編輯器 `index.html` | 穩定 |
-| **PCB Layout** `pcb.html` | 接近桌面 EDA：undo/redo、自動存檔、匯出匯入、刪除、多選/框選/群組拖曳/端點拖曳/複製貼上、對齊分佈、方向鍵微調、文字/尺寸/netlabel/禁止區、Gerber 匯出、3D |
-| IC 元件庫 | footprint 覆蓋 **195/195**（0 方框） |
-| 公版參考庫 | 8 板 213 料件全有 footprint/pin |
-| 知識庫 `knowledge.html` | **152 卡**（2026-08-01 實測，側欄 14 類加總）；原理說明自動分段；電路圖 0 重疊；**無「範例應用」段**（2026-07-26 全數移除，內容與圖都不正確） |
-| 觀測性 | `observe.js` 錯誤監控＋analytics（11 頁），**待跑 SQL 才會有資料** |
-| 金流 | 前後端碼齊全，**待部署** |
+1. **圖字絕不重疊、元件絕不互疊**（使用者稱「鐵律」）。改完圖先跑幾何檢查，再用瀏覽器實測收尾。
+   權威 snippet 在 `overlap-audit.md`（線段真交集版）；node 版檢查器只是估算器，擋 CI 回歸用。
+2. **不憑印象畫電路／腳位／規格**。沒有可查證依據就不畫、不填；datasheet 抽不到就標「未擷取」。
+   電路動畫與「範例應用」兩批內容都是因為畫錯／編錯而整批砍掉——**看起來很確定的錯誤比沒有更糟**。
+3. **元件符號一律用 `schematic-symbols.js`（`Sym`）**：電阻鋸齒、MOSFET 有閘極板/通道/本體箭頭/體二極體。
+   自己刻方框已經被退過一次。
+4. **改知識卡內容或自動圖 → 同步遞增 `BUILTIN_VERSION`（`knowledge.js`）與 `?v=`（`knowledge.html`）**；
+   改 `interview-bank.js` → 遞增 `interview.html` 的 `interview-bank.js?v=`。
+   不遞增的話，使用者 localStorage 的舊快取會蓋掉新內容（這個坑踩過三次）。
+5. **只驗重疊不夠**。q18 曾因單位算錯把整條曲線推出畫布，重疊檢查照樣回報乾淨——空白畫布當然不會疊。
+   每張圖都要有「畫的數字／拓樸對不對」的斷言。
+6. **新功能一律四語**（zh / en / ja / ko）：UI 字串、程式產生的句子、報告輸出都算。
+   例外只有公式、訊號名、封裝名、料號。
+7. **使用者要的是「上線」**：做完就 commit + push，不要停在「沒有 commit（未指示）」。
 
-## 2. CI（10 關，push/PR 觸發）
+---
 
-```
-node --check 全 JS → reffp-check → pcb-logic.test → gerber-check → i18n-check
-→ knowledge-format.test → circuit-check --strict → svg-overlap-check --max=2
-→ JSON parse → HTML 引用存在性
-```
-
-本機跑全套（gerber 較慢，分批跑避免逾時）：
-```bash
-for f in ./*.js; do node --check "$f" || echo "FAIL $f"; done
-node reffp-check.js && node pcb-logic.test.js && node knowledge-format.test.js
-node circuit-check.js --strict && node i18n-check.js
-node svg-overlap-check.js --max=2
-node gerber-check.js
-```
-
-`svg-overlap-check` 用 `--max=2` 而非 `--strict`：那 2 處是估算器**假陽性**（看不到 `<g transform>`、字寬是估算），瀏覽器實測是 0。別為了好看改成 --strict，會被假陽性卡住。
-
-## 3. 開發環境
+## 1. 開發環境
 
 - 預覽：`.claude/launch.json` 的 `web-static`（python http.server :8099）。**不要用 Bash 起 server**。
-- 驗證 SVG 一律用瀏覽器 `getBBox()` + `getCTM()`（getBBox **不含**祖先 transform，只用它會誤判）。
-- 改 `.js` 後要同步 bump `knowledge.html` / `pcb.html` 的 `?v=` 參數。
+- 驗證 SVG 一律用瀏覽器 `getBBox()` + `getCTM()`（`getBBox` **不含**祖先 transform，只用它會誤判）。
+- 檢查器怎麼跑（18 關的本地版指令、棘輪基線現況）：見 `NEW-SESSION.md` §4。
+- **卡數／題數一律現場數，不要抄文件裡的舊數字**（曾沿用「146 卡」當基準，實際是 145）。
 
 ---
 
-## 4. 卡在使用者（我做不了，全在 `LAUNCH-CHECKLIST.md`）
+## 2. 踩過的坑（別重踩）
 
-依急迫度：
+### 畫圖
 
-| # | 事項 | 檔案 | 不做的後果 |
-|---|---|---|---|
-| 1 | **接自訂 SMTP（Resend）** | `supabase/email-templates/SMTP-SETUP.md` | 真實用戶收不到驗證信＝**註冊不通**，比任何功能都硬 |
-| 2 | 跑 SQL Phase A | `supabase/sql/00-RUN-phaseA.sql`（整份貼一次） | observability 表不存在、orders 不存在 |
-| 2b | 註冊後跑 Phase B | `supabase/sql/owner-unlock.sql` | 站主拿不到 admin。⚠ 檔內信箱是 `smallshark1003@gmail.com`，與系統帳號 `barry871003@gmail.com` 不同，跑前先確認 |
-| 3 | 部署 Edge Functions | `supabase/functions/DEPLOY.ps1` | 金流不能用（腳本內含綠界公開測試密鑰，可先端到端驗） |
-| 4 | 註冊網域（`.com`/`.app`，$10–20/年） | — | `github.io` 沒有 DNS 控制權 → **無法接 SMTP**。免費域（.tk 等）信譽差會被擋 |
-| 5 | 加 repo secret `SUPABASE_DB_URL` | `.github/workflows/backup.yml` | 自動備份不啟用（免費層無備份，用戶/訂單炸了沒得救） |
-| 6 | 綠界特約商店送件 | — | 不能正式收款（退款政策已補進 terms.html ✅） |
-
-## 5. 工程面待辦（我能做，等指示）
-
-- **F：footprint/知識擴充** — 需使用者指定方向。加公版板要真實 github 板檔；IC 補腳名要 datasheet，不憑印象。
-- 知識卡逐張審內容（需使用者在場定調）。
-- 前端 analytics 事件已埋（`Observe.track`），等 SQL 跑完才看得到資料。
-
----
-
-## 6. 這個 session 學到的（別重蹈）
-
-- **沒有可驗證判準就別產教學內容**：範例應用（文字＋自動圖）2026-07-26 整段砍掉，理由與電路動畫同一個——內容與圖都不正確。這是同型錯誤第二次；先有「怎樣算對」的檢查方法，再產內容。
-- **「換個標籤」不算新內容**：範例應用第一版把卡片主圖複製一份只改 IC 名 → 同頁兩張一樣的圖，使用者直接指出沒有意義（該段現已刪除）。
-- **自動吸附會吃掉接線**：`knowledge-circuits2.js` 的 `L()` 會把端點吸到 12–14px 內的腳位，兩端吸到同一點時線就塌成零長＝那條線根本沒畫。符號內部一律用 `LR()`（不吸附）。`circuit-check.js` 專抓這個。
+- **自動吸附會吃掉接線**：`knowledge-circuits2.js` 的 `L()` 會把端點吸到 12–14px 內的腳位；
+  兩端吸到同一點時線就塌成零長＝那條線根本沒畫。符號內部一律用 `LR()`（不吸附）。`circuit-check.js` 專抓這個。
+- **`Sym` 的 `opt.label` / `showPins` 一律不能用**：那些字只有 8–10px，低於本專案下限 ≥11。要標就自己用 `T()` 畫。
+- **符號庫缺的東西自己組，但不要包 `transform`**（檢查器讀不到）：
+  `light.js` 的 `diodeV`、`batch11.js` 的 `pnpUp`、`batch12.js` 的 `coilV`/`capH`/`diodeHL`/`fuse`、`knowledge-circuits2.js` 的 `dioV`。
+- **`Sym.npn` 的 C/E 寫死（上 C 下 E）**，`pnp:true` 只換箭頭，而且箭頭方向與它自己的註解不一致。
+- **文字中心落在方框內是合法的**（檢查器當成該框的標題），所以 IC 腳名寫框內最省事。
+- **符號比方框佔空間**：一張圖擠 20 個元件時先切帶（標題／電路／說明）、先畫樓層平面——
+  每個縱向欄位只給一個網路，橫向匯流排只留兩條。
+- **圖上宣稱的東西要畫得出來**：標「等長等距」就要真的等長等距（q23 第一版斜段垂距是 19.8 不是 16）。
+- **表格的值用算的、剖面圖要有比例尺**，驗證器才驗得到（q14 真值表、q22/q37 的 1mil=8px）。
 - **拓樸方向要驗**：曾把 LDO 畫成 `3.3V→5V`（升壓，物理不可能）。凡是有方向的東西都要對照拓樸檢查。
 - **中文排版禁則**：收尾標點不可置行首（曾把「）」單獨丟到第二行）。
-- **估算器 ≠ 實測**：字寬估算會漏掉「bulk 貼著方塊」這種擦邊；最終驗收一律瀏覽器實測。
+- **「換個標籤」不算新內容**：範例應用第一版把卡片主圖複製一份只改 IC 名 → 同頁兩張一樣的圖，使用者直接指出沒有意義。
 
-## 7. 使用者的合作偏好
+### 檢查器
+
+- **稽核器自己也會有 bug**：`knowledge-art-audit` 第一版把「元件自己的 bbox」算成合法連接目標 → 每支腳都通過。
+  **寫檢查器時先確認它抓得到你已知的那個缺陷**，再相信它的乾淨報告。
+- **只驗端點與字框會放過「看得出來的斷線」**：`wire-gap` 只驗接線端點、`svg-overlap` 只驗字框相交，
+  所以才有 `knowledge-art-audit.js`（接腳必須有接線碰到、字離圖形 ≥3px）。改知識卡的圖後要跑它。
+- **拿線段 bbox 當障礙，斜線會嚴重誤判**：要用線段 vs 矩形真交集（slab 法）。
+  兩版對不上時**先確認哪一版的幾何算錯**，不要急著搬圖上的字。
+- **自我測試的變異不可綁死圖上文案**，否則重畫該圖就整組報廢——變異要寫成通用的。
+- **估算器 ≠ 實測**：node 版看不到 2px 以下的擦邊（字寬是估算），最終驗收一律瀏覽器實測（0.5px）。
+
+### datasheet 比對（`ds-compare.js`）
+
+- **抽取規則一定要拿真 datasheet 驗**：合成測試全過、真檔一跑四處出錯——
+  TI 的溫度寫成「–40 125 °C」（en-dash、沒有 to、°C 只出現一次）、封裝寫成「RTE (WQFN, 16)」、
+  目錄行「4 Pin Configuration」被當成腳數 4、內部基準的「Output voltage 1.25V」被當成 VOUT。
+- **一份 datasheet 涵蓋整個系列是常態**（`ads112c14.pdf` 與 `ads122c14.pdf` 逐字相同）。
+  沒有偵測就會產出「參數全部相同 → 可以換」這種害人的結論；`sameDoc()` 會把所有判定轉人工並標紅字。
+- **翻譯後的字串不能拿來做邏輯比對**：判定會跟著介面語言跑掉。**原文比對、翻譯只用於顯示。**
+
+### UI
+
+- **入口埋在詳細頁最底部＝沒有入口**。使用者第一句話是「沒有可以上傳檔案的地方」。
+  常用功能放頁面上方，而且不要求使用者先選好某顆料。
+- **兩個檔案選擇器不值得一個 modal**。使用者原話：「太大材小用」。
+
+### 版面 / 資料
+
+- **`main` 是 flex item 又帶 `margin:0 auto`**：給 SVG 固定寬會把整頁撐寬、出現橫捲。
+- **線上題目來自 Supabase，不是 repo**；`interview.html` 有前端回填（DB 的 answer 沒有 `<svg>` 才補圖）。
+  使用者說「沒看到圖」時先確認瀏覽器快取（`max-age=600`）與 Pages 部署延遲（約一分鐘），別急著改程式。
+- **seed 抽題時把 SVG 剝掉過**：DB 只剩空的 `<div class="exam-diagram-box"></div>`，而 ja/ko 反而有圖。
+
+### 內容
+
+- **沒有可驗證判準就別產教學內容**：範例應用（文字＋自動圖）2026-07-26 整段砍掉，理由與電路動畫同一個。
+  這是同型錯誤第二次；**先有「怎樣算對」的檢查方法，再產內容**。
+
+---
+
+## 3. 使用者的合作偏好
 
 - 要**證據型回報**（exit code、file:line、實測數字），不要「應該可以了」。
-- 給明確清單後期待自主跑完，隨做隨落檔。
+- 給明確清單後期待自主跑完，隨做隨落檔、隨手 commit。
 - 指出問題時通常是對的——先驗證他說的，別急著辯解（範例應用複製那次他就是對的）。
 - 繁體中文回覆。

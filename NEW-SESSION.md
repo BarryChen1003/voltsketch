@@ -1,6 +1,7 @@
 # NEW SESSION — 接手指南（2026-08-05）
 
-先讀本檔，再讀 `HANDOFF.md`（專案硬規矩）。動 `Documents/Web` 前務必讀完這兩份。
+先讀本檔（現況、本輪做了什麼、待辦），再讀 `HANDOFF.md`（長期硬規矩、開發環境、踩過的坑）。
+動 `Documents/Web` 前務必讀完這兩份；兩份衝突時以本檔為準。
 
 **現在的狀態**：面試題畫風轉換做完了（38/38），知識卡加到 152 張，IC 元件庫多了
 「上傳兩份 datasheet → 產出 2nd Source 比對報告」。全部已 commit 並推上 GitHub Pages。
