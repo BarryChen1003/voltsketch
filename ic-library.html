@@ -65,37 +65,31 @@
         <a href="contact.html" class="nav-link">聯絡資訊</a>
         </nav>
     </header>
+    <section id="cmpBar" style="margin:14px 18px 0;padding:12px 16px;background:#fff;border:1px solid #e2e8f0;border-radius:10px">
+      <div style="display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center">
+        <b id="cmpTitleEl" style="font-size:14px;color:#0f172a"></b>
+        <label style="font-size:12.5px;color:#475569;display:flex;gap:6px;align-items:center">
+          <span id="cmpLA"></span><input id="dsA" type="file" accept="application/pdf" style="font-size:12px;max-width:210px"/>
+        </label>
+        <label style="font-size:12.5px;color:#475569;display:flex;gap:6px;align-items:center">
+          <span id="cmpLB"></span><input id="dsB" type="file" accept="application/pdf" style="font-size:12px;max-width:210px"/>
+        </label>
+        <label style="font-size:12.5px;color:#475569;display:flex;gap:6px;align-items:center">
+          <span id="cmpLC"></span>
+          <select id="cmpIC" style="padding:4px 8px;border:1px solid #e2e8f0;border-radius:5px;font-size:12.5px;max-width:190px"></select>
+        </label>
+        <button id="cmpGo" class="primary-button" style="padding:6px 16px;font-size:13px"></button>
+        <span id="cmpMsg" style="font-size:12.5px;color:#94a3b8"></span>
+      </div>
+      <p id="cmpNoteP" style="color:#94a3b8;font-size:11.5px;margin:8px 0 0;line-height:1.5"></p>
+    </section>
     <div class="iclib">
       <div class="col cats" id="cats"></div>
-      <div class="col list">
-        <input class="srch" id="srch" type="search" placeholder="搜尋料號…"/>
-        <button id="cmpOpen" class="primary-button" style="width:100%;margin:6px 0 8px;padding:8px;font-size:13px">⇄ 2nd Source 比對</button>
-        <div id="icList"></div>
-      </div>
+      <div class="col list"><input class="srch" id="srch" type="search" placeholder="搜尋料號…"/><div id="icList"></div></div>
       <div class="col detail" id="detail"><p style="color:#94a3b8;padding:20px">← 左邊選分類，中間點料號看詳細頁</p></div>
     </div>
   </div>
 
-    <div id="cmpModal" hidden style="position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:60;display:flex;align-items:center;justify-content:center;padding:20px">
-      <div style="background:#fff;border-radius:12px;max-width:560px;width:100%;padding:22px 24px;box-shadow:0 20px 60px rgba(0,0,0,.25)">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
-          <h3 id="cmpH" style="margin:0;font-size:17px;color:#0f172a">2nd Source 比對</h3>
-          <button id="cmpX" style="border:0;background:transparent;font-size:22px;line-height:1;cursor:pointer;color:#94a3b8">×</button>
-        </div>
-        <p id="cmpIntroP" style="color:#64748b;font-size:13px;margin:8px 0 14px"></p>
-        <div style="display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:center;font-size:13px">
-          <label for="dsA" id="cmpLA"></label><input id="dsA" type="file" accept="application/pdf" style="font-size:12px"/>
-          <label for="dsB" id="cmpLB"></label><input id="dsB" type="file" accept="application/pdf" style="font-size:12px"/>
-          <label for="cmpIC" id="cmpLC"></label>
-          <select id="cmpIC" style="padding:5px 8px;border:1px solid #e2e8f0;border-radius:5px;font-size:13px"></select>
-        </div>
-        <div style="display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap">
-          <button id="cmpGo" class="primary-button" style="padding:8px 18px;font-size:14px"></button>
-          <span id="cmpMsg" style="font-size:12.5px;color:#94a3b8"></span>
-        </div>
-        <p id="cmpNoteP" style="color:#94a3b8;font-size:12px;margin:14px 0 0;line-height:1.6"></p>
-      </div>
-    </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./auth-config.js?v=2026-07-04a"></script>
   <script src="./observe.js?v=1"></script>
@@ -209,7 +203,7 @@
           <p style="color:#94a3b8;font-size:12px;margin:6px 0 0">${esc(ui('skillNote'))}</p></div>` : ''}
         <div class="sec"><h4>${esc(ui('cmpTitle'))}</h4>
           <p style="color:#64748b;font-size:12.5px;margin:0 0 8px">${esc(ui('cmpIntro'))}</p>
-          <button class="small-button" data-cmp="open" data-part="${esc(ic.part)}">${esc(ui('cmpOpenWith'))}</button></div>
+          <button class="small-button" data-cmp="use" data-part="${esc(ic.part)}">${esc(ui('cmpOpenWith'))}</button></div>
         ${pinTable(ic)}
       </div>`;
     }
@@ -265,7 +259,7 @@
         return;
       }
       const cm = e.target.closest('[data-cmp]');
-      if (cm) { openCmp(cm.dataset.part); return; }
+      if (cm) { useCmpPart(cm.dataset.part); return; }
       const sk = e.target.closest('[data-skill]');
       if (sk && window.SkillSwap) {
         const ic = dataMap[norm(sk.dataset.part)]; if (!ic) return;
@@ -277,45 +271,45 @@
     });
 
 
-    /* ---------- 2nd Source 比對視窗 ----------
-     * 入口有兩個：左欄常駐按鈕（不必先選料號）、以及某顆 IC 詳細頁的按鈕（自動帶入該顆的替換準則）。
-     * 一開始只把它放在詳細頁最底部，等於沒有入口 —— 使用者第一句話就是「沒有可以上傳檔案的地方」。 */
-    const cmpModal = document.getElementById('cmpModal');
+    /* ---------- 2nd Source 比對（頁面上方的內嵌列） ----------
+     * 一開始塞在某顆 IC 詳細頁的最底部，等於沒有入口；改成常駐在三欄之上，
+     * 不必先選料號就能用。詳細頁的按鈕只是把該顆的準則帶進這一列。 */
     const cmpSel = document.getElementById('cmpIC');
+    const cmpMsg = document.getElementById('cmpMsg');
     function fillCmpTexts() {
-      document.getElementById('cmpH').textContent = ui('cmpTitle');
-      document.getElementById('cmpIntroP').textContent = ui('cmpIntro');
+      document.getElementById('cmpTitleEl').textContent = ui('cmpTitleShort');
       document.getElementById('cmpLA').textContent = ui('cmpFileA');
       document.getElementById('cmpLB').textContent = ui('cmpFileB');
       document.getElementById('cmpLC').textContent = ui('cmpPickIC');
       document.getElementById('cmpGo').textContent = ui('cmpRun');
       document.getElementById('cmpNoteP').textContent = ui('cmpNote');
-      document.getElementById('cmpOpen').textContent = '⇄ ' + ui('cmpTitleShort');
+      const keep = cmpSel.value;
+      const parts = Object.keys(dataMap).map(k => dataMap[k])
+        .filter(x => x && x.secondSource && x.secondSource.length).map(x => x.part).sort();
+      cmpSel.innerHTML = `<option value="">${esc(ui('cmpNoIC'))}</option>`
+        + parts.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
+      if (keep) cmpSel.value = keep;
     }
-    function openCmp(part) {
-      fillCmpTexts();
-      // 準則來源：庫內任一顆（可不選）
-      const parts = Object.keys(dataMap).map(k => dataMap[k]).filter(x => x && x.secondSource && x.secondSource.length)
-        .map(x => x.part).sort();
-      cmpSel.innerHTML = `<option value="">${esc(ui('cmpNoIC'))}</option>` +
-        parts.map(p => `<option value="${esc(p)}">${esc(p)}</option>`).join('');
-      if (part && dataMap[norm(part)]) cmpSel.value = dataMap[norm(part)].part;
-      document.getElementById('cmpMsg').textContent = '';
-      cmpModal.hidden = false;
+    function useCmpPart(part) {
+      const ic = dataMap[norm(part)];
+      if (ic) cmpSel.value = ic.part;
+      document.getElementById('cmpBar').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      cmpMsg.style.color = '#94a3b8'; cmpMsg.textContent = '';
     }
-    const closeCmp = () => { cmpModal.hidden = true; };
-    document.getElementById('cmpOpen').addEventListener('click', () => openCmp(curPart));
-    document.getElementById('cmpX').addEventListener('click', closeCmp);
-    cmpModal.addEventListener('click', e => { if (e.target === cmpModal) closeCmp(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !cmpModal.hidden) closeCmp(); });
-
     document.getElementById('cmpGo').addEventListener('click', async () => {
-      const btn = document.getElementById('cmpGo'), msg = document.getElementById('cmpMsg');
-      const say = (t, c) => { msg.style.color = c || '#94a3b8'; msg.textContent = t; };
+      const btn = document.getElementById('cmpGo');
+      const say = (t, c) => { cmpMsg.style.color = c || '#94a3b8'; cmpMsg.textContent = t; };
       const fa = document.getElementById('dsA').files[0], fb = document.getElementById('dsB').files[0];
       if (!fa || !fb) { say(ui('cmpNeedTwo'), '#b45309'); return; }
       if (!window.DSCompare) { say(ui('cmpNoLib'), '#b91c1c'); return; }
-      const ic = cmpSel.value ? dataMap[norm(cmpSel.value)] : null;
+      // 準則本文也要跟著語言走：icLocalized 會用 ic-crit-i18n-data.js 的共享字典翻 secondSource
+      const raw = cmpSel.value ? dataMap[norm(cmpSel.value)] : null;
+      const ic = raw && window.icLocalized ? icLocalized(raw) : raw;
+      // 判定用原文（中文）比對、報告顯示翻譯後的文字：不這樣分，換個語言就會得到不同判定
+      const crit = raw && raw.secondSource
+        ? raw.secondSource.map((m, i) => ({ match: m, show: (ic.secondSource || [])[i] || m }))
+        : null;
+      const lang = window.icLang ? icLang() : 'zh';
       btn.disabled = true; say(ui('cmpBusy'));
       try {
         const [ta, tb] = await Promise.all([DSCompare.extractText(fa), DSCompare.extractText(fb)]);
@@ -323,8 +317,9 @@
         if ((ta + tb).trim().length < 200) { say(ui('cmpNoText'), '#b91c1c'); return; }
         const A = DSCompare.parse(ta, fa.name), B = DSCompare.parse(tb, fb.name);
         const html = DSCompare.reportHTML({
-          A, B, rows: DSCompare.diff(A, B), checks: DSCompare.judge(ic && ic.secondSource, A, B),
-          ic: ic || null, fileA: fa.name, fileB: fb.name,
+          A, B, rows: DSCompare.diff(A, B, lang),
+          checks: DSCompare.judge(crit, A, B, lang),
+          ic: ic || null, fileA: fa.name, fileB: fb.name, lang,
         });
         const w = window.open('', '_blank');
         if (!w) { say(ui('cmpPopup'), '#b91c1c'); return; }

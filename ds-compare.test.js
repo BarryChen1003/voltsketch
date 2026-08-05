@@ -169,5 +169,39 @@ ok('B 的電壓與溫度', B.params.vin.hi === 5.5 && B.params.temp.hi === 105, 
   ok('同文件時全部轉人工', /需人工確認 2</.test(html), (html.match(/需人工確認 \d+</) || [])[0]);
 }
 
+/* ---------- 7) 多語言 ---------- */
+{
+  const langs = DS.LANGS;
+  ok('支援四語', langs.join(',') === 'zh,en,ja,ko', langs.join(','));
+
+  const crit = ['封裝 + pinout 相容', 'AVDD 範圍涵蓋', '工作溫度範圍涵蓋'];
+  const base = DS.judge(crit, A, B, 'zh').map(x => x.verdict).join(',');
+  langs.forEach(l => {
+    const v = DS.judge(crit, A, B, l).map(x => x.verdict).join(',');
+    ok('判定與語言無關（' + l + '）', v === base, v + ' vs ' + base);
+  });
+
+  // 準則被翻成別的語言時，仍要用原文比對 —— 否則關鍵字命中不同，判定會跟著語言跑掉
+  const translated = crit.map((m, i) => ({ match: m, show: ['Package + pinout', 'AVDD range', 'Temperature range'][i] }));
+  const vT = DS.judge(translated, A, B, 'en');
+  ok('翻譯後判定不變', vT.map(x => x.verdict).join(',') === base, vT.map(x => x.verdict).join(','));
+  ok('報告顯示的是翻譯後的文字', vT[0].text === 'Package + pinout', vT[0].text);
+
+  langs.forEach(l => {
+    // 英文報告要驗「沒有中文殘留」，準則本身就得是翻譯過的（頁面上由 icLocalized 提供）
+    const c2 = l === 'en' ? translated : crit;
+    const h = DS.reportHTML({ A, B, rows: DS.diff(A, B, l), checks: DS.judge(c2, A, B, l), ic: null, fileA: 'a.pdf', fileB: 'b.pdf', lang: l });
+    ok('報告 html lang=' + l, new RegExp('<html lang="' + (l === 'zh' ? 'zh-Hant' : l) + '"').test(h));
+    ok('報告有列印鈕（' + l + '）', /window\.print\(\)/.test(h));
+    if (l !== 'zh') {
+      // 英文報告不該混中文（日韓本來就有漢字，只驗英文這條）
+      if (l === 'en') {
+        const body = h.replace(/<style>[\s\S]*?<\/style>/, '');
+        ok('英文報告沒有中文殘留', !/[一-鿿]/.test(body), (body.match(/[一-鿿]+/g) || []).slice(0, 3).join(' '));
+      }
+    }
+  });
+}
+
 console.log(`ds-compare.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
