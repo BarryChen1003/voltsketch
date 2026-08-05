@@ -206,14 +206,17 @@ if (process.argv.includes('--selftest')) {
 }
 
 // ── 掃全部圖 ──
+// --lang=zh|en|ja|ko：換語言後字寬變、元件不動，仍要確認字沒壓到符號。
 global.window = {};
+global.window.ART_LANG = (process.argv.find(a => a.startsWith('--lang=')) || '=zh').split('=')[1] || 'zh';
 require('./schematic-symbols.js');
+require('./knowledge-art-i18n.js');
 require('./knowledge-circuits2.js');
 const ART2 = global.window.CIRCUITS2 || {};
 const kjs = fs.readFileSync('./knowledge.js', 'utf8');
 const a = kjs.indexOf('const CircuitSVG = {'), b = kjs.indexOf('const knowledgeApp = {');
 const CircuitSVG = new Function('window', kjs.slice(a, b) + '\nreturn CircuitSVG;')(global.window);
-const HELPERS = new Set(['wrap', 'capToGnd', 'blk', 'arw', '_transformer', 'switcher', 'normalizeSvgScale']);
+const HELPERS = new Set(['wrap', '_S', 'capToGnd', 'blk', 'arw', '_transformer', 'switcher', 'normalizeSvgScale']);
 
 const figures = [];
 for (const id of Object.keys(ART2)) {

@@ -17,7 +17,9 @@
 'use strict';
 
 global.window = {};
+global.window.ART_LANG = (process.argv.find(a => a.startsWith('--lang=')) || '=zh').split('=')[1] || 'zh';
 require('./schematic-symbols.js');
+require('./knowledge-art-i18n.js');
 require('./knowledge-circuits2.js');
 const CIRCUITS = global.window.CIRCUITS2;
 

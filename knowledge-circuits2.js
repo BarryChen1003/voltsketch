@@ -8,6 +8,18 @@
   const MUT = '#64748b', ACC = '#1f4fd1', RED = '#dc2626', GRN = '#16a34a', ORG = '#d97706';
   const C = '#1d2943';
   const S = () => window.Sym;
+  // ── 圖內文字的語言 ──
+  // 圖上每個字都經過 tr()：查 window.ART_I18N（knowledge-art-i18n.js，key 是中文原文）。
+  // 查不到就回原文，所以字典缺一條不會讓圖畫不出來，只會該條維持中文。
+  // 為什麼 tr 要在 T()/A()/B() 的**入口**做：A() 的自動閃避與 _lblBox 是照字寬算的，
+  // 拿中文寬去排英文字＝排完照樣重疊。譯文先換上去，寬度計算才是真的。
+  // tr 可重複套用（字典的 key 一定含中日韓字元，譯文再查一次是 no-op）。
+  let LANG = 'zh';
+  const tr = s => {
+    if (LANG === 'zh' || typeof s !== 'string') return s;
+    const e = (window.ART_I18N || {})[s];
+    return (e && e[LANG]) || s;
+  };
   // 全圖統一放大係數。以「光耦隔離回授」那張的觀感為基準（圖形與字都 ×1.3）：
   // 等比放大不會改變任何相對位置，所以不會製造新的圖字重疊。
   const K = 1.3;
@@ -15,6 +27,7 @@
   // T：文字。同時登錄字框，讓 A() 的標籤自動閃避時知道哪裡已經有字。
   const T = (x, y, s, o) => {
     o = o || {};
+    s = tr(s);
     TXT.push(_lblBox(x, y, s, o.size || 11, o.anchor || 'middle'));
     return S().txt(x, y, s, o);
   };
@@ -85,6 +98,8 @@
   // 方塊：置中標題＋小字副標（可陣列）；同時登錄幾何供吸附
   function B(x, y, w, h, name, sub, o) {
     o = o || {};
+    name = tr(name);
+    sub = Array.isArray(sub) ? sub.map(tr) : tr(sub);
     REG.push([x - w / 2, y - h / 2, w, h]);
     let g = `<rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="4" fill="${o.fill || '#fff'}" stroke="${o.color || C}" stroke-width="${o.sw || 1.6}"${o.dash ? ` stroke-dasharray="${o.dash}"` : ''}/>`;
     const lines = [].concat(sub || []);
@@ -103,6 +118,7 @@
   // 箭頭（含標籤；起點與箭尖都吸附）
   function A(x1, y1, x2, y2, lbl, o) {
     o = o || {};
+    lbl = tr(lbl);                     // 先換成譯文，_dodge 才是照譯文的寬度閃避
     const p1 = _snapToRects(x2, y2, x1, y1);
     const p2 = _snapToRects(p1[0], p1[1], x2, y2);
     x1 = p1[0]; y1 = p1[1]; x2 = p2[0]; y2 = p2[1];
@@ -1711,11 +1727,16 @@
   // （否則畫在方塊「之前」的連線吸不到該方塊）
   const OUT = {};
   Object.keys(M).forEach(id => {
-    OUT[id] = () => {
+    // lang：'zh'（預設）| 'en' | 'ja' | 'ko'。沒傳就看 window.ART_LANG。
+    // 語言必須在 pass 1 之前設好——pass 1 登錄的字框是給自動閃避用的，
+    // 用中文寬登錄、用英文寬繪製，閃避就是照錯的寬度算的。
+    OUT[id] = (lang) => {
+      LANG = lang || window.ART_LANG || 'zh';
       REG = []; PTS = []; TXT = []; LNS = [];
       M[id]();            // pass 1：登錄方塊/腳位
-      return M[id]();     // pass 2：draw-time 吸附繪製
-
+      const r = M[id]();  // pass 2：draw-time 吸附繪製
+      if (r && r.d) r.d = tr(r.d);
+      return r;
     };
   });
   window.CIRCUITS2 = OUT;

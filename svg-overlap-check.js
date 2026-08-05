@@ -26,7 +26,10 @@
 'use strict';
 
 global.window = {};
+// --lang=zh|en|ja|ko：譯文比中文寬，同一張圖在四種語言下要各驗一次。
+global.window.ART_LANG = (process.argv.find(a => a.startsWith('--lang=')) || '=zh').split('=')[1] || 'zh';
 require('./schematic-symbols.js');
+require('./knowledge-art-i18n.js');
 require('./knowledge-circuits2.js');
 const ART = global.window.CIRCUITS2 || {};
 

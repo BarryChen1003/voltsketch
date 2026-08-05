@@ -1,6 +1,25 @@
 // === 電路圖建構器（用 schematic-symbols.js 真實符號，避免框框/文字壓圖）===
 // 回傳純 SVG 字串，可正常存入 localStorage。
 const CircuitSVG = {
+  // 圖內文字的語言：所有 S.txt 都走 window.ART_I18N（knowledge-art-i18n.js，key 是中文原文），
+  // 與 knowledge-circuits2.js 共用同一本字典。查不到就回原文，字典缺一條不會讓圖畫不出來。
+  // 語言由 window.ART_LANG 決定（openDetail 在畫圖前設）。
+  _S() {
+    const S = window.Sym; if (!S) return null;
+    if (S.__artI18n) return S.__artI18n;
+    const w = Object.create(S);
+    w.txt = (x, y, s, o) => {
+      const L = window.ART_LANG || 'zh';
+      if (L !== 'zh' && typeof s === 'string') {
+        const e = (window.ART_I18N || {})[s];
+        if (e && e[L]) s = e[L];
+      }
+      return S.txt(x, y, s, o);
+    };
+    try { Object.defineProperty(S, '__artI18n', { value: w }); } catch (e) { S.__artI18n = w; }
+    return w;
+  },
+
   // pad：畫布邊距（負 viewBox 原點）。用來納入超出 0,0 的標籤，元件座標完全不動。
   // 全圖統一放大 K 倍（以「光耦隔離回授」那張的圖形/字級觀感為基準）。
   // 等比放大不動相對位置 → 不會製造新的圖字重疊。
@@ -13,7 +32,7 @@ const CircuitSVG = {
 
   // Level Shift（BSS138 雙向電平轉換）
   levelShift() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const p = S.pins.nmos(160, 120); // g=130,120 / s=186,100 / d=186,140
     let g = '';
     // VCCA 3.3V 電源旗標(向上) + R1 + 閘極
@@ -43,7 +62,7 @@ const CircuitSVG = {
 
   // 基本 LDO：pass PMOS（含體二極體）+ 誤差放大器 + 基準 + 回授分壓
   ldoBasic() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // Vin → pass PMOS 源極(156,30)
     g += S.line(14, 30, 156, 30); g += S.txt(12, 23, 'Vin', { anchor: 'start', size: 9, fill: '#64748b' });
@@ -85,7 +104,7 @@ const CircuitSVG = {
 
   // MOSFET 低端開關
   mosfetSwitch() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const p = S.pins.nmos(150, 120); // s=[176,100]上, d=[176,140]下, g=[120,120]
     let g = '';
     // V+ → 負載 → 上端子（汲極）
@@ -113,7 +132,7 @@ const CircuitSVG = {
 
   // 切換式電源（buck/boost/buck-boost 共用骨架）
   switcher(opt) {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const icPins = opt.icPins || { l: ['VIN', 'EN'], r: ['SW', 'FB'] };
     const cx = 95, cy = 78, ww = 70;
     const leadR = S.pins.icLeadR(cx, ww), leadL = S.pins.icLeadL(cx, ww); // 144 / 46
@@ -170,7 +189,7 @@ const CircuitSVG = {
   // A 功率級：下管改 FET（同步整流）＋ HS 需 C_BOOT；B 控制環：電流感測→斜率補償→
   // PWM 比較器（電壓模式這裡是固定鋸齒波）、EA→COMP 只需 Type II（Rc+Cc）、CLK→SR 定頻。
   currentModeBuck() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // ── A. 功率級 ──
     g += S.txt(14, 13, 'A. 功率級：同步整流', { anchor: 'start', size: 9.5, weight: 'bold' });
@@ -223,7 +242,7 @@ const CircuitSVG = {
   // 導通時 Vin→SW→L→GND 儲能；關斷時電感電流續流，改由 −Vout 經二極體灌回 SW，
   // 所以輸出對系統地為負。與 Buck 的差別就在電感接地、二極體反向、IC 地浮在 −Vout。
   invertingBuckBoost() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const cx = 95, cy = 70, ww = 70;
     const leadL = S.pins.icLeadL(cx, ww), leadR = S.pins.icLeadR(cx, ww);   // 46 / 144
     const swY = S.icPinY(cy, 2, 0), gndY = S.icPinY(cy, 2, 1);              // 61 / 79
@@ -257,7 +276,7 @@ const CircuitSVG = {
   },
 
   boost() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const p = S.pins.nmos(150, 90); // s=[176,70]上, d=[176,110]下, g=[120,90]
     let g = '';
     g += S.line(20, 50, 46, 50); g += S.txt(18, 42, 'Vin', { anchor: 'start', size: 9, fill: '#64748b' });
@@ -277,7 +296,7 @@ const CircuitSVG = {
 
   // I2C 匯流排
   i2cBus() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const mcuLead = S.pins.icLeadR(40, 44);   // 76
     const senLead = S.pins.icLeadL(200, 50);  // 161
     const sdaY = S.icPinY(90, 2, 0), sclY = S.icPinY(90, 2, 1); // 81 / 99
@@ -300,7 +319,7 @@ const CircuitSVG = {
 
   // SPI 匯流排
   spiBus() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const mLead = S.pins.icLeadR(40, 46), sLead = S.pins.icLeadL(210, 46); // 77 / 173
     const names = ['SCLK', 'MOSI', 'MISO', 'CS'];
     let g = '';
@@ -315,7 +334,7 @@ const CircuitSVG = {
 
   // LDO 低噪聲（含 NR/旁路電容）
   ldoNoise() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const cx = 112, ww = 78;
     const leadL = S.pins.icLeadL(cx, ww), leadR = S.pins.icLeadR(cx, ww); // 59 / 165
     const inY = S.icPinY(60, 2, 0), outY = S.icPinY(60, 2, 0), nrY = S.icPinY(60, 2, 1); // 51 / 51 / 69
@@ -333,7 +352,7 @@ const CircuitSVG = {
 
   // 反相放大器（Vin→Rg→−，Rf 回授，+ 接地；增益 −Rf/Rg）
   opamp() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // 運放三角（− 上、+ 下）
     g += `<polygon points="75,40 75,100 130,70" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
@@ -355,7 +374,7 @@ const CircuitSVG = {
 
   // ESD/TVS 保護
   esdTVS() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 40, 200, 40);
     g += S.txt(20, 32, 'I/O', { anchor: 'start', size: 9, fill: '#64748b' });
@@ -374,7 +393,7 @@ const CircuitSVG = {
   // 舊版只有一顆閘極接地的 MOS，看不出保護在哪：沒有負載、沒有迴路、也沒說明正接/反接的行為。
   // 這裡畫完整迴路，並標出關鍵：汲極朝電源、源極朝負載 → 反接時體二極體逆偏＋通道關斷。
   reversePolarity() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const MUT = '#64748b';
     let g = '';
     // P-MOS：flip 讓上=汲極（接電源）、下=源極（接負載），體二極體陰極因此落在源極側
@@ -401,7 +420,7 @@ const CircuitSVG = {
 
   // 去耦電容配置
   decoupling() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const xs = [56, 116, 176], vals = ['10µF', '100nF', '1nF'];
     let g = '';
     // 匯流排止於 x=192（IC 方框左緣 216 之前），不越過方框；再折下去接 VCC 腳引線末端 (202,62)
@@ -418,7 +437,7 @@ const CircuitSVG = {
 
   // 共模扼流圈
   commonModeChoke() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 40, 60, 40); g += S.inductor(85, 40, {}); g += S.line(110, 40, 200, 40);
     g += S.line(20, 80, 60, 80); g += S.inductor(85, 80, {}); g += S.line(110, 80, 200, 80);
@@ -432,7 +451,7 @@ const CircuitSVG = {
 
   // TVS 選型示意
   tvsSelect() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 40, 90, 40); g += S.junction(90, 40);
     g += S.txt(20, 32, 'Vbus', { anchor: 'start', size: 9, fill: '#64748b' });
@@ -446,7 +465,7 @@ const CircuitSVG = {
 
   // LED 驅動（定電流 + 串接 LED）
   ledDriver() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.rail(40, 15, 'V+'); g += S.line(40, 15, 40, 35);
     // LED 串（垂直，旋轉後引線在 ±22）
@@ -464,7 +483,7 @@ const CircuitSVG = {
   // 電池充電（簡化接線：VBUS→CIN→充電 IC→COUT→電池；ISET 電阻設定充電電流）
   // 刻意省略 NTC/TS 與 STAT 指示，卡片圖說已標明；STAT 若要畫必須配上拉＋限流，不畫懸空腳。
   batteryCharger() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const leadL = S.pins.icLeadL(155, 86), leadR = S.pins.icLeadR(155, 86);  // 98 / 212
     const yVin = S.icPinY(72, 2, 0), yIset = S.icPinY(72, 2, 1);             // 63 / 81
     let g = '';
@@ -497,7 +516,7 @@ const CircuitSVG = {
   // 舊版畫成高側（Vbus—Rshunt—負載），與卡片圖說「低側」不符；而且 INA 的兩條輸入線
   // 一條停在三角形左邊 10px 外、一條插進三角形裡，等於整個放大器沒接。整張重畫。
   currentSensing() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const MUT = '#64748b';
     let g = '';
     // V_bus → 負載 → 回流 → Rshunt → 地
@@ -524,7 +543,7 @@ const CircuitSVG = {
   // 差分對走線。舊版只有兩條分開很遠的線＋一顆 Rt：卡片說的四個要點（阻抗、等長、
   // 緊耦合、對稱）一個都沒畫出來，而阻抗其實是由 w/s/h 決定的 → 補截面圖。
   diffPair() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const MUT = '#64748b', RED = '#dc2626', ACC = '#1f4fd1';
     let g = '';
     // ── A. 截面：w／s／h 決定阻抗 ──
@@ -553,7 +572,7 @@ const CircuitSVG = {
 
   // 阻抗匹配（源 + 串聯 R + 線 + 負載）
   impedance() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // 驅動端（buffer）
     g += `<polygon points="24,50 24,80 52,65" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
@@ -577,7 +596,7 @@ const CircuitSVG = {
 
   // USB 差分（含 AC 耦合）
   usbDiff() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 40, 90, 40, { color: '#dc2626' }); g += S.txt(20, 32, 'SSTX+', { anchor: 'start', size: 8, fill: '#dc2626' });
     g += `<g transform="rotate(90 110 40)">${S.capacitor(110, 40, {})}</g>`;
@@ -591,7 +610,7 @@ const CircuitSVG = {
 
   // EMI π 型濾波
   emiFilter() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // In → C1 節點 → L → C2 節點 → Out（電感引線對齊，不留縫）
     g += S.line(20, 45, 60, 45); g += S.txt(18, 37, 'In', { anchor: 'start', size: 9, fill: '#64748b' });
@@ -607,7 +626,7 @@ const CircuitSVG = {
 
   // PDN 電容陣列
   pdn() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const vals = ['100µF', '10µF', '1µF', '100nF', '10nF'];
     const xs = vals.map((_, i) => 56 + i * 66); // 拉寬間距，容值放電容旁不打架
     let g = '';
@@ -625,7 +644,7 @@ const CircuitSVG = {
 
   // 車用瞬態保護
   automotiveTransient() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 45, 50, 45); g += S.txt(20, 37, 'VBAT', { anchor: 'start', size: 9, fill: '#64748b' });
     // 反向保護二極體
@@ -642,7 +661,7 @@ const CircuitSVG = {
 
   // ADC/DAC 參考與濾波
   adcDac() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const leadL = S.pins.icLeadL(110, 80); // 56
     const ainY = S.icPinY(70, 2, 0), vrefY = S.icPinY(70, 2, 1); // 61 / 79
     let g = '';
@@ -660,7 +679,7 @@ const CircuitSVG = {
 
   // 嵌入式電源樹
   embeddedPower() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // 5V → Buck → 3.3V
     g += S.line(10, 40, S.pins.icLeadL(70, 58), 40); g += S.txt(10, 33, '5V', { anchor: 'start', size: 9, fill: '#64748b' });
@@ -698,7 +717,7 @@ const CircuitSVG = {
 
   // Flyback 返馳式隔離轉換器
   flyback() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const p = S.pins.nmos(70, 120); // s=[96,100]上, d=[96,140]下, g=[40,120]
     let g = '';
     // 一次側：Vin → 變壓器一次上；一次下(96,100) = MOSFET 上端子(汲極)
@@ -719,7 +738,7 @@ const CircuitSVG = {
 
   // 半橋（高低側 NMOS）
   halfBridge() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const hs = S.pins.nmos(150, 55), ls = S.pins.nmos(150, 120);
     let g = '';
     g += S.rail(176, 15, 'V+'); g += S.line(176, 15, hs.s[0], hs.s[1]); // 15 → (176,35) 高側上端子
@@ -738,7 +757,7 @@ const CircuitSVG = {
 
   // 閘極驅動 IC + 自舉供電
   gateDriver() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const leadL = S.pins.icLeadL(70, 56), leadR = S.pins.icLeadR(70, 56); // 28 / 112
     const hoY = S.icPinY(70, 2, 0), loY = S.icPinY(70, 2, 1);             // 61 / 79
     let g = '';
@@ -753,7 +772,7 @@ const CircuitSVG = {
   // 遲滯比較器（Schmitt）
   // 運放九種基本組態一覽（原本是卡片內嵌的 250×100 小表、字級 6px）
   opampConfigs() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const MUT = '#64748b';
     const rows = [
       [['反相放大', 'Av = −Rf/Rin'], ['同相放大', 'Av = 1 + Rf/Rin'], ['差分放大', 'Vout = (Rf/R1)(V2−V1)']],
@@ -775,7 +794,7 @@ const CircuitSVG = {
   // 舊版兩條輸入線都停在 x=50、三角形左緣卻在 x=60 → 差 10px 沒接上（看起來線不見了）；
   // 同相端也只有 Rf、沒有對地電阻，門檻分壓根本不成立。整張重接。
   comparator() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const MUT = '#64748b';
     let g = '';
     g += `<polygon points="60,30 60,80 120,55" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
@@ -801,7 +820,7 @@ const CircuitSVG = {
   // RC 延遲上電（電源上電順序）。卡片原本內嵌的小圖畫布只有 200×70、字級 5–8px，
   // 跟全站標準差一截 → 改用 Sym 重畫，走 wrap() 拿到統一的 ×1.3 與 9px 字級。
   rcDelaySeq() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const MUT = '#64748b';
     let g = '';
     g += S.txt(16, 44, 'Power_EN', { anchor: 'start', size: 9, fill: MUT });
@@ -820,7 +839,7 @@ const CircuitSVG = {
   // 舊版問題：REF 那條線是一截 L 形空接（沒接到任何東西）、沒有外部分壓、也沒有 Vout 節點，
   // 用 2 腳二極體符號當 3 腳元件畫。改成方塊＋三支腳，接線全部接實，最後整組放大 1.25×。
   tl431() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const MUT = '#64748b';
     let g = '';
     // 被穩壓的輸出軌
@@ -852,7 +871,7 @@ const CircuitSVG = {
 
   // RC 低通濾波
   rcLowpass() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 45, 50, 45); g += S.txt(20, 37, 'Vin', { anchor: 'start', size: 9, fill: '#64748b' });
     g += S.resistor(75, 45, { horizontal: true, label: 'R' });
@@ -868,7 +887,7 @@ const CircuitSVG = {
   // 舊版晶體只有 10x10 的小方塊、兩極板相距 14px，縮圖後根本看不出是晶體。
   // 這裡把晶體放大（極板間距 18px、本體 18x10）、XI/XO 兩軌上下拉開，負載電容各自落地不交叉。
   crystalOsc() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const MUT = '#64748b';
     const leadR = S.pins.icLeadR(55, 40);                       // 89
     const xiY = S.icPinY(60, 2, 0), xoY = S.icPinY(60, 2, 1);   // 51 / 69
@@ -894,7 +913,7 @@ const CircuitSVG = {
 
   // NTC 熱敏分壓
   ntcThermistor() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.rail(60, 15, 'Vcc'); g += S.line(60, 15, 60, 30);
     g += S.resistor(60, 55, { horizontal: false, label: 'R 上拉' });
@@ -908,7 +927,7 @@ const CircuitSVG = {
 
   // 熱插拔 / 浪湧限流（垂直串聯 MOSFET）
   hotSwap() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const p = S.pins.nmos(170, 100); // s=[196,80]上, d=[196,120]下, g=[140,100]
     let g = '';
     // Vin → Rsense → 上端子(汲極) → 下端子(源極) → 負載
@@ -930,7 +949,7 @@ const CircuitSVG = {
   // 舊版把兩側塞在同一個方框裡，而且「光電晶體」根本只有兩截短線（沒有電晶體符號），
   // 也沒畫出隔離界線與兩側各自的地。整張重畫，最後整組放大 1.3×。
   optocoupler() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const MUT = '#64748b';
     let g = '';
     // ── 輸入側：In → Rf 限流 → LED（陽極上、陰極下）→ 返回 ──
@@ -968,7 +987,7 @@ const CircuitSVG = {
 
   // ORing / 理想二極體
   oring() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 35, 45, 35); g += S.txt(20, 27, 'A路', { anchor: 'start', size: 8, fill: '#64748b' });
     g += S.diode(67, 35, {}); g += S.line(89, 35, 130, 35); g += S.junction(130, 35);
@@ -981,7 +1000,7 @@ const CircuitSVG = {
 
   // 電荷泵倍壓（Dickson）
   chargePump() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 40, 45, 40); g += S.txt(20, 32, 'Vin', { anchor: 'start', size: 8, fill: '#64748b' });
     g += S.diode(67, 40, {}); g += S.line(89, 40, 130, 40); g += S.junction(110, 40);
@@ -997,7 +1016,7 @@ const CircuitSVG = {
 
   // 整流橋（菱形，二極體陰極朝 V+、陽極朝 V−）
   bridgeRectifier() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // 四顆二極體：節點 AC1(74,51/59) AC2(146,51/59) V+(106/114,19) V-(106/114,91)
     g += `<g transform="rotate(-45 90 35)">${S.diode(90, 35, {})}</g>`;   // AC1→V+
@@ -1019,7 +1038,7 @@ const CircuitSVG = {
 
   // H 橋馬達驅動（4× NMOS）
   hBridge() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const q1 = S.pins.nmos(60, 55), q3 = S.pins.nmos(180, 55);
     const q2 = S.pins.nmos(60, 120), q4 = S.pins.nmos(180, 120);
     let g = '';
@@ -1048,7 +1067,7 @@ const CircuitSVG = {
 
   // 負載開關（PMOS，垂直串聯）
   loadSwitch() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const p = S.pins.nmos(90, 45); // s=[116,25]上, d=[116,65]下, g=[60,45]
     let g = '';
     // Vin → 源極(上) ；汲極(下) → 負載
@@ -1063,7 +1082,7 @@ const CircuitSVG = {
 
   // RC 緩衝（Snubber）
   rcSnubber() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 40, 60, 40); g += S.junction(60, 40); g += S.txt(20, 32, '開關節點', { anchor: 'start', size: 8, fill: '#64748b' });
     g += S.line(60, 40, 130, 40); g += S.junction(130, 40); g += S.txt(132, 38, '→ 整流', { anchor: 'start', size: 8, fill: '#64748b' });
@@ -1077,7 +1096,7 @@ const CircuitSVG = {
 
   // Forward 正激式隔離轉換器（變壓器 + 一次 MOSFET + 二次整流/續流 + LC）
   forwardConverter() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const p = S.pins.nmos(70, 120); // s=[96,100]上(汲), d=[96,140]下(源), g=[40,120]
     let g = '';
     g += S.rail(60, 18, 'Vin'); g += S.line(60, 18, 60, 40); g += S.line(60, 40, 96, 40);
@@ -1101,7 +1120,7 @@ const CircuitSVG = {
 
   // CAN 收發器節點（含 120Ω 終端）
   canTransceiver() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const leadL = S.pins.icLeadL(70, 70), leadR = S.pins.icLeadR(70, 70); // 21 / 119
     const txdY = S.icPinY(70, 2, 0), rxdY = S.icPinY(70, 2, 1);  // 61 / 79
     const hY = S.icPinY(70, 2, 0), lY = S.icPinY(70, 2, 1);      // CANH 61 / CANL 79
@@ -1121,7 +1140,7 @@ const CircuitSVG = {
 
   // RS-485 收發器（半雙工，120Ω 終端）
   rs485Transceiver() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const leadL = S.pins.icLeadL(70, 70), leadR = S.pins.icLeadR(70, 70); // 21 / 119
     const aY = S.icPinY(78, 2, 0), bY = S.icPinY(78, 2, 1); // A 69 / B 87
     let g = '';
@@ -1137,7 +1156,7 @@ const CircuitSVG = {
 
   // 繼電器驅動（低端 NMOS + 線圈 + 飛輪二極體）
   relayDriver() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const p = S.pins.nmos(120, 120); // s=[146,100]上(汲), d=[146,140]下(源), g=[90,120]
     let g = '';
     g += S.rail(146, 15, 'V+'); g += S.line(146, 15, 146, 31);
@@ -1158,7 +1177,7 @@ const CircuitSVG = {
 
   // 惠斯通電橋（4 電阻 + 差動輸出）
   wheatstoneBridge() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // 上節點 V+ (y=20)，下節點 GND (y=140)，左中(60,80) 右中(160,80)
     g += S.rail(110, 8, 'V+'); g += S.line(60, 20, 160, 20);   // 桿子 8→20 剛好落在橫軌上
@@ -1180,7 +1199,7 @@ const CircuitSVG = {
 
   // 電流鏡（NPN，Q1 二極體接法 + Q2 鏡像）
   currentMirror() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const q1 = S.pins.bjt(90, 105), q2 = S.pins.bjt(170, 105); // b/c/e
     let g = '';
     // Vcc 軌。rail(x,y) 的桿子是 y→y+12：桿子末端必須剛好落在橫軌上，
@@ -1205,7 +1224,7 @@ const CircuitSVG = {
 
   // NPN 低端開關
   bjtSwitch() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const q = S.pins.bjt(120, 110); // b=[94,110], c=[128,80], e=[128,140]
     let g = '';
     // Vcc → 負載 RL → 集極
@@ -1226,7 +1245,7 @@ const CircuitSVG = {
 
   // 推挽轉換器（中心抽頭一次側 + 兩開關交替 + 中心抽頭二次全波整流）
   pushPull() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // 一次側中心抽頭（水平兩半繞組）
     g += S.inductor(100, 48, {}); g += S.inductor(252, 48, {}); // 76..124 / 228..276
@@ -1261,7 +1280,7 @@ const CircuitSVG = {
 
   // 全橋轉換器（4 開關橋臂驅動變壓器一次側；二次側橋式整流）
   fullBridge() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const q1 = S.pins.nmos(60, 60), q3 = S.pins.nmos(200, 60);
     const q2 = S.pins.nmos(60, 120), q4 = S.pins.nmos(200, 120);
     let g = '';
@@ -1291,7 +1310,7 @@ const CircuitSVG = {
 
   // Zener 並聯穩壓（Rs 限流 + Zener 箝位）
   zenerReg() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 45, 50, 45); g += S.txt(18, 37, 'Vin', { anchor: 'start', size: 9, fill: '#64748b' });
     g += S.resistor(75, 45, { horizontal: true, label: 'Rs' }); // 51..99
@@ -1308,7 +1327,7 @@ const CircuitSVG = {
 
   // PWM 控制（鋸齒 vs 誤差電壓 → 比較器 → PWM）
   pwmControl() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // 鋸齒波 → 比較器 +
     g += `<polyline points="20,40 40,28 40,40 60,28 60,40 80,28 80,40" fill="none" stroke="${S.color}" stroke-width="2"/>`;
@@ -1330,7 +1349,7 @@ const CircuitSVG = {
 
   // DDR / VTT 終端（串聯 + 並聯到 VTT=Vdd/2）
   ddrTermination() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // 驅動端
     g += `<polygon points="24,40 24,70 50,55" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
@@ -1352,7 +1371,7 @@ const CircuitSVG = {
   // 舊版：光二極體的三角形（x 32..48）與 + 端接地符號的橫槓（x 48..72、y 78）
   // 剛好貼在一起，看起來像二極體和接地黏成一塊。整張往下重排，兩個接地分開放。
   photodiodeTia() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const MUT = '#64748b';
     let g = '';
     // 光二極體：陽極（上）→ 虛地（− 端），陰極（下）→ 地 ⇒ 光電流灌進 − 節點，Vout 為負
@@ -1378,7 +1397,7 @@ const CircuitSVG = {
 
   // 儀表放大器（3-opamp INA）：兩級輸入緩衝(A1/A2)+Rg 設增益，A3 差動級除共模。
   instrumentationAmp() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const col = S.color;
     let g = '';
     // ---- A1 輸入緩衝（上）----
@@ -1438,7 +1457,7 @@ const CircuitSVG = {
 
   // 雙 FET 防漏 / 開汲極域隔離（兩級 NMOS 開汲極緩衝，上拉接 STBY）
   preventLeakage() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // VCC_3V3_STBY 軌 + 旗標
     g += S.line(64, 34, 182, 34);   // 舊版畫到 300：右端多出 118px 空線頭
@@ -1482,7 +1501,7 @@ const CircuitSVG = {
 
   // Bandgap 基準：概念圖（CTAT VBE + PTAT ΔVBE → 溫度無關 Vref≈1.2V）
   bandgapConcept() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const col = S.color;
     let g = '';
     function box(x, y, w, h, t1, t2) {
@@ -1514,7 +1533,7 @@ const CircuitSVG = {
 
   // Bandgap 核心 schematic：運放強制 VA=VB，左 Q1(×1)、右 R3+Q2(×N)，Vref=VBE+M·ΔVBE
   bandgapCore() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const col = S.color;
     let g = '';
     // Vref 軌
@@ -1554,7 +1573,7 @@ const CircuitSVG = {
 
   // 電源監控 / Reset IC（voltage supervisor）：VCC<Vth → 開汲極 /RST 拉低 + 延時
   powerSupervisor() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     // VCC 軌 + 旗標
     g += S.line(50, 40, 290, 40); g += S.junction(50, 40); g += S.junction(245, 40);
@@ -1579,7 +1598,7 @@ const CircuitSVG = {
 
   // 比較器 vs 運放：並排對比（左=開迴路比較器+遲滯、右=閉迴路運放）
   comparatorVsOpamp() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     const col = S.color;
     let g = '';
     // ---- 左：比較器 ----
@@ -1610,7 +1629,7 @@ const CircuitSVG = {
 
   // RC 高通濾波（C 串聯，R 對地）
   rcHighpass() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 45, 38, 45); g += S.txt(18, 37, 'Vin', { anchor: 'start', size: 9, fill: '#64748b' });
     g += `<g transform="rotate(90 60 45)">${S.capacitor(60, 45, {})}</g>`;
@@ -1626,7 +1645,7 @@ const CircuitSVG = {
 
   // RC 時間延遲（R 串聯，C 對地，節點電壓以 τ=RC 上升）
   rcDelay() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += S.line(20, 45, 50, 45); g += S.txt(18, 37, 'Vin階躍', { anchor: 'start', size: 8, fill: '#64748b' });
     g += S.resistor(75, 45, { horizontal: true, label: 'R' });
@@ -1639,7 +1658,7 @@ const CircuitSVG = {
 
   // 運放積分器（Vin→R→−，C 回授，+ 接地）
   opIntegrator() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += `<polygon points="75,40 75,100 130,70" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
     g += S.txt(82, 57, '−', { size: 11, raw: true }); g += S.txt(82, 86, '+', { size: 11, raw: true });
@@ -1658,7 +1677,7 @@ const CircuitSVG = {
 
   // 運放微分器（Vin→C→−，R 回授，+ 接地）
   opDifferentiator() {
-    const S = window.Sym; if (!S) return '';
+    const S = this._S(); if (!S) return '';
     let g = '';
     g += `<polygon points="75,40 75,100 130,70" fill="#fff" stroke="${S.color}" stroke-width="2"/>`;
     g += S.txt(82, 57, '−', { size: 11, raw: true }); g += S.txt(82, 86, '+', { size: 11, raw: true });
@@ -1721,10 +1740,11 @@ const knowledgeApp = {
     localStorage.setItem('knowledgeBase', JSON.stringify(this.items));
   },
 
-  // 以新符號電路覆蓋舊框框電路（離散元件主題；PCB 疊層/Via/散熱等示意圖維持原樣）
-  applyCircuitArt(data) {
-    if (typeof CircuitSVG === 'undefined' || !window.Sym) return;
-    const map = {
+  // 哪張卡掛哪個 CircuitSVG 圖。抽成方法是因為切語言時要重畫（localizedCircuits），
+  // 兩邊共用同一份對照表，不能各存一份（改了一邊忘另一邊，圖就會跟語言對不上）。
+  circuitArtMap() {
+    if (typeof CircuitSVG === 'undefined' || !window.Sym) return {};
+    return {
       'buck-converter': () => CircuitSVG.switcher({ ic: 'Buck', icPins: { l: ['VIN', 'EN'], r: ['SW', 'FB'] } }),
       // 進階卡不能沿用 switcher（會跟基本 Buck 卡畫出同一張圖，只有 IC 標籤不同）
       'buck-converter-advanced': () => CircuitSVG.currentModeBuck(),
@@ -1754,11 +1774,22 @@ const knowledgeApp = {
       'adc-dac-basics': () => CircuitSVG.adcDac(),
       'embedded-power-design': () => CircuitSVG.embeddedPower()
     };
-    // 少數卡的自動圖不是第一張：battery-charger 第一張是充電曲線，接線圖排第二，
-    // 直接蓋 [0] 會讓「CC-CV 充電曲線」標題底下出現接線圖（標題與圖不符）。
-    const artIndex = { 'battery-charger': 1 };
-    // 一張卡兩張圖：第二張另外填（op-amp-basics 的九種組態表）
-    const artSecond = { 'op-amp-basics': () => CircuitSVG.opampConfigs() };
+  },
+  // 少數卡的自動圖不是第一張：battery-charger 第一張是充電曲線，接線圖排第二，
+  // 直接蓋 [0] 會讓「CC-CV 充電曲線」標題底下出現接線圖（標題與圖不符）。
+  circuitArtIndex() { return { 'battery-charger': 1 }; },
+  // 一張卡兩張圖：第二張另外填（op-amp-basics 的九種組態表）
+  circuitArtSecond() {
+    if (typeof CircuitSVG === 'undefined' || !window.Sym) return {};
+    return { 'op-amp-basics': () => CircuitSVG.opampConfigs() };
+  },
+
+  // 以新符號電路覆蓋舊框框電路（離散元件主題；PCB 疊層/Via/散熱等示意圖維持原樣）
+  applyCircuitArt(data) {
+    if (typeof CircuitSVG === 'undefined' || !window.Sym) return;
+    const map = this.circuitArtMap();
+    const artIndex = this.circuitArtIndex();
+    const artSecond = this.circuitArtSecond();
     data.forEach(item => {
       const fn = map[item.id];
       if (!fn) return;
@@ -1792,6 +1823,60 @@ const knowledgeApp = {
     // 相對位置完全不變 → 不會製造新的圖字重疊）。
     data.forEach(item => (item.circuits || []).forEach(c => { if (c && c.svg) c.svg = this.normalizeSvgScale(c.svg); }));
     return data;
+  },
+
+  // ── 圖的語言 ──
+  // 卡片文字有 item.i18n，圖沒有：圖的字在 SVG 裡面。三種圖三種換法（見 art-i18n-check.js 檔頭）。
+  // 一律在「要顯示的時候」換，不寫回 this.items——localStorage 存的是中文版，
+  // 切語言不必清快取，也不會把某個語言的圖固化進快取。
+  artText(s, lang) {
+    if (!lang || lang === 'zh' || typeof s !== 'string') return s;
+    const e = (window.ART_I18N || {})[s];
+    return (e && e[lang]) || s;
+  },
+
+  // 靜態內嵌 svg：直接換 <text> 的內容。字典查不到就留中文。
+  // 內容含標籤（tspan 等）的不動——那種字被拆成多段，整段換掉會破壞排版。
+  localizeSvgText(svg, lang) {
+    if (!lang || lang === 'zh' || !svg) return svg;
+    return String(svg).replace(/(<text\b[^>]*>)([^<]*)(<\/text>)/g,
+      (m, open, body, close) => open + this.artText(body, lang) + close);
+  },
+
+  /** 回傳這張卡在指定語言下要顯示的 circuits（不改動 this.items）。 */
+  localizedCircuits(item, lang) {
+    const base = item.circuits || [];
+    if (!lang || lang === 'zh') return base;
+    window.ART_LANG = lang;                       // 自動圖畫的時候會讀它
+    const map = this.circuitArtMap();
+    const artIndex = this.circuitArtIndex();
+    const artSecond = this.circuitArtSecond();
+    const out = base.map(c => Object.assign({}, c));
+    try {
+      // 1) CircuitSVG 掛卡的圖：重畫一次（畫的過程中 S.txt 會換語言）
+      const fn = map[item.id];
+      if (fn) {
+        const idx = artIndex[item.id] || 0;
+        const svg = fn();
+        if (svg && out[idx]) out[idx].svg = this.normalizeSvgScale(svg);
+        const fn2 = artSecond[item.id];
+        if (fn2 && out[1]) { const s2 = fn2(); if (s2) out[1].svg = this.normalizeSvgScale(s2); }
+      }
+      // 2) CIRCUITS2 自動補圖：重畫並換圖說
+      const auto = window.CIRCUITS2 && window.CIRCUITS2[item.id];
+      if (auto && out.length === 1 && out[0].type === 'diagram') {
+        const r = auto(lang);
+        if (r && r.svg) { out[0].svg = this.normalizeSvgScale(r.svg); if (r.d) out[0].description = r.d; }
+      }
+    } catch (e) { /* 單張畫失敗就退回中文那張，不擋整頁 */ }
+    // 3) 其餘（卡片自帶的內嵌 svg）換字；圖說一律查字典
+    out.forEach((c, i) => {
+      if (!c) return;
+      if (!(map[item.id] && (artIndex[item.id] || 0) === i) && !(window.CIRCUITS2 && window.CIRCUITS2[item.id]))
+        c.svg = this.localizeSvgText(c.svg, lang);
+      c.description = this.artText(c.description, lang);
+    });
+    return out;
   },
 
   normalizeSvgScale(svg) {
@@ -4396,7 +4481,7 @@ const knowledgeApp = {
         ${this.formatPrinciples(item.principles)}
       </div>
 
-      ${(item.circuits || []).map(circuit => `
+      ${this.localizedCircuits(item, _L).map(circuit => `
         <div class="detail-section">
           <h3>${circuit.description}</h3>
           <div class="circuit-image">

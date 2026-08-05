@@ -25,8 +25,11 @@
 const fs = require('fs');
 
 // ── 載入圖庫 ──
+// --lang=zh|en|ja|ko：圖上的字換語言後幾何會變（譯文比中文寬），四語都要驗。
 global.window = {};
+global.window.ART_LANG = (process.argv.find(a => a.startsWith('--lang=')) || '=zh').split('=')[1] || 'zh';
 require('./schematic-symbols.js');
+require('./knowledge-art-i18n.js');
 require('./knowledge-circuits2.js');
 const ART2 = global.window.CIRCUITS2 || {};
 
@@ -35,7 +38,7 @@ const a = kjs.indexOf('const CircuitSVG = {');
 const b = kjs.indexOf('const knowledgeApp = {');
 if (a < 0 || b < 0) { console.log('FAIL: 找不到 CircuitSVG'); process.exit(1); }
 const CircuitSVG = new Function('window', kjs.slice(a, b) + '\nreturn CircuitSVG;')(global.window);
-const HELPERS = new Set(['wrap', 'capToGnd', 'blk', 'arw', '_transformer', 'switcher']);
+const HELPERS = new Set(['wrap', '_S', 'capToGnd', 'blk', 'arw', '_transformer', 'switcher']);
 
 const figures = [];
 for (const id of Object.keys(ART2)) {
