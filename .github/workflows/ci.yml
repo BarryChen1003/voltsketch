@@ -91,6 +91,10 @@ jobs:
         run: node art-i18n-check.js --strict
       - name: art-lang-render.test（三種圖的換語言路徑）
         run: node art-lang-render.test.js
+      - name: ui-i18n-check（編輯器畫面文字四語齊全）
+        run: node ui-i18n-check.js --strict
+      - name: interview-i18n-check（面試題庫四語齊全）
+        run: node interview-i18n-check.js --strict
 
       # 2g3) 同一張圖換語言＝字寬變、座標不變 → 中文乾淨不代表英文乾淨。
       #      鐵律類（重疊、塌陷線）四語都必須 0；棘輪類各語言各有基線（*.en/ja/ko.json），

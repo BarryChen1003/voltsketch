@@ -24,9 +24,17 @@
    不限於「新功能」：改一句 UI、加一張卡、換一個按鈕標籤、動一張圖上的字，四語一起改才算做完。
    涵蓋：UI 字串、程式產生的句子、報告輸出、**圖上的字**（字典 `knowledge-art-i18n.js`）、圖說。
    例外只有公式、訊號名、封裝名、料號、單位。
-   - 畫面上的字不准寫死中文：走 `I18N.t(key)`（`knowledge.js` 裡是 `this.T(key)`），
-     key 定義在 `i18n.js`，四語齊全；`i18n-check.js` 會抓沒定義的 key。
-   - 圖上的字走 `ART_I18N`，覆蓋率由 `art-i18n-check.js --strict` 把關（少一條就紅）。
+   - 畫面上的字不准寫死中文。三條路各有守衛，改哪裡就跑哪支：
+
+     | 位置 | 怎麼取字 | 檢查器 |
+     |---|---|---|
+     | 全站 UI（HTML/各頁 JS） | `I18N.t(key)`；`knowledge.js` 是 `this.T(key)`，key 定義在 `i18n.js` | `i18n-check.js` |
+     | 線路圖編輯器（`app.js`） | `uiT('中文原文')`，字典 `ui-i18n.js`（key＝中文原文） | `ui-i18n-check.js --strict` |
+     | 知識卡的圖 | `ART_I18N`（`knowledge-art-i18n.js`，key＝中文原文） | `art-i18n-check.js --strict` |
+     | 面試題庫 | zh/en 在 `interview-bank.js`，ja/ko 在 `interview-bank-i18n.js`；`{{SVG}}` 沿用中文圖 | `interview-i18n-check.js --strict` |
+
+   - **值與標籤要分開**：拿來比對/存檔的值（`item.products`、`comp.params` 的下拉選項）維持中文，
+     只翻顯示的標籤。兩個一起翻，篩選與判定就會跟著語言跑掉（datasheet 比對踩過同一個坑）。
    - 改圖或改譯文之後，鐵律類檢查要**四語各跑一次**：字寬變了、座標沒變，中文乾淨不代表英文乾淨。
 7. **使用者要的是「上線」**：做完就 commit + push，不要停在「沒有 commit（未指示）」。
 
