@@ -184,6 +184,43 @@ window.I18N = (function () {
     kb_p_power:     { zh: '電源', en: 'Power', ja: '電源', ko: '전원' },
     kb_p_mcu:       { zh: 'MCU', en: 'MCU', ja: 'MCU', ko: 'MCU' },
 
+    // ---- 線路圖分頁（sheets.js）----
+    sh_page:      { zh: '頁 {n}', en: 'Sheet {n}', ja: 'シート {n}', ko: '시트 {n}' },
+    sh_add:       { zh: '＋ 新頁', en: '+ New sheet', ja: '＋ 新規シート', ko: '+ 새 시트' },
+    sh_hint:      { zh: '雙擊頁籤改名；每頁獨立自動存檔', en: 'Double-click a tab to rename. Each sheet autosaves separately.', ja: 'タブをダブルクリックで名前変更。シートごとに自動保存。', ko: '탭을 더블클릭하면 이름 변경. 시트마다 개별 자동 저장.' },
+    sh_del:       { zh: '刪除「{name}」？（此頁電路會消失）', en: 'Delete "{name}"? This sheet\'s circuit will be lost.', ja: '「{name}」を削除しますか？このシートの回路は失われます。', ko: '"{name}"을(를) 삭제할까요? 이 시트의 회로가 사라집니다.' },
+    sh_rename:    { zh: '頁名稱：', en: 'Sheet name:', ja: 'シート名：', ko: '시트 이름:' },
+
+    // ---- 3D 板面檢視（pcb-3d.js）----
+    p3d_hint:     { zh: '🧊 3D 板面檢視（教學級近似：元件=方塊、無鋪銅顯示；拖曳旋轉、滾輪縮放、Esc 關閉）', en: '🧊 3D board view (teaching-grade approximation: parts as blocks, no copper pour. Drag to rotate, scroll to zoom, Esc to close)', ja: '🧊 3D 基板ビュー（教育用の近似：部品＝ブロック、銅箔表示なし。ドラッグで回転、ホイールで拡大、Esc で閉じる）', ko: '🧊 3D 보드 뷰(교육용 근사: 부품=블록, 카퍼 표시 없음. 드래그 회전, 휠 확대, Esc 닫기)' },
+    p3d_close:    { zh: '✕ 關閉', en: '✕ Close', ja: '✕ 閉じる', ko: '✕ 닫기' },
+    p3d_err_orbit:{ zh: 'OrbitControls 載入失敗', en: 'Failed to load OrbitControls', ja: 'OrbitControls の読み込みに失敗', ko: 'OrbitControls 로드 실패' },
+    p3d_err_three:{ zh: 'Three.js 載入失敗（離線或 CDN 被擋）', en: 'Failed to load Three.js (offline or CDN blocked)', ja: 'Three.js の読み込みに失敗（オフラインまたは CDN ブロック）', ko: 'Three.js 로드 실패(오프라인 또는 CDN 차단)' },
+
+    // ---- PCB 浮動面板（pcb-panels.js）----
+    pp_colors:    { zh: '🎨 配色', en: '🎨 Colors', ja: '🎨 配色', ko: '🎨 색상' },
+    pp_colors_d:  { zh: '整體配色：背景／板框／銅層／元件底色', en: 'Overall colors: background / outline / copper / part fill', ja: '全体の配色：背景／基板外形／銅箔／部品塗り', ko: '전체 색상: 배경/보드 외형/구리/부품 바탕' },
+    pp_panels:    { zh: '▤ 面板', en: '▤ Panels', ja: '▤ パネル', ko: '▤ 패널' },
+    pp_panels_d:  { zh: '開關工具面板（可拖曳的浮動視窗）', en: 'Toggle tool panels (draggable floating windows)', ja: 'ツールパネルの表示切替（ドラッグ可能なフローティング窓）', ko: '도구 패널 토글(드래그 가능한 플로팅 창)' },
+    pp_closeall:  { zh: '全部關閉', en: 'Close all', ja: 'すべて閉じる', ko: '모두 닫기' },
+    pp_close:     { zh: '關閉', en: 'Close', ja: '閉じる', ko: '닫기' },
+
+    // ---- 自訂 IC（ic-manager.js）----
+    icm_empty:    { zh: '尚無自訂 IC', en: 'No custom ICs yet', ja: 'カスタム IC はまだありません', ko: '사용자 IC가 아직 없습니다' },
+
+    // ---- KiCad 匯入（kicad-io.js）----
+    kic_notpcb:   { zh: '不是 kicad_pcb 檔（根節點＝{root}）', en: 'Not a kicad_pcb file (root node = {root})', ja: 'kicad_pcb ファイルではありません（ルートノード＝{root}）', ko: 'kicad_pcb 파일이 아닙니다(루트 노드={root})' },
+
+    // ---- PCB 配色面板（pcb.js）----
+    // 層名不必再定義：layerStack.name 只是存檔用的中文，畫面走 layerDispName() + pj_layer_*。
+    col_bg:       { zh: '畫布背景', en: 'Canvas background', ja: 'キャンバス背景', ko: '캔버스 배경' },
+    col_outline:  { zh: '板框', en: 'Board outline', ja: '基板外形', ko: '보드 외형' },
+    col_grid:     { zh: '格線', en: 'Grid', ja: 'グリッド', ko: '그리드' },
+    col_fcu:      { zh: '正面銅（F.Cu）', en: 'Front copper (F.Cu)', ja: '表面銅箔（F.Cu）', ko: '전면 구리(F.Cu)' },
+    col_bcu:      { zh: '背面銅（B.Cu）', en: 'Back copper (B.Cu)', ja: '裏面銅箔（B.Cu）', ko: '후면 구리(B.Cu)' },
+    col_ffill:    { zh: '正面元件底色', en: 'Front part fill', ja: '表面部品の塗り', ko: '전면 부품 바탕' },
+    col_bfill:    { zh: '背面元件底色', en: 'Back part fill', ja: '裏面部品の塗り', ko: '후면 부품 바탕' },
+
     // ---- PCB Layout 頁（工具面板/分頁/按鈕/狀態）----
     pcb_gate_title: { zh: 'PCB Layout 邀請制', en: 'PCB Layout (invite only)', ja: 'PCB Layout（招待制）', ko: 'PCB Layout(초대제)' },
     pcb_gate_enter: { zh: '進入', en: 'Enter', ja: '入る', ko: '입장' },

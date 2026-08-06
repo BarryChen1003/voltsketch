@@ -79,7 +79,10 @@ window.KicadIO = (function () {
   // ---------- 匯入 ----------
   function importText(text) {
     const tree = parse(text);
-    if (val(tree[0]) !== 'kicad_pcb') throw new Error('不是 kicad_pcb 檔（根節點=' + val(tree[0]) + '）');
+    if (val(tree[0]) !== 'kicad_pcb') {
+      // 硬規矩 6：畫面上的字一律四語（這個訊息會 alert 給使用者看）
+      throw new Error(window.I18N ? I18N.t('kic_notpcb', { root: val(tree[0]) }) : 'Not a kicad_pcb file');
+    }
 
     // 銅層
     const layersNode = find(tree, 'layers') || [];

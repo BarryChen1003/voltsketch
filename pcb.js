@@ -157,14 +157,15 @@ const pcbApp = {
     const host = document.getElementById('paletteRows');
     if (!host) return;
     const p = this.state.palette || this.paletteDefaults();
+    // 硬規矩 6：畫面上的字一律四語（層名走 layerDispName，這裡是配色列的標籤）
     const rows = [
-      ['bg', '畫布背景'], ['board', '板框'], ['grid', '格線'],
-      ['F.Cu', '正面銅（F.Cu）'], ['B.Cu', '背面銅（B.Cu）'],
-      ['compTop', '正面元件底色'], ['compBottom', '背面元件底色']
+      ['bg', 'col_bg'], ['board', 'col_outline'], ['grid', 'col_grid'],
+      ['F.Cu', 'col_fcu'], ['B.Cu', 'col_bcu'],
+      ['compTop', 'col_ffill'], ['compBottom', 'col_bfill']
     ];
-    host.innerHTML = rows.map(([k, label]) =>
+    host.innerHTML = rows.map(([k, labelKey]) =>
       `<label style="display:flex;align-items:center;gap:8px;justify-content:space-between">
-         <span>${label}</span>
+         <span>${pcbT(labelKey)}</span>
          <input type="color" data-pal="${k}" value="${p[k] || '#000000'}"
                 style="width:44px;height:24px;padding:0;border:1px solid var(--line);border-radius:4px;background:none;cursor:pointer">
        </label>`).join('');

@@ -15,8 +15,11 @@
 (function () {
   const LS = 'vs-pcb-panels';
   const Z_BASE = 40;
+  // 硬規矩 6：畫面上的字一律四語。I18N 沒載入就退回 key。
+  const T = (k, v) => (window.I18N ? window.I18N.t(k, v) : k);
   // 這些面板太常用，除了選單再給工具列一顆直達鈕（否則使用者找不到）
-  const QUICK = [['colors', '🎨 配色', '整體配色：背景／板框／銅層／元件底色']];
+  // [key, 標題 i18n key, 說明 i18n key]
+  const QUICK = [['colors', 'pp_colors', 'pp_colors_d']];
   let zTop = Z_BASE;
   const panels = new Map();      // key → { key, title, win, section, btn }
 
@@ -149,7 +152,7 @@
       win.hidden = true;
       win.innerHTML =
         '<div class="pcb-float-head"><span class="pcb-float-title"></span>' +
-        '<button class="pcb-float-x" type="button" aria-label="關閉">✕</button></div>' +
+        '<button class="pcb-float-x" type="button" aria-label="' + T('pp_close') + '">✕</button></div>' +
         '<div class="pcb-float-body"></div><div class="pcb-float-rs"></div>';
       win.querySelector('.pcb-float-title').textContent = title;
       // 搬移原節點（保留所有既有事件與 id）
@@ -180,8 +183,8 @@
     btn.className = 'small-button';
     btn.type = 'button';
     btn.id = 'pcbPanelMenuBtn';
-    btn.textContent = '▤ 面板';
-    btn.title = '開關工具面板（可拖曳的浮動視窗）';
+    btn.textContent = T('pp_panels');
+    btn.title = T('pp_panels_d');
     const pop = document.createElement('div');
     pop.className = 'pcb-menu-pop';
     pop.hidden = true;
@@ -199,7 +202,8 @@
     const sep = document.createElement('div'); sep.className = 'pcb-menu-sep'; pop.appendChild(sep);
     const closeAll = document.createElement('button');
     closeAll.className = 'pcb-menu-item'; closeAll.type = 'button';
-    closeAll.innerHTML = '<span class="tick"></span><span>全部關閉</span>';
+    closeAll.innerHTML = '<span class="tick"></span><span></span>';
+    closeAll.lastChild.textContent = T('pp_closeall');
     closeAll.addEventListener('click', () => panels.forEach(p => setOpen(p.key, false)));
     pop.appendChild(closeAll);
 
@@ -213,15 +217,15 @@
     else bar.appendChild(wrap);
 
     // 常用面板另外給工具列直達按鈕（埋在選單裡等於看不到）
-    QUICK.forEach(([key, label, title]) => {
+    QUICK.forEach(([key, labelKey, titleKey]) => {
       const p = panels.get(key);
       if (!p) return;
       const q = document.createElement('button');
       q.className = 'small-button';
       q.type = 'button';
       q.id = 'pcbQuick-' + key;
-      q.textContent = label;
-      q.title = title || label;
+      q.textContent = T(labelKey);
+      q.title = titleKey ? T(titleKey) : T(labelKey);
       q.addEventListener('click', () => setOpen(key, p.win.hidden));
       if (right && right !== bar.firstElementChild) right.insertBefore(q, wrap);
       else bar.appendChild(q);

@@ -43,7 +43,9 @@ const ICManager = {
   renderCatalog(container) {
     container.innerHTML = '';
     if (this.ics.length === 0) {
-      container.innerHTML = '<p style="font-size:12px;color:#64748b;padding:8px;">尚無自訂 IC</p>';
+      // 硬規矩 6：畫面上的字一律四語
+      const empty = (window.I18N ? I18N.t('icm_empty') : 'icm_empty');
+      container.innerHTML = `<p style="font-size:12px;color:#64748b;padding:8px;">${empty}</p>`;
       return;
     }
     for (const ic of this.ics) {

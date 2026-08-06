@@ -404,7 +404,7 @@ const app = {
             this.state.wires = cloud.wires || [];
             this.state.componentIdCounter = cloud.componentIdCounter || 0;
             this.render();
-            this.showToast('已載入雲端專案');
+            this.showToast(uiT('已載入雲端專案'));
           }
         } catch (e) { }
       }
@@ -415,8 +415,8 @@ const app = {
     document.getElementById('cloudSync')?.addEventListener('click', async () => {
       try {
         await Auth.saveProject({ components: this.state.components, wires: this.state.wires, componentIdCounter: this.state.componentIdCounter });
-        this.showToast('已同步到雲端');
-      } catch (e) { this.showToast('同步失敗：' + (e.message || e)); }
+        this.showToast(uiT('已同步到雲端'));
+      } catch (e) { this.showToast(uiT('同步失敗：{err}', { err: e.message || e })); }
     });
   },
 
@@ -449,7 +449,7 @@ const app = {
     if (!id) return;
     const ic = this.getLibraryIcs().find(i => i.id === id);
     if (ic) this.placeLibraryIc(ic);
-    else this.showToast('找不到該 IC（' + id + '）');
+    else this.showToast(uiT('找不到該 IC（{id}）', { id }));
     // 清掉網址參數，避免重整又放一次
     const u = new URL(location.href); u.searchParams.delete('addIC'); history.replaceState(null, '', u);
   },
@@ -458,7 +458,7 @@ const app = {
     const c = this.els.templateCatalog;
     if (!c) return;
     const list = this.getLibraryIcs();
-    if (!list.length) { c.innerHTML = '<p style="font-size:12px;color:#64748b;padding:8px;">IC 元件庫尚無資料（到「IC 元件庫」分頁新增）</p>'; return; }
+    if (!list.length) { c.innerHTML = `<p style="font-size:12px;color:#64748b;padding:8px;">${uiT('IC 元件庫尚無資料（到「IC 元件庫」分頁新增）')}</p>`; return; }
     c.innerHTML = list.map(ic =>
       `<div class="component-button" data-ic-id="${ic.id}"><span class="schematic-mini chip-mini">IC</span><span>${ic.name}</span></div>`
     ).join('');
@@ -615,8 +615,8 @@ const app = {
     });
     document.getElementById('simCopyNetlist').addEventListener('click', () => {
       const txt = this._lastNetlist || '';
-      navigator.clipboard.writeText(txt).then(() => this.showToast('netlist 已複製'),
-        () => this.showToast('複製失敗'));
+      navigator.clipboard.writeText(txt).then(() => this.showToast(uiT('netlist 已複製')),
+        () => this.showToast(uiT('複製失敗')));
     });
 
     // Labels/Readings toggles
@@ -646,7 +646,7 @@ const app = {
       ICManager.save(data);
       ICManager.closeModal();
       this.renderIcCatalog();
-      this.showToast('IC 已儲存（點庫中卡片即可放上畫布）');
+      this.showToast(uiT('IC 已儲存（點庫中卡片即可放上畫布）'));
     });
     document.getElementById('closeIcDetail').addEventListener('click', () => {
       document.getElementById('icDetailSection').hidden = true;
@@ -715,13 +715,13 @@ const app = {
     const pins = (ic.pins || []).filter(p => (p.type || '') !== 'nc' || true).map(p => ({
       num: p.number, name: p.name, type: p.type || '', side: p.side || ''
     }));
-    if (!pins.length) { this.showToast('此 IC 無 pin 定義'); return; }
+    if (!pins.length) { this.showToast(uiT('此 IC 無 pin 定義')); return; }
     this.saveUndo();
     const vb = this.getViewBox();
     if (pins.length > this.IC_SPLIT_THRESHOLD) {
       const n = this.placeSplitIc(ic, pins, vb);
       this.render();
-      this.showToast(`已放置 ${ic.name}（${pins.length} 腳拆成 ${n} 個 unit）`);
+      this.showToast(uiT('已放置 {name}（{pins} 腳拆成 {n} 個 unit）', { name: ic.name, pins: pins.length, n }));
       return;
     }
     const id = 'c' + (++this.state.componentIdCounter);
@@ -733,7 +733,7 @@ const app = {
     });
     this.setSelection([id]);
     this.render();
-    this.showToast(`已放置 ${ic.name}`);
+    this.showToast(uiT('已放置 {name}', { name: ic.name }));
   },
 
   // 拆多 unit：依原腳序每 IC_UNIT_MAX_PINS 一組，組內左右分欄；所有腳保留可接線。
@@ -790,7 +790,7 @@ const app = {
     const list = q ? all.filter(ic => (ic.name || '').toLowerCase().includes(q) ||
       (ic.manufacturer || '').toLowerCase().includes(q) || (ic.category || '').toLowerCase().includes(q)) : all;
     const c = this.els.templateCatalog;
-    if (!list.length) { c.innerHTML = '<p style="font-size:12px;color:#64748b;padding:8px;">無符合的 IC</p>'; return; }
+    if (!list.length) { c.innerHTML = `<p style="font-size:12px;color:#64748b;padding:8px;">${uiT('無符合的 IC')}</p>`; return; }
     c.innerHTML = list.map(ic =>
       `<div class="component-button" data-ic-id="${ic.id}"><span class="schematic-mini chip-mini">IC</span><span>${ic.name}</span></div>`
     ).join('');
@@ -1250,8 +1250,8 @@ const app = {
       const idxs = this.state.selectedWireIndices.slice();
       const w0 = this.state.wires[idxs[0]];
       empty.innerHTML = `<div style="padding:10px">
-        <div style="font-size:12px;color:#64748b;margin-bottom:6px">已選 ${idxs.length} 條導線</div>
-        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#0f172a">顏色
+        <div style="font-size:12px;color:#64748b;margin-bottom:6px">${uiT('已選 {n} 條導線', { n: idxs.length })}</div>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#0f172a">${uiT('顏色')}
           <input type="color" id="wireColorInput" value="${(w0 && w0.color) || '#2563eb'}"/></label></div>`;
       const inp = document.getElementById('wireColorInput');
       if (inp) inp.oninput = (e) => {
@@ -1262,7 +1262,7 @@ const app = {
       form.hidden = true; empty.hidden = false;
       const pf = document.getElementById('paramFields'); if (pf) pf.innerHTML = '';
       empty.textContent = this.state.selectedIds.length > 1
-        ? `已選取 ${this.state.selectedIds.length} 個元件` : t.nothingSelected;
+        ? uiT('已選取 {n} 個元件', { n: this.state.selectedIds.length }) : t.nothingSelected;
     }
   },
 
@@ -1302,23 +1302,25 @@ const app = {
     const p = comp.params || {};
     const esc = s => String(s == null ? '' : s).replace(/"/g, '&quot;');
     // 顏色/大小移到左上樣式列。文字內容保留（亦可雙擊編輯）。
-    let html = (comp.type === 'text' ? `<label><span>文字內容</span><input type="text" data-prop="text" value="${esc(comp.text || '')}"/></label>` : '');
+    // 硬規矩 6：畫面上的字一律四語。PARAM_SCHEMA 的標籤與選項留中文當字典 key，
+    // 顯示時才翻（uiT）；option 的 value 一定要保持中文原文，否則存進 comp.params 的值會跟著語言跑掉。
+    let html = (comp.type === 'text' ? `<label><span>${uiT('文字內容')}</span><input type="text" data-prop="text" value="${esc(comp.text || '')}"/></label>` : '');
     html += schema.map(f => {
       const val = p[f.k] != null ? p[f.k] : '';
       if (f.opt) {
-        return `<label><span>${f.l}</span><select data-pkey="${f.k}"><option value="">--</option>` +
-          f.opt.map(o => `<option value="${esc(o)}" ${val === o ? 'selected' : ''}>${o}</option>`).join('') + `</select></label>`;
+        return `<label><span>${uiT(f.l)}</span><select data-pkey="${f.k}"><option value="">--</option>` +
+          f.opt.map(o => `<option value="${esc(o)}" ${val === o ? 'selected' : ''}>${uiT(o)}</option>`).join('') + `</select></label>`;
       }
-      return `<label><span>${f.l}${f.u ? ` (${f.u})` : ''}</span><input type="text" data-pkey="${f.k}" value="${esc(val)}" placeholder="${f.u || ''}"/></label>`;
+      return `<label><span>${uiT(f.l)}${f.u ? ` (${f.u})` : ''}</span><input type="text" data-pkey="${f.k}" value="${esc(val)}" placeholder="${f.u || ''}"/></label>`;
     }).join('');
-    html += `<label><span>其他參數/備註（自由填）</span><textarea data-pkey="__notes" rows="2" placeholder="任何會影響特性的條件...">${esc(p.__notes || '')}</textarea></label>`;
+    html += `<label><span>${uiT('其他參數/備註（自由填）')}</span><textarea data-pkey="__notes" rows="2" placeholder="${uiT('任何會影響特性的條件...')}">${esc(p.__notes || '')}</textarea></label>`;
     host.innerHTML = html;
   },
 
   // ---- 線路圖 PDF 匯出（整張，自動框全部）----
   exportSchematicPdf() {
     const E = window.CircuitEngine;
-    if (this.state.components.length === 0 && this.state.wires.length === 0) { this.showToast('畫布沒有內容'); return; }
+    if (this.state.components.length === 0 && this.state.wires.length === 0) { this.showToast(uiT('畫布沒有內容')); return; }
     // 計算 bbox（含接腳、元件標籤區）
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     const acc = (x, y) => { if (x < minX) minX = x; if (y < minY) minY = y; if (x > maxX) maxX = x; if (y > maxY) maxY = y; };
@@ -1345,14 +1347,14 @@ const app = {
     const xml = new XMLSerializer().serializeToString(clone);
 
     const w = window.open('', '_blank');
-    if (!w) { this.showToast('瀏覽器擋了彈窗'); return; }
+    if (!w) { this.showToast(uiT('瀏覽器擋了彈窗')); return; }
     const date = new Date().toLocaleString();
     const land = vb.w >= vb.h; // 依長寬決定紙張方向
     w.document.write(
-      `<html><head><title>線路圖</title><style>@page{size:A4 ${land ? 'landscape' : 'portrait'};margin:8mm}` +
+      `<html><head><title>${uiT('線路圖')}</title><style>@page{size:A4 ${land ? 'landscape' : 'portrait'};margin:8mm}` +
       `body{font-family:system-ui;margin:0}.hdr{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid #888;font-size:12px}` +
       `.wrap{padding:8px 10px}svg{width:100%;height:auto}</style></head><body>` +
-      `<div class="hdr"><b>HardwareAI 線路圖</b><span>${date}　元件 ${this.state.components.length}・導線 ${this.state.wires.length}</span></div>` +
+      `<div class="hdr"><b>HardwareAI ${uiT('線路圖')}</b><span>${date}　${uiT('元件 {c}・導線 {w}', { c: this.state.components.length, w: this.state.wires.length })}</span></div>` +
       `<div class="wrap">${xml}</div><script>setTimeout(function(){window.print();},300);<\/script></body></html>`
     );
     w.document.close(); w.focus();
@@ -1361,7 +1363,7 @@ const app = {
   // ---- BOM 料表 ----
   bomCategory(type) {
     const t = this.i18n[this.state.lang] || this.i18n.zh;
-    const map = { ic: 'IC', comparator: '比較器', and: '邏輯閘', or: '邏輯閘', nand: '邏輯閘', nor: '邏輯閘', xor: '邏輯閘', xnor: '邏輯閘', not: '邏輯閘', buffer: '邏輯閘' };
+    const map = { ic: 'IC', comparator: uiT('比較器'), and: uiT('邏輯閘'), or: uiT('邏輯閘'), nand: uiT('邏輯閘'), nor: uiT('邏輯閘'), xor: uiT('邏輯閘'), xnor: uiT('邏輯閘'), not: '邏輯閘', buffer: '邏輯閘' };
     return map[type] || (t && t[type]) || type;
   },
   bomValueText(g) {
@@ -1409,12 +1411,12 @@ const app = {
     const rows = this.generateBom();
     this._bomRows = rows;
     const host = document.getElementById('bomTableHost');
-    if (!rows.length) { host.innerHTML = '<p style="padding:16px;color:#64748b">畫布沒有可列入 BOM 的元件</p>'; }
+    if (!rows.length) { host.innerHTML = `<p style="padding:16px;color:#64748b">${uiT('畫布沒有可列入 BOM 的元件')}</p>`; }
     else {
       const total = rows.reduce((s, r) => s + r.qty, 0);
-      host.innerHTML = `<div style="font-size:12px;color:#64748b;margin-bottom:6px">品項 ${rows.length} 種・總數 ${total} 顆</div>` +
+      host.innerHTML = `<div style="font-size:12px;color:#64748b;margin-bottom:6px">${uiT('品項 {kinds} 種・總數 {total}', { kinds: rows.length, total })}</div>` +
         `<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr>` +
-        ['項次', '標號', '數量', '類別', '值', '規格', '備註'].map(h => `<th style="border:1px solid #e2e8f0;padding:4px 6px;background:#f8fafc;text-align:left">${h}</th>`).join('') +
+        ['項次', '標號', '數量', '類別', '值', '規格', '備註'].map(h => uiT(h)).map(h => `<th style="border:1px solid #e2e8f0;padding:4px 6px;background:#f8fafc;text-align:left">${h}</th>`).join('') +
         `</tr></thead><tbody>` +
         rows.map(r => `<tr>${[r.item, r.refs, r.qty, r.category, r.value, r.spec, r.notes].map(v => `<td style="border:1px solid #e2e8f0;padding:4px 6px">${(v == null ? '' : String(v)).replace(/</g, '&lt;')}</td>`).join('')}</tr>`).join('') +
         `</tbody></table>`;
@@ -1423,9 +1425,9 @@ const app = {
   },
   exportBomCsv() {
     const rows = this._bomRows || this.generateBom();
-    if (!rows.length) { this.showToast('沒有元件'); return; }
+    if (!rows.length) { this.showToast(uiT('沒有元件')); return; }
     const esc = v => { const s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
-    const head = ['項次', '標號', '數量', '類別', '值', '規格', '備註'];
+    const head = ['項次', '標號', '數量', '類別', '值', '規格', '備註'].map(uiT);
     const csv = '﻿' + [head.join(',')].concat(rows.map(r => [r.item, r.refs, r.qty, r.category, r.value, r.spec, r.notes].map(esc).join(','))).join('\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
@@ -1435,8 +1437,8 @@ const app = {
     const host = document.getElementById('bomTableHost');
     if (!host) return;
     const w = window.open('', '_blank');
-    if (!w) { this.showToast('瀏覽器擋了彈窗'); return; }
-    w.document.write(`<html><head><title>BOM</title><style>body{font-family:system-ui;padding:20px}table{border-collapse:collapse;width:100%;font-size:12px}th,td{border:1px solid #888;padding:4px 6px;text-align:left}th{background:#eee}h1{font-size:18px}</style></head><body><h1>BOM 料表</h1>${host.innerHTML}</body></html>`);
+    if (!w) { this.showToast(uiT('瀏覽器擋了彈窗')); return; }
+    w.document.write(`<html><head><title>BOM</title><style>body{font-family:system-ui;padding:20px}table{border-collapse:collapse;width:100%;font-size:12px}th,td{border:1px solid #888;padding:4px 6px;text-align:left}th{background:#eee}h1{font-size:18px}</style></head><body><h1>${uiT('BOM 料表')}</h1>${host.innerHTML}</body></html>`);
     w.document.close(); w.focus(); setTimeout(() => w.print(), 200);
   },
 
@@ -1450,21 +1452,21 @@ const app = {
     const sel = document.getElementById('presetPick');
     if (!sel) return;
     const list = (this.getPresets()[comp.type]) || [];
-    sel.innerHTML = '<option value="">套用預設規格...</option>' +
+    sel.innerHTML = `<option value="">${uiT('套用預設規格...')}</option>` +
       list.map((pr, i) => `<option value="${i}">${pr.name}</option>`).join('');
   },
 
   savePresetFromComp() {
     const comp = this.state.components.find(c => c.id === this.state.selectedId);
-    if (!comp) { this.showToast('先選一個元件'); return; }
-    const name = window.prompt('預設名稱（例：10k 0402 1%）', comp.label || comp.type);
+    if (!comp) { this.showToast(uiT('先選一個元件')); return; }
+    const name = window.prompt(uiT('預設名稱（例：10k 0402 1%）'), comp.label || comp.type);
     if (!name) return;
     const p = this.getPresets();
     p[comp.type] = (p[comp.type] || []).filter(x => x.name !== name);
     p[comp.type].push({ name, value: comp.value, params: JSON.parse(JSON.stringify(comp.params || {})) });
     this.savePresets(p);
     this.renderPresetPicker(comp);
-    this.showToast(`已存預設「${name}」`);
+    this.showToast(uiT('已存預設「{name}」', { name }));
   },
 
   applyPreset(idx) {
@@ -1477,18 +1479,18 @@ const app = {
     comp.params = JSON.parse(JSON.stringify(pr.params || {}));
     this.render();
     this.syncInspector();
-    this.showToast(`套用預設「${pr.name}」`);
+    this.showToast(uiT('套用預設「{name}」', { name: pr.name }));
   },
 
   deletePreset() {
     const comp = this.state.components.find(c => c.id === this.state.selectedId);
     const sel = document.getElementById('presetPick');
-    if (!comp || !sel || sel.value === '') { this.showToast('先選要刪的預設'); return; }
+    if (!comp || !sel || sel.value === '') { this.showToast(uiT('先選要刪的預設')); return; }
     const p = this.getPresets();
     (p[comp.type] || []).splice(+sel.value, 1);
     this.savePresets(p);
     this.renderPresetPicker(comp);
-    this.showToast('已刪除預設');
+    this.showToast(uiT('已刪除預設'));
   },
 
   onKeyDown(e) {
@@ -1662,7 +1664,7 @@ const app = {
       wires: this.state.wires,
       componentIdCounter: this.state.componentIdCounter
     }));
-    this.showToast('已儲存');
+    this.showToast(uiT('已儲存'));
   },
 
   loadFromStorage() {
@@ -1703,9 +1705,9 @@ const app = {
         this.state.wires = data.wires || [];
         this.state.componentIdCounter = data.componentIdCounter || 0;
         this.render();
-        this.showToast('匯入成功');
+        this.showToast(uiT('匯入成功'));
       } catch(err) {
-        this.showToast('匯入失敗: ' + err.message);
+        this.showToast(uiT('匯入失敗: {err}', { err: err.message }));
       }
     };
     reader.readAsText(file);
@@ -1733,7 +1735,7 @@ const app = {
 
   // Project actions
   newProject() {
-    if (this.state.components.length > 0 && !confirm('確定要新建專案？')) return;
+    if (this.state.components.length > 0 && !confirm(uiT('確定要新建專案？'))) return;
     this.saveUndo();
     this.state.components = [];
     this.state.wires = [];
@@ -1758,7 +1760,7 @@ const app = {
     ];
     this.state.componentIdCounter = 10;
     this.render();
-    this.showToast('已載入範例電路');
+    this.showToast(uiT('已載入範例電路'));
   },
 
   fitView() {
@@ -1810,10 +1812,10 @@ const app = {
     const totalP = results.reduce((s, r) => s + r.power, 0);
 
     this.els.summaryGrid.innerHTML = `
-      <div class="summary-card"><div class="value">${totalV.toFixed(2)}V</div><div class="label">總電壓</div></div>
-      <div class="summary-card"><div class="value">${(totalI * 1000).toFixed(2)}mA</div><div class="label">總電流</div></div>
-      <div class="summary-card"><div class="value">${(totalP * 1000).toFixed(2)}mW</div><div class="label">總功率</div></div>
-      <div class="summary-card"><div class="value">${results.length}</div><div class="label">活躍元件</div></div>
+      <div class="summary-card"><div class="value">${totalV.toFixed(2)}V</div><div class="label">${uiT('總電壓')}</div></div>
+      <div class="summary-card"><div class="value">${(totalI * 1000).toFixed(2)}mA</div><div class="label">${uiT('總電流')}</div></div>
+      <div class="summary-card"><div class="value">${(totalP * 1000).toFixed(2)}mW</div><div class="label">${uiT('總功率')}</div></div>
+      <div class="summary-card"><div class="value">${results.length}</div><div class="label">${uiT('活躍元件')}</div></div>
     `;
     this.els.simMessage.hidden = true;
 
@@ -1858,17 +1860,17 @@ const app = {
     const saveBtn = document.getElementById('saveParsedIC');
 
     if (!input.files.length) {
-      this.showToast('請先選擇檔案');
+      this.showToast(uiT('請先選擇檔案'));
       return;
     }
 
-    statusDiv.textContent = '解析中...';
+    statusDiv.textContent = uiT('解析中...');
     resultDiv.hidden = false;
 
     const file = input.files[0];
     if (file.name.endsWith('.pdf')) {
       const result = await PDFParser.extractPinInfo(file);
-      infoDiv.innerHTML = `<p><strong>${file.name}</strong></p><p>找到 ${result.pins.length} 個 Pin 定義</p><pre style="max-height:100px;overflow:auto;font-size:10px;">${result.text.substring(0, 500)}</pre>`;
+      infoDiv.innerHTML = `<p><strong>${file.name}</strong></p><p>${uiT('找到 {n} 個 Pin 定義', { n: result.pins.length })}</p><pre style="max-height:100px;overflow:auto;font-size:10px;">${result.text.substring(0, 500)}</pre>`;
       saveBtn.hidden = false;
       saveBtn.onclick = () => {
         const ic = {
@@ -1877,7 +1879,7 @@ const app = {
           pins: result.pins.map(p => ({ number: p.number, name: p.name, type: 'io' }))
         };
         ICManager.save(ic);
-        this.showToast('IC 已儲存');
+        this.showToast(uiT('IC 已儲存'));
         resultDiv.hidden = true;
       };
     } else if (file.type.startsWith('image/')) {
@@ -1890,7 +1892,7 @@ const app = {
   // ---- DRC 接線檢查（規則式）----
   runDrc() {
     const E = window.CircuitEngine;
-    if (!E) { this.showToast('引擎未載入'); return; }
+    if (!E) { this.showToast(uiT('引擎未載入')); return; }
     const comps = this.state.components, wires = this.state.wires;
     const nets = E.computeNets(comps, wires);
     const byId = {}; comps.forEach(c => { byId[c.id] = c; });
@@ -1901,10 +1903,10 @@ const app = {
 
     // 1) 無接地 / 無電源
     if (comps.length && !comps.some(c => c.type === 'ground'))
-      issues.push({ sev: 'err', msg: '電路無接地 (GND)，請加接地符號' });
+      issues.push({ sev: 'err', msg: uiT('電路無接地 (GND)，請加接地符號') });
     const hasPower = comps.some(c => c.type === 'source' || c.type === 'dcdc');
     if (comps.some(c => ['ic', 'nmos', 'pmos', 'opamp', 'comparator', 'npn', 'pnp'].includes(c.type)) && !hasPower)
-      issues.push({ sev: 'warn', msg: '無電源（直流電源/DC-DC），主動元件無供電' });
+      issues.push({ sev: 'warn', msg: uiT('無電源（直流電源/DC-DC），主動元件無供電') });
 
     // 2) 浮接腳（含上拉/開漏提示）
     comps.forEach(c => {
@@ -1913,10 +1915,10 @@ const app = {
         if (pinTypeOf(c, p.index) === 'nc') return;
         if (nets.connectedPins.has(key)) return;
         const nm = (c.type === 'ic' && c.icPins && c.icPins[p.index]) ? String(c.icPins[p.index].name || '') : String(p.name || '');
-        let hint = '浮接（未接線）';
-        if (/scl|sda|^od|_od|opendrain|_oc/i.test(nm)) hint = '浮接：開漏訊號需上拉電阻';
-        else if (/rst|reset|^en$|^mr$|boot|^wp$|hold|^cs$|^ce$/i.test(nm)) hint = '浮接：reset/致能腳建議加上拉電阻';
-        issues.push({ sev: 'warn', msg: `${c.label || c.type}.${nm || ('腳' + (p.index + 1))} ${hint}`, x: p.x, y: p.y, id: c.id });
+        let hint = uiT('浮接（未接線）');
+        if (/scl|sda|^od|_od|opendrain|_oc/i.test(nm)) hint = uiT('浮接：開漏訊號需上拉電阻');
+        else if (/rst|reset|^en$|^mr$|boot|^wp$|hold|^cs$|^ce$/i.test(nm)) hint = uiT('浮接：reset/致能腳建議加上拉電阻');
+        issues.push({ sev: 'warn', msg: `${c.label || c.type}.${nm || uiT('腳{n}', { n: p.index + 1 })} ${hint}`, x: p.x, y: p.y, id: c.id });
       });
     });
 
@@ -1930,7 +1932,7 @@ const app = {
         const root = nets.pinNet.get(c.id + ':' + p.index);
         if (root == null) return;
         const hasCap = (netPins[root] || []).some(k => byId[k.split(':')[0]].type === 'capacitor');
-        if (!hasCap) issues.push({ sev: 'info', msg: `${c.label}.${nm} 電源腳建議加去耦電容（0.1µF 對地）`, x: p.x, y: p.y, id: c.id });
+        if (!hasCap) issues.push({ sev: 'info', msg: uiT('{ref}.{pin} 電源腳建議加去耦電容（0.1µF 對地）', { ref: c.label, pin: nm }), x: p.x, y: p.y, id: c.id });
       });
     });
 
@@ -1944,7 +1946,7 @@ const app = {
           if (E.dist(ex, ey, w2.x1, w2.y1) <= 6 || E.dist(ex, ey, w2.x2, w2.y2) <= 6) conn = true;
           else if (E.onSegInterior(ex, ey, [w2.x1, w2.y1, w2.x2, w2.y2], 6)) conn = true;
         });
-        if (!conn) issues.push({ sev: 'warn', msg: `導線端點懸空 @(${Math.round(ex)},${Math.round(ey)})`, x: ex, y: ey });
+        if (!conn) issues.push({ sev: 'warn', msg: uiT('導線端點懸空 @({x},{y})', { x: Math.round(ex), y: Math.round(ey) }), x: ex, y: ey });
       });
     });
 
@@ -1959,38 +1961,38 @@ const app = {
       const add = o => issues.push(Object.assign({ id: c.id, x: c.x, y: c.y }, o)); // 預設定位到元件中心
       if (c.type === 'nmos' || c.type === 'pmos') {
         if (String(P.state || '').toUpperCase() === 'ON') {
-          if (!isConn(c.id, 0)) add({ sev: 'err', msg: `${c.label} 標 ON 但閘極(G)未接電壓，無法導通`, x: pins[0].x, y: pins[0].y });
-          if (!P.vth && !P.vgson) add({ sev: 'info', msg: `${c.label} 標 ON 但未填 Vgs(th)/Vgs(on)，無法確認導通` });
+          if (!isConn(c.id, 0)) add({ sev: 'err', msg: uiT('{ref} 標 ON 但閘極(G)未接電壓，無法導通', { ref: c.label }), x: pins[0].x, y: pins[0].y });
+          if (!P.vth && !P.vgson) add({ sev: 'info', msg: uiT('{ref} 標 ON 但未填 Vgs(th)/Vgs(on)，無法確認導通', { ref: c.label }) });
         }
-        if (P.rdson && num(P.rdson) == null) add({ sev: 'info', msg: `${c.label} Rds(on) 非數值` });
+        if (P.rdson && num(P.rdson) == null) add({ sev: 'info', msg: uiT('{ref} Rds(on) 非數值', { ref: c.label }) });
       }
       if (c.type === 'dualnmos' || c.type === 'dualpmos') {
-        if (String(P.state1 || '').toUpperCase() === 'ON' && !isConn(c.id, 0)) add({ sev: 'err', msg: `${c.label} M1 標 ON 但 G1 未接電壓`, x: pins[0].x, y: pins[0].y });
-        if (String(P.state2 || '').toUpperCase() === 'ON' && !isConn(c.id, 3)) add({ sev: 'err', msg: `${c.label} M2 標 ON 但 G2 未接電壓`, x: pins[3].x, y: pins[3].y });
+        if (String(P.state1 || '').toUpperCase() === 'ON' && !isConn(c.id, 0)) add({ sev: 'err', msg: uiT('{ref} M1 標 ON 但 G1 未接電壓', { ref: c.label }), x: pins[0].x, y: pins[0].y });
+        if (String(P.state2 || '').toUpperCase() === 'ON' && !isConn(c.id, 3)) add({ sev: 'err', msg: uiT('{ref} M2 標 ON 但 G2 未接電壓', { ref: c.label }), x: pins[3].x, y: pins[3].y });
       }
       if (c.type === 'comparator') {
         if (P.out === '開漏') {
           const r = pinRoot(c.id, 2);
-          if (r != null && !netHasType(r, 'resistor')) add({ sev: 'warn', msg: `${c.label} 開漏輸出需上拉電阻`, x: pins[2].x, y: pins[2].y });
+          if (r != null && !netHasType(r, 'resistor')) add({ sev: 'warn', msg: uiT('{ref} 開漏輸出需上拉電阻', { ref: c.label }), x: pins[2].x, y: pins[2].y });
         }
-        if (!P.vcc) add({ sev: 'info', msg: `${c.label} 未填供電 Vcc` });
+        if (!P.vcc) add({ sev: 'info', msg: uiT('{ref} 未填供電 Vcc', { ref: c.label }) });
       }
-      if (c.type === 'opamp' && !P.supply) add({ sev: 'info', msg: `${c.label} 未填供電電壓` });
+      if (c.type === 'opamp' && !P.supply) add({ sev: 'info', msg: uiT('{ref} 未填供電電壓', { ref: c.label }) });
       if (c.type === 'led') {
         const hasR = [pinRoot(c.id, 0), pinRoot(c.id, 1)].some(r => netHasType(r, 'resistor'));
-        if (!hasR) add({ sev: 'warn', msg: `${c.label} LED 無串聯限流電阻，恐過流燒毀` });
+        if (!hasR) add({ sev: 'warn', msg: uiT('{ref} LED 無串聯限流電阻，恐過流燒毀', { ref: c.label }) });
       }
       if (c.type === 'dcdc') {
         const vin = num(P.vin), vout = num(P.vout), topo = P.topo;
         if (vin != null && vout != null) {
-          if ((topo === 'Buck' || topo === 'LDO') && vout > vin) add({ sev: 'warn', msg: `${c.label} ${topo} 不能升壓 (Vout>Vin)` });
-          if (topo === 'Boost' && vout < vin) add({ sev: 'warn', msg: `${c.label} Boost 不能降壓 (Vout<Vin)` });
+          if ((topo === 'Buck' || topo === 'LDO') && vout > vin) add({ sev: 'warn', msg: uiT('{ref} {topo} 不能升壓 (Vout>Vin)', { ref: c.label, topo }) });
+          if (topo === 'Boost' && vout < vin) add({ sev: 'warn', msg: uiT('{ref} Boost 不能降壓 (Vout<Vin)', { ref: c.label }) });
         }
       }
       if (c.type === 'source' && String(P.ac).toUpperCase() === 'AC' && !P.freq)
-        add({ sev: 'info', msg: `${c.label} AC 源未填頻率` });
+        add({ sev: 'info', msg: uiT('{ref} AC 源未填頻率', { ref: c.label }) });
       if (c.type === 'capacitor' && /電解|鉭/.test(P.diel || ''))
-        add({ sev: 'info', msg: `${c.label} 為極性電容(${P.diel})，注意極性與耐壓` });
+        add({ sev: 'info', msg: uiT('{ref} 為極性電容({diel})，注意極性與耐壓', { ref: c.label, diel: P.diel }) });
     });
 
     this.state.drcMarkers = issues.filter(i => i.x != null).map(i => ({ x: i.x, y: i.y, sev: i.sev }));
@@ -2001,14 +2003,14 @@ const app = {
   renderDrcReport(issues) {
     const el = document.getElementById('drcReport');
     if (!el) return;
-    if (!issues.length) { this._drcIssues = []; el.innerHTML = '<div style="color:#16a34a;font-size:12px;padding:6px">✓ 未發現接線問題</div>'; return; }
+    if (!issues.length) { this._drcIssues = []; el.innerHTML = `<div style="color:#16a34a;font-size:12px;padding:6px">${uiT('✓ 未發現接線問題')}</div>`; return; }
     const col = { err: '#dc2626', warn: '#d97706', info: '#2563eb' };
     const ico = { err: '✕', warn: '⚠', info: 'ℹ' };
     const ord = { err: 0, warn: 1, info: 2 };
     const sorted = issues.slice().sort((a, b) => ord[a.sev] - ord[b.sev]);
     this._drcIssues = sorted; // didx 對應排序後索引
     const n = { err: 0, warn: 0, info: 0 }; issues.forEach(i => n[i.sev]++);
-    el.innerHTML = `<div style="font-size:11px;color:#64748b;margin:4px 0">✕${n.err} ⚠${n.warn} ℹ${n.info}　(點問題可定位)</div>` +
+    el.innerHTML = `<div style="font-size:11px;color:#64748b;margin:4px 0">✕${n.err} ⚠${n.warn} ℹ${n.info}　${uiT('(點問題可定位)')}</div>` +
       sorted.map((i, idx) => {
         const clickable = (i.x != null || i.id);
         return `<div data-didx="${idx}" style="font-size:12px;padding:3px 6px;margin:2px 0;border-left:3px solid ${col[i.sev]};background:#f8fafc;cursor:${clickable ? 'pointer' : 'default'}">${ico[i.sev]} ${i.msg}</div>`;
@@ -2155,8 +2157,8 @@ const app = {
   openSimulation(opts) {
     opts = opts || {};
     const E = window.CircuitEngine;
-    if (!E) { this.showToast('引擎未載入'); return; }
-    if (this.state.components.length === 0) { this.showToast('畫布沒有元件'); return; }
+    if (!E) { this.showToast(uiT('引擎未載入')); return; }
+    if (this.state.components.length === 0) { this.showToast(uiT('畫布沒有元件')); return; }
     const { text, unsupported, experimental } = E.toFalstad(this.state.components, this.state.wires);
     this._lastNetlist = text;
     const modal = document.getElementById('simModal');
@@ -2172,19 +2174,19 @@ const app = {
     if (guide) {
       if (opts.fft) {
         guide.hidden = false;
-        guide.innerHTML = '🔍 <b>看環路電流 / FFT(像範例第四張)</b>：' +
-          '① 右鍵<b>電感</b>→「View in New Scope」=輸出環電流(三角波)；' +
-          '② 右鍵<b>輸入電容 Cin</b>→看 Cin 電流(輸入環,開關切換有突變)；' +
-          '③ scope 上右鍵→勾 <b>FFT</b>=看頻譜：輸入環高頻諧波較大→EMI 主因。';
+        guide.innerHTML = uiT('🔍 <b>看環路電流 / FFT(像範例第四張)</b>：') +
+          uiT('① 右鍵<b>電感</b>→「View in New Scope」=輸出環電流(三角波)；') +
+          uiT('② 右鍵<b>輸入電容 Cin</b>→看 Cin 電流(輸入環,開關切換有突變)；') +
+          uiT('③ scope 上右鍵→勾 <b>FFT</b>=看頻譜：輸入環高頻諧波較大→EMI 主因。');
       } else { guide.hidden = true; }
     }
     const msgs = [];
     if (experimental && experimental.length) {
-      msgs.push(`⚗ 電晶體 ${experimental.length} 顆為實驗性匯出（閘/基極自動接，通道端可能需在 Falstad 內微調）：${experimental.join('、')}`);
+      msgs.push(uiT('⚗ 電晶體 {n} 顆為實驗性匯出（閘/基極自動接，通道端可能需在 Falstad 內微調）：{list}', { n: experimental.length, list: experimental.join('、') }));
     }
     if (unsupported.length) {
       const names = unsupported.map(u => `${u.label || u.type}`).join('、');
-      msgs.push(`⚠ ${unsupported.length} 個元件未轉換（邏輯閘/雙MOS/OP/DC-DC），已略過：${names}`);
+      msgs.push(uiT('⚠ {n} 個元件未轉換（邏輯閘/雙MOS/OP/DC-DC），已略過：{list}', { n: unsupported.length, list: names }));
     }
     if (msgs.length) { warn.hidden = false; warn.innerHTML = msgs.join('<br>'); }
     else warn.hidden = true;
@@ -2258,7 +2260,7 @@ const app = {
         case 'text': {
           // 自訂文字標註（net 命名等）
           const tc = sc || c.color || '#0f172a';
-          const s = String(c.text != null ? c.text : '文字').replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+          const s = String(c.text != null ? c.text : uiT('文字')).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
           inner = `<text x="0" y="5" text-anchor="middle" font-size="15" fill="${tc}" font-weight="600" font-family="system-ui,sans-serif">${s}</text>`;
           if (sel) inner = `<rect x="-2" y="-12" width="4" height="4" fill="none"/>` + inner;
           break;
@@ -2565,7 +2567,7 @@ const app = {
   createIcFromForm() {
     const name = (document.getElementById('icbName').value || 'IC').trim();
     const pins = this.parseIcPins(document.getElementById('icbPins').value);
-    if (!pins.length) { this.showToast('請輸入至少一支 pin'); return; }
+    if (!pins.length) { this.showToast(uiT('請輸入至少一支 pin')); return; }
     this.saveUndo();
     const vb = this.getViewBox();
     const id = 'c' + (++this.state.componentIdCounter);
@@ -2577,21 +2579,21 @@ const app = {
     this.setSelection([id]);
     this.render();
     this.closeIcBuilder();
-    this.showToast(`已建立 ${name}（${pins.length} 腳）`);
+    this.showToast(uiT('已建立 {name}（{pins} 腳）', { name, pins: pins.length }));
   },
   async prefillIcFromPdf(e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (typeof PDFParser === 'undefined') { this.showToast('PDF 解析器未載入'); return; }
-    this.showToast('解析 PDF 中...');
+    if (typeof PDFParser === 'undefined') { this.showToast(uiT('PDF 解析器未載入')); return; }
+    this.showToast(uiT('解析 PDF 中...'));
     try {
       const res = await PDFParser.extractPinInfo(file);
       const lines = (res.pins || []).map(p => `${p.number},${p.name}`).join('\n');
       const ta = document.getElementById('icbPins');
       ta.value = lines || ta.value;
       if (!document.getElementById('icbName').value) document.getElementById('icbName').value = file.name.replace(/\.[^.]+$/, '');
-      this.showToast(`預填 ${res.pins ? res.pins.length : 0} 腳，請校正後建立`);
-    } catch (err) { this.showToast('PDF 解析失敗：' + err.message); }
+      this.showToast(uiT('預填 {n} 腳，請校正後建立', { n: res.pins ? res.pins.length : 0 }));
+    } catch (err) { this.showToast(uiT('PDF 解析失敗：{err}', { err: err.message })); }
     e.target.value = '';
   },
 

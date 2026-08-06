@@ -2,6 +2,8 @@
 // Three.js 按需從 CDN 懶載入（開啟 3D 時才抓，不影響頁面初載）。
 // 誠實界定：非精確 3D 模型（無元件外形庫、鋪銅不顯示、板框以外接矩形近似）。
 window.Pcb3D = (() => {
+  // 硬規矩 6：畫面上的字一律四語。I18N 沒載入就退回 key。
+  const T = (k, v) => (window.I18N ? window.I18N.t(k, v) : k);
   let loaded = null;
   function loadThree() {
     if (loaded) return loaded;
@@ -12,10 +14,10 @@ window.Pcb3D = (() => {
         const s2 = document.createElement('script');
         s2.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js';
         s2.onload = () => resolve();
-        s2.onerror = () => reject(new Error('OrbitControls 載入失敗'));
+        s2.onerror = () => reject(new Error(T('p3d_err_orbit')));
         document.head.appendChild(s2);
       };
-      s1.onerror = () => reject(new Error('Three.js 載入失敗（離線或 CDN 被擋）'));
+      s1.onerror = () => reject(new Error(T('p3d_err_three')));
       document.head.appendChild(s1);
     });
     return loaded;
@@ -39,8 +41,8 @@ window.Pcb3D = (() => {
     modal = document.createElement('div');
     modal.style.cssText = 'position:fixed;inset:0;background:rgba(10,12,20,.92);z-index:9999;display:flex;flex-direction:column';
     modal.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;color:#ecf0f1;font-size:14px">' +
-      '<span>🧊 3D 板面檢視（教學級近似：元件=方塊、無鋪銅顯示；拖曳旋轉、滾輪縮放、Esc 關閉）</span>' +
-      '<button id="p3dClose" style="padding:6px 14px;cursor:pointer">✕ 關閉</button></div>' +
+      '<span>' + T('p3d_hint') + '</span>' +
+      '<button id="p3dClose" style="padding:6px 14px;cursor:pointer">' + T('p3d_close') + '</button></div>' +
       '<div id="p3dHost" style="flex:1"></div>';
     document.body.appendChild(modal);
     modal.querySelector('#p3dClose').addEventListener('click', close);

@@ -11,6 +11,8 @@
   'use strict';
   const LS = 'vs-sheets-v1';
   let store = null;
+  // 硬規矩 6：畫面上的字一律四語。I18N 還沒載入就退回 key（不要讓頁籤列爆掉）。
+  const T = (k, v) => (window.I18N ? window.I18N.t(k, v) : k);
 
   const deep = o => JSON.parse(JSON.stringify(o));
   const grab = () => deep({
@@ -31,7 +33,7 @@
     try { store = JSON.parse(localStorage.getItem(LS)); } catch (e) { store = null; }
     if (!store || !store.pages || !store.pages.length) {
       // 首次：把目前畫布（app 已載 voltsketch-project）收編為「頁 1」
-      store = { cur: 0, pages: [{ name: '頁 1', data: grab() }] };
+      store = { cur: 0, pages: [{ name: T('sh_page', { n: 1 }), data: grab() }] };
       save();
     } else {
       const i = Math.min(store.cur || 0, store.pages.length - 1);
@@ -51,14 +53,14 @@
   }
   function addPage() {
     saveCur();
-    store.pages.push({ name: '頁 ' + (store.pages.length + 1), data: { components: [], wires: [], componentIdCounter: 0 } });
+    store.pages.push({ name: T('sh_page', { n: store.pages.length + 1 }), data: { components: [], wires: [], componentIdCounter: 0 } });
     store.cur = store.pages.length - 1;
     put(store.pages[store.cur].data);
     save(); renderBar();
   }
   function delPage(i) {
     if (store.pages.length <= 1) return;
-    if (!confirm('刪除「' + store.pages[i].name + '」？（此頁電路會消失）')) return;
+    if (!confirm(T('sh_del', { name: store.pages[i].name }))) return;
     store.pages.splice(i, 1);
     if (store.cur >= store.pages.length) store.cur = store.pages.length - 1;
     else if (i <= store.cur && store.cur > 0) store.cur--;
@@ -66,7 +68,7 @@
     save(); renderBar();
   }
   function rename(i) {
-    const n = prompt('頁名稱：', store.pages[i].name);
+    const n = prompt(T('sh_rename'), store.pages[i].name);
     if (n && n.trim()) { store.pages[i].name = n.trim(); save(); renderBar(); }
   }
 
@@ -83,8 +85,8 @@
       `<span data-i="${i}" style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;cursor:pointer;${i === store.cur ? 'background:#1d2943;color:#fff' : 'background:#fff;border:1px solid #cbd5e1;color:#334155'}">
         <span class="sheet-name">${p.name.replace(/[<>&]/g, '')}</span>
         ${store.pages.length > 1 ? `<b class="sheet-x" style="cursor:pointer;opacity:.6">✕</b>` : ''}</span>`).join('') +
-      `<button id="sheetAdd" style="padding:3px 10px;border:1px dashed #94a3b8;border-radius:6px;background:none;cursor:pointer;color:#475569">＋ 新頁</button>
-       <span style="color:#94a3b8;margin-left:6px">雙擊頁籤改名；每頁獨立自動存檔</span>`;
+      `<button id="sheetAdd" style="padding:3px 10px;border:1px dashed #94a3b8;border-radius:6px;background:none;cursor:pointer;color:#475569">${T('sh_add')}</button>
+       <span style="color:#94a3b8;margin-left:6px">${T('sh_hint')}</span>`;
     bar.querySelectorAll('[data-i]').forEach(el => {
       const i = +el.dataset.i;
       el.addEventListener('click', e => { if (e.target.classList.contains('sheet-x')) delPage(i); else switchTo(i); });
