@@ -1,0 +1,410 @@
+{
+  "epd-partial-refresh": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "rf-frontend": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "mobile-camera-power": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "laptop-backlight": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "reverse-battery-auto": {
+    "gap": 0,
+    "over": 0,
+    "bare": 1,
+    "free": 3
+  },
+  "auto-lin-bus": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "pmbus-telemetry": {
+    "gap": 0,
+    "over": 1,
+    "bare": 0,
+    "free": 1
+  },
+  "retimer-redriver": {
+    "gap": 0,
+    "over": 1,
+    "bare": 0,
+    "free": 0
+  },
+  "server-hotswap-efuse": {
+    "gap": 1,
+    "over": 0,
+    "bare": 0,
+    "free": 0
+  },
+  "regulator-ldo-vs-buck": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 4
+  },
+  "isolated-gate-driver": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "gan-gate-drive": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "hall-magnetic-sensing": {
+    "gap": 1,
+    "over": 0,
+    "bare": 0,
+    "free": 0
+  },
+  "space-grade-supervisor": {
+    "gap": 3,
+    "over": 0,
+    "bare": 0,
+    "free": 0
+  },
+  "fmcw-radar-frontend": {
+    "gap": 3,
+    "over": 0,
+    "bare": 1,
+    "free": 0
+  },
+  "CircuitSVG.levelShift": {
+    "gap": 0,
+    "over": 2,
+    "bare": 0,
+    "free": 0
+  },
+  "CircuitSVG.ldoBasic": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.mosfetSwitch": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.currentModeBuck": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.invertingBuckBoost": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.boost": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 3
+  },
+  "CircuitSVG.ldoNoise": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.opamp": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.esdTVS": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.reversePolarity": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.commonModeChoke": {
+    "gap": 0,
+    "over": 0,
+    "bare": 7,
+    "free": 1
+  },
+  "CircuitSVG.tvsSelect": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.batteryCharger": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.currentSensing": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.diffPair": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 3
+  },
+  "CircuitSVG.impedance": {
+    "gap": 0,
+    "over": 0,
+    "bare": 2,
+    "free": 0
+  },
+  "CircuitSVG.usbDiff": {
+    "gap": 0,
+    "over": 0,
+    "bare": 3,
+    "free": 1
+  },
+  "CircuitSVG.emiFilter": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.automotiveTransient": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.adcDac": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.embeddedPower": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.flyback": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.halfBridge": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 3
+  },
+  "CircuitSVG.gateDriver": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 3
+  },
+  "CircuitSVG.comparator": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.rcDelaySeq": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.tl431": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.rcLowpass": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.ntcThermistor": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.hotSwap": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.optocoupler": {
+    "gap": 0,
+    "over": 0,
+    "bare": 1,
+    "free": 4
+  },
+  "CircuitSVG.oring": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 3
+  },
+  "CircuitSVG.chargePump": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.bridgeRectifier": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.loadSwitch": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.rcSnubber": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.forwardConverter": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.relayDriver": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.wheatstoneBridge": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.bjtSwitch": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.zenerReg": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.pwmControl": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.ddrTermination": {
+    "gap": 0,
+    "over": 1,
+    "bare": 2,
+    "free": 1
+  },
+  "CircuitSVG.photodiodeTia": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.instrumentationAmp": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 3
+  },
+  "CircuitSVG.preventLeakage": {
+    "gap": 0,
+    "over": 0,
+    "bare": 1,
+    "free": 1
+  },
+  "CircuitSVG.powerSupervisor": {
+    "gap": 0,
+    "over": 1,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.comparatorVsOpamp": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 4
+  },
+  "CircuitSVG.rcHighpass": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.rcDelay": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 2
+  },
+  "CircuitSVG.opIntegrator": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.opDifferentiator": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  },
+  "CircuitSVG.switcher": {
+    "gap": 0,
+    "over": 0,
+    "bare": 0,
+    "free": 1
+  }
+}

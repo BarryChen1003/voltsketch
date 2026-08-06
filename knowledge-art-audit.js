@@ -204,7 +204,10 @@ function audit(id) {
 /* ---------- 棘輪基線（沿用 wire-gap / symbol-overlap 的做法：只准降不准升） ----------
  * 既有那 73 張圖是先前累積的帳，一次清不完。基線鎖住「不准變差」，新畫的圖必須是 0。 */
 const fs = require('fs');
-const BASE = './knowledge-art-baseline.json';
+// 每個語言一份基線（理由同 wire-gap-check）
+const BASE = global.window.ART_LANG === 'zh' || !global.window.ART_LANG
+  ? './knowledge-art-baseline.json'
+  : `./knowledge-art-baseline.${global.window.ART_LANG}.json`;
 const baseline = fs.existsSync(BASE) ? JSON.parse(fs.readFileSync(BASE, 'utf8')) : {};
 const quiet = args.includes('--quiet');
 

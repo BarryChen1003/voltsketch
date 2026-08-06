@@ -4,7 +4,8 @@
 動 `Documents/Web` 前務必讀完這兩份；兩份衝突時以本檔為準。
 
 **現在的狀態**：面試題畫風轉換做完了（38/38），知識卡加到 152 張，IC 元件庫多了
-「上傳兩份 datasheet → 產出 2nd Source 比對報告」。全部已 commit 並推上 GitHub Pages。
+「上傳兩份 datasheet → 產出 2nd Source 比對報告」，知識卡的 155 張圖現在四語都會跟著切（§7）。
+全部已 commit 並推上 GitHub Pages。
 **接下來卡在你（使用者）身上的是上線三軌，見 §6。**
 
 ---
@@ -33,7 +34,8 @@
 | 圖字重疊 | 面試題瀏覽器實測（0.5px、線段真交集）**全庫 0**；知識卡 `svg-overlap` 0 |
 | 知識卡 | **152 張**（含 2026-08-01 新增 7 張 ROHM DC/DC 佈局卡，檔 `knowledge-extra5.js`）；圖 80 張 |
 | IC 元件庫 | 195 顆；2026-08-02 新增 **2nd Source 比對**（`ds-compare.js`） |
-| CI | 18 關，本地與線上皆綠 |
+| 知識卡的圖 | 155 張、985 條字串**四語齊全**（2026-08-06，見 §7）；四語瀏覽器實測重疊 0 |
+| CI | 21 關，本地與線上皆綠 |
 | 部署 | HEAD == origin/main，`https://barrychen1003.github.io/voltsketch/` 已是最新 |
 | 上線阻礙 | **網域未買** → Resend 與正式金流都卡在這（§6） |
 
@@ -98,6 +100,15 @@ node svg-overlap-check.js --strict             # 知識卡圖字不重疊
 node knowledge-art-audit.js --strict --quiet   # 知識卡圖：接腳真的接上、字離圖形 >=3px（棘輪）
 node knowledge-format.test.js                  # 原理說明排版不改內容
 node i18n-check.js                             # 改 HTML 後跑
+node art-i18n-check.js --strict                # 圖上的字四語齊全（985/985）
+node art-lang-render.test.js                   # 三種圖的換語言路徑
+for L in en ja ko; do                          # 改圖或改譯文都要跑：字寬變、座標不變
+  node svg-overlap-check.js --strict --lang=$L
+  node circuit-check.js --strict --lang=$L
+  node knowledge-art-audit.js --strict --quiet --lang=$L
+  node wire-gap-check.js --strict --lang=$L
+  node symbol-overlap-check.js --strict --lang=$L
+done
 node tools/interview-diagrams/verify-batch11.js   # 電路類 B 的拓樸/數字斷言
 node tools/interview-diagrams/verify-batch12.js   # flyback 的拓樸/極性斷言（66 條）
 node tools/interview-diagrams/verify-batch13.js   # 波形/曲線的數值斷言（84 條）
@@ -113,6 +124,9 @@ node tools/interview-diagrams/verify-batch14.js   # 表格/剖面的比例與真
 |---|---|
 | `wire-gap` | 沒接上 8、多出線頭 6、無標籤自由端 18 |
 | `knowledge-art-audit` | 38 張圖 / 139 項（我新畫的 7 張是 0） |
+
+棘輪基線**每個語言一份**（`*-baseline.en/ja/ko.json`）：譯文長度不同，統計本來就不一樣，
+拿中文基線去卡英文只會每次都紅。en 138 / ja 140 / ko 130 項，規則不變——只准往下。
 
 改善之後跑 `--update` 把新數字收進基線；**基線只能往下**。
 
@@ -169,18 +183,23 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 
 ---
 
-## 7. 未決事項（要使用者拍板）
+## 7. 知識卡的圖：四語（2026-08-06 完成）
 
-**知識卡的圖沒有多語言。** 80 張 SVG 的標籤全是中文，`knowledge-circuits2.js` 沒有語言機制，
-切到英日韓時圖不會變；卡片的文字（標題/描述/原理/設計要點/常見錯誤）則是四語齊全。
-（對照：面試題那 76 張圖標籤全用英文，四語共用，沒有這個問題。）
+使用者選了「全部都做」。實際範圍比原本估的「80 張 SVG」大：**155 張圖、985 條中文字串**
+（原本漏算掛在卡上的 26 張 `CircuitSVG` 圖、卡片自帶的內嵌 svg，以及每張圖上方的圖說）。
 
-兩條路，使用者尚未選：
+字典：`knowledge-art-i18n.js`（key 是中文原文）。三種圖三種換法：
 
-- **只做新的 7 張**：art API 加 lang 參數 —— 快，但會變成 7 張會切、73 張不會，更不一致。
-- **全部 80 張**：一致，但每張圖的字一改，重疊與接線就要整批重驗，是好幾個工作段落的工程。
+| 圖 | 張數 | 換字時機 |
+|---|---|---|
+| `CIRCUITS2` 自動補圖 | 80 | **畫的時候**（`T()`/`A()`/`B()` 入口）——`A()` 的標籤閃避是照字寬算的，譯文晚一步換就是拿中文寬度排英文 |
+| `CircuitSVG` 掛卡的圖 | 26 | 畫的時候（`CircuitSVG._S()` 包一層 `Sym`，68 個方法不用逐個改） |
+| 卡片自帶的內嵌 svg | 其餘 | render 時 `localizeSvgText` 換 `<text>` 內容；含 tspan 的整段不動 |
 
-在使用者決定前**維持現狀**，不要做半套。
+**翻譯只在開卡片的當下做，不寫回 `this.items`**：localStorage 存的永遠是中文版，
+所以切語言不必清快取、也不會有哪個語言被固化進快取（`BUILTIN_VERSION` 因此不用動）。
+
+驗收（見 §4 的指令）：node 五支檢查器 × 四語全綠；瀏覽器實測 **155 張圖 × 4 語、每語 1607 個文字、重疊 0**。
 
 ---
 

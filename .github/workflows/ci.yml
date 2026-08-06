@@ -85,6 +85,28 @@ jobs:
       - name: svg-overlap-check（圖字不重疊 · 鐵律）
         run: node svg-overlap-check.js --strict
 
+      # 2g2) 圖上的字四語齊全（硬規矩 6）。從實際畫出來的 SVG 反推該翻的字，
+      #      不是 grep 字串常數，所以陣列/樣板字串/helper 傳進去的字都跑不掉。
+      - name: art-i18n-check（圖上的字四語齊全）
+        run: node art-i18n-check.js --strict
+      - name: art-lang-render.test（三種圖的換語言路徑）
+        run: node art-lang-render.test.js
+
+      # 2g3) 同一張圖換語言＝字寬變、座標不變 → 中文乾淨不代表英文乾淨。
+      #      鐵律類（重疊、塌陷線）四語都必須 0；棘輪類各語言各有基線（*.en/ja/ko.json），
+      #      因為譯文長度不同，拿中文基線卡英文只會每次都紅。
+      - name: 四語幾何檢查（en/ja/ko）
+        run: |
+          set -e
+          for L in en ja ko; do
+            echo "── $L ──"
+            node svg-overlap-check.js --strict --lang=$L
+            node circuit-check.js --strict --lang=$L
+            node knowledge-art-audit.js --strict --quiet --lang=$L
+            node wire-gap-check.js --strict --lang=$L
+            node symbol-overlap-check.js --strict --lang=$L
+          done
+
       # 2h) 面試題庫那 38 張圖：同一條鐵律，外加規格（svg 要有 width、viewBox ≤720、字級 ≥10）。
       #     svg-overlap-check 只掃知識卡的 CIRCUITS2，面試題的圖原本沒有任何守衛。
       #     node 沒有 DOM，字寬靠內建字元寬度表推算（在瀏覽器實測 1051 個文字節點校正過，

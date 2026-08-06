@@ -52,6 +52,65 @@ return {卡數:cards,文字數:texts,重疊:out.length,清單:out};
 > 這個「146」是 2026-07-22 當下的快照，之後卡片有增減，別拿它當基準。
 > 2026-08-01 實測：加 ROHM 那 7 張之前是 **145**，之後 **152**（線上側欄 14 類加總）。
 
+## 四語版（2026-08-06，圖上的字接上 i18n 之後）
+
+上面那段只掃 `circuits[0]` 且只有中文。圖現在會跟著語言換字，**字寬變、座標不變**，
+所以要四語各掃一次，而且要掃每張圖（不只 `[0]`）。與上面那段的兩個差別：
+
+1. 用 `knowledgeApp.localizedCircuits(item, lang)` 取圖，不要直接讀 `item.circuits`
+   （那是快取裡的中文版）。
+2. `<line>` 用 `x1/y1/x2/y2` 兩個端點經 CTM 換算，**不要用 bbox**——
+   第一版拿 bbox 壓成中心線，斜線誤報了 5 筆。
+
+```js
+(()=>{
+const host=document.createElement('div');host.style.cssText='position:absolute;left:-9999px;width:600px';document.body.appendChild(host);
+const box=(el,root)=>{const b=el.getBBox();const m=el.getCTM(),rm=root.getCTM();if(!m||!rm)return b;
+ const t=rm.inverse().multiply(m);const p=[[b.x,b.y],[b.x+b.width,b.y],[b.x,b.y+b.height],[b.x+b.width,b.y+b.height]]
+  .map(([x,y])=>({x:t.a*x+t.c*y+t.e,y:t.b*x+t.d*y+t.f}));const xs=p.map(q=>q.x),ys=p.map(q=>q.y);
+ return{x:Math.min(...xs),y:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)};};
+const pt=(el,root,x,y)=>{const m=el.getCTM(),rm=root.getCTM();const t=rm.inverse().multiply(m);return{x:t.a*x+t.c*y+t.e,y:t.b*x+t.d*y+t.f};};
+const ov=(a,b)=>a.x<b.x+b.width-0.5&&a.x+a.width>b.x+0.5&&a.y<b.y+b.height-0.5&&a.y+a.height>b.y+0.5;
+const hitsRect=(x1,y1,x2,y2,r,pad)=>{const rx1=r.x-pad,ry1=r.y-pad,rx2=r.x+r.width+pad,ry2=r.y+r.height+pad;
+ if(Math.max(x1,x2)<rx1||Math.min(x1,x2)>rx2||Math.max(y1,y2)<ry1||Math.min(y1,y2)>ry2)return false;
+ const dx=x2-x1,dy=y2-y1;let t0=0,t1=1;
+ const clip=(p,q)=>{if(p===0)return q>=0;const t=q/p;if(p<0){if(t>t1)return false;if(t>t0)t0=t;}else{if(t<t0)return false;if(t<t1)t1=t;}return true;};
+ return clip(-dx,x1-rx1)&&clip(dx,rx2-x1)&&clip(-dy,y1-ry1)&&clip(dy,ry2-y1);};
+const res={},out=[];
+for(const lang of ['zh','en','ja','ko']){let figs=0,texts=0,bad=0;
+ for(const it of knowledgeApp.items){
+  (knowledgeApp.localizedCircuits(it,lang)||[]).forEach((c,ci)=>{
+   if(!c||!c.svg||!/^<svg/.test(String(c.svg).trim()))return;
+   figs++;host.innerHTML=c.svg;const root=host.querySelector('svg');if(!root)return;
+   const vb=(root.getAttribute('viewBox')||'0 0 400 200').split(/\s+/).map(Number);
+   const rects=[...root.querySelectorAll('rect')].map(r=>box(r,root));
+   const segs=[];
+   root.querySelectorAll('line').forEach(l=>{const sw=+(l.getAttribute('stroke-width')||2);
+    if(sw<1.2||l.closest('[data-deco]'))return;
+    const a=pt(l,root,+l.getAttribute('x1'),+l.getAttribute('y1')),b=pt(l,root,+l.getAttribute('x2'),+l.getAttribute('y2'));
+    segs.push([a.x,a.y,b.x,b.y,Math.max(sw/2,0.6)]);});
+   const info=[...root.querySelectorAll('text')].map(t=>({s:t.textContent.trim(),b:box(t,root)})).filter(x=>x.s);
+   texts+=info.length;
+   const inOwn=b=>{const cx=b.x+b.width/2,cy=b.y+b.height/2;return rects.some(r=>cx>r.x&&cx<r.x+r.width&&cy>r.y&&cy<r.y+r.height);};
+   info.forEach((t,i)=>{const b=t.b;if(inOwn(b))return;let h=null;
+    if(b.x<vb[0]-1||b.y<vb[1]-1||b.x+b.width>vb[0]+vb[2]+1||b.y+b.height>vb[1]+vb[3]+1)h='出界';
+    if(!h&&rects.some(r=>ov(b,r)))h='壓方塊';
+    const sh={x:b.x+0.5,y:b.y+0.5,width:Math.max(b.width-1,0.5),height:Math.max(b.height-1,0.5)};
+    if(!h&&segs.some(s=>hitsRect(s[0],s[1],s[2],s[3],sh,s[4])))h='壓線';
+    if(!h&&info.some((o,j)=>j!==i&&ov(b,o.b)))h='壓文字';
+    if(h){bad++;if(out.length<30)out.push(`${lang}|${it.id}#${ci}|${t.s.slice(0,22)}|${h}`);}});});}
+ res[lang]={圖:figs,文字:texts,重疊:bad};}
+host.remove();return{res,out};})()
+```
+
+### 現況（2026-08-06 Chromium 實測）
+
+**155 張圖 × 4 語 / 每語 1607 個文字 / 四語重疊皆 0。**
+
+翻譯剛上線時是 en 13、ja 15、ko 9（中文 0）——**全部落在 node 版掃不到的範圍**
+（`svg-overlap-check` 只掃 `CIRCUITS2` 的 80 張，這些是 `CircuitSVG` 與卡片內嵌 svg）。
+多數是「出界」：譯文比中文寬，把字推出畫布。依實測的超出量逐條縮短，共改 39 個欄位後歸零。
+
 ## 面試題庫的圖（interview-bank.js）
 
 知識卡那段只掃 `knowledge-circuits2.js`，**面試題的圖不在任何 CI 覆蓋範圍內**。

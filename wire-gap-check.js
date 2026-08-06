@@ -240,7 +240,10 @@ if (process.argv.includes('--selftest')) {
 // ── 主流程 ──
 const strict = process.argv.includes('--strict');
 const update = process.argv.includes('--update');
-const BASE = './wire-gap-baseline.json';
+// 每個語言一份基線：譯文寬度不同，端點與自由端的統計本來就不會一樣，
+// 拿中文基線去卡英文＝每次都紅。棘輪規則不變，只是各語言各自往下。
+const LANG = global.window.ART_LANG || 'zh';
+const BASE = LANG === 'zh' ? './wire-gap-baseline.json' : `./wire-gap-baseline.${LANG}.json`;
 const baseline = fs.existsSync(BASE) ? JSON.parse(fs.readFileSync(BASE, 'utf8')) : {};
 
 const rows = [];

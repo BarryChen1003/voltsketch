@@ -228,7 +228,9 @@ for (const k of Object.keys(CircuitSVG)) {
 }
 try { figures.push(['CircuitSVG.switcher', CircuitSVG.switcher({})]); } catch (e) { figures.push(['CircuitSVG.switcher', null, e.message]); }
 
-const BASE = './symbol-overlap-baseline.json';
+// 每個語言一份基線（理由同 wire-gap-check）
+const LANG = global.window.ART_LANG || 'zh';
+const BASE = LANG === 'zh' ? './symbol-overlap-baseline.json' : `./symbol-overlap-baseline.${LANG}.json`;
 const baseline = fs.existsSync(BASE) ? JSON.parse(fs.readFileSync(BASE, 'utf8')) : {};
 const now = {}; const rows = [];
 let total = 0, errored = 0;
