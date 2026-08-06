@@ -28,7 +28,8 @@
 
      | 位置 | 怎麼取字 | 檢查器 |
      |---|---|---|
-     | 全站 UI（HTML/各頁 JS） | `I18N.t(key)`；`knowledge.js` 是 `this.T(key)`，key 定義在 `i18n.js` | `i18n-check.js` |
+     | HTML 標記 | `data-i18n` / `-title` / `-placeholder` / `-aria`，key 定義在 `i18n.js` | `html-i18n-check.js --strict`（寫死中文就紅） |
+     | 各頁 JS | `I18N.t(key)`；`knowledge.js` 是 `this.T(key)` | `i18n-check.js` |
      | 線路圖編輯器（`app.js`） | `uiT('中文原文')`，字典 `ui-i18n.js`（key＝中文原文） | `ui-i18n-check.js --strict` |
      | 知識卡的圖 | `ART_I18N`（`knowledge-art-i18n.js`，key＝中文原文） | `art-i18n-check.js --strict` |
      | 面試題庫 | zh/en 在 `interview-bank.js`，ja/ko 在 `interview-bank-i18n.js`；`{{SVG}}` 沿用中文圖 | `interview-i18n-check.js --strict` |

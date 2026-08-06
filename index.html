@@ -64,15 +64,15 @@
           <button class="icon-button" type="button" id="exportPng" title="Export PNG">
             <span aria-hidden="true">PNG</span>
           </button>
-          <button class="icon-button" type="button" id="exportBom" title="產生 BOM 料表">
+          <button class="icon-button" type="button" id="exportBom" data-i18n-title="ix_t_bom" title="產生 BOM 料表">
             <span aria-hidden="true">BOM</span>
           </button>
-          <button class="icon-button" type="button" id="exportPdf" title="整張線路圖匯出 PDF">
+          <button class="icon-button" type="button" id="exportPdf" data-i18n-title="ix_t_pdf" title="整張線路圖匯出 PDF">
             <span aria-hidden="true">PDF</span>
           </button>
-          <a class="icon-button" id="loginLink" href="login.html" title="登入帳號"><span>登入</span></a>
-          <button class="icon-button" type="button" id="cloudSync" title="同步到雲端" hidden><span>☁同步</span></button>
-          <button class="icon-button" type="button" id="logoutBtn" title="登出" hidden><span>登出</span></button>
+          <a class="icon-button" id="loginLink" href="login.html" data-i18n-title="ix_t_login" title="登入帳號"><span data-i18n="ui_login">登入</span></a>
+          <button class="icon-button" type="button" id="cloudSync" data-i18n-title="ix_t_sync" title="同步到雲端" hidden><span data-i18n="ui_sync">☁同步</span></button>
+          <button class="icon-button" type="button" id="logoutBtn" data-i18n-title="ui_logout" title="登出" hidden><span data-i18n="ui_logout">登出</span></button>
           <span id="authEmail" style="font-size:11px;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
           <div class="segmented" aria-label="Language">
           </div>
@@ -94,20 +94,20 @@
               </button>
               <button class="tool-button" type="button" data-tool="text">
                 <span class="tool-icon">T</span>
-                <span>文字</span>
+                <span data-i18n="ix_text">文字</span>
               </button>
             </div>
             <div class="tool-grid" style="margin-top:8px">
-              <button class="small-button" type="button" id="rotateSelected" title="旋轉 (R)">⟳ 旋轉</button>
-              <button class="small-button" type="button" id="flipHSelected" title="水平翻轉 (H)">⇋ 水平翻</button>
-              <button class="small-button" type="button" id="flipVSelected" title="垂直翻轉 (V)">⇅ 垂直翻</button>
+              <button class="small-button" type="button" id="rotateSelected" data-i18n-title="ix_t_rotate" title="旋轉 (R)" data-i18n="ix_rotate">⟳ 旋轉</button>
+              <button class="small-button" type="button" id="flipHSelected" data-i18n-title="ix_t_fliph" title="水平翻轉 (H)" data-i18n="ix_fliph">⇋ 水平翻</button>
+              <button class="small-button" type="button" id="flipVSelected" data-i18n-title="ix_t_flipv" title="垂直翻轉 (V)" data-i18n="ix_flipv">⇅ 垂直翻</button>
             </div>
           </section>
 
           <section class="panel-section">
             <h2 data-i18n="parts">元件庫</h2>
-            <button class="primary-button" type="button" id="openIcBuilder" style="width:100%;margin-bottom:8px">+ 自訂 IC（多腳）</button>
-            <input id="partSearch" class="library-search" type="search" placeholder="搜尋元件（電阻/MOS/閘...）" style="margin-bottom:8px" />
+            <button class="primary-button" type="button" id="openIcBuilder" style="width:100%;margin-bottom:8px" data-i18n="ix_customic">+ 自訂 IC（多腳）</button>
+            <input id="partSearch" class="library-search" type="search" data-i18n-placeholder="ix_ph_part" placeholder="搜尋元件（電阻/MOS/閘...）" style="margin-bottom:8px" />
             <div class="component-list">
               <button class="component-button" type="button" data-tool="resistor">
                 <span class="schematic-mini resistor-mini"></span>
@@ -272,9 +272,9 @@
           <div class="canvas-toolbar">
             <div class="status-pill" id="modeStatus" data-i18n="statusSelect">選取或拖曳元件</div>
             <div class="canvas-actions">
-              <button class="small-button" type="button" id="zoomOut" title="縮小">－</button>
-              <button class="small-button" type="button" id="zoomIn" title="放大">＋</button>
-              <button class="small-button" type="button" id="fitAll" title="全覽（縮到所有線路塞進畫布）">全覽</button>
+              <button class="small-button" type="button" id="zoomOut" data-i18n-title="ix_t_zoomout" title="縮小">－</button>
+              <button class="small-button" type="button" id="zoomIn" data-i18n-title="ix_t_zoomin" title="放大">＋</button>
+              <button class="small-button" type="button" id="fitAll" data-i18n-title="ix_t_fit1" title="全覽（縮到所有線路塞進畫布）" data-i18n="ix_fitall">全覽</button>
               <button class="small-button active" type="button" id="toggleLabels" data-i18n="labelsOn">標籤開</button>
               <button class="small-button active" type="button" id="toggleReadings" data-i18n="readingsOn">讀值開</button>
               <button class="small-button" type="button" id="fitView" data-i18n="fit">重置視圖</button>
@@ -283,10 +283,10 @@
 
           <div class="schematic-wrap" style="position:relative">
             <div id="activeStyleBar" style="position:absolute;top:8px;left:8px;z-index:5;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.95);border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);font-size:12px;color:#475569">
-              <span style="font-weight:600">樣式</span>
-              <label style="display:flex;align-items:center;gap:4px">顏色<input type="color" id="activeColor" value="#1f4fd1" style="width:28px;height:22px;padding:0;border:none;background:none;cursor:pointer" disabled/></label>
-              <label style="display:flex;align-items:center;gap:4px">大小<input type="number" id="activeSize" value="1" min="0.3" max="4" step="0.1" style="width:46px" disabled/></label>
-              <span style="color:#94a3b8">選元件/線即時改</span>
+              <span style="font-weight:600" data-i18n="ix_style">樣式</span>
+              <label style="display:flex;align-items:center;gap:4px"><span data-i18n="ix_color">顏色</span><input type="color" id="activeColor" value="#1f4fd1" style="width:28px;height:22px;padding:0;border:none;background:none;cursor:pointer" disabled/></label>
+              <label style="display:flex;align-items:center;gap:4px"><span data-i18n="ix_size">大小</span><input type="number" id="activeSize" value="1" min="0.3" max="4" step="0.1" style="width:46px" disabled/></label>
+              <span style="color:#94a3b8" data-i18n="ix_stylehint">選元件/線即時改</span>
             </div>
             <svg id="schematic" viewBox="0 0 1000 700" role="img" aria-label="Circuit canvas">
               <defs>
@@ -305,12 +305,12 @@
               <g id="overlayLayer"></g>
               <g id="selectionLayer"></g>
             </svg>
-            <div id="panPad" class="pan-pad" role="group" aria-label="平移畫布" title="平移畫布（點一下移動，長按連續移動）">
-              <button class="pan-btn pan-up" type="button" data-pan="up" aria-label="上移">▲</button>
-              <button class="pan-btn pan-left" type="button" data-pan="left" aria-label="左移">◀</button>
-              <button class="pan-btn pan-fit" type="button" data-pan="fit" aria-label="全覽" title="全覽（縮到所有線路）">⤢</button>
-              <button class="pan-btn pan-right" type="button" data-pan="right" aria-label="右移">▶</button>
-              <button class="pan-btn pan-down" type="button" data-pan="down" aria-label="下移">▼</button>
+            <div id="panPad" class="pan-pad" role="group" data-i18n-aria="ix_t_pan" aria-label="平移畫布" data-i18n-title="ix_t_pan2" title="平移畫布（點一下移動，長按連續移動）">
+              <button class="pan-btn pan-up" type="button" data-pan="up" data-i18n-aria="ix_t_up" aria-label="上移">▲</button>
+              <button class="pan-btn pan-left" type="button" data-pan="left" data-i18n-aria="ix_t_left" aria-label="左移">◀</button>
+              <button class="pan-btn pan-fit" type="button" data-pan="fit" data-i18n-aria="ix_fitall" aria-label="全覽" data-i18n-title="ix_t_fit2" title="全覽（縮到所有線路）">⤢</button>
+              <button class="pan-btn pan-right" type="button" data-pan="right" data-i18n-aria="ix_t_right" aria-label="右移">▶</button>
+              <button class="pan-btn pan-down" type="button" data-pan="down" data-i18n-aria="ix_t_down" aria-label="下移">▼</button>
             </div>
           </div>
         </section>
@@ -326,9 +326,9 @@
               <button class="small-button" type="button" id="stopSim" data-i18n="clear">清除讀值</button>
             </div>
             <div class="sim-actions">
-              <button class="primary-button" type="button" id="simFalstad" title="匯出為 Falstad netlist 並在嵌入模擬器執行">▶ Falstad 模擬</button>
-              <button class="primary-button" type="button" id="simFft" title="環路電流 / FFT：看 Cin 電流、電感電流與頻譜">📈 環路電流/FFT</button>
-              <button class="primary-button" type="button" id="runDrc" title="檢查接線規則：浮接腳/無接地/開漏無上拉/電源無去耦">🔍 DRC 接線檢查</button>
+              <button class="primary-button" type="button" id="simFalstad" data-i18n-title="ix_t_falstad" title="匯出為 Falstad netlist 並在嵌入模擬器執行" data-i18n="ix_falstad">▶ Falstad 模擬</button>
+              <button class="primary-button" type="button" id="simFft" data-i18n-title="ix_t_loopfft" title="環路電流 / FFT：看 Cin 電流、電感電流與頻譜" data-i18n="ix_loopfft">📈 環路電流/FFT</button>
+              <button class="primary-button" type="button" id="runDrc" data-i18n-title="ix_t_drc" title="檢查接線規則：浮接腳/無接地/開漏無上拉/電源無去耦" data-i18n="ix_drc">🔍 DRC 接線檢查</button>
             </div>
             <div id="drcReport" class="review-report"></div>
             <div class="summary-grid" id="summaryGrid"></div>
@@ -351,11 +351,11 @@
               </label>
             </div>
             <div class="pdf-parse-section">
-              <button class="primary-button" type="button" id="parsePdfBtn">📄 解析 Datasheet 並建立 IC</button>
+              <button class="primary-button" type="button" id="parsePdfBtn" data-i18n="ix_pdfic">📄 解析 Datasheet 並建立 IC</button>
               <div id="pdfParseResult" class="pdf-parse-result" hidden>
                 <div class="parse-status" id="parseStatus"></div>
                 <div id="parsedICInfo"></div>
-                <button class="small-button" type="button" id="saveParsedIC" hidden>儲存為 IC</button>
+                <button class="small-button" type="button" id="saveParsedIC" hidden data-i18n="ix_saveic">儲存為 IC</button>
               </div>
             </div>
             <label class="review-notes">
@@ -388,9 +388,9 @@
               </label>
               <div id="paramFields" class="param-fields"></div>
               <div id="presetBar" style="display:flex;gap:6px;align-items:center;margin-top:8px">
-                <select id="presetPick" style="flex:1;font-size:12px;padding:3px"><option value="">套用預設規格...</option></select>
-                <button class="small-button" type="button" id="savePreset" title="把目前規格存成預設，下次免重打">💾 存預設</button>
-                <button class="small-button" type="button" id="delPreset" title="刪除選取的預設">🗑</button>
+                <select id="presetPick" style="flex:1;font-size:12px;padding:3px"><option value="" data-i18n="ix_preset_apply">套用預設規格...</option></select>
+                <button class="small-button" type="button" id="savePreset" data-i18n-title="ix_t_savepreset" title="把目前規格存成預設，下次免重打" data-i18n="ix_preset_save">💾 存預設</button>
+                <button class="small-button" type="button" id="delPreset" data-i18n-title="ix_t_delpreset" title="刪除選取的預設">🗑</button>
               </div>
               <div class="inspector-actions">
                 <button class="danger-button" type="button" id="deleteSelected" data-i18n="delete">刪除</button>
@@ -459,12 +459,12 @@
                 <span data-i18n="icCategory">類別</span>
                 <select id="icCategory">
                   <option value="mcu">MCU</option>
-                  <option value="power">電源管理</option>
-                  <option value="memory">記憶體</option>
-                  <option value="interface">介面</option>
-                  <option value="analog">類比</option>
-                  <option value="digital">數位</option>
-                  <option value="mixed">混合訊號</option>
+                  <option value="power" data-i18n="ix_cat_power">電源管理</option>
+                  <option value="memory" data-i18n="ix_cat_mem">記憶體</option>
+                  <option value="interface" data-i18n="ix_cat_if">介面</option>
+                  <option value="analog" data-i18n="ix_cat_analog">類比</option>
+                  <option value="digital" data-i18n="ix_cat_digital">數位</option>
+                  <option value="mixed" data-i18n="ix_cat_mixed">混合訊號</option>
                 </select>
               </label>
               <label>
@@ -484,7 +484,7 @@
             <div class="pins-section">
               <div class="section-head">
                 <span data-i18n="icPins">Pin 定義</span>
-                <button class="small-button" type="button" id="addPinBtn">+ 新增 Pin</button>
+                <button class="small-button" type="button" id="addPinBtn" data-i18n="ix_addpin">+ 新增 Pin</button>
               </div>
               <div id="pinsList" class="pins-list"></div>
             </div>
@@ -502,26 +502,26 @@
     <div id="icBuilderModal" class="modal" hidden>
       <div class="modal-content" style="width:min(560px,94vw)">
         <div class="modal-header">
-          <h2>建立自訂 IC（方框 + 多腳）</h2>
+          <h2 data-i18n="ix_icb_title">建立自訂 IC（方框 + 多腳）</h2>
           <button class="icon-button" type="button" id="closeIcBuilder">✕</button>
         </div>
         <div class="modal-body">
           <label style="display:block;margin-bottom:8px">
-            <span>IC 名稱</span>
+            <span data-i18n="ix_icname">IC 名稱</span>
             <input id="icbName" type="text" placeholder="ESP32-S3" style="width:100%" />
           </label>
           <label style="display:block;margin-bottom:6px">
-            <span>Pin 表（每行：<code>編號,名稱,側別(L/R/T/B),類型</code>；側別/類型可省略；# 註解）</span>
+            <span data-i18n="ix_pin_hint">Pin 表（每行：編號,名稱,側別(L/R/T/B),類型；側別/類型可省略；# 註解）</span>
             <textarea id="icbPins" rows="10" placeholder="1,VCC,L,power&#10;2,GND,L,power&#10;3,GPIO0,L,io&#10;4,TXD,R,io&#10;5,RXD,R,io&#10;6,EN,R,io" style="width:100%;font-family:monospace;font-size:12px"></textarea>
           </label>
-          <p class="note">側別未填時自動 DIP 分配（前半左、後半右）。</p>
+          <p class="note" data-i18n="ix_pin_dip">側別未填時自動 DIP 分配（前半左、後半右）。</p>
           <div class="sim-actions">
-            <button class="primary-button" type="button" id="icbCreate">建立並放置</button>
-            <label class="small-button file-button" title="從 datasheet PDF 預填">
-              從 PDF 預填
+            <button class="primary-button" type="button" id="icbCreate" data-i18n="ix_create_place">建立並放置</button>
+            <label class="small-button file-button" data-i18n-title="ix_t_frompdf" title="從 datasheet PDF 預填">
+              <span data-i18n="ix_from_pdf">從 PDF 預填</span>
               <input id="icbPdf" type="file" accept="application/pdf" hidden />
             </label>
-            <button class="small-button" type="button" id="icbCancel">取消</button>
+            <button class="small-button" type="button" id="icbCancel" data-i18n="ui_cancel">取消</button>
           </div>
         </div>
       </div>
@@ -531,10 +531,10 @@
     <div id="bomModal" class="modal" hidden>
       <div class="modal-content" style="width:min(820px,95vw);max-height:88vh;display:flex;flex-direction:column">
         <div class="modal-header">
-          <h2>BOM 料表</h2>
+          <h2 data-i18n="ix_bom_title">BOM 料表</h2>
           <div style="display:flex;gap:8px;align-items:center">
-            <button class="small-button" type="button" id="bomCsv">下載 CSV</button>
-            <button class="small-button" type="button" id="bomPdf">列印 / PDF</button>
+            <button class="small-button" type="button" id="bomCsv" data-i18n="ix_csv">下載 CSV</button>
+            <button class="small-button" type="button" id="bomPdf" data-i18n="ix_print">列印 / PDF</button>
             <button class="icon-button" type="button" id="closeBom">✕</button>
           </div>
         </div>
@@ -548,10 +548,10 @@
     <div id="simModal" class="modal" hidden>
       <div class="modal-content sim-modal" style="width:min(1100px,95vw);height:88vh;display:flex;flex-direction:column">
         <div class="modal-header">
-          <h2>Falstad 電路模擬</h2>
+          <h2 data-i18n="ix_falstad_title">Falstad 電路模擬</h2>
           <div style="display:flex;gap:8px;align-items:center">
-            <a id="simOpenNew" class="small-button" href="#" target="_blank" rel="noopener">新分頁開啟</a>
-            <button class="small-button" type="button" id="simCopyNetlist">複製 netlist</button>
+            <a id="simOpenNew" class="small-button" href="#" target="_blank" rel="noopener" data-i18n="ix_newtab">新分頁開啟</a>
+            <button class="small-button" type="button" id="simCopyNetlist" data-i18n="ix_copy_netlist">複製 netlist</button>
             <button class="icon-button" type="button" id="closeSimModal">✕</button>
           </div>
         </div>
@@ -582,6 +582,6 @@
     <script src="./instruments.js"></script>
     <script src="./sim-bench.js"></script>
     <script src="./sheets.js?v=2026-08-06a"></script>
-    <script src="./i18n.js?v=2026-08-06a"></script>
+    <script src="./i18n.js?v=2026-08-06b"></script>
 </body>
 </html>

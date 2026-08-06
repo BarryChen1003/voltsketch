@@ -23,6 +23,25 @@ for (const line of lines) {
   ['en', 'ja', 'ko'].forEach(l => { if (!new RegExp('\\b' + l + ':').test(line)) langMissing.push(key + ' 缺 ' + l); });
 }
 
+// ---------- 1b) app.js 自有的字典（線路圖編輯器的 82 詞條，zh/en/ja/ko 各一份）----------
+// index.html 的 data-i18n="select" 這類 key 是 app.applyI18n() 翻的，不在 i18n.js 裡，
+// 不納進來就會有 80 幾筆假的「未定義」，把真正的漏翻蓋掉。
+const appSrc = fs.readFileSync('./app.js', 'utf8');
+const appStart = appSrc.indexOf('  i18n: {');
+if (appStart >= 0) {
+  const langs = {};
+  for (const L of ['zh', 'en', 'ja', 'ko']) {
+    const i = appSrc.indexOf('\n    ' + L + ': {', appStart);
+    if (i < 0) continue;
+    const seg = appSrc.slice(i, appSrc.indexOf('\n    }', i));
+    langs[L] = new Set([...seg.matchAll(/^\s{6}([A-Za-z0-9_]+):/gm)].map(m => m[1]));
+  }
+  for (const k of langs.zh || []) {
+    defined.add(k);
+    ['en', 'ja', 'ko'].forEach(l => { if (!(langs[l] && langs[l].has(k))) langMissing.push('app.js ' + k + ' 缺 ' + l); });
+  }
+}
+
 // ---------- 2) 用到的字面 key（分 JS / HTML）----------
 const jsUsed = new Map(), htmlUsed = new Map();
 const add = (map, k, w) => { if (!map.has(k)) map.set(k, w); };
@@ -37,7 +56,7 @@ for (const f of files('.js')) {
 }
 for (const f of files('.html')) {
   const src = fs.readFileSync(f, 'utf8');
-  const re = /data-i18n(?:-placeholder|-title)?=["']([A-Za-z0-9_.]+)["']/g; let m;
+  const re = /data-i18n(?:-placeholder|-title|-aria)?=["']([A-Za-z0-9_.]+)["']/g; let m;
   while ((m = re.exec(src))) add(htmlUsed, m[1], f);
 }
 

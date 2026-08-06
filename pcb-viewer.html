@@ -46,56 +46,56 @@
   <style>.vs-embed .topbar { display: none !important; }</style>
   <div class="app-shell">
     <header class="topbar">
-      <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>HardwareAI 硬體實驗室</h1><p>PCB 檢視器（vs-board-extract）</p></div></div>
+      <div class="brand"><div class="brand-mark" aria-hidden="true">VS</div><div><h1>HardwareAI 硬體實驗室</h1><p data-i18n="pv_title">PCB 檢視器（vs-board-extract）</p></div></div>
       <nav class="main-nav">
         <a href="index.html" class="nav-link">線路圖</a>
         <a href="ic-library.html" class="nav-link">IC 元件庫</a>
         <a href="pcb.html" class="nav-link">PCB Layout</a>
           <a href="pcb-viewer.html" class="nav-link">PCB 檢視器</a>
-        <a href="upgrade.html" class="nav-link">升級 VIP</a>
+        <a href="upgrade.html" class="nav-link" data-i18n="nav_upgrade">升級 VIP</a>
         <a href="contact.html" class="nav-link">聯絡資訊</a>
         </nav>
     </header>
     <div class="tools">
-      <button class="small-button" id="loadDemo">載入範例板</button>
-      <button class="small-button" id="loadFile">匯入 vsboard.json</button>
+      <button class="small-button" id="loadDemo" data-i18n="pv_loaddemo">載入範例板</button>
+      <button class="small-button" id="loadFile" data-i18n="pv_import">匯入 vsboard.json</button>
       <input type="file" id="file" accept=".json,.brd" style="display:none" />
-      <button class="small-button" id="loadOverlay">＋ co-lay 疊圖</button>
+      <button class="small-button" id="loadOverlay" data-i18n="pv_colay_add">＋ co-lay 疊圖</button>
       <input type="file" id="fileOv" accept=".json" style="display:none" />
-      <a class="small-button" href="tools/allegro-extract.il" download style="text-decoration:none" title="Allegro 內 skill load 後執行 vsExtract() 產 vsboard.json">下載 Allegro 匯出腳本 (.il)</a>
-      <button class="small-button" id="exJson" title="目前板面資料存成 vsboard.json（可再匯入/co-lay）">匯出 vsboard.json</button>
-      <button class="small-button" id="exPlace" title=".brd 為專有二進位不可自寫；此腳本在 Allegro 內重放元件位置（等價匯出）">匯出佈局 SKILL (.il)</button>
+      <a class="small-button" href="tools/allegro-extract.il" download style="text-decoration:none" data-i18n-title="pv_t_skill" title="Allegro 內 skill load 後執行 vsExtract() 產 vsboard.json" data-i18n="pv_dl_skill">下載 Allegro 匯出腳本 (.il)</a>
+      <button class="small-button" id="exJson" data-i18n-title="pv_t_exjson" title="目前板面資料存成 vsboard.json（可再匯入/co-lay）" data-i18n="pv_ex_json">匯出 vsboard.json</button>
+      <button class="small-button" id="exPlace" data-i18n-title="pv_t_exskill" title=".brd 為專有二進位不可自寫；此腳本在 Allegro 內重放元件位置（等價匯出）" data-i18n="pv_ex_skill">匯出佈局 SKILL (.il)</button>
       <span id="stat" style="color:#94a3b8;font-size:12px"></span>
       <span style="flex:1"></span>
-      <span style="color:#94a3b8;font-size:11px">.brd 為 Cadence 專有二進位：本工具讀「SKILL 匯出的中繼 JSON」，改板用產出的 SKILL 腳本回 Allegro 執行</span>
+      <span style="color:#94a3b8;font-size:11px" data-i18n="pv_brd_note">.brd 為 Cadence 專有二進位：本工具讀「SKILL 匯出的中繼 JSON」，改板用產出的 SKILL 腳本回 Allegro 執行</span>
     </div>
     <div class="pv">
       <div class="cvwrap"><canvas id="cv"></canvas></div>
       <div class="side">
-        <h3>搜尋（refdes / 料號 / net）</h3>
+        <h3 data-i18n="pv_search">搜尋（refdes / 料號 / net）</h3>
         <input id="q" type="search" placeholder="U1、ADS112C14、GND、TP…" />
         <div style="margin-top:6px">
-          <button class="qbtn" data-q="^TP">測試點 TP</button>
-          <button class="qbtn" data-q="SCREW|MTG">螺絲/固定孔</button>
+          <button class="qbtn" data-q="^TP" data-i18n="pv_tp">測試點 TP</button>
+          <button class="qbtn" data-q="SCREW|MTG" data-i18n="pv_mount">螺絲/固定孔</button>
           <button class="qbtn" data-q="^U\d">IC</button>
-          <button class="qbtn" data-q="^J\d">連接器</button>
-          <button class="qbtn" id="clearHl">清除</button>
+          <button class="qbtn" data-q="^J\d" data-i18n="pv_conn">連接器</button>
+          <button class="qbtn" id="clearHl" data-i18n="ui_clear">清除</button>
         </div>
         <div id="hits" style="max-height:180px;overflow-y:auto;margin-top:6px"></div>
         <div id="info" hidden></div>
-        <h3>圖層</h3>
+        <h3 data-i18n="pv_layers">圖層</h3>
         <div id="layers"></div>
-        <h3>換料（產 SKILL 回 Allegro 跑）</h3>
-        <div id="swapBox" style="font-size:12px;color:#64748b">先搜尋並選一顆料</div>
-        <h3>co-lay 比對</h3>
-        <div id="colay" style="font-size:12px;color:#64748b">載入第二片板做疊圖 + 差異清單</div>
+        <h3 data-i18n="pv_swap">換料（產 SKILL 回 Allegro 跑）</h3>
+        <div id="swapBox" style="font-size:12px;color:#64748b" data-i18n="pv_pickfirst">先搜尋並選一顆料</div>
+        <h3 data-i18n="pv_colay">co-lay 比對</h3>
+        <div id="colay" style="font-size:12px;color:#64748b" data-i18n="pv_colay_hint">載入第二片板做疊圖 + 差異清單</div>
       </div>
     </div>
   </div>
 
   <script src="./ic-data.js?v=43"></script>
   <script src="./skill-swap.js"></script>
-  <script src="./i18n.js?v=2026-08-06a"></script>
+  <script src="./i18n.js?v=2026-08-06b"></script>
   <script>
     const $ = id => document.getElementById(id);
     const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));

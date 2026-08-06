@@ -60,8 +60,8 @@
         <a href="ic-library.html" class="nav-link active">IC 元件庫</a>
         <a href="knowledge.html" class="nav-link">硬體知識庫</a>
         <a href="pcb.html" class="nav-link">PCB Layout</a>
-        <a href="interview.html" class="nav-link">面試考題</a>
-        <a href="upgrade.html" class="nav-link">升級 VIP</a>
+        <a href="interview.html" class="nav-link" data-i18n="nav_interview">面試考題</a>
+        <a href="upgrade.html" class="nav-link" data-i18n="nav_upgrade">升級 VIP</a>
         <a href="contact.html" class="nav-link">聯絡資訊</a>
         </nav>
     </header>
@@ -85,8 +85,8 @@
     </section>
     <div class="iclib">
       <div class="col cats" id="cats"></div>
-      <div class="col list"><input class="srch" id="srch" type="search" placeholder="搜尋料號…"/><div id="icList"></div></div>
-      <div class="col detail" id="detail"><p style="color:#94a3b8;padding:20px">← 左邊選分類，中間點料號看詳細頁</p></div>
+      <div class="col list"><input class="srch" id="srch" type="search" data-i18n-placeholder="il_ph_search" placeholder="搜尋料號…"/><div id="icList"></div></div>
+      <div class="col detail" id="detail"><p style="color:#94a3b8;padding:20px" data-i18n="il_hint">← 左邊選分類，中間點料號看詳細頁</p></div>
     </div>
   </div>
 
@@ -335,6 +335,6 @@
     const firstFilled = Object.keys(CL).find(k => CL[k].some(p => dataMap[norm(p)]));
     if (firstFilled) { document.querySelector(`[data-cat="${firstFilled}"]`)?.click(); }
   </script>
-  <script src="./i18n.js?v=2026-08-06a"></script>
+  <script src="./i18n.js?v=2026-08-06b"></script>
 </body>
 </html>

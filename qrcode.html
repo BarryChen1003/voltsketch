@@ -95,24 +95,24 @@
 </head>
 <body>
   <div class="container">
-    <h1>HardwareAI 硬體實驗室</h1>
-    <p class="subtitle">用手機掃描 QR Code 開啟網站</p>
+    <h1 data-i18n="brand_title">HardwareAI 硬體實驗室</h1>
+    <p class="subtitle" data-i18n="qr_title">用手機掃描 QR Code 開啟網站</p>
     
     <div id="qrcode"></div>
     
-    <div class="url" id="urlDisplay">載入中...</div>
+    <div class="url" id="urlDisplay" data-i18n="ui_loading">載入中...</div>
     
     <div class="instructions">
-      <h3>📱 使用步驟：</h3>
+      <h3 data-i18n="qr_steps">📱 使用步驟：</h3>
       <ol>
-        <li>確保手機和電腦在同一網路</li>
-        <li>打開手機相機或 QR Code 掃描器</li>
-        <li>掃描上方 QR Code</li>
-        <li>在瀏覽器中開啟連結</li>
+        <li data-i18n="qr_s1">確保手機和電腦在同一網路</li>
+        <li data-i18n="qr_s2">打開手機相機或 QR Code 掃描器</li>
+        <li data-i18n="qr_s3">掃描上方 QR Code</li>
+        <li data-i18n="qr_s4">在瀏覽器中開啟連結</li>
       </ol>
     </div>
     
-    <button class="btn" onclick="startServer()">啟動本地伺服器</button>
+    <button class="btn" onclick="startServer()" data-i18n="qr_local">啟動本地伺服器</button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
