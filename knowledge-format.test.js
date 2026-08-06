@@ -13,7 +13,9 @@ const fs = require('fs');
 const src = fs.readFileSync('./knowledge.js', 'utf8');
 const m = src.match(/formatPrinciples\(text\)\s*\{[\s\S]*?\n  \},/);
 if (!m) { console.log('FAIL: 找不到 formatPrinciples 實作'); process.exit(1); }
-const formatPrinciples = new Function('return function ' + m[0].replace(/,$/, ''))();
+// 空輸入那條走 this.T('kb_no_desc')（畫面上的字一律四語），測試裡沒有 I18N → 給個假的
+const HOST = { T: k => k };
+const formatPrinciples = new Function('return function ' + m[0].replace(/,$/, ''))().bind(HOST);
 
 let pass = 0, fail = 0;
 const ok = (c, msg) => { if (c) pass++; else { fail++; console.log('  FAIL: ' + msg); } };
@@ -57,8 +59,9 @@ const strip = s => String(s).replace(/\s/g, '');
 }
 
 // 5) 空值
-ok(/無說明/.test(formatPrinciples('')), '空內容回「無說明」');
-ok(/無說明/.test(formatPrinciples(null)), 'null 回「無說明」');
+// 假 T 直接回 key，所以這裡驗的是「有走 i18n 的 no-desc 文案」而不是寫死中文
+ok(/kb_no_desc/.test(formatPrinciples('')), '空內容回 no-desc 文案');
+ok(/kb_no_desc/.test(formatPrinciples(null)), 'null 回 no-desc 文案');
 
 console.log(`\nknowledge-format.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

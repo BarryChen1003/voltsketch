@@ -4234,8 +4234,9 @@ const knowledgeApp = {
   },
 
   // ---- 常用線路拓樸維度（降壓/升壓/DC-DC/AC-DC/DC-AC/AC-AC/LDO）----
-  TOPOS: [['all', '全部'], ['buck', '降壓 Buck'], ['boost', '升壓 Boost'], ['ldo', 'LDO 線性'],
-          ['acdc', 'AC-DC'], ['dcac', 'DC-AC 逆變'], ['acac', 'AC-AC'], ['dcdc', 'DC-DC 其他']],
+  // [值, i18n key]；值進 data-topo（篩選用），標籤四語
+  TOPOS: [['all', 'kb_topo_all'], ['buck', 'kb_topo_buck'], ['boost', 'kb_topo_boost'], ['ldo', 'kb_topo_ldo'],
+          ['acdc', 'kb_topo_acdc'], ['dcac', 'kb_topo_dcac'], ['acac', 'kb_topo_acac'], ['dcdc', 'kb_topo_dcdc']],
   currentTopo: 'all',
   itemTopo(item) {
     const t = (item.title || '') + ' ' + (item.description || '');
@@ -4251,7 +4252,8 @@ const knowledgeApp = {
   renderTopoFilter() {
     const host = document.querySelector('#topoFilter');
     if (!host) return;
-    host.innerHTML = this.TOPOS.map(([v, label]) => {
+    host.innerHTML = this.TOPOS.map(([v, key]) => {
+      const label = this.T(key);
       const active = (this.currentTopo === v) ? ' background:#0e9f6e;color:#fff;border-color:#0e9f6e;' : '';
       return `<button class="topo-btn" data-topo="${v}" style="padding:3px 8px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;font-size:12px;cursor:pointer;${active}">${label}</button>`;
     }).join('');
@@ -4297,9 +4299,9 @@ const knowledgeApp = {
       container.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background:#fff; border:1px solid #e2e8f0; border-radius:12px;">
           <p style="font-size: 44px; margin-bottom: 12px;">🔒</p>
-          <h3 style="color:#0f172a; margin:0 0 8px;">「${this.currentProduct}」為付費主題</h3>
-          <p style="color:#64748b; font-size:14px; margin:0 0 18px;">電子紙、車用電子（電動車）、AI 伺服器、手機、筆電、智慧手錶等熱門主題內容需 VIP 解鎖。</p>
-          <a class="primary-button" style="padding:10px 22px; text-decoration:none;" href="upgrade.html">升級 VIP 解鎖</a>
+          <h3 style="color:#0f172a; margin:0 0 8px;">${this.T('kb_paid_title').replace('{p}', this.productLabel(this.currentProduct))}</h3>
+          <p style="color:#64748b; font-size:14px; margin:0 0 18px;">${this.T('kb_paid_desc')}</p>
+          <a class="primary-button" style="padding:10px 22px; text-decoration:none;" href="upgrade.html">${this.T('kb_paid_cta')}</a>
         </div>`;
       return;
     }
@@ -4309,8 +4311,8 @@ const knowledgeApp = {
       container.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--muted);">
           <p style="font-size: 48px; margin-bottom: 16px;">📚</p>
-          <p>尚無知識卡片</p>
-          <p style="font-size: 14px;">上傳 PDF 或手動新增知識</p>
+          <p>${this.T('kb_empty_title')}</p>
+          <p style="font-size: 14px;">${this.T('kb_empty_sub')}</p>
         </div>
       `;
       return;
@@ -4327,7 +4329,7 @@ const knowledgeApp = {
           <div class="card-title">${item.title}</div>
         </div>
         <div class="card-body">
-          <div class="card-description">${locked ? '付費主題內容，升級 VIP 解鎖完整說明與電路圖。' : (item.description || '')}</div>
+          <div class="card-description">${locked ? this.T('kb_locked_desc') : (item.description || '')}</div>
           <div class="card-tags">
             ${(item.circuits || []).slice(0, 2).map(c => `<span class="card-tag">${c.type}</span>`).join('')}
           </div>
@@ -4344,26 +4346,42 @@ const knowledgeApp = {
     });
   },
 
+  // i18n 薄包裝：I18N 還沒載入就退回 key（不要讓畫面爆掉）。硬規矩 6：畫面上的字一律四語。
+  T(key) { return (window.I18N && I18N.t(key)) || key; },
+
   getCategoryName(category) {
-    const names = {
-      'power-management': '電源管理',
-      'signal-processing': '訊號處理',
-      'communication': '通訊介面',
-      'transistor': '電晶體應用',
-      'protection': '保護電路',
-      'high-speed': '高速設計',
-      'emi-emc': 'EMI/EMC',
-      'emc': 'EMC 設計',
-      'emi': 'EMI 對策',
-      'interview': '面試題目',
-      'analog': '類比電路',
-      'data-conversion': '資料轉換',
-      'measurement': '量測儀器',
-      'embedded': '嵌入式系統',
-      'pcb-design': 'PCB 設計',
-      'automotive': '車用電子'
+    const keys = {
+      'power-management': 'kb_power',
+      'signal-processing': 'kb_signal',
+      'communication': 'kb_comm',
+      'transistor': 'kb_transistor',
+      'protection': 'kb_protection',
+      'high-speed': 'kb_highspeed',
+      'emi-emc': 'kb_emiemc',
+      'emc': 'kb_emc',
+      'emi': 'kb_emi',
+      'interview': 'kb_interview',
+      'analog': 'kb_analog',
+      'data-conversion': 'kb_dataconv',
+      'measurement': 'kb_measure',
+      'embedded': 'kb_embedded',
+      'pcb-design': 'kb_pcbdesign',
+      'automotive': 'kb_auto'
     };
-    return names[category] || category;
+    return keys[category] ? this.T(keys[category]) : category;
+  },
+
+  // 產品篩選鈕：值仍是中文（item.products 是中文，篩選邏輯靠它比對），只翻顯示的標籤
+  productLabel(p) {
+    const keys = {
+      'all': 'kb_p_all', '通用': 'kb_p_generic', '筆電': 'kb_p_laptop', '手機': 'kb_p_phone',
+      '平板': 'kb_p_tablet', '智慧手錶': 'kb_p_watch', '車用電子': 'kb_p_auto', '電子紙': 'kb_p_epaper',
+      'AI 伺服器': 'kb_p_aiserver', '網通': 'kb_p_network', 'WiFi 路由器': 'kb_p_router', 'IoT': 'kb_p_iot',
+      '耳機': 'kb_p_headphone', '滑鼠': 'kb_p_mouse', '硬碟': 'kb_p_hdd', '風扇': 'kb_p_fan',
+      '電器': 'kb_p_appliance', '音訊': 'kb_p_audio', '感測': 'kb_p_sensor', '控制': 'kb_p_control',
+      '電源': 'kb_p_power', 'MCU': 'kb_p_mcu'
+    };
+    return keys[p] ? this.T(keys[p]) : p;
   },
 
   updateCounts() {
@@ -4423,7 +4441,7 @@ const knowledgeApp = {
       (mm, lead, word) => `${lead}<strong>${word}：</strong>`);
     const P = s => `<p style="margin:0 0 12px">${bold(esc(s.trim()))}</p>`;
     const raw = String(text || '').trim();
-    if (!raw) return '<p>無說明</p>';
+    if (!raw) return `<p>${this.T('kb_no_desc')}</p>`;
     if (raw.length < 120) return P(raw);
     // 切句：句號/驚嘆/問號後斷開（保留標點）；超長單句再依分號、必要時逗號軟切，避免單句成牆
     let sentences = raw.split(/(?<=[。！？])\s*/).filter(s => s.trim());
@@ -4477,7 +4495,7 @@ const knowledgeApp = {
     // 兩者同一個理由：內容不正確，錯的教學內容比沒有更糟。
     body.innerHTML = `
       <div class="detail-section">
-        <h3>原理說明</h3>
+        <h3>${this.T('kb_sec_principle')}</h3>
         ${this.formatPrinciples(item.principles)}
       </div>
 
@@ -4485,21 +4503,21 @@ const knowledgeApp = {
         <div class="detail-section">
           <h3>${circuit.description}</h3>
           <div class="circuit-image">
-            ${circuit.svg || '<p>暫無電路圖</p>'}
+            ${circuit.svg || `<p>${this.T('kb_no_circuit')}</p>`}
           </div>
         </div>
       `).join('')}
 
       ${(item.keyFormulas || []).length > 0 ? `
         <div class="detail-section">
-          <h3>關鍵公式</h3>
+          <h3>${this.T('kb_sec_formula')}</h3>
           ${item.keyFormulas.map(f => `<div class="formula-box">${this.subHtml(f)}</div>`).join('')}
         </div>
       ` : ''}
 
       ${(item.designNotes || []).length > 0 ? `
         <div class="detail-section">
-          <h3>設計注意事項</h3>
+          <h3>${this.T('kb_sec_notes')}</h3>
           <ul class="note-list">
             ${item.designNotes.map(n => `<li>${n}</li>`).join('')}
           </ul>
@@ -4508,7 +4526,7 @@ const knowledgeApp = {
 
       ${(item.commonMistakes || []).length > 0 ? `
         <div class="detail-section">
-          <h3>常見錯誤</h3>
+          <h3>${this.T('kb_sec_mistakes')}</h3>
           <ul class="note-list mistake-list">
             ${item.commonMistakes.map(m => `<li>${m}</li>`).join('')}
           </ul>
@@ -4526,7 +4544,7 @@ const knowledgeApp = {
 
   async handlePdfUpload(files) {
     // TODO: Implement PDF parsing
-    alert(`已收到 ${files.length} 個 PDF 檔案。PDF 解析功能即將實作。`);
+    alert(this.T('kb_pdf_todo').replace('{n}', files.length));
   },
 
   renderProductFilter() {
@@ -4541,7 +4559,7 @@ const knowledgeApp = {
     const kbLock = window.KB_LOCK && !window.KB_LOCK.unlocked;
     const lockedProds = (window.KB_LOCK && window.KB_LOCK.prods) || [];
     host.innerHTML = prods.map(p => {
-      let label = p === 'all' ? '全部' : p;
+      let label = this.productLabel(p);
       if (kbLock && lockedProds.includes(p)) label += ' 🔒';
       const active = (this.currentProduct === p) ? ' background:#1f4fd1;color:#fff;border-color:#1f4fd1;' : '';
       return `<button class="prod-btn" data-product="${p}" style="padding:3px 8px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;font-size:12px;cursor:pointer;${active}">${label}</button>`;

@@ -133,6 +133,57 @@ window.I18N = (function () {
     kb_c_emc:      { zh: '抗擾、接地、遮蔽', en: 'Immunity, Grounding, Shielding', ja: 'イミュニティ, 接地, シールド', ko: '내성, 접지, 차폐' },
     kb_c_emi:      { zh: '濾波、共模扼流、佈局', en: 'Filtering, Common-mode choke, Layout', ja: 'フィルタ, コモンモードチョーク, レイアウト', ko: '필터링, 공통 모드 초크, 레이아웃' },
 
+    // ---- 知識卡詳細視窗的區塊標題 ----
+    kb_sec_principle: { zh: '原理說明', en: 'How it works', ja: '原理説明', ko: '원리 설명' },
+    kb_sec_formula:   { zh: '關鍵公式', en: 'Key formulas', ja: '主要な計算式', ko: '핵심 공식' },
+    kb_sec_notes:     { zh: '設計注意事項', en: 'Design notes', ja: '設計上の注意', ko: '설계 주의사항' },
+    kb_sec_mistakes:  { zh: '常見錯誤', en: 'Common mistakes', ja: 'よくある間違い', ko: '흔한 실수' },
+    kb_no_circuit:    { zh: '暫無電路圖', en: 'No diagram yet', ja: '回路図はまだありません', ko: '회로도 없음' },
+    kb_no_desc:       { zh: '無說明', en: 'No description', ja: '説明なし', ko: '설명 없음' },
+
+    // ---- 知識卡列表的空狀態與付費鎖 ----
+    kb_empty_title:  { zh: '尚無知識卡片', en: 'No knowledge cards yet', ja: 'ナレッジカードがありません', ko: '지식 카드가 없습니다' },
+    kb_empty_sub:    { zh: '上傳 PDF 或手動新增知識', en: 'Upload a PDF or add knowledge manually', ja: 'PDF をアップロードするか手動で追加', ko: 'PDF를 업로드하거나 직접 추가하세요' },
+    kb_paid_title:   { zh: '「{p}」為付費主題', en: '"{p}" is a paid topic', ja: '「{p}」は有料トピックです', ko: '"{p}"은(는) 유료 주제입니다' },
+    kb_paid_desc:    { zh: '電子紙、車用電子（電動車）、AI 伺服器、手機、筆電、智慧手錶等熱門主題內容需 VIP 解鎖。', en: 'Popular topics — e-paper, automotive (EV), AI servers, phones, laptops, smartwatches — require VIP.', ja: '電子ペーパー、車載（EV）、AI サーバ、スマホ、ノート PC、スマートウォッチなどの人気トピックは VIP 限定です。', ko: '전자종이, 차량용(EV), AI 서버, 스마트폰, 노트북, 스마트워치 등 인기 주제는 VIP 전용입니다.' },
+    kb_paid_cta:     { zh: '升級 VIP 解鎖', en: 'Upgrade to unlock', ja: 'VIP にアップグレード', ko: 'VIP로 업그레이드' },
+    kb_locked_desc:  { zh: '付費主題內容，升級 VIP 解鎖完整說明與電路圖。', en: 'Paid topic. Upgrade to VIP for the full explanation and diagrams.', ja: '有料トピックです。VIP にアップグレードすると全文と回路図が読めます。', ko: '유료 주제입니다. VIP로 업그레이드하면 전체 설명과 회로도를 볼 수 있습니다.' },
+    kb_pdf_todo:     { zh: '已收到 {n} 個 PDF 檔案。PDF 解析功能即將實作。', en: 'Received {n} PDF file(s). PDF parsing is not implemented yet.', ja: 'PDF を {n} 件受け取りました。解析機能は未実装です。', ko: 'PDF {n}개를 받았습니다. 파싱 기능은 아직 구현되지 않았습니다.' },
+
+    // ---- 常用線路拓樸篩選 ----
+    kb_topo_all:   { zh: '全部', en: 'All', ja: 'すべて', ko: '전체' },
+    kb_topo_buck:  { zh: '降壓 Buck', en: 'Buck', ja: '降圧 Buck', ko: '강압 Buck' },
+    kb_topo_boost: { zh: '升壓 Boost', en: 'Boost', ja: '昇圧 Boost', ko: '승압 Boost' },
+    kb_topo_ldo:   { zh: 'LDO 線性', en: 'LDO linear', ja: 'LDO リニア', ko: 'LDO 선형' },
+    kb_topo_acdc:  { zh: 'AC-DC', en: 'AC-DC', ja: 'AC-DC', ko: 'AC-DC' },
+    kb_topo_dcac:  { zh: 'DC-AC 逆變', en: 'DC-AC inverter', ja: 'DC-AC インバータ', ko: 'DC-AC 인버터' },
+    kb_topo_acac:  { zh: 'AC-AC', en: 'AC-AC', ja: 'AC-AC', ko: 'AC-AC' },
+    kb_topo_dcdc:  { zh: 'DC-DC 其他', en: 'DC-DC other', ja: 'DC-DC その他', ko: 'DC-DC 기타' },
+
+    // ---- 產品大分類篩選鈕（值仍是中文，這裡只翻顯示用的標籤）----
+    kb_p_all:       { zh: '全部', en: 'All', ja: 'すべて', ko: '전체' },
+    kb_p_generic:   { zh: '通用', en: 'General', ja: '汎用', ko: '공통' },
+    kb_p_laptop:    { zh: '筆電', en: 'Laptop', ja: 'ノート PC', ko: '노트북' },
+    kb_p_phone:     { zh: '手機', en: 'Phone', ja: 'スマホ', ko: '스마트폰' },
+    kb_p_tablet:    { zh: '平板', en: 'Tablet', ja: 'タブレット', ko: '태블릿' },
+    kb_p_watch:     { zh: '智慧手錶', en: 'Smartwatch', ja: 'スマートウォッチ', ko: '스마트워치' },
+    kb_p_auto:      { zh: '車用電子', en: 'Automotive', ja: '車載', ko: '차량용' },
+    kb_p_epaper:    { zh: '電子紙', en: 'E-paper', ja: '電子ペーパー', ko: '전자종이' },
+    kb_p_aiserver:  { zh: 'AI 伺服器', en: 'AI server', ja: 'AI サーバ', ko: 'AI 서버' },
+    kb_p_network:   { zh: '網通', en: 'Networking', ja: 'ネットワーク', ko: '네트워크' },
+    kb_p_router:    { zh: 'WiFi 路由器', en: 'WiFi router', ja: 'WiFi ルータ', ko: 'WiFi 공유기' },
+    kb_p_iot:       { zh: 'IoT', en: 'IoT', ja: 'IoT', ko: 'IoT' },
+    kb_p_headphone: { zh: '耳機', en: 'Headphones', ja: 'イヤホン', ko: '이어폰' },
+    kb_p_mouse:     { zh: '滑鼠', en: 'Mouse', ja: 'マウス', ko: '마우스' },
+    kb_p_hdd:       { zh: '硬碟', en: 'Storage', ja: 'ストレージ', ko: '스토리지' },
+    kb_p_fan:       { zh: '風扇', en: 'Fan', ja: 'ファン', ko: '팬' },
+    kb_p_appliance: { zh: '電器', en: 'Appliance', ja: '家電', ko: '가전' },
+    kb_p_audio:     { zh: '音訊', en: 'Audio', ja: 'オーディオ', ko: '오디오' },
+    kb_p_sensor:    { zh: '感測', en: 'Sensing', ja: 'センシング', ko: '센싱' },
+    kb_p_control:   { zh: '控制', en: 'Control', ja: '制御', ko: '제어' },
+    kb_p_power:     { zh: '電源', en: 'Power', ja: '電源', ko: '전원' },
+    kb_p_mcu:       { zh: 'MCU', en: 'MCU', ja: 'MCU', ko: 'MCU' },
+
     // ---- PCB Layout 頁（工具面板/分頁/按鈕/狀態）----
     pcb_gate_title: { zh: 'PCB Layout 邀請制', en: 'PCB Layout (invite only)', ja: 'PCB Layout（招待制）', ko: 'PCB Layout(초대제)' },
     pcb_gate_enter: { zh: '進入', en: 'Enter', ja: '入る', ko: '입장' },

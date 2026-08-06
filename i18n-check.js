@@ -31,7 +31,8 @@ const files = (ext) => fs.readdirSync('.').filter(f => f.endsWith(ext));
 for (const f of files('.js')) {
   if (/i18n/.test(f)) continue;   // i18n 資料檔本身不掃
   const src = fs.readFileSync(f, 'utf8');
-  const re = /(?:pcbT|I18N\.t)\(\s*['"]([A-Za-z0-9_.]+)['"]\s*[),]/g; let m;
+  // this.T('key') 是 knowledge.js 的薄包裝（I18N 沒載入時退回 key），一樣要納入檢查
+  const re = /(?:pcbT|I18N\.t|this\.T)\(\s*['"]([A-Za-z0-9_.]+)['"]\s*[),]/g; let m;
   while ((m = re.exec(src))) add(jsUsed, m[1], f);
 }
 for (const f of files('.html')) {
