@@ -395,6 +395,37 @@ window.I18N = (function () {
     pcbf_selcolor: { zh: "顏色", en: "Color", ja: "色", ko: "색상" },
     pcbf_colorclear: { zh: "還原預設", en: "Reset to default", ja: "既定に戻す", ko: "기본값으로 되돌리기" },
 
+    // ---- 硬體新技術頁（news.html）----
+    nav_news: { zh: "硬體新技術", en: "Tech Watch", ja: "ハード新技術", ko: "하드웨어 신기술" },
+    nw_sub: { zh: "硬體新技術追蹤", en: "Hardware tech watch", ja: "ハードウェア新技術ウォッチ", ko: "하드웨어 신기술 추적" },
+    nw_intro: { zh: "電子電路、電源管理、半導體、PCB、EMC 五個領域的新技術與新發表，來源涵蓋美國、台灣、大陸、韓國、日本的媒體、期刊與研討會。每則都附出處連結與來源日期；標「已核對原文」的是實際抓過原文核對過數字，標「未逐條核對」的只在來源的列表頁或彙整文看到。", en: "New technology and announcements across circuits, power management, semiconductors, PCB and EMC, drawn from media, journals and conferences in the US, Taiwan, China, Korea and Japan. Every entry carries a source link and the date printed on it; “verified” means the source was fetched and its figures checked, “not item-checked” means it was only seen in a listing or round-up.", ja: "回路、電源管理、半導体、PCB、EMC の新技術と新発表を、米国・台湾・中国・韓国・日本のメディア、論文誌、学会から収集。各項目に出典リンクと掲載日を付す。「原文確認済み」は原文を取得して数値を照合したもの、「個別未確認」は一覧記事やまとめ記事で見たもの。", ko: "회로, 전원 관리, 반도체, PCB, EMC 분야의 신기술과 발표를 미국·대만·중국·한국·일본의 매체, 저널, 학회에서 수집한다. 각 항목에 출처 링크와 게재일을 붙이며, “원문 확인”은 원문을 가져와 수치를 대조한 것, “개별 미확인”은 목록·정리 기사에서만 본 것이다." },
+    nw_axis_cat: { zh: "領域", en: "Field", ja: "分野", ko: "분야" },
+    nw_axis_region: { zh: "地區", en: "Region", ja: "地域", ko: "지역" },
+    nw_total: { zh: "收錄", en: "Tracking", ja: "収録", ko: "수록" },
+    nw_items: { zh: "則", en: "items", ja: "件", ko: "건" },
+    nw_latest: { zh: "最新一則", en: "Latest", ja: "最新", ko: "최신" },
+    nw_cadence: { zh: "每月 1 號更新", en: "updated on the 1st of each month", ja: "毎月 1 日更新", ko: "매월 1일 갱신" },
+    nw_why: { zh: "為什麼值得注意", en: "Why it matters", ja: "注目すべき理由", ko: "주목할 이유" },
+    nw_source: { zh: "出處", en: "Source", ja: "出典", ko: "출처" },
+    nw_open: { zh: "看原文", en: "Read the source", ja: "原文を読む", ko: "원문 보기" },
+    nw_empty: { zh: "這個條件下沒有項目", en: "Nothing matches this filter", ja: "この条件に該当する項目はありません", ko: "이 조건에 해당하는 항목이 없습니다" },
+    nw_verified: { zh: "已核對原文", en: "verified", ja: "原文確認済み", ko: "원문 확인" },
+    nw_verified_t: { zh: "已抓取原文並核對數字", en: "The source page was fetched and its figures checked", ja: "原文を取得し数値を照合済み", ko: "원문을 가져와 수치를 대조함" },
+    nw_unverified: { zh: "未逐條核對", en: "not item-checked", ja: "個別未確認", ko: "개별 미확인" },
+    nw_unverified_t: { zh: "來自來源的列表頁或彙整文，數字未逐一核對", en: "Seen in a listing or round-up; individual figures not checked", ja: "一覧記事やまとめ記事で確認、個別の数値は未照合", ko: "목록·정리 기사에서 확인, 개별 수치는 미대조" },
+    nw_cat_all: { zh: "全部", en: "All", ja: "すべて", ko: "전체" },
+    nw_cat_power: { zh: "電源管理", en: "Power", ja: "電源管理", ko: "전원 관리" },
+    nw_cat_semi: { zh: "半導體", en: "Semiconductor", ja: "半導体", ko: "반도체" },
+    nw_cat_pcb: { zh: "PCB / 封裝", en: "PCB / packaging", ja: "PCB / パッケージ", ko: "PCB / 패키징" },
+    nw_cat_emc: { zh: "EMC", en: "EMC", ja: "EMC", ko: "EMC" },
+    nw_cat_circuit: { zh: "電子電路", en: "Circuits", ja: "電子回路", ko: "전자 회로" },
+    nw_rg_all: { zh: "全部", en: "All", ja: "すべて", ko: "전체" },
+    nw_rg_us: { zh: "美國", en: "US", ja: "米国", ko: "미국" },
+    nw_rg_tw: { zh: "台灣", en: "Taiwan", ja: "台湾", ko: "대만" },
+    nw_rg_cn: { zh: "大陸", en: "China", ja: "中国", ko: "중국" },
+    nw_rg_kr: { zh: "韓國", en: "Korea", ja: "韓国", ko: "한국" },
+    nw_rg_jp: { zh: "日本", en: "Japan", ja: "日本", ko: "일본" },
+
     // ---- PCB Layout 頁（工具面板/分頁/按鈕/狀態）----
     pcb_gate_title: { zh: 'PCB Layout 邀請制', en: 'PCB Layout (invite only)', ja: 'PCB Layout（招待制）', ko: 'PCB Layout(초대제)' },
     pcb_gate_enter: { zh: '進入', en: 'Enter', ja: '入る', ko: '입장' },
@@ -1093,7 +1124,7 @@ window.I18N = (function () {
   // nav 依 href 自動翻譯（不用每頁加 data-i18n）
   const NAV_MAP = {
     'index.html': 'nav_schematic', 'architecture.html': 'nav_arch', 'ic-library.html': 'nav_iclib',
-    'knowledge.html': 'nav_knowledge', 'pcb.html': 'nav_pcb', 'interview.html': 'nav_interview',
+    'knowledge.html': 'nav_knowledge', 'news.html': 'nav_news', 'pcb.html': 'nav_pcb', 'interview.html': 'nav_interview',
     'lab.html': 'nav_lab', 'upgrade.html': 'nav_upgrade', 'pcb-viewer.html': 'nav_pcbviewer',
     'contact.html': 'nav_contact'
   };

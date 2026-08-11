@@ -97,6 +97,8 @@ jobs:
         run: node html-i18n-check.js --strict
       - name: interview-i18n-check（面試題庫四語齊全）
         run: node interview-i18n-check.js --strict
+      - name: news-i18n-check（新技術：四語＋每則都要有出處）
+        run: node news-i18n-check.js --strict
 
       # 2g3) 同一張圖換語言＝字寬變、座標不變 → 中文乾淨不代表英文乾淨。
       #      鐵律類（重疊、塌陷線）四語都必須 0；棘輪類各語言各有基線（*.en/ja/ko.json），
