@@ -35,7 +35,10 @@
 | 知識卡 | **152 張**（含 2026-08-01 新增 7 張 ROHM DC/DC 佈局卡，檔 `knowledge-extra5.js`）；圖 80 張 |
 | IC 元件庫 | 195 顆；2026-08-02 新增 **2nd Source 比對**（`ds-compare.js`） |
 | 知識卡的圖 | 155 張、985 條字串**四語齊全**（2026-08-06，見 §7）；四語瀏覽器實測重疊 0 |
-| CI | 21 關，本地與線上皆綠 |
+| 全站四語 | 2026-08-06 補完：編輯器 `uiT` 173 條、HTML 寫死中文 **0 處**、面試題 38/38 四語 |
+| 硬體新技術 | 新頁 `news.html`，10 則（2026-05～08），每則附出處與日期；每月 1 號更新，流程見 `NEWS-UPDATE.md` |
+| 金流保險絲 | 2026-08-06 修：`ECPAY_MODE=live` 時不准 fallback 沙盒（原本 secrets 掉了會靜默送客戶去測試商店） |
+| CI | 25 關，本地與線上皆綠（`fcdd45c` success） |
 | 部署 | HEAD == origin/main，`https://barrychen1003.github.io/voltsketch/` 已是最新 |
 | 上線阻礙 | **網域未買** → Resend 與正式金流都卡在這（§6） |
 
@@ -102,6 +105,11 @@ node knowledge-format.test.js                  # 原理說明排版不改內容
 node i18n-check.js                             # 改 HTML 後跑
 node art-i18n-check.js --strict                # 圖上的字四語齊全（985/985）
 node art-lang-render.test.js                   # 三種圖的換語言路徑
+node ui-i18n-check.js --strict                 # 編輯器畫面文字（uiT + ui-i18n.js）
+node html-i18n-check.js --strict               # HTML 不准寫死中文
+node interview-i18n-check.js --strict          # 面試題庫 38/38 四語
+node news-i18n-check.js --strict               # 新技術：四語＋每則都要有出處
+node ecpay-config.test.mjs                     # 金流保險絲：live 不准 fallback 沙盒
 for L in en ja ko; do                          # 改圖或改譯文都要跑：字寬變、座標不變
   node svg-overlap-check.js --strict --lang=$L
   node circuit-check.js --strict --lang=$L
