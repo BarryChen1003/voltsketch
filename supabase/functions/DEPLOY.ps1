@@ -17,15 +17,27 @@ sb login
 sb link --project-ref $PROJECT_REF
 
 # 3) 設綠界密鑰（secrets set＝輸入金鑰，依安全規則須由你執行，不由 Claude 代打）
+#
+# ⚠ ECPAY_MODE 是保險絲，不要省略：
+#    sandbox（預設）→ 缺值時 fallback 綠界公開測試商店，只跑得動測試金流。
+#    live           → 四個值缺一不可、不准是測試憑證、網址必須是正式站台，
+#                     任一條不符就直接 throw。這是為了避免 secrets 掉了之後，
+#                     真實客戶被安靜地送到沙盒付款頁（測試卡付得過 → 訂單標 paid
+#                     → VIP 免費開通，而且整條路都不會噴錯）。
+#    判斷邏輯：_shared/ecpay-config.mjs；測試：node ecpay-config.test.mjs（14 條）
+#
 # ---- 選項 A：綠界「官方公開測試」密鑰（安全、無真金流；先驗證整條流程用）----
 sb secrets set `
+  ECPAY_MODE=sandbox `
   ECPAY_MERCHANT_ID=2000132 `
   ECPAY_HASH_KEY=5294y06JbISpM5x9 `
   ECPAY_HASH_IV=v77hoKGq4kWxNNIS `
   ECPAY_ACTION_URL=https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5
 
 # ---- 選項 B：正式密鑰（特約商店核准後，用你的實際值取代並改用正式網址）----
+# 沙盒五項驗證沒過之前不要切這段。
 # sb secrets set `
+#   ECPAY_MODE=live `
 #   ECPAY_MERCHANT_ID=<你的商店代號> `
 #   ECPAY_HASH_KEY=<你的HashKey> `
 #   ECPAY_HASH_IV=<你的HashIV> `

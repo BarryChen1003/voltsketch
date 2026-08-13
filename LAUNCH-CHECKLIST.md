@@ -17,11 +17,26 @@
 - 你要做：Resend 註冊拿 SMTP 憑證 → Supabase Auth 填 SMTP → 貼兩個模板 → 寄測試信。
 - 站主自己不必等這步（Phase B 的 owner-unlock 會手動確認站主信箱）。
 
+## ⚠️ 上線前必改（2026-08-06 加）
+- **法律頁的聯絡信箱是假的**：`privacy.html` / `terms.html` 現在寫 `legal@hardwareai.example`，
+  後面還跟著「（上線前請換成實際信箱）」的四語提示。給我信箱我一次改掉（含拿掉那句提示）。
+- **站主信箱要確認**：`owner-unlock.sql` 寫死 `smallshark1003@gmail.com`，系統帳號是 `barry871003@gmail.com`。
+- **法律頁的英日韓版沒有法務看過**：那是使用者按同意時所同意的內容，上線前值得找人審。
+- **`ECPAY_MODE` 一定要設**（見 item ③）：切正式金鑰時忘了改成 `live`，等於保險絲沒裝。
+
 ## ③ 部署金流 Edge Functions
-前後端都寫好了（upgrade.html 已串、create-order/ecpay-webhook/_shared 三個 TS 檔齊全），只差部署。
+前後端都寫好了（upgrade.html 已串、create-order/ecpay-webhook/_shared 齊全），只差部署。
 - 檔案：[`supabase/functions/DEPLOY.ps1`](supabase/functions/DEPLOY.ps1)（逐段執行）
 - 你要做：`supabase login`（互動式，只有你能做）→ link → `secrets set` 綠界密鑰 → `functions deploy` ×2。
 - 綠界密鑰：腳本預設「官方**公開測試**密鑰」可立即端到端驗證流程；正式密鑰待特約商店核准後換上（腳本內選項 B）。
+- **`ECPAY_MODE` 保險絲（2026-08-06 補）**：原本四個綠界設定值都有沙盒 fallback，
+  secrets 掉了或變數名打錯會**安靜地**把真實客戶送到沙盒付款頁——測試卡付得過、
+  webhook 用沙盒 HashKey 驗章也過、訂單標 paid、VIP 免費開通，整條路不噴錯。
+  現在 `ECPAY_MODE=live` 時缺值／用測試憑證／網址不是正式站台一律 throw。
+  邏輯在 `_shared/ecpay-config.mjs`，測試 `node ecpay-config.test.mjs`（14 條，CI 有跑）。
+- ⚠ **`.mjs` 在 Supabase edge runtime 的載入尚未實測**（本機沒裝 Deno）。
+  第一次 `functions deploy` 後先打一次 create-order 確認 function 起得來——
+  若不相容會在部署當下就失敗，不會靜默。
 - 實測前提：先跑 item 2 Phase A（orders 表）。
 
 ## ② 跑後端 SQL

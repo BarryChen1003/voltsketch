@@ -99,6 +99,10 @@ jobs:
         run: node interview-i18n-check.js --strict
       - name: news-i18n-check（新技術：四語＋每則都要有出處）
         run: node news-i18n-check.js --strict
+      # 金流保險絲：live 模式不准用沙盒憑證／沙盒網址，缺值直接 throw。
+      # 先證明它抓得到那些缺陷（前 7 條），再相信它。
+      - name: ecpay-config.test（正式模式不准 fallback 沙盒）
+        run: node ecpay-config.test.mjs
 
       # 2g3) 同一張圖換語言＝字寬變、座標不變 → 中文乾淨不代表英文乾淨。
       #      鐵律類（重疊、塌陷線）四語都必須 0；棘輪類各語言各有基線（*.en/ja/ko.json），

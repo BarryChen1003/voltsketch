@@ -5,16 +5,18 @@
 //   3. .NET UrlEncode（等效：encodeURIComponent 後把 ~ ' 補編碼、%20→+；
 //      保留 - _ . ! * ( ) 不編碼 —— encodeURIComponent 本就不編這些）
 //   4. 全轉小寫 → SHA256 → 十六進位大寫
+import { resolveEcpay } from "./ecpay-config.mjs";
+
+/**
+ * 綠界環境設定。判斷邏輯在 ecpay-config.mjs（純函式，由 ecpay-config.test.mjs 測）。
+ *
+ * ECPAY_MODE=sandbox（預設）才會 fallback 到綠界公開測試商店；
+ * ECPAY_MODE=live 缺任何一個值、或用到測試憑證、或 action URL 不是正式站台，
+ * 一律 throw——寧可付款流程當場失敗，也不要安靜地把真實客戶送去沙盒付款
+ * （測試卡付得過 → 訂單標 paid → VIP 免費開通，而且沒有任何一步會噴錯）。
+ */
 export function ecpayEnv() {
-  // 正式環境把三個值放 Supabase secrets（supabase secrets set ECPAY_...）。
-  // 未設定時 fallback 綠界「公開測試」商店（官方文件公布的 sandbox 憑證，非機密）。
-  return {
-    merchantId: Deno.env.get("ECPAY_MERCHANT_ID") ?? "2000132",
-    hashKey: Deno.env.get("ECPAY_HASH_KEY") ?? "5294y06JbISpM5x9",
-    hashIV: Deno.env.get("ECPAY_HASH_IV") ?? "v77hoKGq4kWxNNIS",
-    actionUrl: Deno.env.get("ECPAY_ACTION_URL") ??
-      "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5", // stage=sandbox；正式換 payment.ecpay.com.tw
-  };
+  return resolveEcpay((k: string) => Deno.env.get(k));
 }
 
 function dotNetUrlEncode(s: string): string {
