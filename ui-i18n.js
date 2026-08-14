@@ -207,7 +207,13 @@
     '🔍 <b>看環路電流 / FFT(像範例第四張)</b>：': { en: '🔍 <b>Loop current / FFT (like the 4th example)</b>:', ja: '🔍 <b>ループ電流 / FFT（サンプル 4 枚目のように）</b>：', ko: '🔍 <b>루프 전류 / FFT(예시 4번째처럼)</b>:' },
     '① 右鍵<b>電感</b>→「View in New Scope」=輸出環電流(三角波)；': { en: '① Right-click the <b>inductor</b> → "View in New Scope" = output loop current (triangle wave);', ja: '① <b>インダクタ</b>を右クリック →「View in New Scope」＝出力ループ電流（三角波）；', ko: '① <b>인덕터</b> 우클릭 → "View in New Scope" = 출력 루프 전류(삼각파);' },
     '② 右鍵<b>輸入電容 Cin</b>→看 Cin 電流(輸入環,開關切換有突變)；': { en: '② Right-click <b>Cin</b> → its current (input loop, jumps at each switching edge);', ja: '② <b>入力コンデンサ Cin</b> を右クリック → Cin 電流（入力ループ、スイッチング時に急変）；', ko: '② <b>입력 커패시터 Cin</b> 우클릭 → Cin 전류(입력 루프, 스위칭 시 급변);' },
-    '③ scope 上右鍵→勾 <b>FFT</b>=看頻譜：輸入環高頻諧波較大→EMI 主因。': { en: '③ Right-click the scope → tick <b>FFT</b> for the spectrum: the input loop has the larger high-frequency content — the main EMI source.', ja: '③ スコープを右クリック → <b>FFT</b> をオンでスペクトル表示：入力ループの高周波成分が大きく、EMI の主因。', ko: '③ 스코프 우클릭 → <b>FFT</b> 체크로 스펙트럼 확인: 입력 루프의 고주파 성분이 커서 EMI 주원인.' }
+    '③ scope 上右鍵→勾 <b>FFT</b>=看頻譜：輸入環高頻諧波較大→EMI 主因。': { en: '③ Right-click the scope → tick <b>FFT</b> for the spectrum: the input loop has the larger high-frequency content — the main EMI source.', ja: '③ スコープを右クリック → <b>FFT</b> をオンでスペクトル表示：入力ループの高周波成分が大きく、EMI の主因。', ko: '③ 스코프 우클릭 → <b>FFT</b> 체크로 스펙트럼 확인: 입력 루프의 고주파 성분이 커서 EMI 주원인.' },
+    "沒有選取任何東西": { en: "Nothing is selected", ja: "何も選択されていません", ko: "선택된 것이 없습니다" },
+    "已複製 {n} 項": { en: "Copied {n} item(s)", ja: "{n} 件をコピーしました", ko: "{n}개를 복사했습니다" },
+    "剪貼簿是空的": { en: "The clipboard is empty", ja: "クリップボードが空です", ko: "클립보드가 비어 있습니다" },
+    "已貼上 {n} 項": { en: "Pasted {n} item(s)", ja: "{n} 件を貼り付けました", ko: "{n}개를 붙여넣었습니다" },
+    "鎖色開：新元件與新線都用這個顏色": { en: "Colour locked: new parts and wires use it", ja: "色ロックON：新しい部品と配線はこの色", ko: "색상 고정 ON: 새 부품과 배선에 이 색 적용" },
+    "鎖色關：顏色跟著選取的元件走": { en: "Colour unlocked: the box follows the selection", ja: "色ロックOFF：選択した部品の色に追従", ko: "색상 고정 OFF: 선택한 부품 색을 따름" }
   };
   const G = (typeof window !== 'undefined' ? window : globalThis);
   G.UI_I18N = D;

@@ -381,6 +381,8 @@ window.I18N = (function () {
     pcb_colors: { zh: "🎨 整體配色", en: "🎨 Colours", ja: "🎨 配色", ko: "🎨 색상" },
     pcbf_h_colors: { zh: "改的是全域預設色。單一走線／元件可在「選取元件」面板單獨上色，會蓋過這裡。", en: "These are the global defaults. A single trace or part can be coloured in the “Selection” panel, which overrides this.", ja: "ここで変えるのは全体の既定色です。個々の配線や部品は「選択」パネルで個別に色を付けられ、そちらが優先されます。", ko: "여기서 바꾸는 것은 전역 기본 색상입니다. 개별 배선이나 부품은 “선택” 패널에서 따로 지정할 수 있고 그쪽이 우선합니다." },
     pcbf_palreset: { zh: "還原預設配色", en: "Reset the palette", ja: "配色を既定に戻す", ko: "색상을 기본값으로 되돌리기" },
+    ix_colorlock: { zh: "🔒 鎖色", en: "🔒 Lock colour", ja: "🔒 色ロック", ko: "🔒 색상 고정" },
+    ix_t_colorlock: { zh: "鎖色：之後新叫的元件與新畫的線都用這個顏色，選到元件也不會被蓋掉", en: "Lock the colour: new parts and new wires all use it, and selecting a part no longer overwrites it", ja: "色ロック：以降に置く部品と描く配線はこの色になり、部品を選んでも上書きされません", ko: "색상 고정: 이후 배치하는 부품과 그리는 배선이 이 색을 쓰며, 부품을 선택해도 덮어쓰지 않습니다" },
     // ---- 邏輯閘與 PCB 面板（2026-08-06 補齊四語）----
     gateAnd: { zh: "AND 閘", en: "AND gate", ja: "AND ゲート", ko: "AND 게이트" },
     gateOr: { zh: "OR 閘", en: "OR gate", ja: "OR ゲート", ko: "OR 게이트" },

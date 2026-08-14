@@ -577,8 +577,22 @@ const app = {
     });
 
     // 左上樣式列：選元件/線後即時改顏色、大小（邊畫邊改）
-    document.getElementById('activeColor')?.addEventListener('input', (e) => this.applyStyleToSelection('color', e.target.value));
+    // 改顏色的意思分兩種模式：
+    //   鎖色 ON  ＝ 只換筆。**不動已選取的元件**——這時你的意圖是「接下來畫的用這個色」，
+    //              不是「把手上這顆改掉」。要改既有的就關掉鎖色，或一個一個改。
+    //   鎖色 OFF ＝ 換筆＋改目前選取（原行為）。
+    document.getElementById('activeColor')?.addEventListener('input', (e) => {
+      this.setActiveColor(e.target.value);
+      if (!this.state.colorLock) this.applyStyleToSelection('color', e.target.value);
+    });
     document.getElementById('activeSize')?.addEventListener('input', (e) => this.applyStyleToSelection('size', e.target.value));
+    document.getElementById('colorLock')?.addEventListener('click', () => this.setColorLock(!this.state.colorLock));
+    // 還原上次的筆色與鎖色狀態
+    try {
+      const sv = localStorage.getItem('vs-active-color');
+      if (sv) this.state.activeColor = sv;
+      this.setColorLock(localStorage.getItem('vs-color-lock') === '1', true);
+    } catch (e) { }
 
     // 元件預設規格庫
     document.getElementById('savePreset')?.addEventListener('click', () => this.savePresetFromComp());
@@ -1012,10 +1026,11 @@ const app = {
         if (Math.hypot(pt.x - w.x2, pt.y - w.y2) <= 8) { this.saveUndo(); this.state.wireDrag = { index: wi, end: 2 }; return; }
       }
     }
+    const add = e.shiftKey || e.ctrlKey || e.metaKey;   // Ctrl/⌘ 與 Shift 都能加選
     const hit = this.hitTest(pt.x, pt.y);
     if (hit) {
-      this.state.selectedWireIndices = [];
-      if (e.shiftKey) {
+      if (!add) this.state.selectedWireIndices = [];    // 加選時保留已選的線，才能元件+線一起改色
+      if (add) {
         this.toggleSelection(hit.id);
       } else if (!this.state.selectedIds.includes(hit.id)) {
         this.setSelection([hit.id]);
@@ -1025,6 +1040,14 @@ const app = {
       // 點到導線 → 選取，並可立即拖移整條
       const wi = this.hitTestWire(pt.x, pt.y);
       if (wi >= 0) {
+        if (add) {
+          // 加選：線可以跟元件、其他線一起被選起來（一次改色用），不進拖曳
+          const at = this.state.selectedWireIndices.indexOf(wi);
+          if (at >= 0) this.state.selectedWireIndices.splice(at, 1);
+          else this.state.selectedWireIndices.push(wi);
+          this.render(); this.updateStyleBar(); this.updateStatus();
+          return;
+        }
         this.state.selectedWireIndices = [wi];
         this.setSelection([]); // 清元件選取（內含 render）
         const w = this.state.wires[wi];
@@ -1032,8 +1055,8 @@ const app = {
         this.state.wireDrag = { index: wi, end: 'move', sx: pt.x, sy: pt.y, x1: w.x1, y1: w.y1, x2: w.x2, y2: w.y2 };
         return;
       }
-      this.state.selectedWireIndices = [];
-      if (!e.shiftKey) this.setSelection([]);
+      if (!add) this.state.selectedWireIndices = [];
+      if (!add) this.setSelection([]);
       this.state.marquee = { x0: pt.x, y0: pt.y, x1: pt.x, y1: pt.y };
     }
   },
@@ -1201,8 +1224,16 @@ const app = {
           if (w.x1 >= xMin && w.x1 <= xMax && w.y1 >= yMin && w.y1 <= yMax &&
             w.x2 >= xMin && w.x2 <= xMax && w.y2 >= yMin && w.y2 <= yMax) wireIdx.push(i);
         });
-        this.setSelection(ids);
-        this.state.selectedWireIndices = wireIdx;
+        // 按著 Ctrl/⌘/Shift 拉框＝加選，不是重選（要一次挑好幾群東西改色時會用到）
+        if (e && (e.shiftKey || e.ctrlKey || e.metaKey)) {
+          const merged = this.state.selectedIds.slice();
+          ids.forEach(id => { if (!merged.includes(id)) merged.push(id); });
+          this.setSelection(merged);
+          wireIdx.forEach(i => { if (!this.state.selectedWireIndices.includes(i)) this.state.selectedWireIndices.push(i); });
+        } else {
+          this.setSelection(ids);
+          this.state.selectedWireIndices = wireIdx;
+        }
       }
       this.state.marquee = null;
       this.render();
@@ -1266,6 +1297,56 @@ const app = {
     }
   },
 
+  // ── 複製／貼上 ──
+  // 存的是深拷貝快照，不是 id 參考：貼上時要產生新 id 與新標號，
+  // 否則兩顆元件共用 id，選取/刪除/接線全部會指到錯的那一顆。
+  copySelection() {
+    const ids = this.state.selectedIds || [];
+    const wIdx = this.state.selectedWireIndices || [];
+    if (!ids.length && !wIdx.length) { this.showToast(uiT('沒有選取任何東西')); return; }
+    const comps = ids.map(id => this.state.components.find(c => c.id === id)).filter(Boolean);
+    const wires = wIdx.map(i => this.state.wires[i]).filter(Boolean);
+    // 以選取內容的左上角為基準，貼上時整組平移，相對位置不變
+    const xs = comps.map(c => c.x).concat(wires.flatMap(w => [w.x1, w.x2]));
+    const ys = comps.map(c => c.y).concat(wires.flatMap(w => [w.y1, w.y2]));
+    this.clipboard = {
+      ox: Math.min(...xs), oy: Math.min(...ys),
+      comps: JSON.parse(JSON.stringify(comps)),
+      wires: JSON.parse(JSON.stringify(wires))
+    };
+    this.showToast(uiT('已複製 {n} 項', { n: comps.length + wires.length }));
+  },
+
+  pasteClipboard() {
+    const cb = this.clipboard;
+    if (!cb || (!cb.comps.length && !cb.wires.length)) { this.showToast(uiT('剪貼簿是空的')); return; }
+    this.saveUndo();
+    const off = this.snapG(20) || 20;          // 貼在原位右下一格，看得出是新的一份
+    const newIds = [];
+    cb.comps.forEach(src => {
+      const c = JSON.parse(JSON.stringify(src));
+      c.id = 'c' + (++this.state.componentIdCounter);
+      // 標號重編：沿用原本的字母前綴（R/C/U…），數字換成新的，才不會兩顆都叫 R3
+      const pre = String(src.label || '').match(/^[A-Za-z]+/);
+      c.label = (pre ? pre[0] : 'X') + this.state.componentIdCounter;
+      c.x = this.snapG(src.x + off); c.y = this.snapG(src.y + off);
+      delete c.icRef; delete c.icFirst;        // 多 unit IC 的群組關係不跟著複製，避免 BOM 誤聚合
+      this.state.components.push(c);
+      newIds.push(c.id);
+    });
+    cb.wires.forEach(src => {
+      const w = JSON.parse(JSON.stringify(src));
+      w.x1 = this.snapG(src.x1 + off); w.y1 = this.snapG(src.y1 + off);
+      w.x2 = this.snapG(src.x2 + off); w.y2 = this.snapG(src.y2 + off);
+      this.state.wires.push(w);
+    });
+    this.setSelection(newIds);                 // 貼上後直接選起來，可以馬上拖走
+    this.state.selectedWireIndices = cb.wires.length
+      ? this.state.wires.map((_, i) => i).slice(-cb.wires.length) : [];
+    this.render(); this.schedulePersist();
+    this.showToast(uiT('已貼上 {n} 項', { n: cb.comps.length + cb.wires.length }));
+  },
+
   // 套用顏色/大小到目前選取的元件 + 導線（左上樣式列即時改）
   applyStyleToSelection(prop, val) {
     (this.state.selectedIds || []).forEach(id => {
@@ -1276,17 +1357,46 @@ const app = {
     if (prop === 'color') (this.state.selectedWireIndices || []).forEach(i => { if (this.state.wires[i]) this.state.wires[i].color = val; });
     this.render(); this.schedulePersist();
   },
-  // 左上樣式列同步顯示選取元件的顏色/大小
+  // 左上樣式列。兩種模式：
+  //   鎖色 ON  ＝「筆」：顏色框永遠顯示你挑的色，選到元件也不會被蓋掉，
+  //                      之後新叫的元件與新畫的線一律用這個顏色。
+  //   鎖色 OFF ＝ 原行為：顏色框跟著選取的元件走，改它就是改那一顆。
+  // 顏色框一律 enabled——之前沒選東西時是 disabled，等於沒辦法「先選色再畫」。
   updateStyleBar() {
     const ac = document.getElementById('activeColor'), az = document.getElementById('activeSize');
     if (!ac || !az) return;
+    ac.disabled = false;
     let c = null;
     if (this.state.selectedIds.length === 1) c = this.state.components.find(k => k.id === this.state.selectedId);
-    if (c) { ac.value = c.color || '#1f4fd1'; az.value = c.scale || 1; ac.disabled = false; az.disabled = false; }
+    if (this.state.colorLock) {
+      ac.value = this.state.activeColor || '#1f4fd1';
+      if (c) { az.value = c.scale || 1; az.disabled = false; } else { az.disabled = true; }
+      return;
+    }
+    if (c) { ac.value = c.color || '#1f4fd1'; az.value = c.scale || 1; az.disabled = false; }
     else if (this.state.selectedWireIndices.length >= 1 && this.state.selectedIds.length === 0) {
       const w = this.state.wires[this.state.selectedWireIndices[0]];
-      ac.value = (w && w.color) || '#2563eb'; ac.disabled = false; az.disabled = true;
-    } else { ac.disabled = true; az.disabled = true; }
+      ac.value = (w && w.color) || '#2563eb'; az.disabled = true;
+    } else { ac.value = this.state.activeColor || '#1f4fd1'; az.disabled = true; }
+  },
+
+  // 鎖色開關：狀態與顏色都存起來，重開網頁還是同一支筆
+  setColorLock(on, quiet) {
+    this.state.colorLock = !!on;
+    try { localStorage.setItem('vs-color-lock', on ? '1' : '0'); } catch (e) { }
+    const btn = document.getElementById('colorLock');
+    if (btn) {
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.style.background = on ? '#1f4fd1' : '#fff';
+      btn.style.color = on ? '#fff' : '#475569';
+    }
+    this.updateStyleBar();
+    if (!quiet) this.showToast(on ? uiT('鎖色開：新元件與新線都用這個顏色') : uiT('鎖色關：顏色跟著選取的元件走'));
+  },
+
+  setActiveColor(v) {
+    this.state.activeColor = v;
+    try { localStorage.setItem('vs-active-color', v); } catch (e) { }
   },
 
   paramSchemaFor(type) {
@@ -1495,6 +1605,19 @@ const app = {
 
   onKeyDown(e) {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const mod = e.ctrlKey || e.metaKey;
+    // 方向鍵：平移畫布（Shift＝一次跨一大步）。放在最前面並 preventDefault，
+    // 否則瀏覽器會拿去捲整頁，畫布看起來就像沒反應。
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key) && !mod) {
+      const step = e.shiftKey ? 0.5 : 0.12;
+      const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+      this.panBy(d[0] * step, d[1] * step);
+      e.preventDefault();
+      return;
+    }
+    if (mod && (e.key === 'c' || e.key === 'C')) { this.copySelection(); e.preventDefault(); return; }
+    if (mod && (e.key === 'v' || e.key === 'V')) { this.pasteClipboard(); e.preventDefault(); return; }
+    if (mod && (e.key === 'x' || e.key === 'X')) { this.copySelection(); this.deleteSelected(); e.preventDefault(); return; }
     if (e.key === 'r' || e.key === 'R') this.rotateSelected();
     if (e.key === 'h' || e.key === 'H') this.flipSelected('h');
     if (e.key === 'v' || e.key === 'V') this.flipSelected('v');

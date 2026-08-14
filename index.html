@@ -285,7 +285,8 @@
           <div class="schematic-wrap" style="position:relative">
             <div id="activeStyleBar" style="position:absolute;top:8px;left:8px;z-index:5;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.95);border:1px solid #e2e8f0;border-radius:8px;padding:6px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);font-size:12px;color:#475569">
               <span style="font-weight:600" data-i18n="ix_style">樣式</span>
-              <label style="display:flex;align-items:center;gap:4px"><span data-i18n="ix_color">顏色</span><input type="color" id="activeColor" value="#1f4fd1" style="width:28px;height:22px;padding:0;border:none;background:none;cursor:pointer" disabled/></label>
+              <label style="display:flex;align-items:center;gap:4px"><span data-i18n="ix_color">顏色</span><input type="color" id="activeColor" value="#1f4fd1" style="width:28px;height:22px;padding:0;border:none;background:none;cursor:pointer"/></label>
+              <button type="button" id="colorLock" aria-pressed="false" data-i18n="ix_colorlock" data-i18n-title="ix_t_colorlock" title="鎖色：之後新叫的元件與新畫的線都用這個顏色，選到元件也不會被蓋掉" style="padding:3px 8px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#475569;font-size:12px;cursor:pointer">🔒 鎖色</button>
               <label style="display:flex;align-items:center;gap:4px"><span data-i18n="ix_size">大小</span><input type="number" id="activeSize" value="1" min="0.3" max="4" step="0.1" style="width:46px" disabled/></label>
               <span style="color:#94a3b8" data-i18n="ix_stylehint">選元件/線即時改</span>
             </div>
@@ -579,7 +580,7 @@
     <script src="./circuit-engine.js?v=34"></script>
     <script src="./ic-data.js?v=44"></script>
     <script src="./ui-i18n.js?v=2026-08-06a"></script>
-    <script src="./app.js?v=50"></script>
+    <script src="./app.js?v=52"></script>
     <script src="./instruments.js"></script>
     <script src="./sim-bench.js"></script>
     <script src="./sheets.js?v=2026-08-06a"></script>
