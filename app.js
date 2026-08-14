@@ -40,7 +40,7 @@ const app = {
       circuitLibrary: '電路範本庫',
       templateSearch: '搜尋範本...',
       quickKeys: '快捷操作',
-      quickKeysBody: 'R 旋轉、H 水平翻轉、V 垂直翻轉、Delete 刪除、拖曳移動；框選多選(Ctrl+A)、中鍵平移、滾輪縮放；導線兩次點擊(吸附接腳)可點選後刪除。自動存檔(重載不丟)。注意 Ctrl+R 是瀏覽器重載非旋轉。',
+      quickKeysBody: 'R 旋轉、H 水平翻轉、V 垂直翻轉、Delete 刪除、Esc 取消目前動作。Ctrl+C 複製、Ctrl+V 貼上、Ctrl+X 剪下、Ctrl+A 全選、Ctrl+Z 復原、Ctrl+Y 重做。方向鍵平移畫布（按住 Shift 一次跨大步）、中鍵拖曳平移、滾輪縮放。拖曳移動元件；框選或按住 Ctrl／Shift 點選可多選；導線兩次點擊(吸附接腳)，可點選後刪除。自動存檔(重載不丟)。注意 Ctrl+R 是瀏覽器重載非旋轉。',
       statusSelect: '選取或拖曳元件',
       statusWire: '點擊兩次以繪製導線',
       statusPlace: '點擊放置元件',
@@ -124,7 +124,7 @@ const app = {
       circuitLibrary: 'Circuit Templates',
       templateSearch: 'Search templates...',
       quickKeys: 'Quick Keys',
-      quickKeysBody: 'R rotate, Delete remove, drag to move; marquee multi-select (Ctrl+A all), middle-drag pan, wheel zoom; wire = two clicks (auto-snap to pins), click a wire to select & delete.',
+      quickKeysBody: 'R rotate, H flip horizontal, V flip vertical, Delete remove, Esc cancel. Ctrl+C copy, Ctrl+V paste, Ctrl+X cut, Ctrl+A select all, Ctrl+Z undo, Ctrl+Y redo. Arrow keys pan the canvas (hold Shift for a big step), middle-drag pan, wheel zoom. Drag to move; marquee or Ctrl/Shift-click for multi-select; wire = two clicks (auto-snap to pins), click a wire to select & delete. Autosave (survives reload). Note: Ctrl+R is the browser reload, not rotate.',
       statusSelect: 'Select or drag components',
       statusWire: 'Click twice to draw wire',
       statusPlace: 'Click to place component',
@@ -208,7 +208,7 @@ const app = {
       circuitLibrary: '回路テンプレート',
       templateSearch: 'テンプレート検索...',
       quickKeys: 'ショートカット',
-      quickKeysBody: 'R 回転、H 左右反転、V 上下反転、Delete 削除、ドラッグ移動。範囲選択(Ctrl+A)、中ボタンでパン、ホイールでズーム。自動保存。',
+      quickKeysBody: 'R 回転、H 左右反転、V 上下反転、Delete 削除、Esc 取り消し。Ctrl+C コピー、Ctrl+V 貼り付け、Ctrl+X 切り取り、Ctrl+A 全選択、Ctrl+Z 元に戻す、Ctrl+Y やり直し。矢印キーでキャンバスをパン（Shift 併用で大きく移動）、中ボタンドラッグでパン、ホイールでズーム。ドラッグで移動、範囲選択または Ctrl／Shift クリックで複数選択。配線は 2 回クリック（ピンに吸着）、クリックして選択後に削除できます。自動保存（リロードしても消えません）。Ctrl+R はブラウザの再読み込みで回転ではありません。',
       statusSelect: '部品を選択/ドラッグ',
       statusWire: '2回クリックで配線',
       statusPlace: 'クリックで配置',
@@ -292,7 +292,7 @@ const app = {
       circuitLibrary: '회로 템플릿',
       templateSearch: '템플릿 검색...',
       quickKeys: '단축키',
-      quickKeysBody: 'R 회전, H 좌우 반전, V 상하 반전, Delete 삭제, 드래그 이동. 범위 선택(Ctrl+A), 휠 줌. 자동 저장.',
+      quickKeysBody: 'R 회전, H 좌우 반전, V 상하 반전, Delete 삭제, Esc 취소. Ctrl+C 복사, Ctrl+V 붙여넣기, Ctrl+X 잘라내기, Ctrl+A 전체 선택, Ctrl+Z 실행 취소, Ctrl+Y 다시 실행. 방향키로 캔버스 이동(Shift와 함께 누르면 크게 이동), 가운데 버튼 드래그로 이동, 휠로 확대·축소. 드래그로 이동, 범위 선택 또는 Ctrl/Shift 클릭으로 다중 선택. 배선은 두 번 클릭(핀에 스냅), 클릭해 선택한 뒤 삭제할 수 있습니다. 자동 저장(새로 고침해도 유지). Ctrl+R은 브라우저 새로 고침이며 회전이 아닙니다.',
       statusSelect: '부품 선택/드래그',
       statusWire: '두 번 클릭으로 배선',
       statusPlace: '클릭하여 배치',
@@ -376,6 +376,7 @@ const app = {
     this.applyI18n();
     this.bindEvents();
     this.loadFromStorage();
+    this.syncBackdrop();      // 開場也要鋪滿，別等到第一次縮放才補
     this.render();
     // ?addIC= 自動放置：延後執行，讓 sheets.js（多頁）先 load 目前頁再放，
     // 否則 sheets.js boot() 會用存檔頁覆寫 state.components 把剛放的 IC 洗掉。
@@ -552,7 +553,12 @@ const app = {
     });
     this.els.fieldValue.addEventListener('input', (e) => {
       const comp = this.state.components.find(c => c.id === this.state.selectedId);
-      if (comp) comp.value = parseFloat(e.target.value) || 0;
+      if (!comp) return;
+      // 空字串＝沒填（標籤不顯示值）；0 是合法值，不能被 `|| 0` 之外的真值判斷吃掉
+      const raw = String(e.target.value).trim();
+      const n = parseFloat(raw);
+      comp.value = (raw === '' || Number.isNaN(n)) ? '' : n;
+      this.render(); this.schedulePersist();
     });
     this.els.fieldClosed.addEventListener('change', (e) => {
       const comp = this.state.components.find(c => c.id === this.state.selectedId);
@@ -587,12 +593,17 @@ const app = {
     });
     document.getElementById('activeSize')?.addEventListener('input', (e) => this.applyStyleToSelection('size', e.target.value));
     document.getElementById('colorLock')?.addEventListener('click', () => this.setColorLock(!this.state.colorLock));
-    // 還原上次的筆色與鎖色狀態
+    // 還原上次的筆色與鎖色狀態。
+    // 鎖色**預設開**：使用者要的是「挑一次紅，之後叫的元件與畫的線都紅」，
+    // 而不是每放一顆再回頭一顆一顆改色。沒存過設定(null)才套預設，關過就記住關。
     try {
       const sv = localStorage.getItem('vs-active-color');
       if (sv) this.state.activeColor = sv;
-      this.setColorLock(localStorage.getItem('vs-color-lock') === '1', true);
-    } catch (e) { }
+      // 換 key：舊的 'vs-color-lock' 是開場自動寫進去的 '0'，不是使用者按過關，
+      // 沿用它會讓所有既有瀏覽器都拿不到新的預設。
+      const lk = localStorage.getItem('vs-color-lock-v2');
+      this.setColorLock(lk === null ? true : lk === '1', true);
+    } catch (e) { this.setColorLock(true, true); }
 
     // 元件預設規格庫
     document.getElementById('savePreset')?.addEventListener('click', () => this.savePresetFromComp());
@@ -856,7 +867,21 @@ const app = {
 
   // ---- 視圖縮放/平移 ----
   getViewBox() { const v = this.els.svg.viewBox.baseVal; return { x: v.x, y: v.y, w: v.width, h: v.height }; },
-  setViewBox(v) { this.els.svg.setAttribute('viewBox', `${v.x} ${v.y} ${v.w} ${v.h}`); },
+  setViewBox(v) { this.els.svg.setAttribute('viewBox', `${v.x} ${v.y} ${v.w} ${v.h}`); this.syncBackdrop(); },
+
+  // 底色與格線永遠鋪滿目前視框（外加半個視框餘裕）。
+  // 原本兩塊 rect 寫死 1000×700，一縮小或平移出去就看到格子的邊界與白邊——
+  // 使用者要的是「沒有邊界的格子」。每次改視框就重鋪，所以餘裕不必大。
+  syncBackdrop() {
+    const v = this.getViewBox();
+    const mx = v.w / 2, my = v.h / 2;
+    ['bgRect', 'gridRect'].forEach(id => {
+      const r = document.getElementById(id);
+      if (!r) return;
+      r.setAttribute('x', v.x - mx); r.setAttribute('y', v.y - my);
+      r.setAttribute('width', v.w + mx * 2); r.setAttribute('height', v.h + my * 2);
+    });
+  },
 
   onWheel(e) {
     e.preventDefault();
@@ -1268,7 +1293,7 @@ const app = {
       if (comp) {
         form.hidden = false; empty.hidden = true;
         this.els.fieldLabel.value = comp.label || '';
-        this.els.fieldValue.value = comp.value || '';
+        this.els.fieldValue.value = this.hasValue(comp) ? comp.value : '';   // 0 要留住，不能被 || '' 吃掉
         if (comp.type === 'switch') { this.els.switchField.hidden = false; this.els.fieldClosed.checked = comp.closed || false; }
         else this.els.switchField.hidden = true;
         this.renderParamFields(comp);
@@ -1383,7 +1408,8 @@ const app = {
   // 鎖色開關：狀態與顏色都存起來，重開網頁還是同一支筆
   setColorLock(on, quiet) {
     this.state.colorLock = !!on;
-    try { localStorage.setItem('vs-color-lock', on ? '1' : '0'); } catch (e) { }
+    // quiet＝開場還原，不是使用者的選擇；只有真的按過開關才寫進 localStorage
+    if (!quiet) { try { localStorage.setItem('vs-color-lock-v2', on ? '1' : '0'); } catch (e) { } }
     const btn = document.getElementById('colorLock');
     if (btn) {
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -1688,13 +1714,18 @@ const app = {
     ic:        [{k:'vcc',l:'供電',u:'V'},{k:'part',l:'料號',u:''}]
   },
 
+  // \u6709\u6C92\u6709\u586B\u503C\u30020 \u662F\u5408\u6CD5\u503C\uFF080\u03A9 \u8DF3\u7DDA\u30010V\uFF09\uFF0C\u4E0D\u80FD\u7528\u771F\u503C\u5224\u65B7\u3002
+  // GND \u4F8B\u5916\uFF1A\u5B83\u7684 value \u6C92\u6709\u610F\u7FA9\uFF0C\u820A\u8CC7\u6599\u5BEB 0\uFF0C\u653E\u884C\u5C31\u6703\u5728\u7B26\u865F\u4E0B\u9762\u591A\u4E00\u500B\u300C0\u300D\u3002
+  hasValue(c) { return c.type !== 'ground' && c.value != null && c.value !== '' && !Number.isNaN(c.value); },
+
   formatValue(c) {
+    if (!this.hasValue(c)) return '';
     if (c.type === 'source') return c.value + 'V';
     if (c.type === 'resistor') return c.value >= 1000 ? (c.value/1000) + 'k\u03A9' : c.value + '\u03A9';
     if (c.type === 'capacitor') return c.value >= 1 ? c.value + '\u03BCF' : (c.value * 1000).toFixed(0) + 'nF';
     if (c.type === 'inductor') return c.value + 'mH';
     if (c.type === 'led' || c.type === 'diode') return c.value + 'V';
-    return c.value ? c.value.toString() : '';
+    return String(c.value);
   },
 
   // 相容舊呼叫：單選/清空 → 委派多選
@@ -1887,7 +1918,7 @@ const app = {
   },
 
   fitView() {
-    this.els.svg.setAttribute('viewBox', '0 0 1000 700');
+    this.setViewBox({ x: 0, y: 0, w: 1000, h: 700 });   // 走 setViewBox 才會重鋪背景格線
   },
 
   // Simulation
@@ -1910,7 +1941,8 @@ const app = {
     const sources = this.state.components.filter(c => c.type === 'source');
     const resistors = this.state.components.filter(c => c.type === 'resistor');
     const totalV = sources.reduce((sum, s) => sum + (s.value || 0), 0);
-    const totalR = resistors.reduce((sum, r) => sum + (r.value || 1), 0);
+    // 0Ω 是跳線，串聯時就是 0，不能當成 1Ω（下面 totalR>0 已擋除以零）
+    const totalR = resistors.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
     const current = totalR > 0 ? totalV / totalR : 0;
     return this.state.components.filter(c => c.type !== 'ground').map(c => ({
       id: c.id,
@@ -2649,7 +2681,8 @@ const app = {
         const lx = c.x + (c.labelDx || 0);              // 可拖曳微調
         const ly = c.y + this.labelOffset(c) + (c.labelDy || 0);
         html += `<text data-label="${c.id}" x="${lx}" y="${ly}" text-anchor="middle" font-size="10" fill="#475569" style="cursor:move">${c.label || ''}</text>`;
-        if (c.value) {
+        // 0 是合法值（0Ω 跳線、0V 參考）。用真值判斷會把 0 當沒填 → 標籤整行消失。
+        if (this.hasValue(c)) {
           html += `<text data-label="${c.id}" x="${lx}" y="${ly + 12}" text-anchor="middle" font-size="9" fill="#94a3b8" style="cursor:move">${this.formatValue(c)}</text>`;
         }
       }
@@ -2684,7 +2717,7 @@ const app = {
       const c = comps[i];
       const lx = c.x + (c.labelDx || 0);
       const ly = c.y + this.labelOffset(c) + (c.labelDy || 0);
-      const label = c.label || '', val = c.value ? this.formatValue(c) : '';
+      const label = c.label || '', val = this.hasValue(c) ? this.formatValue(c) : '';
       const w = Math.max(label.length, val.length) * 6.2 + 10;
       if (x >= lx - w / 2 && x <= lx + w / 2 && y >= ly - 11 && y <= ly + (val ? 15 : 3)) return c;
     }

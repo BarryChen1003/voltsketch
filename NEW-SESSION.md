@@ -38,7 +38,7 @@
 | 全站四語 | 2026-08-06 補完：編輯器 `uiT` 173 條、HTML 寫死中文 **0 處**、面試題 38/38 四語 |
 | 硬體新技術 | 新頁 `news.html`，10 則（2026-05～08），每則附出處與日期；每月 1 號更新，流程見 `NEWS-UPDATE.md` |
 | 金流保險絲 | 2026-08-06 修：`ECPAY_MODE=live` 時不准 fallback 沙盒（原本 secrets 掉了會靜默送客戶去測試商店） |
-| 線路圖編輯器 | 2026-08-06 修翻轉（字不再壓框）＋新增鎖色筆、Ctrl 多選、方向鍵平移、Ctrl+C/V |
+| 線路圖編輯器 | 2026-08-06 修翻轉（字不再壓框）＋新增鎖色筆、Ctrl 多選、方向鍵平移、Ctrl+C/V。2026-08-14：**鎖色改預設開**、0Ω 顯示得出來、背景格線無邊界、快捷鍵說明補齊四語 |
 | CI | 25 關，本地與線上皆綠 |
 | 部署 | HEAD == origin/main，`https://barrychen1003.github.io/voltsketch/` 已是最新 |
 | 上線阻礙 | **網域未買** → Resend 與正式金流都卡在這（§6） |
@@ -212,16 +212,35 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 
 ---
 
-## 7b. 使用者手上未決的事（下次開場先問這幾件）
+## 7b. 使用者已裁決（2026-08-14 全部結案，只剩 #4）
 
-| # | 事 | 卡住什麼 |
+| # | 事 | 結果 |
 |---|---|---|
-| 1 | **法律頁的聯絡信箱** | `privacy.html`/`terms.html` 現在是假的 `legal@hardwareai.example`，四語都掛著「（上線前請換成實際信箱）」。**上線前必改**，使用者給值我改 |
-| 2 | **站主要用哪個 Gmail** | `owner-unlock.sql` 寫死 `smallshark1003@gmail.com`，系統帳號是 `barry871003@gmail.com`。跑 Phase B 前要確認 |
-| 3 | IC 符號畫風要不要改成「腳號在框外、腳名在框內」 | 使用者 2026-08-06 給的參考圖是這個排法，與現行「號內名外」相反。**改了 196 顆全變**（翻不翻轉都變），IC 元件庫詳細頁也要一起改。翻轉的 bug 已獨立修好，這件是純畫風 |
-| 4 | 線上 datasheet 連結 404 | `IC-spec/` 在 gitignore（263 個 PDF 不上 Pages），所以**每顆料**的 datasheet 連結線上都 404。兩條路：PDF 進 repo（體積大），或改連 TI 官網（要驗 URL 規則，不可憑印象組） |
-| 5 | 新技術每月 1 號更新 | 目前是**手動觸發**（最可逆）：使用者月初說一聲就跑，流程在 `NEWS-UPDATE.md`。要改成排程自動跑再說 |
-| 6 | 編輯器快捷鍵說明 | 畫面上的 quick keys 那段還沒寫 Ctrl+C/V 與方向鍵平移（小事） |
+| 1 | 法律頁的聯絡信箱 | ✅ 改成 `smallshark1003@gmail.com`，四語同步，`ui_mail_todo` 提示整條刪除 |
+| 2 | 站主要用哪個 Gmail | ✅ 確認是 `smallshark1003@gmail.com`（`owner-unlock.sql` 原本就對，不用改） |
+| 3 | IC 符號畫風要不要翻成「腳號在框外、腳名在框內」 | ✅ **不改**。維持現行「號內名外」，196 顆與 `ic-preview.html` 的說明都不動 |
+| 4 | 線上 datasheet 連結 404 | ⬜ **唯一未決**。詳情見下方「§7c」 |
+| 5 | 新技術每月更新 | ✅ 改排程：本機任務 `hardwareai-news-monthly`，每月 1 號 09:00，開 PR 不 push main（見 `NEWS-UPDATE.md` 開頭） |
+| 6 | 編輯器快捷鍵說明 | ✅ 補齊四語：Ctrl+C/V/X、Ctrl+A/Z/Y、方向鍵平移（Shift 大步）、Esc、H/V 翻轉 |
+
+## 7c. 唯一未決：線上 datasheet 連結（2026-08-14 查證）
+
+**現況（比舊版描述精確）**：只有**未建檔的料**會出現 datasheet 連結——
+`ic-library.html:231` 的 `notBuilt` 分支硬寫 `IC-spec/<part>.pdf`。
+已建檔的 104 顆詳細頁**根本沒有 datasheet 連結**（`detailCard()` 沒放）。
+另外 `ic-export.js:53` 會把 `ic.datasheet`（`IC-spec/xxx.pdf`）寫進 KiCad 符號的 Datasheet 屬性，
+匯出檔裡也是死路徑。`IC-spec/` 在 gitignore，線上一律 404。
+
+**兩條路的實測數字**：
+
+| 路 | 代價 |
+|---|---|
+| PDF 進 repo | `IC-spec/` = **255 個 PDF、718 MB**。GitHub Pages 建議 repo ≤1 GB、單站 ≤1 GB，clone 也會變很痛。不建議 |
+| 改連 TI 官網 | URL 規則 `https://www.ti.com/lit/ds/symlink/<part>.pdf`。2026-08-14 對 196 顆逐一實測（不是憑印象）：**183 顆 200 且 content-type 是 application/pdf，13 顆 404**。假料號會正確回 404（拿 `zzzznotarealpart123` 驗過），所以這規則是真的 |
+
+13 顆不是 TI 的料（要嘛不放連結，要嘛手填 `datasheetUrl`）：
+`KSZ9031RNX`、`LAN8710A`、`74LVC4066_Q100`、`W25Q128JV`、`ds1230y`、`AXP209`、
+`drv7167`、`NX48P0407`、`RT6150`、`slg59h1403c`、`X4003`、`ADG601_602`、`EFR32BG24L`。
 
 ---
 
@@ -232,6 +251,17 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
   要用 `el.transform.baseVal.consolidate().matrix`。稽核 snippet 與四語實測數字在 `overlap-audit.md`。
 - **「已經有這個功能」不等於「使用者用得到」**：activeColor 早就套用到新元件了，但顏色框沒選東西時 disabled，
   等於永遠沒機會先選色；改功能前先照著使用者的操作路徑走一次。
+- **改預設值救不了既有使用者，如果開場就把預設寫進 localStorage**：`setColorLock()` 連開場還原那次
+  也 `setItem('vs-color-lock','0')`，所以「沒存過才套新預設」對每一台用過的瀏覽器都無效
+  （2026-08-14 在瀏覽器實測抓到：改完 `colorLock` 仍是 false，`storedOld` 是 `'0'`）。
+  兩件事一起做才有用：**換 key**（`vs-color-lock-v2`）＋**還原時不寫回**（只有使用者真的按過開關才存）。
+- **`if (c.value)` 會把 0 當成「沒填」**：0Ω 跳線、0V 都是合法值，標籤整行消失。
+  值的有無一律用 `hasValue()`（`!= null && !== '' && !NaN`）判斷，別用真值。
+  同一個坑在四個地方：overlay 繪製、`hitTestLabel`、inspector 回填（`comp.value || ''`）、`formatValue` 的 fallback。
+  順帶：`simulateDC` 的 `r.value || 1` 會把 0Ω 當 1Ω，允許 0 之後就是錯的。
+- **背景格線與底色是兩塊寫死 1000×700 的 `<rect>`**：一縮小或平移出去就看到格子的邊界與白邊。
+  改成每次 `setViewBox()` 就依現在的視框重鋪（`syncBackdrop()`，外加半個視框餘裕）；
+  所有改視框的地方都要走 `setViewBox()`——`fitView()` 原本自己 `setAttribute('viewBox')` 繞過去了。
 
 **畫圖**
 

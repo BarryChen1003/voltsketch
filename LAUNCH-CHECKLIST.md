@@ -18,9 +18,10 @@
 - 站主自己不必等這步（Phase B 的 owner-unlock 會手動確認站主信箱）。
 
 ## ⚠️ 上線前必改（2026-08-06 加）
-- **法律頁的聯絡信箱是假的**：`privacy.html` / `terms.html` 現在寫 `legal@hardwareai.example`，
-  後面還跟著「（上線前請換成實際信箱）」的四語提示。給我信箱我一次改掉（含拿掉那句提示）。
-- **站主信箱要確認**：`owner-unlock.sql` 寫死 `smallshark1003@gmail.com`，系統帳號是 `barry871003@gmail.com`。
+- ✅ 2026-08-14 已改：`privacy.html` / `terms.html` 的聯絡信箱改成 `smallshark1003@gmail.com`，
+  四語譯文同步、「（上線前請換成實際信箱）」的提示（`ui_mail_todo`）已整條移除。
+- ✅ 2026-08-14 已確認：站主信箱就是 `owner-unlock.sql` 裡的 `smallshark1003@gmail.com`
+  （系統帳號 `barry871003@gmail.com` 只是登入 Claude 用的，與站主帳號無關）。
 - **法律頁的英日韓版沒有法務看過**：那是使用者按同意時所同意的內容，上線前值得找人審。
 - **`ECPAY_MODE` 一定要設**（見 item ③）：切正式金鑰時忘了改成 `live`，等於保險絲沒裝。
 

@@ -265,7 +265,7 @@
 
           <section class="panel-section compact-help">
             <h2 data-i18n="quickKeys">快捷操作</h2>
-            <p data-i18n="quickKeysBody">R 旋轉，Delete 刪除，拖曳元件移動；導線工具以兩次點擊完成連線。</p>
+            <p data-i18n="quickKeysBody">R 旋轉、H 水平翻轉、V 垂直翻轉、Delete 刪除、Esc 取消目前動作。Ctrl+C 複製、Ctrl+V 貼上、Ctrl+X 剪下、Ctrl+A 全選、Ctrl+Z 復原、Ctrl+Y 重做。方向鍵平移畫布（按住 Shift 一次跨大步）、中鍵拖曳平移、滾輪縮放。拖曳移動元件；框選或按住 Ctrl／Shift 點選可多選；導線兩次點擊(吸附接腳)，可點選後刪除。自動存檔(重載不丟)。注意 Ctrl+R 是瀏覽器重載非旋轉。</p>
           </section>
         </aside>
 
@@ -299,8 +299,8 @@
                   <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#1d2b4f" flood-opacity="0.12" />
                 </filter>
               </defs>
-              <rect width="1000" height="700" fill="#f8fafc" />
-              <rect width="1000" height="700" fill="url(#gridPattern)" />
+              <rect id="bgRect" x="0" y="0" width="1000" height="700" fill="#f8fafc" />
+              <rect id="gridRect" x="0" y="0" width="1000" height="700" fill="url(#gridPattern)" />
               <g id="wireLayer"></g>
               <g id="componentLayer"></g>
               <g id="terminalLayer"></g>
@@ -580,10 +580,10 @@
     <script src="./circuit-engine.js?v=34"></script>
     <script src="./ic-data.js?v=44"></script>
     <script src="./ui-i18n.js?v=2026-08-06a"></script>
-    <script src="./app.js?v=52"></script>
+    <script src="./app.js?v=53"></script>
     <script src="./instruments.js"></script>
     <script src="./sim-bench.js"></script>
     <script src="./sheets.js?v=2026-08-06a"></script>
-    <script src="./i18n.js?v=2026-08-06b"></script>
+    <script src="./i18n.js?v=2026-08-14a"></script>
 </body>
 </html>

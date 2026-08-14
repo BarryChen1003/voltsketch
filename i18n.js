@@ -370,7 +370,6 @@ window.I18N = (function () {
     pv_d_card_x: { zh: "；本站僅保存訂單編號、方案、金額與付款狀態，用於開通服務與對帳。", en: "; only the order number, plan, amount and payment status are kept, for activating the service and reconciliation.", ja: "；保存するのは注文番号・プラン・金額・支払状態のみで、サービス有効化と照合に使用します。", ko: "; 주문 번호, 플랜, 금액, 결제 상태만 보관하며 서비스 개통과 대사에 사용합니다." },
     pv_d_ai: { zh: "使用該功能時，相關電路資料會傳送至 AI 模型供應商處理", en: "When you use that feature, the relevant circuit data is sent to the AI model provider for processing", ja: "この機能を使うと、該当する回路データが AI モデル提供者に送信され処理されます", ko: "해당 기능을 사용하면 관련 회로 데이터가 AI 모델 제공업체로 전송되어 처리됩니다" },
     pv_d_ai_x: { zh: "；不使用則不傳送。", en: "; nothing is sent if you do not use it.", ja: "；使用しなければ送信されません。", ko: "; 사용하지 않으면 전송되지 않습니다." },
-    ui_mail_todo: { zh: "（上線前請換成實際信箱）。", en: "(replace with the real mailbox before launch).", ja: "（公開前に実際のメールアドレスに差し替えてください）。", ko: "(출시 전에 실제 메일 주소로 교체하세요)." },
     tm_ds: { zh: "投產前請務必以原廠 datasheet 為準", en: "Always defer to the manufacturer's datasheet before going to production", ja: "量産前には必ずメーカーのデータシートを優先してください", ko: "양산 전에는 반드시 제조사 데이터시트를 기준으로 하세요" },
     tm_ds_x: { zh: "；因使用本站資料造成之損失，本站不負賠償責任。", en: "; this site accepts no liability for losses arising from use of its data.", ja: "；当サイトのデータ利用により生じた損害について、当サイトは責任を負いません。", ko: "; 본 사이트 데이터 사용으로 발생한 손실에 대해 책임지지 않습니다." },
 
@@ -1083,7 +1082,7 @@ window.I18N = (function () {
     tm_s5b: { zh: '繞過額度限制、逆向本站付費機制。', en: 'Circumventing quota limits or reverse-engineering the site\'s payment mechanisms.', ja: '枠制限の回避、本サイト課金機構のリバースエンジニアリング。', ko: '한도 제한 우회, 본 사이트 결제 메커니즘의 역공학.' },
     tm_s5c: { zh: '上傳含惡意程式之檔案或干擾服務運作。', en: 'Uploading files containing malware or interfering with service operation.', ja: 'マルウェアを含むファイルのアップロードやサービス運用の妨害。', ko: '악성 프로그램이 포함된 파일 업로드 또는 서비스 운영 방해.' },
     tm_s6:  { zh: '六、條款變更與聯絡', en: '6. Changes and Contact', ja: '第6条（規約の変更と連絡先）', ko: '제6조(약관 변경과 연락처)' },
-    tm_s6p: { zh: '本站得修訂本條款並於本頁公告。重大變更將於網站明顯處通知。聯絡：legal@hardwareai.example（上線前請換成實際信箱）。', en: 'This site may revise these terms and post them on this page. Material changes will be announced prominently on the site. Contact: legal@hardwareai.example (replace with the real address before launch).', ja: '本サイトは本規約を改訂し本ページで告知することがあります。重要な変更はサイトの目立つ場所で通知します。連絡先：legal@hardwareai.example（公開前に実際のアドレスに差し替え）。', ko: '본 사이트는 본 약관을 개정해 본 페이지에 공고할 수 있습니다. 중대한 변경은 사이트의 눈에 띄는 곳에 알립니다. 연락처: legal@hardwareai.example(공개 전 실제 주소로 교체).' },
+    tm_s6p: { zh: '本站得修訂本條款並於本頁公告。重大變更將於網站明顯處通知。聯絡：smallshark1003@gmail.com。', en: 'This site may revise these terms and post them on this page. Material changes will be announced prominently on the site. Contact: smallshark1003@gmail.com.', ja: '本サイトは本規約を改訂し本ページで告知することがあります。重要な変更はサイトの目立つ場所で通知します。連絡先：smallshark1003@gmail.com。', ko: '본 사이트는 본 약관을 개정해 본 페이지에 공고할 수 있습니다. 중대한 변경은 사이트의 눈에 띄는 곳에 알립니다. 연락처: smallshark1003@gmail.com.' },
     pv_h1:  { zh: '隱私權政策', en: 'Privacy Policy', ja: 'プライバシーポリシー', ko: '개인정보 처리방침' },
     pv_intro: { zh: 'HardwareAI（下稱「本站」）在您登入、建立專案、匯入/匯出檔案、購買方案或使用 AI 輔助功能時，會處理必要之個人資料。本政策說明我們收集什麼、如何使用與保護。', en: 'HardwareAI ("this site") processes necessary personal data when you sign in, create projects, import/export files, purchase plans or use AI-assisted features. This policy explains what we collect and how we use and protect it.', ja: 'HardwareAI（以下「本サイト」）は、ログイン、プロジェクト作成、ファイルのインポート/エクスポート、プラン購入、AI 支援機能の利用時に必要な個人データを処理します。本ポリシーでは収集内容と利用・保護の方法を説明します。', ko: 'HardwareAI(이하 "본 사이트")는 로그인, 프로젝트 생성, 파일 가져오기/내보내기, 플랜 구매, AI 보조 기능 사용 시 필요한 개인정보를 처리합니다. 본 방침은 수집 항목과 이용·보호 방법을 설명합니다.' },
     pv_s1:  { zh: '一、我們收集的資料', en: '1. Data We Collect', ja: '第1条（収集するデータ）', ko: '제1조(수집하는 데이터)' },
@@ -1110,7 +1109,7 @@ window.I18N = (function () {
     pv_s6b: { zh: '您可隨時要求刪除帳號：帳號、專案、使用量與訂單之個資將一併刪除（法律要求保存之交易紀錄除外）。', en: 'You may request account deletion at any time: account, project, usage and order personal data are deleted together (except transaction records the law requires us to keep).', ja: 'アカウント削除はいつでも請求できます。アカウント、プロジェクト、利用量、注文の個人データは一括削除されます（法律で保存が求められる取引記録を除く）。', ko: '언제든 계정 삭제를 요청할 수 있습니다: 계정, 프로젝트, 사용량, 주문의 개인정보가 함께 삭제됩니다(법률상 보관 의무가 있는 거래 기록 제외).' },
     pv_s6c: { zh: '刪除請求與其他個資權利行使（查詢、更正、停止利用），請聯絡下方信箱。', en: 'For deletion requests and other data rights (access, correction, cease of use), contact the address below.', ja: '削除請求やその他の個人データ権利行使（照会、訂正、利用停止）は下記メールアドレスへご連絡ください。', ko: '삭제 요청과 기타 개인정보 권리 행사(조회, 정정, 이용 정지)는 아래 메일로 연락하세요.' },
     pv_s7:  { zh: '七、聯絡方式', en: '7. Contact', ja: '第7条（連絡先）', ko: '제7조(연락처)' },
-    pv_s7p: { zh: '隱私相關問題請聯絡：legal@hardwareai.example（上線前請換成實際信箱）。', en: 'For privacy questions contact: legal@hardwareai.example (replace with the real address before launch).', ja: 'プライバシーに関するお問い合わせ：legal@hardwareai.example（公開前に実際のアドレスに差し替え）。', ko: '개인정보 관련 문의: legal@hardwareai.example(공개 전 실제 주소로 교체).' }
+    pv_s7p: { zh: '隱私相關問題請聯絡：smallshark1003@gmail.com。', en: 'For privacy questions contact: smallshark1003@gmail.com.', ja: 'プライバシーに関するお問い合わせ：smallshark1003@gmail.com。', ko: '개인정보 관련 문의: smallshark1003@gmail.com.' }
   };
 
   let lang = localStorage.getItem(LS) || 'zh';
