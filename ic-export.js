@@ -50,7 +50,7 @@ window.ICExport = (function () {
     (property "Reference" "U" (at 0 ${r2(halfH + LEAD + 1.27)} 0) (effects (font (size 1.27 1.27))))
     (property "Value" "${nm}" (at 0 ${r2(-halfH - LEAD - 1.27)} 0) (effects (font (size 1.27 1.27))))
     (property "Footprint" "${ic.package || ''}" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
-    (property "Datasheet" "${ic.datasheet || ''}" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+    (property "Datasheet" "${(typeof ICDatasheet !== 'undefined' && ICDatasheet.datasheetUrl(ic.part, ic)) || ''}" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (property "Manufacturer" "${ic.mfr || ''}" (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (symbol "${nm}_0_1"
       (rectangle (start ${r2(-halfW)} ${r2(halfH)}) (end ${r2(halfW)} ${r2(-halfH)})

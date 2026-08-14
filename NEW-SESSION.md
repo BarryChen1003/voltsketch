@@ -219,28 +219,72 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 | 1 | 法律頁的聯絡信箱 | ✅ 改成 `smallshark1003@gmail.com`，四語同步，`ui_mail_todo` 提示整條刪除 |
 | 2 | 站主要用哪個 Gmail | ✅ 確認是 `smallshark1003@gmail.com`（`owner-unlock.sql` 原本就對，不用改） |
 | 3 | IC 符號畫風要不要翻成「腳號在框外、腳名在框內」 | ✅ **不改**。維持現行「號內名外」，196 顆與 `ic-preview.html` 的說明都不動 |
-| 4 | 線上 datasheet 連結 404 | ⬜ **唯一未決**。詳情見下方「§7c」 |
+| 4 | 線上 datasheet 連結 404 | ✅ 改連 TI 官網（`ic-datasheet.js`）。詳情與實測數字見 §7c |
 | 5 | 新技術每月更新 | ✅ 改排程：本機任務 `hardwareai-news-monthly`，每月 1 號 09:00，開 PR 不 push main（見 `NEWS-UPDATE.md` 開頭） |
 | 6 | 編輯器快捷鍵說明 | ✅ 補齊四語：Ctrl+C/V/X、Ctrl+A/Z/Y、方向鍵平移（Shift 大步）、Esc、H/V 翻轉 |
 
-## 7c. 唯一未決：線上 datasheet 連結（2026-08-14 查證）
+## 7c. datasheet 連結：改連 TI 官網（2026-08-14 完成）
 
-**現況（比舊版描述精確）**：只有**未建檔的料**會出現 datasheet 連結——
-`ic-library.html:231` 的 `notBuilt` 分支硬寫 `IC-spec/<part>.pdf`。
-已建檔的 104 顆詳細頁**根本沒有 datasheet 連結**（`detailCard()` 沒放）。
-另外 `ic-export.js:53` 會把 `ic.datasheet`（`IC-spec/xxx.pdf`）寫進 KiCad 符號的 Datasheet 屬性，
-匯出檔裡也是死路徑。`IC-spec/` 在 gitignore，線上一律 404。
+**當初的問題描述不準，這裡是實際查證後的版本**：
+
+- 元件庫的 196 顆**全部已建檔**（`IC_DATA.length === 196`，瀏覽器實測）。
+  「104 顆」那個數字是 `grep -c "^    part:"` 數出來的，`ic-data.js` 有些條目縮排不同，漏數了 92 顆。
+  **數量要在瀏覽器問資料本身，不要用縮排當 pattern grep。**
+- 已建檔的料**詳細頁本來就沒有 datasheet 連結**（`detailCard()` 沒放這一列）。
+- 會 404 的其實是兩個地方：
+  1. `ic-library.html` 的 `notBuilt` 分支硬寫 `IC-spec/<part>.pdf`——但 196 顆都建檔了，
+     這條路只有在使用者自己打一個不在庫裡的料號時才走得到。
+  2. `ic-export.js` 把 `ic.datasheet` 原封不動寫進 KiCad 符號的 Datasheet 屬性。
+     那個欄位**格式根本不一致**：106 筆是 `IC-spec/xxx.pdf`（本機死路徑）、
+     13 筆是完整網址、77 筆是人看的引用字串（`Microchip DS00002117`）。
+     所以每一份匯出的符號檔，Datasheet 屬性都不是可以點的東西。
 
 **兩條路的實測數字**：
 
 | 路 | 代價 |
 |---|---|
-| PDF 進 repo | `IC-spec/` = **255 個 PDF、718 MB**。GitHub Pages 建議 repo ≤1 GB、單站 ≤1 GB，clone 也會變很痛。不建議 |
-| 改連 TI 官網 | URL 規則 `https://www.ti.com/lit/ds/symlink/<part>.pdf`。2026-08-14 對 196 顆逐一實測（不是憑印象）：**183 顆 200 且 content-type 是 application/pdf，13 顆 404**。假料號會正確回 404（拿 `zzzznotarealpart123` 驗過），所以這規則是真的 |
+| PDF 進 repo | `IC-spec/` = **255 個 PDF、718 MB**。GitHub Pages 建議整站 ≤1 GB，clone 也會變很痛。否決 |
+| 改連 TI 官網 | URL 規則 `https://www.ti.com/lit/ds/symlink/<料號>.pdf`。2026-08-14 對 196 顆逐一發請求（不是憑印象）：**183 顆 200 且 content-type 是 application/pdf，13 顆 404**。假料號正確回 404（拿 `zzzznotarealpart123` 驗過），所以不是「什麼都給 200」。**採用** |
 
-13 顆不是 TI 的料（要嘛不放連結，要嘛手填 `datasheetUrl`）：
-`KSZ9031RNX`、`LAN8710A`、`74LVC4066_Q100`、`W25Q128JV`、`ds1230y`、`AXP209`、
-`drv7167`、`NX48P0407`、`RT6150`、`slg59h1403c`、`X4003`、`ADG601_602`、`EFR32BG24L`。
+**做法**：新增 `ic-datasheet.js`，`ICDatasheet.datasheetUrl(part, ic)` 依序試
+① `ic.datasheetUrl` ② `ic.datasheet`（僅當它是 http/https）③ TI 規則 ④ 回 `null`。
+回 `null` 時呼叫端**不放連結**，改顯示「這顆不是 TI 的料，請到原廠網站查」（四語）。
+接上的地方：`ic-library.html` 的 `notBuilt` 分支、`ic-export.js` 的 Datasheet 屬性。
+實測：KiCad 匯出 184 顆得到真網址、12 顆留空（原本 196 顆全是死字串）。
+
+12 顆非 TI 且沒有網址（新增這類料號時請填 `datasheetUrl`，否則會產出指向 TI 的死連結）：
+`ADG601_602`、`DRV7167`、`KSZ9031RNX`、`LAN8710A`、`W25Q128JV`、`RT6150`、
+`AXP209`、`X4003`、`NX48P0407`、`EFR32BG24L`、`DS1230Y`、`SLG59H1403C`。
+
+**還沒做（使用者當時選的是「只改連結」）**：詳細頁仍然沒有 datasheet 那一列。
+要加就是在 `detailCard()` 補一列 + 兩條四語字串，`ICDatasheet` 已經備好了。
+
+## 7d. 「使用者自己建一顆 IC」現在能做到哪（2026-08-14 實測）
+
+使用者問：別人想建新的 IC，要怎麼上傳 datasheet PDF 然後建一顆料來畫？現況：
+
+| 環節 | 狀態 |
+|---|---|
+| 入口 | ✅ 線路圖頁左欄「＋ 自訂 IC（多腳）」→ 填名稱 + Pin 表（每行 `編號,名稱,側別(L/R/T/B),類型`，側別可省略走 DIP 分配）→「建立並放置」 |
+| 手打 pin 表 | ✅ 通的。建完就能拉線、能匯出 |
+| 「從 PDF 預填」 | ⚠️ **按鈕在，但抽出來是垃圾** |
+| 存到哪 | localStorage `voltsketch-ics`，**只在他自己的瀏覽器**。不會進站上那 196 顆，別人看不到 |
+| 上傳 PDF 到伺服器 | ❌ 沒有，也是刻意的——PDF 一律在瀏覽器內解析不上傳（ds-compare 同樣設計） |
+
+**「從 PDF 預填」壞在哪**（拿 `IC-spec/` 的真 datasheet 實測，不是推測）：
+pdf.js 取文字沒問題（ads112c14 抽到 199,505 字元、945 ms）。壞的是 `pdf-parser.js`
+只有兩條非常粗的 regex，抽出來的是這種東西：
+
+| datasheet | 實際腳數 | 抽出列數 | 樣本 |
+|---|---|---|---|
+| `sn74lvc1g07` | 5 | 30（9 個相異編號） | `2025,Texas`、`4,Thermal`、`1,Application` |
+| `ads112c14` | 16 | 153 | `4,Thermal`、`1,Analog`、`14,Conversion` |
+| `iso7741u` | 16 | 87 | `1577,and`、`2026,Texas` |
+
+要修的話，`ds-compare.js` 就是現成的示範：它的抽取規則是拿真 datasheet 調出來的
+（TI 的 en-dash 溫度、`RTE (WQFN, 16)` 封裝、目錄行「4 Pin Configuration」被當腳數…見 §8），
+而且有 66 條測試。pin table 抽取應該照同一套做法：獨立模組 + 拿 `IC-spec/` 的真 PDF 當基準。
+**在那之前，這顆按鈕給使用者的是「全刪重打」的體驗，比沒有還糟。**
 
 ---
 
