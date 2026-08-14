@@ -43,7 +43,17 @@
     '解析中...': { en: 'Parsing…', ja: '解析中…', ko: '분석 중…' },
     'PDF 解析失敗：{err}': { en: 'PDF parsing failed: {err}', ja: 'PDF の解析に失敗：{err}', ko: 'PDF 분석 실패: {err}' },
     '找到 {n} 個 Pin 定義': { en: 'Found {n} pin definitions', ja: 'ピン定義を {n} 件検出', ko: '핀 정의 {n}개 발견' },
-    '預填 {n} 腳，請校正後建立': { en: 'Pre-filled {n} pins — review before creating', ja: '{n} ピンを仮入力しました。確認してから作成してください', ko: '{n}핀을 미리 채웠습니다. 확인 후 생성하세요' },
+    '抽到 {n} 腳（{pkg}），請對照 datasheet 校正後再建立': { en: 'Extracted {n} pins ({pkg}) — check them against the datasheet before creating', ja: '{n} ピンを抽出しました（{pkg}）。datasheet と照合してから作成してください', ko: '{n}핀을 추출했습니다({pkg}). datasheet와 대조한 뒤 생성하세요' },
+    '這份 PDF 找不到腳位表（可能是掃描圖檔版，或版型不認得），請手動輸入': { en: 'No pin table found in this PDF (it may be a scanned image, or a layout we do not recognise) — enter the pins manually', ja: 'この PDF にピン表が見つかりません（スキャン画像版か、対応していないレイアウトです）。手動で入力してください', ko: '이 PDF에서 핀 표를 찾지 못했습니다(스캔 이미지이거나 인식하지 못하는 레이아웃). 직접 입력하세요' },
+    '找到腳位表標題，但下面讀不到內容': { en: 'Found the pin-table heading, but no table content under it', ja: 'ピン表の見出しは見つかりましたが、その下の内容が読めません', ko: '핀 표 제목은 찾았지만 그 아래 내용을 읽지 못했습니다' },
+    '讀不出哪一欄是腳號、哪一欄是腳名': { en: 'Could not tell which column holds pin numbers and which holds pin names', ja: 'どの列がピン番号でどの列がピン名か判別できません', ko: '어느 열이 핀 번호이고 어느 열이 핀 이름인지 판별하지 못했습니다' },
+    '找到腳位表，但一列都認不出來': { en: 'Found the pin table, but could not read a single row', ja: 'ピン表は見つかりましたが、1 行も読み取れませんでした', ko: '핀 표는 찾았지만 한 행도 인식하지 못했습니다' },
+    '腳號 {nums} 沒抽到，請對照 datasheet 補上': { en: 'Pins {nums} were not extracted — add them from the datasheet', ja: 'ピン {nums} は抽出できませんでした。datasheet を見て補ってください', ko: '핀 {nums}은(는) 추출하지 못했습니다. datasheet를 보고 추가하세요' },
+    '跳過一列看不懂的內容：{text}': { en: 'Skipped a row we could not parse: {text}', ja: '解釈できない行をスキップしました：{text}', ko: '해석할 수 없는 행을 건너뛰었습니다: {text}' },
+    '腳名重複得太多，可能整欄抓錯，請逐列對照 datasheet': { en: 'Too many repeated pin names — the wrong column may have been read. Check every row against the datasheet', ja: 'ピン名の重複が多すぎます。列を取り違えている可能性があるため、datasheet と 1 行ずつ照合してください', ko: '핀 이름이 너무 많이 중복됩니다. 열을 잘못 읽었을 수 있으니 datasheet와 한 행씩 대조하세요' },
+    '腳名多半只有一兩個字，可能抓到的是 TYPE 欄不是腳名欄': { en: 'Most pin names are only one or two characters — this may be the TYPE column, not the name column', ja: 'ピン名がほぼ 1〜2 文字です。ピン名欄ではなく TYPE 欄を読んでいる可能性があります', ko: '핀 이름이 대부분 한두 글자입니다. 핀 이름 열이 아니라 TYPE 열을 읽었을 수 있습니다' },
+    '這份 datasheet 有多個封裝（{all}），目前取 {pkg}，請確認是你要的那個': { en: 'This datasheet covers several packages ({all}); {pkg} was used — check it is the one you want', ja: 'この datasheet は複数パッケージ（{all}）を含みます。現在 {pkg} を使用しています。目的のものか確認してください', ko: '이 datasheet는 여러 패키지({all})를 다룹니다. 현재 {pkg}를 사용했으니 원하는 것인지 확인하세요' },
+    'datasheet 寫這顆有 {declared} 腳，只抽到 {got} 腳，剩下的請手動補': { en: 'The datasheet says this part has {declared} pins but only {got} were extracted — add the rest by hand', ja: 'datasheet ではこの品番は {declared} ピンですが、{got} ピンしか抽出できませんでした。残りは手動で追加してください', ko: 'datasheet에는 이 부품이 {declared}핀이라고 되어 있지만 {got}핀만 추출했습니다. 나머지는 직접 추가하세요' },
 
     // ── 畫布 / 匯出 ──
     'netlist 已複製': { en: 'Netlist copied', ja: 'ネットリストをコピーしました', ko: '넷리스트를 복사했습니다' },

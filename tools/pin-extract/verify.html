@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <title>pin-extract 批次驗證</title>
+  <style>
+    body { font: 14px/1.6 system-ui; margin: 20px; color: #0f172a; }
+    #log { white-space: pre-wrap; font: 12px/1.5 ui-monospace, monospace; background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; max-height: 60vh; overflow: auto; }
+    b { color: #1d2943; }
+  </style>
+</head>
+<body>
+  <h1>pin-extract 批次驗證</h1>
+  <p>拿 <code>IC-spec/</code> 的真 datasheet 跑 <code>pin-extract.js</code>，跟 <code>ic-data.js</code> 裡人工核對過的腳位比對。
+     這頁是**驗證工具**，不是網站的一部分（<code>IC-spec/</code> 不會上線）。</p>
+  <p><button id="go">開始</button> <span id="stat"></span></p>
+  <div id="log"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="../../ic-data.js"></script>
+  <script src="../../pin-extract.js"></script>
+  <script>
+    const log = m => { document.getElementById('log').textContent += m + '\n'; };
+    const norm = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    async function pagesFor(part) {
+      const r = await fetch('../../IC-spec/' + part.toLowerCase() + '.pdf');
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const pdf = await pdfjsLib.getDocument({ data: await r.arrayBuffer() }).promise;
+      const pages = [];
+      const cap = Math.min(pdf.numPages, 14);
+      for (let i = 1; i <= cap; i++) {
+        const tc = await (await pdf.getPage(i)).getTextContent();
+        pages.push(tc.items.filter(it => it.str && it.str.trim())
+          .map(it => [+it.transform[4].toFixed(1), +it.transform[5].toFixed(1), +(it.height || 0).toFixed(1), it.str]));
+        // 找到表格頁之後再多讀一頁（表格可能跨頁）就停，不必整份讀完
+        const found = PinExtract._findTablePage(pages);
+        if (found && pages.length >= found.page + 5) break;
+      }
+      return pages;
+    }
+
+    window.runVerify = async function () {
+      const data = (window.IC_DATA || []).filter(i => Array.isArray(i.pins) && i.pins.length >= 4);
+      const res = { total: 0, tableFound: 0, exact: 0, partial: 0, none: 0, err: 0, rows: [] };
+      for (const ic of data) {
+        res.total++;
+        let out;
+        try { out = PinExtract.extract(await pagesFor(ic.part)); }
+        catch (e) { res.err++; res.rows.push({ part: ic.part, verdict: 'ERR', note: e.message }); continue; }
+        if (!out.ok) { res.none++; res.rows.push({ part: ic.part, verdict: 'NO-TABLE', note: out.warnings[0] || '' }); continue; }
+        res.tableFound++;
+        // 真值：ic-data 的 pins。EP（外露焊墊）視為可有可無。
+        const truth = new Map();
+        ic.pins.forEach(p => { if (!p.ep) truth.set(String(p.num), norm(p.name)); });
+        let hit = 0, wrong = [];
+        out.pins.forEach(p => {
+          const want = truth.get(String(p.num));
+          if (want == null) return;
+          if (want === norm(p.name) || want.startsWith(norm(p.name)) || norm(p.name).startsWith(want)) hit++;
+          else wrong.push(p.num + ':' + p.name + '≠' + want);
+        });
+        const cover = truth.size ? hit / truth.size : 0;
+        const verdict = (hit === truth.size && out.pins.length <= truth.size + 2) ? 'EXACT' : (cover >= 0.6 ? 'PARTIAL' : 'BAD');
+        if (verdict === 'EXACT') res.exact++; else if (verdict === 'PARTIAL') res.partial++; else res.none++;
+        res.rows.push({ part: ic.part, verdict, got: out.pins.length, want: truth.size, cover: +(cover * 100).toFixed(0), wrong: wrong.slice(0, 3), pkg: out.packageUsed });
+        document.getElementById('stat').textContent = res.total + ' / ' + data.length;
+      }
+      window.__verify = res;
+      log('完成：' + JSON.stringify({ total: res.total, exact: res.exact, partial: res.partial, bad_or_none: res.none, err: res.err }));
+      return res;
+    };
+    document.getElementById('go').addEventListener('click', () => runVerify());
+  </script>
+</body>
+</html>

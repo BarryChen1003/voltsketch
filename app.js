@@ -2024,14 +2024,22 @@ const app = {
 
     const file = input.files[0];
     if (file.name.endsWith('.pdf')) {
-      const result = await PDFParser.extractPinInfo(file);
-      infoDiv.innerHTML = `<p><strong>${file.name}</strong></p><p>${uiT('找到 {n} 個 Pin 定義', { n: result.pins.length })}</p><pre style="max-height:100px;overflow:auto;font-size:10px;">${result.text.substring(0, 500)}</pre>`;
+      const result = await this.pdfPinTable(file);
+      if (!result.ok) {
+        infoDiv.innerHTML = `<p><strong>${file.name}</strong></p><p>${this.pinWarnText(result.warnings[0] || { code: 'no-table' })}</p>`;
+        saveBtn.hidden = true;                     // 抽不到就不給存，別讓半成品進元件庫
+        statusDiv.textContent = '';
+        return;
+      }
+      const preview = result.pins.map(p => `${p.num},${p.name}`).join('\n');
+      infoDiv.innerHTML = `<p><strong>${file.name}</strong></p><p>${uiT('找到 {n} 個 Pin 定義', { n: result.pins.length })}</p>` +
+        `<pre style="max-height:100px;overflow:auto;font-size:10px;">${preview}</pre>`;
       saveBtn.hidden = false;
       saveBtn.onclick = () => {
         const ic = {
           name: file.name.replace('.pdf', ''),
           package: 'DIP',
-          pins: result.pins.map(p => ({ number: p.number, name: p.name, type: 'io' }))
+          pins: result.pins.map(p => ({ number: p.num, name: p.name, type: 'io' }))
         };
         ICManager.save(ic);
         this.showToast(uiT('IC 已儲存'));
@@ -2760,19 +2768,63 @@ const app = {
     this.closeIcBuilder();
     this.showToast(uiT('已建立 {name}（{pins} 腳）', { name, pins: pins.length }));
   },
+  // 讀 PDF → pdf.js 取每頁文字 item（含座標）→ pin-extract 抽 Pin Functions 表。
+  // 只讀到「找到表格那頁 + 再一頁」為止；datasheet 動輒 80 頁，整份讀完沒有意義。
+  async pdfPinTable(file) {
+    if (typeof pdfjsLib === 'undefined' || typeof PinExtract === 'undefined') {
+      return { ok: false, pins: [], warnings: [{ code: 'no-lib' }] };
+    }
+    const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+    const pages = [];
+    const cap = Math.min(pdf.numPages, 16);
+    for (let i = 1; i <= cap; i++) {
+      const tc = await (await pdf.getPage(i)).getTextContent();
+      pages.push(tc.items.filter(it => it.str && it.str.trim()).map(it =>
+        [+it.transform[4].toFixed(1), +it.transform[5].toFixed(1), +(it.height || 0).toFixed(1), it.str]));
+      const found = PinExtract._findTablePage(pages);
+      if (found && pages.length >= found.page + 5) break;   // 表格可能跨好幾頁
+    }
+    return PinExtract.extract(pages);
+  },
+
+  // pin-extract 回的是代碼，四語句子在這裡組（硬規矩 6）
+  pinWarnText(w) {
+    if (w.code === 'no-lib') return uiT('PDF 解析器未載入');
+    if (w.code === 'no-table') return uiT('這份 PDF 找不到腳位表（可能是掃描圖檔版，或版型不認得），請手動輸入');
+    if (w.code === 'no-body') return uiT('找到腳位表標題，但下面讀不到內容');
+    if (w.code === 'no-columns') return uiT('讀不出哪一欄是腳號、哪一欄是腳名');
+    if (w.code === 'no-rows') return uiT('找到腳位表，但一列都認不出來');
+    if (w.code === 'missing') return uiT('腳號 {nums} 沒抽到，請對照 datasheet 補上', { nums: w.nums });
+    if (w.code === 'odd-row') return uiT('跳過一列看不懂的內容：{text}', { text: w.text });
+    if (w.code === 'dup-names') return uiT('腳名重複得太多，可能整欄抓錯，請逐列對照 datasheet');
+    if (w.code === 'short-names') return uiT('腳名多半只有一兩個字，可能抓到的是 TYPE 欄不是腳名欄');
+    if (w.code === 'multi-package') return uiT('這份 datasheet 有多個封裝（{all}），目前取 {pkg}，請確認是你要的那個', { all: w.all, pkg: w.pkg });
+    if (w.code === 'count-short') return uiT('datasheet 寫這顆有 {declared} 腳，只抽到 {got} 腳，剩下的請手動補', { declared: w.declared, got: w.got });
+    return '';
+  },
+
   async prefillIcFromPdf(e) {
     const file = e.target.files[0];
     if (!file) return;
-    if (typeof PDFParser === 'undefined') { this.showToast(uiT('PDF 解析器未載入')); return; }
     this.showToast(uiT('解析 PDF 中...'));
-    try {
-      const res = await PDFParser.extractPinInfo(file);
-      const lines = (res.pins || []).map(p => `${p.number},${p.name}`).join('\n');
-      const ta = document.getElementById('icbPins');
-      ta.value = lines || ta.value;
-      if (!document.getElementById('icbName').value) document.getElementById('icbName').value = file.name.replace(/\.[^.]+$/, '');
-      this.showToast(uiT('預填 {n} 腳，請校正後建立', { n: res.pins ? res.pins.length : 0 }));
-    } catch (err) { this.showToast(uiT('PDF 解析失敗：{err}', { err: err.message })); }
+    let res;
+    try { res = await this.pdfPinTable(file); }
+    catch (err) { this.showToast(uiT('PDF 解析失敗：{err}', { err: err.message })); e.target.value = ''; return; }
+
+    // 抽不到就明說，**不要動 textarea**。舊版會塞一堆頁尾與章節標題進去，
+    // 使用者看到「預填好了」其實得全刪重打，比沒有這顆按鈕還糟。
+    if (!res.ok) {
+      this.showToast(this.pinWarnText(res.warnings[0] || { code: 'no-table' }), 6000);
+      e.target.value = ''; return;
+    }
+    document.getElementById('icbPins').value = res.pins.map(p => `${p.num},${p.name}`).join('\n');
+    if (!document.getElementById('icbName').value) {
+      document.getElementById('icbName').value = file.name.replace(/\.[^.]+$/, '');
+    }
+    let msg = uiT('抽到 {n} 腳（{pkg}），請對照 datasheet 校正後再建立', { n: res.pins.length, pkg: res.packageUsed });
+    const warn = res.warnings.map(w => this.pinWarnText(w)).filter(Boolean)[0];
+    if (warn) msg += '｜' + warn;
+    this.showToast(msg, 7000);
     e.target.value = '';
   },
 

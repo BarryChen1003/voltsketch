@@ -1,0 +1,57 @@
+{
+  "part": "AMC0200D",
+  "note": "IC-spec/amc0200d.pdf 第 3-4 頁的 pdf.js text items。格式 [x, y, height, text]。乾淨版型：NO. / NAME / TYPE / DESCRIPTION 四欄，單一封裝。",
+  "expect": {
+    "packages": ["NO."],
+    "pins": [
+      { "num": "1", "name": "VDD1" },
+      { "num": "2", "name": "INP" },
+      { "num": "3", "name": "INN" },
+      { "num": "4", "name": "GND1" },
+      { "num": "5", "name": "GND2" },
+      { "num": "6", "name": "OUTN" },
+      { "num": "7", "name": "OUTP" },
+      { "num": "8", "name": "VDD2" }
+    ]
+  },
+  "pages": [
+    [
+      [56.7, 706.3, 12, "4"], [66.7, 706.3, 12, "Device Comparison Table"],
+      [149.1, 687.3, 8, "PARAMETER"], [338.8, 687.3, 8, "AMC0200D"], [470.7, 687.3, 8, "AMC0300D"],
+      [58.9, 673.4, 8, "Isolation rating per VDE 0884-17"], [350, 673.4, 8, "Basic"], [472.3, 673.4, 8, "Reinforced"],
+      [58.9, 659.4, 8, "Package"], [319.3, 659.4, 8, "Narrow-body SOIC (D)"], [448.5, 659.4, 8, "Wide-body SOIC (DWV)"],
+      [56.7, 632.1, 12, "5"], [66.7, 632.1, 12, "Pin Configuration and Functions"],
+      [394.1, 602, 8, "VDD2"], [394.1, 580.4, 8, "OUTP"], [394.1, 537.1, 8, "GND2"], [394.1, 558.8, 8, "OUTN"],
+      [355.2, 602, 8, "8"], [355.2, 580.4, 8, "7"], [355.2, 558.8, 8, "6"], [355.2, 537.1, 8, "5"],
+      [195.8, 602, 8, "VDD1"], [203.8, 580.4, 8, "INP"], [203.4, 558.8, 8, "INN"], [194.9, 537.1, 8, "GND1"],
+      [251.4, 602, 8, "1"], [251.4, 580.4, 8, "2"], [251.4, 558.8, 8, "3"], [251.4, 537.1, 8, "4"],
+      [246.6, 513.8, 8, "Not to scale"],
+      [173.1, 496.4, 10, "Figure 5-1."], [226.4, 496.4, 10, "DWV and D Packages"], [329.3, 496.4, 10, ","], [334.8, 496.4, 10, "8-Pin SOIC"], [389.3, 496.4, 10, "(Top View)"],
+      [248.9, 474.4, 10, "Table 5-1. Pin Functions"],
+      [109.6, 460.6, 8, "PIN"],
+      [219.7, 452.4, 8, "TYPE"], [392.5, 452.4, 8, "DESCRIPTION"],
+      [79.4, 444.2, 8, "NO."], [134.3, 444.2, 8, "NAME"],
+      [84.3, 427.9, 8, "1"], [135.4, 427.9, 8, "VDD1"], [201.2, 427.9, 8, "High-side power"], [286.5, 427.9, 8, "High-side power supply"], [369.6, 430.5, 6, "(1)"],
+      [84.3, 411.5, 8, "2"], [139.5, 411.5, 8, "INP"], [207.9, 411.5, 8, "Analog input"], [286.5, 411.5, 8, "Noninverting analog input"], [377.2, 414.2, 6, "(2)"],
+      [84.3, 395.2, 8, "3"], [139.2, 395.2, 8, "INN"], [207.7, 395.2, 8, "Analog Input"], [286.5, 395.2, 8, "Inverting analog input"], [363, 397.8, 6, "(2)"],
+      [84.3, 378.8, 8, "4"], [135, 378.8, 8, "GND1"], [199.7, 378.8, 8, "High-side ground"], [286.5, 378.8, 8, "High-side analog ground"],
+      [84.3, 362.5, 8, "5"], [135, 362.5, 8, "GND2"], [200.5, 362.5, 8, "Low-side ground"], [286.5, 362.5, 8, "Low-side analog ground"],
+      [84.3, 346.1, 8, "6"], [134.8, 346.1, 8, "OUTN"], [205.4, 346.1, 8, "Analog output"], [286.5, 346.1, 8, "Inverting analog output"],
+      [84.3, 329.8, 8, "7"], [135, 329.8, 8, "OUTP"], [205.4, 329.8, 8, "Analog output"], [286.5, 329.8, 8, "Noninverting analog output"],
+      [84.3, 313.4, 8, "8"], [135.4, 313.4, 8, "VDD2"], [202.1, 313.4, 8, "Low-side power"], [286.5, 313.4, 8, "Low-side power supply"], [367.9, 316.1, 6, "(1)"],
+      [56.7, 293, 8, "(1)"], [77.9, 293, 8, "See the"], [107.8, 293, 8, "Power Supply Recommendations"], [228.3, 293, 8, "section for power-supply decoupling recommendations."],
+      [56.7, 283.4, 8, "(2)"], [77.9, 283.4, 8, "See the"], [107.8, 283.4, 8, "Input Filter Design"], [174.9, 283.4, 8, "section for input filter design."],
+      [54, 730.3, 8, "www.ti.com"], [459, 739, 9, "AMC0200D, AMC0300D"], [376.3, 730, 7, "SBASAR7A – SEPTEMBER 2025 – REVISED JUNE 2026"],
+      [54, 43.9, 7, "Copyright © 2026 Texas Instruments Incorporated"], [431.9, 43, 8, "Submit Document Feedback"], [553.6, 43.1, 8, "3"],
+      [224.6, 29.4, 8, "Product Folder Links:"], [302.4, 29.4, 8, "AMC0200D"], [346, 29.4, 8, "AMC0300D"]
+    ],
+    [
+      [56.7, 706.3, 12, "6"], [66.7, 706.3, 12, "Specifications"],
+      [56.7, 688.8, 11, "6.1"], [75, 688.8, 11, "Absolute Maximum Ratings"],
+      [423.6, 658.1, 8, "MIN"], [497, 658.1, 8, "MAX"], [526.8, 658.1, 8, "UNIT"],
+      [58.9, 637.2, 8, "Power-supply voltage"], [173.9, 644.2, 8, "High-side VDD1 to GND1"], [422.7, 644.2, 8, "–0.3"], [503.7, 644.2, 8, "6.5"], [533.5, 637.2, 8, "V"],
+      [54, 739, 9, "AMC0200D, AMC0300D"], [513.8, 730.3, 8, "www.ti.com"],
+      [54, 43, 8, "4"], [79.2, 43, 8, "Submit Document Feedback"], [403.4, 43.9, 7, "Copyright © 2026 Texas Instruments Incorporated"]
+    ]
+  ]
+}
