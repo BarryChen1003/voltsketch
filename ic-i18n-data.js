@@ -10448,6 +10448,65 @@
           { k: '문서 상태', v: 'ADVANCE INFORMATION, SLVSJL6 – JUNE 2026' }
         ]
       }
+    },
+    'SN74LVC1G07': {
+      en: {
+        subcategory: 'Single-Gate Buffer/Driver with Open-Drain Output',
+        whatIs: 'A single buffer/driver whose output is open drain: Y only pulls the line low and never drives it high, so an external pull-up resistor is required. VCC 1.65-5.5V, and both input and output tolerate up to 5.5V.',
+        func: 'Because the output is open drain, several of them can share one line to form a wired-OR (active low) or wired-AND (active high). The output level is set by whichever rail the pull-up goes to, so it translates either up or down. Ioff allows live insertion and prevents back-drive when partially powered down.',
+        usedIn: 'Driving and buffering open-drain buses such as I2C, interrupt and reset lines; level translation between voltage domains; wired-OR logic; sinking LEDs or relays directly (I_OL up to 32mA).',
+        desc: 'Single-gate open-drain buffer, LVC, 1.65-5.5V, I_OL up to 32mA (SC70-5 DCK).',
+        specs: [
+          { k: 'Function', v: 'Buffer/driver, open-drain output (Y sinks only; external pull-up required)' },
+          { k: 'Family', v: 'LVC (input and output both 5.5V tolerant, works across domains)' },
+          { k: 'Supply', v: '1.65 ~ 5.5 V (1.5V minimum for data retention)' },
+          { k: 'Sink current I_OL', v: '32mA at VCC=4.5V; 16/24mA at VCC=3V; 4mA at VCC=1.65V' },
+          { k: 'Propagation delay', v: 't_pd 4.2ns max at 3.3V' },
+          { k: 'Quiescent current', v: 'I_CC 10µA max' },
+          { k: 'Input/output voltage', v: '0 ~ 5.5V (may exceed VCC)' },
+          { k: 'Operating temperature', v: '-40 ~ 125°C (-40 ~ 85°C for the DSBGA package)' },
+          { k: 'Package', v: 'SC70-5 (DCK) 2.0×2.1mm, orderable SN74LVC1G07DCKR (tape and reel); the same die also comes in SOT-23-5/X2SON/USON/DSBGA' }
+        ],
+        dropIn: [{ note: 'Same SC70-5 pinout and also open drain; 1G06 inverts (Y = NOT A), so the function differs' }]
+      },
+      ja: {
+        subcategory: 'シングルゲート バッファ/ドライバ（オープンドレイン出力）',
+        whatIs: '出力がオープンドレインの 1 回路バッファ/ドライバ。Y はラインを引き下げるだけで、能動的にハイにはしないため外付けプルアップ抵抗が必須。VCC 1.65-5.5V、入力・出力とも 5.5V まで耐える。',
+        func: 'オープンドレイン出力なので複数を 1 本の線にまとめてワイヤード OR（ロー有効）／ワイヤード AND（ハイ有効）が組める。出力のハイレベルはプルアップ先の電源で決まるため、上方向にも下方向にもレベル変換できる。Ioff により活線挿抜が可能で、部分電源断時の逆流も防ぐ。',
+        usedIn: 'I2C・割り込み・リセットなどオープンドレインバスの駆動とバッファ、電圧ドメイン間のレベル変換、ワイヤード OR、LED やリレーの直接シンク駆動（I_OL 最大 32mA）。',
+        desc: 'シングルゲート オープンドレインバッファ、LVC、1.65-5.5V、I_OL 最大 32mA（SC70-5 DCK）。',
+        specs: [
+          { k: '機能', v: 'バッファ/ドライバ、オープンドレイン出力（シンクのみ、外付けプルアップ必須）' },
+          { k: 'ファミリ', v: 'LVC（入力・出力とも 5.5V 耐性、ドメイン跨ぎ可）' },
+          { k: '電源', v: '1.65 ~ 5.5 V（データ保持は最低 1.5V）' },
+          { k: 'シンク電流 I_OL', v: 'VCC=4.5V で 32mA、VCC=3V で 16/24mA、VCC=1.65V で 4mA' },
+          { k: '伝搬遅延', v: 't_pd 最大 4.2ns（3.3V）' },
+          { k: '静止電流', v: 'I_CC 最大 10µA' },
+          { k: '入出力電圧', v: '0 ~ 5.5V（VCC を超えても可）' },
+          { k: '動作温度', v: '-40 ~ 125°C（DSBGA パッケージは -40 ~ 85°C）' },
+          { k: 'パッケージ', v: 'SC70-5 (DCK) 2.0×2.1mm、オーダー品番 SN74LVC1G07DCKR（テープ＆リール）；同一チップで SOT-23-5/X2SON/USON/DSBGA もある' }
+        ],
+        dropIn: [{ note: '同一 SC70-5 ピン配置でオープンドレインも同じ；1G06 は反転出力（Y = NOT A）で機能が異なる' }]
+      },
+      ko: {
+        subcategory: '싱글 게이트 버퍼/드라이버(오픈 드레인 출력)',
+        whatIs: '출력이 오픈 드레인인 1회로 버퍼/드라이버. Y는 라인을 로우로 끌어내릴 뿐 하이로 구동하지 않으므로 외부 풀업 저항이 반드시 필요하다. VCC 1.65-5.5V이며 입력과 출력 모두 5.5V까지 견딘다.',
+        func: '출력이 오픈 드레인이라 여러 개를 한 라인에 묶어 와이어드 OR(로우 액티브)이나 와이어드 AND(하이 액티브)를 만들 수 있다. 출력 하이 레벨은 풀업이 연결된 전원이 정하므로 위아래 양방향 레벨 변환이 가능하다. Ioff 덕분에 활선 삽입이 가능하고 부분 전원 차단 시 역류도 막는다.',
+        usedIn: 'I2C·인터럽트·리셋 같은 오픈 드레인 버스의 구동과 버퍼, 전압 도메인 간 레벨 변환, 와이어드 OR 로직, LED나 릴레이 직접 싱크 구동(I_OL 최대 32mA).',
+        desc: '싱글 게이트 오픈 드레인 버퍼, LVC, 1.65-5.5V, I_OL 최대 32mA(SC70-5 DCK).',
+        specs: [
+          { k: '기능', v: '버퍼/드라이버, 오픈 드레인 출력(싱크만, 외부 풀업 필요)' },
+          { k: '패밀리', v: 'LVC(입출력 모두 5.5V 내성, 도메인 간 사용 가능)' },
+          { k: '전원', v: '1.65 ~ 5.5 V(데이터 유지는 최소 1.5V)' },
+          { k: '싱크 전류 I_OL', v: 'VCC=4.5V에서 32mA, VCC=3V에서 16/24mA, VCC=1.65V에서 4mA' },
+          { k: '전파 지연', v: 't_pd 최대 4.2ns(3.3V)' },
+          { k: '정지 전류', v: 'I_CC 최대 10µA' },
+          { k: '입출력 전압', v: '0 ~ 5.5V(VCC보다 높아도 됨)' },
+          { k: '동작 온도', v: '-40 ~ 125°C(DSBGA 패키지는 -40 ~ 85°C)' },
+          { k: '패키지', v: 'SC70-5(DCK) 2.0×2.1mm, 주문 번호 SN74LVC1G07DCKR(테이프앤릴); 같은 다이로 SOT-23-5/X2SON/USON/DSBGA도 있음' }
+        ],
+        dropIn: [{ note: '동일한 SC70-5 핀 배치이며 오픈 드레인도 같음; 1G06은 반전 출력(Y = NOT A)이라 기능이 다름' }]
+      }
     }
   };
   Object.assign(window.IC_I18N, T);

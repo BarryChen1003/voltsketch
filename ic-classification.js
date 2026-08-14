@@ -108,6 +108,7 @@ window.IC_CLASSIFICATION = {
   "sn74lvc14b",
   "sn74lvc1g00b-q1",
   "sn74lvc1g02b-q1",
+  "sn74lvc1g07",
   "sn74lvc1g10b-q1",
   "sn74lvc1g11b-q1",
   "sn74lvc1g125b-q1",

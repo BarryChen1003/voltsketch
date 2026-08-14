@@ -645,7 +645,12 @@
     '功能相近（單電源多通道 SAR ADC＋AFE）': { en: 'Function similar (single-supply multi-channel SAR ADC + AFE)', ja: '機能が近い（単一電源マルチチャネル SAR ADC＋AFE）', ko: '기능 유사(단일 전원 다채널 SAR ADC + AFE)' },
     '內部參考架構相容': { en: 'Internal reference architecture compatible', ja: '内部リファレンス構成互換', ko: '내부 기준 아키텍처 호환' },
     '同 JEDEC 標準 28-pin nvSRAM 腳位者可參考；容量／存取時間／VCC 容差需一致': { en: 'Parts with the same JEDEC-standard 28-pin nvSRAM pinout may be considered; capacity, access time and VCC tolerance must match', ja: '同じ JEDEC 標準 28-pin nvSRAM ピン配置の製品は参考にできる。容量／アクセス時間／VCC 公差が一致していること', ko: '동일한 JEDEC 표준 28-pin nvSRAM 핀 배치 제품은 참고 가능; 용량／접근 시간／VCC 공차가 일치해야 함' },
-    'Power-MUX／OR-ing 負載開關；電流等級、輸入範圍、保護機能需一致': { en: 'Power-MUX / OR-ing load switch; current rating, input range and protection features must match', ja: 'Power-MUX／OR-ing ロードスイッチ。電流等級、入力範囲、保護機能が一致していること', ko: 'Power-MUX／OR-ing 로드 스위치; 전류 등급, 입력 범위, 보호 기능이 일치해야 함' }
+    'Power-MUX／OR-ing 負載開關；電流等級、輸入範圍、保護機能需一致': { en: 'Power-MUX / OR-ing load switch; current rating, input range and protection features must match', ja: 'Power-MUX／OR-ing ロードスイッチ。電流等級、入力範囲、保護機能が一致していること', ko: 'Power-MUX／OR-ing 로드 스위치; 전류 등급, 입력 범위, 보호 기능이 일치해야 함' },
+    '封裝 + pinout 相容（SC70-5、pin-to-pin）': { en: 'Package and pinout compatible (SC70-5, pin-to-pin)', ja: 'パッケージとピン配置が互換（SC70-5、ピン互換）', ko: '패키지와 핀 배치 호환(SC70-5, 핀 대 핀)' },
+    '功能相同（開汲極緩衝器）': { en: 'Same function (open-drain buffer)', ja: '同一機能（オープンドレインバッファ）', ko: '동일 기능(오픈 드레인 버퍼)' },
+    '輸出必須是開汲極（不可換成推挽）': { en: 'Output must be open drain (a push-pull part is not a substitute)', ja: '出力はオープンドレインであること（プッシュプル品は代替不可）', ko: '출력은 오픈 드레인이어야 함(푸시풀 제품은 대체 불가)' },
+    '灌電流 I_OL 涵蓋': { en: 'Sink current I_OL covered', ja: 'シンク電流 I_OL をカバー', ko: '싱크 전류 I_OL 커버' },
+    '傳播延遲同等或更快': { en: 'Propagation delay equal or faster', ja: '伝搬遅延が同等以上に速い', ko: '전파 지연이 동등하거나 더 빠름' }
   };
   Object.assign(window.IC_PIN_I18N, P);
 })();

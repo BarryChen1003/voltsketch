@@ -1744,6 +1744,36 @@ window.IC_DATA = [
     dropIn: [{ part: 'SN74LVC1G00B-Q1', note: '同 SOT-23-5 腳位；1G00B 為 NAND 閘（功能不同）' }]
   },
   {
+    part: 'SN74LVC1G07', mfr: 'Texas Instruments', category: 'logic',
+    subcategory: '單閘緩衝器/驅動器（開汲極輸出）', package: 'SC70-5 (DCK)｜訂購編號 SN74LVC1G07DCKR（捲帶）',
+    whatIs: '單顆緩衝器/驅動器，輸出是開汲極：Y 只會把線拉低，不會主動拉高，所以一定要外接上拉電阻。VCC 1.65~5.5V，輸入與輸出都耐到 5.5V。',
+    func: '輸出開汲極 → 多顆的輸出可以並在同一條線上做 wired-OR（低有效）或 wired-AND（高有效）。上拉電阻接哪個電壓域就輸出哪個準位，所以往上或往下的電平轉換都做得到；Ioff 讓它可熱插拔、部分斷電時不會反灌。',
+    usedIn: 'I2C/中斷/RESET 這類開汲極匯流排的驅動與緩衝、跨電壓域電平轉換、線或邏輯、直接灌電流驅動 LED 或繼電器（I_OL 到 32mA）。',
+    desc: '單閘開汲極緩衝器，LVC、1.65~5.5V，I_OL 最大 32mA（SC70-5 DCK）。',
+    datasheet: 'IC-spec/sn74lvc1g07.pdf',
+    pins: [
+      { num: 1, name: 'NC', side: 'L', type: 'No Connect', desc: '未內接' },
+      { num: 2, name: 'A', side: 'L', type: 'Digital In', desc: '輸入' },
+      { num: 3, name: 'GND', side: 'L', type: 'Ground', desc: '接地' },
+      { num: 5, name: 'VCC', side: 'R', type: 'Power', desc: '電源；接 0.1µF 去耦' },
+      { num: 4, name: 'Y', side: 'R', type: 'Digital Out', desc: '開汲極輸出；需外接上拉電阻' }
+    ],
+    thermalPad: null,
+    specs: [
+      { k: '功能', v: '緩衝器/驅動器，開汲極輸出（Y 只拉低，需外接上拉）' },
+      { k: '系列', v: 'LVC（輸入與輸出皆耐 5.5V，可跨電壓域）' },
+      { k: '電源', v: '1.65 ~ 5.5 V（資料保持最低 1.5V）' },
+      { k: '灌電流 I_OL', v: '32mA @ VCC=4.5V；16/24mA @ VCC=3V；4mA @ VCC=1.65V' },
+      { k: '傳播延遲', v: 't_pd 最大 4.2ns @ 3.3V' },
+      { k: '靜態電流', v: 'I_CC 最大 10µA' },
+      { k: '輸入/輸出耐壓', v: '0 ~ 5.5V（可高於 VCC）' },
+      { k: '工作溫度', v: '-40 ~ 125°C（DSBGA 封裝為 -40 ~ 85°C）' },
+      { k: '封裝', v: 'SC70-5 (DCK) 2.0×2.1mm，訂購編號 SN74LVC1G07DCKR（捲帶）；同晶片另有 SOT-23-5/X2SON/USON/DSBGA' }
+    ],
+    secondSource: ['封裝 + pinout 相容（SC70-5、pin-to-pin）', '功能相同（開汲極緩衝器）', '輸出必須是開汲極（不可換成推挽）', '電源範圍涵蓋', '5V 輸入耐受相容', '灌電流 I_OL 涵蓋', '傳播延遲同等或更快', '工作溫度涵蓋'],
+    dropIn: [{ part: 'SN74LVC1G06', note: '同 SC70-5 腳位、同為開汲極；1G06 是反相輸出（Y = NOT A），功能不同' }]
+  },
+  {
     part: 'SN74LVC1G132B-Q1', mfr: 'Texas Instruments', category: 'logic',
     subcategory: '單閘 2 輸入 NAND (Schmitt 觸發, 車規)', package: 'SOT-23-5 / SC70-5 / X2SON-5',
     whatIs: '單顆 2 輸入 NAND 閘，輸入帶 Schmitt 觸發（遲滯）：Y = NOT(A AND B)。遲滯讓慢速/雜訊訊號整形成乾淨方波。LVC、車規。',

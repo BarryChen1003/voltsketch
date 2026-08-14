@@ -4088,7 +4088,9 @@
     '類比輸入通道 6 正端；與 pin13 AIN_6M 去耦': { en: 'Analog input channel 6 positive; decouple with pin 13 AIN_6M', ja: 'アナログ入力チャネル6の正極；pin13 AIN_6Mとデカップリング', ko: '아날로그 입력 채널 6 정극; pin13 AIN_6M과 디커플링' },
     '類比測試腳；未使用時可懸空不接': { en: 'Analog test pin; may be left floating when unused', ja: 'アナログテストピン；未使用時はオープンでよい', ko: '아날로그 테스트 핀; 미사용 시 개방 상태로 두어도 무방' },
     '電源（+5V）': { en: 'Supply (+5V)', ja: '電源（+5V）', ko: '전원(+5V)' },
-    '開汲極 active-low 狀態指示：高=選 IN1、低=選 IN2；不需要時接 GND': { en: 'Open-drain active-low status indication: high = IN1 selected, low = IN2 selected; tie to GND when not needed', ja: 'オープンドレインactive-lowステータス表示：ハイ=IN1選択、ロー=IN2選択；不要時はGNDに接続', ko: '오픈 드레인 active-low 상태 표시: 하이=IN1 선택, 로우=IN2 선택; 필요 없을 때는 GND에 연결' }
+    '開汲極 active-low 狀態指示：高=選 IN1、低=選 IN2；不需要時接 GND': { en: 'Open-drain active-low status indication: high = IN1 selected, low = IN2 selected; tie to GND when not needed', ja: 'オープンドレインactive-lowステータス表示：ハイ=IN1選択、ロー=IN2選択；不要時はGNDに接続', ko: '오픈 드레인 active-low 상태 표시: 하이=IN1 선택, 로우=IN2 선택; 필요 없을 때는 GND에 연결' },
+    '輸入': { en: 'Input', ja: '入力', ko: '입력' },
+    '開汲極輸出；需外接上拉電阻': { en: 'Open-drain output; needs an external pull-up resistor', ja: 'オープンドレイン出力；外付けプルアップ抵抗が必要', ko: '오픈 드레인 출력; 외부 풀업 저항 필요' }
   };
   Object.assign(window.IC_PIN_I18N, P);
 })();
