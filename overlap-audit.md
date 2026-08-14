@@ -111,6 +111,63 @@ host.remove();return{res,out};})()
 （`svg-overlap-check` 只掃 `CIRCUITS2` 的 80 張，這些是 `CircuitSVG` 與卡片內嵌 svg）。
 多數是「出界」：譯文比中文寬，把字推出畫布。依實測的超出量逐條縮短，共改 39 個欄位後歸零。
 
+## 線路圖編輯器：翻轉後的文字（2026-08-06）
+
+翻轉的元件會跑一段「把字反轉回正向」的補償（`app.js` renderComponents 尾端）。
+補償寫錯不會讓畫面壞掉，只會讓字悄悄跑到不該在的位置，所以要用量的。
+
+貼進 `index.html` 的 console（會在畫布上放一顆 IC 再翻）：
+
+```js
+(async()=>{
+const box=(el,svg)=>{const bb=el.getBBox();const m=el.getCTM(),rm=svg.getCTM();const t=rm.inverse().multiply(m);
+  const p=[[bb.x,bb.y],[bb.x+bb.width,bb.y],[bb.x,bb.y+bb.height],[bb.x+bb.width,bb.y+bb.height]]
+   .map(([x,y])=>({x:t.a*x+t.c*y+t.e,y:t.b*x+t.d*y+t.f}));
+  const xs=p.map(q=>q.x),ys=p.map(q=>q.y);
+  return{x:Math.min(...xs),y:Math.min(...ys),w:Math.max(...xs)-Math.min(...xs),h:Math.max(...ys)-Math.min(...ys)};};
+const s=document.querySelector('#partSearch');s.value='1G07';s.dispatchEvent(new Event('input',{bubbles:true}));
+await new Promise(r=>setTimeout(r,400));
+document.querySelectorAll('.component-button').forEach(b=>{if(/1G07/i.test(b.textContent)){app.state.components=[];b.click();}});
+await new Promise(r=>setTimeout(r,300));
+const c=app.state.components[0];app.setSelection([c.id]);
+const measure=()=>{const g=document.querySelector(`[data-id="${c.id}"]`),svg=g.ownerSVGElement;
+ const r=box(g.querySelector('rect'),svg),L=r.x,R=r.x+r.w,T=r.y,B=r.y+r.h;
+ let cross=0,mir=0;const bs=[];
+ [...g.querySelectorAll('text')].forEach(e=>{const b=box(e,svg);bs.push(b);
+  if((b.x<L-.5&&b.x+b.w>L+.5)||(b.x<R-.5&&b.x+b.w>R+.5)||(b.y<T-.5&&b.y+b.h>T+.5)||(b.y<B-.5&&b.y+b.h>B+.5))cross++;
+  const m=e.getScreenCTM();if(m&&(m.a*m.d-m.b*m.c)<0)mir++;});
+ let ov=0;for(let i=0;i<bs.length;i++)for(let j=i+1;j<bs.length;j++){const a=bs[i],b=bs[j];
+  if(a.x<b.x+b.w-.5&&a.x+a.w>b.x+.5&&a.y<b.y+b.h-.5&&a.y+a.h>b.y+.5)ov++;}
+ return{壓框:cross,鏡像字:mir,字壓字:ov};};
+const o={未翻:measure()};
+app.flipSelected('h');await new Promise(r=>setTimeout(r,200));o.水平=measure();
+app.flipSelected('v');await new Promise(r=>setTimeout(r,200));o['水平+垂直']=measure();
+app.flipSelected('h');await new Promise(r=>setTimeout(r,200));o.垂直=measure();
+return o;})()
+```
+
+**三個判準都必須是 0**：壓框、鏡像字、字壓字。另外還要驗「真的是鏡射」——
+水平翻轉後每個字的中心 x 應該等於 `2 × 元件x − 原本的中心x`，y 不變。
+
+### 修過的坑
+
+- **繞錨點反轉是錯的**：字身在基線上方，垂直鏡射後跑到基線下方，整塊往外位移約一個字高，
+  B 側腳號因此從框內跳到框外壓線。改成**繞字的視覺中心**反轉——位置本來就被群組鏡射擺對了，
+  補償只該修字形方向。順帶連錨點都不必換。
+- **`DOMMatrix` 解析不了 SVG 的 `rotate(deg cx cy)`**（CSS 版只吃單參數，T/B 腳名就是這種）。
+  要用 `el.transform.baseVal.consolidate().matrix`。
+- **旋轉 90° 的字要換軸補償**：它的區域 x 軸在螢幕上是垂直的，螢幕水平翻轉對它而言是區域 y 翻。
+
+### 現況（2026-08-06 Chromium 實測）
+
+| 元件 | 未翻 | 水平 | 水平+垂直 | 垂直 | 垂直+轉90 | 水平+垂直+轉270 |
+|---|---|---|---|---|---|---|
+| SN74LVC1G07（11 字） | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 |
+| ADS112C14（35 字，含 T/B 腳） | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 | 0/0/0 |
+
+（壓框/鏡像字/字壓字）。鏡射對稱性 11/11 個字 x 誤差 0、y 誤差 0。
+另掃 resistor/capacitor/diode/led/nmos/pmos/npn/opamp 三種翻轉組合：鏡像字 0。
+
 ## 面試題庫的圖（interview-bank.js）
 
 知識卡那段只掃 `knowledge-circuits2.js`，**面試題的圖不在任何 CI 覆蓋範圍內**。

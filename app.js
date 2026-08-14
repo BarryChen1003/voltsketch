@@ -2478,15 +2478,38 @@ const app = {
       return `<g transform="${rot}" data-id="${c.id}">${inner}</g>`;
     }).join('');
 
-    // 翻轉的元件：把符號內部文字(G/D/S、腳位編號等)反轉回正向，避免鏡像字
+    // 翻轉的元件：把符號內部文字(G/D/S、腳位編號等)反轉回正向，避免鏡像字。
+    //
+    // 只反轉字形是不夠的，還要反轉「錨點」：text-anchor=end 的腳名鏡射後仍往同一側長，
+    // 於是往框內延伸、跨過框線（2026-08-06 使用者回報的水平翻轉錯誤就是這個）。
+    // 另外 T/B 腳名包在 rotate(-90) 裡，它的區域 x 軸在螢幕上是垂直的：
+    //   - 螢幕水平翻轉對它而言是「區域 y 翻」，補償要用 scale(1,-1) 而不是 scale(-1,1)
+    //   - 書寫方向被反轉的是 flipV 而不是 flipH，所以錨點要看 fy
+    // 判斷方式：把該字到元件節點之間的 transform 疊起來，看區域 +x 落在螢幕的哪個軸。
     this.state.components.forEach(c => {
       if (!c.flipH && !c.flipV) return;
       const g = this.els.componentLayer.querySelector(`[data-id="${c.id}"]`);
       if (!g) return;
       const fx = c.flipH ? -1 : 1, fy = c.flipV ? -1 : 1;
       g.querySelectorAll('text').forEach(t => {
-        const tx = parseFloat(t.getAttribute('x')) || 0, ty = parseFloat(t.getAttribute('y')) || 0;
-        t.setAttribute('transform', `translate(${tx},${ty}) scale(${fx},${fy}) translate(${-tx},${-ty})`);
+        // 區域 +x 在螢幕上的方向（只累 g 內部的 transform，不含元件自身的 rotate/scale）
+        // 用 SVG 自己的 transform API：DOMMatrix 解析不了 SVG 的三參數 rotate(deg cx cy)
+        const svgRoot = g.ownerSVGElement;
+        let m = svgRoot.createSVGMatrix();
+        for (let el = t.parentNode; el && el !== g; el = el.parentNode) {
+          const con = el.transform && el.transform.baseVal && el.transform.baseVal.consolidate();
+          if (con) m = con.matrix.multiply(m);
+        }
+        const vertical = Math.abs(m.b) > Math.abs(m.a);   // 區域 x 指向螢幕的垂直方向
+        // 補償縮放：在字的區域座標裡表示這次翻轉
+        const sx = vertical ? fy : fx, sy = vertical ? fx : fy;
+        // 繞「字的視覺中心」反轉，不要繞錨點：
+        //   位置本來就被群組鏡射擺對了（腳名仍在框外那一側），補償只需要把字形轉正。
+        //   繞錨點會出事——字身在基線上方，垂直鏡射後跑到基線下方，整塊位移一個字高，
+        //   B 側腳號因此從框內跳到框外壓線。繞中心則位置完全不動。
+        const bb = t.getBBox();                            // 區域座標，且不含自身 transform
+        const cx = bb.x + bb.width / 2, cy = bb.y + bb.height / 2;
+        t.setAttribute('transform', `translate(${cx},${cy}) scale(${sx},${sy}) translate(${-cx},${-cy})`);
       });
     });
   },
