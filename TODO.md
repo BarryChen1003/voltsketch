@@ -1,6 +1,7 @@
 # HardwareAI TODO / 待辦總表
 
-> 更新：2026-07-16。狀態：✅完成 🔄進行中 ⬜未開始 ❌卡外部 ⏸依指示暫緩。
+> 更新：2026-08-14。狀態：✅完成 🔄進行中 ⬜未開始 ❌卡外部 ⏸依指示暫緩。
+> **上線順序看 `LAUNCH-GUIDE.md`**（含這張表沒列的：安全標頭、CDN 供應鏈、備份未啟用、法遵）。
 > 原始願景見 `PROJECT_ROADMAP.md`；金流/帳號部署步驟見 `SETUP-PAYMENT.md`、`SETUP-AUTH.md`、`SETUP-EXPORT-QUOTA.md`。
 
 ## A. 卡站主帳號/外部申請（工程端無法代做）
@@ -51,7 +52,7 @@
 
 ## E. 長期（PROJECT_ROADMAP 第二/三階段殘餘）
 
-- datasheet 上傳 → pin table 自動萃取 → 自動建 IC symbol
+- ~~datasheet 上傳 → pin table 自動萃取~~ ✅ 2026-08-14 `pin-extract.js`（193 顆實測：77 完全正確、35 明講讀不出來；細節見 `NEW-SESSION.md` §7e）。**自動建 IC symbol 仍未做**：目前抽完是填進自訂 IC 的 pin 表，要人校正後才建
 - 線路圖圖片/PDF 上傳檢查（TX/RX 反接、I2C pull-up、電源/GND 漏接、decoupling、電壓域）
 - PDF 批次 → 知識卡自動管線＋圖片擷取；動圖（SVG/canvas）
 - schematic → PCB netlist 完整對應（現僅基礎 sync）
