@@ -58,24 +58,29 @@
         <span class="axis-label" data-i18n="nw_axis_cat">領域</span>
         <span id="newsCatFilter"></span>
       </div>
-      <div class="news-filters" style="margin-bottom:18px">
+      <div class="news-filters">
         <span class="axis-label" data-i18n="nw_axis_region">地區</span>
         <span id="newsRegionFilter"></span>
+      </div>
+      <div class="news-filters" style="margin-bottom:18px">
+        <span class="axis-label" data-i18n="nw_axis_kind">類型</span>
+        <span id="newsKindFilter"></span>
       </div>
 
       <p style="font-size:12px;color:var(--muted,#64748b);margin:0 0 14px">
         <span data-i18n="nw_total">收錄</span> <b id="newsCount">0</b> <span data-i18n="nw_items">則</span> ·
         <span data-i18n="nw_latest">最新一則</span> <b id="newsUpdated">—</b> ·
-        <span data-i18n="nw_cadence">每月 1 號更新</span>
+        <span data-i18n="nw_cadence">新聞每天更新，期刊與研討會每月 1 號更新；舊的不刪，往後面的頁碼堆</span>
       </p>
 
       <div id="newsList"></div>
+      <nav id="newsPager" aria-label="pagination"></nav>
     </main>
   </div>
   <script src="./auth-config.js?v=2026-07-04a"></script>
   <script src="./observe.js?v=1"></script>
-  <script src="./news-data.js?v=2026-08-06a"></script>
-  <script src="./news.js?v=2026-08-06b"></script>
+  <script src="./news-data.js?v=2026-08-14a"></script>
+  <script src="./news.js?v=2026-08-14a"></script>
   <script src="./i18n.js?v=2026-08-14a"></script>
 </body>
 </html>

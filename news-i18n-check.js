@@ -15,6 +15,8 @@ const LANGS = ['zh', 'en', 'ja', 'ko'];
 const FIELDS = ['title', 'summary', 'why'];
 const REGIONS = ['US', 'TW', 'CN', 'KR', 'JP'];
 const CATS = ['power', 'semi', 'pcb', 'emc', 'circuit'];
+// kind 決定「這則歸哪一次更新掃出來的」：news 每天、paper 每月 1 號。也是頁面上的第三個篩選軸。
+const KINDS = ['news', 'paper'];
 
 global.window = {};
 require('./news-data.js');
@@ -35,6 +37,7 @@ for (const n of NEWS) {
   if (!n.source) bad.push(`${at}: 缺 source`);
   if (!REGIONS.includes(n.region)) bad.push(`${at}: region「${n.region}」不在 ${REGIONS.join('/')}`);
   if (!CATS.includes(n.cat)) bad.push(`${at}: cat「${n.cat}」不在 ${CATS.join('/')}`);
+  if (!KINDS.includes(n.kind)) bad.push(`${at}: kind「${n.kind}」不在 ${KINDS.join('/')}`);
   if (typeof n.verified !== 'boolean') bad.push(`${at}: verified 要是 true/false`);
   if (n.verified) verified++;
 
@@ -57,6 +60,7 @@ const by = (key) => {
 console.log(`硬體新技術：${NEWS.length} 則（已核對原文 ${verified}）`);
 console.log(`  領域：${by('cat')}`);
 console.log(`  地區：${by('region')}`);
+console.log(`  類型：${by('kind')}`);
 console.log(`  四語與出處：${bad.length ? bad.length + ' 項有問題' : '✓'}`);
 bad.slice(0, 30).forEach(s => console.log('    ✗ ' + s));
 

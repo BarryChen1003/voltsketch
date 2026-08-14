@@ -12,11 +12,15 @@
  *      false 表示只在來源的列表頁/彙整文看到，數字未逐一核對——UI 上會標出來。
  *
  * region: US | TW | CN | KR | JP    cat: power | semi | pcb | emc | circuit
- * 每月 1 號更新一批，見 NEWS-UPDATE.md。
+ * kind: news | paper
+ *   news  = 媒體報導、廠商新聞稿、新產品、商業消息 → **每天**更新一批
+ *   paper = 期刊論文、研討會/論壇發表（ISSCC、APEC、PCIM、EMC+SIPI、ECTC…）→ **每月 1 號**更新一批
+ * 兩種更新的差別只在「掃什麼來源、多久掃一次」。舊條目一律不刪，頁面用分頁往後堆。
+ * 流程見 NEWS-UPDATE.md。
  */
 window.NEWS = [
   {
-    id: 'itri-48v-ivr-microfluidic',
+    id: 'itri-48v-ivr-microfluidic', kind: 'paper',
     date: '2026-08-03', region: 'TW', cat: 'power', verified: true,
     source: 'TechNews 科技新報',
     url: 'https://technews.tw/2026/08/03/itri-%E2%80%8B%E2%80%8Bunveils-groundbreaking-high-efficiency-power-conversion-and-microfluidic-heat-dissipation-technologies/',
@@ -42,7 +46,7 @@ window.NEWS = [
     }
   },
   {
-    id: 'rohm-rtd-thz-gen2',
+    id: 'rohm-rtd-thz-gen2', kind: 'news',
     date: '2026-08-05', region: 'JP', cat: 'semi', verified: true,
     source: 'TheElec',
     url: 'https://www.thelec.net/news/articleView.html?idxno=12821',
@@ -68,7 +72,7 @@ window.NEWS = [
     }
   },
   {
-    id: 'hioki-current-probe-10x',
+    id: 'hioki-current-probe-10x', kind: 'news',
     date: '2026-07-13', region: 'JP', cat: 'power', verified: true,
     source: 'EE Times Japan',
     url: 'https://eetimes.itmedia.co.jp/ee/articles/2607/13/news078.html',
@@ -94,7 +98,7 @@ window.NEWS = [
     }
   },
   {
-    id: 'tsmc-a13-a12-n2u',
+    id: 'tsmc-a13-a12-n2u', kind: 'news',
     date: '2026-04', region: 'TW', cat: 'semi', verified: true,
     source: 'TSMC 官方新聞稿',
     url: 'https://pr.tsmc.com/english/news/3302',
@@ -120,7 +124,7 @@ window.NEWS = [
     }
   },
   {
-    id: 'navitas-pcim-2026',
+    id: 'navitas-pcim-2026', kind: 'paper',
     date: '2026-05-18', region: 'US', cat: 'power', verified: true,
     source: 'GlobeNewswire（Navitas 新聞稿）',
     url: 'https://www.globenewswire.com/news-release/2026/05/18/3296623/0/en/navitas-to-showcase-breakthrough-gan-and-sic-based-solutions-for-ai-data-center-energy-and-grid-infrastructure-and-industrial-electrification-at-pcim-2026.html',
@@ -146,7 +150,7 @@ window.NEWS = [
     }
   },
   {
-    id: 'navitas-magnachip-sic-license',
+    id: 'navitas-magnachip-sic-license', kind: 'news',
     date: '2026-07', region: 'KR', cat: 'power', verified: false,
     source: 'Power Electronics News（Wide Bandgap Monthly Insights, 2026-07）',
     url: 'https://www.powerelectronicsnews.com/wide-bandgap-monthly-insights-july-2026/',
@@ -172,7 +176,7 @@ window.NEWS = [
     }
   },
   {
-    id: 'adi-empower-close',
+    id: 'adi-empower-close', kind: 'news',
     date: '2026-07-09', region: 'US', cat: 'power', verified: false,
     source: 'TheElec',
     url: 'https://www.thelec.net/news/articleView.html?idxno=12085',
@@ -198,7 +202,7 @@ window.NEWS = [
     }
   },
   {
-    id: 'tsmc-cowos-roadmap-2029',
+    id: 'tsmc-cowos-roadmap-2029', kind: 'news',
     date: '2026-04', region: 'TW', cat: 'pcb', verified: false,
     source: "Tom's Hardware",
     url: 'https://www.tomshardware.com/tech-industry/semiconductors/tsmcs-details-next-gen-cowos-roadmap-over-14-reticle-packages-and-48x-leap-in-compute-power-expected-by-2029-massive-size-enables-24-hbm5e-stacks-and-additional-memory-bandwidth-jump',
@@ -224,7 +228,7 @@ window.NEWS = [
     }
   },
   {
-    id: 'emc-sipi-2026-dallas',
+    id: 'emc-sipi-2026-dallas', kind: 'paper',
     date: '2026-08-03', region: 'US', cat: 'emc', verified: true,
     source: 'IEEE EMC+SIPI 2026',
     url: 'https://2026.emcsipi.org/',
@@ -250,7 +254,7 @@ window.NEWS = [
     }
   },
   {
-    id: 'cn-cmp-advanced-packaging-forum',
+    id: 'cn-cmp-advanced-packaging-forum', kind: 'paper',
     date: '2026-07-29', region: 'CN', cat: 'pcb', verified: false,
     source: '艾邦半導體網',
     url: 'https://www.ab-sm.com/a/date/2026/07',
