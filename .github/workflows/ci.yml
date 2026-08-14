@@ -55,6 +55,8 @@ jobs:
         run: node knowledge-format.test.js
       - name: ds-compare.test（datasheet 比對：抽不到不編造）
         run: node ds-compare.test.js
+      - name: pin-extract.test（腳位抽取：抽不到不吐半成品）
+        run: node pin-extract.test.js
       - name: knowledge-art-audit（知識卡圖：接腳接上、字不貼圖）
         run: node knowledge-art-audit.js --strict --quiet
 

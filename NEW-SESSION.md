@@ -39,7 +39,7 @@
 | 硬體新技術 | 新頁 `news.html`，10 則（2026-05～08），每則附出處與日期；每月 1 號更新，流程見 `NEWS-UPDATE.md` |
 | 金流保險絲 | 2026-08-06 修：`ECPAY_MODE=live` 時不准 fallback 沙盒（原本 secrets 掉了會靜默送客戶去測試商店） |
 | 線路圖編輯器 | 2026-08-06 修翻轉（字不再壓框）＋新增鎖色筆、Ctrl 多選、方向鍵平移、Ctrl+C/V。2026-08-14：**鎖色改預設開**、0Ω 顯示得出來、背景格線無邊界、快捷鍵說明補齊四語 |
-| CI | 25 關，本地與線上皆綠 |
+| CI | 26 關，本地與線上皆綠 |
 | 部署 | HEAD == origin/main，`https://barrychen1003.github.io/voltsketch/` 已是最新 |
 | 上線阻礙 | **網域未買** → Resend 與正式金流都卡在這（§6） |
 
@@ -91,10 +91,11 @@ DB 的 answer 已有 <svg>  →  原樣不動
 
 ---
 
-## 4. 檢查（CI 25 關的本地版）
+## 4. 檢查（CI 26 關的本地版）
 
 ```bash
 node ds-compare.test.js                        # datasheet 比對：抽不到不編造、四語判定一致
+node pin-extract.test.js                       # 腳位抽取：先證明守衛抓得到 4 種壞法，再驗真 fixture
 node interview-diagram-check.test.js           # 先證明守衛抓得到（6 種壞法，全是通用變異）
 node interview-diagram-check.js                # 面試題規格 + 圖字重疊，0 發現才算過
 node circuit-check.js --strict                 # 知識卡：接線被吸附塌成零長
