@@ -68,7 +68,24 @@ jobs:
           fi
 
           HOST=$(printf '%s' "$BODY" | sed -E 's#^[^@]*@([^:/?]+).*#\1#')
+          DBUSER=${BODY%%:*}
           echo "連線主機: $HOST"
+          echo "使用者: $DBUSER"
+
+          # Pooler 的使用者名稱必須是 postgres.<專案ref>，純 postgres 會被拒。
+          # 2026-08-15 踩過：連線成功但回 FATAL password authentication failed for user "postgres"，
+          # 看起來像密碼錯，其實是使用者名稱少了 .<ref>。
+          case "$HOST" in
+            *pooler.supabase.com)
+              case "$DBUSER" in
+                *.*) : ;;
+                *)
+                  echo "::error::主機是 pooler，但使用者名稱是「$DBUSER」。"
+                  echo "::error::Pooler 必須用 postgres.<專案ref>，例如 postgres.dmkxjawjrmltmrmkebbs。"
+                  echo "::error::到 Supabase 的 Connect → Session pooler 重新複製一次，不要自己拼。"
+                  exit 1 ;;
+              esac ;;
+          esac
           if getent ahostsv4 "$HOST" > /dev/null 2>&1; then
             echo "IPv4: 有，可以連"
           else
