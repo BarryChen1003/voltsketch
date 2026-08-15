@@ -41,7 +41,7 @@
 | 線路圖編輯器 | 2026-08-06 修翻轉（字不再壓框）＋新增鎖色筆、Ctrl 多選、方向鍵平移、Ctrl+C/V。2026-08-14：**鎖色改預設開**、0Ω 顯示得出來、背景格線無邊界、快捷鍵說明補齊四語 |
 | CI | 26 關，本地與線上皆綠 |
 | 部署 | **2026-08-15 搬到 Cloudflare Workers，正式網域 `https://hardware-ai.org`**；推 main 自動部署。設定在 `wrangler.jsonc` / `.assetsignore` / `_headers` / `_redirects`，坑與驗收見 `LAUNCH-GUIDE.md` §② |
-| 上線阻礙 | 網域已買、站已上正式網域。**下一關是 Supabase Phase A SQL**（沒跑 → `page_views` 回 404、觀測資料一筆都沒收），再來是 SMTP 與綠界（§6、`LAUNCH-GUIDE.md`） |
+| 上線阻礙 | 2026-08-15：網域、代管、建表、站主權限、SMTP（**6 位數驗證碼端到端跑通**）、備份全部完成。**剩下卡在綠界特約商店申請**與法遵；工程端剩 D1 資安總檢（建議收錢前做）。詳見 `LAUNCH-GUIDE.md` |
 
 ---
 

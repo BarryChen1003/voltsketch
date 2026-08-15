@@ -151,9 +151,12 @@ canonical / og:url / JSON-LD / `sitemap.xml` / `robots.txt` / `.well-known/secur
 
 ---
 
-## ④ 信件（Resend + SMTP）
+## ④ 信件（✅ 2026-08-15 端到端跑通）
 
-真實用戶收不到驗證信就無法註冊。逐步在 `supabase/email-templates/SMTP-SETUP.md`。
+**站主用非站主信箱實測過**：在 `hardware-ai.org/login.html` 註冊 → 收到 6 位數驗證碼
+→ 打進網站 → 直接登入。Resend 網域驗證、SMTP、DMARC、`{{ .Token }}` 模板四項齊全。
+
+**「真實用戶能註冊」這個上線硬條件到此達成。** 逐步紀錄在 `supabase/email-templates/SMTP-SETUP.md`。
 
 **之前收不到驗證信的原因**：沒接自訂 SMTP 時走 Supabase 內建寄信，每小時上限極低而且常被判垃圾信。
 這不是程式壞掉，是預設就不能拿來當正式服務用。
@@ -356,6 +359,10 @@ secret 只要一個：**`SUPABASE_DB_PASSWORD`，值是密碼本身**（不是�
 **anon key 公開是設計，不是漏洞——前提是 RLS 真的擋得住。** 所以下一項才是重點。
 
 ### 9.5 RLS 實測（`TODO.md` D1，你說了才做）
+
+⚠️ **2026-08-15 起這件事的急迫性升級了**：註冊流程已經通，任何人都能在
+`hardware-ai.org` 開帳號。RLS 從「理論上應該擋得住」變成「馬上會被真實帳號測試」。
+**建議排在開始收錢之前，而不是之後。**
 
 RLS policy 寫了不等於擋得住。要用**三種身分實打**：未登入 / 免費 / VIP，逐表確認：
 - 讀不到別人的專案、訂單、使用量
