@@ -317,9 +317,20 @@ CDN 被入侵或套件被投毒，等於有人拿到你所有使用者的 sessio
 `.github/workflows/backup.yml` 寫好了，但要 repo secret `SUPABASE_DB_URL` 才會真的跑，
 沒設會 skip（不報錯，所以很容易以為有在備份）。
 
-**你要做**：Supabase → Settings → Database → Connection string (URI，含密碼) →
-GitHub repo → Settings → Secrets and variables → Actions → New secret，
-名稱 `SUPABASE_DB_URL`。設完**手動觸發一次**確認真的 dump 出東西。
+**你要做**：加一個 repo secret，名稱 `SUPABASE_DB_PASSWORD`，值是**資料庫密碼本身**
+（不是連線字串、不是網址）。位置：GitHub repo → Settings → Secrets and variables → Actions。
+設完**手動觸發一次**確認真的 dump 出東西。
+
+主機／使用者／port 已經寫死在 workflow 的 `env` 裡，因為 2026-08-15 連踩三次都在這三個值上：
+
+| 踩到什麼 | 症狀 |
+|---|---|
+| 密碼含 `@` `]` 沒編碼 | URI 被切錯，錯誤變成看不懂的 socket 路徑 |
+| 用 Direct connection | 主機只有 IPv6，GitHub Actions 連不到 |
+| Pooler 使用者寫成 `postgres` | 回 `password authentication failed`，看起來像密碼錯，其實是使用者少了 `.<ref>` |
+
+把三個固定值搬進 workflow、密碼走 `PGPASSWORD` 環境變數（不需要任何編碼），
+使用者要提供的就只剩密碼一項，上面三種錯都不可能再發生。
 
 備份含使用者 email 等個資，只上傳成 Actions artifact（保留 90 天），**絕不能 commit 進這個公開 repo**。
 

@@ -4,17 +4,26 @@ name: Supabase 備份（pg_dump → artifact）
 # 上傳為 GitHub Actions artifact（僅 repo 協作者可下載，保留 90 天）。
 # 重要：dump 含用戶 email 等 PII，"絕不" commit 進這個公開 repo；只放 artifact。
 #
+# ─────────────────────────────────────────────────────────────
 # 【你要做的事，只做一次】
-#   Supabase → Project Settings → Database → Connection string
-#   → **選 Session pooler 那一種**（不要選 Direct connection）
-#   複製後到 GitHub repo → Settings → Secrets and variables → Actions → New secret
-#     Name:  SUPABASE_DB_URL
-#     Value: postgresql://postgres.dmkxjawjrmltmrmkebbs:<你的密碼>@aws-0-<區域>.pooler.supabase.com:5432/postgres
-#   加好後此 workflow 才會真的 dump；沒加會 skip（不報錯）。
+#   加一個 repo secret，名稱 SUPABASE_DB_PASSWORD，值就是**資料庫密碼本身**。
+#   不是連線字串、不是網址，就只有密碼那幾個字。
+#   位置：repo → Settings → Secrets and variables → Actions → New repository secret
+# ─────────────────────────────────────────────────────────────
 #
-#   為什麼不能用 Direct connection：db.<ref>.supabase.co 只有 IPv6 位址，
-#   GitHub Actions 的機器沒有 IPv6，連不上。2026-08-15 第一次跑就是死在這裡。
-#   Pooler 要用 5432（session mode），6543 是 transaction mode，pg_dump 不能用。
+# 為什麼不再貼整串連線字串（2026-08-15 連踩三次才改成這樣）：
+#   ① 密碼含 @ ] 之類的字元沒編碼 → URI 被切錯，錯誤訊息是看不懂的 socket 路徑
+#   ② Direct connection 主機只有 IPv6，GitHub Actions 連不上
+#   ③ Pooler 的使用者名稱要 postgres.<ref>，寫成 postgres 會回
+#      "password authentication failed"，看起來像密碼錯，其實是使用者錯
+#   主機、port、使用者名稱這三個是固定值，寫死在下面 env 就好；
+#   使用者唯一要提供的只有密碼，而密碼走 PGPASSWORD 環境變數**不需要任何編碼**。
+#
+# 這些值哪裡來（Supabase → Connect → Session pooler）。換區域或換專案才需要改：
+#   PGHOST     aws-1-ap-southeast-2.pooler.supabase.com   ← 2026-08-15 實測連得上（52.62.122.103）
+#   PGUSER     postgres.dmkxjawjrmltmrmkebbs              ← postgres.<專案ref>，那個點不能少
+#   PGPORT     5432                                       ← session mode；6543 是 transaction，pg_dump 不能用
+
 on:
   schedule:
     - cron: '31 5 * * 0'      # 每週日 05:31 UTC
@@ -23,12 +32,17 @@ on:
 jobs:
   dump:
     runs-on: ubuntu-latest
+    env:
+      PGHOST: aws-1-ap-southeast-2.pooler.supabase.com
+      PGPORT: '5432'
+      PGUSER: postgres.dmkxjawjrmltmrmkebbs
+      PGDATABASE: postgres
     steps:
       - name: 檢查 secret 是否已設
         id: guard
         run: |
-          if [ -z "${{ secrets.SUPABASE_DB_URL }}" ]; then
-            echo "::warning::未設 SUPABASE_DB_URL secret，跳過備份。見本檔頂部說明加 secret。"
+          if [ -z "${{ secrets.SUPABASE_DB_PASSWORD }}" ]; then
+            echo "::warning::未設 SUPABASE_DB_PASSWORD secret，跳過備份。見本檔頂部說明。"
             echo "ok=false" >> "$GITHUB_OUTPUT"
           else
             echo "ok=true" >> "$GITHUB_OUTPUT"
@@ -42,72 +56,37 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y postgresql-client-17
 
-      # 失敗時最常見的原因不是 workflow 寫錯，是連線字串挑錯：
-      # Supabase 的直連主機 db.<ref>.supabase.co 只有 IPv6 位址，
-      # 而 GitHub Actions 的機器沒有 IPv6 → pg_dump 會噴 "Network is unreachable"，
-      # 看起來像 workflow 壞掉。這一步先把原因指出來，不要讓人去猜。
-      # 只印主機名，不印整串（整串含密碼）。
-      - name: 連線前診斷
+      # 先用一句 select 1 確認「連得上而且密碼對」，再花時間 dump。
+      # 這樣失敗訊息只會有一種可能：密碼不對。其他變因都被上面的 env 寫死了。
+      - name: 連線測試
         if: steps.guard.outputs.ok == 'true'
         env:
-          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           echo "pg_dump: $(pg_dump --version)"
-
-          # 密碼含 URI 特殊字元（@ : / ? # [ ]）又沒編碼 → 解析器會從錯的地方切，
-          # 密碼碎片跑進主機名稱，錯誤訊息變成看不懂的 socket 路徑。
-          # 2026-08-15 第一次跑就是死在這：socket "@@]@db.<ref>.supabase.co/.s.PGSQL.5432"。
-          BODY=${DB_URL#*://}
-          AT_COUNT=$(printf '%s' "$BODY" | tr -cd '@' | wc -c)
-          if [ "$AT_COUNT" -ne 1 ]; then
-            echo "::error::連線字串裡有 $AT_COUNT 個 @（正常應該只有 1 個）。"
-            echo "::error::多半是密碼含 @ 之類的特殊字元沒有編碼。兩條路："
-            echo "::error::(1) 到 Supabase 把資料庫密碼重設成只有英文字母與數字（最省事）；"
-            echo "::error::(2) 或把密碼百分比編碼後再放進字串：@ → %40、] → %5D、/ → %2F、# → %23、? → %3F、% → %25。"
-            exit 1
-          fi
-
-          HOST=$(printf '%s' "$BODY" | sed -E 's#^[^@]*@([^:/?]+).*#\1#')
-          DBUSER=${BODY%%:*}
-          echo "連線主機: $HOST"
-          echo "使用者: $DBUSER"
-
-          # Pooler 的使用者名稱必須是 postgres.<專案ref>，純 postgres 會被拒。
-          # 2026-08-15 踩過：連線成功但回 FATAL password authentication failed for user "postgres"，
-          # 看起來像密碼錯，其實是使用者名稱少了 .<ref>。
-          case "$HOST" in
-            *pooler.supabase.com)
-              case "$DBUSER" in
-                *.*) : ;;
-                *)
-                  echo "::error::主機是 pooler，但使用者名稱是「$DBUSER」。"
-                  echo "::error::Pooler 必須用 postgres.<專案ref>，例如 postgres.dmkxjawjrmltmrmkebbs。"
-                  echo "::error::到 Supabase 的 Connect → Session pooler 重新複製一次，不要自己拼。"
-                  exit 1 ;;
-              esac ;;
-          esac
-          if getent ahostsv4 "$HOST" > /dev/null 2>&1; then
-            echo "IPv4: 有，可以連"
+          echo "連線目標: $PGUSER@$PGHOST:$PGPORT/$PGDATABASE"
+          if psql -w -c 'select 1' > /dev/null 2>psql-err.txt; then
+            echo "連線成功"
           else
-            echo "::error::主機 $HOST 沒有 IPv4 位址，GitHub Actions 連不到。"
-            echo "::error::改用 Supabase 的 Session Pooler 連線字串（Connection string 頁面選 Session mode），"
-            echo "::error::格式是 postgresql://postgres.<專案ref>:<密碼>@aws-0-<區域>.pooler.supabase.com:5432/postgres"
-            echo "::error::注意使用者名稱是 postgres.<ref> 不是 postgres，而且要用 5432（session）不是 6543（transaction）。"
+            cat psql-err.txt
+            if grep -q 'password authentication failed' psql-err.txt; then
+              echo "::error::密碼不對。SUPABASE_DB_PASSWORD 這個 secret 要放**密碼本身**，"
+              echo "::error::不是整串 postgresql://... 連線字串，也不要包含使用者名稱或 @ 後面的主機。"
+              echo "::error::忘記密碼就到 Supabase → Project Settings → Database → Reset database password 重設。"
+            fi
             exit 1
           fi
 
       - name: pg_dump public schema
         if: steps.guard.outputs.ok == 'true'
         env:
-          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           set -e
           STAMP=$(date -u +%Y%m%d-%H%M)
           OUT="supabase-dump-${STAMP}.sql"
           # --no-owner/--no-privileges：還原到新專案不卡權限；只 dump public schema。
-          pg_dump "$DB_URL" \
-            --schema=public --no-owner --no-privileges \
-            --file="$OUT"
+          pg_dump --schema=public --no-owner --no-privileges --file="$OUT"
           gzip -9 "$OUT"
           ls -lh "${OUT}.gz"
           echo "DUMP_FILE=${OUT}.gz" >> "$GITHUB_ENV"
