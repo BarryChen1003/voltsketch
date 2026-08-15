@@ -2,10 +2,25 @@
 
 > 由 Claude 整理 2026-07-21。全部檔案冪等（可重跑不壞）。
 
-## Phase A — 現在就跑（一次貼上）
+## Phase A — 分四次貼（2026-08-15 改）
 
-到 **Supabase Dashboard → SQL Editor**，把 **`00-RUN-phaseA.sql`** 整份貼上 → Run。
-它已依相依順序串好這 7 段：
+**`00-RUN-phaseA.sql` 整份是 372 KB**（763 行，但面試題內嵌 SVG 讓單行極長），
+貼進 Supabase SQL Editor 會卡住。已拆成四支，**照編號依序貼**：
+
+| 檔 | 大小 | 內容 | 什麼時候要 |
+|---|---|---|---|
+| `01-core.sql` | 18 KB | profiles / 觀測 / orders / 額度 | **先跑這支就夠**——註冊→`owner-unlock` 的流程立刻可用 |
+| `02-interview-i18n.sql` | 85 KB | 面試題 ja/ko 欄位＋譯文 | 要上面試題內容時。**必須在 04 之前** |
+| `03-interview-pcb.sql` | 5 KB | PCB 面試題種子 | 同上 |
+| `04-interview-batch2.sql` | 257 KB | 第二批面試題種子 | 同上。**這支可能還是貼不下**，改用 Supabase CLI 或 `psql` |
+
+拆檔已驗證與原檔逐行一致（660 有效行對 660）。`00-RUN-phaseA.sql` 保留當備查，不要直接貼。
+
+**踩過的坑**：把 Dashboard 的網址貼進查詢框會得到
+`ERROR: 42601: syntax error at or near "https"`——網址是要在瀏覽器開的，
+查詢框要貼的是 `.sql` **檔案裡的內容**。
+
+原本 7 段的相依順序（拆檔已照這個順序切）：
 
 | 順序 | 段落 | 建立什麼 |
 |---|---|---|
