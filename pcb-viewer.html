@@ -40,6 +40,8 @@
 <body class="editor-lock">
   <script>
     // 邀請碼守門（與 pcb.html 同一旗標）；?embed=1 = pcb.html 分頁內嵌，隱藏自身 topbar
+    // 沒旗標就退回 pcb.html——解鎖判斷（邀請碼／pcb_access／admin）只寫在那一頁，
+    // 有權限的人會在那裡被自動放行並設好旗標，再回來就進得來。
     if (localStorage.getItem('pcb-invite-ok') !== '1') location.replace('pcb.html');
     if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('vs-embed');
   </script>

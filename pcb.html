@@ -510,7 +510,25 @@
       (function () {
         var CODES = ['VSPCB-7K3M9', 'VSPCB-2QX8F', 'VSPCB-R5TN4', 'VSPCB-J8WD6', 'VSPCB-M3ZK7'];
         var gate = document.getElementById('pcbGate');
+        function unlock() {
+          try { localStorage.setItem('pcb-invite-ok', '1'); } catch (e) { }   // pcb-viewer.html 共用這個旗標
+          if (gate && gate.parentNode) gate.remove();
+        }
         if (localStorage.getItem('pcb-invite-ok') === '1') { gate.remove(); return; }
+
+        // 已買 12 個月方案或站主 admin 的人不該被邀請碼擋。
+        // 這一段原本沒有：閘門只看 localStorage，所以 profiles.pcb_access=true 照樣進不來——
+        // 上面那句「訂閱 12 個月方案亦自動開通」等於沒有兌現。
+        // auth.js 在頁尾才載入，這裡等 load 之後再問一次。
+        (function waitAuth(tries) {
+          if (window.Auth && Auth.enabled && Auth.enabled()) {
+            Auth.entitlements().then(function (e) {
+              if (e && (e.pcb_access || e.role === 'admin')) unlock();
+            }).catch(function () { });
+            return;
+          }
+          if (tries > 0) setTimeout(function () { waitAuth(tries - 1); }, 200);
+        })(25);   // 最多等 5 秒；等不到就維持邀請碼那條路
         // gate copy contains inline links, so it needs a per-language template (not data-i18n)
         var MSG = {
           zh: '目前以邀請碼開放。索取邀請碼或洽談合作請見<a href="contact.html">聯絡資訊</a>；訂閱 <a href="upgrade.html">12 個月方案</a>亦自動開通。',
