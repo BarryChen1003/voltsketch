@@ -1,6 +1,6 @@
 # RFC 9116 安全聯絡資訊
 # 換到自訂網域後：Contact / Canonical 兩行要一起改（見 NEW-SESSION.md §3.1）
-Contact: https://barrychen1003.github.io/voltsketch/contact.html
+Contact: https://hardware-ai.org/contact.html
 Expires: 2027-07-27T00:00:00.000Z
 Preferred-Languages: zh-Hant, en
-Canonical: https://barrychen1003.github.io/voltsketch/.well-known/security.txt
+Canonical: https://hardware-ai.org/.well-known/security.txt

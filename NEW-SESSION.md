@@ -40,8 +40,8 @@
 | 金流保險絲 | 2026-08-06 修：`ECPAY_MODE=live` 時不准 fallback 沙盒（原本 secrets 掉了會靜默送客戶去測試商店） |
 | 線路圖編輯器 | 2026-08-06 修翻轉（字不再壓框）＋新增鎖色筆、Ctrl 多選、方向鍵平移、Ctrl+C/V。2026-08-14：**鎖色改預設開**、0Ω 顯示得出來、背景格線無邊界、快捷鍵說明補齊四語 |
 | CI | 26 關，本地與線上皆綠 |
-| 部署 | HEAD == origin/main，`https://barrychen1003.github.io/voltsketch/` 已是最新 |
-| 上線阻礙 | **網域未買** → Resend 與正式金流都卡在這（§6） |
+| 部署 | **2026-08-15 搬到 Cloudflare Workers，正式網域 `https://hardware-ai.org`**；推 main 自動部署。設定在 `wrangler.jsonc` / `.assetsignore` / `_headers` / `_redirects`，坑與驗收見 `LAUNCH-GUIDE.md` §② |
+| 上線阻礙 | 網域已買、站已上正式網域。**下一關是 Supabase Phase A SQL**（沒跑 → `page_views` 回 404、觀測資料一筆都沒收），再來是 SMTP 與綠界（§6、`LAUNCH-GUIDE.md`） |
 
 ---
 

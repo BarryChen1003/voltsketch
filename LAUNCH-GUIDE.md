@@ -68,9 +68,23 @@ Cloudflare Pages（或 Netlify）可以放一個 `_headers` 檔就設好，而�
    設 `html_handling: "none"` 修好——但副作用是根路徑 `/` 變 404，所以要配 `_redirects` 的
    `/  /index.html  200`（**改寫不是轉址**，網址列不變，才對得上 index.html 的 canonical）。
 
-**還沒做**：接上 `hardware-ai.org` 自訂網域 → 然後才改 canonical/og:url、301 舊網址、
-Supabase redirect URL、綠界 ReturnURL。**canonical 現在刻意還指著 github.io**，
-因為站還沒在正式網域上跑，先改會指到連不上的網址。
+**✅ 2026-08-15 正式網域上線：`https://hardware-ai.org`**（HTTPS 憑證自動發，標頭實測都有送）。
+
+自訂網域**不是在儀表板綁的**——這種「只有靜態資產」的 Worker，
+Settings 沒有 Domains & Routes 那一區（Variables / Triggers 也一併被擋，畫面會寫
+「cannot be added to a Worker that only has static assets」）。
+改用 `wrangler.jsonc` 的 `routes` + `custom_domain: true`，`wrangler deploy` 會順便建 DNS 記錄。
+同時關掉 `workers_dev` 與 `preview_urls`，避免同一份內容掛在多個網址。
+
+canonical / og:url / JSON-LD / `sitemap.xml` / `robots.txt` / `.well-known/security.txt`
+已全部改成新網域（15 個 HTML + 3 個檔）。
+
+**綠界不用改**（我先前寫錯，這裡更正）：`ReturnURL` 指的是 Supabase functions 的網址、與站台網域無關；
+`ClientBackURL` 取 request 的 `origin`，使用者從哪個網址來就回哪裡。所以換網域不必動金流程式。
+
+**還沒做**：Supabase Auth 的 Site URL / Redirect URLs（只能在 Dashboard 改）；
+`www.hardware-ai.org` 導到根網域（要在 Cloudflare 加 Redirect Rule）；
+舊的 GitHub Pages 站要不要關掉（現在 canonical 已指向新網域，Google 會逐漸收斂）。
 
 ---
 

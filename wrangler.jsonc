@@ -20,6 +20,12 @@
   "routes": [
     { "pattern": "hardware-ai.org", "custom_domain": true }
   ],
+
+  // 正式網域接上之後就關掉 workers.dev 與預覽網址：同一份內容掛在多個網址，
+  // Google 會當重複內容，而且 create-order 的 ClientBackURL 取 request 的 origin，
+  // 使用者從哪個網址進來就從哪個網址回來——付款流程不該有第二個入口。
+  "workers_dev": false,
+  "preview_urls": false,
   // html_handling 預設會把 `/news.html` 307 導到 `/news`。這站不能吃這個預設：
   // 全站的導覽連結、canonical、og:url、sitemap 全都寫 `.html`，
   // 放著不管等於每次點導覽多一次轉址，而且 canonical 指的網址跟實際服務的網址不一樣。
