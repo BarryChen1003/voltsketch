@@ -61,18 +61,37 @@ jobs:
       - name: 連線測試
         if: steps.guard.outputs.ok == 'true'
         env:
-          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          RAW_PW: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           echo "pg_dump: $(pg_dump --version)"
           echo "連線目標: $PGUSER@$PGHOST:$PGPORT/$PGDATABASE"
+
+          # 貼 secret 時最常見的三種壞法。這裡只在「有問題」時才印，
+          # 而且只講形狀不講內容——這個 repo 是公開的，Actions log 任何人看得到。
+          PW=$(printf '%s' "$RAW_PW" | tr -d '\r\n')
+          TRIMMED=$(printf '%s' "$PW" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+          if [ "$PW" != "$TRIMMED" ]; then
+            echo "::warning::secret 首尾有空白或換行，已自動去掉再連。建議回去重貼一次乾淨的。"
+            PW="$TRIMMED"
+          fi
+          case "$PW" in
+            *://*|*@*) echo "::error::secret 內容看起來是整串連線字串，不是密碼。只放密碼那幾個字。" ; exit 1 ;;
+          esac
+          case "$PW" in
+            *\[*|*\]*) echo "::error::secret 裡有中括號，多半是 [YOUR-PASSWORD] 的括號沒刪乾淨。" ; exit 1 ;;
+          esac
+
+          export PGPASSWORD="$PW"
           if psql -w -c 'select 1' > /dev/null 2>psql-err.txt; then
             echo "連線成功"
           else
             cat psql-err.txt
             if grep -q 'password authentication failed' psql-err.txt; then
-              echo "::error::密碼不對。SUPABASE_DB_PASSWORD 這個 secret 要放**密碼本身**，"
-              echo "::error::不是整串 postgresql://... 連線字串，也不要包含使用者名稱或 @ 後面的主機。"
-              echo "::error::忘記密碼就到 Supabase → Project Settings → Database → Reset database password 重設。"
+              echo "::error::密碼不對。"
+              echo "::error::注意：訊息裡的 user \"postgres\" 是 pooler 的正常顯示，不代表使用者名稱設錯——"
+              echo "::error::PGUSER 已經是 postgres.<專案ref>，.<ref> 只用於路由，登入身分本來就是 postgres。"
+              echo "::error::請到 Supabase → Project Settings → Database → Reset database password 重設一組"
+              echo "::error::只有英數字的密碼，複製後**立刻**更新 SUPABASE_DB_PASSWORD（重設頁面關掉就看不到了）。"
             fi
             exit 1
           fi
@@ -80,9 +99,12 @@ jobs:
       - name: pg_dump public schema
         if: steps.guard.outputs.ok == 'true'
         env:
-          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          RAW_PW: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           set -e
+          # 跟上一步同樣的清理，否則首尾空白會讓這步又失敗一次
+          PGPASSWORD=$(printf '%s' "$RAW_PW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+          export PGPASSWORD
           STAMP=$(date -u +%Y%m%d-%H%M)
           OUT="supabase-dump-${STAMP}.sql"
           # --no-owner/--no-privileges：還原到新專案不卡權限；只 dump public schema。
