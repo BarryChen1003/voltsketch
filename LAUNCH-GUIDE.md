@@ -158,14 +158,25 @@ canonical / og:url / JSON-LD / `sitemap.xml` / `robots.txt` / `.well-known/secur
 **之前收不到驗證信的原因**：沒接自訂 SMTP 時走 Supabase 內建寄信，每小時上限極低而且常被判垃圾信。
 這不是程式壞掉，是預設就不能拿來當正式服務用。
 
-**「驗證碼」與「驗證連結」是兩種東西，現在做的是連結**：
-`auth.js` 用 `signUp({email, password})`，登入頁沒有輸入驗證碼的欄位，
-信件模板變數是 `{{ .ConfirmationURL }}`——使用者收到的是一條**點下去就啟用**的連結。
-要改成「收 6 位數驗證碼、自己打進網站」得三樣一起改：
-模板換 `{{ .Token }}`、登入頁加輸入欄、前端改呼叫 `verifyOtp()`。是一個小功能，不是設定改一改。
+**✅ 2026-08-15 改成 6 位數驗證碼**（站主決定）。原本是「點連結啟用」，
+在手機上常出事：信件 App 用內建瀏覽器開連結 → session 落在那個瀏覽器，
+使用者切回原本註冊的分頁還是「沒登入」。驗證碼從頭到尾都在同一個瀏覽器。
 
-- **SPF / DKIM / DMARC 三筆掛在子網域**（`send.` 或 `mail.`），不要掛根網域——
-  這樣寄信信譽出問題時不會拖累根網域。
+三處要一致，改一處就會壞：
+
+| 檔 | 做什麼 |
+|---|---|
+| `supabase/email-templates/confirm-signup.html` | 用 `{{ .Token }}` 印出 6 位數（**不是** `{{ .ConfirmationURL }}`） |
+| `auth.js` | `verifySignup()` 走 `verifyOtp({type:'signup'})`；`resendSignup()` 重寄 |
+| `login.html` | 註冊成功後切到驗證碼步驟；登入時若遇「帳號未驗證」也會自動重寄並切過去 |
+
+要改回連結：三處一起改回去，別只換模板。
+
+- **實際採用根網域 `hardware-ai.org`**（2026-08-15）。Resend 的設定會自己把
+  SPF/MX 放在 `send.` 子網域當退信路徑，DKIM 則簽根網域——寄件人顯示
+  `no-reply@hardware-ai.org`，使用者看得懂。以後要發電子報再另開子網域隔離信譽。
+- **DMARC 是選用但建議**：Cloudflare 加一筆 TXT，Name `_dmarc`，
+  內容 `v=DMARC1; p=none;`。`p=none` 只監控不擋信，先從這個開始最安全。
 - 模板 `supabase/email-templates/confirm-signup.html`、`supabase/email-templates/reset-password.html` 貼進 Supabase Auth。
 - **最後一定要實際寄一封到 Gmail 收**，看有沒有進垃圾桶。DNS 設對不等於送得到。
 

@@ -27,6 +27,16 @@ window.Auth = (function () {
     async signUp(email, pw) { const r = await client.auth.signUp({ email, password: pw }); if (r && !r.error) obs('signup'); return r; },
     async signIn(email, pw) { const r = await client.auth.signInWithPassword({ email, password: pw }); if (r && !r.error) obs('login'); return r; },
     async oauth(provider) { obs('oauth:' + provider); return client.auth.signInWithOAuth({ provider, options: { redirectTo: location.origin + location.pathname } }); },
+    // 註冊驗證用 6 位數驗證碼，不是點連結。
+    // 為什麼：連結在手機上常被信件 App 用內建瀏覽器打開 → session 落在那個瀏覽器裡，
+    // 使用者切回原本的分頁還是「沒登入」。驗證碼從頭到尾都在同一個瀏覽器。
+    // 對應的信件模板必須用 {{ .Token }}（見 supabase/email-templates/confirm-signup.html）。
+    async verifySignup(email, token) {
+      const r = await client.auth.verifyOtp({ email, token: String(token).trim(), type: 'signup' });
+      if (r && !r.error) obs('verify_signup');
+      return r;
+    },
+    async resendSignup(email) { return client.auth.resend({ type: 'signup', email }); },
     async reset(email) { return client.auth.resetPasswordForEmail(email, { redirectTo: location.origin + '/login.html' }); },
     async updatePassword(pw) { return client.auth.updateUser({ password: pw }); },
     async signOut() { try { return await client.auth.signOut(); } catch (e) { } },

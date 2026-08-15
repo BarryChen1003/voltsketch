@@ -1,6 +1,11 @@
-<!-- HardwareAI — 註冊確認信模板
+<!-- HardwareAI — 註冊驗證碼信件模板
      貼到：Supabase Dashboard → Authentication → Emails → Templates → "Confirm signup"
-     變數由 Supabase 代入：{{ .ConfirmationURL }} = 確認連結。信件用 inline CSS（email client 相容）。 -->
+     變數由 Supabase 代入：{{ .Token }} = 6 位數驗證碼。信件用 inline CSS（email client 相容）。
+
+     為什麼是驗證碼不是連結（2026-08-15 站主決定）：
+     連結在手機上常被信件 App 用內建瀏覽器打開，session 落在那個瀏覽器裡，
+     使用者切回原本註冊的分頁還是「沒登入」。驗證碼從頭到尾都在同一個瀏覽器。
+     改回連結的話，這份模板要換回 {{ .ConfirmationURL }}，login.html 的驗證碼步驟也要一起拿掉。 -->
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f8fc;padding:32px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans TC',sans-serif;">
   <tr><td align="center">
     <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
@@ -9,18 +14,17 @@
         <span style="color:#94a3b8;font-size:13px;"> 硬體實驗室</span>
       </td></tr>
       <tr><td style="padding:28px;">
-        <h1 style="margin:0 0 12px;color:#0f172a;font-size:20px;">確認你的信箱</h1>
+        <h1 style="margin:0 0 12px;color:#0f172a;font-size:20px;">你的驗證碼</h1>
         <p style="margin:0 0 20px;color:#475569;font-size:15px;line-height:1.7;">
-          歡迎加入 HardwareAI。點下方按鈕完成註冊，即可使用線路圖編輯器、IC 元件庫、PCB Layout 與硬體知識庫。
+          歡迎加入 HardwareAI。回到剛才註冊的頁面，輸入下面這組驗證碼即可完成註冊。
         </p>
         <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 24px;"><tr>
-          <td style="border-radius:8px;background:#0e9f6e;">
-            <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 28px;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;">確認信箱並啟用帳號</a>
+          <td style="border-radius:8px;background:#f1f5f9;border:1px solid #e2e8f0;padding:16px 32px;">
+            <span style="color:#0f172a;font-size:32px;font-weight:700;letter-spacing:8px;font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;">{{ .Token }}</span>
           </td>
         </tr></table>
         <p style="margin:0 0 8px;color:#94a3b8;font-size:12px;line-height:1.6;">
-          按鈕無法點擊時，複製此連結到瀏覽器：<br>
-          <a href="{{ .ConfirmationURL }}" style="color:#0e9f6e;word-break:break-all;">{{ .ConfirmationURL }}</a>
+          驗證碼有時效，過期的話回頁面按「重寄驗證碼」即可。
         </p>
         <p style="margin:16px 0 0;color:#94a3b8;font-size:12px;">若非你本人註冊，忽略此信即可，帳號不會啟用。</p>
       </td></tr>

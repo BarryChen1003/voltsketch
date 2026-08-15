@@ -1007,6 +1007,15 @@ window.I18N = (function () {
     lg_cfg:    { zh: '請先設定 Supabase（auth-config.js）', en: 'Configure Supabase first (auth-config.js)', ja: '先に Supabase を設定してください（auth-config.js）', ko: '먼저 Supabase를 설정하세요(auth-config.js)' },
     lg_ok:     { zh: '登入成功，導向…', en: 'Signed in; redirecting…', ja: 'ログイン成功。移動中…', ko: '로그인 성공, 이동 중…' },
     lg_signup_ok: { zh: '註冊成功，請收信驗證後再登入', en: 'Signed up - check your email to verify, then sign in', ja: '登録成功。確認メールを開いて認証後にログインしてください', ko: '가입 성공 - 메일 인증 후 로그인하세요' },
+    lg_code_hint: { zh: '驗證碼已寄到 {email}，輸入後即完成註冊。', en: 'We sent a code to {email}. Enter it to finish signing up.', ja: '{email} に確認コードを送りました。入力すると登録が完了します。', ko: '{email} 로 인증 코드를 보냈습니다. 입력하면 가입이 완료됩니다.' },
+    lg_need_verify: { zh: '這個帳號還沒完成驗證。驗證碼已重新寄到 {email}，輸入後即可登入。', en: 'This account is not verified yet. A new code was sent to {email} - enter it to sign in.', ja: 'このアカウントは未認証です。{email} に確認コードを再送しました。入力するとログインできます。', ko: '이 계정은 아직 인증되지 않았습니다. {email} 로 코드를 다시 보냈으니 입력하면 로그인됩니다.' },
+    lg_code_ph: { zh: '6 位數驗證碼', en: '6-digit code', ja: '6 桁の確認コード', ko: '6자리 인증 코드' },
+    lg_code_go: { zh: '驗證並登入', en: 'Verify and sign in', ja: '認証してログイン', ko: '인증하고 로그인' },
+    lg_code_resend: { zh: '重寄驗證碼', en: 'Resend code', ja: 'コードを再送', ko: '코드 재전송' },
+    lg_code_resent: { zh: '已重寄，請查看信箱（含垃圾郵件匣）', en: 'Sent again - check your inbox, including spam', ja: '再送しました。迷惑メールフォルダもご確認ください', ko: '다시 보냈습니다. 스팸함도 확인하세요' },
+    lg_code_back: { zh: '用別的信箱', en: 'Use another email', ja: '別のメールで', ko: '다른 이메일 사용' },
+    lg_code_empty: { zh: '請輸入驗證碼', en: 'Enter the code', ja: '確認コードを入力してください', ko: '인증 코드를 입력하세요' },
+    lg_code_bad: { zh: '驗證碼不正確或已過期，請按「重寄驗證碼」', en: 'That code is wrong or expired - use "Resend code"', ja: '確認コードが正しくないか期限切れです。「コードを再送」を押してください', ko: '코드가 올바르지 않거나 만료되었습니다. "코드 재전송"을 누르세요' },
     lg_reset_ok: { zh: '重設密碼信已寄出，請收信', en: 'Password reset email sent - check your inbox', ja: 'リセットメールを送信しました。受信箱を確認してください', ko: '재설정 메일 발송됨 - 받은편지함 확인' },
     lg_fail:   { zh: '失敗', en: 'Failed', ja: '失敗しました', ko: '실패' },
 
@@ -1064,7 +1073,7 @@ window.I18N = (function () {
     ar_imfail: { zh: '匯入失敗：', en: 'Import failed: ', ja: 'インポート失敗：', ko: '가져오기 실패: ' },
 
     // --- terms.html / privacy.html（法律文本；譯文參考用，歧異以 zh 為準）---
-    legal_upd: { zh: '最後更新：2026-07-21', en: 'Last updated: 2026-07-21', ja: '最終更新：2026-07-21', ko: '최종 업데이트: 2026-07-21' },
+    legal_upd: { zh: '最後更新：2026-08-15', en: 'Last updated: 2026-08-15', ja: '最終更新：2026-08-15', ko: '최종 업데이트: 2026-08-15' },
     legal_zh_prevails: { zh: '本頁譯文僅供參考；若譯文與中文版有歧異，以中文版為準。', en: 'Translations on this page are for reference only; if a translation conflicts with the Chinese version, the Chinese version prevails.', ja: '本ページの訳文は参考用です。訳文と中国語版に相違がある場合は中国語版が優先します。', ko: '이 페이지의 번역문은 참고용이며, 번역문과 중국어판이 상충할 경우 중국어판이 우선합니다.' },
     tm_h1:  { zh: '使用條款', en: 'Terms of Service', ja: '利用規約', ko: '이용약관' },
     tm_s1:  { zh: '一、服務內容', en: '1. The Service', ja: '第1条（サービス内容）', ko: '제1조(서비스 내용)' },
@@ -1073,7 +1082,7 @@ window.I18N = (function () {
     tm_s2a: { zh: '免費方案：每月每格式 3 次匯出。', en: 'Free plan: 3 exports per format per month.', ja: '無料プラン：形式ごとに月 3 回のエクスポート。', ko: '무료 플랜: 형식별 월 3회 내보내기.' },
     tm_s2b: { zh: 'VIP 方案：依購買頁面說明之額度與價格；付款由綠界 ECPay 處理。', en: 'VIP plans: quota and pricing as described on the purchase page; payment is processed by ECPay.', ja: 'VIP プラン：枠と価格は購入ページの記載に従います。決済は ECPay が処理します。', ko: 'VIP 플랜: 한도와 가격은 구매 페이지 안내를 따르며, 결제는 ECPay가 처리합니다.' },
     tm_s2c: { zh: '月額度於每月自然月重新計算；未用完不累計、不折現。', en: 'Monthly quota resets each calendar month; unused quota does not carry over and is not refundable.', ja: '月間枠は暦月ごとにリセットされます。未使用分の繰越・換金はできません。', ko: '월 한도는 매 달력월마다 재계산되며, 미사용분은 이월·환금되지 않습니다.' },
-    tm_s2d: { zh: '訂閱取消後，已付費期間之權益維持至期末。您可隨時於帳號頁或聯絡客服取消訂閱，取消後不再自動續扣。', en: 'After cancellation, benefits for the paid period remain until the end of that period. You may cancel anytime via your account page or by contacting support; no further auto-renewal charges will be made.', ja: '解約後も、支払済み期間の権益は期間満了まで維持されます。アカウントページまたはサポートへの連絡でいつでも解約でき、以後の自動更新課金は行われません。', ko: '구독 취소 후에도 결제된 기간의 혜택은 기간 만료까지 유지됩니다. 계정 페이지 또는 고객지원 연락으로 언제든 취소할 수 있으며, 이후 자동 갱신 결제는 이루어지지 않습니다.' },
+    tm_s2d: { zh: '本站目前為單次購買制：購買後立即開通指定期間的權益，期間屆滿自動回復為免費方案，不會自動續扣，也不需要取消訂閱。要繼續使用請於到期後再次購買。', en: 'Plans are currently one-off purchases: benefits start immediately for the period you bought, and the account returns to the free plan when that period ends. Nothing renews automatically and there is no subscription to cancel. To continue, buy again after it expires.', ja: '本サイトは現在都度購入制です。購入すると指定期間の権益が即時に有効になり、期間満了後は自動的に無料プランに戻ります。自動更新課金はなく、解約手続きも不要です。継続する場合は満了後に再度ご購入ください。', ko: '본 사이트는 현재 1회 구매 방식입니다. 구매 즉시 해당 기간의 혜택이 시작되고, 기간이 끝나면 자동으로 무료 플랜으로 돌아갑니다. 자동 갱신 결제가 없으며 취소할 구독도 없습니다. 계속 이용하려면 만료 후 다시 구매하세요.' },
     tm_s2e: { zh: '退款政策（數位服務）：本站 VIP 為即時開通之線上數位服務。依《通訊交易解除權合理例外情事適用準則》，數位內容或線上服務一經您於購買時同意後即時提供者，不適用七日猶豫期無條件解約退款；您在購買時即同意此例外並放棄該七日解約權。', en: 'Refund policy (digital service): VIP is an online digital service activated immediately. Under Taiwan\'s regulation on reasonable exceptions to the right of rescission in distance sales, digital content or online services provided immediately with your consent at purchase are not subject to the 7-day unconditional cooling-off refund; by purchasing you agree to this exception and waive that 7-day right.', ja: '返金ポリシー（デジタルサービス）：VIP は即時有効化されるオンラインデジタルサービスです。台湾の通信取引解除権の合理的例外に関する準則により、購入時のお客様の同意のもと即時提供されるデジタルコンテンツ・オンラインサービスは、7 日間の無条件クーリングオフ返金の対象外です。購入によりこの例外に同意し、当該 7 日間の解除権を放棄したものとみなされます。', ko: '환불 정책(디지털 서비스): VIP는 즉시 활성화되는 온라인 디지털 서비스입니다. 대만의 통신거래 해제권 합리적 예외 준칙에 따라 구매 시 귀하의 동의하에 즉시 제공되는 디지털 콘텐츠·온라인 서비스는 7일 무조건 청약철회 환불 대상이 아닙니다. 구매로써 이 예외에 동의하고 해당 7일 해제권을 포기한 것으로 봅니다.' },
     tm_s2f: { zh: '例外退款：若發生重複扣款、系統錯誤導致未開通服務，或本站無法提供已付費之服務，請於扣款後 30 日內聯絡客服，經核實後全額或按比例退款。', en: 'Exceptional refunds: for duplicate charges, a system error that failed to activate the service, or if we cannot provide a service you paid for, contact support within 30 days of the charge; after verification we will refund in full or pro rata.', ja: '例外的返金：二重課金、システムエラーによる未開通、または支払済みサービスを提供できない場合は、課金後 30 日以内にサポートへご連絡ください。確認のうえ全額または按分で返金します。', ko: '예외 환불: 중복 결제, 시스템 오류로 서비스가 활성화되지 않은 경우, 또는 결제한 서비스를 제공할 수 없는 경우 결제 후 30일 이내에 고객지원에 연락하세요. 확인 후 전액 또는 비례 환불합니다.' },
     tm_s2g: { zh: '退款方式：經核准之退款將透過綠界 ECPay 循原付款管道退回；作業時間依發卡行/金流商而定，通常為 7–14 個工作天。', en: 'Refund method: approved refunds are returned via ECPay through the original payment channel; processing time depends on the card issuer/payment provider, typically 7–14 business days.', ja: '返金方法：承認された返金は ECPay を通じて元の決済経路へ返金されます。処理時間はカード発行会社・決済事業者により、通常 7〜14 営業日です。', ko: '환불 방법: 승인된 환불은 ECPay를 통해 원래 결제 경로로 반환됩니다. 처리 시간은 카드 발급사/결제사에 따라 보통 7~14 영업일입니다.' },
