@@ -101,7 +101,7 @@ canonical / og:url / JSON-LD / `sitemap.xml` / `robots.txt` / `.well-known/secur
 | 2 | 改 Site URL / Redirect URLs 成 `https://hardware-ai.org` | Authentication → URL Configuration |
 | 3 | 到 `hardware-ai.org` 用 `smallshark1003@gmail.com` 註冊一次 | 網站 |
 | 4 | 跑 `owner-unlock.sql`（拿全權限＋免驗證信） | SQL Editor |
-| 5 | 接 Resend SMTP＋貼信件模板（給**真實用戶**用） | Project Settings → Authentication |
+| 5 | 接 Resend SMTP＋貼信件模板（給**真實用戶**用） | **Authentication → Emails**（不是 Project Settings，2026-08-15 對實際畫面更正） |
 
 **第 2 步不能省，也不能排在第 3 步後面。** Site URL 還是舊網址的話，
 註冊驗證信裡的連結會指回 github.io——就算信寄出去了也點不回正確的站。

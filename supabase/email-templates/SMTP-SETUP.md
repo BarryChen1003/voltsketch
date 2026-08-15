@@ -15,7 +15,12 @@
    - Pass: 你的 Resend API key（`re_...`）
 
 ## B. 在 Supabase 填 SMTP（約 2 分鐘）
-Dashboard → **Project Settings → Authentication → SMTP Settings** → Enable custom SMTP：
+
+**路徑（2026-08-15 對著實際畫面更正）**：左側 **Authentication** → NOTIFICATIONS 區的 **Emails**
+→ 該頁的 **SMTP** 分頁 → 打開 **Enable Custom SMTP**。
+
+> 舊版文件寫「Project Settings → Authentication → SMTP Settings」，**現在的儀表板不在那裡**。
+> Project Settings 底下找不到，會以為沒有這個功能。
 | 欄位 | 值 |
 |---|---|
 | Sender email | `no-reply@<你的網域>`（網域好之前先用可寄的信箱） |
@@ -28,7 +33,7 @@ Dashboard → **Project Settings → Authentication → SMTP Settings** → Enab
 存檔後按 **Send test email** 確認能收到。
 
 ## C. 套用品牌信件模板（約 2 分鐘）
-Dashboard → **Authentication → Emails → Templates**：
+同一頁：**Authentication → Emails** → **Templates** 分頁：
 - **Confirm signup** → 貼上 `confirm-signup.html` 全文
 - **Reset password** → 貼上 `reset-password.html` 全文
 
@@ -39,5 +44,5 @@ Dashboard → **Authentication → Emails → Templates**：
 （站主自己不必等這步：Phase B 的 `owner-unlock.sql` 會手動確認站主信箱。）
 
 ## 網域注意
-接好網域（hardwareai.app）後，Sender email 換成該網域、DNS 的 SPF/DKIM 也要指向 Resend，
+接好網域（**hardware-ai.org**，2026-08-15 已上線）後，Sender email 換成該網域、DNS 的 SPF/DKIM 也要指向 Resend，
 並把 Supabase Auth 的 Site URL / Redirect URLs 一併改成新網域，否則驗證連結會指到舊 github.io。
