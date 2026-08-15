@@ -55,7 +55,7 @@
         <div id="codeStep" hidden>
           <p id="codeHint" class="muted" style="margin:0 0 8px;font-size:13px;line-height:1.7"></p>
           <input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10"
-                 placeholder="6 位數驗證碼" data-i18n-placeholder="lg_code_ph"
+                 placeholder="信裡的驗證碼" data-i18n-placeholder="lg_code_ph"
                  style="text-align:center;letter-spacing:6px;font-size:18px" />
           <button class="primary-button" id="codeGo" style="width:100%;margin-top:6px" data-i18n="lg_code_go">驗證並登入</button>
           <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px">
@@ -102,7 +102,8 @@
         setTimeout(() => location.href = dest, 800);
       }
 
-      // 驗證碼步驟（Supabase 的 signup OTP）。信件模板用 {{ .Token }} 才會寄出 6 位數。
+      // 驗證碼步驟（Supabase 的 signup OTP）。信件模板用 {{ .Token }} 才會寄出驗證碼。
+      // 位數由 Supabase 的 Email OTP length 決定（可調），所以畫面文案不要寫死位數。
       let pendingEmail = '';
       function showCode(email, hintKey) {
         pendingEmail = email;
@@ -169,6 +170,6 @@
 
       // Google / 手機登入已移除（2026-07-04 站主指示）：僅 email。要恢復見 git 歷史 + SETUP-AUTH.md。
     </script>
-    <script src="./i18n.js?v=2026-08-15a"></script>
+    <script src="./i18n.js?v=2026-08-15b"></script>
 </body>
 </html>

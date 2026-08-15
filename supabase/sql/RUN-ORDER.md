@@ -12,7 +12,7 @@
 | `01-core.sql` | 18 KB | profiles / 觀測 / orders / 額度 | **先跑這支就夠**——註冊→`owner-unlock` 的流程立刻可用 |
 | `02-interview-i18n.sql` | 85 KB | 面試題 ja/ko 欄位＋譯文 | 要上面試題內容時。**必須在 04 之前** |
 | `03-interview-pcb.sql` | 5 KB | PCB 面試題種子 | 同上 |
-| `04-interview-batch2.sql` | 257 KB | 第二批面試題種子 | 同上。**這支可能還是貼不下**，改用 Supabase CLI 或 `psql` |
+| `04-batch2-1of5.sql` ~ `5of5` | 各約 52 KB | 第二批面試題種子（原 `04-interview-batch2.sql` 257 KB **實測貼不下**，已拆成一題一檔） | 同上。依編號跑，**每支只跑一次**（重跑會產生重複題目） |
 
 拆檔已驗證與原檔逐行一致（660 有效行對 660）。`00-RUN-phaseA.sql` 保留當備查，不要直接貼。
 

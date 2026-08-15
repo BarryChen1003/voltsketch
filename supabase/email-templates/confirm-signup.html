@@ -1,6 +1,6 @@
 <!-- HardwareAI — 註冊驗證碼信件模板
      貼到：Supabase Dashboard → Authentication → Emails → Templates → "Confirm signup"
-     變數由 Supabase 代入：{{ .Token }} = 6 位數驗證碼。信件用 inline CSS（email client 相容）。
+     變數由 Supabase 代入：{{ .Token }} = 驗證碼（位數由 Authentication → Sign In/Providers → Email 的 Email OTP length 決定）。信件用 inline CSS（email client 相容）。
 
      為什麼是驗證碼不是連結（2026-08-15 站主決定）：
      連結在手機上常被信件 App 用內建瀏覽器打開，session 落在那個瀏覽器裡，

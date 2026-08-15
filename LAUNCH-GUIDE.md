@@ -153,7 +153,7 @@ canonical / og:url / JSON-LD / `sitemap.xml` / `robots.txt` / `.well-known/secur
 
 ## ④ 信件（✅ 2026-08-15 端到端跑通）
 
-**站主用非站主信箱實測過**：在 `hardware-ai.org/login.html` 註冊 → 收到 6 位數驗證碼
+**站主用非站主信箱實測過**：在 `hardware-ai.org/login.html` 註冊 → 收到驗證碼
 → 打進網站 → 直接登入。Resend 網域驗證、SMTP、DMARC、`{{ .Token }}` 模板四項齊全。
 
 **「真實用戶能註冊」這個上線硬條件到此達成。** 逐步紀錄在 `supabase/email-templates/SMTP-SETUP.md`。
@@ -161,7 +161,7 @@ canonical / og:url / JSON-LD / `sitemap.xml` / `robots.txt` / `.well-known/secur
 **之前收不到驗證信的原因**：沒接自訂 SMTP 時走 Supabase 內建寄信，每小時上限極低而且常被判垃圾信。
 這不是程式壞掉，是預設就不能拿來當正式服務用。
 
-**✅ 2026-08-15 改成 6 位數驗證碼**（站主決定）。原本是「點連結啟用」，
+**✅ 2026-08-15 改成驗證碼**（站主決定）。原本是「點連結啟用」，
 在手機上常出事：信件 App 用內建瀏覽器開連結 → session 落在那個瀏覽器，
 使用者切回原本註冊的分頁還是「沒登入」。驗證碼從頭到尾都在同一個瀏覽器。
 
@@ -169,7 +169,7 @@ canonical / og:url / JSON-LD / `sitemap.xml` / `robots.txt` / `.well-known/secur
 
 | 檔 | 做什麼 |
 |---|---|
-| `supabase/email-templates/confirm-signup.html` | 用 `{{ .Token }}` 印出 6 位數（**不是** `{{ .ConfirmationURL }}`） |
+| `supabase/email-templates/confirm-signup.html` | 用 `{{ .Token }}` 印出驗證碼（**不是** `{{ .ConfirmationURL }}`）；位數由 Email OTP length 決定，站主目前設 8，所以**畫面文案不要寫死「6 位數」** |
 | `auth.js` | `verifySignup()` 走 `verifyOtp({type:'signup'})`；`resendSignup()` 重寄 |
 | `login.html` | 註冊成功後切到驗證碼步驟；登入時若遇「帳號未驗證」也會自動重寄並切過去 |
 

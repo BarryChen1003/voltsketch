@@ -1009,7 +1009,7 @@ window.I18N = (function () {
     lg_signup_ok: { zh: '註冊成功，請收信驗證後再登入', en: 'Signed up - check your email to verify, then sign in', ja: '登録成功。確認メールを開いて認証後にログインしてください', ko: '가입 성공 - 메일 인증 후 로그인하세요' },
     lg_code_hint: { zh: '驗證碼已寄到 {email}，輸入後即完成註冊。', en: 'We sent a code to {email}. Enter it to finish signing up.', ja: '{email} に確認コードを送りました。入力すると登録が完了します。', ko: '{email} 로 인증 코드를 보냈습니다. 입력하면 가입이 완료됩니다.' },
     lg_need_verify: { zh: '這個帳號還沒完成驗證。驗證碼已重新寄到 {email}，輸入後即可登入。', en: 'This account is not verified yet. A new code was sent to {email} - enter it to sign in.', ja: 'このアカウントは未認証です。{email} に確認コードを再送しました。入力するとログインできます。', ko: '이 계정은 아직 인증되지 않았습니다. {email} 로 코드를 다시 보냈으니 입력하면 로그인됩니다.' },
-    lg_code_ph: { zh: '6 位數驗證碼', en: '6-digit code', ja: '6 桁の確認コード', ko: '6자리 인증 코드' },
+    lg_code_ph: { zh: '信裡的驗證碼', en: 'Code from the email', ja: 'メールの確認コード', ko: '메일의 인증 코드' },
     lg_code_go: { zh: '驗證並登入', en: 'Verify and sign in', ja: '認証してログイン', ko: '인증하고 로그인' },
     lg_code_resend: { zh: '重寄驗證碼', en: 'Resend code', ja: 'コードを再送', ko: '코드 재전송' },
     lg_code_resent: { zh: '已重寄，請查看信箱（含垃圾郵件匣）', en: 'Sent again - check your inbox, including spam', ja: '再送しました。迷惑メールフォルダもご確認ください', ko: '다시 보냈습니다. 스팸함도 확인하세요' },
