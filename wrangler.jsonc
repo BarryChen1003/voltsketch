@@ -10,7 +10,12 @@
   "name": "voltsketch",
   "compatibility_date": "2026-08-15",
   "observability": { "enabled": true },
+  // html_handling 預設會把 `/news.html` 307 導到 `/news`。這站不能吃這個預設：
+  // 全站的導覽連結、canonical、og:url、sitemap 全都寫 `.html`，
+  // 放著不管等於每次點導覽多一次轉址，而且 canonical 指的網址跟實際服務的網址不一樣。
+  // "none" = 網址原樣對應檔案，`/news.html` 直接 200。
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "html_handling": "none"
   }
 }
