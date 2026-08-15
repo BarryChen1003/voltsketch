@@ -1,0 +1,7 @@
+# 根路徑改寫成 index.html。
+#
+# 背景：wrangler 的 `html_handling: "none"` 讓 `/news.html` 直接 200（不轉址到 `/news`），
+# 這是我們要的——全站連結與 canonical 都寫 `.html`。但副作用是 `/` 也不再對應 index.html，
+# 直接 404。這行把根路徑「改寫」成 index.html（狀態碼 200，網址列不變），
+# 而不是轉址——因為 index.html 的 canonical 指的就是根路徑，轉址會讓兩者對不上。
+/    /index.html    200
