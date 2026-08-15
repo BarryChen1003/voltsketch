@@ -90,6 +90,38 @@ canonical / og:url / JSON-LD / `sitemap.xml` / `robots.txt` / `.well-known/secur
 
 ## ③ Supabase 後端（SQL + 帳號）
 
+專案：`dmkxjawjrmltmrmkebbs`（Dashboard 名稱「Hardware ai」）。
+下面每一步都標了選單路徑；Supabase 改版時以選單名為準，網址只是捷徑。
+
+### 3.0 五步驟總覽（照順序，不能跳）
+
+| # | 做什麼 | 在哪 |
+|---|---|---|
+| 1 | 跑 Phase A SQL（建表） | SQL Editor |
+| 2 | 改 Site URL / Redirect URLs 成 `https://hardware-ai.org` | Authentication → URL Configuration |
+| 3 | 到 `hardware-ai.org` 用 `smallshark1003@gmail.com` 註冊一次 | 網站 |
+| 4 | 跑 `owner-unlock.sql`（拿全權限＋免驗證信） | SQL Editor |
+| 5 | 接 Resend SMTP＋貼信件模板（給**真實用戶**用） | Project Settings → Authentication |
+
+**第 2 步不能省，也不能排在第 3 步後面。** Site URL 還是舊網址的話，
+註冊驗證信裡的連結會指回 github.io——就算信寄出去了也點不回正確的站。
+
+### 3.1 為什麼「站主拿全權限」不需要等信
+
+`owner-unlock.sql` 做四件事，其中第一件就是**直接把信箱標成已確認**：
+
+| 段 | 效果 |
+|---|---|
+| ① `email_confirmed_at = now()` | **免收驗證信就能登入**——所以你不必等 SMTP 弄好 |
+| ② `profiles.role='admin'`＋`interview_paid`＋`pcb_access` | 面試題與 PCB 的 RLS 全通 |
+| ③ `user_plans` plan=`owner`、額度 9999、`unlock_all`、**永不過期** | 付費知識卡全開、匯出不受限 |
+| ④ 兩個 `select` | 跑完自己核對，各應回 1 列 |
+
+**前提：`auth.users` 要先有你那一列**，也就是**得先在網站按過一次註冊**（信收不到沒關係，帳號列還是會建立）。
+所以順序是「先註冊，再跑這支 SQL」。
+
+**信箱寫死 `smallshark1003@gmail.com`**（`owner-unlock.sql` 三處）。要用別的信箱就先改 SQL 再跑。
+
 照 `supabase/sql/RUN-ORDER.md`：
 
 1. **Phase A**：SQL Editor 貼 `supabase/sql/00-RUN-phaseA.sql` → Run。
@@ -122,6 +154,15 @@ canonical / og:url / JSON-LD / `sitemap.xml` / `robots.txt` / `.well-known/secur
 ## ④ 信件（Resend + SMTP）
 
 真實用戶收不到驗證信就無法註冊。逐步在 `supabase/email-templates/SMTP-SETUP.md`。
+
+**之前收不到驗證信的原因**：沒接自訂 SMTP 時走 Supabase 內建寄信，每小時上限極低而且常被判垃圾信。
+這不是程式壞掉，是預設就不能拿來當正式服務用。
+
+**「驗證碼」與「驗證連結」是兩種東西，現在做的是連結**：
+`auth.js` 用 `signUp({email, password})`，登入頁沒有輸入驗證碼的欄位，
+信件模板變數是 `{{ .ConfirmationURL }}`——使用者收到的是一條**點下去就啟用**的連結。
+要改成「收 6 位數驗證碼、自己打進網站」得三樣一起改：
+模板換 `{{ .Token }}`、登入頁加輸入欄、前端改呼叫 `verifyOtp()`。是一個小功能，不是設定改一改。
 
 - **SPF / DKIM / DMARC 三筆掛在子網域**（`send.` 或 `mail.`），不要掛根網域——
   這樣寄信信譽出問題時不會拖累根網域。
