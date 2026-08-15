@@ -1,0 +1,16 @@
+// Cloudflare Workers 靜態資產設定。
+//
+// 為什麼要把這檔收進 repo：Cloudflare 的建置流程在沒有這檔時會**自動產一份**，
+// 內容是 `"assets": { "directory": "." }`——整個資料夾都當網站檔案上傳。
+// 2026-08-15 第一次部署就是這樣，結果 `.git/`、`supabase/`、所有內部 .md
+// 全部公開放送（實測 `/.git/config` 回 200）。要排除什麼由 `.assetsignore` 決定。
+//
+// 這站是純靜態，沒有 build step；部署指令就是 `npx wrangler deploy`。
+{
+  "name": "voltsketch",
+  "compatibility_date": "2026-08-15",
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "."
+  }
+}

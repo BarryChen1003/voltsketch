@@ -1,0 +1,15 @@
+# HTTP 安全標頭（Cloudflare Workers/Pages 讀這個檔）。
+# GitHub Pages 設不了任何標頭，這是搬到 Cloudflare 的主要理由。
+#
+# 這裡只放「不會弄壞任何現有功能」的五條。完整的 CSP script-src 還沒上——
+# 全站有 13 段 inline <script>（10 個頁面）與大量 inline style，
+# 靜態代管發不了每次請求不同的 nonce，硬上只能加 'unsafe-inline'，
+# 那擋得住外部網域載入腳本、擋不住 inline 的 XSS payload。要嚴格 CSP 得先把
+# inline 搬進獨立檔案，那是重構，排時間再做（見 LAUNCH-GUIDE.md §9.1）。
+
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+  Content-Security-Policy: frame-ancestors 'self'

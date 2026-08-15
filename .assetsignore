@@ -1,0 +1,69 @@
+# 不要被當成網站檔案上傳的東西（Workers Static Assets，.gitignore 語法）。
+#
+# 沒有這個檔的話，`assets.directory: "."` 會把整個 repo 放上公開網站——
+# 2026-08-15 第一次部署就發生過：`/.git/config`、`/supabase/.temp/linked-project.json`
+# 都能直接用瀏覽器打開。
+#
+# 加東西進來之前先確認網站沒在用它：頁面的 <script src>/<link href>、
+# 程式裡的 fetch()、以及 pcb-3d.js 那種動態 createElement('script')。
+# 改完一定要重新部署再實測一次（見本檔最後的驗收指令）。
+
+# --- 版本控制與 CI ---
+.git
+.git/**
+.github
+.github/**
+.gitignore
+.claude
+.claude/**
+
+# --- 後端與維運（不是網站檔案） ---
+supabase
+supabase/**
+tools
+tools/**
+*.ps1
+
+# --- 內部索引（沒有任何頁面或程式讀它） ---
+knowledge-db
+knowledge-db/**
+knowledge-assets
+knowledge-assets/**
+
+# --- 文件 ---
+*.md
+
+# --- 測試與 node-only 檢查器（跑在 CI，不是瀏覽器） ---
+*.test.js
+*.test.mjs
+art-i18n-check.js
+circuit-check.js
+gerber-check.js
+html-i18n-check.js
+i18n-check.js
+interview-diagram-check.js
+interview-i18n-check.js
+knowledge-art-audit.js
+news-i18n-check.js
+reffp-check.js
+svg-overlap-check.js
+symbol-overlap-check.js
+ui-i18n-check.js
+wire-gap-check.js
+
+# --- 保留但沒接上的原始檔（pcb.html 註解說明轉知識卡前不刪） ---
+pcb-practice.js
+pcb-tutorial.js
+
+# --- 舊版單檔參考稿，站上沒有任何連結指向它 ---
+hardware-knowledge-site
+hardware-knowledge-site/**
+
+# --- 設定檔本身 ---
+.assetsignore
+wrangler.jsonc
+
+# 驗收（部署後跑，兩邊都要對）：
+#   curl -o /dev/null -w "%{http_code}\n" https://<站台>/.git/config      → 404
+#   curl -o /dev/null -w "%{http_code}\n" https://<站台>/index.html       → 200
+#   curl -o /dev/null -w "%{http_code}\n" https://<站台>/ai-checker.js    → 200（這支是網站在用的）
