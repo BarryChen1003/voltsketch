@@ -5,11 +5,16 @@ name: Supabase 備份（pg_dump → artifact）
 # 重要：dump 含用戶 email 等 PII，"絕不" commit 進這個公開 repo；只放 artifact。
 #
 # 【你要做的事，只做一次】
-#   Supabase → Project Settings → Database → Connection string → URI（含密碼）
+#   Supabase → Project Settings → Database → Connection string
+#   → **選 Session pooler 那一種**（不要選 Direct connection）
 #   複製後到 GitHub repo → Settings → Secrets and variables → Actions → New secret
 #     Name:  SUPABASE_DB_URL
-#     Value: postgresql://postgres:<你的密碼>@db.dmkxjawjrmltmrmkebbs.supabase.co:5432/postgres
+#     Value: postgresql://postgres.dmkxjawjrmltmrmkebbs:<你的密碼>@aws-0-<區域>.pooler.supabase.com:5432/postgres
 #   加好後此 workflow 才會真的 dump；沒加會 skip（不報錯）。
+#
+#   為什麼不能用 Direct connection：db.<ref>.supabase.co 只有 IPv6 位址，
+#   GitHub Actions 的機器沒有 IPv6，連不上。2026-08-15 第一次跑就是死在這裡。
+#   Pooler 要用 5432（session mode），6543 是 transaction mode，pg_dump 不能用。
 on:
   schedule:
     - cron: '31 5 * * 0'      # 每週日 05:31 UTC
@@ -36,6 +41,29 @@ jobs:
           curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
           sudo apt-get update
           sudo apt-get install -y postgresql-client-17
+
+      # 失敗時最常見的原因不是 workflow 寫錯，是連線字串挑錯：
+      # Supabase 的直連主機 db.<ref>.supabase.co 只有 IPv6 位址，
+      # 而 GitHub Actions 的機器沒有 IPv6 → pg_dump 會噴 "Network is unreachable"，
+      # 看起來像 workflow 壞掉。這一步先把原因指出來，不要讓人去猜。
+      # 只印主機名，不印整串（整串含密碼）。
+      - name: 連線前診斷
+        if: steps.guard.outputs.ok == 'true'
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          HOST=$(printf '%s' "$DB_URL" | sed -E 's#^.*@([^:/?]+).*#\1#')
+          echo "pg_dump: $(pg_dump --version)"
+          echo "連線主機: $HOST"
+          if getent ahostsv4 "$HOST" > /dev/null 2>&1; then
+            echo "IPv4: 有，可以連"
+          else
+            echo "::error::主機 $HOST 沒有 IPv4 位址，GitHub Actions 連不到。"
+            echo "::error::改用 Supabase 的 Session Pooler 連線字串（Connection string 頁面選 Session mode），"
+            echo "::error::格式是 postgresql://postgres.<專案ref>:<密碼>@aws-0-<區域>.pooler.supabase.com:5432/postgres"
+            echo "::error::注意使用者名稱是 postgres.<ref> 不是 postgres，而且要用 5432（session）不是 6543（transaction）。"
+            exit 1
+          fi
 
       - name: pg_dump public schema
         if: steps.guard.outputs.ok == 'true'
