@@ -115,7 +115,10 @@ jobs:
 
       - name: 上傳 artifact（僅協作者可下載，保留 90 天）
         if: steps.guard.outputs.ok == 'true'
-        uses: actions/upload-artifact@v4
+        # v4 跑在 Node 20，GitHub 已標記棄用（現在是被強制拉到 Node 24 跑）。
+        # v7 是官方 README 範例用的版本，name/path/retention-days/if-no-files-found
+        # 四個參數語意沒變（2026-08-15 查 README 確認），所以只換版本號。
+        uses: actions/upload-artifact@v7
         with:
           name: supabase-dump
           path: ${{ env.DUMP_FILE }}
