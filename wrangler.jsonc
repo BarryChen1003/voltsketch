@@ -10,6 +10,16 @@
   "name": "voltsketch",
   "compatibility_date": "2026-08-15",
   "observability": { "enabled": true },
+
+  // 自訂網域用設定檔綁，不走儀表板：這個專案是「只有靜態資產」的 Worker，
+  // 儀表板的 Settings 沒有 Domains & Routes 那一區（Triggers/Variables 也一併被擋）。
+  // 官方文件（workers/configuration/routing/custom-domains）寫明 routes + custom_domain
+  // 是等效做法，`npx wrangler deploy` 會順便建立網域與 DNS 記錄。
+  // 只綁根網域；`www.` 要另外用 Cloudflare 的 Redirect Rule 導到根網域，
+  // 直接綁成第二個 custom_domain 會變成同一份內容兩個網址（Google 當重複內容）。
+  "routes": [
+    { "pattern": "hardware-ai.org", "custom_domain": true }
+  ],
   // html_handling 預設會把 `/news.html` 307 導到 `/news`。這站不能吃這個預設：
   // 全站的導覽連結、canonical、og:url、sitemap 全都寫 `.html`，
   // 放著不管等於每次點導覽多一次轉址，而且 canonical 指的網址跟實際服務的網址不一樣。
