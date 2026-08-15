@@ -312,14 +312,13 @@ CDN 被入侵或套件被投毒，等於有人拿到你所有使用者的 sessio
 2. 更好：**7 支全部下載到 repo 自己 host**。它們都是靜態函式庫，不需要 CDN 的更新。
    做完之後 `script-src` 就只剩 `'self'`，供應鏈風險直接歸零，CSP 也好寫。
 
-### 9.3 備份：**現在等於沒有備份**
+### 9.3 備份（✅ 2026-08-15 跑通，artifact 有東西）
 
-`.github/workflows/backup.yml` 寫好了，但要 repo secret `SUPABASE_DB_URL` 才會真的跑，
-沒設會 skip（不報錯，所以很容易以為有在備份）。
+`.github/workflows/backup.yml`，每週日跑一次，也可手動觸發。
+secret 只要一個：**`SUPABASE_DB_PASSWORD`，值是密碼本身**（不是連線字串）。
+主機／使用者／port 已寫死在 workflow 的 `env`，因為那三個值連續害我們失敗三次。
 
-**你要做**：加一個 repo secret，名稱 `SUPABASE_DB_PASSWORD`，值是**資料庫密碼本身**
-（不是連線字串、不是網址）。位置：GitHub repo → Settings → Secrets and variables → Actions。
-設完**手動觸發一次**確認真的 dump 出東西。
+**✅ 已完成**（2026-08-15，手動觸發驗證過 artifact 真的有檔案）。
 
 主機／使用者／port 已經寫死在 workflow 的 `env` 裡，因為 2026-08-15 連踩三次都在這三個值上：
 
@@ -334,7 +333,16 @@ CDN 被入侵或套件被投毒，等於有人拿到你所有使用者的 sessio
 
 備份含使用者 email 等個資，只上傳成 Actions artifact（保留 90 天），**絕不能 commit 進這個公開 repo**。
 
-**還要做一次還原演練**：備份沒還原過就不算備份。
+**還要做一次還原演練**：備份沒還原過就不算備份。**這件還沒做。**
+
+踩過的四關（改這個 workflow 前先看，別重蹈）：
+
+| 症狀 | 真因 |
+|---|---|
+| `socket "@@]@db...supabase.co/.s.PGSQL.5432"` | 密碼含 `@` `]` 沒編碼，URI 被切錯 |
+| 連不上、逾時 | Direct connection 主機只有 IPv6，GitHub Actions 沒 IPv6 |
+| `password authentication failed for user "postgres"` | **不是使用者名稱錯**——pooler 就是這樣顯示。真因是密碼 |
+| 密碼看起來對卻還是失敗 | secret 首尾有換行（現在會自動去掉） |
 
 ### 9.4 金鑰盤點（現況已檢查過，維持這樣）
 

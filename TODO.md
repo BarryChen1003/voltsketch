@@ -13,7 +13,7 @@
 | A2 | Email 服務 | 對外聯絡信箱＋Supabase Auth SMTP（密碼重設/驗證信寄送品質）。同樣需站主本人開通，建議與 A0/A1 一起辦 | ⏸ 等 A0 |
 | A3 | 綠界特約商店 | 申請正式商店（個人賣家或公司）→ 取 MerchantID/HashKey/HashIV → `supabase secrets set` → ECPAY_ACTION_URL 換正式 → 真實小額測試（沙盒 E2E 已過） | ❌ 卡申請（3–5 工作天） |
 | A4 | 電子發票 | 正式收款（台灣）需開立發票：綠界電子發票加值服務或其他方案，接進 webhook 入帳流程 | ⬜ A3 之後 |
-| A5 | Supabase 正式部署核對 | SQL 三件（schema/export-quota/payment）＋ owner-grant 已跑？Functions 已 deploy？secrets 已設？ | ⬜ 站主核對一次 |
+| A5 | Supabase 正式部署核對 | 🔄 2026-08-15：`01-core.sql` ✅、owner-unlock ✅（站主全權限）、Site URL ✅、SMTP ✅、備份 ✅。**還沒**：面試題 SQL 02/03/04＋flyback、Functions 部署、綠界 secrets |
 
 ## B. 工程（可自主）
 
