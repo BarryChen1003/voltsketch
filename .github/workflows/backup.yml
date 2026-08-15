@@ -52,8 +52,22 @@ jobs:
         env:
           DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          HOST=$(printf '%s' "$DB_URL" | sed -E 's#^.*@([^:/?]+).*#\1#')
           echo "pg_dump: $(pg_dump --version)"
+
+          # 密碼含 URI 特殊字元（@ : / ? # [ ]）又沒編碼 → 解析器會從錯的地方切，
+          # 密碼碎片跑進主機名稱，錯誤訊息變成看不懂的 socket 路徑。
+          # 2026-08-15 第一次跑就是死在這：socket "@@]@db.<ref>.supabase.co/.s.PGSQL.5432"。
+          BODY=${DB_URL#*://}
+          AT_COUNT=$(printf '%s' "$BODY" | tr -cd '@' | wc -c)
+          if [ "$AT_COUNT" -ne 1 ]; then
+            echo "::error::連線字串裡有 $AT_COUNT 個 @（正常應該只有 1 個）。"
+            echo "::error::多半是密碼含 @ 之類的特殊字元沒有編碼。兩條路："
+            echo "::error::(1) 到 Supabase 把資料庫密碼重設成只有英文字母與數字（最省事）；"
+            echo "::error::(2) 或把密碼百分比編碼後再放進字串：@ → %40、] → %5D、/ → %2F、# → %23、? → %3F、% → %25。"
+            exit 1
+          fi
+
+          HOST=$(printf '%s' "$BODY" | sed -E 's#^[^@]*@([^:/?]+).*#\1#')
           echo "連線主機: $HOST"
           if getent ahostsv4 "$HOST" > /dev/null 2>&1; then
             echo "IPv4: 有，可以連"
