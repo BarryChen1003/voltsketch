@@ -20,13 +20,15 @@
 
 ---
 
-## ① 網域（只有你能做，要付款）
+## ① 網域（✅ 2026-08-15 完成：`hardware-ai.org`，Cloudflare Registrar，$11.20/年，自動續約開）
 
 - `hardwareai.com` 2016 年就被註冊佔走（Dynadot，2026-09-19 到期）。
 - **不要用 `.work` 這類低價 gTLD**：寄信信譽差，而這站要寄付款收據與驗證信。
 - 建議在 **Cloudflare Registrar** 一次搜 `.io` / `.app` / `.dev`，哪個有拿哪個
   （之後代管、DNS、安全標頭都在同一個後台，少一層設定）。
-- `.app` 與 `.dev` 是 HSTS preload 網域，**強制 HTTPS**——對這站是好事，沒有額外成本。
+- `.app` 與 `.dev` 是 HSTS preload 網域，**強制 HTTPS**。
+  **實際買的是 `.org`**——老牌 TLD、寄信信譽好、名稱對得上，沒問題；
+  差別只有 `.org` 不在 preload 清單，所以 HSTS 要自己送（已在 `_headers` 設好，見 §9.1）。
 
 **買完給我：網域名稱 + 你選的代管。** 我接手：DNS 記錄、CNAME、安全標頭、
 全站 canonical/og:url 改寫、301 舊網址、Supabase redirect URL、綠界 ReturnURL/ClientBackURL。
@@ -43,10 +45,32 @@
 
 Cloudflare Pages（或 Netlify）可以放一個 `_headers` 檔就設好，而且免費層夠用。
 
-**你要做**：Cloudflare → Workers & Pages → 連 GitHub repo `BarryChen1003/voltsketch` →
-build command 留空、output directory 填 `/`（這是純靜態站，沒有 build step）。
+**✅ 2026-08-15 已完成**，實際落在 **Cloudflare Workers 靜態資產**（不是 Pages），
+部署指令 `npx wrangler deploy`，推 main 就自動部署。目前網址：
+`https://voltsketch.barry871003.workers.dev`（自訂網域還沒接）。
 
-**我接手**：寫 `_headers`、驗證每個標頭真的送出來、把 GitHub Pages 設成 301 導到新網域。
+三個檔控制部署，**都在 repo 裡**：
+
+| 檔 | 作用 |
+|---|---|
+| `wrangler.jsonc` | 專案設定。**沒有這檔的話 Cloudflare 會自動產一份**，內容是 `assets.directory: "."` |
+| `.assetsignore` | 哪些東西不要上傳（見下面「坑 1」；檔內自帶驗收指令） |
+| `_headers` | 安全標頭（見 §9.1） |
+| `_redirects` | 根路徑 `/` 改寫成 `index.html` |
+
+**踩過的兩個坑（改設定前先看）**：
+
+1. **第一次部署把整個 repo 放上公開網站**。`/.git/config`、
+   `/supabase/.temp/linked-project.json`、所有內部 `.md` 都能用瀏覽器直接打開（實測 200）。
+   沒有金鑰外洩（repo 本來就公開、`.git/config` 裡沒憑證），但 `.assetsignore` 是必要的。
+2. **Workers 預設會把 `/news.html` 307 導到 `/news`**。全站連結與 canonical 都寫 `.html`，
+   放著不管等於每次點導覽多一次轉址、canonical 指的網址跟實際服務的對不上。
+   設 `html_handling: "none"` 修好——但副作用是根路徑 `/` 變 404，所以要配 `_redirects` 的
+   `/  /index.html  200`（**改寫不是轉址**，網址列不變，才對得上 index.html 的 canonical）。
+
+**還沒做**：接上 `hardware-ai.org` 自訂網域 → 然後才改 canonical/og:url、301 舊網址、
+Supabase redirect URL、綠界 ReturnURL。**canonical 現在刻意還指著 github.io**，
+因為站還沒在正式網域上跑，先改會指到連不上的網址。
 
 ---
 
@@ -65,6 +89,9 @@ build command 留空、output directory 填 `/`（這是純靜態站，沒有 bu
      from auth.users u join public.profiles p on p.id = u.id
     where u.email = 'smallshark1003@gmail.com';
    ```
+
+**已知徵狀**：2026-08-15 在 Cloudflare 上實測，前端打 `/rest/v1/page_views` 回 **404**——
+就是因為 Phase A 還沒跑，`page_views` 表不存在。所以現在**沒有任何流量與錯誤紀錄**在收。
 
 **還有幾筆面試題 SQL 沒跑**（`NEW-SESSION.md` §5 列了七支，`supabase/sql/interview-flyback-fix.sql` 是必跑）。
 
@@ -171,20 +198,26 @@ build command 留空、output directory 填 `/`（這是純靜態站，沒有 bu
 
 ## ⑨ 資安（搬完家就做，不要等「有空」）
 
-### 9.1 安全標頭（搬到 Cloudflare Pages 之後才設得了）
+### 9.1 安全標頭（✅ 2026-08-15 已上線，實測 curl 有送出來）
 
-放一個 `_headers` 檔。**先設不會弄壞任何東西的四個**：
+`_headers` 檔已在 repo。目前這五條：
 
 ```
 /*
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
   Content-Security-Policy: frame-ancestors 'self'
 ```
 
-`frame-ancestors 'self'` 擋點擊劫持，且**不需要動任何程式碼**。
+`frame-ancestors 'self'` 擋點擊劫持，且不需要動任何程式碼。
+`.org` 不在 HSTS preload 清單，所以 `Strict-Transport-Security` 必須自己送（已送）。
+
+驗收指令（換成正式網域後要重跑一次）：
+```bash
+curl -sI https://<站台>/ | grep -iE "strict-transport|content-security|x-content-type|referrer|permissions"
+```
 
 **完整的 CSP 是另一件事，不要一次上**。現況：全站有 13 段 inline `<script>`（10 個頁面）
 與大量 inline `style="..."`。靜態代管沒辦法每次請求發不同的 nonce，所以完整 CSP 只有兩條路：
@@ -193,7 +226,7 @@ build command 留空、output directory 填 `/`（這是純靜態站，沒有 bu
 
 ### 9.2 第三方 CDN 是目前最大的供應鏈風險
 
-全站從外部載入 5 個腳本：
+全站從外部載入 **7 個**腳本（5 個寫在 HTML，2 個由 `pcb-3d.js` 動態插入）：
 
 | 來源 | 用途 | 問題 |
 |---|---|---|
@@ -202,13 +235,15 @@ build command 留空、output directory 填 `/`（這是純靜態站，沒有 bu
 | `cdnjs.cloudflare.com/.../xlsx/0.18.5` | 匯出 | 同上 |
 | `cdnjs.cloudflare.com/.../mammoth/1.6.0` | 文件匯入 | 同上 |
 | `cdn.jsdelivr.net/npm/qrcode@1.5.3` | QR code | 同上 |
+| `cdn.jsdelivr.net/npm/three@0.128.0` | PCB 3D 檢視 | **`pcb-3d.js` 執行時才插入**，grep HTML 看不到 |
+| `cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js` | 同上 | 同上 |
 
 `supabase-js` 是**處理登入 token 的那一支**。它從外部網域載入、又不鎖版本——
 CDN 被入侵或套件被投毒，等於有人拿到你所有使用者的 session。
 
 **建議（依 CP 值排序）**：
 1. `supabase-js` 鎖到明確版本 + 加 `integrity`（SRI）。
-2. 更好：**5 支全部下載到 repo 自己 host**。它們都是靜態函式庫，不需要 CDN 的更新。
+2. 更好：**7 支全部下載到 repo 自己 host**。它們都是靜態函式庫，不需要 CDN 的更新。
    做完之後 `script-src` 就只剩 `'self'`，供應鏈風險直接歸零，CSP 也好寫。
 
 ### 9.3 備份：**現在等於沒有備份**
@@ -274,4 +309,7 @@ RLS policy 寫了不等於擋得住。要用**三種身分實打**：未登入 /
 ## 教訓
 
 - 2026-08-14 | 寫上線指南 | 條款寫「取消訂閱不再自動續扣」，但實作是單次購買、根本沒有續扣機制 | 法律頁描述的服務要跟實作對帳，每次改方案就重對一次
+- 2026-08-15 | 第一次 Cloudflare 部署 | 沒放 wrangler 設定，建置流程自動產一份 `assets.directory: "."`，把 `.git/` 與 `supabase/` 放上公開網站 | 部署設定要收進 repo 自己控制；部署後**實際 curl 幾個不該公開的路徑**確認是 404，不要只看建置成功
+- 2026-08-15 | 部署驗收 | 只看 HTTP 狀態碼會漏掉 `/news.html` 被 307 導向 `/news`——狀態碼是 200，但那是轉址後的 200 | 驗網址行為要看 `-I` 的第一行與 `Location`，不要用 `-L` 之後的狀態碼下結論
+- 2026-08-15 | 排除清單 | 差點把 `ai-checker.js`、`schematic-check.js` 當成 CI 檢查器排掉——名字像，實際是網站在載的模組 | 排除任何檔案前先掃三種引用：HTML 的 src/href、程式裡的 `fetch()`、以及 `createElement('script')` 這種動態插入
 - 2026-08-14 | 資安盤點 | `.github/workflows/backup.yml` 沒設 secret 時是靜默 skip，看起來像有在備份 | 「設好但沒啟用」的防護要在文件裡標成「等於沒有」，不要只寫檔案存在
