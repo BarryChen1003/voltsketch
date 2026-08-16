@@ -1,6 +1,6 @@
 # HardwareAI TODO / 待辦總表
 
-> 更新：2026-08-14。狀態：✅完成 🔄進行中 ⬜未開始 ❌卡外部 ⏸依指示暫緩。
+> 更新：2026-08-15。狀態：✅完成 🔄進行中 ⬜未開始 ❌卡外部 ⏸依指示暫緩。
 > **上線順序看 `LAUNCH-GUIDE.md`**（含這張表沒列的：安全標頭、CDN 供應鏈、備份未啟用、法遵）。
 > 原始願景見 `PROJECT_ROADMAP.md`；金流/帳號部署步驟見 `SETUP-PAYMENT.md`、`SETUP-AUTH.md`、`SETUP-EXPORT-QUOTA.md`。
 
@@ -8,12 +8,12 @@
 
 | # | 項目 | 內容 | 狀態 |
 |---|---|---|---|
-| A0 | **正式網域** | github.io 為暫時網址，成品後換自訂網域並關閉舊址。遷移 checklist（工程端屆時執行）：canonical/OG URL 全站改、Supabase Auth redirect URL、ECPay ReturnURL/ClientBackURL、CORS、GitHub Pages custom domain + HTTPS、（可能）舊址 301 | ⬜ 卡網域購買/定名 |
-| A1 | Search Console + GA4 | **必須站主本人 Google 帳號登入操作**（工程端只能備 meta 驗證檔/sitemap＋一步步指引，不能代登入）。⚠️ 建議**等 A0 網域定案再辦**——現在對 github.io 驗證，換網域要整套重來 | ⏸ 等 A0 |
-| A2 | Email 服務 | 對外聯絡信箱＋Supabase Auth SMTP（密碼重設/驗證信寄送品質）。同樣需站主本人開通，建議與 A0/A1 一起辦 | ⏸ 等 A0 |
-| A3 | 綠界特約商店 | 申請正式商店（個人賣家或公司）→ 取 MerchantID/HashKey/HashIV → `supabase secrets set` → ECPAY_ACTION_URL 換正式 → 真實小額測試（沙盒 E2E 已過） | ❌ 卡申請（3–5 工作天） |
+| A0 | **正式網域** | github.io 為暫時網址，成品後換自訂網域並關閉舊址。遷移 checklist（工程端屆時執行）：canonical/OG URL 全站改、Supabase Auth redirect URL、ECPay ReturnURL/ClientBackURL、CORS、GitHub Pages custom domain + HTTPS、（可能）舊址 301 | ✅ 2026-08-15 `hardware-ai.org` 上線（Cloudflare Workers）；canonical/sitemap/robots/security.txt 全站已換 |
+| A1 | Search Console + GA4 | **必須站主本人 Google 帳號登入操作**（工程端只能備 meta 驗證檔/sitemap＋一步步指引，不能代登入）。⚠️ 建議**等 A0 網域定案再辦**——現在對 github.io 驗證，換網域要整套重來 | ⬜ **A0 已完成，現在可以辦了** |
+| A2 | Email 服務 | 對外聯絡信箱＋Supabase Auth SMTP（密碼重設/驗證信寄送品質）。同樣需站主本人開通，建議與 A0/A1 一起辦 | ✅ 2026-08-15 Resend SMTP 已接、DKIM/SPF/DMARC 綠勾、驗證碼模板已貼、實測收得到 |
+| A3 | 綠界特約商店 | 申請正式商店（個人賣家或公司）→ 取 MerchantID/HashKey/HashIV → `supabase secrets set` → ECPAY_ACTION_URL 換正式 → 真實小額測試（沙盒 E2E 已過） | ❌ **還沒送件**。3–5 工作天，建議先送 |
 | A4 | 電子發票 | 正式收款（台灣）需開立發票：綠界電子發票加值服務或其他方案，接進 webhook 入帳流程 | ⬜ A3 之後 |
-| A5 | Supabase 正式部署核對 | 🔄 2026-08-15：`01-core.sql` ✅、owner-unlock ✅（站主全權限）、Site URL ✅、SMTP ✅、備份 ✅。**還沒**：面試題 SQL 02/03/04＋flyback、Functions 部署、綠界 secrets |
+| A5 | Supabase 正式部署核對 | 🔄 2026-08-15：建表 ✅、owner-unlock ✅、Site URL ✅、SMTP ✅、備份 ✅、**面試題 SQL 全部跑完 ✅**。**還沒**：Functions 部署、綠界 secrets |
 
 ## B. 工程（可自主）
 
@@ -38,7 +38,7 @@
 
 | # | 項目 | 內容 | 狀態 |
 |---|---|---|---|
-| F1 | 知識卡付費內容不可見 | ✅ 診斷完＝權限鏈非 bug：Supabase 已配置（非 demo）→ 解鎖需登入＋（有效方案 OR admin）。**站主動作**：用 smallshark1003@gmail.com 在站上註冊/登入 → Supabase SQL Editor 跑 `owner-grant.sql`（email 不同先改 SQL）→ 付費主題全開 | 🔄 等站主跑 owner-grant |
+| F1 | 知識卡付費內容不可見 | ✅ 診斷完＝權限鏈非 bug：Supabase 已配置（非 demo）→ 解鎖需登入＋（有效方案 OR admin）。**站主動作**：用 smallshark1003@gmail.com 在站上註冊/登入 → Supabase SQL Editor 跑 `owner-grant.sql`（email 不同先改 SQL）→ 付費主題全開 | ✅ 2026-08-15 站主已註冊並跑完 owner-unlock，付費內容全開 |
 | F2 | 知識卡內容明確性 | 部分卡片表達不夠明確——需站主指出卡片清單，逐張複審改寫 | ⬜ 待站主列卡 |
 | F3 | IC symbol 文字/圖重疊 | 診斷結果：**幾何重疊＝0**（195 顆全掃，含 transform 的視覺框驗證；先前 getBBox 對旋轉腳名假陽性）。真因＝巨型單一 symbol 縮到 4–7px 字（觀感如重疊）→ 由 F4 根治 | ✅ 併入 F4 解決（79c95fb） |
 | F4 | 多 pin IC 拆 multi-unit symbol | ✅ `ICSymbol.renderMulti`（>80 腳自動拆：訊號 unit 左右兩欄＋電源/接地 unit 同名聚合 ×N），ic-library/ic-preview 皆上；AWRL6844/DAC39RF20 由 4–7px → 14px。**（線路圖畫布擺放仍為單一符號，屬另一渲染器，要拆再議）** | ✅ 79c95fb |

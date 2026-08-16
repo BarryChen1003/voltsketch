@@ -28,7 +28,7 @@
 
 | 項目 | 狀態 |
 |---|---|
-| **正式站** | `https://hardware-ai.org`（Cloudflare Workers，推 main 自動部署）。HTTPS、安全標頭、`.git` 不外流，全部實測過 |
+| **正式站** | `https://hardware-ai.org`（Cloudflare Workers，推 main 自動部署）。HTTPS、安全標頭、`.git` 不外流、`www` 301 導根網域，全部實測過 |
 | **帳號** | 註冊走**驗證碼**（不是連結）；Resend SMTP 已接、四語模板已貼；站主 `smallshark1003@gmail.com` 是 admin＋owner＋額度 9999 |
 | **資料庫備份** | ✅ 每週日自動 `pg_dump` → GitHub artifact。**還原演練還沒做** |
 | **金流** | 程式全備好，**Functions 還沒部署**、綠界特約商店還沒申請 |
@@ -170,32 +170,49 @@ node tools/interview-diagrams/verify-batch14.js   # 表格/剖面的比例與真
 
 ---
 
-## 6. 上線：已完成與剩餘（完整操作步驟在 `LAUNCH-GUIDE.md`）
+## 6. 剩餘工作總表（2026-08-15 盤點；操作步驟在 `LAUNCH-GUIDE.md`）
 
-### 已完成（2026-08-15）
+### 已完成，不用再看
 
-網域 `hardware-ai.org`（Cloudflare Registrar）→ 搬到 Cloudflare Workers →
-安全標頭 → canonical/sitemap/robots 全站換網域 → Supabase 建表 →
-站主全權限 → Resend SMTP＋驗證碼 → 資料庫備份。
+網域 `hardware-ai.org`＋`www` 轉址 → Cloudflare Workers 部署＋安全標頭 →
+canonical/sitemap/robots/security.txt 換網域 → Supabase 建表 → 站主全權限 →
+Resend SMTP＋驗證碼註冊 → 資料庫每週備份 → 面試題 SQL 全部跑完 →
+條款改成單次購買措辭 → PCB 閘門看權限放行。
 
-### 剩餘（卡在使用者）
+### A. 卡使用者（外部審核或只有他能操作）
 
-| 事 | 誰 | 備註 |
+| # | 事 | 說明 |
 |---|---|---|
-| 綠界特約商店申請 | 使用者 | 3–5 工作天。**先送件，等的時候做別的** |
-| `supabase login` + 部署兩支 Function | 使用者 | `create-order`、`ecpay-webhook --no-verify-jwt` |
-| 營業登記／統一發票／定型化契約／個資跨境 | 使用者問會計師 | **不要替他猜法規**，只列出要問什麼 |
-| Supabase 免費層夠不夠 | 使用者確認 | 收錢後被暫停是客訴 |
-| Search Console + GA4 | 使用者 | 網域已定，可以辦了 |
+| A-1 | **綠界特約商店申請** | 3–5 工作天。**這是收錢的唯一瓶頸，越早送件越好** |
+| A-2 | **`supabase login` + 部署兩支 Function** | `create-order`、`ecpay-webhook --no-verify-jwt`。做完我才能跑沙盒驗證 |
+| A-3 | 綠界正式金鑰 + `ECPAY_MODE=live` | A-1 核准後。**金鑰站主自己填，我不碰** |
+| A-4 | 營業登記／統一發票／定型化契約／個資跨境 | 問國稅局或會計師。**不要替他猜法規**，只列出要問什麼 |
+| A-5 | Supabase 免費層夠不夠 | 收錢後被暫停是客訴 |
+| A-6 | Search Console + GA4 | 網域已定，可以辦了 |
+| A-7 | 舊 GitHub Pages 站 | 使用者決定「留 1–2 個月」，到期再處理。canonical 已指新網域 |
 
-### 剩餘（我做，等使用者先動作）
+**已明確跳過**：密碼長度 6→8 與字元要求（使用者 2026-08-15 說不用）；
+Leaked password protection（Pro 專屬，免費層做不到）。
 
-| 事 | 前提 |
+### B. 我做，等使用者先動作
+
+| # | 事 | 前提 |
+|---|---|---|
+| B-1 | 綠界沙盒五項驗證 | A-2 完成後。**沙盒沒過絕不切正式** |
+| B-2 | 電子發票串接（`TODO.md` A4） | A-1 核准後。工程我做、行政他辦 |
+| B-3 | **D1 資安總檢** | **隨時可開始，建議排在正式收款之前**。RLS 三身分實打、額度繞過、webhook 偽造重放、前端門面盤點 |
+| B-4 | 備份還原演練 | 隨時。備份沒還原過不算備份 |
+
+### C. 內容與長期（可自主，沒有時間壓力）
+
+| # | 事 |
 |---|---|
-| 綠界沙盒五項驗證 | Functions 部署後。**沙盒沒過絕不切正式** |
-| 電子發票串接（`TODO.md` A4） | 綠界核准後 |
-| **D1 資安總檢** | 隨時可開始。**建議排在正式收款之前** |
-| 備份還原演練 | 隨時。備份沒還原過不算備份 |
+| C-1 | 付費知識卡月更（`TODO.md` C1，每月 5 張、6 分類輪替）——**這是付費頁面的承諾，收錢後就是契約義務** |
+| C-2 | 面試題庫擴充（`TODO.md` C2） |
+| C-3 | 知識卡產品卡填充（`TODO.md` B7） |
+| C-4 | 使用者要列清單才能動的兩項：知識卡表達不清（F2）、有問題的 IC 料號（F5） |
+| C-5 | 腳位抽取的已知缺口：跨多頁的大表只抽得到前幾腳（見 §7e 結尾） |
+| C-6 | 前端 CDN 依賴自己 host（7 支，見 `LAUNCH-GUIDE.md` §9.2）＋嚴格 CSP（要先把 inline script 搬出去） |
 
 **綠界不必因為換網域而改**：`ReturnURL` 指 Supabase functions、與站台網域無關；
 `ClientBackURL` 取 request 的 `origin`。
