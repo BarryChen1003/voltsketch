@@ -62,3 +62,19 @@ select u.email, u.email_confirmed_at, p.role, p.interview_paid, p.pcb_access
 select * from public.error_summary;     -- 近 7 天前端錯誤（合併計數）
 select * from public.pageview_summary;  -- 近 7 天各頁瀏覽/session
 ```
+
+## 貼不進 SQL Editor 的檔案（2026-08-15 實測）
+
+面試題的種子與修圖 SQL 都內嵌 SVG，單行動輒 20–50 KB，整檔貼進 Supabase SQL Editor 會被截斷，
+症狀是 `ERROR: 42601: syntax error at end of input`（語句沒收尾）。已拆成小檔，**用拆檔不要用原檔**：
+
+| 原檔 | 大小 | 改用 |
+|---|---|---|
+| `04-interview-batch2.sql` | 257 KB | `04-batch2-1of5.sql` ~ `5of5`（各約 52 KB，**每支只跑一次**，重跑會重複題目） |
+| `interview-flyback-fix.sql` | 109 KB | `flyback-fix-1of5.sql` ~ `5of5`（各約 22 KB，**冪等可重跑**，這是 update 不是 insert） |
+
+拆檔都逐字驗證過與原檔一致。原檔保留當備查。
+
+跳出「Potential issue detected / without enabling RLS」一律按 **Run without RLS**：
+這些檔只有 insert/update，沒有建表，`interview_questions` 的 RLS 在 `01-core.sql` 就開好了。
+Supabase 的檢查器會把 SQL 裡的英文單字誤判成表名（看過它說表名叫 `the`）。
