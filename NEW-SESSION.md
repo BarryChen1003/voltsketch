@@ -1,14 +1,12 @@
-# NEW SESSION — 接手指南（2026-08-06）
+# NEW SESSION — 接手指南（2026-08-15）
 
-先讀本檔（現況、本輪做了什麼、待辦），再讀 `HANDOFF.md`（長期硬規矩、開發環境、踩過的坑）。
+先讀本檔（現況、上輪做了什麼、待辦），再讀 `HANDOFF.md`（長期硬規矩、開發環境、踩過的坑）。
 動 `Documents/Web` 前務必讀完這兩份；兩份衝突時以本檔為準。
+**上線的順序與剩餘關卡看 `LAUNCH-GUIDE.md`**（那份是站主照著點的操作手冊，本檔不重複）。
 
-**現在的狀態**：全站四語補完（含 155 張圖、面試題 38/38、HTML 寫死中文 0 處），
-新增「硬體新技術」頁，IC 元件庫 196 顆，線路圖編輯器補了鎖色/多選/方向鍵/複製貼上並修好翻轉。
-全部已 commit 並推上 GitHub Pages。
-**接下來卡在你（使用者）身上的是上線三軌，見 §6。**
-
----
+**站已經上線了**：`https://hardware-ai.org`，Cloudflare Workers 靜態資產，推 main 自動部署。
+帳號系統可用（驗證碼註冊、站主全權限）、資料庫每週自動備份。
+**還沒能收錢**——綠界特約商店要等使用者送件核准（見 §6）。
 
 ## 0. 硬規矩
 
@@ -26,24 +24,23 @@
 
 ---
 
-## 1. 現況（2026-08-06）
+## 1. 現況（2026-08-15）
 
 | 項目 | 狀態 |
 |---|---|
-| 面試題 | 38 題全部有圖、**38/38 已轉符號庫畫風**；zh+en 共 76 張 |
-| 圖字重疊 | 面試題瀏覽器實測（0.5px、線段真交集）**全庫 0**；知識卡 `svg-overlap` 0 |
-| 知識卡 | **152 張**（含 2026-08-01 新增 7 張 ROHM DC/DC 佈局卡，檔 `knowledge-extra5.js`）；圖 80 張 |
-| IC 元件庫 | **196 顆**（2026-08-06 加 SN74LVC1G07 開汲極緩衝器）；2026-08-02 新增 **2nd Source 比對**（`ds-compare.js`） |
-| 知識卡的圖 | 155 張、985 條字串**四語齊全**（2026-08-06，見 §7）；四語瀏覽器實測重疊 0 |
-| 全站四語 | 2026-08-06 補完：編輯器 `uiT` 173 條、HTML 寫死中文 **0 處**、面試題 38/38 四語 |
-| 硬體新技術 | 新頁 `news.html`，10 則（2026-05～08），每則附出處與日期；每月 1 號更新，流程見 `NEWS-UPDATE.md` |
-| 金流保險絲 | 2026-08-06 修：`ECPAY_MODE=live` 時不准 fallback 沙盒（原本 secrets 掉了會靜默送客戶去測試商店） |
-| 線路圖編輯器 | 2026-08-06 修翻轉（字不再壓框）＋新增鎖色筆、Ctrl 多選、方向鍵平移、Ctrl+C/V。2026-08-14：**鎖色改預設開**、0Ω 顯示得出來、背景格線無邊界、快捷鍵說明補齊四語 |
+| **正式站** | `https://hardware-ai.org`（Cloudflare Workers，推 main 自動部署）。HTTPS、安全標頭、`.git` 不外流，全部實測過 |
+| **帳號** | 註冊走**驗證碼**（不是連結）；Resend SMTP 已接、四語模板已貼；站主 `smallshark1003@gmail.com` 是 admin＋owner＋額度 9999 |
+| **資料庫備份** | ✅ 每週日自動 `pg_dump` → GitHub artifact。**還原演練還沒做** |
+| **金流** | 程式全備好，**Functions 還沒部署**、綠界特約商店還沒申請 |
+| 面試題 | 38 題全部有圖、38/38 符號庫畫風；DB 種子與 flyback 修圖 SQL **已全部跑完** |
+| 知識卡 | 152 張；圖 155 張、985 條字串四語齊全；瀏覽器實測重疊 0 |
+| IC 元件庫 | 196 顆全建檔；2nd Source 比對（`ds-compare.js`）；datasheet 連結指 TI 官網（`ic-datasheet.js`） |
+| 硬體新技術 | `news.html` 分頁（每頁 8 則，最新在第 1 頁）；`kind` 分 news／paper |
+| 新技術自動更新 | 本機排程：新聞每天 09:00/12:00/21:00、期刊研討會每月 1 號，**直接 push main** |
+| 全站四語 | HTML 寫死中文 0 處；編輯器 `uiT` 全覆蓋 |
+| 線路圖編輯器 | 鎖色預設開、0Ω 顯示得出來、背景格線無邊界、快捷鍵四語 |
+| PCB | 邀請碼閘門會看 `pcb_access`／`admin` 自動放行（12 個月方案的承諾終於兌現） |
 | CI | 26 關，本地與線上皆綠 |
-| 部署 | **2026-08-15 搬到 Cloudflare Workers，正式網域 `https://hardware-ai.org`**；推 main 自動部署。設定在 `wrangler.jsonc` / `.assetsignore` / `_headers` / `_redirects`，坑與驗收見 `LAUNCH-GUIDE.md` §② |
-| 上線阻礙 | 2026-08-15：網域、代管、建表、站主權限、SMTP（**6 位數驗證碼端到端跑通**）、備份全部完成。**剩下卡在綠界特約商店申請**與法遵；工程端剩 D1 資安總檢（建議收錢前做）。詳見 `LAUNCH-GUIDE.md` |
-
----
 
 ## 2. 2nd Source 比對（本輪新功能，IC 元件庫）
 
@@ -87,7 +84,7 @@ DB 的 answer 已有 <svg>  →  原樣不動
 - **flyback 那 5 題 DB 已有舊圖，回填碰不到** → 非跑 SQL 不可（§5）。
 
 使用者說「沒看到圖」時，先確認是不是瀏覽器快取（`interview.html` 是 `max-age=600`），
-或 GitHub Pages 的部署延遲（推上去約一分鐘才生效）；別急著改程式。
+或 Cloudflare 的部署延遲（推 main 後約一分鐘生效）；別急著改程式。
 
 ---
 
@@ -150,46 +147,58 @@ node tools/interview-diagrams/verify-batch14.js   # 表格/剖面的比例與真
 
 ---
 
-## 5. 待跑的 SQL（只有使用者能跑）
+## 5. 面試題 SQL：✅ 2026-08-15 全部跑完
 
-```
-supabase/sql/interview-flyback-fix.sql      ← 必跑：那 5 筆前端回填碰不到
-supabase/sql/interview-fix-diagrams.sql        q5/q6/q13
-supabase/sql/interview-batch1-diagrams.sql     q7/q12/q17/q19/q26/q27
-supabase/sql/interview-batch3-diagrams.sql     q1/q2/q4/q14/q15/q16/q22
-supabase/sql/interview-batch4-diagrams.sql     q3/q8/q9/q10/q11
-supabase/sql/interview-batch5-diagrams.sql     q18/q20/q21/q23/q24/q25
-supabase/sql/interview-pcb-diagrams.sql        q33–q38
-```
+站主已跑完 `01-core` → `02-interview-i18n` → `03-interview-pcb` →
+`04-batch2-1~5of5` → `flyback-fix-1~5of5`。DB 裡的題目與圖都是最新的。
 
-七支都是 2026-08-01 依現行 bank 重新產生的，全部冪等、可重跑。
+**兩件會再踩到的事**：
+
+1. **大檔貼不進 SQL Editor**。面試題 SQL 內嵌 SVG，單行 20–50 KB，
+   整檔貼會被截斷，報 `ERROR: 42601: syntax error at end of input`。
+   已拆成 `04-batch2-*of5.sql`（各 52 KB）與 `flyback-fix-*of5.sql`（各 22 KB），
+   **用拆檔不要用原檔**。詳見 `supabase/sql/RUN-ORDER.md`。
+2. **Supabase 會誤判「這個 query 建了沒開 RLS 的表」**。那些檔只有 insert/update，
+   一張表都沒建（它甚至把 SQL 裡的英文單字 `the` 當成表名）。**一律按 Run without RLS**。
+   `interview_questions` 的 RLS 在 `supabase/sql/01-core.sql` 就開好了，可用這句自己驗：
+   ```sql
+   select relname, relrowsecurity from pg_class where relname = 'interview_questions';
+   ```
+
 **改完圖一定要重跑對應的 `gen-*-sql.js`**，否則 SQL 裡是舊圖。
-所有 `gen-*-sql.js` 現在都從 `interview-bank.js` 取圖（不要再綁 batch 檔，題目會被下一批重畫）。
+所有 `gen-*-sql.js` 都從 `interview-bank.js` 取圖（不要再綁 batch 檔，題目會被下一批重畫）。
 
 ---
 
-## 6. 上線三軌（卡在使用者，程式端都備好了）
+## 6. 上線：已完成與剩餘（完整操作步驟在 `LAUNCH-GUIDE.md`）
 
-### 6.1 網域（只有你能做：要付款）
+### 已完成（2026-08-15）
 
-- `hardwareai.com` 2016 年就被註冊佔走（Dynadot，2026-09-19 到期）。
-- `.work` 不建議：低價 gTLD 的寄信信譽差，而這站要寄付款收據。
-- 建議去 Cloudflare Registrar 一次搜 `.io` / `.app` / `.dev`，哪個有拿哪個。
-- 買完給我網域 + 代管（Cloudflare Pages / Netlify 能設安全標頭，GitHub Pages 不能）。
-  我接手：DNS 記錄、CNAME、安全標頭、canonical/og:url 全站改寫、301 舊網址。
-  **localStorage key 與舊 github.io 網址刻意保留**（見 `hardwareai-rebrand` 記憶）。
+網域 `hardware-ai.org`（Cloudflare Registrar）→ 搬到 Cloudflare Workers →
+安全標頭 → canonical/sitemap/robots 全站換網域 → Supabase 建表 →
+站主全權限 → Resend SMTP＋驗證碼 → 資料庫備份。
 
-### 6.2 綠界（申請只有你能做）
+### 剩餘（卡在使用者）
 
-- `SETUP-PAYMENT.md` 已定版。沙盒會 fallback 到官方測試商店 2000132，**不需要任何金鑰**就能先跑通。
-- 你要做：部署 `create-order` / `ecpay-webhook`（`--no-verify-jwt`，綠界通知不帶 JWT）。
-- 我接手：沙盒五項驗證（入帳、錯 CheckMacValue 要回 `0|CheckMacValue Error`、重送冪等、
-  贊助只入帳不升級、金額界外擋下）。**沙盒沒過絕不切正式**；正式金鑰你自己填，我不碰。
+| 事 | 誰 | 備註 |
+|---|---|---|
+| 綠界特約商店申請 | 使用者 | 3–5 工作天。**先送件，等的時候做別的** |
+| `supabase login` + 部署兩支 Function | 使用者 | `create-order`、`ecpay-webhook --no-verify-jwt` |
+| 營業登記／統一發票／定型化契約／個資跨境 | 使用者問會計師 | **不要替他猜法規**，只列出要問什麼 |
+| Supabase 免費層夠不夠 | 使用者確認 | 收錢後被暫停是客訴 |
+| Search Console + GA4 | 使用者 | 網域已定，可以辦了 |
 
-### 6.3 Resend（等網域）
+### 剩餘（我做，等使用者先動作）
 
-- SPF/DKIM/DMARC 三筆掛在**子網域**（`send.` 或 `mail.`），保護根網域寄信信譽。
-- 我接手：三筆 DNS 完整值、Supabase SMTP 設定、三種信件模板、實際寄一封驗證送達。
+| 事 | 前提 |
+|---|---|
+| 綠界沙盒五項驗證 | Functions 部署後。**沙盒沒過絕不切正式** |
+| 電子發票串接（`TODO.md` A4） | 綠界核准後 |
+| **D1 資安總檢** | 隨時可開始。**建議排在正式收款之前** |
+| 備份還原演練 | 隨時。備份沒還原過不算備份 |
+
+**綠界不必因為換網域而改**：`ReturnURL` 指 Supabase functions、與站台網域無關；
+`ClientBackURL` 取 request 的 `origin`。
 
 ---
 
@@ -213,12 +222,12 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 
 ---
 
-## 7b. 使用者已裁決（2026-08-14 全部結案，只剩 #4）
+## 7b. 使用者已裁決（2026-08-14 提的六件，全部結案）
 
 | # | 事 | 結果 |
 |---|---|---|
 | 1 | 法律頁的聯絡信箱 | ✅ 改成 `smallshark1003@gmail.com`，四語同步，`ui_mail_todo` 提示整條刪除 |
-| 2 | 站主要用哪個 Gmail | ✅ 確認是 `smallshark1003@gmail.com`（`owner-unlock.sql` 原本就對，不用改） |
+| 2 | 站主要用哪個 Gmail | ✅ 確認是 `smallshark1003@gmail.com`（`supabase/sql/owner-unlock.sql` 原本就對，不用改） |
 | 3 | IC 符號畫風要不要翻成「腳號在框外、腳名在框內」 | ✅ **不改**。維持現行「號內名外」，196 顆與 `ic-preview.html` 的說明都不動 |
 | 4 | 線上 datasheet 連結 404 | ✅ 改連 TI 官網（`ic-datasheet.js`）。詳情與實測數字見 §7c |
 | 5 | 新技術每月更新 | ✅ 改排程：本機任務 `hardwareai-news-monthly`，每月 1 號 09:00，開 PR 不 push main（見 `NEWS-UPDATE.md` 開頭） |
@@ -273,7 +282,7 @@ supabase/sql/interview-pcb-diagrams.sql        q33–q38
 | 上傳 PDF 到伺服器 | ❌ 沒有，也是刻意的——PDF 一律在瀏覽器內解析不上傳（ds-compare 同樣設計） |
 
 **「從 PDF 預填」壞在哪**（拿 `IC-spec/` 的真 datasheet 實測，不是推測）：
-pdf.js 取文字沒問題（ads112c14 抽到 199,505 字元、945 ms）。壞的是 `pdf-parser.js`
+pdf.js 取文字沒問題（ads112c14 抽到 199,505 字元、945 ms）。壞的是 `pdf-parser.js`（已刪除，2026-08-14 由 `pin-extract.js` 取代）
 只有兩條非常粗的 regex，抽出來的是這種東西：
 
 | datasheet | 實際腳數 | 抽出列數 | 樣本 |
@@ -286,7 +295,7 @@ pdf.js 取文字沒問題（ads112c14 抽到 199,505 字元、945 ms）。壞的
 
 檔：`pin-extract.js`（純函式，node 可測）＋ `pin-extract.test.js`（CI 用）
 ＋ `tools/pin-extract/verify.html`（拿 `IC-spec/` 的真 PDF 批次驗證，不上線）。
-`pdf-parser.js` 已刪除。
+`pdf-parser.js`（已刪除，2026-08-14 由 `pin-extract.js` 取代） 已刪除。
 
 **壞在哪**：舊版把整頁文字 `join(' ')` 成一長串再套兩條 regex。表格的欄位結構在
 join 的那一刻就沒了，所以抽到的是頁尾版權年份與章節標題。
@@ -323,11 +332,60 @@ join 的那一刻就沒了，所以抽到的是頁尾版權年份與章節標題
 
 最後量到的安全性（148 份有產出的）：**51 份完全沒警告，其中只有 3 份是錯的**
 （TPS25751A、CC2755P10、CC2755R10）；其餘 97 份都至少帶一條警告。
-**這幾個數字每次改抽取規則都要用 `verify.html` 重量，不准用推的。**
+**這幾個數字每次改抽取規則都要用 `tools/pin-extract/verify.html` 重量，不准用推的。**
 
 **已知還沒解的**：跨很多頁的大表（CC3300MOD 是 65 腳橫跨 4 頁，只抽到前 8 腳）——
 續頁的續讀還是會停。現在靠「datasheet 說 65 腳、只抽到 8 腳」的對帳警告擋住，
 不會安靜地給錯的東西，但也還沒真的抽全。
+
+---
+
+## 7f. 上線那一輪的關鍵設定（2026-08-15）
+
+改這些之前先看，每一項都是踩過才長這樣。
+
+### 部署（Cloudflare Workers 靜態資產）
+
+四個檔控制部署，全在 repo：`wrangler.jsonc`／`.assetsignore`／`_headers`／`_redirects`。
+
+| 設定 | 為什麼非這樣不可 |
+|---|---|
+| `wrangler.jsonc` 存在 | **沒有它 Cloudflare 會自動產一份** `assets.directory: "."`，把 `.git/`、`supabase/`、所有內部 `.md` 放上公開網站（實測 `/.git/config` 回 200） |
+| `html_handling: "none"` | 預設會把 `/news.html` 307 導到 `/news`，但全站連結與 canonical 都寫 `.html`，會變成每次導覽多一次轉址、canonical 指向沒在服務的網址 |
+| `_redirects` 的 `/ /index.html 200` | 上一項的副作用是根路徑變 404。**要用改寫（200）不是轉址**，網址列不變才對得上 index 的 canonical |
+| `routes` + `custom_domain` | 「只有靜態資產」的 Worker，儀表板沒有 Domains & Routes 那區，自訂網域只能寫在設定檔 |
+| `workers_dev: false` | 同一份內容掛多個網址＝重複內容；而且 `create-order` 的 `ClientBackURL` 取 request origin，付款不該有第二個入口 |
+
+改完**一定要實際 curl 幾個不該公開的路徑確認是 404**，不要只看建置成功。
+
+### 註冊改用驗證碼（不是連結）
+
+三處必須一致，只改一處就會壞：
+
+| 檔 | 做什麼 |
+|---|---|
+| `supabase/email-templates/confirm-signup.html` | `{{ .Token }}`（**不是** `{{ .ConfirmationURL }}`） |
+| `auth.js` | `verifySignup()` 走 `verifyOtp({type:'signup'})`、`resendSignup()` 重寄 |
+| `login.html` | 註冊後切驗證碼步驟；登入遇「未驗證」會自動重寄並切過去 |
+
+**畫面文案不准寫死位數**：位數由 Supabase 的 Email OTP length 決定（站主目前設 8），
+寫「6 位數」就會跟實際不符。
+
+### 資料庫備份
+
+secret 只有一個：**`SUPABASE_DB_PASSWORD`，值是密碼本身**（不是連線字串）。
+主機／使用者／port 寫死在 workflow 的 `env`，因為那三個值連續害我們失敗三次：
+
+| 症狀 | 真因 |
+|---|---|
+| `socket "@@]@db...supabase.co/.s.PGSQL.5432"` | 密碼含 `@` `]` 沒編碼，URI 被切錯 |
+| 連不上 | Direct connection 主機只有 IPv6，GitHub Actions 沒 IPv6 → 要用 Session pooler |
+| `password authentication failed for user "postgres"` | **不是使用者名稱錯**。pooler 就是這樣顯示，`.<ref>` 只用於路由。真因是密碼 |
+
+### 免費層做不到的事
+
+**Leaked password protection 是 Pro 方案才有的**（畫面自己寫 "Only available on Pro plan and above"）。
+免費層的替代：把 Minimum password length 從 6 調到 8、Password requirements 選有字元要求的。
 
 ---
 
@@ -355,8 +413,8 @@ join 的那一刻就沒了，所以抽到的是頁尾版權年份與章節標題
 - **符號庫早就存在，我沒用**：`schematic-symbols.js` 檔頭就寫著風格參考。自己刻方框＝跟知識庫完全不同調。
 - **`Sym` 的 `opt.label` / `showPins` 一律不能用**：那些字是 8-10px，低於本專案 ≥11。要標就自己用 `T()` 畫。
 - **符號比方框佔空間**：先切帶（標題/電路/說明）再放元件。
-- **符號庫缺的東西自己組，不要包 `transform`**（檢查器讀不到）：`light.js` 的 `diodeV`、
-  `batch11.js` 的 `pnpUp`、`batch12.js` 的 `coilV`/`capH`/`diodeHL`/`fuse`、`knowledge-circuits2.js` 的 `dioV`。
+- **符號庫缺的東西自己組，不要包 `transform`**（檢查器讀不到）：`tools/interview-diagrams/light.js` 的 `diodeV`、
+  `tools/interview-diagrams/batch11.js` 的 `pnpUp`、`tools/interview-diagrams/batch12.js` 的 `coilV`/`capH`/`diodeHL`/`fuse`、`knowledge-circuits2.js` 的 `dioV`。
 - **`Sym.npn` 的 C/E 寫死（上 C 下 E），`pnp:true` 只換箭頭**，而且那個箭頭方向與它自己的註解不一致。
 - **文字中心落在方框內是合法的**（檢查器當成該框的標題），所以 IC 腳名寫框內最省事。
 - **一張圖擠 20 個元件時先畫樓層平面**：每個縱向欄位只給一個網路，橫向匯流排只留兩條。
@@ -394,3 +452,21 @@ join 的那一刻就沒了，所以抽到的是頁尾版權年份與章節標題
 - **`main` 是 flex item 又帶 `margin:0 auto`**：給 SVG 固定寬會把整頁撐寬出現橫捲。
 - **seed 抽題時把 SVG 剝掉了**：DB 只剩空的 `<div class="exam-diagram-box"></div>`，而 ja/ko 反而有圖。
   遇到「圖不見了」先查 DB 欄位，不要假設是前端問題。
+
+**上線／部署（2026-08-15 新增）**
+
+- **部署設定沒收進 repo，代管平台會自己產一份**——Cloudflare 產的那份把整個工作目錄當網站上傳。
+  部署後要**實際 curl 幾個不該公開的路徑**確認 404，不能只看「建置成功」。
+- **只看 HTTP 狀態碼會漏掉轉址**：`/news.html` 回 200，但那是 307 之後的 200。
+  驗網址行為看 `curl -I` 的第一行與 `Location`，不要用 `-L` 之後的狀態碼下結論。
+- **排除檔案前先掃三種引用**：HTML 的 `src/href`、程式裡的 `fetch()`、
+  以及 `createElement('script')` 這種動態插入（`pcb-3d.js` 就是這樣載 three.js）。
+  差點把網站在用的 `ai-checker.js`、`schematic-check.js` 當 CI 工具排掉。
+- **錯誤訊息會指向錯的地方**：pooler 回 `password authentication failed for user "postgres"`，
+  我據此判斷「使用者名稱少了 .<ref>」並要使用者改——**那是誤判**，pooler 本來就這樣顯示。
+  同一個症狀連錯三輪之後才改設計：把固定值寫死、只留一個變因。
+  **同一個東西連錯兩次就該換設計，不是換參數。**
+- **付費功能會長得像設定沒開**：Leaked password protection 顯示 DISABLED 但點不動，
+  因為它是 Pro 專屬。叫使用者去開之前先確認方案有沒有那一項。
+- **大檔貼不進 Web SQL Editor**：內嵌 SVG 讓單行 20–50 KB，整檔貼會被截斷，
+  症狀是 `syntax error at end of input`。拆檔時**逐字驗證與原檔一致**再交出去。
