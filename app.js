@@ -1436,7 +1436,10 @@ const app = {
     if (!host) return;
     const schema = this.paramSchemaFor(comp.type);
     const p = comp.params || {};
-    const esc = s => String(s == null ? '' : s).replace(/"/g, '&quot;');
+    // 只跳脫 " 擋得住屬性語境，擋不住下面 textarea 的元素語境：
+    // params.__notes 帶 </textarea><img onerror=...> 就能跳出去執行（匯入的 .json 即可觸發）。
+    const ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ESC_MAP[c]);
     // 顏色/大小移到左上樣式列。文字內容保留（亦可雙擊編輯）。
     // 硬規矩 6：畫面上的字一律四語。PARAM_SCHEMA 的標籤與選項留中文當字典 key，
     // 顯示時才翻（uiT）；option 的 value 一定要保持中文原文，否則存進 comp.params 的值會跟著語言跑掉。

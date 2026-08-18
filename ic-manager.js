@@ -1,4 +1,9 @@
 // IC Manager Module
+// pin 表的值會插進屬性語境；不跳脫的話，存進來的腳號/腳名可以帶 onfocus= 之類的東西跳出屬性。
+function icEsc(v) {
+  const M = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
+  return String(v == null ? '' : v).replace(/[&<>"]/g, c => M[c]);
+}
 const ICManager = {
   ics: [],
 
@@ -51,7 +56,7 @@ const ICManager = {
     for (const ic of this.ics) {
       const card = document.createElement('div');
       card.className = 'component-button';
-      card.innerHTML = `<span class="schematic-mini chip-mini">IC</span><span>${ic.name}</span>`;
+      card.innerHTML = `<span class="schematic-mini chip-mini">IC</span><span>${icEsc(ic.name)}</span>`;
       card.dataset.icId = ic.id;
       container.appendChild(card);
     }
@@ -84,8 +89,8 @@ const ICManager = {
     const row = document.createElement('div');
     row.className = 'pin-row';
     row.innerHTML = `
-      <input type="text" placeholder="1" value="${pin.number || ''}" data-field="number" />
-      <input type="text" placeholder="VCC" value="${pin.name || ''}" data-field="name" />
+      <input type="text" placeholder="1" value="${icEsc(pin.number)}" data-field="number" />
+      <input type="text" placeholder="VCC" value="${icEsc(pin.name)}" data-field="name" />
       <select data-field="type">
         <option value="power" ${pin.type === 'power' ? 'selected' : ''}>Power</option>
         <option value="ground" ${pin.type === 'ground' ? 'selected' : ''}>GND</option>
