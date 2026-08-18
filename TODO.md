@@ -48,7 +48,7 @@
 
 | # | 項目 | 內容 | 狀態 |
 |---|---|---|---|
-| D1 | 資安總檢 | 全站盤點：RLS policies 實測（匿名/免費/VIP 各角色實打）、export-gateway 額度繞過測試、webhook 偽造/重放實測、PCB `pcb_access` 硬鎖 vs 前端邀請碼門面、XSS（esc() 覆蓋率）、依賴（supabase-js CDN 版本）、secrets 不落前端複查 | ✅ 2026-08-18 完成。9 項發現，已修 7 項（XSS、webhook 錯誤處理、續購累加、競態、額度白名單、Origin 白名單、訂單節流）＋ D-4 CDN 自代管。**未修：D-1 付費前端誠信制（待產品決策）**。報告在本機 SECURITY-AUDIT-D1.md（不進 git） |
+| D1 | 資安總檢 | 全站盤點：RLS policies 實測（匿名/免費/VIP 各角色實打）、export-gateway 額度繞過測試、webhook 偽造/重放實測、PCB `pcb_access` 硬鎖 vs 前端邀請碼門面、XSS（esc() 覆蓋率）、依賴（supabase-js CDN 版本）、secrets 不落前端複查 | ✅ 2026-08-18 完成。9 項發現，已修 7 項（XSS、webhook 錯誤處理、續購累加、競態、額度白名單、Origin 白名單、訂單節流）＋ D-4 CDN 自代管。D-1 已處理其中兩項：邀請碼機制整個移除（PCB 改 12 個月方案專屬，權限只認 profiles.pcb_access）、pcb-viewer 不再信 localStorage。**仍未修：PCB 工具本身在瀏覽器端跑、匯出檔案在前端產生**。報告在本機 SECURITY-AUDIT-D1.md（不進 git） |
 
 ## E. 長期（PROJECT_ROADMAP 第二/三階段殘餘）
 

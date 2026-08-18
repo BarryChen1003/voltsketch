@@ -436,9 +436,9 @@ window.I18N = (function () {
     nw_rg_jp: { zh: "日本", en: "Japan", ja: "日本", ko: "일본" },
 
     // ---- PCB Layout 頁（工具面板/分頁/按鈕/狀態）----
-    pcb_gate_title: { zh: 'PCB Layout 邀請制', en: 'PCB Layout (invite only)', ja: 'PCB Layout（招待制）', ko: 'PCB Layout(초대제)' },
-    pcb_gate_enter: { zh: '進入', en: 'Enter', ja: '入る', ko: '입장' },
-    pcb_gate_ph:    { zh: '輸入邀請碼', en: 'Enter invite code', ja: '招待コードを入力', ko: '초대 코드 입력' },
+    pcb_gate_title: { zh: 'PCB Layout 為 12 個月方案專屬', en: 'PCB Layout is included with the 12-month plan', ja: 'PCB Layout は 12か月プラン専用です', ko: 'PCB Layout은 12개월 플랜 전용입니다' },
+    pcb_gate_buy:   { zh: '查看 12 個月方案', en: 'See the 12-month plan', ja: '12か月プランを見る', ko: '12개월 플랜 보기' },
+    pcb_gate_login: { zh: '已經購買了？請先登入', en: 'Already purchased? Sign in', ja: '購入済みですか？ログインしてください', ko: '이미 구매하셨나요? 로그인하세요' },
     pcb_new:        { zh: '+ 新建', en: '+ New', ja: '+ 新規', ko: '+ 새로 만들기' },
     pcb_save:       { zh: '💾 儲存', en: '💾 Save', ja: '💾 保存', ko: '💾 저장' },
     pcb_top_export: { zh: '📤 匯出', en: '📤 Export', ja: '📤 エクスポート', ko: '📤 내보내기' },

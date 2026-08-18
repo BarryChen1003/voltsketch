@@ -39,10 +39,11 @@
 </head>
 <body class="editor-lock">
   <script>
-    // 邀請碼守門（與 pcb.html 同一旗標）；?embed=1 = pcb.html 分頁內嵌，隱藏自身 topbar
-    // 沒旗標就退回 pcb.html——解鎖判斷（邀請碼／pcb_access／admin）只寫在那一頁，
-    // 有權限的人會在那裡被自動放行並設好旗標，再回來就進得來。
-    if (localStorage.getItem('pcb-invite-ok') !== '1') location.replace('pcb.html');
+    // 存取判準與 pcb.html 一致：profiles.pcb_access（或 admin）。
+    // 舊版看的是 localStorage 的 pcb-invite-ok 旗標，任何人開 F12 打一行 setItem
+    // 就能繞過；改成問後端的權限，並清掉那個殘留旗標。
+    // ?embed=1 = pcb.html 分頁內嵌，隱藏自身 topbar。
+    try { localStorage.removeItem('pcb-invite-ok'); } catch (e) { }
     if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('vs-embed');
   </script>
   <style>.vs-embed .topbar { display: none !important; }</style>
@@ -97,7 +98,7 @@
 
   <script src="./ic-data.js?v=43"></script>
   <script src="./skill-swap.js"></script>
-  <script src="./i18n.js?v=2026-08-18d"></script>
+  <script src="./i18n.js?v=2026-08-18e"></script>
   <script>
     const $ = id => document.getElementById(id);
     const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -358,6 +359,24 @@ ${rows}
     window.addEventListener('resize', draw);
 
     renderLayerUI(); draw();
+  </script>
+  <!-- 權限檢查需要這三支：這一頁原本完全沒有載 auth，所以問不到 pcb_access。 -->
+  <script src="./vendor/supabase-js-2.112.3.min.js"></script>
+  <script src="./auth-config.js?v=2026-07-04a"></script>
+  <script src="./auth.js?v=2026-08-15a"></script>
+  <script>
+    // 權限檢查放在頁尾：auth.js 載入之後才問得到。沒有權限就退回 pcb.html
+    // （那一頁會顯示「12 個月方案專屬」的說明）。查不到也退回——失敗要鎖住不是放行。
+    (function waitAuth(tries) {
+      if (window.Auth && Auth.enabled && Auth.enabled()) {
+        Auth.entitlements()
+          .then(function (e) { if (!(e && (e.pcb_access || e.role === 'admin'))) location.replace('pcb.html'); })
+          .catch(function () { location.replace('pcb.html'); });
+        return;
+      }
+      if (tries > 0) { setTimeout(function () { waitAuth(tries - 1); }, 200); return; }
+      location.replace('pcb.html');
+    })(25);
   </script>
 </body>
 </html>
