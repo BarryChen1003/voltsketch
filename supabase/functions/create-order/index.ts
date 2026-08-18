@@ -15,12 +15,26 @@ const PLANS: Record<string, { amount: number; desc: string }> = {
   vip_12m: { amount: 3000, desc: "HardwareAI VIP 12 個月(含面試題庫+PCB)" },  // 250/月＝最划算檔
 };
 
-const cors = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+// 只認自家網域。以前 CORS 開 * 且 ClientBackURL 直接取請求的 Origin，
+// 等於「付完款要跳去哪」由呼叫方決定；沒有理由這樣。
+const ALLOWED_ORIGINS = new Set([
+  "https://hardware-ai.org",
+  "https://www.hardware-ai.org",
+  "http://localhost:8099",       // 本機預覽
+]);
+const SITE_URL = "https://hardware-ai.org";
+
+function corsFor(req: Request): Record<string, string> {
+  const o = req.headers.get("origin") ?? "";
+  return {
+    "Access-Control-Allow-Origin": ALLOWED_ORIGINS.has(o) ? o : SITE_URL,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Vary": "Origin",
+  };
+}
 
 Deno.serve(async (req) => {
+  const cors = corsFor(req);
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   const json = (b: unknown, s = 200) =>
     new Response(JSON.stringify(b), { status: s, headers: { ...cors, "Content-Type": "application/json" } });
@@ -52,6 +66,14 @@ Deno.serve(async (req) => {
     const admin = createClient(
       Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
+
+    // 節流：一個帳號 10 分鐘內最多開 10 張單。正常人按不到這個數，
+    // 但沒有這道，任何登入帳號都能無限灌 orders 把免費層的 500MB 撐爆。
+    const since = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const { count, error: cntErr } = await admin.from("orders")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id).gte("created_at", since);
+    if (!cntErr && (count ?? 0) >= 10) return json({ error: "too_many_orders" }, 429);
     const tradeNo = ("VS" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8))
       .toUpperCase().slice(0, 20);
     const { error: insErr } = await admin.from("orders").insert({
@@ -76,7 +98,8 @@ Deno.serve(async (req) => {
       TradeDesc: p.desc,
       ItemName: p.desc,
       ReturnURL: returnUrl,                       // 綠界 server-to-server 通知
-      ClientBackURL: req.headers.get("origin") ?? "",  // 付完返回站上
+      ClientBackURL: ALLOWED_ORIGINS.has(req.headers.get("origin") ?? "")
+        ? (req.headers.get("origin") as string) : SITE_URL,   // 付完返回站上（白名單外一律回正式站）
       ChoosePayment: "ALL",
       EncryptType: "1",
       CustomField1: user.id,                      // 備援對帳（主對帳走 orders 表）

@@ -107,6 +107,8 @@ jobs:
       # 先證明它抓得到那些缺陷（前 7 條），再相信它。
       - name: ecpay-config.test（正式模式不准 fallback 沙盒）
         run: node ecpay-config.test.mjs
+      - name: plan-dates.test（續購日期：不吃掉剩餘天數、月底不溢位）
+        run: node plan-dates.test.mjs
 
       # 2g3) 同一張圖換語言＝字寬變、座標不變 → 中文乾淨不代表英文乾淨。
       #      鐵律類（重疊、塌陷線）四語都必須 0；棘輪類各語言各有基線（*.en/ja/ko.json），
