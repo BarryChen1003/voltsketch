@@ -13,7 +13,7 @@
 | A2 | Email 服務 | 對外聯絡信箱＋Supabase Auth SMTP（密碼重設/驗證信寄送品質）。同樣需站主本人開通，建議與 A0/A1 一起辦 | ✅ 2026-08-15 Resend SMTP 已接、DKIM/SPF/DMARC 綠勾、驗證碼模板已貼、實測收得到 |
 | A3 | 綠界特約商店 | 申請正式商店 → 取 MerchantID/HashKey/HashIV → `supabase secrets set` → ECPAY_ACTION_URL 換正式 → 真實小額測試 | 🔄 **2026-08-18 已送件**，等審核（3–5 工作天） |
 | A4 | 電子發票 | 正式收款（台灣）需開立發票：綠界電子發票加值服務或其他方案，接進 webhook 入帳流程 | ⬜ A3 之後 |
-| A5 | Supabase 正式部署核對 | 🔄 2026-08-15：建表 ✅、owner-unlock ✅、Site URL ✅、SMTP ✅、備份 ✅、**面試題 SQL 全部跑完 ✅**。**Functions 已部署 ✅ 2026-08-18**（create-order／ecpay-webhook --no-verify-jwt，走 --use-api 免 Docker）；沙盒 secrets 已設 |
+| A5 | Supabase 正式部署核對 | 🔄 2026-08-15：建表 ✅、owner-unlock ✅、Site URL ✅、SMTP ✅、備份 ✅、**面試題 SQL 全部跑完 ✅**。**Functions 已部署 ✅ 2026-08-18**（create-order／ecpay-webhook --no-verify-jwt，走 --use-api 免 Docker）；沙盒 secrets 已設。**2026-08-18 全部補完**：observability 兩張表（先前實測不存在，已補跑並驗證 201）、額度白名單、Functions 二次部署（D-2/3/6/7/8 已生效，CORS 白名單實打驗過） |
 
 ## B. 工程（可自主）
 
@@ -48,7 +48,7 @@
 
 | # | 項目 | 內容 | 狀態 |
 |---|---|---|---|
-| D1 | 資安總檢 | 全站盤點：RLS policies 實測（匿名/免費/VIP 各角色實打）、export-gateway 額度繞過測試、webhook 偽造/重放實測、PCB `pcb_access` 硬鎖 vs 前端邀請碼門面、XSS（esc() 覆蓋率）、依賴（supabase-js CDN 版本）、secrets 不落前端複查 | ⏸ 指定最終步 |
+| D1 | 資安總檢 | 全站盤點：RLS policies 實測（匿名/免費/VIP 各角色實打）、export-gateway 額度繞過測試、webhook 偽造/重放實測、PCB `pcb_access` 硬鎖 vs 前端邀請碼門面、XSS（esc() 覆蓋率）、依賴（supabase-js CDN 版本）、secrets 不落前端複查 | ✅ 2026-08-18 完成。9 項發現，已修 7 項（XSS、webhook 錯誤處理、續購累加、競態、額度白名單、Origin 白名單、訂單節流）＋ D-4 CDN 自代管。**未修：D-1 付費前端誠信制（待產品決策）**。報告在本機 SECURITY-AUDIT-D1.md（不進 git） |
 
 ## E. 長期（PROJECT_ROADMAP 第二/三階段殘餘）
 
