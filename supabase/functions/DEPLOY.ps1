@@ -44,8 +44,13 @@ sb secrets set `
 #   ECPAY_ACTION_URL=https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5
 
 # 4) 部署兩個 function
+#
+# ⚠ ecpay-webhook 一定要帶 --no-verify-jwt。綠界是 server-to-server 通知，
+#   不會帶 Authorization 標頭；沒關掉 JWT 驗證的話，每一筆付款通知都會被
+#   Supabase 擋在我們的程式之前（401）。症狀是「錢收了、VIP 沒開通」，
+#   而且函式 log 裡什麼都看不到——請求根本沒進到函式。
 sb functions deploy create-order
-sb functions deploy ecpay-webhook
+sb functions deploy ecpay-webhook --no-verify-jwt
 
 # 5) 驗證：到 upgrade.html 按方案 → 應被導到綠界測試付款頁；
 #    測試卡：4311-9522-2222-2222，任一未過期年月，任一 3 碼 CVV。
