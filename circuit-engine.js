@@ -149,33 +149,24 @@
   }
 
   /**
-   * 從元件清單收集 net 標籤。兩種來源，行為相同：
-   *   - text 元件綁到某個座標（netAt）→ 那個點所在的 net 取這個名字
-   *   - vrail 電壓符號 → 它的接腳位置就是綁定點，label 就是名字
-   * 名字相同的標籤會被併成同一個 net（跨圖連接，不必真的拉線過去）。
+   * 收集 net 標籤。**唯一來源是導線自己的 `net` 欄位**。
+   *
+   * 為什麼不是綁座標（2026-08-18 改）：上一版把標籤綁在一個絕對座標上，
+   * 導線一被拖動或因為接腳移動而重算，座標就留在原地，綁定會安靜失效——
+   * 使用者看到名字還在，但那條 net 其實已經沒有名字了。名字存在導線本身就沒這問題。
+   *
+   * 電壓符號(vrail)**不參與**這裡。它只是一個可以移動的符號，
+   * 要讓它所在的 net 有名字，就跟其它元件一樣：把名字設在它接的那條導線上。
    */
-  function collectNetLabels(components) {
+  function collectNetLabels(components, wires) {
     const out = [];
-    (components || []).forEach(c => {
-      if (c.type === 'text' && c.netAt && c.text) {
-        out.push({ x: c.netAt.x, y: c.netAt.y, name: String(c.text).trim(), src: c.id });
-      } else if (c.type === 'vrail') {
-        const name = railNetName(c);
-        if (name) {
-          const p = getPins(c)[0];
-          if (p) out.push({ x: p.x, y: p.y, name, src: c.id });
-        }
-      }
+    (wires || []).forEach((w, i) => {
+      const name = (w.net == null ? '' : String(w.net)).trim();
+      if (!name) return;
+      // 取線段中點當併入點：它一定在這條線上，線怎麼移動都跟著
+      out.push({ x: (w.x1 + w.x2) / 2, y: (w.y1 + w.y2) / 2, name: name, src: 'w' + i });
     });
-    return out.filter(l => l.name);
-  }
-
-  /** 電壓符號的 net 名：優先用標籤，沒填才退回電壓值（12 → "12V"）。 */
-  function railNetName(c) {
-    const lab = (c.label == null ? '' : String(c.label)).trim();
-    if (lab) return lab;
-    const v = c.value;
-    return (v === '' || v == null || Number.isNaN(Number(v))) ? '' : String(v) + 'V';
+    return out;
   }
 
   /**
@@ -195,7 +186,7 @@
       pts.push({ x: w.x2, y: w.y2, kind: 'wire', key: 'w' + i + ':b', wi: i });
     });
     // 標籤也當成點參與 union，這樣「標籤貼在線上」就自動併進那條 net
-    const labels = collectNetLabels(components);
+    const labels = collectNetLabels(components, wires);
     const labelIdx = [];
     labels.forEach((l, li) => {
       labelIdx.push(pts.length);
@@ -367,6 +358,6 @@
 
   global.CircuitEngine = {
     PinDefs, FALSTAD_SUPPORTED, getPins, snapTarget, computeNets, toFalstad, falstadURL, dist, junctions, icLayout, onSegInterior,
-    collectNetLabels, railNetName
+    collectNetLabels
   };
 })(typeof window !== 'undefined' ? window : this);

@@ -1502,9 +1502,11 @@ const app = {
     let html = (comp.type === 'text' ? `<label><span>${uiT('文字內容')}</span><input type="text" data-prop="text" value="${esc(comp.text || '')}"/></label>` : '');
     // Net 命名：文字綁到一條導線之後，那條 net 就叫這個名字；同名的 net 會被視為相連。
     if (comp.type === 'text') {
-      const bound = !!comp.netAt;
+      const nm = String(comp.text || '').trim();
+      const segs = nm ? this.state.wires.filter(w => w.net === nm).length : 0;
+      const bound = segs > 0;
       html += `<div style="margin:6px 0 2px;font-size:12px;color:${bound ? '#15803d' : '#64748b'}">`
-        + (bound ? uiT('已綁定到導線：這條 net 叫「{n}」', { n: comp.text || '' }) : uiT('尚未綁定：目前只是純文字註解'))
+        + (bound ? uiT('已命名 {n} 段導線為「{name}」', { n: segs, name: nm }) : uiT('尚未綁定：目前只是純文字註解'))
         + `</div>`
         + `<div style="display:flex;gap:6px;flex-wrap:wrap">`
         + `<button type="button" class="small-button" data-netbind="${comp.id}">${bound ? uiT('重新指定 Net') : uiT('指定 Net（點一條線）')}</button>`
@@ -1529,7 +1531,8 @@ const app = {
       const c = this.state.components.find(x => x.id === unbindBtn.dataset.netunbind);
       if (!c) return;
       this.saveUndo();
-      delete c.netAt;
+      this.clearNetName(String(c.text || '').trim());
+      delete c.netWire; delete c.netAt;
       this.render(); this.renderParamFields(c); this.schedulePersist();
       this.showToast(uiT('已取消綁定，這段文字回到純註解'));
     });
@@ -1574,25 +1577,63 @@ const app = {
   finishNetBind(pt) {
     const c = this.state.components.find(x => x.id === this.state.netBindFor);
     if (!c) { this.cancelNetBind(); return; }
-    // 先找線；沒點到線就找接腳（直接命名某支腳所在的 net 也合理）
-    let target = this.wirePointAt(pt.x, pt.y, 12);
-    if (!target) {
-      const E = window.CircuitEngine;
-      let bestD = 14;
-      this.state.components.forEach(cc => {
-        if (cc.id === c.id || cc.type === 'text') return;
-        E.getPins(cc).forEach(p => {
-          const d = Math.hypot(pt.x - p.x, pt.y - p.y);
-          if (d < bestD) { bestD = d; target = { x: p.x, y: p.y }; }
-        });
-      });
-    }
-    if (!target) { this.showToast(uiT('那裡沒有線也沒有接腳，再點一次')); return; }
+    const wi = this.wireIndexAt(pt.x, pt.y, 12);
+    if (wi < 0) { this.showToast(uiT('那裡沒有導線，請點在線上')); return; }
+    const name = String(c.text || '').trim();
+    if (!name) { this.showToast(uiT('先填文字內容，才知道這條 net 要叫什麼')); return; }
     this.saveUndo();
-    c.netAt = { x: target.x, y: target.y };
+    // 名字寫進導線本身：導線之後怎麼移動、怎麼被接腳牽動，名字都跟著走。
+    // 同一條實體 net 上的每一段導線都要標到，才算整條有名字——所以連通的線一起標。
+    const marked = this.markConnectedWires(wi, name);
+    c.netWire = name;                 // 文字記住自己命名了誰，純粹為了顯示與解除
     this.cancelNetBind();
     this.render(); this.renderParamFields(c); this.schedulePersist();
-    this.showToast(uiT('這條 net 現在叫「{n}」', { n: c.text }));
+    this.showToast(uiT('已命名 {n} 段導線為「{name}」', { n: marked, name: name }));
+  },
+
+  // 點擊落在第幾條導線上（回傳索引，沒有則 -1）
+  wireIndexAt(x, y, tol) {
+    tol = tol || 10;
+    let best = -1, bestD = tol;
+    this.state.wires.forEach((w, i) => {
+      const dx = w.x2 - w.x1, dy = w.y2 - w.y1, L2 = dx * dx + dy * dy;
+      let px, py;
+      if (L2 === 0) { px = w.x1; py = w.y1; }
+      else {
+        let t = ((x - w.x1) * dx + (y - w.y1) * dy) / L2;
+        t = Math.max(0, Math.min(1, t));
+        px = w.x1 + t * dx; py = w.y1 + t * dy;
+      }
+      const d = Math.hypot(x - px, y - py);
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    return best;
+  },
+
+  // 從某條導線出發，把電氣上相連的每一段都標成同一個 net 名。
+  // 使用者是點「一條線」，但一條 net 常常是好幾段折線接起來的；
+  // 只標點到的那一段，匯出時另外幾段仍然無名。
+  markConnectedWires(startIndex, name) {
+    const E = window.CircuitEngine;
+    const nets = E.computeNets(this.state.components, this.state.wires);
+    const rootOf = (i) => {
+      const p = nets.pts.findIndex(pt => pt.kind === 'wire' && pt.wi === i);
+      return p < 0 ? null : nets.find(p);
+    };
+    const target = rootOf(startIndex);
+    let count = 0;
+    this.state.wires.forEach((w, i) => {
+      if (target != null && rootOf(i) === target) { w.net = name; count++; }
+    });
+    if (count === 0) { this.state.wires[startIndex].net = name; count = 1; }
+    return count;
+  },
+
+  // 解除：把這個名字從所有導線上清掉
+  clearNetName(name) {
+    let n = 0;
+    this.state.wires.forEach(w => { if (w.net === name) { delete w.net; n++; } });
+    return n;
   },
 
   // ---- 線路圖 PDF 匯出（整張，自動框全部）----
@@ -2511,14 +2552,27 @@ const app = {
       const js = window.CircuitEngine.junctions(this.state.components, this.state.wires);
       html += js.map(j => `<circle cx="${j.x}" cy="${j.y}" r="3.6" fill="#2563eb"/>`).join('');
     }
-    // Net 命名的牽引線：從文字拉一條虛線到它命名的那個點，讓「這個名字是給哪條線的」看得出來。
-    // 畫在導線層的絕對座標上，不受文字元件本身的旋轉/縮放影響。
-    this.state.components.forEach(c => {
-      if (c.type !== 'text' || !c.netAt) return;
-      const col = c.color || '#0f172a';
-      html += `<line x1="${c.x}" y1="${c.y + 6}" x2="${c.netAt.x}" y2="${c.netAt.y}" stroke="${col}" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.75"/>`
-        + `<circle cx="${c.netAt.x}" cy="${c.netAt.y}" r="3.2" fill="none" stroke="${col}" stroke-width="1.6"/>`;
-    });
+    // 有名字的導線：把名字畫在線上方（同真實 EDA 的 net label 畫法）。
+    // 一條 net 可能由多段折線組成，只在最長的那一段標一次，不然同一個名字會沿路重複。
+    {
+      const byName = {};
+      this.state.wires.forEach((w, i) => {
+        const nm = (w.net == null ? '' : String(w.net)).trim();
+        if (!nm) return;
+        const len = Math.hypot(w.x2 - w.x1, w.y2 - w.y1);
+        if (!byName[nm] || len > byName[nm].len) byName[nm] = { w, len, i };
+      });
+      Object.keys(byName).forEach(nm => {
+        const w = byName[nm].w;
+        const mx = (w.x1 + w.x2) / 2, my = (w.y1 + w.y2) / 2;
+        const horiz = Math.abs(w.x2 - w.x1) >= Math.abs(w.y2 - w.y1);
+        const esc = String(nm).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+        // 水平線把字放上方；垂直線把字轉 90 度貼著線，兩種都不會壓到線本身
+        html += horiz
+          ? `<text x="${mx}" y="${my - 6}" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8" font-family="system-ui,sans-serif">${esc}</text>`
+          : `<text x="${mx - 6}" y="${my}" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8" font-family="system-ui,sans-serif" transform="rotate(-90 ${mx - 6} ${my})">${esc}</text>`;
+      });
+    }
     this.els.wireLayer.innerHTML = html;
   },
 
@@ -2598,7 +2652,9 @@ const app = {
           // 電壓符號：橫桿 + 往下的接腳，名字寫在桿上方（同使用者提供的圖）。
           // 名字就是 net 名——兩顆同名的電壓符號會被 computeNets 併成同一條 net。
           const rc = sc || '#1f4fd1';
-          const nm = window.CircuitEngine ? CircuitEngine.railNetName(c) : (c.label || '');
+          // 純顯示：標籤優先，沒填才用電壓值。它不參與 net 命名（net 名設在導線上）。
+          const lab = (c.label == null ? '' : String(c.label)).trim();
+          const nm = lab || ((c.value === '' || c.value == null || Number.isNaN(Number(c.value))) ? '' : c.value + 'V');
           const escR = t => String(t == null ? '' : t).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
           inner = `<line x1="-22" y1="0" x2="22" y2="0" stroke="${rc}" stroke-width="2.5" stroke-linecap="round"/>`
             + `<line x1="0" y1="0" x2="0" y2="14" stroke="${rc}" stroke-width="2.5" stroke-linecap="round"/>`;

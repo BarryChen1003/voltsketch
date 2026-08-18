@@ -1,7 +1,13 @@
 /**
  * net-label.test.js — net 命名的守衛。
  *
- * 先證明「沒有標籤時 net 是匿名的」，再證明每一條命名規則真的生效。
+ * 模型（2026-08-18 修正）：**net 名字存在導線的 `net` 欄位上**。
+ *   - 文字元件只是輸入與顯示的手段，本身不是名字的所在地。
+ *   - 電壓符號(vrail) **不參與** net 命名，它只是一個可移動的符號。
+ *
+ * 上一版把名字綁在一個絕對座標上，而且讓 vrail 也當標籤，兩者都被使用者退回。
+ * 這裡逐條把「退回的行為」寫成反向斷言，避免再犯。
+ *
  * 跑法：node net-label.test.js
  */
 'use strict';
@@ -13,115 +19,122 @@ const E = global.window.CircuitEngine;
 let pass = 0, fail = 0;
 function ok(name, cond, extra) {
   if (cond) { pass++; return; }
-  fail++;
-  console.log('  FAIL: ' + name + (extra ? '  → ' + extra : ''));
+  fail++; console.log('  FAIL: ' + name + (extra ? '  → ' + extra : ''));
 }
 function eq(name, got, want) { ok(name, got === want, 'got ' + JSON.stringify(got) + ' want ' + JSON.stringify(want)); }
 
-// 兩顆電阻用一條線接起來：R1.b(24,0)+(100,100) → (124,100)，線到 (224,100)=R2.a
 const R1 = { id: 'r1', type: 'resistor', x: 100, y: 100, rotation: 0 };
-const R2 = { id: 'r2', type: 'resistor', x: 248, y: 100, rotation: 0 };  // a 腳在 224,100
-const WIRE = { x1: 124, y1: 100, x2: 224, y2: 100 };
+const R2 = { id: 'r2', type: 'resistor', x: 248, y: 100, rotation: 0 };
 
-// ---- 1) 基準：沒有標籤 → 有連線但沒有名字 ----
+// ---- 1) 基準：導線沒有 net 欄位 → net 無名 ----
 {
-  const n = E.computeNets([R1, R2], [WIRE]);
-  ok('無標籤時兩腳同 net', n.pinNet.get('r1:1') === n.pinNet.get('r2:0'));
-  eq('無標籤時沒有名字', n.nameOfPin('r1:1'), '');
-  eq('無標籤時 netName 是空的', n.netName.size, 0);
+  const w = { x1: 124, y1: 100, x2: 224, y2: 100 };
+  const n = E.computeNets([R1, R2], [w]);
+  ok('無名時兩腳仍同 net', n.pinNet.get('r1:1') === n.pinNet.get('r2:0'));
+  eq('無名時 nameOfPin 為空', n.nameOfPin('r1:1'), '');
 }
 
-// ---- 2) text 綁到線上 → 那條 net 有名字 ----
+// ---- 2) 名字設在導線上 → 該 net 有名字 ----
 {
-  const label = { id: 't1', type: 'text', x: 174, y: 70, text: 'P3V3_BMC', netAt: { x: 174, y: 100 } };
-  const n = E.computeNets([R1, R2, label], [WIRE]);
-  eq('text 綁定後 net 有名字', n.nameOfPin('r1:1'), 'P3V3_BMC');
-  eq('同一條 net 兩端都拿到名字', n.nameOfPin('r2:0'), 'P3V3_BMC');
+  const w = { x1: 124, y1: 100, x2: 224, y2: 100, net: 'HMC_RST_N' };
+  const n = E.computeNets([R1, R2], [w]);
+  eq('導線帶 net 名，兩端接腳都拿得到', n.nameOfPin('r1:1'), 'HMC_RST_N');
+  eq('另一端也一樣', n.nameOfPin('r2:0'), 'HMC_RST_N');
 }
 
-// ---- 3) 沒綁定（netAt 缺）的純文字不影響 net ----
+// ---- 3) 名字跟著導線走：導線移動後仍然有效（這是改掉座標綁定的原因）----
 {
-  const floating = { id: 't2', type: 'text', x: 174, y: 70, text: '這只是註解' };
-  const n = E.computeNets([R1, R2, floating], [WIRE]);
-  eq('未綁定的文字不命名任何 net', n.nameOfPin('r1:1'), '');
-  eq('未綁定的文字不進標籤清單', n.netLabels.length, 0);
+  const w = { x1: 124, y1: 100, x2: 224, y2: 100, net: 'VBUS' };
+  const before = E.computeNets([R1, R2], [w]).nameOfPin('r1:1');
+  // 模擬導線被拖到別的地方（元件跟著移動）
+  const R1b = { id: 'r1', type: 'resistor', x: 100, y: 500, rotation: 0 };
+  const R2b = { id: 'r2', type: 'resistor', x: 248, y: 500, rotation: 0 };
+  const wMoved = { x1: 124, y1: 500, x2: 224, y2: 500, net: 'VBUS' };
+  const after = E.computeNets([R1b, R2b], [wMoved]).nameOfPin('r1:1');
+  eq('移動前有名字', before, 'VBUS');
+  eq('移動後名字還在（不會因為座標變了就失效）', after, 'VBUS');
 }
 
-// ---- 4) 同名標籤跨區 union：兩段不相連的線，同名 → 同一條 net ----
+// ---- 4) 同名導線跨區視為相連 ----
 {
-  // 左邊一段：R1.b —— 線 —— 開路端
-  const wA = { x1: 124, y1: 100, x2: 200, y2: 100 };
-  // 右邊另一段，完全不接觸：R3 在很遠的地方
   const R3 = { id: 'r3', type: 'resistor', x: 700, y: 400, rotation: 0 };
-  const wB = { x1: 724, y1: 400, x2: 800, y2: 400 };
-  const labA = { id: 'ta', type: 'text', x: 160, y: 70, text: '3V3_STBY', netAt: { x: 160, y: 100 } };
-  const labB = { id: 'tb', type: 'text', x: 760, y: 370, text: '3V3_STBY', netAt: { x: 760, y: 400 } };
-
-  const without = E.computeNets([R1, R3], [wA, wB]);
-  ok('沒有標籤時兩段是不同 net', without.pinNet.get('r1:1') !== without.pinNet.get('r3:1'));
-
-  const withL = E.computeNets([R1, R3, labA, labB], [wA, wB]);
-  ok('同名標籤把兩段併成同一條 net',
-    withL.pinNet.get('r1:1') === withL.pinNet.get('r3:1'),
-    'r1net=' + withL.pinNet.get('r1:1') + ' r3net=' + withL.pinNet.get('r3:1'));
-  eq('併起來之後名字一致', withL.nameOfPin('r3:1'), '3V3_STBY');
+  const wA = { x1: 124, y1: 100, x2: 200, y2: 100, net: '3V3_STBY' };
+  const wB = { x1: 724, y1: 400, x2: 800, y2: 400, net: '3V3_STBY' };
+  const without = E.computeNets([R1, R3], [{ x1: 124, y1: 100, x2: 200, y2: 100 }, { x1: 724, y1: 400, x2: 800, y2: 400 }]);
+  ok('沒名字時兩段是不同 net', without.pinNet.get('r1:1') !== without.pinNet.get('r3:1'));
+  const withL = E.computeNets([R1, R3], [wA, wB]);
+  ok('同名導線併成同一條 net', withL.pinNet.get('r1:1') === withL.pinNet.get('r3:1'));
 }
 
 // ---- 5) 不同名字不會被誤併 ----
 {
-  const wA = { x1: 124, y1: 100, x2: 200, y2: 100 };
   const R3 = { id: 'r3', type: 'resistor', x: 700, y: 400, rotation: 0 };
-  const wB = { x1: 724, y1: 400, x2: 800, y2: 400 };
-  const labA = { id: 'ta', type: 'text', x: 160, y: 70, text: 'VBUS', netAt: { x: 160, y: 100 } };
-  const labB = { id: 'tb', type: 'text', x: 760, y: 370, text: 'VSYS', netAt: { x: 760, y: 400 } };
-  const n = E.computeNets([R1, R3, labA, labB], [wA, wB]);
+  const n = E.computeNets([R1, R3], [
+    { x1: 124, y1: 100, x2: 200, y2: 100, net: 'VBUS' },
+    { x1: 724, y1: 400, x2: 800, y2: 400, net: 'VSYS' },
+  ]);
   ok('不同名字不相併', n.pinNet.get('r1:1') !== n.pinNet.get('r3:1'));
-  eq('各自拿到自己的名字 A', n.nameOfPin('r1:1'), 'VBUS');
-  eq('各自拿到自己的名字 B', n.nameOfPin('r3:1'), 'VSYS');
+  eq('各自的名字 A', n.nameOfPin('r1:1'), 'VBUS');
+  eq('各自的名字 B', n.nameOfPin('r3:1'), 'VSYS');
 }
 
-// ---- 6) vrail 電壓符號本身就是 net 標籤 ----
+// ---- 6) 空白名字不算標籤（否則所有無名 net 會被併成一條）----
 {
-  // vrail 腳在 (x, y+14)。放 (124, 86) → 腳在 (124,100) = R1.b
+  const R3 = { id: 'r3', type: 'resistor', x: 700, y: 400, rotation: 0 };
+  const n = E.computeNets([R1, R3], [
+    { x1: 124, y1: 100, x2: 200, y2: 100, net: '   ' },
+    { x1: 724, y1: 400, x2: 800, y2: 400, net: '' },
+  ]);
+  eq('空白不進標籤清單', n.netLabels.length, 0);
+  ok('空白不會把不相干的 net 併起來', n.pinNet.get('r1:1') !== n.pinNet.get('r3:1'));
+}
+
+// ---- 7) 使用者退回的行為 A：vrail 不准參與 net 命名 ----
+{
+  // vrail 腳在 (x, y+14)。放 (124,86) → 腳在 (124,100) = R1.b
   const rail = { id: 'v1', type: 'vrail', x: 124, y: 86, rotation: 0, label: 'P12V', value: 12 };
   const n = E.computeNets([R1, rail], []);
-  eq('vrail 命名它接到的 net', n.nameOfPin('r1:1'), 'P12V');
+  eq('vrail 的 label 不會變成 net 名', n.nameOfPin('r1:1'), '');
+  eq('vrail 不產生任何標籤', n.netLabels.length, 0);
 }
 
-// ---- 7) vrail 沒填名字 → 退回用電壓值當名字 ----
-{
-  const rail = { id: 'v2', type: 'vrail', x: 124, y: 86, rotation: 0, label: '', value: 3.3 };
-  const n = E.computeNets([R1, rail], []);
-  eq('vrail 無標籤時用電壓當名字', n.nameOfPin('r1:1'), '3.3V');
-}
-
-// ---- 8) vrail 兩顆同名 → 同一條 net（電源符號的重點行為）----
+// ---- 8) 使用者退回的行為 B：兩顆同名 vrail 不准自動併成一條 net ----
 {
   const R3 = { id: 'r3', type: 'resistor', x: 700, y: 400, rotation: 0 };
-  const v1 = { id: 'v1', type: 'vrail', x: 76, y: 86, rotation: 0, label: 'P3V3', value: 3.3 };   // 腳 (76,100)=R1.a
-  const v2 = { id: 'v2', type: 'vrail', x: 676, y: 386, rotation: 0, label: 'P3V3', value: 3.3 }; // 腳 (676,400)=R3.a
+  const v1 = { id: 'v1', type: 'vrail', x: 76, y: 86, rotation: 0, label: 'P3V3', value: 3.3 };
+  const v2 = { id: 'v2', type: 'vrail', x: 676, y: 386, rotation: 0, label: 'P3V3', value: 3.3 };
   const n = E.computeNets([R1, R3, v1, v2], []);
-  ok('同名電壓符號跨區相連', n.pinNet.get('r1:0') === n.pinNet.get('r3:0'));
-  eq('名字正確', n.nameOfPin('r3:0'), 'P3V3');
+  ok('同名 vrail 不會被自動連在一起（它只是個符號）',
+    n.pinNet.get('r1:0') !== n.pinNet.get('r3:0'));
 }
 
-// ---- 9) 同一條 net 被貼兩個不同名字 → 要報衝突，不能安靜吃掉 ----
+// ---- 9) vrail 仍然是正常元件：接到導線就參與連通 ----
 {
-  const labA = { id: 'ta', type: 'text', x: 150, y: 70, text: 'VBUS', netAt: { x: 150, y: 100 } };
-  const labB = { id: 'tb', type: 'text', x: 200, y: 70, text: 'VSYS', netAt: { x: 200, y: 100 } };
-  const n = E.computeNets([R1, R2, labA, labB], [WIRE]);
+  const rail = { id: 'v1', type: 'vrail', x: 124, y: 86, rotation: 0, label: 'P12V', value: 12 };
+  const w = { x1: 124, y1: 100, x2: 224, y2: 100, net: 'P12V_RAIL' };
+  const n = E.computeNets([R1, R2, rail], [w]);
+  ok('vrail 的腳與導線相連', n.pinNet.get('v1:0') === n.pinNet.get('r2:0'));
+  eq('那條 net 的名字來自導線', n.nameOfPin('v1:0'), 'P12V_RAIL');
+}
+
+// ---- 10) 同一條 net 上兩段導線給了不同名字 → 要報衝突 ----
+{
+  const n = E.computeNets([R1, R2], [
+    { x1: 124, y1: 100, x2: 174, y2: 100, net: 'VBUS' },
+    { x1: 174, y1: 100, x2: 224, y2: 100, net: 'VSYS' },
+  ]);
   ok('同一條 net 兩個名字要進 nameConflicts', n.nameConflicts.length >= 1,
-    'conflicts=' + JSON.stringify(n.nameConflicts));
+    JSON.stringify(n.nameConflicts));
 }
 
-// ---- 10) 空白名字不算標籤（避免空字串把所有無名 net 併成一條）----
+// ---- 11) 一條 net 由多段組成、全部標同名 → 不算衝突 ----
 {
-  const blank1 = { id: 'b1', type: 'text', x: 150, y: 70, text: '   ', netAt: { x: 150, y: 100 } };
-  const R3 = { id: 'r3', type: 'resistor', x: 700, y: 400, rotation: 0 };
-  const blank2 = { id: 'b2', type: 'text', x: 760, y: 370, text: '', netAt: { x: 760, y: 400 } };
-  const n = E.computeNets([R1, R3, blank1, blank2], [WIRE, { x1: 724, y1: 400, x2: 800, y2: 400 }]);
-  eq('空白標籤不進清單', n.netLabels.length, 0);
-  ok('空白標籤不會把不相干的 net 併起來', n.pinNet.get('r1:1') !== n.pinNet.get('r3:1'));
+  const n = E.computeNets([R1, R2], [
+    { x1: 124, y1: 100, x2: 174, y2: 100, net: 'SDA' },
+    { x1: 174, y1: 100, x2: 224, y2: 100, net: 'SDA' },
+  ]);
+  eq('多段同名不算衝突', n.nameConflicts.length, 0);
+  eq('名字正確', n.nameOfPin('r1:1'), 'SDA');
 }
 
 console.log('\nnet-label.test: ' + pass + ' passed, ' + fail + ' failed');
