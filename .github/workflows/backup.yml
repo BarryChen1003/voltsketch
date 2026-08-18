@@ -113,6 +113,41 @@ jobs:
           ls -lh "${OUT}.gz"
           echo "DUMP_FILE=${OUT}.gz" >> "$GITHUB_ENV"
 
+      # public 的每一張表都 references auth.users(id)，但 auth 不在 public 裡。
+      # 只還原 public 的話：使用者一個都沒有、外鍵全部指空、等於誰付過錢也認不出來。
+      # auth schema 屬於 supabase_auth_admin，這個角色不一定 dump 得動，
+      # 所以這步「允許失敗」——public 那份照樣產出，不要因為這步把整個備份弄壞。
+      - name: pg_dump auth（帳號；允許失敗）
+        id: authdump
+        if: steps.guard.outputs.ok == 'true'
+        continue-on-error: true
+        env:
+          RAW_PW: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          set -e
+          PGPASSWORD=$(printf '%s' "$RAW_PW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+          export PGPASSWORD
+          STAMP=$(date -u +%Y%m%d-%H%M)
+          OUT="supabase-auth-${STAMP}.sql"
+          # 只取還原身分真正需要的表；整個 auth schema 有大量 Supabase 內部狀態，還原反而會打架。
+          if pg_dump --no-owner --no-privileges --data-only \
+               --table=auth.users --table=auth.identities --file="$OUT" 2>dump-err.txt; then
+            gzip -9 "$OUT"
+            ls -lh "${OUT}.gz"
+            echo "AUTH_FILE=${OUT}.gz" >> "$GITHUB_ENV"
+            echo "auth 備份成功"
+          else
+            echo "::warning::auth schema dump 失敗，本次備份只有 public。訊息形狀如下（不印內容）："
+            sed -e 's/[A-Za-z0-9._%+-]*@[A-Za-z0-9.-]*/<redacted>/g' dump-err.txt | head -5
+            exit 1
+          fi
+
+      - name: 提醒 auth 沒備到
+        if: steps.guard.outputs.ok == 'true' && steps.authdump.outcome == 'failure'
+        run: |
+          echo "::warning::這份備份不含帳號資料。若要用它做災難還原，使用者、方案歸屬都救不回來。"
+          echo "::warning::處理方式見 BACKUP-RESTORE-DRILL.md（本機檔，未進 repo）。"
+
       - name: 上傳 artifact（僅協作者可下載，保留 90 天）
         if: steps.guard.outputs.ok == 'true'
         # v4 跑在 Node 20，GitHub 已標記棄用（現在是被強制拉到 Node 24 跑）。
@@ -121,6 +156,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: supabase-dump
-          path: ${{ env.DUMP_FILE }}
+          # 兩份都收；auth 那份失敗時 AUTH_FILE 是空的，多一行空 path 不影響上傳。
+          path: |
+            ${{ env.DUMP_FILE }}
+            ${{ env.AUTH_FILE }}
           retention-days: 90
           if-no-files-found: error
