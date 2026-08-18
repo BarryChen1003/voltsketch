@@ -1,0 +1,10 @@
+# vendor/ 是逐位元組保存的第三方程式庫：vendor-check.js 會比對 SHA-256。
+# core.autocrlf=true 在 Windows 上會改寫換行，一旦某支檔案含 CRLF，
+# repo 裡的內容就會跟當初算雜湊的檔案不同，CI（Linux）會出現
+# 「本機過、線上紅」而且原因很難看出來。-text = git 完全不要碰。
+vendor/** -text
+
+# 這些也是逐位元組比對或有固定格式的，一併不要轉換
+*.pdf binary
+*.png binary
+*.woff2 binary
