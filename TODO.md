@@ -9,11 +9,11 @@
 | # | 項目 | 內容 | 狀態 |
 |---|---|---|---|
 | A0 | **正式網域** | github.io 為暫時網址，成品後換自訂網域並關閉舊址。遷移 checklist（工程端屆時執行）：canonical/OG URL 全站改、Supabase Auth redirect URL、ECPay ReturnURL/ClientBackURL、CORS、GitHub Pages custom domain + HTTPS、（可能）舊址 301 | ✅ 2026-08-15 `hardware-ai.org` 上線（Cloudflare Workers）；canonical/sitemap/robots/security.txt 全站已換 |
-| A1 | Search Console + GA4 | **必須站主本人 Google 帳號登入操作**（工程端只能備 meta 驗證檔/sitemap＋一步步指引，不能代登入）。⚠️ 建議**等 A0 網域定案再辦**——現在對 github.io 驗證，換網域要整套重來 | ⬜ **A0 已完成，現在可以辦了** |
+| A1 | Search Console + GA4 | **必須站主本人 Google 帳號登入操作**（工程端只能備 meta 驗證檔/sitemap＋一步步指引，不能代登入）。⚠️ 建議**等 A0 網域定案再辦**——現在對 github.io 驗證，換網域要整套重來 | 🔄 Search Console ✅ 2026-08-18（網域名稱供應商驗證）；GA4 暫緩（改用站內 observe.js，見 D-9） |
 | A2 | Email 服務 | 對外聯絡信箱＋Supabase Auth SMTP（密碼重設/驗證信寄送品質）。同樣需站主本人開通，建議與 A0/A1 一起辦 | ✅ 2026-08-15 Resend SMTP 已接、DKIM/SPF/DMARC 綠勾、驗證碼模板已貼、實測收得到 |
-| A3 | 綠界特約商店 | 申請正式商店（個人賣家或公司）→ 取 MerchantID/HashKey/HashIV → `supabase secrets set` → ECPAY_ACTION_URL 換正式 → 真實小額測試（沙盒 E2E 已過） | ❌ **還沒送件**。3–5 工作天，建議先送 |
+| A3 | 綠界特約商店 | 申請正式商店 → 取 MerchantID/HashKey/HashIV → `supabase secrets set` → ECPAY_ACTION_URL 換正式 → 真實小額測試 | 🔄 **2026-08-18 已送件**，等審核（3–5 工作天） |
 | A4 | 電子發票 | 正式收款（台灣）需開立發票：綠界電子發票加值服務或其他方案，接進 webhook 入帳流程 | ⬜ A3 之後 |
-| A5 | Supabase 正式部署核對 | 🔄 2026-08-15：建表 ✅、owner-unlock ✅、Site URL ✅、SMTP ✅、備份 ✅、**面試題 SQL 全部跑完 ✅**。**還沒**：Functions 部署、綠界 secrets |
+| A5 | Supabase 正式部署核對 | 🔄 2026-08-15：建表 ✅、owner-unlock ✅、Site URL ✅、SMTP ✅、備份 ✅、**面試題 SQL 全部跑完 ✅**。**Functions 已部署 ✅ 2026-08-18**（create-order／ecpay-webhook --no-verify-jwt，走 --use-api 免 Docker）；沙盒 secrets 已設 |
 
 ## B. 工程（可自主）
 

@@ -17,6 +17,7 @@ __pycache__/
 # 資安報告（列出「尚未修好」的洞；repo 是公開的，絕不進 git）
 SECURITY-AUDIT-*.md
 BACKUP-RESTORE-DRILL.md
+SANDBOX-VERIFY.md
 
 # DB 備份（含用戶 PII，絕不進公開 repo）
 backups/
