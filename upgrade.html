@@ -98,8 +98,13 @@
       </div>
 
       <div class="msg" id="msg"></div>
-      <p class="note"><span data-i18n="up_note">付款由綠界 ECPay 處理，本站不經手、不儲存您的卡號。金額以付款頁為準。</span><br/>
-        <span id="agreeLine"><span data-i18n="up_agree">購買即表示同意</span> <a href="terms.html" data-i18n="nav_terms">使用條款</a> <span data-i18n="ui_and">與</span> <a href="privacy.html" data-i18n="nav_privacy">隱私權政策</a>。</span></p>
+      <p class="note"><span data-i18n="up_note">付款由綠界 ECPay 處理，本站不經手、不儲存您的卡號。金額以付款頁為準。</span></p>
+      <!-- 明示同意：《通訊交易解除權合理例外情事適用準則》第 2 條第 5 款要求「經消費者事先同意」
+           才排除七日解約權。被動的「購買即表示同意」不足以構成事先同意，所以改成必須主動勾選。 -->
+      <label id="agreeBox" style="display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.7;color:#334155;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-top:12px;cursor:pointer">
+        <input type="checkbox" id="agreeChk" style="margin-top:4px;flex:none;width:16px;height:16px;cursor:pointer" />
+        <span id="agreeLine"></span>
+      </label>
     </div>
   </div>
 
@@ -111,8 +116,18 @@
     const T = (k, v) => window.I18N ? window.I18N.t(k, v) : k;  // i18n.js 稍後載入；點擊時已可用
     const obs = n => { try { window.Observe && window.Observe.track(n); } catch (e) { } };  // 購買意圖漏斗
     const msg = document.getElementById('msg');
+    const agreeChk = document.getElementById('agreeChk');
+    const agreeBox = document.getElementById('agreeBox');
+    // 沒勾就不建立訂單。這道閘是退款政策第二節的事實基礎，不要為了「少一次點擊」拿掉。
+    function agreed() {
+      if (agreeChk && agreeChk.checked) { agreeBox.style.borderColor = '#e2e8f0'; return true; }
+      msg.style.color = '#b45309'; msg.textContent = T('up_need_agree');
+      if (agreeBox) { agreeBox.style.borderColor = '#f59e0b'; agreeBox.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+      return false;
+    }
     document.querySelectorAll('.buy').forEach(btn => btn.addEventListener('click', async () => {
       obs('buy:' + btn.dataset.plan);
+      if (!agreed()) { obs('buy:no_consent'); return; }
       if (!window.Auth || !window.Auth.enabled()) { msg.style.color = '#b45309'; msg.textContent = T('up_demo_nopay'); return; }
       const u = await window.Auth.user();
       if (!u) { obs('buy:login_wall'); location.href = 'login.html?next=upgrade.html'; return; }
@@ -155,20 +170,25 @@
       document.body.appendChild(f); f.submit();
     });
   </script>
-  <script src="./i18n.js?v=2026-08-15b"></script>
+  <script src="./i18n.js?v=2026-08-18a"></script>
   <script>
     // 同意條款句含 2 個 inline 連結，語序跨語言不同 → 每語言 template（同 pcb gate 模式）
     (function () {
       var M = {
-        zh: '購買即表示同意 <a href="terms.html" data-i18n="nav_terms">使用條款</a> 與 <a href="privacy.html" data-i18n="nav_privacy">隱私權政策</a>。',
-        en: 'By purchasing you agree to the <a href="terms.html">Terms of Service</a> and the <a href="privacy.html">Privacy Policy</a>.',
-        ja: '購入することで<a href="terms.html">利用規約</a>と<a href="privacy.html">プライバシーポリシー</a>に同意したものとみなされます。',
-        ko: '구매 시 <a href="terms.html">이용약관</a>과 <a href="privacy.html">개인정보 처리방침</a>에 동의한 것으로 간주됩니다.'
+        zh: '我已閱讀並同意 <a href="terms.html" target="_blank">使用條款</a>、<a href="privacy.html" target="_blank">隱私權政策</a> 與 <a href="refund.html" target="_blank">退款政策</a>，並同意本服務於付款後<b>即時開通</b>；我了解依《通訊交易解除權合理例外情事適用準則》，此類即時提供之數位服務<b>不適用七日猶豫期解約退款</b>。',
+        en: 'I have read and agree to the <a href="terms.html" target="_blank">Terms of Service</a>, <a href="privacy.html" target="_blank">Privacy Policy</a> and <a href="refund.html" target="_blank">Refund Policy</a>, and I consent to this service being <b>activated immediately</b> after payment. I understand that under Taiwan regulations on reasonable exceptions to the right of rescission in distance sales, a digital service delivered this way is <b>not subject to the 7-day cooling-off refund</b>.',
+        ja: '<a href="terms.html" target="_blank">利用規約</a>、<a href="privacy.html" target="_blank">プライバシーポリシー</a>、<a href="refund.html" target="_blank">返金ポリシー</a>を読み、同意します。また本サービスが支払い後に<b>即時有効化</b>されることに同意します。台湾の通信取引解除権の合理的例外に関する準則により、この形で提供されるデジタルサービスは<b>7 日間のクーリングオフ返金の対象外</b>であることを理解しています。',
+        ko: '<a href="terms.html" target="_blank">이용약관</a>, <a href="privacy.html" target="_blank">개인정보 처리방침</a>, <a href="refund.html" target="_blank">환불 정책</a>을 읽고 동의합니다. 또한 본 서비스가 결제 후 <b>즉시 활성화</b>되는 데 동의합니다. 대만의 통신거래 해제권 합리적 예외 준칙에 따라 이렇게 제공되는 디지털 서비스는 <b>7일 청약철회 환불 대상이 아님</b>을 이해합니다.'
       };
       function apply() {
         var l = localStorage.getItem('vs-lang') || 'zh';
         var el = document.getElementById('agreeLine');
-        if (el) el.innerHTML = M[l] || M.zh;
+        if (!el) return;
+        el.innerHTML = M[l] || M.zh;
+        // 連結在 <label> 內：不擋的話點連結會順便勾掉同意欄，等於誤觸同意。
+        el.querySelectorAll('a').forEach(function (a) {
+          a.addEventListener('click', function (e) { e.stopPropagation(); });
+        });
       }
       document.addEventListener('vs-lang-change', apply);
       apply();
