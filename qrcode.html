@@ -115,26 +115,24 @@
     <button class="btn" onclick="startServer()" data-i18n="qr_local">啟動本地伺服器</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="./vendor/qrcodejs-1.0.0.min.js"></script>
   <script>
     // Generate QR Code for localhost
     function generateQR(url) {
       const qrcode = document.getElementById('qrcode');
       qrcode.innerHTML = '';
       
-      QRCode.toCanvas(qrcode, url, {
+      // qrcodejs 的 API 與舊的 qrcode 套件不同：建構式，不是 toCanvas()。
+      // 換掉的原因是舊的那支 CDN 網址根本不存在（404），這頁從上線就沒運作過。
+      new QRCode(qrcode, {
+        text: url,
         width: 256,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#ffffff'
-        }
-      }, function(error) {
-        if (error) {
-          console.error(error);
-        }
+        height: 256,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
       });
-      
+
       document.getElementById('urlDisplay').textContent = url;
     }
 

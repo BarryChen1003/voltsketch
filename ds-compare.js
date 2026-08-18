@@ -610,7 +610,7 @@
     const lib = root.pdfjsLib || root['pdfjs-dist/build/pdf'];
     if (!lib) throw new Error('pdf.js 未載入');
     if (lib.GlobalWorkerOptions && !lib.GlobalWorkerOptions.workerSrc) {
-      lib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      lib.GlobalWorkerOptions.workerSrc = './vendor/pdf-3.11.174.worker.min.js';
     }
     const buf = await file.arrayBuffer();
     const pdf = await lib.getDocument({ data: buf }).promise;

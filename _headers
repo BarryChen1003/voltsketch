@@ -1,15 +1,23 @@
 # HTTP 安全標頭（Cloudflare Workers/Pages 讀這個檔）。
 # GitHub Pages 設不了任何標頭，這是搬到 Cloudflare 的主要理由。
 #
-# 這裡只放「不會弄壞任何現有功能」的五條。完整的 CSP script-src 還沒上——
-# 全站有 13 段 inline <script>（10 個頁面）與大量 inline style，
-# 靜態代管發不了每次請求不同的 nonce，硬上只能加 'unsafe-inline'，
-# 那擋得住外部網域載入腳本、擋不住 inline 的 XSS payload。要嚴格 CSP 得先把
-# inline 搬進獨立檔案，那是重構，排時間再做（見 LAUNCH-GUIDE.md §9.1）。
+# CSP 的現況（2026-08-18）：
+#   全站腳本已自行代管（vendor/，見 vendor/README.md），所以 script-src 可以收成 'self'。
+#   仍需要 'unsafe-inline'：全站有 13 段 inline <script>（10 個頁面）與大量 inline style，
+#   靜態代管發不了每次請求不同的 nonce。所以這條 CSP 擋得住「從外部網域載入腳本」，
+#   擋不住 inline 的 XSS payload。要擋 inline 得先把它們搬進獨立檔案（見 LAUNCH-GUIDE.md §9.1）。
+#   即使如此仍值得上：D1 資安總檢那個匯入 .json 的 XSS，注入的若是外部腳本就會被這條擋掉。
+#
+# 三個「改了會靜靜壞掉」的地方，動之前先看：
+#   form-action   upgrade.html 付款時組隱藏表單 POST 到綠界。少了綠界網域＝按了付款沒反應，
+#                 而且沙盒與正式是**不同網域**，兩個都要留。
+#   frame-src     線路圖頁的模擬器是 falstad.com 的 iframe。
+#   connect-src   Supabase REST/Auth/Functions 全走這個網域。
+#   worker-src    pdf.js 的 worker（同源）＋ blob:（pdf.js 取不到 worker 時的 fallback）。
 
 /*
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
-  Content-Security-Policy: frame-ancestors 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://dmkxjawjrmltmrmkebbs.supabase.co; frame-src https://www.falstad.com; worker-src 'self' blob:; form-action 'self' https://payment.ecpay.com.tw https://payment-stage.ecpay.com.tw; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
