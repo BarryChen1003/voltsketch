@@ -14,6 +14,25 @@
  */
 (function () {
   const D = {
+    // ── 自訂 IC 的保留機制（需登入）──
+    '已建立 {name}（{pins} 腳），並存進元件庫可重複使用': { en: 'Created {name} ({pins} pins) and saved it to your library for reuse', ja: '{name}（{pins} ピン）を作成し、部品ライブラリに保存しました（再利用可）', ko: '{name}({pins}핀)을 만들고 부품 라이브러리에 저장했습니다(재사용 가능)' },
+    '自訂 IC 要登入才能保留下來，否則換一張圖就不見了': { en: 'Custom ICs need an account to persist, otherwise they vanish when you open another sheet', ja: 'カスタム IC を保持するにはログインが必要です。ログインしないと別の図面を開いた時点で消えます', ko: '커스텀 IC를 보관하려면 로그인이 필요합니다. 그렇지 않으면 다른 도면을 열면 사라집니다' },
+    '要現在登入嗎？登入後建立的 IC 會留在你的元件庫。': { en: 'Sign in now? ICs you create will stay in your library.', ja: '今すぐログインしますか？作成した IC は部品ライブラリに残ります。', ko: '지금 로그인할까요? 만든 IC는 부품 라이브러리에 남습니다.' },
+    '存進元件庫失敗：{err}': { en: 'Could not save to the library: {err}', ja: '部品ライブラリへの保存に失敗：{err}', ko: '부품 라이브러리 저장 실패: {err}' },
+    '從 datasheet 建 IC 需要登入，這樣抽出來的腳位才留得住': { en: 'Building an IC from a datasheet needs an account, so the pins you extract are kept', ja: 'datasheet から IC を作るにはログインが必要です。抽出したピンを保持するためです', ko: 'datasheet로 IC를 만들려면 로그인이 필요합니다. 추출한 핀을 보관하기 위해서입니다' },
+
+    // ── Net 命名（文字綁到導線）──
+    '已綁定到導線：這條 net 叫「{n}」': { en: 'Bound to a wire: this net is called "{n}"', ja: '配線に紐付け済み：この net の名前は「{n}」', ko: '배선에 연결됨: 이 net의 이름은 "{n}"' },
+    '尚未綁定：目前只是純文字註解': { en: 'Not bound yet: this is just a text note for now', ja: '未紐付け：現在は単なるテキスト注記です', ko: '아직 연결 안 됨: 지금은 단순 텍스트 주석입니다' },
+    '重新指定 Net': { en: 'Re-assign net', ja: 'net を指定し直す', ko: 'net 다시 지정' },
+    '指定 Net（點一條線）': { en: 'Assign net (click a wire)', ja: 'net を指定（配線をクリック）', ko: 'net 지정(배선 클릭)' },
+    '取消綁定': { en: 'Unbind', ja: '紐付けを解除', ko: '연결 해제' },
+    '已取消綁定，這段文字回到純註解': { en: 'Unbound. This text is a plain note again.', ja: '紐付けを解除しました。このテキストは注記に戻ります。', ko: '연결을 해제했습니다. 이 텍스트는 다시 단순 주석입니다.' },
+    '先填文字內容，才知道這條 net 要叫什麼': { en: 'Type the text first, otherwise the net has no name to take', ja: '先にテキストを入力してください。net に付ける名前が決まりません', ko: '먼저 텍스트를 입력하세요. net에 붙일 이름이 없습니다' },
+    '點一下要命名的那條線（Esc 取消）': { en: 'Click the wire you want to name (Esc to cancel)', ja: '名前を付けたい配線をクリック（Esc で中止）', ko: '이름을 붙일 배선을 클릭하세요(Esc로 취소)' },
+    '那裡沒有線也沒有接腳，再點一次': { en: 'No wire or pin there. Click again.', ja: 'そこには配線もピンもありません。もう一度クリックしてください。', ko: '거기에는 배선도 핀도 없습니다. 다시 클릭하세요.' },
+    '這條 net 現在叫「{n}」': { en: 'This net is now called "{n}"', ja: 'この net の名前を「{n}」にしました', ko: '이 net의 이름을 "{n}"(으)로 지정했습니다' },
+
     // ── 雲端 / 專案 ──
     '已載入雲端專案': { en: 'Cloud project loaded', ja: 'クラウドのプロジェクトを読み込みました', ko: '클라우드 프로젝트를 불러왔습니다' },
     '已同步到雲端': { en: 'Synced to cloud', ja: 'クラウドに同期しました', ko: '클라우드에 동기화했습니다' },

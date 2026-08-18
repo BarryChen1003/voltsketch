@@ -230,6 +230,7 @@ window.I18N = (function () {
     ix_fliph: { zh: '⇋ 水平翻', en: '⇋ Flip H', ja: '⇋ 左右反転', ko: '⇋ 좌우 반전' },
     ix_flipv: { zh: '⇅ 垂直翻', en: '⇅ Flip V', ja: '⇅ 上下反転', ko: '⇅ 상하 반전' },
     ix_customic: { zh: '+ 自訂 IC（多腳）', en: '+ Custom IC (multi-pin)', ja: '+ カスタム IC（多ピン）', ko: '+ 사용자 IC(다핀)' },
+    ix_vrail: { zh: '電壓符號', en: 'Power Rail', ja: '電源シンボル', ko: '전원 심볼' },
     ix_fitall: { zh: '全覽', en: 'Fit', ja: '全体表示', ko: '전체 보기' },
     ix_style: { zh: '樣式', en: 'Style', ja: 'スタイル', ko: '스타일' },
     ix_color: { zh: '顏色', en: 'Color', ja: '色', ko: '색상' },

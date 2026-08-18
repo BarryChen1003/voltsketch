@@ -50,7 +50,9 @@
     gdt:      [[-16, 0, 'a'], [16, 0, 'b']],
     xtal:     [[-16, 0, 'a'], [16, 0, 'b']],
     cmchoke:  [[-30, -14, '1'], [30, -14, '2'], [-30, 14, '3'], [30, 14, '4']],
-    shield:   [[0, 34, 'g']]
+    shield:   [[0, 34, 'g']],
+    // 電壓符號（power rail）：橫桿在中心、單腳朝下。名稱寫在橫桿上方。
+    vrail:    [[0, 14, 'p']]
   };
 
   // Falstad 可直接匯出的二端元件（其餘列為未支援）
@@ -147,9 +149,40 @@
   }
 
   /**
+   * 從元件清單收集 net 標籤。兩種來源，行為相同：
+   *   - text 元件綁到某個座標（netAt）→ 那個點所在的 net 取這個名字
+   *   - vrail 電壓符號 → 它的接腳位置就是綁定點，label 就是名字
+   * 名字相同的標籤會被併成同一個 net（跨圖連接，不必真的拉線過去）。
+   */
+  function collectNetLabels(components) {
+    const out = [];
+    (components || []).forEach(c => {
+      if (c.type === 'text' && c.netAt && c.text) {
+        out.push({ x: c.netAt.x, y: c.netAt.y, name: String(c.text).trim(), src: c.id });
+      } else if (c.type === 'vrail') {
+        const name = railNetName(c);
+        if (name) {
+          const p = getPins(c)[0];
+          if (p) out.push({ x: p.x, y: p.y, name, src: c.id });
+        }
+      }
+    });
+    return out.filter(l => l.name);
+  }
+
+  /** 電壓符號的 net 名：優先用標籤，沒填才退回電壓值（12 → "12V"）。 */
+  function railNetName(c) {
+    const lab = (c.label == null ? '' : String(c.label)).trim();
+    if (lab) return lab;
+    const v = c.value;
+    return (v === '' || v == null || Number.isNaN(Number(v))) ? '' : String(v) + 'V';
+  }
+
+  /**
    * 節點計算：union-find 把同電位點併在一起。
-   * 規則：每條導線兩端同電位；任何空間重合(≤EPS)的點同電位。
-   * 回傳 { pinNet: Map(comp.id+':'+index -> netId), netCount, connectedPins:Set }
+   * 規則：每條導線兩端同電位；任何空間重合(≤EPS)的點同電位；
+   *       net 標籤併入所在的 net，且**同名標籤互相 union**（等同接在一起）。
+   * 回傳 { pinNet, connectedPins, netCount, find, pts, netName:Map(root->名字), nameOfPin(key) }
    */
   function computeNets(components, wires, eps) {
     eps = eps || 6;
@@ -160,6 +193,13 @@
     (wires || []).forEach((w, i) => {
       pts.push({ x: w.x1, y: w.y1, kind: 'wire', key: 'w' + i + ':a', wi: i });
       pts.push({ x: w.x2, y: w.y2, kind: 'wire', key: 'w' + i + ':b', wi: i });
+    });
+    // 標籤也當成點參與 union，這樣「標籤貼在線上」就自動併進那條 net
+    const labels = collectNetLabels(components);
+    const labelIdx = [];
+    labels.forEach((l, li) => {
+      labelIdx.push(pts.length);
+      pts.push({ x: l.x, y: l.y, kind: 'label', key: 'L' + li, name: l.name, src: l.src });
     });
     const parent = pts.map((_, i) => i);
     function find(a) { while (parent[a] !== a) { parent[a] = parent[parent[a]]; a = parent[a]; } return a; }
@@ -183,6 +223,12 @@
       });
     });
 
+    // 同名標籤 union：這是 net label 的重點——兩處寫同一個名字就是同一條 net，
+    // 不必真的把線拉過去。少了這步，3V3_STBY 出現兩次會被算成兩條不相干的 net。
+    const byName = {};
+    labels.forEach((l, li) => { (byName[l.name] = byName[l.name] || []).push(labelIdx[li]); });
+    Object.values(byName).forEach(arr => { for (let k = 1; k < arr.length; k++) union(arr[0], arr[k]); });
+
     // 整理每個 net 內的 pin 數
     const netMembers = {};
     pts.forEach((p, i) => { const r = find(i); (netMembers[r] = netMembers[r] || []).push(p); });
@@ -196,7 +242,22 @@
       const pinCount = members.filter(m => m.kind === 'pin').length;
       if (pinCount >= 2) connectedPins.add(p.key); // 與其他接腳同網才算「已連接」
     });
-    return { pinNet, connectedPins, netCount: Object.keys(netMembers).length, find, pts };
+
+    // net → 名字。同一條 net 被貼了兩個不同名字時取第一個，並記在 conflicts 供 DRC 報。
+    const netName = new Map();
+    const conflicts = [];
+    labels.forEach((l, li) => {
+      const r = find(labelIdx[li]);
+      const cur = netName.get(r);
+      if (cur == null) netName.set(r, l.name);
+      else if (cur !== l.name) conflicts.push({ net: r, names: [cur, l.name] });
+    });
+
+    return {
+      pinNet, connectedPins, netCount: Object.keys(netMembers).length, find, pts,
+      netName, netLabels: labels, nameConflicts: conflicts,
+      nameOfPin(key) { const r = pinNet.get(key); return r == null ? '' : (netName.get(r) || ''); }
+    };
   }
 
   /**
@@ -305,6 +366,7 @@
   }
 
   global.CircuitEngine = {
-    PinDefs, FALSTAD_SUPPORTED, getPins, snapTarget, computeNets, toFalstad, falstadURL, dist, junctions, icLayout, onSegInterior
+    PinDefs, FALSTAD_SUPPORTED, getPins, snapTarget, computeNets, toFalstad, falstadURL, dist, junctions, icLayout, onSegInterior,
+    collectNetLabels, railNetName
   };
 })(typeof window !== 'undefined' ? window : this);

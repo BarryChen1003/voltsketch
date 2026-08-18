@@ -423,13 +423,19 @@ const app = {
 
   getLibraryIcs() {
     let custom = [];
+    // 舊 key：早期版本把自訂 IC 存在 icLibrary，留著讀避免既有使用者的東西消失
     try { custom = JSON.parse(localStorage.getItem('icLibrary') || '[]'); } catch (e) { custom = []; }
+    // 目前的 key 由 ICManager 管（voltsketch-ics）。這裡以前沒讀它，
+    // 所以自訂 IC 就算存進去也不會出現在左欄，等於存了也用不到。
+    let mine = [];
+    try { mine = (typeof ICManager !== 'undefined') ? ICManager.getAll() : []; } catch (e) { mine = []; }
     // 內建 ic-data.js（前端 JSON）→ 轉成編輯器可放置格式
     const data = (window.IC_DATA || []).map(ic => ({
       id: 'data:' + ic.part, name: ic.part, manufacturer: ic.mfr || '', category: ic.category || '',
       pins: this.icDataToPins(ic)
     }));
-    return [...data, ...custom];
+    // 自己建的排最前面：那是使用者剛做出來的東西，不該埋在 196 顆內建料後面
+    return [...mine, ...custom, ...data];
   },
 
   // ic-data.js pin → 編輯器 pin（num→number、去 {} active-low 標記、EP→補腳、type 簡化）
@@ -732,6 +738,49 @@ const app = {
     });
   },
 
+  // ---- 放置避讓：新元件不要疊在既有元件上 ----
+  // 元件的外框（含接腳與引線）。IC 用實際方框尺寸，其餘用接腳範圍撐出來。
+  compBBox(c) {
+    const E = window.CircuitEngine;
+    const k = c.scale || 1;
+    let minX = c.x - 24 * k, maxX = c.x + 24 * k, minY = c.y - 24 * k, maxY = c.y + 24 * k;
+    if (c.type === 'ic' && E) {
+      const L = E.icLayout(c);
+      const hw = (L.w / 2 + 44) * k, hh = (L.h / 2 + 24) * k;   // +44 讓出腳名往外延伸的空間
+      minX = c.x - hw; maxX = c.x + hw; minY = c.y - hh; maxY = c.y + hh;
+    }
+    if (E) E.getPins(c).forEach(p => {
+      minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+      minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+    });
+    return { minX, minY, maxX, maxY };
+  },
+
+  // 從 (px,py) 往外找一個放得下 w×h 且不壓到既有元件的中心點。
+  // 先右後下、逐圈外擴；找不到就放在所有元件的右邊（一定不會疊）。
+  findFreeSpot(w, h, px, py) {
+    const pad = 30;
+    const boxes = this.state.components.map(c => this.compBBox(c));
+    const clash = (cx, cy) => {
+      const a = { minX: cx - w / 2 - pad, maxX: cx + w / 2 + pad, minY: cy - h / 2 - pad, maxY: cy + h / 2 + pad };
+      return boxes.some(b => !(a.maxX < b.minX || a.minX > b.maxX || a.maxY < b.minY || a.minY > b.maxY));
+    };
+    if (!clash(px, py)) return { x: this.snapG(px), y: this.snapG(py) };
+    const step = Math.max(60, this.snapG((w + pad * 2) / 2) || 60);
+    for (let ring = 1; ring <= 12; ring++) {
+      for (let dy = -ring; dy <= ring; dy++) {
+        for (let dx = -ring; dx <= ring; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== ring) continue;   // 只走這一圈的外緣
+          const cx = px + dx * step, cy = py + dy * step;
+          if (!clash(cx, cy)) return { x: this.snapG(cx), y: this.snapG(cy) };
+        }
+      }
+    }
+    // 十二圈都滿：擺到目前所有東西的右側，寧可遠也不要疊
+    const right = boxes.length ? Math.max(...boxes.map(b => b.maxX)) : px;
+    return { x: this.snapG(right + w / 2 + pad * 2), y: this.snapG(py) };
+  },
+
   // 把 IC 庫的元件放到畫布（ICManager pins:{number,name,type} → icPins）
   // 超大 IC（>150 腳）拆成多個 unit symbol（同顆共用 refdes，後綴 A/B/C），一次全放、格狀排開。
   IC_SPLIT_THRESHOLD: 150,
@@ -750,9 +799,13 @@ const app = {
       return;
     }
     const id = 'c' + (++this.state.componentIdCounter);
+    const probe = { type: 'ic', x: 0, y: 0, rotation: 0, icPins: pins, name: ic.name || 'IC', scale: this.state.activeSize };
+    const bb = this.compBBox(probe);
+    const spot = this.findFreeSpot(bb.maxX - bb.minX, bb.maxY - bb.minY,
+      vb.x + vb.w / 2, vb.y + vb.h / 2);
     this.state.components.push({
       id, type: 'ic', name: ic.name || 'IC',
-      x: this.snapG(vb.x + vb.w / 2), y: this.snapG(vb.y + vb.h / 2),
+      x: spot.x, y: spot.y,
       rotation: 0, label: 'U' + this.state.componentIdCounter, icPins: pins,
       color: this.state.activeColor, scale: this.state.activeSize
     });
@@ -973,6 +1026,9 @@ const app = {
   onCanvasClick(e) {
     const pt = this.getSVGPoint(e);
 
+    // Net 命名拾取中：這一下點擊是用來選線的，不做其他事
+    if (this.state.netBindFor) { this.finishNetBind(pt); return; }
+
     // 導線工具：兩次點擊，端點吸附到接腳/既有端點/網格；吸到接腳則綁定(pin-binding)
     if (this.state.tool === 'wire') {
       const snap = this.snapPoint(pt.x, pt.y);
@@ -1006,7 +1062,7 @@ const app = {
       return;
     }
     // 元件放置工具（select 由 mousedown/up 處理，這裡略過）
-    const componentTypes = ['resistor','source','ground','switch','lamp','led','diode','capacitor','inductor','tvs','bead','cmchoke','varistor','gdt','fuse','xtal','shield','ammeter','voltmeter','nmos','pmos','dualnmos','dualpmos','npn','pnp','opamp','comparator','dcdc','and','or','nand','nor','xor','xnor','not','buffer'];
+    const componentTypes = ['resistor','source','ground','vrail','switch','lamp','led','diode','capacitor','inductor','tvs','bead','cmchoke','varistor','gdt','fuse','xtal','shield','ammeter','voltmeter','nmos','pmos','dualnmos','dualpmos','npn','pnp','opamp','comparator','dcdc','and','or','nand','nor','xor','xnor','not','buffer'];
     if (componentTypes.includes(this.state.tool)) {
       const hit = this.hitTest(pt.x, pt.y);
       if (hit) { this.setSelection([hit.id]); return; }
@@ -1444,6 +1500,17 @@ const app = {
     // 硬規矩 6：畫面上的字一律四語。PARAM_SCHEMA 的標籤與選項留中文當字典 key，
     // 顯示時才翻（uiT）；option 的 value 一定要保持中文原文，否則存進 comp.params 的值會跟著語言跑掉。
     let html = (comp.type === 'text' ? `<label><span>${uiT('文字內容')}</span><input type="text" data-prop="text" value="${esc(comp.text || '')}"/></label>` : '');
+    // Net 命名：文字綁到一條導線之後，那條 net 就叫這個名字；同名的 net 會被視為相連。
+    if (comp.type === 'text') {
+      const bound = !!comp.netAt;
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:${bound ? '#15803d' : '#64748b'}">`
+        + (bound ? uiT('已綁定到導線：這條 net 叫「{n}」', { n: comp.text || '' }) : uiT('尚未綁定：目前只是純文字註解'))
+        + `</div>`
+        + `<div style="display:flex;gap:6px;flex-wrap:wrap">`
+        + `<button type="button" class="small-button" data-netbind="${comp.id}">${bound ? uiT('重新指定 Net') : uiT('指定 Net（點一條線）')}</button>`
+        + (bound ? `<button type="button" class="small-button" data-netunbind="${comp.id}">${uiT('取消綁定')}</button>` : '')
+        + `</div>`;
+    }
     html += schema.map(f => {
       const val = p[f.k] != null ? p[f.k] : '';
       if (f.opt) {
@@ -1454,6 +1521,78 @@ const app = {
     }).join('');
     html += `<label><span>${uiT('其他參數/備註（自由填）')}</span><textarea data-pkey="__notes" rows="2" placeholder="${uiT('任何會影響特性的條件...')}">${esc(p.__notes || '')}</textarea></label>`;
     host.innerHTML = html;
+
+    const bindBtn = host.querySelector('[data-netbind]');
+    if (bindBtn) bindBtn.addEventListener('click', () => this.startNetBind(bindBtn.dataset.netbind));
+    const unbindBtn = host.querySelector('[data-netunbind]');
+    if (unbindBtn) unbindBtn.addEventListener('click', () => {
+      const c = this.state.components.find(x => x.id === unbindBtn.dataset.netunbind);
+      if (!c) return;
+      this.saveUndo();
+      delete c.netAt;
+      this.render(); this.renderParamFields(c); this.schedulePersist();
+      this.showToast(uiT('已取消綁定，這段文字回到純註解'));
+    });
+  },
+
+  // ---- Net 命名：把一段文字綁到一條導線 ----
+  // 使用者流程：選文字 → 按「指定 Net」→ 點畫布上的線 → 那條 net 就叫這段文字。
+  startNetBind(textId) {
+    const c = this.state.components.find(x => x.id === textId);
+    if (!c) return;
+    if (!String(c.text || '').trim()) { this.showToast(uiT('先填文字內容，才知道這條 net 要叫什麼')); return; }
+    this.state.netBindFor = textId;
+    this.els.svg.style.cursor = 'crosshair';
+    this.showToast(uiT('點一下要命名的那條線（Esc 取消）'), 5000);
+  },
+
+  cancelNetBind() {
+    if (!this.state.netBindFor) return;
+    this.state.netBindFor = null;
+    this.els.svg.style.cursor = '';
+  },
+
+  // 點擊落在哪條線上？回傳線上最接近的點（吸附到線本身，不是隨手一點的位置）
+  wirePointAt(x, y, tol) {
+    tol = tol || 10;
+    let best = null, bestD = tol;
+    this.state.wires.forEach(w => {
+      const dx = w.x2 - w.x1, dy = w.y2 - w.y1, L2 = dx * dx + dy * dy;
+      let px, py;
+      if (L2 === 0) { px = w.x1; py = w.y1; }
+      else {
+        let t = ((x - w.x1) * dx + (y - w.y1) * dy) / L2;
+        t = Math.max(0, Math.min(1, t));
+        px = w.x1 + t * dx; py = w.y1 + t * dy;
+      }
+      const d = Math.hypot(x - px, y - py);
+      if (d < bestD) { bestD = d; best = { x: px, y: py }; }
+    });
+    return best;
+  },
+
+  finishNetBind(pt) {
+    const c = this.state.components.find(x => x.id === this.state.netBindFor);
+    if (!c) { this.cancelNetBind(); return; }
+    // 先找線；沒點到線就找接腳（直接命名某支腳所在的 net 也合理）
+    let target = this.wirePointAt(pt.x, pt.y, 12);
+    if (!target) {
+      const E = window.CircuitEngine;
+      let bestD = 14;
+      this.state.components.forEach(cc => {
+        if (cc.id === c.id || cc.type === 'text') return;
+        E.getPins(cc).forEach(p => {
+          const d = Math.hypot(pt.x - p.x, pt.y - p.y);
+          if (d < bestD) { bestD = d; target = { x: p.x, y: p.y }; }
+        });
+      });
+    }
+    if (!target) { this.showToast(uiT('那裡沒有線也沒有接腳，再點一次')); return; }
+    this.saveUndo();
+    c.netAt = { x: target.x, y: target.y };
+    this.cancelNetBind();
+    this.render(); this.renderParamFields(c); this.schedulePersist();
+    this.showToast(uiT('這條 net 現在叫「{n}」', { n: c.text }));
   },
 
   // ---- 線路圖 PDF 匯出（整張，自動框全部）----
@@ -1652,6 +1791,7 @@ const app = {
     if (e.key === 'v' || e.key === 'V') this.flipSelected('v');
     if (e.key === 'Delete' || e.key === 'Backspace') this.deleteSelected();
     if (e.key === 'Escape') {
+      this.cancelNetBind();
       this.state.wireStart = null;
       this.state.snapHint = null;
       this.state.marquee = null;
@@ -1673,14 +1813,14 @@ const app = {
     const labels = { resistor:'R', source:'V', ground:'GND', switch:'SW', lamp:'L', led:'D',
       diode:'D', capacitor:'C', inductor:'L', ammeter:'A', voltmeter:'V',
       nmos:'M1', pmos:'M2', dualnmos:'M3', dualpmos:'M4', npn:'Q1', pnp:'Q2',
-      opamp:'U1', comparator:'U1', dcdc:'DC1', ic:'U',
+      opamp:'U1', comparator:'U1', dcdc:'DC1', ic:'U', vrail:'',
       tvs:'D', bead:'FB', cmchoke:'L', varistor:'RV', gdt:'GDT', fuse:'F', xtal:'Y', shield:'SH',
       and:'U', or:'U', nand:'U', nor:'U', xor:'U', xnor:'U', not:'U', buffer:'U' };
     return (labels[type] || 'X') + this.state.componentIdCounter;
   },
 
   getDefaultValue(type) {
-    const defaults = { resistor:1000, source:5, lamp:100, led:2, capacitor:0.1, inductor:10 };
+    const defaults = { resistor:1000, source:5, lamp:100, led:2, capacitor:0.1, inductor:10, vrail:3.3 };
     return defaults[type] || 0;
   },
 
@@ -1714,7 +1854,8 @@ const app = {
     xtal:     [{k:'freq',l:'頻率',u:'MHz'},{k:'cl',l:'負載電容 CL',u:'pF'},{k:'esr',l:'ESR',u:'Ω'},{k:'ppm',l:'頻率容差',u:'ppm'}],
     shield:   [{k:'note',l:'備註（罩內分區用）',u:''}],
     and:[{k:'vcc',l:'供電',u:'V'},{k:'vih',l:'Vih',u:'V'},{k:'vil',l:'Vil',u:'V'},{k:'tpd',l:'延遲',u:'ns'}],
-    ic:        [{k:'vcc',l:'供電',u:'V'},{k:'part',l:'料號',u:''}]
+    ic:        [{k:'vcc',l:'供電',u:'V'},{k:'part',l:'料號',u:''}],
+    vrail:     [{k:'tol',l:'容差',u:'%'},{k:'imax',l:'最大電流',u:'A'}]
   },
 
   // \u6709\u6C92\u6709\u586B\u503C\u30020 \u662F\u5408\u6CD5\u503C\uFF080\u03A9 \u8DF3\u7DDA\u30010V\uFF09\uFF0C\u4E0D\u80FD\u7528\u771F\u503C\u5224\u65B7\u3002
@@ -1723,7 +1864,7 @@ const app = {
 
   formatValue(c) {
     if (!this.hasValue(c)) return '';
-    if (c.type === 'source') return c.value + 'V';
+    if (c.type === 'source' || c.type === 'vrail') return c.value + 'V';
     if (c.type === 'resistor') return c.value >= 1000 ? (c.value/1000) + 'k\u03A9' : c.value + '\u03A9';
     if (c.type === 'capacitor') return c.value >= 1 ? c.value + '\u03BCF' : (c.value * 1000).toFixed(0) + 'nF';
     if (c.type === 'inductor') return c.value + 'mH';
@@ -2370,6 +2511,14 @@ const app = {
       const js = window.CircuitEngine.junctions(this.state.components, this.state.wires);
       html += js.map(j => `<circle cx="${j.x}" cy="${j.y}" r="3.6" fill="#2563eb"/>`).join('');
     }
+    // Net 命名的牽引線：從文字拉一條虛線到它命名的那個點，讓「這個名字是給哪條線的」看得出來。
+    // 畫在導線層的絕對座標上，不受文字元件本身的旋轉/縮放影響。
+    this.state.components.forEach(c => {
+      if (c.type !== 'text' || !c.netAt) return;
+      const col = c.color || '#0f172a';
+      html += `<line x1="${c.x}" y1="${c.y + 6}" x2="${c.netAt.x}" y2="${c.netAt.y}" stroke="${col}" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.75"/>`
+        + `<circle cx="${c.netAt.x}" cy="${c.netAt.y}" r="3.2" fill="none" stroke="${col}" stroke-width="1.6"/>`;
+    });
     this.els.wireLayer.innerHTML = html;
   },
 
@@ -2445,6 +2594,17 @@ const app = {
             + `<line x1="0" y1="11" x2="0" y2="22" stroke="${sc||'#1e40af'}" stroke-width="2"/>`
             + `<text x="14" y="-10" font-size="11" fill="#1e40af">+</text>`;
           break;
+        case 'vrail': {
+          // 電壓符號：橫桿 + 往下的接腳，名字寫在桿上方（同使用者提供的圖）。
+          // 名字就是 net 名——兩顆同名的電壓符號會被 computeNets 併成同一條 net。
+          const rc = sc || '#1f4fd1';
+          const nm = window.CircuitEngine ? CircuitEngine.railNetName(c) : (c.label || '');
+          const escR = t => String(t == null ? '' : t).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+          inner = `<line x1="-22" y1="0" x2="22" y2="0" stroke="${rc}" stroke-width="2.5" stroke-linecap="round"/>`
+            + `<line x1="0" y1="0" x2="0" y2="14" stroke="${rc}" stroke-width="2.5" stroke-linecap="round"/>`;
+          if (nm) inner += `<text x="0" y="-7" text-anchor="middle" font-size="12" font-weight="700" fill="${rc}" font-family="system-ui,sans-serif">${escR(nm)}</text>`;
+          break;
+        }
         case 'ground':
           inner = window.Sym ? Sym.ground(0, -4, { color: sc || undefined, label: false })
             : `<line x1="-10" y1="-8" x2="10" y2="-8" stroke="${sc||'#475569'}" stroke-width="2"/><line x1="-7" y1="-2" x2="7" y2="-2" stroke="#475569" stroke-width="1.5"/><line x1="-4" y1="4" x2="4" y2="4" stroke="#475569" stroke-width="1"/>`;
@@ -2688,6 +2848,9 @@ const app = {
 
     let html = '';
     this.state.components.forEach(c => {
+      // 電壓符號的名字已經畫在符號上（桿子上方），這裡再畫一次會變兩個字疊著。
+      // 電壓值只在屬性面板看，不上畫布——它會落在接腳下方、正好壓到接線（硬規矩 1）。
+      if (c.type === 'vrail') return;
       if (this.state.showLabels) {
         const lx = c.x + (c.labelDx || 0);              // 可拖曳微調
         const ly = c.y + this.labelOffset(c) + (c.labelDy || 0);
@@ -2754,22 +2917,64 @@ const app = {
     });
     return pins;
   },
-  createIcFromForm() {
+  // 建立自訂 IC。兩件事以前是壞的：
+  //   1) 建完只丟到畫布，沒有存進元件庫 → 換一張圖就沒了，等於每次都要重打 pin 表。
+  //   2) 一律放在畫面正中央 → 連建兩顆就疊在一起。
+  // 現在：先存庫（要登入，因為「保留」是綁在帳號上的）→ 再放到空位。
+  async createIcFromForm() {
     const name = (document.getElementById('icbName').value || 'IC').trim();
     const pins = this.parseIcPins(document.getElementById('icbPins').value);
     if (!pins.length) { this.showToast(uiT('請輸入至少一支 pin')); return; }
+
+    const saved = await this.saveCustomIc(name, pins);
+    if (saved === 'cancelled') return;    // 未登入：已提示，不要半套地只放畫布
+
     this.saveUndo();
     const vb = this.getViewBox();
     const id = 'c' + (++this.state.componentIdCounter);
+    const probe = { type: 'ic', x: 0, y: 0, rotation: 0, icPins: pins, name, scale: this.state.activeSize };
+    const bb = this.compBBox(probe);
+    const spot = this.findFreeSpot(bb.maxX - bb.minX, bb.maxY - bb.minY, vb.x + vb.w / 2, vb.y + vb.h / 2);
     this.state.components.push({
-      id, type: 'ic', name, x: this.snapG(vb.x + vb.w / 2), y: this.snapG(vb.y + vb.h / 2),
+      id, type: 'ic', name, x: spot.x, y: spot.y,
       rotation: 0, label: 'U' + this.state.componentIdCounter, icPins: pins,
       color: this.state.activeColor, scale: this.state.activeSize
     });
     this.setSelection([id]);
     this.render();
     this.closeIcBuilder();
-    this.showToast(uiT('已建立 {name}（{pins} 腳）', { name, pins: pins.length }));
+    this.showToast(saved
+      ? uiT('已建立 {name}（{pins} 腳），並存進元件庫可重複使用', { name, pins: pins.length })
+      : uiT('已建立 {name}（{pins} 腳）', { name, pins: pins.length }));
+  },
+
+  // 存進元件庫。回傳 true=存了、false=沒存但可以繼續、'cancelled'=擋下不要建。
+  // 需要登入：保留機制是綁帳號的，沒有帳號就沒有「下次還在」可言。
+  async saveCustomIc(name, pins) {
+    const needLogin = window.Auth && window.Auth.enabled();
+    if (needLogin) {
+      const u = await window.Auth.user();
+      if (!u) {
+        this.showToast(uiT('自訂 IC 要登入才能保留下來，否則換一張圖就不見了'), 6000);
+        if (confirm(uiT('要現在登入嗎？登入後建立的 IC 會留在你的元件庫。'))) {
+          location.href = 'login.html?next=index.html';
+        }
+        return 'cancelled';
+      }
+    }
+    if (typeof ICManager === 'undefined') return false;
+    try {
+      ICManager.save({
+        name,
+        category: 'mixed',
+        pins: pins.map(p => ({ number: p.num, name: p.name, type: p.type || '' , side: p.side || '' }))
+      });
+      this.renderIcCatalog();
+      return true;
+    } catch (e) {
+      this.showToast(uiT('存進元件庫失敗：{err}', { err: e.message }));
+      return false;
+    }
   },
   // 讀 PDF → pdf.js 取每頁文字 item（含座標）→ pin-extract 抽 Pin Functions 表。
   // 只讀到「找到表格那頁 + 再一頁」為止；datasheet 動輒 80 頁，整份讀完沒有意義。
@@ -2809,6 +3014,15 @@ const app = {
   async prefillIcFromPdf(e) {
     const file = e.target.files[0];
     if (!file) return;
+    // 抽腳位很花工，抽完卻留不住的話等於白做 → 進這條路之前先要求登入。
+    if (window.Auth && window.Auth.enabled() && !(await window.Auth.user())) {
+      e.target.value = '';
+      this.showToast(uiT('從 datasheet 建 IC 需要登入，這樣抽出來的腳位才留得住'), 6000);
+      if (confirm(uiT('要現在登入嗎？登入後建立的 IC 會留在你的元件庫。'))) {
+        location.href = 'login.html?next=index.html';
+      }
+      return;
+    }
     this.showToast(uiT('解析 PDF 中...'));
     let res;
     try { res = await this.pdfPinTable(file); }
