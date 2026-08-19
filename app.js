@@ -579,7 +579,10 @@ const app = {
       const prop = e.target.dataset.prop;
       if (prop) {
         if (prop === 'size') comp.scale = Math.max(0.3, Math.min(4, parseFloat(e.target.value) || 1));
-        else comp[prop] = e.target.value;   // color / text
+        else {
+          if (prop === 'text') this.renameBoundNet(comp, e.target.value);
+          comp[prop] = e.target.value;   // color / text
+        }
         this.render(); this.schedulePersist(); return;
       }
       const key = e.target.dataset.pkey; if (!key) return;
@@ -1204,9 +1207,10 @@ const app = {
       if (done) return; done = true;
       const v = inp.value; inp.remove();
       if (!v.trim()) {
+        this.renameBoundNet(comp, '');   // 文字刪掉 → 那條 net 也不該還掛著這個名字
         this.state.components = this.state.components.filter(c => c !== comp);
         this.state.selectedIds = this.state.selectedIds.filter(id => id !== comp.id);
-      } else comp.text = v;
+      } else { this.renameBoundNet(comp, v); comp.text = v; }
       this.render(); this.schedulePersist();
     };
     inp.addEventListener('blur', commit);
@@ -1579,13 +1583,22 @@ const app = {
     if (!c) { this.cancelNetBind(); return; }
     const wi = this.wireIndexAt(pt.x, pt.y, 12);
     if (wi < 0) { this.showToast(uiT('那裡沒有導線，請點在線上')); return; }
+    const target = this.wirePointAt(pt.x, pt.y, 12) || { x: pt.x, y: pt.y };
     const name = String(c.text || '').trim();
     if (!name) { this.showToast(uiT('先填文字內容，才知道這條 net 要叫什麼')); return; }
     this.saveUndo();
     // 名字寫進導線本身：導線之後怎麼移動、怎麼被接腳牽動，名字都跟著走。
     // 同一條實體 net 上的每一段導線都要標到，才算整條有名字——所以連通的線一起標。
     const marked = this.markConnectedWires(wi, name);
-    c.netWire = name;                 // 文字記住自己命名了誰，純粹為了顯示與解除
+    c.netWire = name;                 // 這段文字目前命名的是哪個 net（改字時要跟著改）
+
+    // 把使用者的文字搬到他點的那個位置上方，不要另外生一個標籤。
+    // 往上讓開一點，避免字壓在線上（硬規矩 1：圖字不重疊）。
+    const w = this.state.wires[wi];
+    const horiz = Math.abs(w.x2 - w.x1) >= Math.abs(w.y2 - w.y1);
+    c.x = this.snapG(horiz ? target.x : target.x + 34);
+    c.y = this.snapG(horiz ? target.y - 16 : target.y);
+
     this.cancelNetBind();
     this.render(); this.renderParamFields(c); this.schedulePersist();
     this.showToast(uiT('已命名 {n} 段導線為「{name}」', { n: marked, name: name }));
@@ -1627,6 +1640,24 @@ const app = {
     });
     if (count === 0) { this.state.wires[startIndex].net = name; count = 1; }
     return count;
+  },
+
+  // 文字內容改了 → 它命名的那條 net 也要跟著改名。
+  // 沒有這段的話，改完字畫面顯示新名字、導線上還是舊名字，匯出會用舊的。
+  renameBoundNet(comp, newText) {
+    const oldName = comp.netWire;
+    if (!oldName) return 0;
+    const nm = String(newText == null ? '' : newText).trim();
+    if (!nm) {                       // 字被清空 → 這條 net 回到無名
+      const cleared = this.clearNetName(oldName);
+      delete comp.netWire;
+      return cleared;
+    }
+    if (nm === oldName) return 0;
+    let cnt = 0;
+    this.state.wires.forEach(w => { if (w.net === oldName) { w.net = nm; cnt++; } });
+    comp.netWire = nm;
+    return cnt;
   },
 
   // 解除：把這個名字從所有導線上清掉
@@ -1954,6 +1985,11 @@ const app = {
     }
     if (ids.length) {
       const set = new Set(ids);
+      // 刪掉的若是 net 標籤，那條 net 也要回到無名——否則名字會留在導線上，
+      // 畫面看不到任何標籤，匯出卻還帶著一個沒人認得的名字。
+      this.state.components.forEach(c => {
+        if (set.has(c.id) && c.type === 'text' && c.netWire) this.clearNetName(c.netWire);
+      });
       this.state.components = this.state.components.filter(c => !set.has(c.id));
       this.state.selectedIds = [];
       this.state.selectedId = null;
@@ -2552,27 +2588,9 @@ const app = {
       const js = window.CircuitEngine.junctions(this.state.components, this.state.wires);
       html += js.map(j => `<circle cx="${j.x}" cy="${j.y}" r="3.6" fill="#2563eb"/>`).join('');
     }
-    // 有名字的導線：把名字畫在線上方（同真實 EDA 的 net label 畫法）。
-    // 一條 net 可能由多段折線組成，只在最長的那一段標一次，不然同一個名字會沿路重複。
-    {
-      const byName = {};
-      this.state.wires.forEach((w, i) => {
-        const nm = (w.net == null ? '' : String(w.net)).trim();
-        if (!nm) return;
-        const len = Math.hypot(w.x2 - w.x1, w.y2 - w.y1);
-        if (!byName[nm] || len > byName[nm].len) byName[nm] = { w, len, i };
-      });
-      Object.keys(byName).forEach(nm => {
-        const w = byName[nm].w;
-        const mx = (w.x1 + w.x2) / 2, my = (w.y1 + w.y2) / 2;
-        const horiz = Math.abs(w.x2 - w.x1) >= Math.abs(w.y2 - w.y1);
-        const esc = String(nm).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
-        // 水平線把字放上方；垂直線把字轉 90 度貼著線，兩種都不會壓到線本身
-        html += horiz
-          ? `<text x="${mx}" y="${my - 6}" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8" font-family="system-ui,sans-serif">${esc}</text>`
-          : `<text x="${mx - 6}" y="${my}" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8" font-family="system-ui,sans-serif" transform="rotate(-90 ${mx - 6} ${my})">${esc}</text>`;
-      });
-    }
+    // 這裡刻意**不畫** net 名字。名字就是使用者自己那個文字元件——
+    // 綁定時會把它搬到線上，之後照常可以拖曳。先前版本另外畫一份在線的中點，
+    // 結果畫面上同時有「使用者的文字」與「自動畫的名字」兩份，而自動那份還拖不動。
     this.els.wireLayer.innerHTML = html;
   },
 
