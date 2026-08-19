@@ -8,6 +8,12 @@
 #   擋不住 inline 的 XSS payload。要擋 inline 得先把它們搬進獨立檔案（見 LAUNCH-GUIDE.md §9.1）。
 #   即使如此仍值得上：D1 資安總檢那個匯入 .json 的 XSS，注入的若是外部腳本就會被這條擋掉。
 #
+#   script-src 唯一的外部例外是 static.cloudflareinsights.com（Web Analytics 的 beacon，
+#   由 Cloudflare 在邊緣自動注入）。放行的理由：Cloudflare 本來就在送整個站、終止 TLS，
+#   已經能看到與改寫每一個位元組——擋它自家的 beacon 防不到任何原本防得到的東西。
+#   它提供的 Core Web Vitals 與載入時間是 observe.js 收不到的（那支只收 path/referrer/
+#   語言/視窗尺寸與 JS 錯誤），不是重複資料。
+#
 # 三個「改了會靜靜壞掉」的地方，動之前先看：
 #   form-action   upgrade.html 付款時組隱藏表單 POST 到綠界。少了綠界網域＝按了付款沒反應，
 #                 而且沙盒與正式是**不同網域**，兩個都要留。
@@ -20,4 +26,4 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://dmkxjawjrmltmrmkebbs.supabase.co; frame-src https://www.falstad.com; worker-src 'self' blob:; form-action 'self' https://payment.ecpay.com.tw https://payment-stage.ecpay.com.tw; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://dmkxjawjrmltmrmkebbs.supabase.co; frame-src https://www.falstad.com; worker-src 'self' blob:; form-action 'self' https://payment.ecpay.com.tw https://payment-stage.ecpay.com.tw; base-uri 'self'; object-src 'none'; frame-ancestors 'self'
