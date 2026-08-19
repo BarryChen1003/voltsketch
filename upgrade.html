@@ -51,6 +51,7 @@
             <li data-i18n="up_f_kb">硬體知識庫付費主題全解鎖（電子紙 / 車用電子 / AI 伺服器 / 手機 / 筆電 / 智慧手錶），每月上線新內容</li>
             <li data-i18n="up_f_export">.OLB / .DSN / .BRD 等格式匯出 30 次/月（免費版 3 次）</li>
             <li data-i18n="up_f_formats">KiCad / OLB pin 清單 / Tcl / SKILL 全格式</li>
+            <li data-i18n="up_f_pcb">PCB 工具權限（佈線、鋪銅、疊層、Gerber 匯出）</li>
           </ul>
           <button class="primary-button buy" data-plan="vip_1m" data-i18n="up_buy" style="width:100%;padding:11px;font-size:14px">前往付款</button>
         </div>
@@ -77,9 +78,8 @@
           <h2 style="margin:0 0 4px" data-i18n="up_p12_t">VIP 12 個月</h2>
           <div class="price">NT$3000 <small data-i18n="up_p12_u">/ 12 個月（250/月）</small></div>
           <ul class="feat">
-            <li data-i18n="up_f_all12">月付方案全部內容（知識庫 + 匯出 30 次/月）</li>
+            <li data-i18n="up_f_all12">月付方案全部內容（知識庫 + 匯出 30 次/月 + PCB 工具）</li>
             <li data-i18n="up_f_interview">面試考題完整題庫（僅 12 個月方案）</li>
-            <li data-i18n="up_f_pcb">PCB 工具權限（pcb_access）</li>
           </ul>
           <button class="primary-button buy" data-plan="vip_12m" data-i18n="up_buy" style="width:100%;padding:11px;font-size:14px">前往付款</button>
         </div>
@@ -111,7 +111,7 @@
   <script src="./vendor/supabase-js-2.112.3.min.js"></script>
   <script src="./auth-config.js?v=2026-07-04a"></script>
   <script src="./observe.js?v=1"></script>
-  <script src="./auth.js?v=2026-08-15a"></script>
+  <script src="./auth.js?v=2026-08-18a"></script>
   <script>
     const T = (k, v) => window.I18N ? window.I18N.t(k, v) : k;  // i18n.js 稍後載入；點擊時已可用
     const obs = n => { try { window.Observe && window.Observe.track(n); } catch (e) { } };  // 購買意圖漏斗
@@ -170,7 +170,7 @@
       document.body.appendChild(f); f.submit();
     });
   </script>
-  <script src="./i18n.js?v=2026-08-18e"></script>
+  <script src="./i18n.js?v=2026-08-18f"></script>
   <script>
     // 同意條款句含 2 個 inline 連結，語序跨語言不同 → 每語言 template（同 pcb gate 模式）
     (function () {

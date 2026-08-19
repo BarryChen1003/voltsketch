@@ -20,11 +20,15 @@ import { checkMacValue, ecpayEnv } from "../_shared/ecpay.ts";
 import { nextExpiry } from "../_shared/plan-dates.mjs";
 
 // 方案規則（需與 create-order 的 PLANS 一致）：額度/月、期限月數、是否全解鎖
-const PLAN_RULES: Record<string, { limit: number; months: number; unlockAll: boolean }> = {
-  vip_1m:  { limit: 30, months: 1,  unlockAll: false },
-  vip_3m:  { limit: 30, months: 3,  unlockAll: false },
-  vip_6m:  { limit: 30, months: 6,  unlockAll: false },
-  vip_12m: { limit: 30, months: 12, unlockAll: true },  // 12 個月：+面試題庫+PCB 權限
+// 2026-08-18：PCB 下放到所有 VIP 方案（原本只有 12 個月才有）。
+// 因此 unlockAll 這個單一布林拆成兩個獨立旗標——它們本來就是兩種權限，
+// 綁在一起才會出現「想給 PCB 就非得連面試題庫一起給」。
+// 12 個月方案的差異化改由面試題庫 + 最低月費（250/月）承擔。
+const PLAN_RULES: Record<string, { limit: number; months: number; pcb: boolean; interview: boolean }> = {
+  vip_1m:  { limit: 30, months: 1,  pcb: true, interview: false },
+  vip_3m:  { limit: 30, months: 3,  pcb: true, interview: false },
+  vip_6m:  { limit: 30, months: 6,  pcb: true, interview: false },
+  vip_12m: { limit: 30, months: 12, pcb: true, interview: true },   // 12 個月另含面試題庫
 };
 
 Deno.serve(async (req) => {
@@ -98,16 +102,19 @@ Deno.serve(async (req) => {
       user_id: order.user_id, plan: order.plan,
       monthly_export_limit: rule.limit,
       plan_expires_at: expires.toISOString(),
-      unlock_all: rule.unlockAll,
+      unlock_all: rule.interview,   // 這欄的語意＝含面試題庫（plan.js 讀它做前端顯示）
       updated_at: new Date().toISOString(),
     });
     if (planErr) { await release(); return text("0|DB Error: plan upsert"); }
 
-    // 年付全解鎖：同步 profiles 旗標（面試題 RLS / PCB 權限沿用既有機制）
-    if (rule.unlockAll) {
-      const { error: profErr } = await admin.from("profiles").upsert({
-        id: order.user_id, interview_paid: true, pcb_access: true,
-      });
+    // 權限旗標。**只設 true、不設 false**：降階續購不該把還沒到期的既有權益關掉，
+    // 而「到期要失效」是由 my_entitlements()／is_interview_paid() 比對
+    // user_plans.plan_expires_at 決定的（entitlements-expiry.sql），不是靠這裡改旗標。
+    const flags: Record<string, unknown> = { id: order.user_id };
+    if (rule.pcb) flags.pcb_access = true;
+    if (rule.interview) flags.interview_paid = true;
+    if (rule.pcb || rule.interview) {
+      const { error: profErr } = await admin.from("profiles").upsert(flags);
       // 這裡刻意不 release：期限已經寫進 user_plans 了，退回 pending 會讓重送再累加一次。
       // 記進 log，由站主用 owner-unlock.sql 手動補這兩個旗標即可。
       if (profErr) console.error("profiles upsert failed for", order.user_id, profErr.message);

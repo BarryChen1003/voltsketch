@@ -98,7 +98,7 @@
 
   <script src="./ic-data.js?v=43"></script>
   <script src="./skill-swap.js"></script>
-  <script src="./i18n.js?v=2026-08-18e"></script>
+  <script src="./i18n.js?v=2026-08-18f"></script>
   <script>
     const $ = id => document.getElementById(id);
     const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -363,7 +363,7 @@ ${rows}
   <!-- 權限檢查需要這三支：這一頁原本完全沒有載 auth，所以問不到 pcb_access。 -->
   <script src="./vendor/supabase-js-2.112.3.min.js"></script>
   <script src="./auth-config.js?v=2026-07-04a"></script>
-  <script src="./auth.js?v=2026-08-15a"></script>
+  <script src="./auth.js?v=2026-08-18a"></script>
   <script>
     // 權限檢查放在頁尾：auth.js 載入之後才問得到。沒有權限就退回 pcb.html
     // （那一頁會顯示「12 個月方案專屬」的說明）。查不到也退回——失敗要鎖住不是放行。

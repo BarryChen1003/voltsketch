@@ -9,10 +9,10 @@ import { checkMacValue, ecpayEnv } from "../_shared/ecpay.ts";
 
 // ---- 方案型錄（唯一真相：金額/額度/期限都在後端；價格可調，webhook 的 PLAN_RULES 需同步）----
 const PLANS: Record<string, { amount: number; desc: string }> = {
-  vip_1m:  { amount: 300,  desc: "HardwareAI VIP 1 個月" },
-  vip_3m:  { amount: 750,  desc: "HardwareAI VIP 3 個月" },   // 250/月
-  vip_6m:  { amount: 1500, desc: "HardwareAI VIP 6 個月" },   // 250/月
-  vip_12m: { amount: 3000, desc: "HardwareAI VIP 12 個月(含面試題庫+PCB)" },  // 250/月＝最划算檔
+  vip_1m:  { amount: 300,  desc: "HardwareAI VIP 1 個月(含 PCB)" },
+  vip_3m:  { amount: 750,  desc: "HardwareAI VIP 3 個月(含 PCB)" },   // 250/月
+  vip_6m:  { amount: 1500, desc: "HardwareAI VIP 6 個月(含 PCB)" },   // 250/月
+  vip_12m: { amount: 3000, desc: "HardwareAI VIP 12 個月(含 PCB+面試題庫)" },  // 250/月＝最划算檔
 };
 
 // 只認自家網域。以前 CORS 開 * 且 ClientBackURL 直接取請求的 Origin，

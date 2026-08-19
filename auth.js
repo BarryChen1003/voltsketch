@@ -55,9 +55,20 @@ window.Auth = (function () {
       const { data } = await client.from('projects').select('data').eq('user_id', u.id).maybeSingle();
       return data ? data.data : null;
     },
-    // 權限/解鎖旗標（表 profiles: id uuid PK = auth.uid, pcb_access bool, interview_paid bool, role text）
+    // 有效權限。走 my_entitlements() RPC，因為那支會比對 user_plans.plan_expires_at。
+    // profiles 上的 pcb_access / interview_paid 記的是「買過」，不是「現在還有效」——
+    // 它們只會被設成 true、從來不會設回 false，直接讀等於付一次就永久有效。
+    // RPC 不存在時（entitlements-expiry.sql 還沒跑）退回舊的直接讀，站台照常運作，
+    // 但**那條路不會檢查到期**。
     async entitlements() {
       const u = await this.user(); if (!u) return {};
+      try {
+        const { data, error } = await client.rpc('my_entitlements');
+        if (!error && data) {
+          const r = Array.isArray(data) ? data[0] : data;
+          if (r) return r;
+        }
+      } catch (e) { /* 落到下面的舊路徑 */ }
       const { data } = await client.from('profiles').select('pcb_access, interview_paid, role').eq('id', u.id).maybeSingle();
       return data || {};
     },
