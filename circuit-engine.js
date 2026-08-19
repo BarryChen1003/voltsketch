@@ -164,9 +164,29 @@
       const name = (w.net == null ? '' : String(w.net)).trim();
       if (!name) return;
       // 取線段中點當併入點：它一定在這條線上，線怎麼移動都跟著
-      out.push({ x: (w.x1 + w.x2) / 2, y: (w.y1 + w.y2) / 2, name: name, src: 'w' + i });
+      out.push({
+        x: (w.x1 + w.x2) / 2, y: (w.y1 + w.y2) / 2,
+        name: name, volt: parseVolt(w.netV), src: 'w' + i,
+      });
     });
     return out;
+  }
+
+  /**
+   * net 電壓。接受 3.3 / "3.3" / "3V3" / "3.3V" / "-12V" / "1V8"，回傳數字或 null。
+   * 0 是合法值（GND 參考），所以不能用真值判斷。
+   */
+  function parseVolt(v) {
+    if (v == null || v === '') return null;
+    if (typeof v === 'number') return Number.isFinite(v) ? v : null;
+    let s = String(v).trim().toUpperCase().replace(/\s+/g, '');
+    if (!s) return null;
+    // 3V3 / 1V8 這種把 V 當小數點的寫法（硬體圈常用）
+    const m = s.match(/^(-?\d+)V(\d+)$/);
+    if (m) return parseFloat(m[1] + '.' + m[2]);
+    s = s.replace(/V(DC|OLT[S]?)?$/, '');
+    const n = parseFloat(s);
+    return Number.isFinite(n) ? n : null;
   }
 
   /**
@@ -244,10 +264,27 @@
       else if (cur !== l.name) conflicts.push({ net: r, names: [cur, l.name] });
     });
 
+    // net → 電壓。同一條 net 上出現兩個不同電壓＝那兩個電源被接在一起（短路），
+    // 這是使用者最想被提早擋下的錯，所以獨立記錄供 DRC 用。
+    const netVolt = new Map();
+    const voltConflicts = [];
+    labels.forEach((l, li) => {
+      if (l.volt == null) return;
+      const r = find(labelIdx[li]);
+      const cur = netVolt.get(r);
+      if (cur == null) netVolt.set(r, l.volt);
+      else if (cur !== l.volt) {
+        voltConflicts.push({ net: r, name: netName.get(r) || '', volts: [cur, l.volt] });
+      }
+    });
+
     return {
       pinNet, connectedPins, netCount: Object.keys(netMembers).length, find, pts,
       netName, netLabels: labels, nameConflicts: conflicts,
-      nameOfPin(key) { const r = pinNet.get(key); return r == null ? '' : (netName.get(r) || ''); }
+      netVolt, voltConflicts,
+      nameOfPin(key) { const r = pinNet.get(key); return r == null ? '' : (netName.get(r) || ''); },
+      // 回傳該腳所在 net 的電壓（沒設定回 null；0 是合法值，呼叫端別用真值判斷）
+      voltOfPin(key) { const r = pinNet.get(key); if (r == null) return null; const v = netVolt.get(r); return v == null ? null : v; }
     };
   }
 
@@ -358,6 +395,6 @@
 
   global.CircuitEngine = {
     PinDefs, FALSTAD_SUPPORTED, getPins, snapTarget, computeNets, toFalstad, falstadURL, dist, junctions, icLayout, onSegInterior,
-    collectNetLabels
+    collectNetLabels, parseVolt
   };
 })(typeof window !== 'undefined' ? window : this);

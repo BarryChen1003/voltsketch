@@ -1516,6 +1516,12 @@ const app = {
         + `<button type="button" class="small-button" data-netbind="${comp.id}">${bound ? uiT('重新指定 Net') : uiT('指定 Net（點一條線）')}</button>`
         + (bound ? `<button type="button" class="small-button" data-netunbind="${comp.id}">${uiT('取消綁定')}</button>` : '')
         + `</div>`;
+      // 電壓：讓這條 net 知道自己是幾 V，線路檢查才判得出「這樣接會不會有問題」
+      if (bound) {
+        html += `<label style="margin-top:6px"><span>${uiT('這條 net 的電壓')} (V)</span>`
+          + `<input type="text" data-netvolt="${comp.id}" value="${esc(comp.netValue == null ? '' : comp.netValue)}" placeholder="3.3 / 3V3 / 0"/></label>`
+          + `<div style="font-size:11px;color:#64748b;margin-top:2px">${uiT('留空＝不指定。填了之後，同一條 net 出現兩個不同電壓會被線路檢查判為短路。')}</div>`;
+      }
     }
     html += schema.map(f => {
       const val = p[f.k] != null ? p[f.k] : '';
@@ -1530,6 +1536,14 @@ const app = {
 
     const bindBtn = host.querySelector('[data-netbind]');
     if (bindBtn) bindBtn.addEventListener('click', () => this.startNetBind(bindBtn.dataset.netbind));
+    const voltInput = host.querySelector('[data-netvolt]');
+    if (voltInput) voltInput.addEventListener('input', () => {
+      const c = this.state.components.find(x => x.id === voltInput.dataset.netvolt);
+      if (!c) return;
+      c.netValue = voltInput.value;
+      this.applyNetValue(c);
+      this.render(); this.schedulePersist();
+    });
     const unbindBtn = host.querySelector('[data-netunbind]');
     if (unbindBtn) unbindBtn.addEventListener('click', () => {
       const c = this.state.components.find(x => x.id === unbindBtn.dataset.netunbind);
@@ -1591,6 +1605,7 @@ const app = {
     // 同一條實體 net 上的每一段導線都要標到，才算整條有名字——所以連通的線一起標。
     const marked = this.markConnectedWires(wi, name);
     c.netWire = name;                 // 這段文字目前命名的是哪個 net（改字時要跟著改）
+    this.applyNetValue(c);            // 先填過電壓的話，綁定當下就套上去
 
     // 把使用者的文字搬到他點的那個位置上方，不要另外生一個標籤。
     // 往上讓開一點，避免字壓在線上（硬規矩 1：圖字不重疊）。
@@ -1657,13 +1672,30 @@ const app = {
     let cnt = 0;
     this.state.wires.forEach(w => { if (w.net === oldName) { w.net = nm; cnt++; } });
     comp.netWire = nm;
+    this.applyNetValue(comp);   // 電壓跟著新名字走，不要留在舊名字上
+    return cnt;
+  },
+
+  // 把這段文字的電壓值套到它命名的每一段導線。
+  // 存在導線上（而不是只存在文字元件）的理由跟名字一樣：導線才是 net 的載體，
+  // 引擎與匯出都從導線讀，文字只是輸入與顯示的地方。
+  applyNetValue(comp) {
+    const nm = comp.netWire;
+    if (!nm) return 0;
+    const raw = (comp.netValue == null ? '' : String(comp.netValue)).trim();
+    let cnt = 0;
+    this.state.wires.forEach(w => {
+      if (w.net !== nm) return;
+      if (raw === '') delete w.netV; else w.netV = raw;
+      cnt++;
+    });
     return cnt;
   },
 
   // 解除：把這個名字從所有導線上清掉
   clearNetName(name) {
     let n = 0;
-    this.state.wires.forEach(w => { if (w.net === name) { delete w.net; n++; } });
+    this.state.wires.forEach(w => { if (w.net === name) { delete w.net; delete w.netV; n++; } });
     return n;
   },
 
@@ -2647,8 +2679,17 @@ const app = {
         case 'text': {
           // 自訂文字標註（net 命名等）
           const tc = sc || c.color || '#0f172a';
-          const s = String(c.text != null ? c.text : uiT('文字')).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+          const esc = t => String(t).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+          const s = esc(c.text != null ? c.text : uiT('文字'));
           inner = `<text x="0" y="5" text-anchor="middle" font-size="15" fill="${tc}" font-weight="600" font-family="system-ui,sans-serif">${s}</text>`;
+          // 有標電壓就顯示在名字下面，讓「這條是幾 V」看圖就知道，不必點開屬性面板。
+          // 放下方而不是接在名字後面：名字長度不一，接在後面會讓對齊亂掉。
+          const vRaw = (c.netValue == null ? '' : String(c.netValue)).trim();
+          if (c.netWire && vRaw !== '') {
+            const vn = window.CircuitEngine ? CircuitEngine.parseVolt(vRaw) : null;
+            const shown = vn == null ? vRaw : (vn + 'V');
+            inner += `<text x="0" y="19" text-anchor="middle" font-size="11" fill="#64748b" font-family="system-ui,sans-serif">${esc(shown)}</text>`;
+          }
           if (sel) inner = `<rect x="-2" y="-12" width="4" height="4" fill="none"/>` + inner;
           break;
         }

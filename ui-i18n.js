@@ -22,6 +22,8 @@
     '從 datasheet 建 IC 需要登入，這樣抽出來的腳位才留得住': { en: 'Building an IC from a datasheet needs an account, so the pins you extract are kept', ja: 'datasheet から IC を作るにはログインが必要です。抽出したピンを保持するためです', ko: 'datasheet로 IC를 만들려면 로그인이 필요합니다. 추출한 핀을 보관하기 위해서입니다' },
 
     // ── Net 命名（文字綁到導線）──
+    '這條 net 的電壓': { en: 'Voltage of this net', ja: 'この net の電圧', ko: '이 net의 전압' },
+    '留空＝不指定。填了之後，同一條 net 出現兩個不同電壓會被線路檢查判為短路。': { en: 'Leave blank to skip. Once set, two different voltages on one net are flagged as a short by the checker.', ja: '空欄なら未指定。入力すると、同じ net に異なる電圧が二つある場合は回路チェックで短絡と判定されます。', ko: '비워두면 미지정. 값을 넣으면 같은 net에 서로 다른 전압이 있을 때 회로 검사가 단락으로 판정합니다.' },
     '那裡沒有導線，請點在線上': { en: 'No wire there. Click on a wire.', ja: 'そこには配線がありません。配線の上をクリックしてください。', ko: '거기에는 배선이 없습니다. 배선 위를 클릭하세요.' },
     '已命名 {n} 段導線為「{name}」': { en: 'Named {n} wire segment(s) "{name}"', ja: '{n} 本の配線を「{name}」と命名しました', ko: '배선 {n}개를 "{name}"(으)로 명명했습니다' },
     '尚未綁定：目前只是純文字註解': { en: 'Not bound yet: this is just a text note for now', ja: '未紐付け：現在は単なるテキスト注記です', ko: '아직 연결 안 됨: 지금은 단순 텍스트 주석입니다' },

@@ -137,5 +137,60 @@ const R2 = { id: 'r2', type: 'resistor', x: 248, y: 100, rotation: 0 };
   eq('名字正確', n.nameOfPin('r1:1'), 'SDA');
 }
 
+
+// ---- 12) 電壓解析：接受硬體圈常見的幾種寫法 ----
+{
+  const P = E.parseVolt;
+  eq("數字", P(3.3), 3.3);
+  eq("字串數字", P("3.3"), 3.3);
+  eq("帶 V", P("3.3V"), 3.3);
+  eq("3V3 寫法", P("3V3"), 3.3);
+  eq("1V8 寫法", P("1V8"), 1.8);
+  eq("負電壓", P("-12V"), -12);
+  eq("0 是合法值（GND 參考）", P("0"), 0);
+  eq("小寫也接受", P("3v3"), 3.3);
+  eq("空字串→null", P(""), null);
+  eq("null→null", P(null), null);
+  eq("看不懂的字→null", P("abc"), null);
+}
+
+// ---- 13) net 電壓：標了就查得到 ----
+{
+  const w = { x1: 124, y1: 100, x2: 224, y2: 100, net: "P3V3", netV: "3V3" };
+  const n = E.computeNets([R1, R2], [w]);
+  eq("接腳查得到所在 net 的電壓", n.voltOfPin("r1:1"), 3.3);
+  eq("沒標電壓的 net 回 null",
+     E.computeNets([R1, R2], [{ x1: 124, y1: 100, x2: 224, y2: 100, net: "X" }]).voltOfPin("r1:1"), null);
+}
+
+// ---- 14) 同一條 net 兩個不同電壓 → 短路，必須報 ----
+{
+  const n = E.computeNets([R1, R2], [
+    { x1: 124, y1: 100, x2: 174, y2: 100, net: "A", netV: "3.3" },
+    { x1: 174, y1: 100, x2: 224, y2: 100, net: "A", netV: "5" },
+  ]);
+  ok("電壓衝突要進 voltConflicts", n.voltConflicts.length >= 1, JSON.stringify(n.voltConflicts));
+}
+
+// ---- 15) 同值不同寫法不算衝突 ----
+{
+  const n = E.computeNets([R1, R2], [
+    { x1: 124, y1: 100, x2: 174, y2: 100, net: "A", netV: "3.3" },
+    { x1: 174, y1: 100, x2: 224, y2: 100, net: "A", netV: "3V3" },
+  ]);
+  eq("同值不同寫法不算衝突", n.voltConflicts.length, 0);
+  eq("電壓正確", n.voltOfPin("r1:1"), 3.3);
+}
+
+// ---- 16) 同名 net 跨區合併後，電壓衝突照樣抓得到 ----
+{
+  const R3 = { id: "r3", type: "resistor", x: 700, y: 400, rotation: 0 };
+  const n = E.computeNets([R1, R3], [
+    { x1: 124, y1: 100, x2: 200, y2: 100, net: "VBUS", netV: "5" },
+    { x1: 724, y1: 400, x2: 800, y2: 400, net: "VBUS", netV: "3.3" },
+  ]);
+  ok("跨區同名合併後仍抓得到電壓衝突", n.voltConflicts.length >= 1);
+}
+
 console.log('\nnet-label.test: ' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);

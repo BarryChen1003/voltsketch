@@ -32,7 +32,8 @@ window.SchematicCheck = (function () {
       return out;
     }
     const comps = (components || []).filter(c => c.type !== 'text');
-    const { pinNet, connectedPins } = eng.computeNets(comps, wires || []);
+    const nets0 = eng.computeNets(comps, wires || []);
+    const { pinNet, connectedPins } = nets0;
 
     // 建索引：net → 成員腳、comp → 腳清單
     const nets = new Map();
@@ -151,6 +152,41 @@ window.SchematicCheck = (function () {
       if (!ps.some(e => e.net != null && netHasType(e.net, 'capacitor')))
         out.infos.push({ msg: `${name(x)}：晶振兩側建議各接負載電容 CL 到地`, comps: [x.id] });
     });
+
+    // 9b) net 標籤：命名衝突與電壓衝突
+    //     這幾項全都是從使用者自己標的資料直接推出來的，不靠猜測——
+    //     所以敢報成 error 而不是提醒。
+    (nets0.nameConflicts || []).forEach(c => {
+      out.errors.push({
+        msg: `同一條 net 被標了兩個名字（${c.names.join(' / ')}）——它們其實接在一起`,
+        comps: [],
+      });
+    });
+    (nets0.voltConflicts || []).forEach(c => {
+      const vs = c.volts.map(v => v + 'V').join(' 與 ');
+      out.errors.push({
+        msg: `net${c.name ? ' ' + c.name : ''} 上同時標了 ${vs}——兩個不同電位接在一起就是短路`,
+        comps: [],
+      });
+    });
+
+    // 9c) 有電壓的 net 直接接到接地符號 = 電源對地短路
+    if (nets0.netVolt && nets0.netVolt.size) {
+      const gndNets = new Set();
+      comps.filter(c => c.type === 'ground').forEach(g => {
+        (pinsOf.get(g.id) || []).forEach(e => { if (e.net != null) gndNets.add(e.net); });
+      });
+      nets0.netVolt.forEach((v, netId) => {
+        if (v === 0) return;                 // 標 0V 接地是正確的，不是錯誤
+        if (!gndNets.has(netId)) return;
+        const nm = nets0.netName.get(netId) || '';
+        out.errors.push({
+          msg: `net${nm ? ' ' + nm : ''}（${v}V）直接接到接地符號——電源對地短路`,
+          comps: comps.filter(c => c.type === 'ground' &&
+            (pinsOf.get(c.id) || []).some(e => e.net === netId)).map(c => c.id),
+        });
+      });
+    }
 
     // 10) 基本存在性
     if (!comps.some(c => c.type === 'source')) out.warns.push({ msg: '電路沒有電源', comps: [] });
