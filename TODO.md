@@ -34,6 +34,18 @@
 | C1 | 付費知識卡月更 | 🔄 節奏定案＝每月 5 張、6 付費分類輪替。**2026-07 第一批 ✅**（knowledge-paid2.js：epd-frontlight/auto-lin-bus/server-hotswap-efuse/mobile-camera-power/laptop-fan-control，四語內嵌）。下批（2026-08）智慧手錶優先輪回 | 🔄 07 批已上 |
 | C2 | 面試題庫擴充 | 🔄 批2 完成（q28–q32 返馳迴路辨識×5，站主提供的實際面試題型＋同型自我延伸；站風暗底電路圖＋黃/紅/綠/橘路徑標示，四語）。**站主動作**：SQL Editor 跑 `supabase/sql/interview-batch2.sql` 讓正式 DB（RLS 路徑）也有新題。簡介已改「實際面試考題＋同型延伸」四語 | 🔄 +5 題，SQL 待跑 |
 
+## G. 2026-08-19 完成（實打驗證）
+
+| 項目 | 證據 |
+|---|---|
+| 備份含 auth schema | Actions #11 綠；「提醒 auth 沒備到」步驟被 skip；artifact 36.6→60.6 KB |
+| 權限到期失效 | `entitlements-expiry.sql` 已跑；`my_entitlements` 存在且 anon 被 revoke 擋下 |
+| PCB 下放全 VIP 方案 | 兩支 Function 已重新部署（webhook 4 檔含 plan-dates.mjs） |
+| 金流防線重驗 | GET 405／偽造簽章 0|CheckMacValue Error／正確簽章 0|Order Not Found／create-order 兩層 401 |
+| CORS 白名單 | evil.example.com 被改寫成 hardware-ai.org |
+
+**仍未做**：備份還原演練（備份沒還原過不算備份）、嚴格 CSP、Cloudflare Web Analytics 決策。
+
 ## F. 細修（站主 2026-07-16 驗收回饋，整體完成後逐項修）
 
 | # | 項目 | 內容 | 狀態 |
