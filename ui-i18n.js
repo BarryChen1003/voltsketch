@@ -21,6 +21,15 @@
     '存進元件庫失敗：{err}': { en: 'Could not save to the library: {err}', ja: '部品ライブラリへの保存に失敗：{err}', ko: '부품 라이브러리 저장 실패: {err}' },
     '從 datasheet 建 IC 需要登入，這樣抽出來的腳位才留得住': { en: 'Building an IC from a datasheet needs an account, so the pins you extract are kept', ja: 'datasheet から IC を作るにはログインが必要です。抽出したピンを保持するためです', ko: 'datasheet로 IC를 만들려면 로그인이 필요합니다. 추출한 핀을 보관하기 위해서입니다' },
 
+    // ── Net 清單匯出 ──
+    '未命名': { en: 'unnamed', ja: '未命名', ko: '이름 없음' },
+    '畫布沒有任何 net': { en: 'There are no nets on the canvas', ja: 'キャンバスに net がありません', ko: '캔버스에 net이 없습니다' },
+    '已匯出 {n} 條 net（其中 {k} 條已命名）': { en: 'Exported {n} nets ({k} named)', ja: '{n} 本の net を書き出しました（うち {k} 本は命名済み）', ko: 'net {n}개를 내보냈습니다(그중 {k}개는 명명됨)' },
+    'Net 名稱': { en: 'Net name', ja: 'Net 名', ko: 'Net 이름' },
+    '電壓': { en: 'Voltage', ja: '電圧', ko: '전압' },
+    '接點數': { en: 'Pins', ja: '接続点数', ko: '접점 수' },
+    '連接的接腳': { en: 'Connected pins', ja: '接続されているピン', ko: '연결된 핀' },
+
     // ── Net 命名（文字綁到導線）──
     '這條 net 的電壓': { en: 'Voltage of this net', ja: 'この net の電圧', ko: '이 net의 전압' },
     '留空＝不指定。填了之後，同一條 net 出現兩個不同電壓會被線路檢查判為短路。': { en: 'Leave blank to skip. Once set, two different voltages on one net are flagged as a short by the checker.', ja: '空欄なら未指定。入力すると、同じ net に異なる電圧が二つある場合は回路チェックで短絡と判定されます。', ko: '비워두면 미지정. 값을 넣으면 같은 net에 서로 다른 전압이 있을 때 회로 검사가 단락으로 판정합니다.' },

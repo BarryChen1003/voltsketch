@@ -699,6 +699,7 @@ const app = {
     document.getElementById('exportPdf').addEventListener('click', () => this.exportSchematicPdf());
     document.getElementById('closeBom').addEventListener('click', () => { document.getElementById('bomModal').hidden = true; });
     document.getElementById('bomCsv').addEventListener('click', () => this.exportBomCsv());
+    document.getElementById('netCsv').addEventListener('click', () => this.exportNetlistCsv());
     document.getElementById('bomPdf').addEventListener('click', () => this.printBom());
 
     // Language switcher
@@ -1805,6 +1806,61 @@ const app = {
     }
     document.getElementById('bomModal').hidden = false;
   },
+  // Net 清單：layout 與導 BOM 時要知道「這條線是什麼、幾伏特、接到哪些腳」。
+  // 這跟 BOM 是兩種東西——BOM 依元件分組，一顆元件會跨好幾條 net，塞不進同一張表。
+  generateNetlist() {
+    const E = window.CircuitEngine;
+    if (!E) return [];
+    const comps = this.state.components.filter(c => c.type !== 'text');
+    const nets = E.computeNets(comps, this.state.wires);
+    const byNet = new Map();
+    comps.forEach(c => {
+      E.getPins(c).forEach((p, idx) => {
+        const key = c.id + ':' + idx;
+        const root = nets.pinNet.get(key);
+        if (root == null) return;
+        if (!byNet.has(root)) byNet.set(root, []);
+        // IC 用腳名比腳號好讀；其餘元件用 pin 名（a/b/G/S/D…）
+        let pinName = p.name;
+        if (c.type === 'ic') {
+          const def = (c.icPins || []).find(x => String(x.num) === String(p.name));
+          if (def && def.name) pinName = def.num + '(' + def.name + ')';
+        }
+        byNet.get(root).push((c.label || c.name || c.type) + '.' + pinName);
+      });
+    });
+    const rows = [];
+    byNet.forEach((pins, root) => {
+      const nm = nets.netName.get(root) || '';
+      const v = nets.netVolt.get(root);
+      rows.push({
+        net: nm || ('(' + uiT('未命名') + ')'),
+        named: !!nm,
+        volt: v == null ? '' : v + 'V',
+        pinCount: pins.length,
+        pins: pins.sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).join(', '),
+      });
+    });
+    // 有名字的排前面，其次照名字排；未命名的擺最後（那些通常是還沒標的）
+    rows.sort((a, b) => (b.named - a.named) || a.net.localeCompare(b.net, undefined, { numeric: true }));
+    rows.forEach((r, i) => { r.item = i + 1; });
+    return rows;
+  },
+
+  exportNetlistCsv() {
+    const rows = this.generateNetlist();
+    if (!rows.length) { this.showToast(uiT('畫布沒有任何 net')); return; }
+    const esc = v => { const s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+    const head = ['項次', 'Net 名稱', '電壓', '接點數', '連接的接腳'].map(uiT);
+    const csv = '﻿' + [head.join(',')]
+      .concat(rows.map(r => [r.item, r.net, r.volt, r.pinCount, r.pins].map(esc).join(','))).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = 'netlist.csv'; a.click();
+    const named = rows.filter(r => r.named).length;
+    this.showToast(uiT('已匯出 {n} 條 net（其中 {k} 條已命名）', { n: rows.length, k: named }));
+  },
+
   exportBomCsv() {
     const rows = this._bomRows || this.generateBom();
     if (!rows.length) { this.showToast(uiT('沒有元件')); return; }

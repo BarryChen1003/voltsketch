@@ -258,6 +258,7 @@ window.I18N = (function () {
     ui_cancel: { zh: '取消', en: 'Cancel', ja: 'キャンセル', ko: '취소' },
     ix_bom_title: { zh: 'BOM 料表', en: 'BOM', ja: 'BOM（部品表）', ko: 'BOM(부품표)' },
     ix_csv: { zh: '下載 CSV', en: 'Download CSV', ja: 'CSV をダウンロード', ko: 'CSV 다운로드' },
+    ix_netcsv: { zh: 'Net 清單 CSV', en: 'Net list CSV', ja: 'Net 一覧 CSV', ko: 'Net 목록 CSV' },
     ix_print: { zh: '列印 / PDF', en: 'Print / PDF', ja: '印刷 / PDF', ko: '인쇄 / PDF' },
     ix_falstad_title: { zh: 'Falstad 電路模擬', en: 'Falstad circuit simulation', ja: 'Falstad 回路シミュレーション', ko: 'Falstad 회로 시뮬레이션' },
     ix_newtab: { zh: '新分頁開啟', en: 'Open in a new tab', ja: '新しいタブで開く', ko: '새 탭에서 열기' },
