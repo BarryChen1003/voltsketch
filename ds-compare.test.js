@@ -203,5 +203,85 @@ ok('B 的電壓與溫度', B.params.vin.hi === 5.5 && B.params.temp.hi === 105, 
   });
 }
 
+
+/* ---------- 6) 真 datasheet 迴歸（tools/ds-compare/fixtures/*.txt） ----------
+ * 素材：三份真 datasheet 用網站自己的 pdf.js + linesFromItems 抽出來的規格列，
+ * 再裁到「再拿掉任何一列，parse() 結果就會變」的最小集合。
+ * 期望值逐條對照過 datasheet 原文。這一段守的是使用者 2026-08-20 實測到的那類錯誤：
+ * 抽不到（14 項只中 3 項）、以及抽到量級錯誤的值（IQ 160 mA）。 */
+const fs = require('fs'), path = require('path');
+const FX = f => fs.readFileSync(path.join(__dirname, 'tools', 'ds-compare', 'fixtures', f), 'utf8');
+
+{
+  const R = DS.parse(FX('rt6150.txt'), 'rt6150.pdf');
+  ok('RT6150 料號與廠商', R.part === 'RT6150' && R.mfr === 'Richtek', R.part + ' / ' + R.mfr);
+  ok('RT6150 封裝 WDFN-10', R.params.package.value === 'WDFN-10', R.params.package.value);
+  ok('RT6150 腳數 10', R.params.pins.n === 10, JSON.stringify(R.params.pins));
+  // datasheet 原文：Quiescent current is only 60 μA。同一列還有測試條件「I OUT = 0mA」，
+  // 舊版抓的就是那個 0mA；EC 表另一處寫「-- 60 -- A」，數字與單位不相鄰。
+  ok('RT6150 IQ = 60 µA', R.params.iq && Math.abs(R.params.iq.n - 60e-6) < 1e-12, JSON.stringify(R.params.iq));
+  // Ta -40~85 與 Tj -40~125 兩個都在文件裡，2nd source 要比的是環境溫度
+  ok('RT6150 工作溫度取環境溫度 -40~85', R.params.temp.lo === -40 && R.params.temp.hi === 85, JSON.stringify(R.params.temp));
+  ok('RT6150 VIN 1.8~5.5 V', R.params.vin.lo === 1.8 && R.params.vin.hi === 5.5, JSON.stringify(R.params.vin));
+  ok('RT6150 IOUT 800 mA', R.params.iout && Math.abs(R.params.iout.n - 0.8) < 1e-9, JSON.stringify(R.params.iout));
+  // EC 表是 MIN 0.8 / TYP 1 / MAX 1.2 MHz —— 要取 TYP，不是掃到的第一個或最大的
+  ok('RT6150 fSW 取 typ = 1 MHz', R.params.fsw && R.params.fsw.n === 1e6, JSON.stringify(R.params.fsw));
+  ok('RT6150 ESD 2 kV', R.params.esd && R.params.esd.n === 2000, JSON.stringify(R.params.esd));
+  ok('RT6150 沒有輸入品質警告', R.warn.length === 0, JSON.stringify(R.warn));
+}
+
+{
+  const W = DS.parse(FX('w25q128jv.txt'), 'w25q128jv.pdf');
+  // 舊版把 Absolute Maximum 的「VCC -0.6 to 4.6 V」當成工作電壓
+  ok('W25Q128JV VCC 2.7~3.6（不是 abs max）', W.params.vin.lo === 2.7 && W.params.vin.hi === 3.6, JSON.stringify(W.params.vin));
+  ok('W25Q128JV 料號取自檔名', W.part === 'W25Q128JV', W.part);
+  ok('W25Q128JV 廠商 Winbond', W.mfr === 'Winbond', W.mfr);
+  ok('W25Q128JV 多種封裝 → 腳數不猜', W.params.pins.ambiguous === true, JSON.stringify(W.params.pins));
+  // Standby Current 是 MIN 1 / TYP 10 / MAX 60 μA
+  ok('W25Q128JV IQ 取 typ = 10 µA', W.params.iq && Math.abs(W.params.iq.n - 10e-6) < 1e-12, JSON.stringify(W.params.iq));
+  ok('W25Q128JV 溫度 -40~85', W.params.temp.lo === -40 && W.params.temp.hi === 85, JSON.stringify(W.params.temp));
+  ok('W25Q128JV 介面 SPI', W.params.interface.set.join(',') === 'SPI', JSON.stringify(W.params.interface));
+}
+
+{
+  const X = DS.parse(FX('axp209.txt'), 'axp209.pdf');
+  ok('AXP209 封裝 QFN-48', X.params.package.value === 'QFN-48', X.params.package.value);
+  ok('AXP209 VIN 2.9~6.3 V', X.params.vin.lo === 2.9 && X.params.vin.hi === 6.3, JSON.stringify(X.params.vin));
+  ok('AXP209 fSW 1.5 MHz', X.params.fsw && X.params.fsw.n === 1.5e6, JSON.stringify(X.params.fsw));
+  ok('AXP209 介面認得 TWSI 就是 I2C', X.params.interface.set.indexOf('I2C') >= 0, JSON.stringify(X.params.interface));
+  // 這顆的溫度只出現在 Absolute Maximum（Tj -40~130），拿去當工作溫度會高估 → 寧可未擷取。
+  // 另外「V IN = 5V , BAT = 3.8V , T A = 2 5 ℃」被 PDF 拆成「2 5」，不准變成「2 ~ 5 °C」。
+  ok('AXP209 工作溫度未擷取（不給錯的）', X.params.temp === null, JSON.stringify(X.params.temp));
+}
+
+/* ---------- 7) 誤抽防線（合成最小案例，一條一種手法） ---------- */
+{
+  const p1 = DS.parse('Quiescent Current I OUT = 0mA, PS = 0V (Note 5) Power Save Mode', 'x1.pdf');
+  ok('等號後面是測試條件，不是規格值', p1.params.iq === null, JSON.stringify(p1.params.iq));
+  const p2 = DS.parse('Quiescent current IQ 160 mA', 'x2.pdf');
+  ok('IQ 160 mA 量級不可能 → 不抽', p2.params.iq === null, JSON.stringify(p2.params.iq));
+  const p3 = DS.parse('Absolute Maximum Ratings\nSupply Voltage VCC 0.6 to 4.6 V', 'x3.pdf');
+  ok('Absolute Maximum 不能當工作電壓', p3.params.vin === null, JSON.stringify(p3.params.vin));
+  const p4 = DS.parse('Quiescent current is only 60 μ A in Power Save Mode', 'x4.pdf');
+  ok('μ 與 A 之間有空白也要認得', p4.params.iq && Math.abs(p4.params.iq.n - 60e-6) < 1e-12, JSON.stringify(p4.params.iq));
+  const p5 = DS.parse('Operating Temperature Range − 40 ° C to 85 ° C', 'x5.pdf');
+  ok('負號與度數被空白拆開也要認得', p5.params.temp && p5.params.temp.lo === -40 && p5.params.temp.hi === 85, JSON.stringify(p5.params.temp));
+  const p6 = DS.parse('Operating temperature T A = 2 5 ℃ typical', 'x6.pdf');
+  ok('被拆開的 25℃ 不會變成 2~5 °C 的範圍', p6.params.temp === null, JSON.stringify(p6.params.temp));
+}
+
+/* ---------- 8) 輸入本身有問題，報告要直接講 ---------- */
+{
+  const bad = DS.parse('RP095xxRBWC screw type terminal block, pluggable, centerline 5.00 mm', 'pca9450.pdf');
+  ok('料號沒出現在內文 → 警告', bad.warn.some(w => w.w === 'part'), JSON.stringify(bad.warn));
+  ok('幾乎沒有文字 → 警告', bad.warn.some(w => w.w === 'noText'), JSON.stringify(bad.warn));
+  const h = DS.reportHTML({ A: bad, B: bad, checks: [], fileA: 'pca9450.pdf', fileB: 'pca9450.pdf', lang: 'zh' });
+  ok('警告印在報告上', h.indexOf('沒有出現在這份 PDF') > 0);
+  DS.LANGS.forEach(l => {
+    const hh = DS.reportHTML({ A: bad, B: bad, checks: [], fileA: 'a.pdf', fileB: 'b.pdf', lang: l });
+    ok('警告四語齊全（' + l + '）', !/undefined/.test(hh) && /border-left-color:#b91c1c/.test(hh));
+  });
+}
+
 console.log(`ds-compare.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

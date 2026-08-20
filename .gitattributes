@@ -8,3 +8,6 @@ vendor/** -text
 *.pdf binary
 *.png binary
 *.woff2 binary
+
+# ds-compare 的迴歸素材：測試比對的是逐列文字，換行被改寫不會壞，但固定住比較好追
+tools/ds-compare/fixtures/** -text
