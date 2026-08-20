@@ -23,6 +23,7 @@ supabase/**
 tools
 tools/**
 *.ps1
+*.sh
 
 # --- 內部索引（沒有任何頁面或程式讀它） ---
 knowledge-db

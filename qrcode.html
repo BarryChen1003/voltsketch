@@ -112,11 +112,16 @@
       </ol>
     </div>
     
-    <button class="btn" onclick="startServer()" data-i18n="qr_local">啟動本地伺服器</button>
+    <button class="btn" id="startServerBtn" data-i18n="qr_local">啟動本地伺服器</button>
   </div>
 
   <script src="./vendor/qrcodejs-1.0.0.min.js"></script>
   <script>
+    // 原本是 onclick="startServer()"，改成 addEventListener（嚴格 CSP 不許 inline handler）
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('startServerBtn')?.addEventListener('click', function () { startServer(); });
+    });
+
     // Generate QR Code for localhost
     function generateQR(url) {
       const qrcode = document.getElementById('qrcode');

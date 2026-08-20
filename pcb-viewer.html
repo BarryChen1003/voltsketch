@@ -298,7 +298,7 @@
           1️⃣ 下載 <a href="tools/allegro-extract.il" download><b>allegro-extract.il</b></a>（只讀不改板，安全）<br/>
           2️⃣ Allegro 開你的 .brd → 命令列輸入 <code>skill load("allegro-extract.il")</code> → 再輸入 <code>vsExtract()</code><br/>
           3️⃣ 產出的 <b>vsboard.json</b> 回這裡「匯入」→ 分層/搜尋/找料/換料全部可用</p>
-          <div style="text-align:right;margin-top:12px"><button class="small-button" onclick="document.getElementById('brdGuide').remove()">知道了</button></div>
+          <div style="text-align:right;margin-top:12px"><button class="small-button" id="brdGuideOk" data-i18n="ui_got_it">知道了</button></div>
         </div>`;
         document.body.appendChild(g);
       }
@@ -360,6 +360,14 @@ ${rows}
 
     renderLayerUI(); draw();
   </script>
+  <script>
+    // 原本是 onclick="..."，改成 addEventListener：嚴格 CSP 不允許 inline 事件處理器，
+    // 而 hash 只蓋得到 <script> 區塊，蓋不到屬性上的程式碼。
+    document.getElementById('brdGuideOk')?.addEventListener('click', function () {
+      document.getElementById('brdGuide')?.remove();
+    });
+  </script>
+
   <!-- 權限檢查需要這三支：這一頁原本完全沒有載 auth，所以問不到 pcb_access。 -->
   <script src="./vendor/supabase-js-2.112.3.min.js"></script>
   <script src="./auth-config.js?v=2026-07-04a"></script>

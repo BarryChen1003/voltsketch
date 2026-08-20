@@ -101,6 +101,8 @@ jobs:
         run: node html-i18n-check.js --strict
       - name: vendor-check（不准回頭用 CDN；vendor 檔要與紀錄的雜湊相符）
         run: node vendor-check.js --strict
+      - name: csp-hash（inline script 的雜湊要與 _headers 同步）
+        run: node csp-hash.js --check
       - name: interview-i18n-check（面試題庫四語齊全）
         run: node interview-i18n-check.js --strict
       - name: news-i18n-check（新技術：四語＋每則都要有出處）
