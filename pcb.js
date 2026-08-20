@@ -1076,18 +1076,64 @@ const pcbApp = {
       : pcbT('pj_kicad_exported_new', { name });
   },
 
-  exportGerber() {
+  // Gerber 由後端產生（supabase/functions/pcb-export）。
+  // 產生器不在前端：它送給每個訪客的話，PCB 這個付費功能真正的價值——
+  // 那包拿去打版的檔案——等於免費送。這裡只負責送出板子狀態與收下 ZIP。
+  async exportGerber() {
+    const el = document.getElementById('kicadIoMsg');
+    const say = (html) => { if (el) el.innerHTML = html; };
+
+    if (!(window.Auth && Auth.enabled && Auth.enabled())) { say('⚠ ' + pcbT('pj_gerber_need_login')); return; }
+    const sess = await Auth.raw().auth.getSession();
+    const token = sess?.data?.session?.access_token;
+    if (!token) { say('⚠ ' + pcbT('pj_gerber_need_login')); return; }
+
     const s = this.state;
     const base = s.kicad ? s.kicad.fileName : 'hardwareai';
-    const r = window.GerberExport.downloadZip(s, this.padAbs.bind(this), base);
-    const el = document.getElementById('kicadIoMsg');
-    if (el) {
-      const names = r.files.map(f => f.name.replace(/^.*?-/, '')).join('、');
-      el.innerHTML = pcbT('pj_gerber_exported', {
-        n: r.files.length, names, pth: r.drillCounts.pth,
-        npth: r.drillCounts.npth ? '＋NPTH ' + r.drillCounts.npth : '',
-        slots: r.drillCounts.slots ? pcbT('pj_gerber_slots', { n: r.drillCounts.slots }) : ''
-      }) + (r.warnings.length ? '<br>⚠ ' + r.warnings.join('<br>⚠ ') : '');
+    say(pcbT('pj_gerber_working'));
+
+    let res;
+    try {
+      res = await fetch((window.AUTH_CONFIG.url) + '/functions/v1/pcb-export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ state: s, baseName: base })
+      });
+    } catch (e) { say('⚠ ' + pcbT('pj_gerber_failed', { err: e.message })); return; }
+
+    if (!res.ok) {
+      let reason = res.status;
+      try { const j = await res.json(); reason = j.error || reason; } catch (e) { }
+      const msg = reason === 'pcb_access_required' ? pcbT('pj_gerber_no_access')
+        : reason === 'not_authenticated' ? pcbT('pj_gerber_need_login')
+          : reason === 'quota_exceeded' ? pcbT('pj_gerber_quota')
+            : pcbT('pj_gerber_failed', { err: String(reason) });
+      say('⚠ ' + msg);
+      return;
+    }
+
+    // 統計與警告走標頭（本體是 ZIP）。警告是 { k, v }，在這裡才翻成四語。
+    let meta = null;
+    try {
+      const b64 = res.headers.get('X-Gerber-Meta');
+      if (b64) meta = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0))));
+    } catch (e) { }
+
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = base.replace(/\.kicad_pcb$/i, '') + '-gerber.zip';
+    a.click();
+    URL.revokeObjectURL(a.href);
+
+    if (meta) {
+      const names = meta.files.map(f => f.replace(/^.*?-/, '')).join('、');
+      const warns = (meta.warnings || []).map(w => pcbT(w.k, w.v));
+      say(pcbT('pj_gerber_exported', {
+        n: meta.files.length, names, pth: meta.drillCounts.pth,
+        npth: meta.drillCounts.npth ? '＋NPTH ' + meta.drillCounts.npth : '',
+        slots: meta.drillCounts.slots ? pcbT('pj_gerber_slots', { n: meta.drillCounts.slots }) : ''
+      }) + (warns.length ? '<br>⚠ ' + warns.join('<br>⚠ ') : ''));
     }
   },
 

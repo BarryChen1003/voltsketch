@@ -24,8 +24,11 @@ global.document = docStub; global.localStorage = lsStub; global.window.document 
 const fs = require('fs');
 try { require('./ic-data.js'); } catch (e) {}
 require('./footprint-gen.js'); require('./parts-lib.js'); require('./pcb-ref-fp.js');
-require('./pcb-refboards.js'); require('./pcb-history.js'); require('./gerber-export.js');
-['PcbHistory', 'FootprintGen', 'RefFP', 'PartsLib', 'PCB_REFBOARDS', 'IC_DATA', 'GerberExport'].forEach(k => { global[k] = global.window[k]; });
+require('./pcb-refboards.js'); require('./pcb-history.js');
+// Gerber 產生器已搬到後端（前端不再持有）。這裡直接載那一份，
+// 測的就是真正會產出打版檔的那段程式。
+global.GerberExport = require('./supabase/functions/_shared/gerber.mjs');
+['PcbHistory', 'FootprintGen', 'RefFP', 'PartsLib', 'PCB_REFBOARDS', 'IC_DATA'].forEach(k => { global[k] = global.window[k]; });
 
 let src = fs.readFileSync('./pcb.js', 'utf8').replace(/pcbApp\.init\(\);\s*/m, '');
 eval(src);

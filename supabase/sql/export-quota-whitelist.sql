@@ -30,7 +30,8 @@ declare
   -- 加新匯出格式時**必須**同步這裡，否則新格式會被擋成 bad_export_type。
   v_allowed constant text[] := array[
     'json', 'kicad', 'csv', 'tcl',
-    'arch-json', 'arch-bom', 'arch-dsn'
+    'arch-json', 'arch-bom', 'arch-dsn',
+    'gerber'   -- 2026-08-20：Gerber 改由後端 pcb-export 產生，一併納入額度
   ];
 begin
   if v_user is null then
@@ -86,7 +87,8 @@ declare
   -- 加新匯出格式時**必須**同步這裡，否則新格式會被擋成 bad_export_type。
   v_allowed constant text[] := array[
     'json', 'kicad', 'csv', 'tcl',
-    'arch-json', 'arch-bom', 'arch-dsn'
+    'arch-json', 'arch-bom', 'arch-dsn',
+    'gerber'   -- 2026-08-20：Gerber 改由後端 pcb-export 產生，一併納入額度
   ];
 begin
   if v_user is null then return query select 0, 'anonymous'; return; end if;

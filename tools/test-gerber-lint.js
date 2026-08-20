@@ -3,7 +3,8 @@ global.window = global;
 global.TextEncoder = require('util').TextEncoder;
 const fs = require('fs');
 eval(fs.readFileSync('C:/Users/User/Documents/Web/kicad-io.js', 'utf8'));
-eval(fs.readFileSync('C:/Users/User/Documents/Web/gerber-export.js', 'utf8'));
+// Gerber 產生器已搬到後端；這裡直接載那一份（也順便去掉寫死的絕對路徑）
+global.window.GerberExport = require('../supabase/functions/_shared/gerber.mjs');
 
 let fail = 0;
 const eq = (name, got, want, tol) => {
