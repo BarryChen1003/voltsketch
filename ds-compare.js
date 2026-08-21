@@ -238,6 +238,17 @@
 
   /** 找出第一個命中的原文列，當作這個判斷的出處。
    *  規則是在全文上比對的，但要能回頭指出「憑哪一行講的」，驗證器才驗得動。 */
+
+  /** 找出含有這段原文的那一列。規則已經拿到命中字串時用這個，比再比對一次準：
+   *  TI 的 ESD 表有好幾列都寫 HBM，只有其中一列帶著數值。 */
+  function lineWith(t, str) {
+    if (!str) return null;
+    const needle = norm(str).replace(/\s+/g, ' ').trim();
+    const rows = norm(t).split(/\n/);
+    const hit = rows.find(r => r.replace(/\s+/g, ' ').indexOf(needle) >= 0);
+    return hit ? hit.slice(0, 240) : null;
+  }
+
   function lineOf(t, re, withNext) {
     const rows = norm(t).split(/\n/);
     for (let i = 0; i < rows.length; i++) {
@@ -492,7 +503,15 @@
         const s = scale('V', m[2]); if (s === null) return null;
         const n = num(m[1]) * s;
         return (n >= 100 && n <= 30000)
-          ? { value: m[1] + ' ' + m[2], n, src: lineOf(t, /HBM|Human\s+Body\s+Model/i) } : null;
+          ? {
+            value: m[1] + ' ' + m[2], n,
+            // TI 的 ESD 表把單位放在隔壁欄，y 併列之後單位會落到下一列
+            //（「…JS-001 (1) ±2000」↵「V (ESD) Electrostatic discharge V」），
+            // 所以命中列找不到時，帶上下一列才撐得住這個值。
+            src: lineWith(t, m[0])
+              || lineOf(t, new RegExp('HBM[^\n]{0,60}' + m[1].replace('.', '\.')), true)
+              || lineOf(t, /HBM|Human\s+Body\s+Model/i, true),
+          } : null;
       },
     },
     {

@@ -129,7 +129,8 @@ function verifyClaim(claim, pages) {
     const okLo = nums.some(v => near(v, claim.lo));
     const okHi = nums.some(v => near(v, claim.hi));
     if (!(okLo && okHi)) return { ok: false, reason: 'number-mismatch', page: page + 1, checks };
-    if (!(claim.lo < claim.hi)) return { ok: false, reason: 'range-inverted', page: page + 1, checks };
+    // lo === hi 是「單一值」（固定輸出電壓那種），不是範圍寫反
+    if (!(claim.lo <= claim.hi)) return { ok: false, reason: 'range-inverted', page: page + 1, checks };
   } else if (claim.n !== undefined && claim.n !== null) {
     const kind = KIND[key];
     const nums = kind ? valuesIn(quote, kind) : numbersIn(quote);
