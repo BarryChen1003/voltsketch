@@ -25,6 +25,10 @@ const DS = require('../../ds-compare.js');
  *  （DS.norm 已經處理過私有區字元、破折號、單位間的空白。） */
 const flat = s => DS.norm(String(s == null ? '' : s)).replace(/\s+/g, ' ').trim();
 
+/** 破折號前面必須是一個「單獨的數字」才算範圍分隔。
+ *  「1.65 -5.5 V」是範圍；「P07-P00 -10 mA」的 -10 是真的負值（前面是料號不是數字）。 */
+const RANGE_DASH = /(?:^|[\s(])\d[\d,]*(?:\.\d+)?\s*$/;
+
 /** 數字相等：用相對誤差，避免 0.1+0.2 那種浮點誤差誤判 */
 function near(a, b) {
   if (a === b) return true;
@@ -48,6 +52,8 @@ function valuesIn(text, kind) {
     const n = DS.num(m[1]);
     if (sc === null || n === null) continue;
     out.push(n * sc);
+    // 「1.65 - 5.5 V」的破折號是範圍分隔，不是負號（理由見 numbersIn）
+    if (n < 0 && RANGE_DASH.test(t.slice(0, m.index))) out.push(-n * sc);
   }
   // MIN TYP MAX 三欄共用行尾的單位：三個值都要算進來
   const mtm = new RegExp('(-?[\\d.]+|--)\\s+(-?[\\d.]+|--)\\s+(-?[\\d.]+|--)\\s*(' + alt + ')(?![A-Za-z0-9µΩ])', 'i');
@@ -171,12 +177,21 @@ function verifyClaim(claim, pages) {
   return { ok: true, reason: 'pass', page: page + 1, sect, checks };
 }
 
-/** 純數字（給溫度這種單位寫在行尾、數字本身沒帶單位的情況） */
+/** 純數字（給溫度這種單位寫在行尾、數字本身沒帶單位的情況）
+ *  「1.65 - 5.5 V」裡的破折號是範圍分隔不是負號，會讓 5.5 被讀成 -5.5。
+ *  分不出來的時候兩種讀法都收：驗證要的是「宣稱的數字有沒有出現在出處裡」，
+ *  漏收會把對的值誤判成造假，比多收一個讀法傷害大。 */
 function numbersIn(text) {
+  const t = flat(text);
   const out = [];
   const re = /-?\d[\d,]*(?:\.\d+)?/g;
   let m;
-  while ((m = re.exec(flat(text)))) { const n = DS.num(m[0]); if (n !== null) out.push(n); }
+  while ((m = re.exec(t))) {
+    const n = DS.num(m[0]);
+    if (n === null) continue;
+    out.push(n);
+    if (n < 0 && RANGE_DASH.test(t.slice(0, m.index))) out.push(-n);
+  }
   return out;
 }
 

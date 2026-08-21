@@ -103,6 +103,17 @@ const PAGES = [
   ok('標了 absolute 才放行', flagged.ok, flagged.reason);
 }
 
+/* ---------- 8b) 範圍的破折號不是負號 ---------- */
+{
+  // Nexperia 74LVC4066 的電源列抽出來是「V CC supply voltage 1.65 -5.5 V」，
+  // 那個「-」是 1.65 到 5.5 的分隔。讀成 -5.5 的話，正確的宣稱會被誤判成造假。
+  const pages = ['V CC supply voltage 1.65 -5.5 V'];
+  const r = V.verifyClaim({ key: 'vin', value: '1.65 ~ 5.5 V', lo: 1.65, hi: 5.5, quote: pages[0], page: 1 }, pages);
+  ok('範圍分隔的破折號不會讓正確宣稱被擋', r.ok, r.reason);
+  // 但真正的負值仍要讀得出來
+  ok('句首的負號照樣是負號', V.numbersIn('-40 °C to 85 °C').indexOf(-40) >= 0);
+}
+
 /* ---------- 9) 缺件 ---------- */
 {
   ok('沒有 quote → 擋下', !V.verifyClaim({ key: 'iq', n: 1e-6 }, PAGES).ok);
