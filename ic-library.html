@@ -334,6 +334,12 @@
         const w = window.open('', '_blank');
         if (!w) { say(ui('cmpPopup'), '#b91c1c'); return; }
         w.document.write(html); w.document.close();
+        // 報告視窗繼承本站 CSP，裡面的 inline onclick 不會執行（列印鈕會沒反應）。
+        // 由這邊掛 listener 才有效；先拿掉 inline 屬性，免得另存後的檔案被按一次印兩次。
+        w.document.querySelectorAll('[data-print]').forEach(btn => {
+          btn.removeAttribute('onclick');
+          btn.addEventListener('click', () => w.print());
+        });
         say(ui('cmpDone'), '#15803d');
       } catch (err) {
         say(ui('cmpFail') + '：' + (err && err.message ? err.message : err), '#b91c1c');

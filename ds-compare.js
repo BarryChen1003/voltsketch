@@ -21,7 +21,7 @@
   const UNIT = {
     V: { V: 1, mV: 1e-3, kV: 1e3 },
     A: { A: 1, mA: 1e-3, uA: 1e-6, 'µA': 1e-6, nA: 1e-9 },
-    R: { 'Ω': 1, ohm: 1, R: 1, 'mΩ': 1e-3, mohm: 1e-3, 'kΩ': 1e3, kohm: 1e3 },
+    R: { 'Ω': 1, ohm: 1, 'mΩ': 1e-3, mohm: 1e-3, 'kΩ': 1e3, kohm: 1e3 },
     Hz: { Hz: 1, kHz: 1e3, MHz: 1e6, GHz: 1e9 },
     SPS: { SPS: 1, kSPS: 1e3, MSPS: 1e6 },
   };
@@ -75,6 +75,7 @@
       .replace(/[‐-―−]/g, '-')
       .replace(/[.·•_]{4,}/g, ' ').replace(/-{4,}/g, ' ')
       .replace(/µ\s+(?=[AVFHSW])/g, 'µ')
+      .replace(/([munpkM])\s+(?=Ω)/g, '$1')
       .replace(/(\d)\s*°\s*([CF])\b/g, '$1 °$2')
       .replace(/([\s(:=,[])-\s+(\d)/g, '$1-$2')
       .replace(/[ \t]{2,}/g, ' ');
@@ -124,6 +125,7 @@
     const win = opt.win || 70, back = opt.back || 44;
     for (const ln of sectioned(t)) {
       if (ln.sect === 'absmax') continue;
+      if (/^\s*(?:fig(?:ure)?\.?|table)\s*\d/i.test(ln.text)) continue;   // 圖說／表題不是規格
       const lab = new RegExp(opt.label.source, 'gi');
       let m;
       while ((m = lab.exec(ln.text))) {
@@ -163,7 +165,9 @@
     let v, last = null;
     while ((v = re.exec(seg))) {
       const before = seg.slice(0, v.index);
-      if (/=\s*[-+]?$/.test(before)) continue;   // 測試條件，不是規格值
+      // 標籤與數值之間只有「=」→ 這個等號指的就是標籤本身，是規格；
+      // 中間還夾了別的符號（I OUT =、V GS =）→ 那是量測條件，跳過。
+      if (/=\s*[-+]?$/.test(before) && before.replace(/[\s:：=+()\-]/g, '').length > 0) continue;
       const r = ok(v);
       if (!r) continue;
       if (!backward) return r;
@@ -189,6 +193,21 @@
     const out = [];
     for (const ln of sectioned(t)) {
       if (ln.sect === 'absmax' && !opt.absmax) continue;
+      // MIN TYP MAX 三欄（-40 25 125 °C）：範圍是頭與尾，中間是典型值
+      if (opt.loose) {
+        const mtm = ln.text.match(new RegExp(NUM + '\\s+' + NUM + '\\s+' + NUM + '\\s*(?:' + U + ')', 'i'));
+        if (mtm) {
+          const lo = num(mtm[1]), hi = num(mtm[3]);
+          const around = ln.text.slice(0, mtm.index) + ' | ' + ln.text.slice(mtm.index + mtm[0].length, mtm.index + mtm[0].length + 40);
+          const okBounds = lo !== null && hi !== null && lo < hi
+            && (opt.min === undefined || lo >= opt.min) && (opt.max === undefined || hi <= opt.max)
+            && (opt.span === undefined || hi - lo >= opt.span);
+          if (okBounds && new RegExp(opt.label.source, 'i').test(around) && !(opt.reject && opt.reject.test(around))) {
+            out.push({ lo, hi, sect: ln.sect, value: lo + ' ~ ' + hi + (opt.unit === 'C' ? ' °C' : ' V') });
+            continue;
+          }
+        }
+      }
       const re = new RegExp(src, 'gi');
       let m;
       while ((m = re.exec(ln.text))) {
@@ -269,9 +288,10 @@
       key: 'vin', label: '輸入電壓範圍', kind: 'range',
       run: t => {
         const hit = preferOne(findRange(t, {
-          label: /V\s?(?:IN|CC|DD|S|SUPPLY)|supply\s+voltage|input\s+voltage|power\s+supply|operating\s+voltage|工作電壓/i,
+          label: /V\s?(?:IN|CC|DD|DDA|BAT|SUP|SUPPLY)\b|supply\s+voltage|input\s+voltage|power\s+supply|operating\s+voltage|工作電壓/i,
           unit: 'V', min: 0.5, max: 60,
-          reject: /output\s+voltage|V\s?OUT|reference|storage|絕對/i,
+          // 量測條件不是規格：on-resistance、flatness、延遲時間那幾列都會帶一段「V x = a to b」
+          reject: /output\s+voltage|V\s?OUT|reference|storage|絕對|on-?resistance|flatness|R\s?ON\b|I\s?DS\b|see\s+figure|propagation|delay/i,
         }), ['roc', 'ec', 'head', 'other']);
         return hit ? { value: hit.value, lo: hit.lo, hi: hit.hi } : null;
       },
@@ -449,7 +469,7 @@
       key: 'epad', label: '散熱墊 / 外露焊盤', kind: 'text',
       run: t0 => {
         const t = norm(t0);
-        if (!/exposed\s+pad|thermal\s+pad|power\s?pad|die\s+pad|外露焊盤|散熱墊/i.test(t)) return null;
+        if (!/exposed\s+pad|thermal\s+pad|power\s?pad|外露焊盤|散熱墊/i.test(t)) return null;
         const gnd = /(?:exposed|thermal)\s+pad[^.\n]{0,90}(?:\bGND\b|ground|接地)|(?:\bGND\b|ground)[^.\n]{0,40}(?:exposed|thermal)\s+pad/i.test(t);
         return gnd ? { value: '有（須接地）', i18nKey: 'padGnd', text: 'padGnd' }
           : { value: '有', i18nKey: 'padYes', text: 'padYes' };
@@ -537,7 +557,14 @@
     const warn = [];
     if (flat.length < 1200) warn.push({ w: 'noText' });
     else if (got <= 2) warn.push({ w: 'lowYield' });
-    if (h.partFromName && h.part && flat.indexOf(h.part.replace(/-/g, '')) < 0) warn.push({ w: 'part', part: h.part });
+    if (h.partFromName && h.part) {
+      const full = h.part.replace(/-/g, '');
+      // 同一顆料在內文常寫成別的排列（檔名 DS1230AB-DS1230Y、內文 DS1230Y/AB），
+      // 所以核心（字母＋數字，長度夠時）有出現就不算對不上
+      const core = (full.match(/^[A-Z]+\d+/) || [''])[0];
+      const key = core.length >= 5 ? core : full;
+      if (flat.indexOf(key) < 0) warn.push({ w: 'part', part: h.part });
+    }
     return Object.assign({ params, chars: t.length, raw: t, warn, got }, h);
   }
 
@@ -1083,7 +1110,10 @@
       const body = w.w === 'noText' ? D.wNoText : w.w === 'lowYield' ? D.wLowYield : D.wPart(esc(w.part));
       return `<div class="note" style="background:#fef2f2;border-left-color:#b91c1c;color:#7f1d1d">${esc(side)}｜${body}</div>`;
     }).join('');
-    return `<button class="btn" onclick="window.print()">${esc(D.print)}</button>
+    // data-print：報告視窗會繼承本站的 CSP，inline onclick 在那裡是死的（實測 hardware-ai.org
+    // 上按了沒反應）。開啟報告的頁面會用 addEventListener 掛上去，那條路徑 CSP 擋不到。
+    // inline onclick 仍然留著：這份報告常被另存成檔案，從 file:// 打開時沒有 CSP，那時它才是唯一能用的。
+    return `<button class="btn" data-print onclick="window.print()">${esc(D.print)}</button>
 <div class="sheet">
  <h1>${esc(D.title)}</h1>
  <div class="meta">${esc(D.inUse)}：<b>${esc(A.part || D.unknown)}</b>${A.mfr ? '（' + esc(A.mfr) + '）' : ''} — ${esc(fileA)}<br>

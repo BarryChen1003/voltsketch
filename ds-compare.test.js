@@ -437,5 +437,71 @@ const FX = f => fs.readFileSync(path.join(__dirname, 'tools', 'ds-compare', 'fix
   });
 }
 
+
+/* ---------- 13) 盲測抓到的誤判（開發時沒看過的 datasheet） ----------
+ * 這三條都是「抽到錯的值」，比抽不到嚴重。素材是 IC-spec/ 底下沒參與開發的檔案。 */
+{
+  // ADG601（ADI 類比開關）：量測條件「On-Resistance Flatness … V S = 1.5 V to 3.3 V, I DS = -10 mA」
+  // 曾被讀成工作電壓 1.5~3.3 V。這顆是雙電源（VDD/VSS = ±5 V），本來就不該有單一範圍。
+  const sw = DS.parse('On-Resistance Flatness (R FLAT (ON)) 0.2 0.2 Ω typ V S = 1.5 V to 3.3 V, I DS = -10 mA', 'adg.pdf');
+  ok('量測條件的 V S 不是工作電壓', sw.params.vin === null, JSON.stringify(sw.params.vin));
+  // 但真正的電源範圍還是要抽得到
+  const ok1 = DS.parse('Supply voltage VCC 1.65 V to 5.5 V', 'x13.pdf');
+  ok('真正的電源範圍照抽', ok1.params.vin && ok1.params.vin.lo === 1.65 && ok1.params.vin.hi === 5.5, JSON.stringify(ok1.params.vin));
+
+  // 「Die Pad Coordinates」是晶粒銲墊座標表，不是散熱墊
+  ok('晶粒銲墊座標表不算散熱墊',
+    DS.parse('Table 6. Die Pad Coordinates 1 Die Pad No. X (µm) Y (µm) Mnemonic', 'die.pdf').params.epad === null);
+  ok('真的散熱墊還是認得',
+    DS.parse('The exposed pad must be soldered to the board and connected to GND.', 'pad.pdf').params.epad.text === 'padGnd');
+
+  // 檔名 DS1230AB-DS1230Y.pdf、內文寫 DS1230Y/AB —— 同一顆料，不該報「料號對不上」
+  const nv = DS.parse('DS1230Y/AB 256k Nonvolatile SRAM. '.repeat(60), 'DS1230AB-DS1230Y.pdf');
+  ok('料號排列不同不算對不上', !nv.warn.some(w => w.w === 'part'), JSON.stringify(nv.warn));
+  // 真的不是這顆料時，警告要照樣出現
+  const wrong = DS.parse('RP095xxRBWC screw type terminal block, pluggable. '.repeat(60), 'pca9450.pdf');
+  ok('內文真的沒有這顆料號時照樣警告', wrong.warn.some(w => w.w === 'part'), JSON.stringify(wrong.warn));
+}
+
+/* ---------- 14) 列印鈕：報告視窗繼承母頁 CSP，inline onclick 是死的 ----------
+ * 實測 hardware-ai.org：document.write 出來的視窗裡，inline onclick 與 inline <script>
+ * 都被 CSP 擋掉，只有從開啟者用 addEventListener 掛上去的才會執行。
+ * 所以報告的按鈕要帶 data-print 這個記號給呼叫端掛 listener。 */
+{
+  const A = DS.parse(FX('pca9555a.txt'), 'PCA9555A.pdf');
+  const B = DS.parse(FX('pca9535.txt'), 'pca9535.pdf');
+  const h = DS.reportHTML({ A, B, checks: [], ic: null, fileA: 'a.pdf', fileB: 'b.pdf', lang: 'zh' });
+  ok('列印鈕帶 data-print 給呼叫端掛 listener', /<button class="btn" data-print/.test(h));
+  ok('inline onclick 仍保留（另存成檔案後沒有 CSP，那時只剩它能用）', /data-print onclick="window\.print\(\)"/.test(h));
+  const four = DS.reportHTML({ A, B, checks: [], ic: null, fileA: 'a.pdf', fileB: 'b.pdf', lang: 'zh', langs: DS.LANGS });
+  ok('四語版每個語言各一顆列印鈕', (four.match(/data-print/g) || []).length === 4, String((four.match(/data-print/g) || []).length));
+}
+
+
+/* ---------- 15) 盲測第二批抓到的誤判 ---------- */
+{
+  // ADS8688W 的規格表寫「T A Ambient temperature -40 25 125 ℃」＝ MIN TYP MAX 三欄，
+  // 原本被讀成 25 ~ 125（把 typ 當成下限）。範圍要取頭尾。
+  const mtm = DS.parse('T A Ambient temperature -40 25 125 °C', 'mtm.pdf');
+  ok('MIN TYP MAX 的溫度取頭尾', mtm.params.temp && mtm.params.temp.lo === -40 && mtm.params.temp.hi === 125, JSON.stringify(mtm.params.temp));
+
+  // Toshiba 的圖說「Fig. 8.4 R DS(ON) - I D」被讀成 8.4 Ω（真值 1.17 mΩ，差三個數量級）
+  ok('圖說不是規格', DS.parse('Fig. 8.3 R DS(ON) - V GS Fig. 8.4 R DS(ON) - I D', 'fig.pdf').params.rdson === null);
+  ok('裸的 R 不再當成歐姆', DS.parse('R DS(ON) 8.4 R', 'r.pdf').params.rdson === null,
+    JSON.stringify(DS.parse('R DS(ON) 8.4 R', 'r.pdf').params.rdson));
+
+  // 等號要看被指定的是誰：標籤自己被指定＝規格；夾了別的符號＝量測條件
+  const spec = DS.parse('Low drain-source on-resistance: R DS(ON) = 1.17 mΩ (typ.) (V GS = 10 V)', 'ok.pdf');
+  ok('「R DS(ON) = 1.17 mΩ」是規格，要收', spec.params.rdson && Math.abs(spec.params.rdson.n - 0.00117) < 1e-9, JSON.stringify(spec.params.rdson));
+  const cond = DS.parse('Quiescent Current I OUT = 0mA, PS = 0V (Note 5)', 'cond.pdf');
+  ok('「I OUT = 0mA」仍然是條件，不收', cond.params.iq === null, JSON.stringify(cond.params.iq));
+
+  // 「m Ω」中間有空白也算 mΩ
+  const sp = DS.parse('Drain-source on-resistance R DS(ON) 1.3 1.7 m Ω', 'sp.pdf');
+  // 這一列只有 typ 與 max 兩欄（min 是空的），取到 max 1.7 mΩ；重點是「m Ω」的空白要能認得
+  ok('「m Ω」有空白也認得（毫歐等級）', sp.params.rdson && sp.params.rdson.n < 0.01 && /mΩ/.test(sp.params.rdson.value),
+    JSON.stringify(sp.params.rdson));
+}
+
 console.log(`ds-compare.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
