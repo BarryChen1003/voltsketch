@@ -328,6 +328,8 @@
           A, B, rows: DSCompare.diff(A, B, lang),
           checks: DSCompare.judge(crit, A, B, lang),
           ic: ic || null, fileA: fa.name, fileB: fb.name, lang,
+          // 同一份報告裡放四種語言，讀者自己切換：報告常被寄給國外的原廠或客戶
+          langs: DSCompare.LANGS,
         });
         const w = window.open('', '_blank');
         if (!w) { say(ui('cmpPopup'), '#b91c1c'); return; }

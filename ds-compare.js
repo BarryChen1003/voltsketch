@@ -617,6 +617,7 @@
       summary: '結論摘要', nCrit: n => `準則 ${n} 條`, nDiff: n => `參數差異 <b>${n}</b> 項`,
       hasNg: n => `有 ${n} 條準則判定不符合 —— 這些必須先解決，否則不能當 2nd source。`,
       noNg: n => `自動判定沒有發現不符合項；剩下 ${n} 條要人工確認。`,
+      hiddenParams: ks => `另有 ${ks.length} 個參數兩邊都沒抽到，未列出：${ks.join('、')}。這通常代表這類 IC 沒有這項規格，或 datasheet 的寫法目前抽不到——不代表兩顆在這些項目上相同。`,
       paramTable: '參數差異表', param: '參數', verdict: '判定', basis: '依據',
       critTable: '替換準則逐條判定', crit: '準則', noCrit: '元件庫裡沒有這顆的替換準則，所以沒有逐條判定。上面的「換料注意事項」與參數差異表仍然適用。',
       docInfo: '兩份文件的基本資訊', fileName: '檔名', detPart: '辨識到的料號', detMfr: '辨識到的廠商',
@@ -675,6 +676,7 @@
       summary: 'Summary', nCrit: n => `${n} requirements`, nDiff: n => `<b>${n}</b> parameter differences`,
       hasNg: n => `${n} requirement(s) failed — these must be resolved before this part can be a 2nd source.`,
       noNg: n => `No automatic failures; ${n} requirement(s) still need human review.`,
+      hiddenParams: ks => `${ks.length} parameters were found in neither datasheet and are not listed: ${ks.join(', ')}. Usually the part has no such spec, or the wording is one this tool cannot read yet — it does not mean the two parts match on them.`,
       paramTable: 'Parameter differences', param: 'Parameter', verdict: 'Verdict', basis: 'Basis',
       critTable: 'Requirement-by-requirement verdict', crit: 'Requirement',
       noCrit: 'The library holds no replacement requirements for this part, so there is no clause-by-clause verdict. The swap notes and the parameter table above still apply.',
@@ -734,6 +736,7 @@
       summary: '結論サマリー', nCrit: n => `条件 ${n} 件`, nDiff: n => `パラメータ差異 <b>${n}</b> 件`,
       hasNg: n => `${n} 件が不適合 —— 解決しない限りセカンドソースにはできません。`,
       noNg: n => `自動判定での不適合はありません。残り ${n} 件は人手確認が必要です。`,
+      hiddenParams: ks => `両方から抽出できなかった ${ks.length} 項目は掲載していません：${ks.join('、')}。該当仕様が無いか、現状の抽出では読めない書き方です——2 品番がこれらの項目で同じという意味ではありません。`,
       paramTable: 'パラメータ差分表', param: 'パラメータ', verdict: '判定', basis: '根拠',
       critTable: '置換条件ごとの判定', crit: '条件',
       noCrit: 'この IC にはライブラリ上の置換条件がないため、条項ごとの判定はありません。上の「置き換え時の注意点」とパラメータ差分表は有効です。',
@@ -793,6 +796,7 @@
       summary: '결론 요약', nCrit: n => `조건 ${n}개`, nDiff: n => `파라미터 차이 <b>${n}</b>개`,
       hasNg: n => `${n}개 조건이 불충족 — 해결하지 않으면 세컨드 소스로 쓸 수 없습니다.`,
       noNg: n => `자동 판정에서 불충족은 없습니다. 남은 ${n}개는 사람이 확인해야 합니다.`,
+      hiddenParams: ks => `양쪽 모두에서 찾지 못한 ${ks.length}개 항목은 표시하지 않았습니다: ${ks.join(', ')}. 해당 사양이 없거나 현재 추출이 읽지 못하는 표기입니다 — 두 부품이 이 항목에서 같다는 뜻은 아닙니다.`,
       paramTable: '파라미터 차이표', param: '파라미터', verdict: '판정', basis: '근거',
       critTable: '대체 조건별 판정', crit: '조건',
       noCrit: '이 IC에는 라이브러리에 등록된 대체 조건이 없어 조항별 판정은 없습니다. 위의 교체 주의사항과 파라미터 차이표는 그대로 유효합니다.',
@@ -1052,9 +1056,9 @@
     return A.raw.slice(0, 3000) === B.raw.slice(0, 3000);
   }
 
-  function reportHTML(o) {
+  /** 一份報告的本體（不含 <html>/<head>）。四語同檔時會被呼叫四次。 */
+  function reportBody(o, lang) {
     const { A, B, ic, fileA, fileB } = o;
-    const lang = o.lang && L[o.lang] ? o.lang : 'zh';
     const rows = diff(A, B, lang);   // 依報告語言重算欄名，呼叫端傳什麼語言的 rows 都不影響
     const D = dict(lang);
     const same = sameDoc(A, B);
@@ -1066,6 +1070,10 @@
     const when = new Date().toISOString().slice(0, 16).replace('T', ' ');
     const tally = k => checks.filter(c => c.verdict === k).length;
     const diffRows = rows.filter(r => r.state === 'diff').length;
+    // 兩邊都沒抽到的參數不列進表：整排「未擷取」看起來像功能壞掉，但又不能靜靜消失，
+    // 所以表格下方用一行把它們的名字列出來。
+    const shownRows = rows.filter(r => r.state !== 'none');
+    const hiddenRows = rows.filter(r => r.state === 'none');
     const notes = swapNotes(A, B, lang);
     const nHigh = notes.filter(n => n.level === 'high').length;
     const tag = (txt, color) => `<span class="tag" style="background:${color}">${esc(txt)}</span>`;
@@ -1075,31 +1083,7 @@
       const body = w.w === 'noText' ? D.wNoText : w.w === 'lowYield' ? D.wLowYield : D.wPart(esc(w.part));
       return `<div class="note" style="background:#fef2f2;border-left-color:#b91c1c;color:#7f1d1d">${esc(side)}｜${body}</div>`;
     }).join('');
-    return `<!doctype html><html lang="${HTMLLANG[lang]}"><head><meta charset="utf-8">
-<title>${esc(D.title)} — ${esc(A.part || fileA)} vs ${esc(B.part || fileB)}</title>
-<style>
- body{font:14px/1.6 system-ui,"Noto Sans TC","Noto Sans JP","Noto Sans KR",sans-serif;color:#1d2943;margin:0;padding:32px;background:#f8fafc}
- .sheet{max-width:880px;margin:0 auto;background:#fff;padding:32px 36px;border:1px solid #e2e8f0;border-radius:10px}
- h1{font-size:20px;margin:0 0 4px} h2{font-size:15px;margin:26px 0 8px;padding-bottom:4px;border-bottom:2px solid #e2e8f0}
- .meta{color:#64748b;font-size:12px}
- table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
- th,td{border:1px solid #e2e8f0;padding:6px 9px;text-align:left;vertical-align:top}
- th{background:#f8fafc;font-weight:600;white-space:nowrap}
- .tag{display:inline-block;padding:1px 7px;border-radius:99px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap}
- .sum{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
- .sum div{border:1px solid #e2e8f0;border-radius:8px;padding:8px 14px;font-size:13px}
- .note{background:#fffbeb;border-left:3px solid #b45309;padding:9px 12px;font-size:12px;color:#7c4a03;margin:14px 0}
- ul.swap{list-style:none;padding:0;margin:8px 0}
- ul.swap li{border-left:3px solid #cbd5e1;background:#f8fafc;padding:9px 12px;margin:8px 0;font-size:13px}
- ul.swap li.lv-high{border-left-color:#b91c1c;background:#fef2f2}
- ul.swap li.lv-check{border-left-color:#b45309;background:#fffbeb}
- .lvtag{display:inline-block;font-weight:700;font-size:11px;margin-right:8px;padding:1px 7px;border-radius:99px;background:#e2e8f0;color:#334155}
- li.lv-high .lvtag{background:#b91c1c;color:#fff} li.lv-check .lvtag{background:#b45309;color:#fff}
- .btn{position:fixed;right:24px;top:24px;padding:9px 16px;border:0;border-radius:8px;background:#1f4fd1;color:#fff;font-size:14px;cursor:pointer}
- @media print{body{background:#fff;padding:0}.sheet{border:0;max-width:none;padding:0}.btn{display:none}
-   table{page-break-inside:auto} tr{page-break-inside:avoid}}
-</style></head><body>
-<button class="btn" onclick="window.print()">${esc(D.print)}</button>
+    return `<button class="btn" onclick="window.print()">${esc(D.print)}</button>
 <div class="sheet">
  <h1>${esc(D.title)}</h1>
  <div class="meta">${esc(D.inUse)}：<b>${esc(A.part || D.unknown)}</b>${A.mfr ? '（' + esc(A.mfr) + '）' : ''} — ${esc(fileA)}<br>
@@ -1132,9 +1116,10 @@
 
  <h2>${esc(D.paramTable)}</h2>
  <table><thead><tr><th>${esc(D.param)}</th><th>${esc(D.inUse)}</th><th>${esc(D.cand)}</th><th>${esc(D.verdict)}</th></tr></thead><tbody>
- ${rows.map(r => `<tr><th>${esc(r.label)}</th><td>${esc(r.a || D.notExtracted)}</td><td>${esc(r.b || D.notExtracted)}</td>
+ ${shownRows.map(r => `<tr><th>${esc(r.label)}</th><td>${esc(r.a || D.notExtracted)}</td><td>${esc(r.b || D.notExtracted)}</td>
    <td>${tag(D.st[r.state], COLOR[r.state])}</td></tr>`).join('')}
  </tbody></table>
+ ${hiddenRows.length ? `<p class="meta">${esc(D.hiddenParams(hiddenRows.map(r => r.label)))}</p>` : ''}
 
  <h2>${esc(D.critTable)}</h2>
  ${checks.length ? `<table><thead><tr><th style="width:46%">${esc(D.crit)}</th><th>${esc(D.verdict)}</th><th>${esc(D.basis)}</th></tr></thead><tbody>
@@ -1149,7 +1134,59 @@
  ${partyRow(D.textAmt, D.chars(A.chars), D.chars(B.chars))}
  </tbody></table>
  <p class="meta" style="margin-top:18px">${esc(D.foot)}</p>
-</div></body></html>`;
+</div>`;
+  }
+
+
+  const REPORT_CSS = ` body{font:14px/1.6 system-ui,"Noto Sans TC","Noto Sans JP","Noto Sans KR",sans-serif;color:#1d2943;margin:0;padding:32px;background:#f8fafc}
+ .sheet{max-width:880px;margin:0 auto;background:#fff;padding:32px 36px;border:1px solid #e2e8f0;border-radius:10px}
+ h1{font-size:20px;margin:0 0 4px} h2{font-size:15px;margin:26px 0 8px;padding-bottom:4px;border-bottom:2px solid #e2e8f0}
+ .meta{color:#64748b;font-size:12px}
+ table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+ th,td{border:1px solid #e2e8f0;padding:6px 9px;text-align:left;vertical-align:top}
+ th{background:#f8fafc;font-weight:600;white-space:nowrap}
+ .tag{display:inline-block;padding:1px 7px;border-radius:99px;font-size:11px;font-weight:600;color:#fff;white-space:nowrap}
+ .sum{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+ .sum div{border:1px solid #e2e8f0;border-radius:8px;padding:8px 14px;font-size:13px}
+ .note{background:#fffbeb;border-left:3px solid #b45309;padding:9px 12px;font-size:12px;color:#7c4a03;margin:14px 0}
+ ul.swap{list-style:none;padding:0;margin:8px 0}
+ ul.swap li{border-left:3px solid #cbd5e1;background:#f8fafc;padding:9px 12px;margin:8px 0;font-size:13px}
+ ul.swap li.lv-high{border-left-color:#b91c1c;background:#fef2f2}
+ ul.swap li.lv-check{border-left-color:#b45309;background:#fffbeb}
+ .lvtag{display:inline-block;font-weight:700;font-size:11px;margin-right:8px;padding:1px 7px;border-radius:99px;background:#e2e8f0;color:#334155}
+ li.lv-high .lvtag{background:#b91c1c;color:#fff} li.lv-check .lvtag{background:#b45309;color:#fff}
+ .btn{position:fixed;right:24px;top:24px;padding:9px 16px;border:0;border-radius:8px;background:#1f4fd1;color:#fff;font-size:14px;cursor:pointer}
+ @media print{body{background:#fff;padding:0}.sheet{border:0;max-width:none;padding:0}.btn{display:none}
+   table{page-break-inside:auto} tr{page-break-inside:avoid}}
+`;
+  const LANGNAME = { zh: '中文', en: 'English', ja: '日本語', ko: '한국어' };
+
+  /** 報告 HTML。
+   *  o.langs 給多個語言時，同一個檔案裡放四份內容，用純 CSS 的單選鈕切換
+   *  （不用 JavaScript：這份檔常被另存或列印，沒有腳本比較不會壞）。 */
+  function reportHTML(o) {
+    const lang = o.lang && L[o.lang] ? o.lang : 'zh';
+    const langs = (Array.isArray(o.langs) ? o.langs : [lang]).filter(l => L[l]);
+    const list = langs.length ? langs : [lang];
+    const D = dict(lang), { A, B, fileA, fileB } = o;
+    const title = `${esc(D.title)} — ${esc(A.part || fileA)} vs ${esc(B.part || fileB)}`;
+    const head = `<!doctype html><html lang="${HTMLLANG[lang]}"><head><meta charset="utf-8">
+<title>${title}</title>
+<style>
+${REPORT_CSS}${list.length > 1 ? `
+ .langpick{position:absolute;left:-9999px}
+ .langbar{max-width:880px;margin:0 auto 14px;display:flex;gap:6px}
+ .langbar label{cursor:pointer;padding:6px 14px;border:1px solid #cbd5e1;border-radius:99px;background:#fff;font-size:13px}
+ .pane{display:none}
+${list.map(l => ` #lp-${l}:checked ~ .panes #pane-${l}{display:block}
+ #lp-${l}:checked ~ .langbar label[for=lp-${l}]{background:#1f4fd1;border-color:#1f4fd1;color:#fff}`).join('\n')}
+ @media print{.langbar{display:none}}` : ''}
+</style></head><body>`;
+    if (list.length === 1) return head + reportBody(o, list[0]) + '</body></html>';
+    const picks = list.map(l => `<input class="langpick" type="radio" name="rlang" id="lp-${l}"${l === lang ? ' checked' : ''}>`).join('');
+    const bar = `<div class="langbar">${list.map(l => `<label for="lp-${l}">${esc(LANGNAME[l] || l)}</label>`).join('')}</div>`;
+    const panes = `<div class="panes">${list.map(l => `<div class="pane" id="pane-${l}">${reportBody(o, l)}</div>`).join('')}</div>`;
+    return head + picks + bar + panes + '</body></html>';
   }
 
   /* ---------------- pdf.js 取文字（瀏覽器端） ---------------- */

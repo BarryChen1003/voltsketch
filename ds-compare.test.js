@@ -399,5 +399,43 @@ const FX = f => fs.readFileSync(path.join(__dirname, 'tools', 'ds-compare', 'fix
     (hEn.match(/[一-鿿]+/g) || []).slice(0, 3).join(' '));
 }
 
+
+/* ---------- 12) 報告：四語同檔、兩邊都沒抽到的參數不列出來 ----------
+ * 使用者實測後的兩個要求：(1)「未擷取就不用放上來說未擷取」——整排未擷取看起來像壞掉；
+ * (2) 同一份報告要能給看不同語言的人（原廠、國外客戶）看。
+ * 但「不列出來」不等於「靜靜消失」：被略過的參數名字仍要出現在註腳，
+ * 而且要講清楚那是沒抽到、不是兩顆相同。 */
+{
+  const A = DS.parse(FX('pca9555a.txt'), 'PCA9555A.pdf');
+  const B = DS.parse(FX('pca9535.txt'), 'pca9535.pdf');
+  const rows = DS.diff(A, B, 'zh');
+  const none = rows.filter(r => r.state === 'none');
+  ok('這一對確實有兩邊都沒抽到的參數', none.length > 0, String(none.length));
+
+  const one = DS.reportHTML({ A, B, checks: [], ic: null, fileA: 'a.pdf', fileB: 'b.pdf', lang: 'zh' });
+  ok('兩邊都沒抽到的參數不佔表格列', none.every(r => one.indexOf('<th>' + r.label + '</th>') < 0),
+    none.filter(r => one.indexOf('<th>' + r.label + '</th>') >= 0).map(r => r.label).join(','));
+  ok('至少一邊有值的參數還在表格裡', rows.filter(r => r.state !== 'none').every(r => one.indexOf('<th>' + r.label + '</th>') > 0));
+  ok('被略過的參數名字仍列在註腳', none.every(r => one.indexOf(r.label) > 0));
+  ok('註腳講明「不代表兩顆相同」', /不代表兩顆在這些項目上相同/.test(one));
+
+  const four = DS.reportHTML({ A, B, checks: [], ic: null, fileA: 'a.pdf', fileB: 'b.pdf', lang: 'zh', langs: DS.LANGS });
+  ok('四語同檔：四個內容區', (four.match(/class="pane"/g) || []).length === 4, String((four.match(/class="pane"/g) || []).length));
+  ok('四語同檔：四個切換鈕', (four.match(/type="radio"/g) || []).length === 4);
+  ok('預設選中傳入的語言', /id="lp-zh" checked/.test(four));
+  ok('四個語言名稱都在切換列上', ['中文', 'English', '日本語', '한국어'].every(x => four.indexOf('>' + x + '<') > 0));
+  ok('切換不靠 JavaScript（純 CSS，另存或列印都不會壞）', !/<script/i.test(four));
+  ok('英文區塊有英文標題', four.indexOf('What to check before you swap') > 0);
+  ok('日文區塊有日文標題', four.indexOf('置き換え時の注意点') > 0);
+  ok('韓文區塊有韓文標題', four.indexOf('교체 전 확인할 것') > 0);
+  ok('四語同檔沒有 undefined', !/undefined/.test(four));
+
+  DS.LANGS.forEach(l => {
+    const hh = DS.reportHTML({ A, B, checks: [], ic: null, fileA: 'a.pdf', fileB: 'b.pdf', lang: l });
+    const skipped = DS.diff(A, B, l).filter(r => r.state === 'none');
+    ok('略過說明四語齊全（' + l + '）', !/undefined/.test(hh) && skipped.every(r => hh.indexOf(r.label) > 0), l);
+  });
+}
+
 console.log(`ds-compare.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
