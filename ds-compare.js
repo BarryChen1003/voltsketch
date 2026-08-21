@@ -67,9 +67,9 @@
    * 實測 W25Q128JV：abs max 寫「VCC -0.6 to 4.6 V」，被當成工作電壓抽出來，
    * 真正的工作範圍是 2.7~3.6V。整段跳過比較安全。 */
   const SECTION = [
-    [/^\s*(?:\d+(?:\.\d+)*\.?\s*)?absolute\s+maximum\s+ratings|絕對最大額定|絕對最大值/i, 'absmax'],
+    [/^\s*(?:\d+(?:\.\d+)*\.?\s*)?(?:absolute\s+maximum\s+ratings|limiting\s+values)|絕對最大額定|絕對最大值/i, 'absmax'],
     [/^\s*(?:\d+(?:\.\d+)*\.?\s*)?(?:recommended\s+operating\s+conditions|operating\s+ranges?|operating\s+conditions)/i, 'roc'],
-    [/^\s*(?:\d+(?:\.\d+)*\.?\s*)?(?:electrical\s+characteristics|electrical\s+specifications|[da]c\s+characteristics|電氣特性)/i, 'ec'],
+    [/^\s*(?:\d+(?:\.\d+)*\.?\s*)?(?:electrical\s+characteristics|electrical\s+specifications|[da]c\s+characteristics|static\s+characteristics|dynamic\s+characteristics|電氣特性)/i, 'ec'],
     [/^\s*(?:\d+(?:\.\d+)*\.?\s*)?(?:ordering\s+information|package\s+(?:information|outline|dimension)|revision\s+history|typical\s+(?:operating\s+)?(?:characteristics|performance)|thermal\s+information|application\s+information)/i, 'other'],
   ];
   /** 逐列標上所屬章節；'head' = 標題／Features／General Description（規格常寫在敘述裡）。 */
@@ -191,22 +191,32 @@
     {
       key: 'package', label: '封裝', kind: 'text',
       run: t => {
-        // TI 寫成「RTE (WQFN, 16)」、有的寫「WQFN-16」、有的寫「16-Pin WQFN」、
-        // Richtek 寫「WDFN-10L」（腳數後面還有一個 L）——四種都要收
-        const NAMES = 'WDFN|UDFN|VDFN|WQFN|VQFN|HVQFN|UQFN|QFN|WSON|USON|DFN|DSBGA|WLCSP|LQFP|TQFP|HTSSOP|TSSOP|VSSOP|MSOP|SOIC|SOP|SOT-?23|SOT-?223|TO-?220|TO-?252|DIP|BGA|LGA|CSP';
-        const hits = [];
-        // 腳數必須合理（4~256）：不設限的話「WQFN 0.5mm」會被讀成 WQFN-0
-        const okPins = n => { const v = +n; return v >= 4 && v <= 256; };
-        const push = (name, n) => { if (n && !okPins(n)) return; hits.push(String(name).toUpperCase().replace(/\s/g, '') + (n ? '-' + n : '')); };
+        // Richtek 寫「WDFN-10L」、NXP 寫「TSSOP24」、TI 訂購表寫「SSOP (DB) | 24」，
+        // 而 TI 首頁的 Device Information 表被併列之後會變成「SSOP (16)」——
+        // 那個 16 是隔壁欄的位元數，PCA9535 其實是 24 腳。拿它去判 pin-to-pin 會害人，
+        // 所以「括號裡只有數字」這種寫法列為不可靠，只有在沒有別的來源時才用。
+        const NAMES = 'WDFN|UDFN|VDFN|HWQFN|WQFN|VQFN|HVQFN|UQFN|QFN|WSON|USON|DFN|DSBGA|WLCSP|TFBGA|LQFP|TQFP|HTSSOP|TSSOP|VSSOP|TVSOP|MSOP|SSOP|SOIC|SOP|SOT-?23|SOT-?223|TO-?220|TO-?252|DIP|BGA|LGA|CSP';
+        const okPins = n => { const v = +n; return v >= 4 && v <= 256; };   // 「WQFN 0.5mm」不能讀成 WQFN-0
+        const solid = [], loose = [];
+        const put = (list, name, n) => { if (okPins(n)) list.push(String(name).toUpperCase().replace(/\s/g, '') + '-' + n); };
         let m;
-        // 分隔只認逗號或左括號（TI 寫「RTE (WQFN, 16)」）；允許空白會把後面的尺寸數字當腳數
-        const re1 = new RegExp('\\b(' + NAMES + ')\\s*[,(]\\s*(\\d{1,3})\\b', 'gi');
-        while ((m = re1.exec(t))) push(m[1], m[2]);
-        // 尾綴 L / P / -PIN：WDFN-10L、TSSOP-20P
-        const re2 = new RegExp('\\b(' + NAMES + ')\\s*-\\s*(\\d{1,3})\\s*(?:L|P|-?pins?|-?lead)?\\b', 'gi');
-        while ((m = re2.exec(t))) push(m[1], m[2]);
-        const re3 = new RegExp('(\\d{1,3})\\s*-?\\s*(?:pin|lead|ball)s?\\s+(' + NAMES + ')\\b', 'gi');
-        while ((m = re3.exec(t))) push(m[2], m[1]);
+        // 可靠：訂購表「SSOP (DB) | 24」
+        const reOrd = new RegExp('\\b(' + NAMES + ')\\s*\\([A-Z]{1,4}\\)\\s*\\|\\s*(\\d{1,3})\\b', 'gi');
+        while ((m = reOrd.exec(t))) put(solid, m[1], m[2]);
+        // 可靠：黏在一起的「TSSOP24」
+        const reGlue = new RegExp('\\b(' + NAMES + ')(\\d{2,3})\\b', 'gi');
+        while ((m = reGlue.exec(t))) put(solid, m[1], m[2]);
+        // 可靠：帶破折號的「WDFN-10L」「SOIC-8」（尾綴 L/P/pin/lead 都收）
+        const reDash = new RegExp('\\b(' + NAMES + ')\\s*-\\s*(\\d{1,3})\\s*(?:L|P|-?pins?|-?lead)?\\b', 'gi');
+        while ((m = reDash.exec(t))) put(solid, m[1], m[2]);
+        // 可靠：「16-Pin WQFN」
+        const rePin = new RegExp('(\\d{1,3})\\s*-?\\s*(?:pin|lead|ball)s?\\s+(' + NAMES + ')\\b', 'gi');
+        while ((m = rePin.exec(t))) put(solid, m[2], m[1]);
+        // 不可靠：「RTE (WQFN, 16)」「SSOP (16)」——括號裡只有數字
+        const reParen = new RegExp('\\b(' + NAMES + ')\\s*[,(]\\s*(\\d{1,3})\\b', 'gi');
+        while ((m = reParen.exec(t))) put(loose, m[1], m[2]);
+
+        const hits = solid.length ? solid : loose;
         if (!hits.length) {
           const bare = t.match(new RegExp('\\b(' + NAMES + ')\\b', 'i'));
           return bare ? { value: bare[1].toUpperCase(), text: bare[1].toUpperCase(), noPins: true } : null;
@@ -221,7 +231,12 @@
       run: t => {
         const pkg = RULES[0].run(t);
         if (!pkg) return null;
-        if (pkg.ambiguous) return { value: PINS_AMBIG.zh, i18nKey: 'pinsAmbig', ambiguous: true };
+        if (pkg.ambiguous) {
+          // 多種封裝但腳數一致（SOIC-24 / TSSOP-24 / QFN-24）→ 腳數是確定的
+          const ns = [...new Set(String(pkg.value).split('/').map(x => (x.match(/-(\d{1,3})\s*$/) || [])[1]).filter(Boolean))];
+          if (ns.length === 1) return { value: ns[0] + ' pin', n: num(ns[0]) };
+          return { value: PINS_AMBIG.zh, i18nKey: 'pinsAmbig', ambiguous: true };
+        }
         const m = String(pkg.value).match(/-(\d{1,3})$/);
         return m ? { value: m[1] + ' pin', n: num(m[1]) } : null;
       },
@@ -257,7 +272,7 @@
           kind: 'A', min: 1e-6, max: 100,
           reject: /leakage|quiescent|input\s+current/i,
         }), ['ec', 'head', 'roc', 'other']);
-        return hit ? { value: hit.value, n: hit.n } : null;
+        return hit ? { value: hit.value, n: Math.abs(hit.n) } : null;
       },
     },
     {
@@ -267,7 +282,7 @@
         const hit = preferOne(findNum(t, {
           label: /quiescent\s+current|standby\s+current|static\s+current|supply\s+current|I\s?Q\b|I\s?DD\b|I\s?CC\b|I\s?AVDD\b|I\s?DVDD\b|靜態電流/i,
           kind: 'A', min: 1e-10, max: 0.05,
-          reject: /output\s+current|load\s+current|leakage/i,
+          reject: /output\s+current|load\s+current|leakage|additional|delta|Δ|增量/i,
         }), ['ec', 'head', 'roc', 'other']);
         return hit ? { value: hit.value, n: hit.n } : null;
       },
@@ -362,6 +377,42 @@
       },
     },
     {
+      /* 這一條是整個功能存在的理由。
+       * 2026-08-20 使用者拿 PCA9555A（NXP）對 PCA9535（TI）：pin-to-pin、暫存器一樣、
+       * 參數表看起來可以換，但 PCA9535 的 datasheet 自己寫著
+       * 「identical to the PCA9555, except for the removal of the internal I/O pullup resistor」。
+       * 換上去而沒補外部上拉，輸入腳就是浮的——板子不會當場死，會變成偶發故障。
+       * 注意「Connect to VCC through a pullup resistor」講的是「你要外接」，不算內建。 */
+      key: 'iopull', label: 'I/O 內建上拉', kind: 'flag',
+      run: t0 => {
+        const t = norm(t0);
+        const NEG = /(?:removal|removed|without|no)\s+(?:of\s+)?(?:the\s+)?(?:internal|built-in|integrated)\s+(?:I\/?O\s+)?pull-?ups?|(?:internal\s+)?pull-?ups?[^.\n]{0,24}(?:removed|not\s+present|not\s+available)|無內建上拉|不含內建上拉/i;
+        const POS = /(?:weak|internal|integrated|built-in|on-chip|內建|內部)[^.\n]{0,24}pull-?up|pull-?up\s+resistors?\s+(?:are\s+)?(?:connected\s+to\s+them|integrated|included|built)|內建.{0,6}上拉/i;
+        if (NEG.test(t)) return { value: '無', i18nKey: 'pullNo', flag: false };
+        if (POS.test(t)) return { value: '有', i18nKey: 'pullYes', flag: true };
+        return null;
+      },
+    },
+    {
+      key: 'iotol', label: 'I/O 5V 耐受', kind: 'flag',
+      // 匯流排上有 5V 裝置時，這一項少了就是把 I/O 打壞
+      run: t => (/5(?:\.5)?\s*-?\s*V\s+tolerant/i.test(norm(t)) ? { value: '有', i18nKey: 'yes', flag: true } : null),
+    },
+    {
+      key: 'intod', label: '中斷腳輸出型態', kind: 'text',
+      // 開汲極＝一定要外部上拉。兩顆都是開汲極不是差異，但提醒使用者「那顆電阻別拿掉」
+      run: t0 => {
+        const t = norm(t0);
+        if (/open[-\s]?drain[^.\n]{0,40}interrupt|interrupt[^.\n]{0,40}open[-\s]?drain|INT[^.\n]{0,40}open[-\s]?drain|open[-\s]?drain[^.\n]{0,20}INT\b/i.test(t)) {
+          return { value: '開汲極', i18nKey: 'od', text: 'od' };
+        }
+        if (/push[-\s]?pull[^.\n]{0,30}interrupt|interrupt[^.\n]{0,30}push[-\s]?pull/i.test(t)) {
+          return { value: '推挽', i18nKey: 'pp', text: 'pp' };
+        }
+        return null;
+      },
+    },
+    {
       key: 'aecq', label: '車規 AEC-Q100', kind: 'flag',
       run: t => (/AEC\s*-?\s*Q100/i.test(t) ? { value: '有標示', flag: true } : null),
     },
@@ -412,7 +463,7 @@
   /** 兩份的參數逐條比對 → [{key,label,a,b,state}]；state: same | diff | partial | none */
   function diff(A, B, lang) {
     const lg = lang && L[lang] ? lang : 'zh';
-    const tr = v => (v && v.i18nKey === 'pinsAmbig') ? (PINS_AMBIG[lg] || PINS_AMBIG.zh) : (v ? v.value : null);
+    const tr = v => (v && v.i18nKey && VTEXT[v.i18nKey]) ? (VTEXT[v.i18nKey][lg] || VTEXT[v.i18nKey].zh) : (v ? v.value : null);
     return RULES.map(r => {
       const a = A.params[r.key], b = B.params[r.key];
       let state = 'none';
@@ -443,6 +494,20 @@
       unknown: '(未辨識)', notExtracted: '未擷取', print: '列印 / 存成 PDF',
       disclaimer: '本報告由 datasheet 全文自動擷取而成，只能當<b>初篩</b>。抽不到的欄位標「未擷取」，不代表該規格不存在；判定為「符合」也只表示自動擷取到的數值通過該條準則。最終仍以 datasheet 原文、廠商確認與樣品實測為準。檔案全程只在你的瀏覽器內解析，未上傳。',
       sameDoc: '<b>這兩個檔案的內容相同</b>——很可能是同一份系列 datasheet（一份文件涵蓋多顆料號）。這種情況下「參數全部相同」不代表兩顆料可以互換，下面的判定沒有鑑別力。請改用各料號自己的 datasheet。',
+      swapTitle: '換料注意事項',
+      lv: { high: '要動線路', check: '要人工確認', info: '參考' },
+      note: {
+        pullLost: '候選料沒有內建上拉，現用料有。原設計若靠那組弱上拉（按鍵、開集極輸出的感測器、未使用的 I/O），換上去之後那些腳就是浮接：上電狀態不定、偶發誤觸發，而且不一定在 bring-up 就看得出來。受影響的每一支都要外加上拉電阻（常用 10 kΩ；要維持原本的弱上拉行為就取接近內建的阻值，實際值以 datasheet 為準）。',
+        pullGained: '候選料多了內建弱上拉，現用料沒有。它會跟外部下拉電阻分壓（外部 10 kΩ 對地、內建 100 kΩ 對電源，低準位大約 0.09×VDD），要確認仍低於 VIL；未使用的腳會被拉到高電位，靜態電流的量測值也會跟著變。',
+        pullUnknown: '兩份 datasheet 都沒抽到「I/O 有沒有內建上拉」。這一項不能猜，請自己翻 pin description。pin-to-pin 換料最常見的地雷就是它：一顆內建、一顆沒有，板子上就少一顆電阻。',
+        vinFloor: (b, a) => `候選料的電源下限比較高（${b} V，現用料 ${a} V）。原設計若供電低於 ${b} V，這顆直接不能用。`,
+        vinCeil: (b, a) => `候選料的電源上限比較低（${b} V，現用料 ${a} V）。原設計若供電高於 ${b} V，這顆不能用。`,
+        tolLost: '現用料的 I/O 標示 5 V 耐受，候選料沒有這項標示。若有 5 V 訊號直接進到這些腳，換上去可能過壓損壞——要加準位轉換，或改選有標示耐受的型號。',
+        pinsDiff: (b, a) => `腳數不同（候選料 ${b} 腳、現用料 ${a} 腳），不是 pin-to-pin，不能直接換。`,
+        tempNarrow: (b, a) => `候選料的工作溫度範圍比較窄（${b}，現用料 ${a}）。確認產品的環境溫度規格還在裡面。`,
+        intOd: '兩顆的中斷腳都是開汲極：板子上原本那顆外部上拉要保留，拿掉的話中斷永遠回不到高電位。',
+        scope: '這份比對只涵蓋 datasheet 抽得到的項目。暫存器位址與上電預設值、I2C 時序、輸出驅動能力、ESD 等級、散熱墊條件都沒有比對——這些一樣會讓「pin-to-pin」的兩顆行為不同。把「報告沒提到」當成「沒問題」是最危險的讀法。',
+      },
       wNoText: '<b>這份 PDF 幾乎沒有可抽取的文字</b>——多半是掃描檔或圖片型 PDF。下面幾乎每一欄都會是「未擷取」，這份比對不能用。',
       wLowYield: '<b>這份 PDF 只抽到極少數參數</b>——可能排版特殊，或這不是完整的 datasheet。下面的欄位請以原文為準。',
       wPart: p => `<b>檔名寫的料號「${p}」沒有出現在這份 PDF 的內文</b>——請確認上傳的就是這顆料的 datasheet。`,
@@ -450,7 +515,7 @@
       hasNg: n => `有 ${n} 條準則判定不符合 —— 這些必須先解決，否則不能當 2nd source。`,
       noNg: n => `自動判定沒有發現不符合項；剩下 ${n} 條要人工確認。`,
       paramTable: '參數差異表', param: '參數', verdict: '判定', basis: '依據',
-      critTable: '替換準則逐條判定', crit: '準則', noCrit: '這顆 IC 在元件庫裡沒有替換準則，僅提供上方參數差異表。',
+      critTable: '替換準則逐條判定', crit: '準則', noCrit: '元件庫裡沒有這顆的替換準則，所以沒有逐條判定。上面的「換料注意事項」與參數差異表仍然適用。',
       docInfo: '兩份文件的基本資訊', fileName: '檔名', detPart: '辨識到的料號', detMfr: '辨識到的廠商',
       textAmt: '取出的文字量', chars: n => n.toLocaleString() + ' 字',
       foot: 'HardwareAI 硬體實驗室 — IC 元件庫 2nd Source 比對',
@@ -479,6 +544,20 @@
       unknown: '(not identified)', notExtracted: 'not extracted', print: 'Print / Save as PDF',
       disclaimer: 'This report is extracted automatically from the datasheet text and is a <b>first pass only</b>. A field marked "not extracted" does not mean the spec is absent, and a "pass" only means the extracted numbers satisfy that requirement. The datasheet itself, vendor confirmation and bench measurement remain the authority. Files were parsed entirely in your browser and never uploaded.',
       sameDoc: '<b>These two files have identical content</b> — almost certainly one family datasheet covering several part numbers. "Every parameter matches" then says nothing about whether the parts are interchangeable, and the verdicts below have no discriminating power. Use each part\'s own datasheet instead.',
+      swapTitle: 'What to check before you swap',
+      lv: { high: 'Board change', check: 'Verify by hand', info: 'For reference' },
+      note: {
+        pullLost: 'The candidate has no internal pull-ups; the part in use does. If the design leans on those weak pull-ups (buttons, open-drain sensors, unused I/O), those pins float after the swap: an indeterminate state at power-up and intermittent false triggers, and not necessarily visible during bring-up. Add an external pull-up on every affected pin (10 kΩ is common; to keep the original weak-pull-up behaviour pick a value close to the internal one, and take the real figure from the datasheet).',
+        pullGained: 'The candidate adds internal weak pull-ups; the part in use has none. They divide against any external pull-down (10 kΩ to ground against 100 kΩ to the rail puts the low level near 0.09 x VDD), so confirm the low level still sits under VIL. Unused pins now sit high, and quiescent-current measurements change with them.',
+        pullUnknown: 'Neither datasheet said whether the I/O pins carry internal pull-ups. Do not guess this one — read the pin description yourself. It is the classic pin-to-pin trap: one part integrates the resistor, the other does not, and the board is left without it.',
+        vinFloor: (b, a) => `The candidate needs a higher minimum supply (${b} V against ${a} V on the part in use). If the design runs below ${b} V, this part will not work at all.`,
+        vinCeil: (b, a) => `The candidate has a lower maximum supply (${b} V against ${a} V on the part in use). If the design runs above ${b} V, this part cannot be used.`,
+        tolLost: 'The part in use declares 5 V tolerant I/O; the candidate does not. If 5 V signals reach these pins directly, the swap can overstress them — add level shifting, or pick a part that declares the tolerance.',
+        pinsDiff: (b, a) => `Different pin counts (candidate ${b}, part in use ${a}). These are not pin-to-pin and cannot be swapped directly.`,
+        tempNarrow: (b, a) => `The candidate has a narrower operating temperature range (${b} against ${a}). Confirm the product's environmental spec still fits inside it.`,
+        intOd: 'Both parts drive the interrupt pin open-drain, so keep the external pull-up already on the board — without it the interrupt never returns high.',
+        scope: 'This comparison only covers what could be extracted from the datasheets. Register addresses and power-up defaults, I2C timing, output drive strength, ESD ratings and thermal-pad requirements were not compared, and any of them can make two "pin-to-pin" parts behave differently. Reading "not mentioned here" as "not a problem" is the dangerous way to use this report.',
+      },
       wNoText: '<b>Almost no extractable text in this PDF</b> — most likely a scan or an image-only file. Nearly every field below will read "not extracted"; this comparison is not usable.',
       wLowYield: '<b>Only a couple of parameters could be extracted from this PDF</b> — unusual layout, or not a full datasheet. Read the fields below against the original document.',
       wPart: p => `<b>The part number "${p}" taken from the file name appears nowhere in this PDF</b> — check that you uploaded the datasheet for this part.`,
@@ -487,7 +566,7 @@
       noNg: n => `No automatic failures; ${n} requirement(s) still need human review.`,
       paramTable: 'Parameter differences', param: 'Parameter', verdict: 'Verdict', basis: 'Basis',
       critTable: 'Requirement-by-requirement verdict', crit: 'Requirement',
-      noCrit: 'The library has no replacement requirements for this part, so only the parameter table above is available.',
+      noCrit: 'The library holds no replacement requirements for this part, so there is no clause-by-clause verdict. The swap notes and the parameter table above still apply.',
       docInfo: 'About the two documents', fileName: 'File name', detPart: 'Detected part number', detMfr: 'Detected vendor',
       textAmt: 'Text extracted', chars: n => n.toLocaleString() + ' chars',
       foot: 'HardwareAI Hardware Lab — IC library 2nd-source comparison',
@@ -516,6 +595,20 @@
       unknown: '(判別できず)', notExtracted: '抽出できず', print: '印刷 / PDF に保存',
       disclaimer: '本レポートは datasheet の全文から自動抽出したもので、<b>一次スクリーニング</b>にのみ使えます。「抽出できず」はその仕様が存在しないという意味ではなく、「適合」も抽出できた数値がその条件を満たすという意味にすぎません。最終判断は datasheet 原文・メーカー確認・実測に従ってください。ファイルはブラウザ内だけで解析し、アップロードしていません。',
       sameDoc: '<b>この 2 ファイルは内容が同一です</b>——同じシリーズの datasheet（1 つの文書が複数品番を扱う）である可能性が高く、「全パラメータが同じ」は互換性の根拠になりません。以下の判定に識別力はありません。各品番の datasheet を使ってください。',
+      swapTitle: '置き換え時の注意点',
+      lv: { high: '回路変更が必要', check: '要手動確認', info: '参考' },
+      note: {
+        pullLost: '候補品には内蔵プルアップがなく、現用品にはあります。設計がその弱プルアップに依存している場合（ボタン、オープンドレイン出力のセンサ、未使用 I/O）、置き換え後はそれらのピンが浮きます。電源投入時の状態が不定になり、間欠的な誤トリガが起きます。bring-up では見えないこともあります。該当するピンごとに外付けプルアップを追加してください（一般には 10 kΩ。元の弱プルアップの挙動を保つなら内蔵値に近い抵抗値を選び、実際の値は datasheet で確認してください）。',
+        pullGained: '候補品には内蔵の弱プルアップがあり、現用品にはありません。外付けプルダウンと分圧になり（外付け 10 kΩ 対 GND、内蔵 100 kΩ 対 電源で L レベルは約 0.09×VDD）、VIL を下回るか確認が必要です。未使用ピンは H に張り付き、静止電流の実測値も変わります。',
+        pullUnknown: 'どちらの datasheet からも「I/O に内蔵プルアップがあるか」を抽出できませんでした。ここは推測してはいけません。pin description をご自身で確認してください。pin-to-pin 置き換えで最も多い落とし穴です。片方は内蔵、もう片方は非内蔵で、基板に抵抗が足りなくなります。',
+        vinFloor: (b, a) => `候補品は電源電圧の下限が高いです（${b} V、現用品は ${a} V）。設計が ${b} V 未満で動いている場合、この品番は使えません。`,
+        vinCeil: (b, a) => `候補品は電源電圧の上限が低いです（${b} V、現用品は ${a} V）。設計が ${b} V を超える場合、この品番は使えません。`,
+        tolLost: '現用品は I/O が 5 V トレラントと明記されていますが、候補品にはその記載がありません。5 V の信号が直接これらのピンに入る場合、置き換えると過電圧で破損する可能性があります。レベルシフトを追加するか、トレラント記載のある品番を選んでください。',
+        pinsDiff: (b, a) => `ピン数が異なります（候補品 ${b}、現用品 ${a}）。pin-to-pin ではないため、そのままでは置き換えられません。`,
+        tempNarrow: (b, a) => `候補品は動作温度範囲が狭いです（${b}、現用品は ${a}）。製品の環境温度仕様が収まるか確認してください。`,
+        intOd: 'どちらも割り込みピンはオープンドレインです。基板上の外付けプルアップはそのまま残してください。外すと割り込みが H に戻りません。',
+        scope: 'この比較は datasheet から抽出できた項目のみを対象にしています。レジスタアドレスと電源投入時の初期値、I2C タイミング、出力駆動能力、ESD 定格、放熱パッドの条件は比較していません。いずれも「pin-to-pin」の 2 品番の挙動を変え得ます。「ここに書かれていない＝問題ない」と読むのが最も危険です。',
+      },
       wNoText: '<b>この PDF からはテキストがほとんど取り出せません</b>——スキャン（画像）PDF の可能性が高いです。以下はほぼ「未抽出」になり、この比較は使えません。',
       wLowYield: '<b>この PDF から抽出できたパラメータはごくわずかです</b>——特殊なレイアウト、または完全な datasheet ではない可能性があります。以下は原文と照合してください。',
       wPart: p => `<b>ファイル名の品番「${p}」が本文に見当たりません</b>——この品番の datasheet かどうか確認してください。`,
@@ -524,7 +617,7 @@
       noNg: n => `自動判定での不適合はありません。残り ${n} 件は人手確認が必要です。`,
       paramTable: 'パラメータ差分表', param: 'パラメータ', verdict: '判定', basis: '根拠',
       critTable: '置換条件ごとの判定', crit: '条件',
-      noCrit: 'この IC にはライブラリ上の置換条件がないため、上のパラメータ差分表のみです。',
+      noCrit: 'この IC にはライブラリ上の置換条件がないため、条項ごとの判定はありません。上の「置き換え時の注意点」とパラメータ差分表は有効です。',
       docInfo: '2 つの文書の基本情報', fileName: 'ファイル名', detPart: '判別した品番', detMfr: '判別したメーカー',
       textAmt: '抽出した文字量', chars: n => n.toLocaleString() + ' 文字',
       foot: 'HardwareAI ハードウェアラボ — IC ライブラリ セカンドソース比較',
@@ -553,6 +646,20 @@
       unknown: '(식별 불가)', notExtracted: '추출 안 됨', print: '인쇄 / PDF로 저장',
       disclaimer: '이 보고서는 datasheet 전문에서 자동 추출한 것으로 <b>1차 선별용</b>입니다. "추출 안 됨"은 해당 사양이 없다는 뜻이 아니며, "충족" 역시 추출된 수치가 그 조건을 통과했다는 의미일 뿐입니다. 최종 판단은 datasheet 원문, 제조사 확인, 실측을 따르십시오. 파일은 브라우저 안에서만 해석되었고 업로드되지 않았습니다.',
       sameDoc: '<b>두 파일의 내용이 동일합니다</b> — 한 문서가 여러 부품 번호를 다루는 시리즈 datasheet일 가능성이 큽니다. 이 경우 "모든 파라미터 동일"은 호환 근거가 되지 않으며 아래 판정에는 변별력이 없습니다. 각 부품의 datasheet를 사용하세요.',
+      swapTitle: '교체 전 확인할 것',
+      lv: { high: '회로 변경 필요', check: '수동 확인 필요', info: '참고' },
+      note: {
+        pullLost: '후보 부품에는 내장 풀업이 없고 현용 부품에는 있습니다. 설계가 그 약한 풀업에 의존한다면(버튼, 오픈 드레인 출력 센서, 미사용 I/O) 교체 후 해당 핀은 플로팅 상태가 됩니다. 전원 인가 시 상태가 불확정이고 간헐적 오동작이 생기며, bring-up 단계에서는 보이지 않을 수도 있습니다. 해당 핀마다 외부 풀업을 추가하세요(보통 10 kΩ. 기존 약한 풀업 동작을 유지하려면 내장 값에 가까운 저항을 쓰고, 실제 값은 datasheet에서 확인하세요).',
+        pullGained: '후보 부품에는 내장 약한 풀업이 있고 현용 부품에는 없습니다. 외부 풀다운과 분압이 되어(외부 10 kΩ 대지, 내장 100 kΩ 전원 → 로우 레벨 약 0.09×VDD) VIL 아래인지 확인해야 합니다. 미사용 핀은 하이로 유지되고 정지 전류 측정값도 달라집니다.',
+        pullUnknown: '두 datasheet 모두에서 "I/O에 내장 풀업이 있는지"를 추출하지 못했습니다. 이 항목은 추측하면 안 됩니다. pin description을 직접 확인하세요. pin-to-pin 교체에서 가장 흔한 함정입니다. 한쪽은 내장, 다른 쪽은 없어서 보드에 저항이 빠지게 됩니다.',
+        vinFloor: (b, a) => `후보 부품의 전원 하한이 더 높습니다(${b} V, 현용 ${a} V). 설계가 ${b} V 미만에서 동작한다면 이 부품은 쓸 수 없습니다.`,
+        vinCeil: (b, a) => `후보 부품의 전원 상한이 더 낮습니다(${b} V, 현용 ${a} V). 설계가 ${b} V를 넘는다면 이 부품은 쓸 수 없습니다.`,
+        tolLost: '현용 부품은 I/O가 5 V 톨러런트로 표기되어 있으나 후보 부품에는 그 표기가 없습니다. 5 V 신호가 이 핀에 직접 들어온다면 교체 시 과전압으로 손상될 수 있습니다. 레벨 시프트를 추가하거나 톨러런트가 명시된 부품을 고르세요.',
+        pinsDiff: (b, a) => `핀 수가 다릅니다(후보 ${b}, 현용 ${a}). pin-to-pin이 아니므로 그대로 교체할 수 없습니다.`,
+        tempNarrow: (b, a) => `후보 부품의 동작 온도 범위가 더 좁습니다(${b}, 현용 ${a}). 제품의 환경 온도 사양이 그 안에 들어오는지 확인하세요.`,
+        intOd: '두 부품 모두 인터럽트 핀이 오픈 드레인입니다. 보드에 이미 있는 외부 풀업을 유지하세요. 제거하면 인터럽트가 하이로 복귀하지 않습니다.',
+        scope: '이 비교는 datasheet에서 추출할 수 있었던 항목만 다룹니다. 레지스터 주소와 전원 인가 시 기본값, I2C 타이밍, 출력 구동 능력, ESD 등급, 방열 패드 조건은 비교하지 않았습니다. 이 중 어느 것이든 "pin-to-pin"인 두 부품의 동작을 다르게 만들 수 있습니다. "여기에 없으니 문제없다"고 읽는 것이 가장 위험합니다.',
+      },
       wNoText: '<b>이 PDF에서 추출할 수 있는 텍스트가 거의 없습니다</b> — 스캔(이미지) PDF일 가능성이 큽니다. 아래 항목 대부분이 "미추출"이 되며 이 비교는 사용할 수 없습니다.',
       wLowYield: '<b>이 PDF에서 추출된 파라미터가 매우 적습니다</b> — 특이한 레이아웃이거나 완전한 datasheet가 아닐 수 있습니다. 아래 항목은 원문과 대조하세요.',
       wPart: p => `<b>파일 이름의 부품번호 "${p}"가 본문에 없습니다</b> — 해당 부품의 datasheet가 맞는지 확인하세요.`,
@@ -561,7 +668,7 @@
       noNg: n => `자동 판정에서 불충족은 없습니다. 남은 ${n}개는 사람이 확인해야 합니다.`,
       paramTable: '파라미터 차이표', param: '파라미터', verdict: '판정', basis: '근거',
       critTable: '대체 조건별 판정', crit: '조건',
-      noCrit: '이 IC에는 라이브러리에 등록된 대체 조건이 없어 위의 파라미터 차이표만 제공합니다.',
+      noCrit: '이 IC에는 라이브러리에 등록된 대체 조건이 없어 조항별 판정은 없습니다. 위의 교체 주의사항과 파라미터 차이표는 그대로 유효합니다.',
       docInfo: '두 문서의 기본 정보', fileName: '파일명', detPart: '식별된 부품 번호', detMfr: '식별된 제조사',
       textAmt: '추출된 텍스트 양', chars: n => n.toLocaleString() + '자',
       foot: 'HardwareAI 하드웨어 랩 — IC 라이브러리 세컨드 소스 비교',
@@ -603,6 +710,9 @@
     fsw: { zh: '切換頻率', en: 'Switching frequency', ja: 'スイッチング周波数', ko: '스위칭 주파수' },
     esd: { zh: 'ESD (HBM)', en: 'ESD (HBM)', ja: 'ESD (HBM)', ko: 'ESD (HBM)' },
     aecq: { zh: '車規 AEC-Q100', en: 'AEC-Q100 automotive', ja: '車載 AEC-Q100', ko: '차량용 AEC-Q100' },
+    iopull: { zh: 'I/O 內建上拉', en: 'Internal I/O pull-up', ja: 'I/O 内蔵プルアップ', ko: 'I/O 내장 풀업' },
+    iotol: { zh: 'I/O 5V 耐受', en: '5 V tolerant I/O', ja: 'I/O 5V トレラント', ko: 'I/O 5V 톨러런트' },
+    intod: { zh: '中斷腳輸出型態', en: 'Interrupt output type', ja: '割り込み出力形式', ko: '인터럽트 출력 형식' },
   };
   const plabel = (key, lang) => (PLABEL[key] && (PLABEL[key][lang] || PLABEL[key].zh))
     || (RULES.find(r => r.key === key) || {}).label || key;
@@ -610,6 +720,16 @@
   // 封裝多值時，腳數欄要顯示的說明（四語）
   const PINS_AMBIG = { zh: '封裝有多種，無法判定腳數', en: 'several packages listed; pin count undetermined',
     ja: 'パッケージが複数あり、ピン数を確定できません', ko: '패키지가 여러 개여서 핀 수를 확정할 수 없음' };
+
+  /** 參數值本身也要四語：不然英文報告會出現「有」「無」這種中文殘留。 */
+  const VTEXT = {
+    pinsAmbig: PINS_AMBIG,
+    pullYes: { zh: '有（內建弱上拉）', en: 'Yes (internal weak pull-up)', ja: 'あり（内蔵ウィークプルアップ）', ko: '있음(내장 약한 풀업)' },
+    pullNo: { zh: '無', en: 'No', ja: 'なし', ko: '없음' },
+    yes: { zh: '有', en: 'Yes', ja: 'あり', ko: '있음' },
+    od: { zh: '開汲極', en: 'Open-drain', ja: 'オープンドレイン', ko: '오픈 드레인' },
+    pp: { zh: '推挽', en: 'Push-pull', ja: 'プッシュプル', ko: '푸시풀' },
+  };
 
   /* ---------------- secondSource 準則判定 ----------------
    * 準則是自然語言（ic-data.js 每顆都有一串）。這裡只做「關鍵字對得到參數」的機械判定，
@@ -628,6 +748,8 @@
     { key: 'sps', re: /取樣率|SPS|sample rate/i, mode: 'ge' },
     { key: 'fsw', re: /切換頻率|開關頻率|fSW/i, mode: 'equalish' },
     { key: 'esd', re: /ESD|HBM/i, mode: 'ge' },
+    { key: 'iopull', re: /上拉|pull-?up/i, mode: 'flag' },
+    { key: 'iotol', re: /5\s?V\s?耐受|5\s?-?\s?V\s+tolerant/i, mode: 'flag' },
     { key: 'aecq', re: /AEC|車規/i, mode: 'flag' },
   ];
 
@@ -689,6 +811,57 @@
     }
   }
 
+  /* ---------------- 換料注意事項 ----------------
+   * 這一段不是判定，是給設計者的提醒。理由（使用者的原話）：
+   * pin-to-pin 很容易被當成可以直接換，但「換了對原設計有沒有影響」沒有人知道，
+   * 因為報告不知道原設計長什麼樣。所以能做的是把「哪裡不同、線路上要注意什麼」講清楚，
+   * 剩下的由設計者自己判斷——而不是為了便宜就直接換。
+   *
+   * 三個級別：
+   *   high  ＝ 換了要動外部電路或直接不能用
+   *   check ＝ 這一項沒抽到，但它足以讓板子壞，必須人工確認（不准用留白帶過）
+   *   info  ＝ 兩邊一樣但值得提醒、以及這份報告沒有涵蓋什麼
+   */
+  function swapNotes(A, B, lang) {
+    const N = dict(lang).note;
+    const a = A.params, b = B.params, out = [];
+    const push = (level, text) => { if (text) out.push({ level, text }); };
+
+    // 1) 內建上拉：這一項是這個功能存在的理由
+    if (a.iopull && b.iopull) {
+      if (a.iopull.flag && !b.iopull.flag) push('high', N.pullLost);
+      else if (!a.iopull.flag && b.iopull.flag) push('high', N.pullGained);
+    } else {
+      push('check', N.pullUnknown);
+    }
+
+    // 2) 電源範圍：下限抬高最容易被忽略（原設計跑 1.8V，換上 2.3V 起跳的就是不會動）
+    if (a.vin && b.vin) {
+      if (b.vin.lo > a.vin.lo) push('high', N.vinFloor(b.vin.lo, a.vin.lo));
+      if (b.vin.hi < a.vin.hi) push('high', N.vinCeil(b.vin.hi, a.vin.hi));
+    }
+
+    // 3) 5V 耐受：現用料有、候選料沒標示
+    if (a.iotol && a.iotol.flag && !(b.iotol && b.iotol.flag)) push('high', N.tolLost);
+
+    // 4) 腳數不同就不是 pin-to-pin
+    if (a.pins && b.pins && !a.pins.ambiguous && !b.pins.ambiguous && a.pins.n !== b.pins.n) {
+      push('high', N.pinsDiff(b.pins.n, a.pins.n));
+    }
+
+    // 5) 溫度範圍變窄
+    if (a.temp && b.temp && (b.temp.lo > a.temp.lo || b.temp.hi < a.temp.hi)) {
+      push('high', N.tempNarrow(b.temp.value, a.temp.value));
+    }
+
+    // 6) 兩邊都是開汲極中斷：不是差異，但那顆外部上拉不能拿掉
+    if (a.intod && b.intod && a.intod.text === 'od' && b.intod.text === 'od') push('info', N.intOd);
+
+    // 7) 永遠講清楚沒有比到什麼——這份報告最危險的用法是把「沒提到」當成「沒問題」
+    push('info', N.scope);
+    return out;
+  }
+
   /* ---------------- 報告 ---------------- */
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const COLOR = { same: '#15803d', diff: '#b91c1c', partial: '#b45309', none: '#94a3b8', ok: '#15803d', ng: '#b91c1c', manual: '#b45309' };
@@ -716,6 +889,8 @@
     const when = new Date().toISOString().slice(0, 16).replace('T', ' ');
     const tally = k => checks.filter(c => c.verdict === k).length;
     const diffRows = rows.filter(r => r.state === 'diff').length;
+    const notes = swapNotes(A, B, lang);
+    const nHigh = notes.filter(n => n.level === 'high').length;
     const tag = (txt, color) => `<span class="tag" style="background:${color}">${esc(txt)}</span>`;
     const partyRow = (l, a, b) => `<tr><th>${esc(l)}</th><td>${esc(a || '—')}</td><td>${esc(b || '—')}</td></tr>`;
     // 檔案本身的問題（掃描檔、料號對不上）要在最上面講，否則滿頁「未擷取」會被當成功能壞掉
@@ -737,6 +912,12 @@
  .sum{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
  .sum div{border:1px solid #e2e8f0;border-radius:8px;padding:8px 14px;font-size:13px}
  .note{background:#fffbeb;border-left:3px solid #b45309;padding:9px 12px;font-size:12px;color:#7c4a03;margin:14px 0}
+ ul.swap{list-style:none;padding:0;margin:8px 0}
+ ul.swap li{border-left:3px solid #cbd5e1;background:#f8fafc;padding:9px 12px;margin:8px 0;font-size:13px}
+ ul.swap li.lv-high{border-left-color:#b91c1c;background:#fef2f2}
+ ul.swap li.lv-check{border-left-color:#b45309;background:#fffbeb}
+ .lvtag{display:inline-block;font-weight:700;font-size:11px;margin-right:8px;padding:1px 7px;border-radius:99px;background:#e2e8f0;color:#334155}
+ li.lv-high .lvtag{background:#b91c1c;color:#fff} li.lv-check .lvtag{background:#b45309;color:#fff}
  .btn{position:fixed;right:24px;top:24px;padding:9px 16px;border:0;border-radius:8px;background:#1f4fd1;color:#fff;font-size:14px;cursor:pointer}
  @media print{body{background:#fff;padding:0}.sheet{border:0;max-width:none;padding:0}.btn{display:none}
    table{page-break-inside:auto} tr{page-break-inside:avoid}}
@@ -761,9 +942,16 @@
   <div>${tag(D.vd.ng + ' ' + tally('ng'), COLOR.ng)}</div>
   <div>${tag(D.vd.manual + ' ' + tally('manual'), COLOR.manual)}</div>
   <div>${D.nDiff(diffRows)}</div>
+  ${nHigh ? `<div>${tag(D.lv.high + ' ' + nHigh, COLOR.ng)}</div>` : ''}
  </div>
  ${tally('ng') ? `<p style="color:#b91c1c;font-weight:600">${esc(D.hasNg(tally('ng')))}</p>`
+      : checks.length === 0 ? `<p style="color:#b45309;font-weight:600">${esc(D.noCrit)}</p>`
         : `<p style="color:#15803d;font-weight:600">${esc(D.noNg(tally('manual')))}</p>`}
+
+ <h2>${esc(D.swapTitle)}</h2>
+ <ul class="swap">
+  ${notes.map(n => `<li class="lv-${n.level}"><span class="lvtag">${esc(D.lv[n.level])}</span>${esc(n.text)}</li>`).join('')}
+ </ul>
 
  <h2>${esc(D.paramTable)}</h2>
  <table><thead><tr><th>${esc(D.param)}</th><th>${esc(D.inUse)}</th><th>${esc(D.cand)}</th><th>${esc(D.verdict)}</th></tr></thead><tbody>
@@ -832,6 +1020,6 @@
     return out.join('\n');
   }
 
-  root.DSCompare = { RULES, parse, diff, judge, reportHTML, extractText, linesFromItems, sameDoc, LANGS: Object.keys(L) };
+  root.DSCompare = { RULES, parse, diff, judge, swapNotes, reportHTML, extractText, linesFromItems, sameDoc, LANGS: Object.keys(L) };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.DSCompare;
 })(typeof window !== 'undefined' ? window : globalThis);

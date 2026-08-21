@@ -283,5 +283,54 @@ const FX = f => fs.readFileSync(path.join(__dirname, 'tools', 'ds-compare', 'fix
   });
 }
 
+
+/* ---------- 9) PCA9555A vs PCA9535：pin-to-pin，但差一顆內建上拉 ----------
+ * 使用者 2026-08-20 給的真實案例，也是這個功能存在的理由：
+ * 兩顆腳位相同、暫存器相同、參數表看起來可以換，但 PCA9535 的 datasheet 自己寫著
+ * 「identical to the PCA9555, except for the removal of the internal I/O pullup resistor」。
+ * 沒抓到這一條就會有人把板子上少的那顆電阻忘掉。 */
+{
+  const A = DS.parse(FX('pca9555a.txt'), 'PCA9555A.pdf');   // 現用料：NXP，有內建弱上拉
+  const B = DS.parse(FX('pca9535.txt'), 'pca9535.pdf');     // 候選料：TI，拿掉了內建上拉
+
+  ok('PCA9555A 認得內建弱上拉', A.params.iopull && A.params.iopull.flag === true, JSON.stringify(A.params.iopull));
+  ok('PCA9535 認得「沒有內建上拉」', B.params.iopull && B.params.iopull.flag === false, JSON.stringify(B.params.iopull));
+  ok('兩顆都是 24 腳（確實 pin-to-pin）', A.params.pins.n === 24 && B.params.pins.n === 24,
+    JSON.stringify([A.params.pins, B.params.pins]));
+  ok('PCA9555A 電源下限 1.65 V', A.params.vin.lo === 1.65, JSON.stringify(A.params.vin));
+  ok('PCA9535 電源下限 2.3 V', B.params.vin.lo === 2.3, JSON.stringify(B.params.vin));
+  ok('兩顆的 INT 都是開汲極', A.params.intod.text === 'od' && B.params.intod.text === 'od',
+    JSON.stringify([A.params.intod, B.params.intod]));
+  ok('兩顆都標 5V 耐受', !!(A.params.iotol && B.params.iotol), JSON.stringify([A.params.iotol, B.params.iotol]));
+
+  const n = DS.swapNotes(A, B, 'zh');
+  ok('提醒：候選料沒有內建上拉（要動線路）', n.some(x => x.level === 'high' && /沒有內建上拉/.test(x.text)),
+    JSON.stringify(n.map(x => x.level)));
+  ok('提醒：電源下限變高', n.some(x => x.level === 'high' && /電源下限/.test(x.text)), JSON.stringify(n.map(x => x.level)));
+  ok('提醒：INT 外部上拉要保留', n.some(x => /開汲極/.test(x.text)));
+  ok('一定附上「這份報告沒有比到什麼」', n.some(x => /暫存器位址/.test(x.text)));
+
+  // 反向換料（沒上拉的換成有上拉的）給的提醒不一樣：分壓、未使用腳被拉高
+  const rev = DS.swapNotes(B, A, 'zh');
+  ok('反向換料提醒的是「多了內建上拉」', rev.some(x => /多了內建弱上拉/.test(x.text)), JSON.stringify(rev.map(x => x.text.slice(0, 12))));
+
+  // 抽不到就要明講。這一項沉默＝害人，所以一定要有 check 級提醒
+  const silent = DS.parse('Generic device description without any statement about pin biasing. '.repeat(30), 'x9.pdf');
+  ok('上拉抽不到 → 出現「要人工確認」', DS.swapNotes(silent, silent, 'zh').some(x => x.level === 'check'),
+    JSON.stringify(DS.swapNotes(silent, silent, 'zh').map(x => x.level)));
+
+  DS.LANGS.forEach(l => {
+    const notes = DS.swapNotes(A, B, l);
+    ok('注意事項四語齊全（' + l + '）', notes.length >= 4 && notes.every(x => x.text && !/undefined/.test(x.text)), l);
+  });
+
+  const h = DS.reportHTML({ A, B, checks: [], ic: null, fileA: 'PCA9555A.pdf', fileB: 'pca9535.pdf', lang: 'zh' });
+  ok('報告有「換料注意事項」段', /換料注意事項/.test(h) && /lv-high/.test(h));
+  ok('注意事項排在參數表前面', h.indexOf('<h2>換料注意事項') < h.indexOf('<h2>參數差異表'));
+  const hEn = DS.reportHTML({ A, B, checks: [], ic: null, fileA: 'a.pdf', fileB: 'b.pdf', lang: 'en' });
+  const bodyEn = hEn.replace(/<style>[\s\S]*?<\/style>/, '');
+  ok('英文報告的注意事項沒有中文殘留', !/[一-鿿]/.test(bodyEn), (bodyEn.match(/[一-鿿]+/g) || []).slice(0, 3).join(' '));
+}
+
 console.log(`ds-compare.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

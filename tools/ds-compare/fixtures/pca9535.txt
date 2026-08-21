@@ -1,0 +1,20 @@
+PCA9535
+www.ti.com SCPS129K – AUGUST 2005 – REVISED MARCH 2021 PCA9535
+SCPS129K – AUGUST 2005 – REVISED MARCH 2021
+PCA9535 Remote 16-BIT I 2 C and SMBus Low-Power I/O Expander With Interrupt
+Output and Configuration Registers
+• Low standby-current consumption of 1 μA Max This 16-bit I/O expander for the two-line bidirectional
+• I 2 C to Parallel port expander bus (I C) is designed for 2.3-V to 5.5-V V CC operation.
+• Open-drain active-low interrupt output It provides general-purpose remote I/O expansion for
+• 5-V Tolerant I/O ports most microcontroller families via the I C interface
+The PCA9535 is identical to the PCA9555, except for the removal of the internal I/O pullup resistor, which greatly
+6.3 Recommended Operating Conditions
+I OH High-level output current P07–P00, P17–P10 –10 mA
+T A Operating free-air temperature –40 85 °C
+I I V I = V CC or GND 2.3 V to 5.5 V μA
+PCA9535DB Obsolete Production SSOP (DB) | 24 - - Call TI Call TI -40 to 85 PD9535
+PCA9535DGVR Active Production TVSOP (DGV) | 24 2000 | LARGE T&R Yes NIPDAU Level-1-260C-UNLIM -40 to 85 PD9535
+PCA9535DW Active Production SOIC (DW) | 24 25 | TUBE Yes NIPDAU Level-1-260C-UNLIM -40 to 85 PCA9535
+PCA9535PWR Active Production TSSOP (PW) | 24 2000 | LARGE T&R Yes NIPDAU Level-1-260C-UNLIM -40 to 85 PD9535
+PCA9535RGER Active Production VQFN (RGE) | 24 3000 | LARGE T&R Yes NIPDAU Level-1-260C-UNLIM -40 to 85 PD9535
+PCA9535RTWR Active Production WQFN (RTW) | 24 3000 | LARGE T&R Yes NIPDAU Level-2-260C-1 YEAR -40 to 85 PD535
