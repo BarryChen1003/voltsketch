@@ -249,9 +249,15 @@ const FX = f => fs.readFileSync(path.join(__dirname, 'tools', 'ds-compare', 'fix
   ok('AXP209 VIN 2.9~6.3 V', X.params.vin.lo === 2.9 && X.params.vin.hi === 6.3, JSON.stringify(X.params.vin));
   ok('AXP209 fSW 1.5 MHz', X.params.fsw && X.params.fsw.n === 1.5e6, JSON.stringify(X.params.fsw));
   ok('AXP209 介面認得 TWSI 就是 I2C', X.params.interface.set.indexOf('I2C') >= 0, JSON.stringify(X.params.interface));
-  // 這顆的溫度只出現在 Absolute Maximum（Tj -40~130），拿去當工作溫度會高估 → 寧可未擷取。
-  // 另外「V IN = 5V , BAT = 3.8V , T A = 2 5 ℃」被 PDF 拆成「2 5」，不准變成「2 ~ 5 °C」。
-  ok('AXP209 工作溫度未擷取（不給錯的）', X.params.temp === null, JSON.stringify(X.params.temp));
+  // 這顆整份文件只在 Absolute Maximum 裡給溫度（Tj -40~130）。直接當工作溫度會高估，
+  // 完全不給又讓人以為沒資料 → 給值但標明出處，報告會顯示「（取自絕對最大額定）」。
+  ok('AXP209 溫度取自絕對最大額定並標註出處',
+    X.params.temp && X.params.temp.lo === -40 && X.params.temp.hi === 130 && X.params.temp.srcTag === 'fromAbsMax',
+    JSON.stringify(X.params.temp));
+  ok('出處標註會出現在報告的參數表', /取自絕對最大額定/.test(
+    DS.reportHTML({ A: X, B: X, checks: [], ic: null, fileA: 'a.pdf', fileB: 'b.pdf', lang: 'zh' })));
+  // 「V IN = 5V , BAT = 3.8V , T A = 2 5 ℃」被 PDF 拆成「2 5」，不准變成「2 ~ 5 °C」的工作溫度
+  ok('被拆開的 25℃ 沒有變成溫度範圍', !(X.params.temp.lo === 2 && X.params.temp.hi === 5), JSON.stringify(X.params.temp));
 }
 
 /* ---------- 7) 誤抽防線（合成最小案例，一條一種手法） ---------- */
@@ -330,6 +336,67 @@ const FX = f => fs.readFileSync(path.join(__dirname, 'tools', 'ds-compare', 'fix
   const hEn = DS.reportHTML({ A, B, checks: [], ic: null, fileA: 'a.pdf', fileB: 'b.pdf', lang: 'en' });
   const bodyEn = hEn.replace(/<style>[\s\S]*?<\/style>/, '');
   ok('英文報告的注意事項沒有中文殘留', !/[一-鿿]/.test(bodyEn), (bodyEn.match(/[一-鿿]+/g) || []).slice(0, 3).join(' '));
+}
+
+
+/* ---------- 10) 符號字型（私有區字元）與工作溫度 ----------
+ * PCA9555A 的「Tamb = -40 °C to +85 °C」在 PDF 裡是 Symbol 字型畫的：
+ * 負號是 U+F02D、度數是 U+F0B0、µ 是 U+F06D。不還原就整條工作溫度抓不到，
+ * 而且看起來像「datasheet 沒寫」——這是使用者要求特別檢查的一項。 */
+{
+  const p = DS.parse('Tamb = 40 C to +85 C; VDD = 1.65 V to 5.5 V. '
+    + 'Low standby current consumption: 1.5 A typical', 'x10.pdf');
+  ok('私有區的負號與度數還原後抽得到溫度', p.params.temp && p.params.temp.lo === -40 && p.params.temp.hi === 85, JSON.stringify(p.params.temp));
+  ok('私有區的 µ 還原成微安', p.params.iq && Math.abs(p.params.iq.n - 1.5e-6) < 1e-12, JSON.stringify(p.params.iq));
+  ok('未知的私有區字元換成空白，不會黏在數字上',
+    DS.parse(' Operating temperature -40 °C to 85 °C', 'y10.pdf').params.temp.lo === -40);
+
+  const T = f => DS.parse(FX(f), f.replace('.txt', '.pdf')).params.temp;
+  ok('PCA9555A 工作溫度 -40~85', T('pca9555a.txt').lo === -40 && T('pca9555a.txt').hi === 85, JSON.stringify(T('pca9555a.txt')));
+  ok('PCA9535 工作溫度 -40~85', T('pca9535.txt').lo === -40 && T('pca9535.txt').hi === 85, JSON.stringify(T('pca9535.txt')));
+  ok('W25Q128JV 工作溫度 -40~85', T('w25q128jv.txt').lo === -40 && T('w25q128jv.txt').hi === 85, JSON.stringify(T('w25q128jv.txt')));
+  ok('RT6150 取環境溫度 85 而不是接面溫度 125', T('rt6150.txt').hi === 85, JSON.stringify(T('rt6150.txt')));
+  ok('五份真 datasheet 都抽得到工作溫度',
+    ['pca9555a.txt', 'pca9535.txt', 'w25q128jv.txt', 'rt6150.txt', 'axp209.txt'].every(f => T(f)),
+    ['pca9555a.txt', 'pca9535.txt', 'w25q128jv.txt', 'rt6150.txt', 'axp209.txt'].filter(f => !T(f)).join(','));
+
+  // 標籤在行尾、值被斷到下一行（NXP 的 Features 條列常這樣）
+  const nl = DS.parse('Low standby current consumption:\n1.5 µA (typical at 5 V VDD)', 'z10.pdf');
+  ok('值斷到下一行也抓得到', nl.params.iq && Math.abs(nl.params.iq.n - 1.5e-6) < 1e-12, JSON.stringify(nl.params.iq));
+}
+
+/* ---------- 11) 其餘「會改到板子」的差異 ---------- */
+{
+  const A = DS.parse(FX('pca9555a.txt'), 'PCA9555A.pdf');
+  const R = DS.parse(FX('rt6150.txt'), 'rt6150.pdf');
+  const W = DS.parse(FX('w25q128jv.txt'), 'w25q128jv.pdf');
+  ok('PCA9555A 上電預設是「輸入含弱上拉」', A.params.pordef && A.params.pordef.text === 'inPu', JSON.stringify(A.params.pordef));
+  ok('RT6150 認得內建軟啟動與振盪器',
+    R.params.integ && R.params.integ.set.indexOf('soft-start') >= 0 && R.params.integ.set.indexOf('oscillator') >= 0,
+    JSON.stringify(R.params.integ));
+  ok('RT6150 的外露焊盤要求接地', R.params.epad && R.params.epad.text === 'padGnd', JSON.stringify(R.params.epad));
+  ok('W25Q128JV 的未使用腳可浮接', W.params.nofloat && W.params.nofloat.text === 'ok', JSON.stringify(W.params.nofloat));
+
+  // 合成一組：內建功能被拿掉、散熱墊冒出來、未使用腳不准浮接
+  const tail = ' Operating temperature -40 °C to 85 °C. Supply voltage 4.5 V to 18 V.';
+  const cur = DS.parse('Internal soft-start and internally compensated loop. Unused pins can be left floating.' + tail, 'cur.pdf');
+  const cand = DS.parse('Internal oscillator only. Exposed pad must be connected to ground. Unused pins must not be left floating.' + tail, 'cand.pdf');
+  const nn = DS.swapNotes(cur, cand, 'zh');
+  ok('內建功能少掉要提醒補外部元件', nn.some(x => x.level === 'high' && /軟啟動/.test(x.text)), JSON.stringify(nn.map(x => x.level)));
+  // 候選料的 datasheet 完全沒提內建功能時＝沒查到，不是沒有 → 要出 check 級提醒
+  const mute = DS.parse('A part with no statement about integration at all.' + tail, 'mute.pdf');
+  ok('候選料沒提內建功能 → 判「要人工確認」而不是「它沒有」',
+    DS.swapNotes(cur, mute, 'zh').some(x => x.level === 'check' && /軟啟動/.test(x.text)),
+    JSON.stringify(DS.swapNotes(cur, mute, 'zh').map(x => x.level)));
+  ok('散熱墊要接地要提醒改 PCB', nn.some(x => x.level === 'high' && /散熱墊/.test(x.text)), JSON.stringify(nn.map(x => x.level)));
+  ok('未使用腳不可浮接要提醒', nn.some(x => x.level === 'high' && /浮接/.test(x.text)), JSON.stringify(nn.map(x => x.level)));
+  DS.LANGS.forEach(l => {
+    const t = DS.swapNotes(cur, cand, l);
+    ok('新增提醒四語齊全（' + l + '）', t.length >= 3 && t.every(x => x.text && !/undefined/.test(x.text)), l);
+  });
+  const hEn = DS.reportHTML({ A: cur, B: cand, checks: [], ic: null, fileA: 'a.pdf', fileB: 'b.pdf', lang: 'en' });
+  ok('英文報告仍然沒有中文殘留', !/[一-鿿]/.test(hEn.replace(/<style>[\s\S]*?<\/style>/, '')),
+    (hEn.match(/[一-鿿]+/g) || []).slice(0, 3).join(' '));
 }
 
 console.log(`ds-compare.test: ${pass} passed, ${fail} failed`);

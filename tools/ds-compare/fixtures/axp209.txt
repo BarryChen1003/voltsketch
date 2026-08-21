@@ -3,7 +3,6 @@ AXP209
 Enhanced single Cell Li - Battery and Power System Management IC
 X - Powers
 © 2010 X - Powers Limited - All rights reserved
-AXP209
 Enhanced single Cell Li - Battery and Power System Manage ment IC
 Table of Contents
 1. Overview ................................ ................................ ................................ ................................ ........ 3
@@ -21,15 +20,18 @@ Table of Contents
 9.4 Backup battery ................................ ................................ ................................ ................... 22
 9.5 Multi - channel power output s ................................ ................................ ............................ 23
 9.6 Default Voltage / Timing Setting s ................................ ................................ ..................... 24
+9.11 HOST Interface and interrupt(TWSI and IRQ) ................................ ................................ . 26
 AXP209 Incorporates an adaptive USB - Compatible PWM Charger, 2 Buck DC - DC converter s , 5 Linear
 regulators (LDO s ) , Voltage / Curre nt / Temperature and other multi - channel 12 - Bit ADC , a s well as 4
-single - cell Li - Ion battery, USB port, and AC - adapter. It can also support a rechargeable backup battery
-Interface (TWSI), through which application processor is capable of enabling/disabling power rails,
 AXP209 Provided 6mm x 6mm 48 - pin QFN Package.
 o Wide input voltage range: 2.9V ~ 6.3V
+4. Absolute Maximum Ratings
+T J Operating Temperature Range - 40 To 130 ℃
 V ESD Maximum ESD stress voltage , Human Body Model > 4000 V
 5. Electrical Characteristics
 I OUT V OUT Current Available Before 500mV Voltage Drop 2500 mA
+V UVLO ACIN Under Voltage Lockout 3.8 V
 R ds (on) On Resistance (BAT to IPSOUT) 75 mΩ
 f OSC Oscillator Frequency Default 1.5 MHz
+49 EP G Exposed Pad, need to connect to system ground
 DCDC3 output voltage ranges from 0.7 V to 3.5V, and output voltage of DCDC2 is ranged from

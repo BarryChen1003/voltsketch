@@ -12,13 +12,14 @@ In addition to providing a flexible set of GPIOs, the wide V DD range of 1.65 V 
 allows the PCA9555A to interface with next-generation microprocessors and
 microcontrollers where supply levels are dropping down to conserve power.
 The PCA9555A contains the PCA9555 register set of four pairs of 8-bit Configuration,
-The PCA9555A is a pin-to-pin replacement to the PCA9555 and other industry-standard
-devices. A more fully featured device, the PCAL9555A, is available with Agile I/O
-features. See the respective data sheet for more details.
 The PCA9555A open-drain interrupt (INT) output is activated when any input state differs
-from its corresponding Input Port register state and is used to indicate to the system
+ Low standby current consumption:
+ 1.5  A (typical at 5 V V DD )
  5 V tolerant I/Os
+ Power-up with all channels configured as inputs with weak pull-up resistors
  Packages offered: TSSOP24, HWQFN24
+PCA9555APW PCA9555APW,118 TSSOP24 REEL 13" Q1/T1 2500 T amb =  40  C to +85  C
+level performance, the exposed pad needs to be soldered to the board using a corresponding thermal pad
 10. Recommended operating conditions
 I OH HIGH-level output current P1_7 to P0_0 - 10 mA
 Footprint information for reflow soldering of HVQFN24 package SOT994-1

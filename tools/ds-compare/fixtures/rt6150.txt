@@ -10,14 +10,16 @@ battery applications where the output voltage is within the      
 battery voltage range.      Input Voltage Range: 1.8V to 5.5V
      Fixed 3.3V and Adjustable Output Voltage Options
 The device includes two N-MOSFET switches and two P-
-MOSFET switches for high efficiency operation. Switching
      10-Lead WDFN Packages
-frequency is set at 1MHz to reduce the external
-     RoHS Compliant and Halogen Free
 component size. Quiescent current is only 60 μ A in Power
+soft-start control, thermal shutdown protection and current Lead Plating System
 DS6150A/B-05 July 2015 www.richtek.com
+11 (Exposed Pad) connected to GND for maximum power dissipation.
 10 FB the output voltage and it can be adjusted from 1.8V to 5.5V; For fixed
 HBM (Human Body Model) ----------------------------------------------------------------------------------------------- 2kV
 Recommended Operating Conditions (Note 4)
  Ambient Temperature Range --------------------------------------------------------------------------------------------- − 40 ° C to 85 ° C
+UVLO Low-Level 1.4 1.55 --
+R DS(ON)_N -- 0.15 -- 
 Oscillator Frequency f OSC 0.8 1 1.2 MHz
+Soft-Start Time t SS -- 0.65 1 ms

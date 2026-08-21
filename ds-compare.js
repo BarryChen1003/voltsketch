@@ -49,8 +49,26 @@
    * 正規化之後才能要求「數值與單位相鄰」——那是擋掉誤抽最有效的一道閘。
    * 注意：不動連續兩個的「--」，那在規格表裡是「此欄無值」的佔位符，
    * 收掉的話「-- 60 -- A」會被讀成「60 A」（真值是 60 µA，差六個數量級）。 */
+  /** Symbol / Wingdings 之類的字型把符號放在私有區（U+F000 + 原碼位）。
+   *  pdf.js 照抽出來就是看不見的字：實測 PCA9555A 的「Tamb = -40 °C to +85 °C」
+   *  抽出來變成「Tamb =  40  C to +85  C」——負號是 U+F02D、度數是 U+F0B0，
+   *  於是整條工作溫度抓不到。µ（U+F06D）同理，NXP 與 Richtek 的 µA 都吃這一招。
+   *  只還原意義明確的符號；其餘私有區字元是項目符號或 logo，換成空白比留著安全。 */
+  const PUA = { 0x2B: '+', 0x2D: '-', 0x44: 'Δ', 0x57: 'Ω', 0x6D: 'µ', 0xA3: '≤', 0xB0: '°', 0xB1: '±', 0xB3: '≥', 0xB4: '×' };
+  function unpua(t) {
+    return t.replace(/[-]/g, ch => {
+      const c = ch.codePointAt(0);
+      if (c >= 0xF000 && c <= 0xF0FF) {
+        const low = c - 0xF000;
+        if (PUA[low] !== undefined) return PUA[low];
+        if (low >= 0x30 && low <= 0x39) return String.fromCharCode(low);   // Symbol 的數字就是數字
+      }
+      return ' ';
+    });
+  }
+
   function norm(t0) {
-    return String(t0 || '')
+    return unpua(String(t0 || ''))
       .replace(/[ 　]/g, ' ')
       .replace(/℃/g, ' °C').replace(/℉/g, ' °F')
       .replace(/[µμ]/g, 'µ')
@@ -75,10 +93,12 @@
   /** 逐列標上所屬章節；'head' = 標題／Features／General Description（規格常寫在敘述裡）。 */
   function sectioned(t) {
     let sect = 'head';
-    return norm(t).split('\n').map(text => {
+    const rows = norm(t).split('\n').map(text => {
       for (const [re, s] of SECTION) if (re.test(text)) { sect = s; break; }
       return { text, sect };
     });
+    rows.forEach((r, i) => { r.next = rows[i + 1] ? rows[i + 1].text : ''; });
+    return rows;
   }
   const RXESC = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   /** 單位字母表（長的排前面，否則 'A' 會先吃掉 'mA'） */
@@ -111,7 +131,12 @@
         if (opt.reject && opt.reject.test(around)) continue;
         const end = m.index + m[0].length;
         const fwd = ln.text.slice(end, end + win);
-        const cand = pickNum(fwd, opt) || pickNum(ln.text.slice(Math.max(0, m.index - back), m.index), opt, true);
+        let cand = pickNum(fwd, opt) || pickNum(ln.text.slice(Math.max(0, m.index - back), m.index), opt, true);
+        // 標籤落在行尾（後面只剩「:」之類）時，值多半被斷到下一行去了
+        if (!cand && !/\d/.test(ln.text.slice(end)) && ln.text.slice(end).length <= 40 && ln.next) {
+          const nx = pickNum(ln.next.slice(0, win), opt);
+          if (nx && !(opt.reject && opt.reject.test(ln.next.slice(0, win)))) cand = nx;
+        }
         if (cand) out.push({ n: cand.n, value: cand.value, sect: ln.sect });
         if (lab.lastIndex <= m.index) break;
       }
@@ -163,13 +188,12 @@
     const src = NUM + '\\s*(?:' + U + ')?\\s*' + SEP + '\\s*\\+?' + NUM + '\\s*(?:' + U + ')';
     const out = [];
     for (const ln of sectioned(t)) {
-      if (ln.sect === 'absmax') continue;
+      if (ln.sect === 'absmax' && !opt.absmax) continue;
       const re = new RegExp(src, 'gi');
       let m;
       while ((m = re.exec(ln.text))) {
         const lo = num(m[1]), hi = num(m[2]);
         if (lo === null || hi === null || lo >= hi) continue;
-        if (/=\s*[-+]?$/.test(ln.text.slice(0, m.index))) continue;   // 測試條件，不是規格範圍
         if (opt.span !== undefined && hi - lo < opt.span) continue;
         if (opt.min !== undefined && lo < opt.min) continue;
         if (opt.max !== undefined && hi > opt.max) continue;
@@ -280,7 +304,7 @@
       // 上限 50 mA：靜態電流大於這個量級的不是 IQ，是誤抽（使用者實測遇過 160 mA）
       run: t => {
         const hit = preferOne(findNum(t, {
-          label: /quiescent\s+current|standby\s+current|static\s+current|supply\s+current|I\s?Q\b|I\s?DD\b|I\s?CC\b|I\s?AVDD\b|I\s?DVDD\b|靜態電流/i,
+          label: /quiescent[-\s]current|standby[-\s]current|static[-\s]current|supply[-\s]current|I\s?Q\b|I\s?DD\b|I\s?CC\b|I\s?AVDD\b|I\s?DVDD\b|靜態電流/i,
           kind: 'A', min: 1e-10, max: 0.05,
           reject: /output\s+current|load\s+current|leakage|additional|delta|Δ|增量/i,
         }), ['ec', 'head', 'roc', 'other']);
@@ -306,13 +330,19 @@
         const order = ['roc', 'ec', 'head', 'other'];
         // 先找環境溫度；找不到才退而用接面溫度（Tj 通常比 Ta 寬，直接拿去比會高估）
         const amb = preferOne(findRange(t, {
-          label: /ambient|operating|free-?air|工作溫度|T\s?A\b/i, unit: 'C', loose: true,
+          label: /ambient|operating|free-?air|工作溫度|T\s?amb\b|T\s?A\b/i, unit: 'C', loose: true,
           min: -100, max: 200, span: 40, reject: new RegExp(NOT.source + '|junction|T\\s?J\\b', 'i'),
         }), order);
         const hit = amb || preferOne(findRange(t, {
           label: /junction|temperature/i, unit: 'C', loose: true, min: -100, max: 200, span: 40, reject: NOT,
         }), order);
-        return hit ? { value: hit.value, lo: hit.lo, hi: hit.hi } : null;
+        if (hit) return { value: hit.value, lo: hit.lo, hi: hit.hi };
+        // 最後手段：絕對最大額定裡的溫度。標上出處，報告會顯示「（取自絕對最大額定）」
+        const am = (findRange(t, {
+          label: /ambient|operating|junction|temperature|T\s?(?:A|J|amb)\b/i, unit: 'C', loose: true,
+          min: -100, max: 200, span: 40, absmax: true, reject: NOT,
+        }) || []).filter(c => c.sect === 'absmax')[0];
+        return am ? { value: am.value, lo: am.lo, hi: am.hi, srcTag: 'fromAbsMax' } : null;
       },
     },
     {
@@ -413,6 +443,65 @@
       },
     },
     {
+      /* 散熱墊：現用料沒有、候選料有（或反過來）都要動 PCB。
+       * 有墊子而 footprint 沒開對應銅箔與散熱孔＝焊不牢、散熱差；
+       * 墊子規定接地而底下走訊號＝直接短路。 */
+      key: 'epad', label: '散熱墊 / 外露焊盤', kind: 'text',
+      run: t0 => {
+        const t = norm(t0);
+        if (!/exposed\s+pad|thermal\s+pad|power\s?pad|die\s+pad|外露焊盤|散熱墊/i.test(t)) return null;
+        const gnd = /(?:exposed|thermal)\s+pad[^.\n]{0,90}(?:\bGND\b|ground|接地)|(?:\bGND\b|ground)[^.\n]{0,40}(?:exposed|thermal)\s+pad/i.test(t);
+        return gnd ? { value: '有（須接地）', i18nKey: 'padGnd', text: 'padGnd' }
+          : { value: '有', i18nKey: 'padYes', text: 'padYes' };
+      },
+    },
+    {
+      /* 未使用腳能不能浮接。兩顆講法不同就是外部要不要補電阻／接固定電位。 */
+      key: 'nofloat', label: '未使用腳可否浮接', kind: 'text',
+      run: t0 => {
+        const t = norm(t0);
+        if (/(?:must|should|can)\s?not\s+be\s+left\s+floating|do\s+not\s+(?:leave|allow)[^.\n]{0,24}float|不可浮接|不得浮接/i.test(t)) {
+          return { value: '不可浮接', i18nKey: 'floatNo', text: 'no' };
+        }
+        if (/(?:can|may)\s+be\s+left\s+floating|可以浮接|可浮接/i.test(t)) {
+          return { value: '可浮接', i18nKey: 'floatOk', text: 'ok' };
+        }
+        return null;
+      },
+    },
+    {
+      /* 內建 vs 外接：這幾樣少了就得在板子上補元件（軟啟動電容、補償 RC、
+       * bootstrap 二極體、外部振盪器）。 */
+      key: 'integ', label: '內建功能', kind: 'set',
+      run: t0 => {
+        const t = norm(t0);
+        const set = [];
+        [['soft-start', /internal(?:ly)?\s+soft[-\s]?start|integrated\s+soft[-\s]?start|built-in\s+soft[-\s]?start|soft[-\s]?start\s+time|t\s?SS\b|內建軟啟動/i],
+        ['compensation', /internal(?:ly)?\s+compensat|integrated\s+compensation|內部補償/i],
+        ['oscillator', /internal\s+oscillator|on-chip\s+oscillator|oscillator\s+frequency|f\s?OSC\b|內建振盪器/i],
+        ['bootstrap', /(?:internal|integrated|built-in)\s+bootstrap|bootstrap\s+diode[^.\n]{0,20}(?:integrated|internal)/i],
+        ['UVLO', /\bUVLO\b|under-?voltage\s+lockout/i],
+        ['OTP', /thermal\s+shutdown|over-?temperature\s+protection|過溫保護/i]]
+          .forEach(([n, re]) => { if (re.test(t)) set.push(n); });
+        return set.length ? { value: set.join(', '), set } : null;
+      },
+    },
+    {
+      /* 上電預設狀態：下游若是 MOSFET gate、致能腳或 LED，上電那一瞬間的準位
+       * 不同就是不同的行為，而這在參數表上完全看不出來。 */
+      key: 'pordef', label: 'I/O 上電預設', kind: 'text',
+      run: t0 => {
+        const t = norm(t0);
+        const pu = /power-?up[^.\n]{0,80}(?:configured\s+as\s+)?inputs?[^.\n]{0,40}weak\s+pull-?up|inputs?\s+with\s+weak\s+pull-?ups?[^.\n]{0,30}(?:at|on)\s+power-?up/i;
+        const inp = /(?:at|on)\s+power-?up[^.\n]{0,60}configured\s+as\s+inputs?|power-?up[^.\n]{0,40}all\s+(?:channels|I\/O)[^.\n]{0,30}inputs?/i;
+        const hiz = /(?:at|on)\s+power-?up[^.\n]{0,60}high-?impedance|power-?up[^.\n]{0,40}high[-\s]?Z/i;
+        if (pu.test(t)) return { value: '輸入（含弱上拉）', i18nKey: 'porInPu', text: 'inPu' };
+        if (hiz.test(t)) return { value: '輸入（高阻）', i18nKey: 'porHiZ', text: 'hiz' };
+        if (inp.test(t)) return { value: '輸入', i18nKey: 'porIn', text: 'in' };
+        return null;
+      },
+    },
+    {
       key: 'aecq', label: '車規 AEC-Q100', kind: 'flag',
       run: t => (/AEC\s*-?\s*Q100/i.test(t) ? { value: '有標示', flag: true } : null),
     },
@@ -463,7 +552,13 @@
   /** 兩份的參數逐條比對 → [{key,label,a,b,state}]；state: same | diff | partial | none */
   function diff(A, B, lang) {
     const lg = lang && L[lang] ? lang : 'zh';
-    const tr = v => (v && v.i18nKey && VTEXT[v.i18nKey]) ? (VTEXT[v.i18nKey][lg] || VTEXT[v.i18nKey].zh) : (v ? v.value : null);
+    const vt = k => (VTEXT[k] && (VTEXT[k][lg] || VTEXT[k].zh)) || '';
+    const tr = v => {
+      if (!v) return null;
+      if (v.i18nKey && VTEXT[v.i18nKey]) return vt(v.i18nKey);
+      // 值抽自「不該拿來當工作值」的地方時，把出處寫在後面，不要讓它看起來像正式規格
+      return v.srcTag ? v.value + '（' + vt(v.srcTag) + '）' : v.value;
+    };
     return RULES.map(r => {
       const a = A.params[r.key], b = B.params[r.key];
       let state = 'none';
@@ -500,13 +595,21 @@
         pullLost: '候選料沒有內建上拉，現用料有。原設計若靠那組弱上拉（按鍵、開集極輸出的感測器、未使用的 I/O），換上去之後那些腳就是浮接：上電狀態不定、偶發誤觸發，而且不一定在 bring-up 就看得出來。受影響的每一支都要外加上拉電阻（常用 10 kΩ；要維持原本的弱上拉行為就取接近內建的阻值，實際值以 datasheet 為準）。',
         pullGained: '候選料多了內建弱上拉，現用料沒有。它會跟外部下拉電阻分壓（外部 10 kΩ 對地、內建 100 kΩ 對電源，低準位大約 0.09×VDD），要確認仍低於 VIL；未使用的腳會被拉到高電位，靜態電流的量測值也會跟著變。',
         pullUnknown: '兩份 datasheet 都沒抽到「I/O 有沒有內建上拉」。這一項不能猜，請自己翻 pin description。pin-to-pin 換料最常見的地雷就是它：一顆內建、一顆沒有，板子上就少一顆電阻。',
+        padGnd: '候選料底部有散熱墊，而且規定要接地。現有的 footprint 若沒有對應的散熱銅箔與散熱孔，焊接與散熱都會出問題；墊子下方原本走訊號的話會被短路。改料同時要改 PCB。',
+        padDiff: '兩顆的散熱墊條件不同（一顆有、一顆沒有，或接地要求不同）。footprint 與底層銅箔要跟著改，不是換上去就好。',
+        padLost: '候選料沒有散熱墊，現用料有。少了這條散熱路徑，θJA 會變大——確認滿載時的溫升還在範圍內。',
+        floatNo: '候選料的未使用腳不可浮接（現用料允許）。沒有用到的腳要接固定電位或設成輸出，否則會漏電、耗電變大，也可能自己振盪。',
+        integUnknown: x => `現用料內建「${x}」，但候選料的 datasheet 沒有相對應的敘述——這代表「沒查到」，不代表「它沒有」。請翻原文確認，少了這些是要在板子上補元件的。`,
+        integLost: x => `現用料內建的「${x}」候選料沒有：這些要在板子上補回來（例：軟啟動電容、補償 RC、bootstrap 二極體、外部振盪元件）。`,
+        integGained: x => `候選料多了內建的「${x}」。原本外接的元件可能變成多餘、甚至互相打架（例：外部補償與內部補償並存會影響迴路穩定度），確認要不要拿掉。`,
+        porDiff: (a, b) => `上電瞬間的 I/O 預設不同（現用料：${a}；候選料：${b}）。下游若是 MOSFET 閘極、致能腳或 LED，上電那一下的準位會不一樣——這在參數表上看不出來，但會變成上電 glitch。`,
         vinFloor: (b, a) => `候選料的電源下限比較高（${b} V，現用料 ${a} V）。原設計若供電低於 ${b} V，這顆直接不能用。`,
         vinCeil: (b, a) => `候選料的電源上限比較低（${b} V，現用料 ${a} V）。原設計若供電高於 ${b} V，這顆不能用。`,
         tolLost: '現用料的 I/O 標示 5 V 耐受，候選料沒有這項標示。若有 5 V 訊號直接進到這些腳，換上去可能過壓損壞——要加準位轉換，或改選有標示耐受的型號。',
         pinsDiff: (b, a) => `腳數不同（候選料 ${b} 腳、現用料 ${a} 腳），不是 pin-to-pin，不能直接換。`,
         tempNarrow: (b, a) => `候選料的工作溫度範圍比較窄（${b}，現用料 ${a}）。確認產品的環境溫度規格還在裡面。`,
         intOd: '兩顆的中斷腳都是開汲極：板子上原本那顆外部上拉要保留，拿掉的話中斷永遠回不到高電位。',
-        scope: '這份比對只涵蓋 datasheet 抽得到的項目。暫存器位址與上電預設值、I2C 時序、輸出驅動能力、ESD 等級、散熱墊條件都沒有比對——這些一樣會讓「pin-to-pin」的兩顆行為不同。把「報告沒提到」當成「沒問題」是最危險的讀法。',
+        scope: '這份比對只涵蓋 datasheet 抽得到的項目。暫存器位址與內容、I2C 時序、輸出驅動能力（IOL/IOH）、ESD 等級、熱阻數值都沒有比對——這些一樣會讓「pin-to-pin」的兩顆行為不同。把「報告沒提到」當成「沒問題」是最危險的讀法。',
       },
       wNoText: '<b>這份 PDF 幾乎沒有可抽取的文字</b>——多半是掃描檔或圖片型 PDF。下面幾乎每一欄都會是「未擷取」，這份比對不能用。',
       wLowYield: '<b>這份 PDF 只抽到極少數參數</b>——可能排版特殊，或這不是完整的 datasheet。下面的欄位請以原文為準。',
@@ -550,13 +653,21 @@
         pullLost: 'The candidate has no internal pull-ups; the part in use does. If the design leans on those weak pull-ups (buttons, open-drain sensors, unused I/O), those pins float after the swap: an indeterminate state at power-up and intermittent false triggers, and not necessarily visible during bring-up. Add an external pull-up on every affected pin (10 kΩ is common; to keep the original weak-pull-up behaviour pick a value close to the internal one, and take the real figure from the datasheet).',
         pullGained: 'The candidate adds internal weak pull-ups; the part in use has none. They divide against any external pull-down (10 kΩ to ground against 100 kΩ to the rail puts the low level near 0.09 x VDD), so confirm the low level still sits under VIL. Unused pins now sit high, and quiescent-current measurements change with them.',
         pullUnknown: 'Neither datasheet said whether the I/O pins carry internal pull-ups. Do not guess this one — read the pin description yourself. It is the classic pin-to-pin trap: one part integrates the resistor, the other does not, and the board is left without it.',
+        padGnd: 'The candidate has a pad on the underside and requires it tied to ground. If the current footprint has no matching copper land and thermal vias, soldering and heat transfer both suffer, and any signal routed under the pad is shorted. Swapping this part means changing the PCB.',
+        padDiff: 'The two parts differ in exposed/thermal pad (one has it, or the grounding requirement differs). The footprint and the copper under it have to change with the part.',
+        padLost: 'The candidate has no exposed pad; the part in use does. Losing that heat path raises theta-JA, so confirm the temperature rise at full load is still acceptable.',
+        floatNo: 'The candidate does not allow unused pins to float (the part in use does). Tie every unused pin to a fixed level or drive it as an output, otherwise you get leakage, higher current draw and possible oscillation.',
+        integUnknown: x => `The part in use integrates ${x}; the candidate's datasheet says nothing either way. That means not found, not absent. Check the original document — if these really are missing, they come back as board components.`,
+        integLost: x => `The part in use integrates ${x}; the candidate does not. Those have to come back as board components (soft-start capacitor, compensation RC, bootstrap diode, external oscillator parts).`,
+        integGained: x => `The candidate integrates ${x} where the part in use did not. External components for those may now be redundant or actively fight the internal ones (external plus internal compensation changes loop stability), so decide whether to remove them.`,
+        porDiff: (a, b) => `The I/O default at power-up differs (part in use: ${a}; candidate: ${b}). If a MOSFET gate, an enable pin or an LED sits downstream, the level during that first instant is not the same — invisible in the parameter table, visible as a power-up glitch.`,
         vinFloor: (b, a) => `The candidate needs a higher minimum supply (${b} V against ${a} V on the part in use). If the design runs below ${b} V, this part will not work at all.`,
         vinCeil: (b, a) => `The candidate has a lower maximum supply (${b} V against ${a} V on the part in use). If the design runs above ${b} V, this part cannot be used.`,
         tolLost: 'The part in use declares 5 V tolerant I/O; the candidate does not. If 5 V signals reach these pins directly, the swap can overstress them — add level shifting, or pick a part that declares the tolerance.',
         pinsDiff: (b, a) => `Different pin counts (candidate ${b}, part in use ${a}). These are not pin-to-pin and cannot be swapped directly.`,
         tempNarrow: (b, a) => `The candidate has a narrower operating temperature range (${b} against ${a}). Confirm the product's environmental spec still fits inside it.`,
         intOd: 'Both parts drive the interrupt pin open-drain, so keep the external pull-up already on the board — without it the interrupt never returns high.',
-        scope: 'This comparison only covers what could be extracted from the datasheets. Register addresses and power-up defaults, I2C timing, output drive strength, ESD ratings and thermal-pad requirements were not compared, and any of them can make two "pin-to-pin" parts behave differently. Reading "not mentioned here" as "not a problem" is the dangerous way to use this report.',
+        scope: 'This comparison only covers what could be extracted from the datasheets. Register addresses and contents, I2C timing, output drive strength (IOL/IOH), ESD ratings and thermal-resistance figures were not compared, and any of them can make two "pin-to-pin" parts behave differently. Reading "not mentioned here" as "not a problem" is the dangerous way to use this report.',
       },
       wNoText: '<b>Almost no extractable text in this PDF</b> — most likely a scan or an image-only file. Nearly every field below will read "not extracted"; this comparison is not usable.',
       wLowYield: '<b>Only a couple of parameters could be extracted from this PDF</b> — unusual layout, or not a full datasheet. Read the fields below against the original document.',
@@ -601,13 +712,21 @@
         pullLost: '候補品には内蔵プルアップがなく、現用品にはあります。設計がその弱プルアップに依存している場合（ボタン、オープンドレイン出力のセンサ、未使用 I/O）、置き換え後はそれらのピンが浮きます。電源投入時の状態が不定になり、間欠的な誤トリガが起きます。bring-up では見えないこともあります。該当するピンごとに外付けプルアップを追加してください（一般には 10 kΩ。元の弱プルアップの挙動を保つなら内蔵値に近い抵抗値を選び、実際の値は datasheet で確認してください）。',
         pullGained: '候補品には内蔵の弱プルアップがあり、現用品にはありません。外付けプルダウンと分圧になり（外付け 10 kΩ 対 GND、内蔵 100 kΩ 対 電源で L レベルは約 0.09×VDD）、VIL を下回るか確認が必要です。未使用ピンは H に張り付き、静止電流の実測値も変わります。',
         pullUnknown: 'どちらの datasheet からも「I/O に内蔵プルアップがあるか」を抽出できませんでした。ここは推測してはいけません。pin description をご自身で確認してください。pin-to-pin 置き換えで最も多い落とし穴です。片方は内蔵、もう片方は非内蔵で、基板に抵抗が足りなくなります。',
+        padGnd: '候補品は底面に放熱パッドがあり、接地が要求されています。現在の footprint に対応する銅箔とサーマルビアがない場合、はんだ付けと放熱の両方に問題が出ます。パッドの下に信号を通していれば短絡します。置き換えは PCB 変更を伴います。',
+        padDiff: '2 品番で放熱パッドの条件が異なります（片方のみ存在する、または接地要求が異なる）。footprint と直下の銅箔も併せて変更が必要です。',
+        padLost: '候補品には放熱パッドがなく、現用品にはあります。放熱経路が 1 本減るため θJA が大きくなります。full load 時の温度上昇が許容内か確認してください。',
+        floatNo: '候補品は未使用ピンの開放を許していません（現用品は可）。未使用ピンは固定電位に接続するか出力に設定してください。さもないとリーク、消費電流増加、発振の恐れがあります。',
+        integUnknown: x => `現用品は「${x}」を内蔵していますが、候補品の datasheet には該当する記述がありません。「見つからなかった」であって「無い」ではありません。原文で確認してください。本当に無ければ基板側で補う必要があります。`,
+        integLost: x => `現用品が内蔵している「${x}」を候補品は持っていません。基板側で補う必要があります（ソフトスタート容量、補償 RC、ブートストラップダイオード、外部発振素子など）。`,
+        integGained: x => `候補品は「${x}」を内蔵しています（現用品は非内蔵）。外付け部品が不要になる、あるいは内部回路と競合する可能性があります（外部補償と内部補償の併存はループ安定性に影響）。撤去するか判断してください。`,
+        porDiff: (a, b) => `電源投入時の I/O 初期状態が異なります（現用品：${a}／候補品：${b}）。下流が MOSFET ゲート、イネーブル端子、LED の場合、投入直後のレベルが変わります。パラメータ表には現れませんが、電源投入時のグリッチになります。`,
         vinFloor: (b, a) => `候補品は電源電圧の下限が高いです（${b} V、現用品は ${a} V）。設計が ${b} V 未満で動いている場合、この品番は使えません。`,
         vinCeil: (b, a) => `候補品は電源電圧の上限が低いです（${b} V、現用品は ${a} V）。設計が ${b} V を超える場合、この品番は使えません。`,
         tolLost: '現用品は I/O が 5 V トレラントと明記されていますが、候補品にはその記載がありません。5 V の信号が直接これらのピンに入る場合、置き換えると過電圧で破損する可能性があります。レベルシフトを追加するか、トレラント記載のある品番を選んでください。',
         pinsDiff: (b, a) => `ピン数が異なります（候補品 ${b}、現用品 ${a}）。pin-to-pin ではないため、そのままでは置き換えられません。`,
         tempNarrow: (b, a) => `候補品は動作温度範囲が狭いです（${b}、現用品は ${a}）。製品の環境温度仕様が収まるか確認してください。`,
         intOd: 'どちらも割り込みピンはオープンドレインです。基板上の外付けプルアップはそのまま残してください。外すと割り込みが H に戻りません。',
-        scope: 'この比較は datasheet から抽出できた項目のみを対象にしています。レジスタアドレスと電源投入時の初期値、I2C タイミング、出力駆動能力、ESD 定格、放熱パッドの条件は比較していません。いずれも「pin-to-pin」の 2 品番の挙動を変え得ます。「ここに書かれていない＝問題ない」と読むのが最も危険です。',
+        scope: 'この比較は datasheet から抽出できた項目のみを対象にしています。レジスタアドレスと内容、I2C タイミング、出力駆動能力（IOL/IOH）、ESD 定格、熱抵抗の数値は比較していません。いずれも「pin-to-pin」の 2 品番の挙動を変え得ます。「ここに書かれていない＝問題ない」と読むのが最も危険です。',
       },
       wNoText: '<b>この PDF からはテキストがほとんど取り出せません</b>——スキャン（画像）PDF の可能性が高いです。以下はほぼ「未抽出」になり、この比較は使えません。',
       wLowYield: '<b>この PDF から抽出できたパラメータはごくわずかです</b>——特殊なレイアウト、または完全な datasheet ではない可能性があります。以下は原文と照合してください。',
@@ -652,13 +771,21 @@
         pullLost: '후보 부품에는 내장 풀업이 없고 현용 부품에는 있습니다. 설계가 그 약한 풀업에 의존한다면(버튼, 오픈 드레인 출력 센서, 미사용 I/O) 교체 후 해당 핀은 플로팅 상태가 됩니다. 전원 인가 시 상태가 불확정이고 간헐적 오동작이 생기며, bring-up 단계에서는 보이지 않을 수도 있습니다. 해당 핀마다 외부 풀업을 추가하세요(보통 10 kΩ. 기존 약한 풀업 동작을 유지하려면 내장 값에 가까운 저항을 쓰고, 실제 값은 datasheet에서 확인하세요).',
         pullGained: '후보 부품에는 내장 약한 풀업이 있고 현용 부품에는 없습니다. 외부 풀다운과 분압이 되어(외부 10 kΩ 대지, 내장 100 kΩ 전원 → 로우 레벨 약 0.09×VDD) VIL 아래인지 확인해야 합니다. 미사용 핀은 하이로 유지되고 정지 전류 측정값도 달라집니다.',
         pullUnknown: '두 datasheet 모두에서 "I/O에 내장 풀업이 있는지"를 추출하지 못했습니다. 이 항목은 추측하면 안 됩니다. pin description을 직접 확인하세요. pin-to-pin 교체에서 가장 흔한 함정입니다. 한쪽은 내장, 다른 쪽은 없어서 보드에 저항이 빠지게 됩니다.',
+        padGnd: '후보 부품은 하단에 방열 패드가 있고 접지가 요구됩니다. 현재 footprint에 대응하는 동박과 서멀 비아가 없으면 납땜과 방열 모두 문제가 됩니다. 패드 아래로 신호를 배선했다면 단락됩니다. 교체는 PCB 변경을 수반합니다.',
+        padDiff: '두 부품의 노출/방열 패드 조건이 다릅니다(한쪽에만 있거나 접지 요구가 다름). footprint와 그 아래 동박도 함께 바꿔야 합니다.',
+        padLost: '후보 부품에는 노출 패드가 없고 현용 부품에는 있습니다. 방열 경로가 하나 줄어 θJA가 커지므로 최대 부하에서의 온도 상승이 허용 범위인지 확인하세요.',
+        floatNo: '후보 부품은 미사용 핀 개방을 허용하지 않습니다(현용 부품은 허용). 미사용 핀은 고정 전위에 연결하거나 출력으로 설정하세요. 그렇지 않으면 누설, 소비 전류 증가, 발진이 생길 수 있습니다.',
+        integUnknown: x => `현용 부품은 "${x}"를 내장하지만 후보 부품의 datasheet에는 관련 서술이 없습니다. "찾지 못함"이지 "없음"이 아닙니다. 원문을 확인하세요. 실제로 없다면 보드에서 보완해야 합니다.`,
+        integLost: x => `현용 부품이 내장한 "${x}"를 후보 부품은 갖고 있지 않습니다. 보드에서 보완해야 합니다(소프트 스타트 커패시터, 보상 RC, 부트스트랩 다이오드, 외부 발진 부품 등).`,
+        integGained: x => `후보 부품은 "${x}"를 내장합니다(현용 부품은 없음). 외부 부품이 불필요해지거나 내부 회로와 충돌할 수 있습니다(외부 보상과 내부 보상이 함께 있으면 루프 안정성에 영향). 제거 여부를 판단하세요.`,
+        porDiff: (a, b) => `전원 인가 시 I/O 기본 상태가 다릅니다(현용: ${a}, 후보: ${b}). 하류에 MOSFET 게이트, 인에이블 핀, LED가 있으면 인가 직후 레벨이 달라집니다. 파라미터 표에는 보이지 않지만 전원 인가 글리치로 나타납니다.`,
         vinFloor: (b, a) => `후보 부품의 전원 하한이 더 높습니다(${b} V, 현용 ${a} V). 설계가 ${b} V 미만에서 동작한다면 이 부품은 쓸 수 없습니다.`,
         vinCeil: (b, a) => `후보 부품의 전원 상한이 더 낮습니다(${b} V, 현용 ${a} V). 설계가 ${b} V를 넘는다면 이 부품은 쓸 수 없습니다.`,
         tolLost: '현용 부품은 I/O가 5 V 톨러런트로 표기되어 있으나 후보 부품에는 그 표기가 없습니다. 5 V 신호가 이 핀에 직접 들어온다면 교체 시 과전압으로 손상될 수 있습니다. 레벨 시프트를 추가하거나 톨러런트가 명시된 부품을 고르세요.',
         pinsDiff: (b, a) => `핀 수가 다릅니다(후보 ${b}, 현용 ${a}). pin-to-pin이 아니므로 그대로 교체할 수 없습니다.`,
         tempNarrow: (b, a) => `후보 부품의 동작 온도 범위가 더 좁습니다(${b}, 현용 ${a}). 제품의 환경 온도 사양이 그 안에 들어오는지 확인하세요.`,
         intOd: '두 부품 모두 인터럽트 핀이 오픈 드레인입니다. 보드에 이미 있는 외부 풀업을 유지하세요. 제거하면 인터럽트가 하이로 복귀하지 않습니다.',
-        scope: '이 비교는 datasheet에서 추출할 수 있었던 항목만 다룹니다. 레지스터 주소와 전원 인가 시 기본값, I2C 타이밍, 출력 구동 능력, ESD 등급, 방열 패드 조건은 비교하지 않았습니다. 이 중 어느 것이든 "pin-to-pin"인 두 부품의 동작을 다르게 만들 수 있습니다. "여기에 없으니 문제없다"고 읽는 것이 가장 위험합니다.',
+        scope: '이 비교는 datasheet에서 추출할 수 있었던 항목만 다룹니다. 레지스터 주소와 내용, I2C 타이밍, 출력 구동 능력(IOL/IOH), ESD 등급, 열저항 수치는 비교하지 않았습니다. 이 중 어느 것이든 "pin-to-pin"인 두 부품의 동작을 다르게 만들 수 있습니다. "여기에 없으니 문제없다"고 읽는 것이 가장 위험합니다.',
       },
       wNoText: '<b>이 PDF에서 추출할 수 있는 텍스트가 거의 없습니다</b> — 스캔(이미지) PDF일 가능성이 큽니다. 아래 항목 대부분이 "미추출"이 되며 이 비교는 사용할 수 없습니다.',
       wLowYield: '<b>이 PDF에서 추출된 파라미터가 매우 적습니다</b> — 특이한 레이아웃이거나 완전한 datasheet가 아닐 수 있습니다. 아래 항목은 원문과 대조하세요.',
@@ -713,6 +840,10 @@
     iopull: { zh: 'I/O 內建上拉', en: 'Internal I/O pull-up', ja: 'I/O 内蔵プルアップ', ko: 'I/O 내장 풀업' },
     iotol: { zh: 'I/O 5V 耐受', en: '5 V tolerant I/O', ja: 'I/O 5V トレラント', ko: 'I/O 5V 톨러런트' },
     intod: { zh: '中斷腳輸出型態', en: 'Interrupt output type', ja: '割り込み出力形式', ko: '인터럽트 출력 형식' },
+    epad: { zh: '散熱墊 / 外露焊盤', en: 'Exposed / thermal pad', ja: '放熱パッド', ko: '노출 패드' },
+    nofloat: { zh: '未使用腳可否浮接', en: 'Unused pins may float', ja: '未使用ピンの開放可否', ko: '미사용 핀 개방 가능 여부' },
+    integ: { zh: '內建功能', en: 'Integrated functions', ja: '内蔵機能', ko: '내장 기능' },
+    pordef: { zh: 'I/O 上電預設', en: 'I/O state at power-up', ja: '電源投入時の I/O 状態', ko: '전원 인가 시 I/O 상태' },
   };
   const plabel = (key, lang) => (PLABEL[key] && (PLABEL[key][lang] || PLABEL[key].zh))
     || (RULES.find(r => r.key === key) || {}).label || key;
@@ -729,6 +860,14 @@
     yes: { zh: '有', en: 'Yes', ja: 'あり', ko: '있음' },
     od: { zh: '開汲極', en: 'Open-drain', ja: 'オープンドレイン', ko: '오픈 드레인' },
     pp: { zh: '推挽', en: 'Push-pull', ja: 'プッシュプル', ko: '푸시풀' },
+    fromAbsMax: { zh: '取自絕對最大額定', en: 'from absolute maximum ratings', ja: '絶対最大定格より', ko: '절대 최대 정격에서' },
+    padYes: { zh: '有', en: 'Yes', ja: 'あり', ko: '있음' },
+    padGnd: { zh: '有（須接地）', en: 'Yes (must be tied to ground)', ja: 'あり（要接地）', ko: '있음(접지 필요)' },
+    floatOk: { zh: '可浮接', en: 'May be left floating', ja: '開放可', ko: '개방 가능' },
+    floatNo: { zh: '不可浮接', en: 'Must not be left floating', ja: '開放不可', ko: '개방 불가' },
+    porIn: { zh: '輸入', en: 'Inputs', ja: '入力', ko: '입력' },
+    porInPu: { zh: '輸入（含弱上拉）', en: 'Inputs with weak pull-up', ja: '入力（ウィークプルアップ付き）', ko: '입력(약한 풀업 포함)' },
+    porHiZ: { zh: '輸入（高阻）', en: 'Inputs, high impedance', ja: '入力（ハイインピーダンス）', ko: '입력(하이 임피던스)' },
   };
 
   /* ---------------- secondSource 準則判定 ----------------
@@ -748,6 +887,8 @@
     { key: 'sps', re: /取樣率|SPS|sample rate/i, mode: 'ge' },
     { key: 'fsw', re: /切換頻率|開關頻率|fSW/i, mode: 'equalish' },
     { key: 'esd', re: /ESD|HBM/i, mode: 'ge' },
+    { key: 'epad', re: /散熱墊|外露焊盤|thermal\s*pad|exposed\s*pad/i, mode: 'equal' },
+    { key: 'integ', re: /內建|integrated|軟啟動|soft-?start|補償|compensation/i, mode: 'superset' },
     { key: 'iopull', re: /上拉|pull-?up/i, mode: 'flag' },
     { key: 'iotol', re: /5\s?V\s?耐受|5\s?-?\s?V\s+tolerant/i, mode: 'flag' },
     { key: 'aecq', re: /AEC|車規/i, mode: 'flag' },
@@ -822,6 +963,17 @@
    *   check ＝ 這一項沒抽到，但它足以讓板子壞，必須人工確認（不准用留白帶過）
    *   info  ＝ 兩邊一樣但值得提醒、以及這份報告沒有涵蓋什麼
    */
+  const INTEG = {
+    'soft-start': { zh: '軟啟動', en: 'soft-start', ja: 'ソフトスタート', ko: '소프트 스타트' },
+    compensation: { zh: '迴路補償', en: 'loop compensation', ja: 'ループ補償', ko: '루프 보상' },
+    oscillator: { zh: '振盪器', en: 'oscillator', ja: '発振器', ko: '발진기' },
+    bootstrap: { zh: 'bootstrap 二極體', en: 'bootstrap diode', ja: 'ブートストラップダイオード', ko: '부트스트랩 다이오드' },
+    UVLO: { zh: '低壓鎖定 UVLO', en: 'UVLO', ja: 'UVLO', ko: 'UVLO' },
+    OTP: { zh: '過溫保護', en: 'thermal shutdown', ja: '過熱保護', ko: '과열 보호' },
+  };
+  const integName = (k, lang) => (INTEG[k] && (INTEG[k][lang] || INTEG[k].zh)) || k;
+  const vtext = (k, lang) => (VTEXT[k] && (VTEXT[k][lang] || VTEXT[k].zh)) || k;
+
   function swapNotes(A, B, lang) {
     const N = dict(lang).note;
     const a = A.params, b = B.params, out = [];
@@ -854,7 +1006,32 @@
       push('high', N.tempNarrow(b.temp.value, a.temp.value));
     }
 
-    // 6) 兩邊都是開汲極中斷：不是差異，但那顆外部上拉不能拿掉
+    // 6) 散熱墊：footprint 會不一樣
+    if (a.epad && b.epad && a.epad.text !== b.epad.text) {
+      push('high', b.epad.text === 'padGnd' ? N.padGnd : a.epad.text ? N.padDiff : N.padDiff);
+    } else if (!a.epad && b.epad) push('high', b.epad.text === 'padGnd' ? N.padGnd : N.padDiff);
+    else if (a.epad && !b.epad) push('info', N.padLost);
+
+    // 7) 未使用腳：一邊說可以浮接、另一邊說不行
+    if (a.nofloat && b.nofloat && a.nofloat.text !== b.nofloat.text && b.nofloat.text === 'no') push('high', N.floatNo);
+
+    // 8) 內建功能少掉的，要在板子上補回來
+    if (a.integ && b.integ) {
+      const lost = a.integ.set.filter(x => b.integ.set.indexOf(x) < 0);
+      const got = b.integ.set.filter(x => a.integ.set.indexOf(x) < 0);
+      if (lost.length) push('high', N.integLost(lost.map(x => integName(x, lang)).join('、')));
+      if (got.length) push('info', N.integGained(got.map(x => integName(x, lang)).join('、')));
+    } else if (a.integ && !b.integ) {
+      push('check', N.integUnknown(a.integ.set.map(x => integName(x, lang)).join('、')));
+    }
+
+    // 9) 上電預設狀態不同（純粹上拉造成的差異已經在第 1 條講過，不重複）
+    if (a.pordef && b.pordef && a.pordef.text !== b.pordef.text) {
+      const pullOnly = [a.pordef.text, b.pordef.text].sort().join(',') === 'in,inPu';
+      if (!pullOnly) push('high', N.porDiff(vtext(a.pordef.i18nKey, lang), vtext(b.pordef.i18nKey, lang)));
+    }
+
+    // 10) 兩邊都是開汲極中斷：不是差異，但那顆外部上拉不能拿掉
     if (a.intod && b.intod && a.intod.text === 'od' && b.intod.text === 'od') push('info', N.intOd);
 
     // 7) 永遠講清楚沒有比到什麼——這份報告最危險的用法是把「沒提到」當成「沒問題」
