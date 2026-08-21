@@ -54,7 +54,7 @@ const app = {
       running: '模擬中',
       run: '執行模擬',
       clear: '清除讀值',
-      simHint: '加入電源、電阻與接地後即可分析節點電壓與支路電流。',
+      simHint: '加入電源、電阻與接地後可估算串聯迴路的電流與各元件壓降（單迴路估算，非節點分析）。',
       circuitReview: '線路檢查',
       schematicFiles: '線路圖/工程檔',
       datasheetFiles: 'IC Datasheet',
@@ -138,7 +138,7 @@ const app = {
       running: 'Running',
       run: 'Run Simulation',
       clear: 'Clear Readings',
-      simHint: 'Add sources, resistors and ground to analyze node voltages and branch currents.',
+      simHint: 'Add sources, resistors and ground to estimate the series-loop current and the drop across each part (single-loop estimate, not nodal analysis).',
       circuitReview: 'Circuit Review',
       schematicFiles: 'Schematic Files',
       datasheetFiles: 'IC Datasheet',
@@ -222,7 +222,7 @@ const app = {
       running: '実行中',
       run: 'シミュレーション実行',
       clear: '測定値クリア',
-      simHint: '電源・抵抗・グランドを配置するとノード電圧と分岐電流を解析できます。',
+      simHint: '電源・抵抗・グランドを配置すると直列ループの電流と各部品の電圧降下を概算できます（単一ループ概算。ノード解析ではありません）。',
       circuitReview: '回路チェック',
       schematicFiles: '回路図/プロジェクト',
       datasheetFiles: 'IC データシート',
@@ -306,7 +306,7 @@ const app = {
       running: '실행 중',
       run: '시뮬레이션 실행',
       clear: '측정값 지우기',
-      simHint: '전원·저항·접지를 배치하면 노드 전압과 분기 전류를 해석할 수 있습니다.',
+      simHint: '전원·저항·접지를 배치하면 직렬 루프 전류와 각 부품의 전압 강하를 개략 계산합니다(단일 루프 근사, 노드 해석 아님).',
       circuitReview: '회로 검사',
       schematicFiles: '회로도/프로젝트 파일',
       datasheetFiles: 'IC 데이터시트',
@@ -1738,9 +1738,13 @@ const app = {
       `body{font-family:system-ui;margin:0}.hdr{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid #888;font-size:12px}` +
       `.wrap{padding:8px 10px}svg{width:100%;height:auto}</style></head><body>` +
       `<div class="hdr"><b>HardwareAI ${uiT('線路圖')}</b><span>${date}　${uiT('元件 {c}・導線 {w}', { c: this.state.components.length, w: this.state.wires.length })}</span></div>` +
-      `<div class="wrap">${xml}</div><script>setTimeout(function(){window.print();},300);<\/script></body></html>`
+      `<div class="wrap">${xml}</div></body></html>`
     );
     w.document.close(); w.focus();
+    // 這個新視窗會繼承本站的 CSP，裡面的 inline <script> 不會執行
+    //（2026-08-21 在正式站實測：inline script 與 inline onclick 都被擋掉），
+    // 所以列印要由開啟它的這一頁呼叫，那條路徑 CSP 管不到。
+    setTimeout(() => { try { w.print(); } catch (e) { /* 使用者自己按 Ctrl+P 也行 */ } }, 300);
   },
 
   // ---- BOM 料表 ----
@@ -2215,11 +2219,15 @@ const app = {
       { id: 'd3', type: 'led', x: 450, y: 200, rotation: 0, label: 'D1', value: 2 },
       { id: 'd4', type: 'ground', x: 300, y: 350, rotation: 0, label: 'GND', value: 0 }
     ];
+    // 導線端點必須落在腳位座標上，否則按「範例」載進來的電路自己就過不了 DRC
+    //（2026-08-21 實測：舊座標差幾個 px，DRC 報 9 個「浮接／端點懸空」）。
+    // 腳位：V1.+ (150,178) V1.- (150,222) / R1.a (276,150) R1.b (324,150)
+    //      D1.a (434,200) D1.k (466,200) / GND.g (300,332)
     this.state.wires = [
-      { x1: 175, y1: 200, x2: 275, y2: 150 },
-      { x1: 325, y1: 150, x2: 425, y2: 200 },
-      { x1: 475, y1: 200, x2: 300, y2: 350 },
-      { x1: 300, y1: 350, x2: 150, y2: 225 }
+      { x1: 150, y1: 178, x2: 276, y2: 150 },
+      { x1: 324, y1: 150, x2: 434, y2: 200 },
+      { x1: 466, y1: 200, x2: 300, y2: 332 },
+      { x1: 300, y1: 332, x2: 150, y2: 222 }
     ];
     this.state.componentIdCounter = 10;
     this.render();
@@ -2246,21 +2254,26 @@ const app = {
     }, 300);
   },
 
+  /** 單一串聯迴路的估算：I = (ΣV源 − Σ順向壓降) / ΣR。
+   *  **不是節點分析**：不看接線拓樸，也不處理並聯與多迴路。
+   *  二極體/LED 的 value 是順向壓降（伏特），不是電阻——修之前被當成電阻，
+   *  範例電路的 LED 因此顯示 0.01 V（正確應為 2 V），電源功率顯示 0.13 mW。 */
   simulateDC() {
+    const isDrop = c => c.type === 'led' || c.type === 'diode';
     const sources = this.state.components.filter(c => c.type === 'source');
     const resistors = this.state.components.filter(c => c.type === 'resistor');
-    const totalV = sources.reduce((sum, s) => sum + (s.value || 0), 0);
+    const totalV = sources.reduce((sum, s) => sum + (Number(s.value) || 0), 0);
     // 0Ω 是跳線，串聯時就是 0，不能當成 1Ω（下面 totalR>0 已擋除以零）
     const totalR = resistors.reduce((sum, r) => sum + (Number(r.value) || 0), 0);
-    const current = totalR > 0 ? totalV / totalR : 0;
-    return this.state.components.filter(c => c.type !== 'ground').map(c => ({
-      id: c.id,
-      label: c.label,
-      type: c.type,
-      voltage: c.type === 'source' ? c.value : current * (c.value || 0),
-      current: current,
-      power: current * current * (c.value || 0)
-    }));
+    const totalDrop = this.state.components.filter(isDrop).reduce((sum, d) => sum + (Number(d.value) || 0), 0);
+    const driving = Math.max(0, totalV - totalDrop);   // 壓降大於電源時電流為 0，不給負電流
+    const current = totalR > 0 ? driving / totalR : 0;
+    return this.state.components.filter(c => c.type !== 'ground').map(c => {
+      const v = c.type === 'source' ? (Number(c.value) || 0)
+        : isDrop(c) ? (Number(c.value) || 0)
+          : current * (Number(c.value) || 0);
+      return { id: c.id, label: c.label, type: c.type, voltage: v, current, power: v * current };
+    });
   },
 
   renderResults(results) {
@@ -2273,7 +2286,8 @@ const app = {
 
     const totalV = results.filter(r => r.type === 'source').reduce((s, r) => s + r.voltage, 0);
     const totalI = results[0] ? results[0].current : 0;
-    const totalP = results.reduce((s, r) => s + r.power, 0);
+    // 總功率只算負載，不把電源也加進去 —— 兩邊相加會變成雙重計算（5V×3mA 的迴路會顯示 30mW）
+    const totalP = results.filter(r => r.type !== 'source').reduce((s, r) => s + r.power, 0);
 
     this.els.summaryGrid.innerHTML = `
       <div class="summary-card"><div class="value">${totalV.toFixed(2)}V</div><div class="label">${uiT('總電壓')}</div></div>
