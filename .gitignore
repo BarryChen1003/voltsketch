@@ -29,3 +29,6 @@ tools/pin-todo.json
 tools/ss-todo.json
 tools/pin-todo-rest.json
 tools/pin-gen-out.js
+
+# 建庫覆核清單是本機產物，不進 git
+tools/ic-extract/out/

@@ -106,6 +106,15 @@
   function unitAlt(kind) {
     return Object.keys(UNIT[kind] || {}).sort((a, b) => b.length - a.length).map(RXESC).join('|');
   }
+  /** 各參數的合理量級。規則用它擋誤抽，驗證器用同一張表覆核 ——
+   *  兩邊各寫一份遲早會不一致，所以只留這一份。 */
+  const BOUNDS = {
+    vin: { min: 0.5, max: 60 }, vout: { min: 0.3, max: 60 },
+    iout: { min: 1e-6, max: 100 }, iq: { min: 1e-10, max: 0.05 },
+    rdson: { min: 1e-4, max: 100 }, fsw: { min: 1e3, max: 1e8 },
+    esd: { min: 100, max: 30000 }, temp: { min: -100, max: 200, span: 40 },
+    bits: { min: 4, max: 32 }, pins: { min: 4, max: 256 },
+  };
   const NUM = '(-?\\d[\\d,]*(?:\\.\\d+)?)';
   /** 數值＋單位，且兩者最多隔一個空白 */
   const numUnitRe = kind => new RegExp(NUM + '\\s?(' + unitAlt(kind) + ')(?![A-Za-z0-9µΩ])', 'gi');
@@ -137,9 +146,10 @@
         // 標籤落在行尾（後面只剩「:」之類）時，值多半被斷到下一行去了
         if (!cand && !/\d/.test(ln.text.slice(end)) && ln.text.slice(end).length <= 40 && ln.next) {
           const nx = pickNum(ln.next.slice(0, win), opt);
-          if (nx && !(opt.reject && opt.reject.test(ln.next.slice(0, win)))) cand = nx;
+          if (nx && !(opt.reject && opt.reject.test(ln.next.slice(0, win)))) { nx.fromNext = true; cand = nx; }
         }
-        if (cand) out.push({ n: cand.n, value: cand.value, sect: ln.sect });
+        // src 是這個值的出處原文列：驗證器拿它回頭比對，報告日後也能顯示「依據哪一行」
+        if (cand) out.push({ n: cand.n, value: cand.value, sect: ln.sect, src: (cand.fromNext ? ln.next : ln.text).slice(0, 240) });
         if (lab.lastIndex <= m.index) break;
       }
     }
@@ -203,7 +213,7 @@
             && (opt.min === undefined || lo >= opt.min) && (opt.max === undefined || hi <= opt.max)
             && (opt.span === undefined || hi - lo >= opt.span);
           if (okBounds && new RegExp(opt.label.source, 'i').test(around) && !(opt.reject && opt.reject.test(around))) {
-            out.push({ lo, hi, sect: ln.sect, value: lo + ' ~ ' + hi + (opt.unit === 'C' ? ' °C' : ' V') });
+            out.push({ lo, hi, sect: ln.sect, value: lo + ' ~ ' + hi + (opt.unit === 'C' ? ' °C' : ' V'), src: ln.text.slice(0, 240) });
             continue;
           }
         }
@@ -220,10 +230,23 @@
           + ' | ' + ln.text.slice(m.index + m[0].length, m.index + m[0].length + 40);
         if (!new RegExp(opt.label.source, 'i').test(around)) continue;
         if (opt.reject && opt.reject.test(around)) continue;
-        out.push({ lo, hi, sect: ln.sect, value: lo + ' ~ ' + hi + (opt.unit === 'C' ? ' °C' : ' V') });
+        out.push({ lo, hi, sect: ln.sect, value: lo + ' ~ ' + hi + (opt.unit === 'C' ? ' °C' : ' V'), src: ln.text.slice(0, 240) });
       }
     }
     return out;
+  }
+
+  /** 找出第一個命中的原文列，當作這個判斷的出處。
+   *  規則是在全文上比對的，但要能回頭指出「憑哪一行講的」，驗證器才驗得動。 */
+  function lineOf(t, re, withNext) {
+    const rows = norm(t).split(/\n/);
+    for (let i = 0; i < rows.length; i++) {
+      if (!re.test(rows[i])) continue;
+      // 句子被斷成兩列時（「…soldered to a large PCB and」↵「connected to GND…」），
+      // 只給前半列會讓出處撐不住結論，所以需要時把下一列一起帶上
+      return (withNext && rows[i + 1] ? rows[i] + ' ' + rows[i + 1] : rows[i]).slice(0, 240);
+    }
+    return null;
   }
 
   /* ---------------- 參數抽取規則 ----------------
@@ -293,7 +316,7 @@
           // 量測條件不是規格：on-resistance、flatness、延遲時間那幾列都會帶一段「V x = a to b」
           reject: /output\s+voltage|V\s?OUT|reference|storage|絕對|on-?resistance|flatness|R\s?ON\b|I\s?DS\b|see\s+figure|propagation|delay/i,
         }), ['roc', 'ec', 'head', 'other']);
-        return hit ? { value: hit.value, lo: hit.lo, hi: hit.hi } : null;
+        return hit ? { value: hit.value, lo: hit.lo, hi: hit.hi, src: hit.src } : null;
       },
     },
     {
@@ -303,9 +326,9 @@
         const LBL = /V\s?OUT|output\s+voltage|輸出電壓/i;
         const REJ = /REFERENCE|V\s?REF|REF\s+buffer|input\s+voltage|V\s?IN\b/i;
         const rng = preferOne(findRange(t, { label: LBL, unit: 'V', min: 0.3, max: 60, reject: REJ }), ['roc', 'ec', 'head', 'other']);
-        if (rng) return { value: rng.value, lo: rng.lo, hi: rng.hi };
+        if (rng) return { value: rng.value, lo: rng.lo, hi: rng.hi, src: rng.src };
         const one = preferOne(findNum(t, { label: LBL, kind: 'V', min: 0.3, max: 60, reject: REJ }), ['ec', 'roc', 'head', 'other']);
-        return one ? { value: one.value, lo: one.n, hi: one.n } : null;
+        return one ? { value: one.value, lo: one.n, hi: one.n, src: one.src } : null;
       },
     },
     {
@@ -316,7 +339,7 @@
           kind: 'A', min: 1e-6, max: 100,
           reject: /leakage|quiescent|input\s+current/i,
         }), ['ec', 'head', 'roc', 'other']);
-        return hit ? { value: hit.value, n: Math.abs(hit.n) } : null;
+        return hit ? { value: hit.value, n: Math.abs(hit.n), abs: hit.n < 0, src: hit.src } : null;
       },
     },
     {
@@ -328,7 +351,7 @@
           kind: 'A', min: 1e-10, max: 0.05,
           reject: /output\s+current|load\s+current|leakage|additional|delta|Δ|增量/i,
         }), ['ec', 'head', 'roc', 'other']);
-        return hit ? { value: hit.value, n: hit.n } : null;
+        return hit ? { value: hit.value, n: hit.n, src: hit.src } : null;
       },
     },
     {
@@ -337,7 +360,7 @@
         const hit = preferOne(findNum(t, {
           label: /R\s?DS\s*\(?\s*on\s*\)?|導通電阻/i, kind: 'R', min: 1e-4, max: 100,
         }), ['ec', 'head', 'roc', 'other']);
-        return hit ? { value: hit.value, n: hit.n } : null;
+        return hit ? { value: hit.value, n: hit.n, src: hit.src } : null;
       },
     },
     {
@@ -356,13 +379,13 @@
         const hit = amb || preferOne(findRange(t, {
           label: /junction|temperature/i, unit: 'C', loose: true, min: -100, max: 200, span: 40, reject: NOT,
         }), order);
-        if (hit) return { value: hit.value, lo: hit.lo, hi: hit.hi };
+        if (hit) return { value: hit.value, lo: hit.lo, hi: hit.hi, src: hit.src };
         // 最後手段：絕對最大額定裡的溫度。標上出處，報告會顯示「（取自絕對最大額定）」
         const am = (findRange(t, {
           label: /ambient|operating|junction|temperature|T\s?(?:A|J|amb)\b/i, unit: 'C', loose: true,
           min: -100, max: 200, span: 40, absmax: true, reject: NOT,
         }) || []).filter(c => c.sect === 'absmax')[0];
-        return am ? { value: am.value, lo: am.lo, hi: am.hi, srcTag: 'fromAbsMax' } : null;
+        return am ? { value: am.value, lo: am.lo, hi: am.hi, srcTag: 'fromAbsMax', src: am.src } : null;
       },
     },
     {
@@ -409,7 +432,7 @@
           label: /switching\s+frequency|f\s?SW\b|f\s?OSC\b|oscillator\s+frequency|切換頻率|開關頻率/i,
           kind: 'Hz', min: 1e3, max: 1e8,
         }), ['ec', 'head', 'roc', 'other']);
-        return hit ? { value: hit.value, n: hit.n } : null;
+        return hit ? { value: hit.value, n: hit.n, src: hit.src } : null;
       },
     },
     {
@@ -438,15 +461,16 @@
         const t = norm(t0);
         const NEG = /(?:removal|removed|without|no)\s+(?:of\s+)?(?:the\s+)?(?:internal|built-in|integrated)\s+(?:I\/?O\s+)?pull-?ups?|(?:internal\s+)?pull-?ups?[^.\n]{0,24}(?:removed|not\s+present|not\s+available)|無內建上拉|不含內建上拉/i;
         const POS = /(?:weak|internal|integrated|built-in|on-chip|內建|內部)[^.\n]{0,24}pull-?up|pull-?up\s+resistors?\s+(?:are\s+)?(?:connected\s+to\s+them|integrated|included|built)|內建.{0,6}上拉/i;
-        if (NEG.test(t)) return { value: '無', i18nKey: 'pullNo', flag: false };
-        if (POS.test(t)) return { value: '有', i18nKey: 'pullYes', flag: true };
+        if (NEG.test(t)) return { value: '無', i18nKey: 'pullNo', flag: false, src: lineOf(t, NEG) };
+        if (POS.test(t)) return { value: '有', i18nKey: 'pullYes', flag: true, src: lineOf(t, POS) };
         return null;
       },
     },
     {
       key: 'iotol', label: 'I/O 5V 耐受', kind: 'flag',
       // 匯流排上有 5V 裝置時，這一項少了就是把 I/O 打壞
-      run: t => (/5(?:\.5)?\s*-?\s*V\s+tolerant/i.test(norm(t)) ? { value: '有', i18nKey: 'yes', flag: true } : null),
+      run: t => (/5(?:\.5)?\s*-?\s*V\s+tolerant/i.test(norm(t))
+        ? { value: '有', i18nKey: 'yes', flag: true, src: lineOf(t, /5(?:\.5)?\s*-?\s*V\s+tolerant/i) } : null),
     },
     {
       key: 'intod', label: '中斷腳輸出型態', kind: 'text',
@@ -454,10 +478,10 @@
       run: t0 => {
         const t = norm(t0);
         if (/open[-\s]?drain[^.\n]{0,40}interrupt|interrupt[^.\n]{0,40}open[-\s]?drain|INT[^.\n]{0,40}open[-\s]?drain|open[-\s]?drain[^.\n]{0,20}INT\b/i.test(t)) {
-          return { value: '開汲極', i18nKey: 'od', text: 'od' };
+          return { value: '開汲極', i18nKey: 'od', text: 'od', src: lineOf(t, /open[-\s]?drain/i) };
         }
         if (/push[-\s]?pull[^.\n]{0,30}interrupt|interrupt[^.\n]{0,30}push[-\s]?pull/i.test(t)) {
-          return { value: '推挽', i18nKey: 'pp', text: 'pp' };
+          return { value: '推挽', i18nKey: 'pp', text: 'pp', src: lineOf(t, /push[-\s]?pull/i) };
         }
         return null;
       },
@@ -471,8 +495,9 @@
         const t = norm(t0);
         if (!/exposed\s+pad|thermal\s+pad|power\s?pad|外露焊盤|散熱墊/i.test(t)) return null;
         const gnd = /(?:exposed|thermal)\s+pad[^.\n]{0,90}(?:\bGND\b|ground|接地)|(?:\bGND\b|ground)[^.\n]{0,40}(?:exposed|thermal)\s+pad/i.test(t);
-        return gnd ? { value: '有（須接地）', i18nKey: 'padGnd', text: 'padGnd' }
-          : { value: '有', i18nKey: 'padYes', text: 'padYes' };
+        const PAD = /exposed\s+pad|thermal\s+pad|power\s?pad|外露焊盤|散熱墊/i;
+        return gnd ? { value: '有（須接地）', i18nKey: 'padGnd', text: 'padGnd', src: lineOf(t, PAD, true) }
+          : { value: '有', i18nKey: 'padYes', text: 'padYes', src: lineOf(t, PAD) };
       },
     },
     {
@@ -481,10 +506,10 @@
       run: t0 => {
         const t = norm(t0);
         if (/(?:must|should|can)\s?not\s+be\s+left\s+floating|do\s+not\s+(?:leave|allow)[^.\n]{0,24}float|不可浮接|不得浮接/i.test(t)) {
-          return { value: '不可浮接', i18nKey: 'floatNo', text: 'no' };
+          return { value: '不可浮接', i18nKey: 'floatNo', text: 'no', src: lineOf(t, /floating|浮接/i) };
         }
         if (/(?:can|may)\s+be\s+left\s+floating|可以浮接|可浮接/i.test(t)) {
-          return { value: '可浮接', i18nKey: 'floatOk', text: 'ok' };
+          return { value: '可浮接', i18nKey: 'floatOk', text: 'ok', src: lineOf(t, /floating|浮接/i) };
         }
         return null;
       },
@@ -515,9 +540,9 @@
         const pu = /power-?up[^.\n]{0,80}(?:configured\s+as\s+)?inputs?[^.\n]{0,40}weak\s+pull-?up|inputs?\s+with\s+weak\s+pull-?ups?[^.\n]{0,30}(?:at|on)\s+power-?up/i;
         const inp = /(?:at|on)\s+power-?up[^.\n]{0,60}configured\s+as\s+inputs?|power-?up[^.\n]{0,40}all\s+(?:channels|I\/O)[^.\n]{0,30}inputs?/i;
         const hiz = /(?:at|on)\s+power-?up[^.\n]{0,60}high-?impedance|power-?up[^.\n]{0,40}high[-\s]?Z/i;
-        if (pu.test(t)) return { value: '輸入（含弱上拉）', i18nKey: 'porInPu', text: 'inPu' };
-        if (hiz.test(t)) return { value: '輸入（高阻）', i18nKey: 'porHiZ', text: 'hiz' };
-        if (inp.test(t)) return { value: '輸入', i18nKey: 'porIn', text: 'in' };
+        if (pu.test(t)) return { value: '輸入（含弱上拉）', i18nKey: 'porInPu', text: 'inPu', src: lineOf(t, pu) };
+        if (hiz.test(t)) return { value: '輸入（高阻）', i18nKey: 'porHiZ', text: 'hiz', src: lineOf(t, hiz) };
+        if (inp.test(t)) return { value: '輸入', i18nKey: 'porIn', text: 'in', src: lineOf(t, inp) };
         return null;
       },
     },
@@ -1264,6 +1289,7 @@ ${list.map(l => ` #lp-${l}:checked ~ .panes #pane-${l}{display:block}
     return out.join('\n');
   }
 
-  root.DSCompare = { RULES, parse, diff, judge, swapNotes, reportHTML, extractText, linesFromItems, sameDoc, LANGS: Object.keys(L) };
+  root.DSCompare = { RULES, BOUNDS, parse, diff, judge, swapNotes, reportHTML, extractText, linesFromItems, sameDoc,
+    norm, scale, num, sectioned, LANGS: Object.keys(L) };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.DSCompare;
 })(typeof window !== 'undefined' ? window : globalThis);

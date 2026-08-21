@@ -57,6 +57,8 @@ jobs:
         run: node ds-compare.test.js
       - name: pin-extract.test（腳位抽取：抽不到不吐半成品）
         run: node pin-extract.test.js
+      - name: ic-extract.test（建庫驗證器：編的值進不了資料庫）
+        run: node ic-extract.test.js
       - name: net-label.test（net 命名：同名相連、空白不亂併）
         run: node net-label.test.js
       - name: knowledge-art-audit（知識卡圖：接腳接上、字不貼圖）
