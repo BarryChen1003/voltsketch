@@ -34,8 +34,11 @@ function claimsFromRules(pages, fileName) {
   DS.RULES.forEach(r => {
     const p = parsed.params[r.key];
     if (!p) return;
-    if (!p.src) { noQuote.push({ key: r.key, value: p.value }); return; }
-    const c = { key: r.key, value: p.value, quote: p.src, page: pageOf(p.src, flatPages) };
+    if (!p.src && !(p.srcList && p.srcList.length)) { noQuote.push({ key: r.key, value: p.value }); return; }
+    // srcList = 好幾列共同支撐一個判斷（多封裝、介面清單、內建功能清單）
+    const c = p.srcList && p.srcList.length
+      ? { key: r.key, value: p.value, quotes: p.srcList, page: pageOf(p.srcList[0], flatPages) }
+      : { key: r.key, value: p.value, quote: p.src, page: pageOf(p.src, flatPages) };
     if (p.n !== undefined) c.n = p.n;
     if (p.lo !== undefined) { c.lo = p.lo; c.hi = p.hi; }
     if (p.srcTag) c.srcTag = p.srcTag;

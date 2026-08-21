@@ -62,7 +62,10 @@ async function main() {
     allTotal += res.total; allPass += res.pass;
     const extra = meta.noQuote ? '無出處可驗 ' + meta.noQuote.length + ' 項' : '';
     summarise(name, res, extra);
-    res.rows.filter(r => !r.ok).forEach(r => console.log('    ✗ ' + r.key + ' = ' + r.value + '  → ' + r.reason));
+    res.rows.filter(r => !r.ok).forEach(r => {
+      console.log('    ✗ ' + r.key + ' = ' + r.value + '  → ' + r.reason);
+      (r.quote || []).forEach(q => console.log('        出處: ' + q));
+    });
 
     const out = path.join(OUT, name.replace(/\.[^.]+$/, '') + '.review.json');
     fs.writeFileSync(out, JSON.stringify({ file: name, pages: pages.length, ...meta, result: res }, null, 1));

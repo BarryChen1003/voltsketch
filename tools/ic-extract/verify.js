@@ -28,6 +28,11 @@ const flat = s => DS.norm(String(s == null ? '' : s)).replace(/\s+/g, ' ').trim(
 /** 破折號前面必須是一個「單獨的數字」才算範圍分隔。
  *  「1.65 -5.5 V」是範圍；「P07-P00 -10 mA」的 -10 是真的負值（前面是料號不是數字）。 */
 const RANGE_DASH = /(?:^|[\s(])\d[\d,]*(?:\.\d+)?\s*$/;
+/** 連字號直接黏在字母後面時（WDFN-10L、P07-P00），那是型號的一部分，不是負號 */
+const WORD_DASH = /[A-Za-z]$/;
+/** 這些參數本來就寫在 Absolute Maximum Ratings 裡（ESD 是耐受上限，不是工作值），
+ *  在那一段找到它不算問題。其餘參數落在那一段就要擋。 */
+const ABSMAX_OK = { esd: 1 };
 
 /** 數字相等：用相對誤差，避免 0.1+0.2 那種浮點誤差誤判 */
 function near(a, b) {
@@ -97,24 +102,25 @@ const RANGE_KEYS = { vin: 1, vout: 1, temp: 1 };
 function verifyClaim(claim, pages) {
   const checks = { quote: false, number: false, bounds: false, section: false };
   const key = claim && claim.key;
-  const quote = flat(claim && claim.quote);
   if (!key) return { ok: false, reason: 'no-key', checks };
-  if (!quote) return { ok: false, reason: 'no-quote', checks };
-  if (quote.length < 6) return { ok: false, reason: 'quote-too-short', checks };
+  // 一個判斷可以由好幾列共同支撐（多種封裝、介面清單、內建功能清單）→ quotes 陣列。
+  // 每一列都要各自在文件裡找得到，缺一列就不算數。
+  const list = (Array.isArray(claim.quotes) ? claim.quotes : [claim.quote]).map(flat).filter(Boolean);
+  if (!list.length) return { ok: false, reason: 'no-quote', checks };
+  if (list.some(q => q.length < 6)) return { ok: false, reason: 'quote-too-short', checks };
+  const quote = list.join(' ');
 
-  // 1) quote 要真的在文件裡。有給頁碼就先驗那一頁，對不上再全文找（回報頁碼不符）
+  // 1) 每一段 quote 都要真的在文件裡。有給頁碼就先驗那一頁，對不上再全文找（回報頁碼不符）
   const flats = pages.map(flat);
+  const found = list.map(q => flats.findIndex(p => p.indexOf(q) >= 0));
+  if (found.some(i => i < 0)) return { ok: false, reason: 'quote-not-found', checks };
   const claimed = Number(claim.page) - 1;
-  let page = -1;
-  if (Number.isInteger(claimed) && claimed >= 0 && claimed < flats.length && flats[claimed].indexOf(quote) >= 0) {
+  let page = found[0];
+  if (Number.isInteger(claimed) && claimed >= 0 && claimed < flats.length && flats[claimed].indexOf(list[0]) >= 0) {
     page = claimed;
-  } else {
-    page = flats.findIndex(p => p.indexOf(quote) >= 0);
-    if (page >= 0 && claim.page !== undefined) {
-      return { ok: false, reason: 'wrong-page', page: page + 1, checks };
-    }
+  } else if (claim.page !== undefined) {
+    return { ok: false, reason: 'wrong-page', page: page + 1, checks };
   }
-  if (page < 0) return { ok: false, reason: 'quote-not-found', checks };
   checks.quote = true;
 
   // 2) 數字要能從 quote 自己重新解析出來
@@ -140,9 +146,13 @@ function verifyClaim(claim, pages) {
     const rule = DS.RULES.find(r => r.key === key);
     if (rule && !claim.textFree) {
       let again = null;
-      try { again = rule.run(quote); } catch (e) { again = null; }
+      try { again = rule.run(list.join('\n')); } catch (e) { again = null; }
       if (!again) return { ok: false, reason: 'quote-does-not-support', page: page + 1, checks };
+      // 清單型的值（「SOIC-24 / TSSOP-24」「I2C, SMBus」）比的是集合，不是字串：
+      // 出處只有那幾列時，掃描順序可能跟全文不同，順序不該影響判定
+      const asSet = v => String(v).split(/\s*[/,]\s*/).map(x => x.trim().toUpperCase()).filter(Boolean).sort().join('|');
       const same = String(again.value) === String(claim.value)
+        || asSet(again.value) === asSet(claim.value)
         || (again.text !== undefined && again.text === claim.text)
         || (again.flag !== undefined && claim.flag !== undefined && again.flag === claim.flag);
       if (!same) return { ok: false, reason: 'quote-says-otherwise', page: page + 1, checks };
@@ -167,9 +177,9 @@ function verifyClaim(claim, pages) {
   checks.bounds = true;
 
   // 4) quote 不能來自「不可超過」的段落
-  const row = DS.sectioned(pages[page]).find(r => flat(r.text).indexOf(quote) >= 0 || quote.indexOf(flat(r.text)) >= 0);
+  const row = DS.sectioned(pages[page]).find(r => flat(r.text).indexOf(list[0]) >= 0 || list[0].indexOf(flat(r.text)) >= 0);
   const sect = row ? row.sect : null;
-  if (sect === 'absmax' && claim.srcTag !== 'fromAbsMax') {
+  if (sect === 'absmax' && claim.srcTag !== 'fromAbsMax' && !ABSMAX_OK[key]) {
     return { ok: false, reason: 'from-absmax', page: page + 1, checks };
   }
   checks.section = true;
@@ -190,7 +200,8 @@ function numbersIn(text) {
     const n = DS.num(m[0]);
     if (n === null) continue;
     out.push(n);
-    if (n < 0 && RANGE_DASH.test(t.slice(0, m.index))) out.push(-n);
+    const before = t.slice(0, m.index);
+    if (n < 0 && (RANGE_DASH.test(before) || WORD_DASH.test(before))) out.push(-n);
   }
   return out;
 }
@@ -202,7 +213,11 @@ function numbersIn(text) {
 function verifyAll(claims, pages) {
   const rows = (claims || []).map(c => {
     const r = verifyClaim(c, pages);
-    return { key: c.key, value: c.value, page: r.page || c.page || null, ok: r.ok, reason: r.reason, quote: String(c.quote || '').slice(0, 120) };
+    const src = Array.isArray(c.quotes) ? c.quotes : [c.quote];
+    return {
+      key: c.key, value: c.value, page: r.page || c.page || null, ok: r.ok, reason: r.reason,
+      quote: src.filter(Boolean).map(q => String(q).slice(0, 120)),
+    };
   });
   const byReason = {};
   rows.forEach(r => { if (!r.ok) byReason[r.reason] = (byReason[r.reason] || 0) + 1; });

@@ -2,12 +2,10 @@ PCA9555A
 Low-voltage 16-bit I 2 C-bus I/O port with interrupt and
 weak pull-up
 Rev. 1.1 — 6 October 2015 Product data sheet
-1. General description
 The PCA9555A is a low-voltage 16-bit General Purpose Input/Output (GPIO) expander
 with interrupt and weak pull-up resistors for I 2 C-bus/SMBus applications. NXP I/O
 expanders provide a simple solution when additional I/Os are needed while keeping
 interconnections to a minimum, for example, in ACPI power switches, sensors, push
-buttons, LEDs, fan control, etc.
 In addition to providing a flexible set of GPIOs, the wide V DD range of 1.65 V to 5.5 V
 allows the PCA9555A to interface with next-generation microprocessors and
 microcontrollers where supply levels are dropping down to conserve power.
@@ -18,8 +16,9 @@ The PCA9555A open-drain interrupt (INT) output is activated when any input state
  5 V tolerant I/Os
  Power-up with all channels configured as inputs with weak pull-up resistors
  Packages offered: TSSOP24, HWQFN24
-PCA9555APW PCA9555APW,118 TSSOP24 REEL 13" Q1/T1 2500 T amb =  40  C to +85  C
 level performance, the exposed pad needs to be soldered to the board using a corresponding thermal pad
 10. Recommended operating conditions
 I OH HIGH-level output current P1_7 to P0_0 - 10 mA
+T amb ambient temperature operating in free air  40 +85  C
+T amb =  40  C to +85  C; V DD = 1.65 V to 5.5 V; unless otherwise specified.
 Footprint information for reflow soldering of HVQFN24 package SOT994-1

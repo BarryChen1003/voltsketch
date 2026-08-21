@@ -20,18 +20,18 @@ Table of Contents
 3.8 Ball Configuration WLCSP ................................................................................................... 8
 3.9 Ball Description WLCSP24 ................................................................................................... 8
 4. PIN DESCRIPTIONS ........................................................................................................................ 9
-4.2 Serial Data Input, Output and IOs (DI, DO and IO0, IO1, IO2, IO3) ..................................... 9
-6.1 Standard SPI Instructions ................................................................................................... 11
-6.2 Dual SPI Instructions .......................................................................................................... 11
-6.3 Quad SPI Instructions ......................................................................................................... 11
+4.1 Chip Select (/CS) .................................................................................................................. 9
 9.2 Operating Ranges............................................................................................................... 60
+10.1 8 - Pin SOIC 208 - mil (Package Code S) ................................ ................................ .............. 67
+10.2 16 - Pin SOIC 300 - mil (Package Code F) ................................ ................................ ............ 68
+10.5 24 - Ball TFBGA 8x6 - mm (Package Code B, 5x5 - 1 b all array) ................................ ............ 71
 and storing voice, text and data. The device operates on a single 2.7V to 3.6V power supply with current
-– - 40°C to +85°C operating range – 24 - ball WLCSP
 – - 40°C to + 1 0 5°C operating range – Contact Winbond for KGD and other options
 function is not used, this pin can be left floating or connected to VCC in the system.
 3. There is an internal pull-up resistor for the dedicated /RESET pin on the SOIC-16 and TFBGA-24 package. If the reset function
 Electrostatic Discharge Voltage V ESD Human Body Model ( 3 ) – 2000 to +2000 V
 9.2 Operating Ranges
+Ambient Temperature, Industrial – 40 +85 °C
 Standby Current I CC 1 10 60 μA
 SOIC - 8 208 - mil 128 M - bit W2 5 Q128JV S I Q 25 Q 128 JV SQ
 WSON - 8 6x5 - mm

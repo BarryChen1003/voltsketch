@@ -249,6 +249,28 @@
     return null;
   }
 
+  /** 一個判斷由好幾列共同支撐時（多種封裝、介面清單、內建功能清單），
+   *  出處要把那幾列都列出來。驗證器會逐列確認它們真的都在文件裡。 */
+  function linesOf(t, res) {
+    const rows = norm(t).split(/\n/);
+    const picked = [];
+    res.forEach(re => {
+      const hit = rows.find(r => re.test(r));
+      if (hit && picked.indexOf(hit.slice(0, 240)) < 0) picked.push(hit.slice(0, 240));
+    });
+    return picked.length ? picked : null;
+  }
+
+  /** 內建功能的偵測清單：規則與出處共用同一份，改一處就好 */
+  const INTEG_LIST = [
+    ['soft-start', /internal(?:ly)?\s+soft[-\s]?start|integrated\s+soft[-\s]?start|built-in\s+soft[-\s]?start|soft[-\s]?start\s+time|t\s?SS\b|內建軟啟動/i],
+    ['compensation', /internal(?:ly)?\s+compensat|integrated\s+compensation|內部補償/i],
+    ['oscillator', /internal\s+oscillator|on-chip\s+oscillator|oscillator\s+frequency|f\s?OSC\b|內建振盪器/i],
+    ['bootstrap', /(?:internal|integrated|built-in)\s+bootstrap|bootstrap\s+diode[^.\n]{0,20}(?:integrated|internal)/i],
+    ['UVLO', /\bUVLO\b|under-?voltage\s+lockout/i],
+    ['OTP', /thermal\s+shutdown|over-?temperature\s+protection|過溫保護/i],
+  ];
+
   /* ---------------- 參數抽取規則 ----------------
    * 每條規則：找到就回 { value（顯示用原文）, n / lo / hi（正規化數值）, kind }
    * 找不到回 null —— 呼叫端據此顯示「未擷取」。寧可未擷取，不可給錯的值。 */
@@ -288,7 +310,29 @@
           return bare ? { value: bare[1].toUpperCase(), text: bare[1].toUpperCase(), noPins: true } : null;
         }
         const r = multi(hits, x => x);
-        return r.ambiguous ? r : { value: r.one, text: r.one };
+        // 出處：每一種封裝各找一列。條件是那一列**自己**就讀得出這個封裝——
+        // 用同一組樣式重掃單列，撐不住的列不算數（否則會指到「WSON8 6x5-mm」這種
+        // 規則本身讀不出來的寫法，驗證器一replay 就對不起來）。
+        const one = row => {
+          const s2 = [], l2 = [];
+          let mm;
+          const scan = (re, take) => { const rr = new RegExp(re.source, re.flags); while ((mm = rr.exec(row))) take(mm); };
+          scan(reOrd, x => put(s2, x[1], x[2]));
+          scan(reGlue, x => put(s2, x[1], x[2]));
+          scan(reDash, x => put(s2, x[1], x[2]));
+          scan(rePin, x => put(s2, x[2], x[1]));
+          scan(reParen, x => put(l2, x[1], x[2]));
+          return s2.length ? s2 : l2;
+        };
+        const rows = norm(t).split(/\n/);
+        const wanted = r.ambiguous ? String(r.value).split(' / ') : [r.one];
+        const srcList = [];
+        wanted.forEach(w => {
+          const row = rows.find(x => one(x).indexOf(w) >= 0);
+          if (row && srcList.indexOf(row.slice(0, 240)) < 0) srcList.push(row.slice(0, 240));
+        });
+        const src = srcList.length ? srcList : null;
+        return r.ambiguous ? Object.assign(r, { srcList: src }) : { value: r.one, text: r.one, srcList: src };
       },
     },
     {
@@ -300,11 +344,11 @@
         if (pkg.ambiguous) {
           // 多種封裝但腳數一致（SOIC-24 / TSSOP-24 / QFN-24）→ 腳數是確定的
           const ns = [...new Set(String(pkg.value).split('/').map(x => (x.match(/-(\d{1,3})\s*$/) || [])[1]).filter(Boolean))];
-          if (ns.length === 1) return { value: ns[0] + ' pin', n: num(ns[0]) };
-          return { value: PINS_AMBIG.zh, i18nKey: 'pinsAmbig', ambiguous: true };
+          if (ns.length === 1) return { value: ns[0] + ' pin', n: num(ns[0]), srcList: pkg.srcList };
+          return { value: PINS_AMBIG.zh, i18nKey: 'pinsAmbig', ambiguous: true, srcList: pkg.srcList };
         }
         const m = String(pkg.value).match(/-(\d{1,3})$/);
-        return m ? { value: m[1] + ' pin', n: num(m[1]) } : null;
+        return m ? { value: m[1] + ' pin', n: num(m[1]), srcList: pkg.srcList } : null;
       },
     },
     {
@@ -393,11 +437,11 @@
       // 只掃文件前段（標題＋Features＋概述）：內文提到「EVM 用 USB 供電」不是這顆的介面
       run: t0 => {
         const t = norm(t0).slice(0, 6000);
-        const hit = [];
+        const hit = [], used = [];
         [['I2C', /\bI\s?2\s?C\b|\bIIC\b|\bTWSI\b|\bTWI\b/i], ['SPI', /\bSPI\b/i], ['UART', /\bUART\b/i], ['CAN', /\bCAN(?:\s?FD)?\b/],
         ['LIN', /\bLIN\b/], ['USB', /\bUSB\b/i], ['SMBus', /\bSMBus\b/i], ['PMBus', /\bPMBus\b/i], ['I3C', /\bI3C\b/i]]
-          .forEach(([n, re]) => { if (re.test(t)) hit.push(n); });
-        return hit.length ? { value: hit.join(', '), set: hit } : null;
+          .forEach(([n, re]) => { if (re.test(t)) { hit.push(n); used.push(re); } });
+        return hit.length ? { value: hit.join(', '), set: hit, srcList: linesOf(t, used) } : null;
       },
     },
     {
@@ -412,7 +456,8 @@
         const m = head.match(/(\d{1,2})\s*-?\s*bit\b/i);
         if (!m) return null;
         const n = num(m[1]);
-        return (n >= 4 && n <= 32) ? { value: m[1] + '-bit', n } : null;
+        return (n >= 4 && n <= 32)
+          ? { value: m[1] + '-bit', n, src: lineOf(t, new RegExp(m[1] + '\\s*-?\\s*bit\\b', 'i')) } : null;
       },
     },
     {
@@ -446,7 +491,8 @@
         if (!m) return null;
         const s = scale('V', m[2]); if (s === null) return null;
         const n = num(m[1]) * s;
-        return (n >= 100 && n <= 30000) ? { value: m[1] + ' ' + m[2], n } : null;
+        return (n >= 100 && n <= 30000)
+          ? { value: m[1] + ' ' + m[2], n, src: lineOf(t, /HBM|Human\s+Body\s+Model/i) } : null;
       },
     },
     {
@@ -520,15 +566,9 @@
       key: 'integ', label: '內建功能', kind: 'set',
       run: t0 => {
         const t = norm(t0);
-        const set = [];
-        [['soft-start', /internal(?:ly)?\s+soft[-\s]?start|integrated\s+soft[-\s]?start|built-in\s+soft[-\s]?start|soft[-\s]?start\s+time|t\s?SS\b|內建軟啟動/i],
-        ['compensation', /internal(?:ly)?\s+compensat|integrated\s+compensation|內部補償/i],
-        ['oscillator', /internal\s+oscillator|on-chip\s+oscillator|oscillator\s+frequency|f\s?OSC\b|內建振盪器/i],
-        ['bootstrap', /(?:internal|integrated|built-in)\s+bootstrap|bootstrap\s+diode[^.\n]{0,20}(?:integrated|internal)/i],
-        ['UVLO', /\bUVLO\b|under-?voltage\s+lockout/i],
-        ['OTP', /thermal\s+shutdown|over-?temperature\s+protection|過溫保護/i]]
-          .forEach(([n, re]) => { if (re.test(t)) set.push(n); });
-        return set.length ? { value: set.join(', '), set } : null;
+        const set = [], used = [];
+        INTEG_LIST.forEach(([n, re]) => { if (re.test(t)) { set.push(n); used.push(re); } });
+        return set.length ? { value: set.join(', '), set, srcList: linesOf(t, used) } : null;
       },
     },
     {
@@ -548,7 +588,7 @@
     },
     {
       key: 'aecq', label: '車規 AEC-Q100', kind: 'flag',
-      run: t => (/AEC\s*-?\s*Q100/i.test(t) ? { value: '有標示', flag: true } : null),
+      run: t => (/AEC\s*-?\s*Q100/i.test(t) ? { value: '有標示', flag: true, src: lineOf(t, /AEC\s*-?\s*Q100/i) } : null),
     },
   ];
 

@@ -1,5 +1,5 @@
+RT6150A/B
 Current Mode Buck-Boost Converter
-General Description Features
 The RT6150A/B is a high efficiency, fixed frequency, Buck-      Single Inductor
 Boost DC/DC converter that operates from input voltages      Fixed Frequency Operation with Battery Voltages
 above, below or equal to the output voltage. The topology      Synchronous Rectification : Up to 90% Efficiency
@@ -8,16 +8,16 @@ function through all operating modes, making the product      VOU
 ideal for single lithium-ion, multi-cell alkaline or Ni-MH      Power Save Mode (PSM) Enable Control
 battery applications where the output voltage is within the      <1 μ μ μ μ μ A Shutdown Current
 battery voltage range.      Input Voltage Range: 1.8V to 5.5V
-     Fixed 3.3V and Adjustable Output Voltage Options
-The device includes two N-MOSFET switches and two P-
      10-Lead WDFN Packages
 component size. Quiescent current is only 60 μ A in Power
 soft-start control, thermal shutdown protection and current Lead Plating System
 DS6150A/B-05 July 2015 www.richtek.com
+3, 9, Power Ground. The exposed pad must be soldered to a large PCB and
 11 (Exposed Pad) connected to GND for maximum power dissipation.
 10 FB the output voltage and it can be adjusted from 1.8V to 5.5V; For fixed
 HBM (Human Body Model) ----------------------------------------------------------------------------------------------- 2kV
 Recommended Operating Conditions (Note 4)
+ Supply Input Voltage, VIN ------------------------------------------------------------------------------------------------ 1.8V to 5.5V
  Ambient Temperature Range --------------------------------------------------------------------------------------------- − 40 ° C to 85 ° C
 UVLO Low-Level 1.4 1.55 --
 R DS(ON)_N -- 0.15 -- 

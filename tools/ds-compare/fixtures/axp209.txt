@@ -3,6 +3,7 @@ AXP209
 Enhanced single Cell Li - Battery and Power System Management IC
 X - Powers
 © 2010 X - Powers Limited - All rights reserved
+AXP209
 Enhanced single Cell Li - Battery and Power System Manage ment IC
 Table of Contents
 1. Overview ................................ ................................ ................................ ................................ ........ 3
@@ -17,7 +18,6 @@ Table of Contents
 9.1 Power On / Off & Rese t ................................ ................................ ................................ ..... 15
 9.2 Power path ma nagement (IPS) ................................ ................................ .......................... 17
 9.3 Adaptive PWM Charger ................................ ................................ ................................ ..... 19
-9.4 Backup battery ................................ ................................ ................................ ................... 22
 9.5 Multi - channel power output s ................................ ................................ ............................ 23
 9.6 Default Voltage / Timing Setting s ................................ ................................ ..................... 24
 9.11 HOST Interface and interrupt(TWSI and IRQ) ................................ ................................ . 26
@@ -34,4 +34,5 @@ V UVLO ACIN Under Voltage Lockout 3.8 V
 R ds (on) On Resistance (BAT to IPSOUT) 75 mΩ
 f OSC Oscillator Frequency Default 1.5 MHz
 49 EP G Exposed Pad, need to connect to system ground
+DC - DC3 VIN3
 DCDC3 output voltage ranges from 0.7 V to 3.5V, and output voltage of DCDC2 is ranged from

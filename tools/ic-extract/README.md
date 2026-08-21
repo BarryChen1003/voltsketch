@@ -53,12 +53,19 @@ node tools/ic-extract/pdf-pages.js datasheets/rt6150.pdf 5
 
 ## 目前的覆蓋範圍
 
-會產出出處、因此驗得動的參數：`vin` `vout` `iout` `iq` `rdson` `fsw` `temp`
-`iopull` `iotol` `intod` `epad` `nofloat` `pordef`。
+**全部 21 個參數都會產出出處**，因此都驗得動。多筆出處（`quotes`）用在「好幾列共同支撐
+一個判斷」的情況：多種封裝、介面清單、內建功能清單——每一列都要各自在文件裡找得到。
 
-還沒有出處的：`package` `pins` `interface` `bits` `esd` `integ` `aecq`
-——這幾條規則是在全文上比對的，還沒記錄命中的那一列。它們會列在 `noQuote`，
-**不計入通過率**（免得數字好看但不誠實）。
+封裝的出處還多一道條件：那一列**自己**就要讀得出這個封裝。
+（W25Q128JV 的 `WSON8 6x5-mm` 規則讀不出來，就不會被拿來當 WSON-8 的出處。）
+
+實測（2026-08-21，9 份 datasheet，其中 4 份是開發時沒看過的）：
+
+| 檔 | 宣稱 | 通過 |
+|---|---|---|
+| PCA9555A / PCA9535 / RT6150 / W25Q128JV / AXP209 | 9–13 | 100% |
+| 74LVC4066 / ADG601 / SLG59H1403C（沒看過） | 4–7 | 100% |
+| ADS8688W（沒看過） | 9 | 8（ESD 的出處那一列沒有數字 → 擋下） |
 
 ## 測試
 
