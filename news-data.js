@@ -20,6 +20,32 @@
  */
 window.NEWS = [
   {
+    id: 'hyundai-mobis-eis-battery-diagnostic', kind: 'news',
+    date: '2026-08-22', region: 'KR', cat: 'power', verified: true,
+    source: 'TheElec',
+    url: 'https://www.thelec.net/news/articleView.html?idxno=13240',
+    zh: {
+      title: '現代摩比斯 EIS 電池診斷，熱失控預警提前 20–30 分鐘',
+      summary: '現代摩比斯開發以電化學阻抗頻譜（EIS）為基礎的電動車電池管理技術，用多頻率電流訊號解析電池內部阻抗與電化學反應，比只測電壓/電流/溫度的傳統 BMS 提前 20–30 分鐘偵測熱失控徵兆。採用 ADI 車用 IC，目標 2028 年後量產，正評估導入兩款高階電動車。',
+      why: '傳統 BMS 只看得到外部電氣量，內部劣化要等反映到電壓電流才抓得到。直接量測阻抗把診斷時間點往前推——電池包與 BMS IC 選型多了一個新軸線，值得留意 ADI 是否推出對應量產品項。'
+    },
+    en: {
+      title: "Hyundai Mobis's EIS battery diagnostics catch thermal runaway 20-30 minutes earlier",
+      summary: 'Hyundai Mobis is developing an EV battery management approach based on electrochemical impedance spectroscopy (EIS), applying multi-frequency current signals to read internal resistance and electrochemical reactions instead of relying only on voltage/current/temperature. It detects thermal-runaway precursors 20-30 minutes earlier than conventional BMS, uses Analog Devices automotive ICs, and targets mass production after 2028, with two high-end EV models under evaluation.',
+      why: 'Conventional BMS only sees external electrical signals, so internal degradation shows up late. Measuring impedance directly pushes the detection window earlier — a new axis for battery-pack and BMS IC selection, worth watching for whether ADI ships a matching production part.'
+    },
+    ja: {
+      title: '現代モビス、EIS電池診断で熱暴走を20〜30分早く検知',
+      summary: '現代モビスは電気化学インピーダンス分光法（EIS）を用いたEVバッテリー管理技術を開発中。多周波数の電流信号で内部抵抗と電気化学反応を解析し、電圧・電流・温度のみを見る従来のBMSより熱暴走の兆候を20〜30分早く検知できる。ADI製車載ICを採用し、2028年以降の量産を目指しハイエンドEV2車種への搭載を検討中。',
+      why: '従来のBMSは外部の電気量しか見えず、内部劣化の検知は後手に回る。インピーダンスを直接測ることで診断のタイミングを前倒しできる——バッテリーパックとBMS IC選定に新しい軸が生まれ、ADIが対応量産品を出すかどうか注目に値する。'
+    },
+    ko: {
+      title: '현대모비스 EIS 배터리 진단, 열폭주 20~30분 앞서 감지',
+      summary: '현대모비스가 전기화학 임피던스 분광법(EIS) 기반 EV 배터리 관리 기술을 개발 중이다. 다중 주파수 전류 신호로 내부 저항과 전기화학 반응을 분석해, 전압·전류·온도만 보는 기존 BMS보다 열폭주 징후를 20~30분 앞서 감지한다. ADI 차량용 IC를 채택했으며 2028년 이후 양산을 목표로 하이엔드 EV 2개 차종에 적용을 검토 중이다.',
+      why: '기존 BMS는 외부 전기량만 보기 때문에 내부 열화 감지가 늦다. 임피던스를 직접 측정하면 진단 시점을 앞당길 수 있다 — 배터리팩과 BMS IC 선정에 새로운 축이 생기는 셈이며, ADI가 대응 양산품을 내놓을지 지켜볼 만하다.'
+    }
+  },
+  {
     id: 'itri-48v-ivr-microfluidic', kind: 'paper',
     date: '2026-08-03', region: 'TW', cat: 'power', verified: true,
     source: 'TechNews 科技新報',
