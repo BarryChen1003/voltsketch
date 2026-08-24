@@ -64,6 +64,16 @@
           </div>
         </div>
 
+        <!-- 重設密碼回來時走這一步。Supabase 的信件連結會把人導回本頁並帶上 recovery token，
+             舊版沒有這一段，所以使用者只會看到登入表單（站主 2026-08-21 回報）。 -->
+        <div id="recoverStep" hidden>
+          <p class="muted" style="margin:0 0 8px;font-size:13px;line-height:1.7" data-i18n="lg_newpw_hint">
+            你是從重設密碼的信件連結進來的，請直接設定新密碼。</p>
+          <input id="newPw" type="password" autocomplete="new-password"
+                 placeholder="新密碼（至少 6 碼）" data-i18n-placeholder="lg_newpw_ph" />
+          <button class="primary-button" id="newPwGo" style="width:100%;margin-top:6px" data-i18n="lg_newpw_go">更新密碼</button>
+        </div>
+
         <div id="msg" class="auth-msg"></div>
       </div>
     </div>
@@ -132,6 +142,7 @@
               showCode(email, 'lg_need_verify');
               return;
             }
+            if (error && /invalid login credentials/i.test(error.message || '')) { msg(T('lg_bad_creds')); return; }
             if (error) throw error; msg(T('lg_ok'), true);
             goNext();
           } else if (mode === 'signup') {
@@ -145,6 +156,57 @@
           }
         } catch (e) { msg(e.message || T('lg_fail')); }
       });
+
+      /* ---------- 重設密碼 ----------
+       * Supabase 寄出的連結會回到本頁，網址上帶著 recovery token；supabase-js 讀完就把它
+       * 從網址上抹掉，並發出 PASSWORD_RECOVERY 事件。兩個訊號都接：
+       *   - 事件：最可靠，但可能在我們訂閱之前就發生
+       *   - 網址還留著 type=recovery：補上面那個時間差
+       * 連結過期或用過的話不會有 session —— 這時要明講，不要讓人對著登入框發呆。 */
+      function showRecover() {
+        $('mainStep').hidden = true;
+        $('codeStep').hidden = true;
+        $('recoverStep').hidden = false;
+        document.querySelector('.auth-tabs').style.display = 'none';
+        msg('');
+        setTimeout(() => $('newPw').focus(), 0);
+      }
+
+      (function initRecovery() {
+        if (!Auth.enabled()) return;
+        const c = Auth.raw();
+        let shown = false;
+        const arrive = () => { if (!shown) { shown = true; showRecover(); } };
+        try {
+          c.auth.onAuthStateChange((ev) => { if (ev === 'PASSWORD_RECOVERY') arrive(); });
+        } catch (e) { /* 舊版 SDK 沒這個事件也不至於壞掉 */ }
+        const looksRecovery = /type=recovery/.test(location.hash || '') || /[?&]code=/.test(location.search || '');
+        if (!looksRecovery) return;
+        arrive();
+        // 沒有 session＝連結失效或已用過
+        setTimeout(async () => {
+          const u = await Auth.user();
+          if (!u) {
+            $('recoverStep').hidden = true;
+            $('mainStep').hidden = false;
+            document.querySelector('.auth-tabs').style.display = '';
+            msg(T('lg_link_dead'));
+          }
+        }, 1500);
+      })();
+
+      $('newPwGo').addEventListener('click', async () => {
+        const pw = $('newPw').value;
+        if (!pw || pw.length < 6) { msg(T('lg_newpw_short')); return; }
+        try {
+          const { error } = await Auth.updatePassword(pw);
+          if (error) throw error;
+          msg(T('lg_newpw_ok'), true);
+          history.replaceState(null, '', location.pathname);   // 把 token 從網址上清掉
+          goNext();
+        } catch (e) { msg(e.message || T('lg_fail')); }
+      });
+      $('newPw').addEventListener('keydown', e => { if (e.key === 'Enter') $('newPwGo').click(); });
 
       $('codeGo').addEventListener('click', async () => {
         const token = $('code').value.trim();
