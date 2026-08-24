@@ -20,6 +20,32 @@
  */
 window.NEWS = [
   {
+    id: 'kools-spea-tgv-plating', kind: 'news',
+    date: '2026-08-23', region: 'KR', cat: 'pcb', verified: true,
+    source: 'TheElec',
+    url: 'https://www.thelec.net/news/articleView.html?idxno=13257',
+    zh: {
+      title: 'Kools 發表玻璃基板 TGV 由下而上填孔電鍍',
+      summary: 'Kools 公開玻璃穿孔（TGV）金屬化技術 SPEA（Self-Propagating Electrode Architecture）：先在過孔底部形成起始電極，金屬長到哪一區、那一區就接著當電極，讓填充由下往上依序推進，避免孔口先封死而在孔內留下空洞。原文未給填充率與深寬比數字，細節由執行長曹振鉉在 2026 年 8 月 27 日水原會議中心的研討會發表。',
+      why: '玻璃基板要取代有機基板，卡點就在 TGV 金屬化——孔口先長滿，孔內留下的空洞直接打到良率與可靠度。由下而上的填充若成立，玻璃基板撐得住的深寬比上限會往上走，做 2.5D/3D 封裝的人選基板時多一條路。'
+    },
+    en: {
+      title: 'Kools shows bottom-up plating for through-glass vias',
+      summary: 'Kools unveiled SPEA (Self-Propagating Electrode Architecture), a metallization method for through-glass vias: an initial electrode is formed at the bottom of the via, and each region the growing metal reaches then acts as the electrode itself, so filling proceeds bottom-up. The stated aim is to avoid pinching off the via entrance and leaving voids inside. The article gives no fill-rate or aspect-ratio figures; CEO Cho Jin-hyun presents the details at a Suwon Convention Center seminar on 27 August 2026.',
+      why: 'TGV metallization is the bottleneck holding glass substrates back from replacing organic ones — if the entrance closes first, the void left inside hits yield and reliability. A working bottom-up fill raises the aspect ratio a glass substrate can carry, which adds an option when choosing substrates for 2.5D/3D packaging.'
+    },
+    ja: {
+      title: 'Kools、ガラス基板TGVのボトムアップめっき技術を公開',
+      summary: 'Koolsが貫通ガラスビア（TGV）向けメタライゼーション技術「SPEA（Self-Propagating Electrode Architecture）」を公開した。ビア底部に初期電極を形成し、金属が成長して到達した領域がそのまま電極として機能することで、充填を下から順に進める。ビア入口の目詰まりと内部ボイドの発生を抑える狙い。記事に充填率やアスペクト比の数値はなく、詳細はチョ・ジンヒョンCEOが2026年8月27日、水原コンベンションセンターのセミナーで発表する。',
+      why: 'ガラス基板が有機基板を置き換えるうえでのボトルネックはTGVのメタライゼーションにある。入口が先に塞がれば内部にボイドが残り、歩留まりと信頼性に直結する。ボトムアップ充填が成立すればガラス基板が扱えるアスペクト比の上限が上がり、2.5D/3D実装の基板選定に選択肢が増える。'
+    },
+    ko: {
+      title: 'Kools, 유리기판 TGV 바텀업 도금 기술 공개',
+      summary: 'Kools가 유리관통비아(TGV) 메탈라이제이션 기술 SPEA(Self-Propagating Electrode Architecture)를 공개했다. 비아 바닥에 초기 전극을 형성하면 금속이 자라 도달한 영역이 다시 전극 역할을 해, 충전이 아래에서 위로 순차 진행된다. 비아 입구가 먼저 막혀 내부에 보이드가 생기는 것을 억제하는 것이 목표다. 기사에는 충전율이나 종횡비 수치가 없으며, 조진현 대표가 2026년 8월 27일 수원컨벤션센터 세미나에서 상세 내용을 발표한다.',
+      why: '유리기판이 유기기판을 대체하는 데 걸림돌은 TGV 메탈라이제이션이다. 입구가 먼저 막히면 내부에 보이드가 남아 수율과 신뢰성에 직결된다. 바텀업 충전이 성립하면 유리기판이 감당할 수 있는 종횡비 상한이 올라가고, 2.5D/3D 패키징 기판 선정에 선택지가 늘어난다.'
+    }
+  },
+  {
     id: 'hyundai-mobis-eis-battery-diagnostic', kind: 'news',
     date: '2026-08-22', region: 'KR', cat: 'power', verified: true,
     source: 'TheElec',
@@ -43,6 +69,58 @@ window.NEWS = [
       title: '현대모비스 EIS 배터리 진단, 열폭주 20~30분 앞서 감지',
       summary: '현대모비스가 전기화학 임피던스 분광법(EIS) 기반 EV 배터리 관리 기술을 개발 중이다. 다중 주파수 전류 신호로 내부 저항과 전기화학 반응을 분석해, 전압·전류·온도만 보는 기존 BMS보다 열폭주 징후를 20~30분 앞서 감지한다. ADI 차량용 IC를 채택했으며 2028년 이후 양산을 목표로 하이엔드 EV 2개 차종에 적용을 검토 중이다.',
       why: '기존 BMS는 외부 전기량만 보기 때문에 내부 열화 감지가 늦다. 임피던스를 직접 측정하면 진단 시점을 앞당길 수 있다 — 배터리팩과 BMS IC 선정에 새로운 축이 생기는 셈이며, ADI가 대응 양산품을 내놓을지 지켜볼 만하다.'
+    }
+  },
+  {
+    id: 'adeka-pag-euv-capacity-double', kind: 'news',
+    date: '2026-08-20', region: 'JP', cat: 'semi', verified: true,
+    source: 'ADEKA 新聞稿',
+    url: 'https://www.adeka.co.jp/news/2026/08/260820.html',
+    zh: {
+      title: 'ADEKA EUV 用光酸產生劑產能翻倍，2028 年 9 月投產',
+      summary: '千葉工場（千葉縣袖浦市）增設產線，投資約 10 億日圓，把光酸產生劑（PAG）產能提高到原本約 2 倍。2027 年 1 月動工、2028 年 2 月完工、2028 年 9 月商業運轉，供給體制的強化比原訂計畫提前 2 年。主力是先進世代需求看漲的聚合物結合型 PAG 單體；埼玉縣久喜市的半導體創新中心已於 2026 年 7 月正式啟用。',
+      why: 'PAG 是光阻在 EUV 曝光下真正產生酸的那個成分，供給吃緊會直接反映到先進製程的產出。提前 2 年擴產代表 EUV 需求的能見度比原本估的更強——在排先進節點流片時程的人，可以把 2028 下半年當成這項材料轉寬鬆的節點。'
+    },
+    en: {
+      title: 'ADEKA doubles EUV photoacid generator capacity, online September 2028',
+      summary: 'ADEKA will add a production line at its Chiba plant (Sodegaura, Chiba) with roughly 1 billion yen of investment, raising photoacid generator (PAG) capacity to about 2x. Construction starts January 2027, completes February 2028, and commercial operation begins September 2028 — pulling the supply expansion forward by two years against the original plan. The focus is polymer-bound PAG monomer for advanced nodes. Its Semiconductor Innovation Center in Kuki, Saitama came fully online in July 2026.',
+      why: 'PAG is the component of the resist that actually generates acid on EUV exposure, so a tight supply propagates straight into advanced-node output. Pulling the expansion in by two years signals stronger visibility on EUV demand than previously modelled — anyone scheduling advanced-node tape-outs can treat H2 2028 as the point where this material loosens.'
+    },
+    ja: {
+      title: 'ADEKA、EUV向け光酸発生剤を2倍に増産、2028年9月稼働',
+      summary: 'ADEKAは千葉工場（千葉県袖ケ浦市）に生産ラインを増設し、約10億円を投じて光酸発生剤（PAG）の生産能力を従来比約2倍に引き上げる。2027年1月着工、2028年2月完工、2028年9月営業運転開始で、供給体制の強化を当初計画から2年前倒しする。先端世代で需要拡大が見込まれるポリマーバウンド型のPAGモノマーが主対象。埼玉県久喜市の半導体イノベーションセンターは2026年7月に本格始動している。',
+      why: 'PAGはEUV露光で実際に酸を発生させるレジストの中核材料であり、供給逼迫はそのまま先端プロセスの産出量に跳ね返る。2年前倒しは、EUV需要の見通しが従来想定より強いことの表れ。先端ノードのテープアウト計画を引く側は、2028年下期をこの材料が緩む節目として見ておける。'
+    },
+    ko: {
+      title: 'ADEKA, EUV용 광산발생제 생산능력 2배… 2028년 9월 가동',
+      summary: 'ADEKA가 지바 공장(지바현 소데가우라시)에 생산 라인을 증설해 약 10억 엔을 투자, 광산발생제(PAG) 생산능력을 기존 대비 약 2배로 늘린다. 2027년 1월 착공, 2028년 2월 완공, 2028년 9월 상업 운전 개시로 공급 체계 강화를 당초 계획보다 2년 앞당긴다. 선단 세대에서 수요 확대가 예상되는 폴리머 결합형 PAG 모노머가 주 대상이며, 사이타마현 구키시의 반도체 이노베이션 센터는 2026년 7월 본격 가동에 들어갔다.',
+      why: 'PAG는 EUV 노광에서 실제로 산을 발생시키는 레지스트의 핵심 재료라, 공급 경색이 그대로 선단 공정 산출량으로 이어진다. 2년 앞당긴 증설은 EUV 수요 가시성이 기존 전망보다 강하다는 신호다. 선단 노드 테이프아웃 일정을 짜는 쪽은 2028년 하반기를 이 재료가 풀리는 분기점으로 봐 둘 만하다.'
+    }
+  },
+  {
+    id: 'tierIV-open-source-av-ai-chip', kind: 'news',
+    date: '2026-08-17', region: 'JP', cat: 'semi', verified: true,
+    source: 'レスポンス（Response）',
+    url: 'https://response.jp/article/2026/08/17/415313.html',
+    zh: {
+      title: 'Tier IV 要把自駕 AI 晶片的設計資產與工具鏈開源',
+      summary: 'Tier IV 參與 JST「次世代邊緣 AI 半導體研究開發事業」，負責端到端（E2E）自駕 AI 推論晶片的邏輯設計，目標把設計資產連同編譯器等工具鏈一起開源。晶片對應該公司主導的開源自駕軟體 Autoware，定位是滿足 L4 所需的功耗、即時性與安全性、且不綁特定硬體的「軟體定義 SoC」。研究課題由東京大學川原圭博教授主持。製程節點與效能數字未公布。',
+      why: '車用 AI 推論晶片現在幾乎清一色是封閉的供應商平台，選了哪家就連工具鏈一起綁死。設計資產加編譯器一起開源，等於第一次讓自駕系統商有機會自己改推論管線、甚至自行流片——評估 L4 平台時多了一個不被鎖住的選項。'
+    },
+    en: {
+      title: 'Tier IV to open-source its autonomous-driving AI chip design and toolchain',
+      summary: 'Tier IV has joined JST next-generation edge AI semiconductor programme, taking on the logic design of an AI chip for end-to-end autonomous-driving inference, and aims to open-source the design assets together with the compiler and surrounding toolchain. The chip targets Autoware, the open-source autonomous-driving stack Tier IV leads, and is positioned as a hardware-independent "software-defined SoC" meeting Level 4 power, real-time and safety constraints. The research theme is led by Professor Yoshihiro Kawahara of the University of Tokyo. No process node or performance figures were disclosed.',
+      why: 'Automotive AI inference silicon is almost entirely closed vendor platforms today, and picking one locks in its toolchain. Open-sourcing the design assets alongside the compiler would, for the first time, let an AV integrator rework the inference pipeline itself or even tape out its own part — a non-locked-in option to weigh when evaluating a Level 4 platform.'
+    },
+    ja: {
+      title: 'ティアフォー、自動運転AIチップの設計とツールチェーンをオープンソース化へ',
+      summary: 'ティアフォーはJST「次世代エッジAI半導体研究開発事業」に参画し、エンドツーエンド（E2E）自動運転AIの推論処理を担うAIチップの論理設計を担当する。設計資産とコンパイラなどのツールチェーンのオープンソース化を目指す。対象は同社が開発を主導するオープンソース自動運転ソフトウェア「Autoware」で、レベル4に必要な電力制約・リアルタイム性・安全性を満たしつつハードウェアに依存しない「ソフトウェア定義型SoC」と位置付ける。研究開発課題は東京大学の川原圭博教授が代表。プロセスノードや性能の数値は非公表。',
+      why: '車載AI推論チップは現状ほぼ閉じたベンダープラットフォームで、選んだ時点でツールチェーンごと固定される。設計資産をコンパイラと合わせて公開すれば、自動運転システム側が推論パイプラインを自ら手直しし、場合によっては自前でテープアウトする道が初めて開く。レベル4プラットフォームの評価に、ベンダーロックインしない選択肢が加わる。'
+    },
+    ko: {
+      title: '티어포, 자율주행 AI 칩 설계와 툴체인 오픈소스화 추진',
+      summary: '티어포가 JST의 차세대 엣지 AI 반도체 연구개발사업에 참여해 엔드투엔드(E2E) 자율주행 AI 추론용 칩의 논리 설계를 맡고, 설계 자산과 컴파일러 등 툴체인의 오픈소스화를 목표로 한다. 대상은 티어포가 개발을 주도하는 오픈소스 자율주행 소프트웨어 Autoware이며, 레벨 4에 필요한 전력 제약·실시간성·안전성을 만족하면서 하드웨어에 의존하지 않는 "소프트웨어 정의 SoC"로 규정한다. 연구 과제는 도쿄대 가와하라 요시히로 교수가 대표를 맡는다. 공정 노드나 성능 수치는 공개되지 않았다.',
+      why: '차량용 AI 추론 칩은 현재 대부분 폐쇄형 벤더 플랫폼이라, 선택하는 순간 툴체인까지 묶인다. 설계 자산을 컴파일러와 함께 공개하면 자율주행 시스템 업체가 직접 추론 파이프라인을 손보거나 자체 테이프아웃까지 시도할 길이 처음 열린다. 레벨 4 플랫폼 평가에 벤더 종속되지 않는 선택지가 하나 늘어난다.'
     }
   },
   {
