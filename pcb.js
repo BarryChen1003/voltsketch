@@ -2160,12 +2160,15 @@ const pcbApp = {
     const cap = 30;
     const todo = lines.slice(0, cap);
     let okN = 0, failN = 0;
+    // 用使用者當下的 DRC 規則繞線。舊版這裡硬寫 clearance 0.15，
+    // 使用者把淨空調大後自動繞線仍照 0.15 走，繞完直接違規而且不會報。
+    const rules = this.loadDrcRules();
     const t0 = performance.now();
     for (const line of todo) {
       const r = window.AutoRoute.route(this.state, this.padAbs.bind(this), line, {
         layer: this.state.traceLayer || 'F.Cu',
         width: this.state.traceWidth || 0.25,
-        clearance: 0.15,
+        clearance: rules.clearance,
         grid: 0.25
       });
       if (!r.ok) { failN++; continue; }

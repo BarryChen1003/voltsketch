@@ -275,7 +275,17 @@
         const L = Math.hypot(x2 - x1, y2 - y1), n = Math.max(1, Math.ceil(L / (g / 2)));
         for (let i = 0; i <= n; i++) mark(x1 + (x2 - x1) * i / n, y1 + (y2 - y1) * i / n, r);
       };
-      const margin = opt.clearance + opt.width / 2;
+      // clearance 可給數字（全障礙共用，舊呼叫相容）或 DRC 規則物件
+      // {traceToTrace, traceToPad, traceToEdge, ...}。這裡繞的是「走線」，所以：
+      // 對 pad 用 traceToPad、對走線與 via 用 traceToTrace（via 對走線而言就是一塊銅）、
+      // 對板邊用 traceToEdge。viaToVia/padToPad/holeToHole 管的是別的組合，不適用。
+      const clObj = (opt.clearance && typeof opt.clearance === 'object') ? opt.clearance : null;
+      const clNum = (typeof opt.clearance === 'number' && opt.clearance >= 0) ? opt.clearance : 0.15;
+      const clOf = (k, d) => { const v = clObj ? clObj[k] : clNum; return (typeof v === 'number' && v >= 0) ? v : d; };
+      const half = opt.width / 2;
+      const mPad = clOf('traceToPad', clNum) + half;
+      const mTrace = clOf('traceToTrace', clNum) + half;
+      const mEdge = clOf('traceToEdge', 0) + half;
       const net = line.net || '';
       (state.components || []).forEach(c => (c.pads || []).forEach(p => {
         if (p.cu === false) return;
@@ -283,21 +293,47 @@
         const sideOk = p.side === '*' || (opt.layer === 'F.Cu' && p.side === 'F') || (opt.layer === 'B.Cu' && p.side === 'B');
         if (!sideOk) return;
         const a = padAbs(c, p);
-        mark(a.x, a.y, Math.hypot(p.w || 0.5, p.h || 0.5) / 2 + margin);
+        mark(a.x, a.y, Math.hypot(p.w || 0.5, p.h || 0.5) / 2 + mPad);
       }));
       (state.traces || []).forEach(t => {
         if ((t.layer || 'F.Cu') !== opt.layer) return;
         if (net && (t.net || '') === net) return;
-        markSeg(t.x1, t.y1, t.x2, t.y2, (t.width || 0.3) / 2 + margin);
+        markSeg(t.x1, t.y1, t.x2, t.y2, (t.width || 0.3) / 2 + mTrace);
       });
       (state.vias || []).forEach(v => {
         if (net && (v.net || '') === net) return;
-        mark(v.x, v.y, (v.od || 0.6) / 2 + margin);
+        mark(v.x, v.y, (v.od || 0.6) / 2 + mTrace);
       });
       const toCell = (x, y) => [Math.round((x - ox) / g), Math.round((y - oy) / g)];
       const [sx, sy] = toCell(line.x1, line.y1), [ex, ey] = toCell(line.x2, line.y2);
       if (!inb(sx, sy) || !inb(ex, ey)) return { ok: false, reason: T('rule_ep_outside') };
       if (blocked[idx(sx, sy)] || blocked[idx(ex, ey)]) return { ok: false, reason: T('rule_ep_blocked') };
+      // 板邊淨空（traceToEdge）。擺在端點檢查之後：靠邊的 pad 本身可能違規，
+      // 但那是 DRC 該報的事，不該讓繞線直接失敗，所以最後幫端點開逃逸泡泡。
+      if (mEdge > 0) {
+        const edgeOnly = new Uint8Array(nx * ny);
+        for (let iy = 0; iy < ny; iy++) {
+          const y = oy + iy * g, dy = Math.min(y - oy, oy + H - y);
+          for (let ix = 0; ix < nx; ix++) {
+            const x = ox + ix * g;
+            if (Math.min(x - ox, ox + W - x, dy) < mEdge) {
+              if (!blocked[idx(ix, iy)]) edgeOnly[idx(ix, iy)] = 1;
+              blocked[idx(ix, iy)] = 1;
+            }
+          }
+        }
+        // 端點若本來就落在板邊淨空帶內（靠邊的 pad），只放行它自己那一格是不夠的：
+        // 整圈鄰格都被擋，A* 第一步就走不出去。開一個半徑 mEdge+g 的逃逸泡泡，
+        // 讓它離開淨空帶，其餘板邊仍受限。
+        const bubble = (cx, cy) => {
+          const r = mEdge + g;
+          const x0 = Math.max(0, Math.floor((ox + cx * g - r - ox) / g)), x1c = Math.min(nx - 1, Math.ceil((ox + cx * g + r - ox) / g));
+          const y0 = Math.max(0, Math.floor((oy + cy * g - r - oy) / g)), y1c = Math.min(ny - 1, Math.ceil((oy + cy * g + r - oy) / g));
+          for (let iy = y0; iy <= y1c; iy++) for (let ix = x0; ix <= x1c; ix++)
+            if (Math.hypot((ix - cx) * g, (iy - cy) * g) <= r) blocked[idx(ix, iy)] = edgeOnly[idx(ix, iy)] ? 0 : blocked[idx(ix, iy)];
+        };
+        bubble(sx, sy); bubble(ex, ey);
+      }
       // A*（binary heap）
       const gc = new Float32Array(nx * ny).fill(Infinity);
       const par = new Int32Array(nx * ny).fill(-1);
