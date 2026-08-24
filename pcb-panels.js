@@ -145,7 +145,12 @@
     const st = load();
     document.querySelectorAll('.panel-section[data-panel]').forEach(section => {
       const key = section.dataset.panel;
-      const title = section.dataset.panelTitle || key;
+      // 面板標題的 i18n key 寫在 data-panel-data-i18n-title（→ dataset.panelDataI18nTitle），
+      // 舊程式讀的卻是 dataset.panelTitle，從來沒有人設，所以一律 fallback 到
+      // 原始 key——選單上四種語言都只看得到 rules / stackup / emi 這種字。
+      const titleKey = section.dataset.panelDataI18nTitle || null;
+      const rawTitle = section.dataset.panelTitle || section.getAttribute('title') || key;
+      const title = titleKey ? T(titleKey) : rawTitle;
       const win = document.createElement('div');
       win.className = 'pcb-float';
       win.id = 'float-' + key;
@@ -155,11 +160,12 @@
         '<button class="pcb-float-x" type="button" aria-label="' + T('pp_close') + '">✕</button></div>' +
         '<div class="pcb-float-body"></div><div class="pcb-float-rs"></div>';
       win.querySelector('.pcb-float-title').textContent = title;
+      win.querySelector('.pcb-float-title').dataset.titleKey = titleKey || '';
       // 搬移原節點（保留所有既有事件與 id）
       win.querySelector('.pcb-float-body').appendChild(section);
       host.appendChild(win);
 
-      const p = { key, title, win, section, btn: null };
+      const p = { key, title, titleKey, rawTitle, win, section, btn: null };
       panels.set(key, p);
       makeDraggable(p);
       win.addEventListener('pointerdown', () => bringFront(win));
@@ -172,6 +178,22 @@
     });
 
     buildMenu(st);
+    document.addEventListener('vs-lang-change', relabelPanels);
+  }
+
+  const titleOf = p => (p.titleKey ? T(p.titleKey) : (p.rawTitle || p.key));
+
+  // 切語言時重貼標籤：這些字是 JS 產的，data-i18n 那套掃不到。
+  function relabelPanels() {
+    panels.forEach(p => {
+      const t = titleOf(p);
+      p.title = t;
+      const el = p.win.querySelector('.pcb-float-title');
+      if (el) el.textContent = t;
+      if (p.btn && p.btn.lastChild) p.btn.lastChild.textContent = t;
+    });
+    const mb = document.getElementById('pcbPanelMenuBtn');
+    if (mb) { mb.textContent = T('pp_panels'); mb.title = T('pp_panels_d'); }
   }
 
   function buildMenu(st) {
@@ -194,7 +216,7 @@
       item.className = 'pcb-menu-item';
       item.type = 'button';
       item.innerHTML = '<span class="tick"></span><span></span>';
-      item.lastChild.textContent = p.title;
+      item.lastChild.textContent = titleOf(p);
       item.addEventListener('click', () => setOpen(p.key, p.win.hidden));
       pop.appendChild(item);
       p.btn = item;

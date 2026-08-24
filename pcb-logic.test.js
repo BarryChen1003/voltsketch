@@ -47,10 +47,11 @@ require('./pcb-refboards.js');
 require('./pcb-history.js');
 require('./pcb-rules.js');
 require('./pcb-stackup.js');
+require('./pcb-fabs.js');
 
 // pcb.js 內部以「裸全域」引用這些（瀏覽器 window 屬性＝全域）；node 需手動鏡射到 global
 ['PcbHistory', 'FootprintGen', 'RefFP', 'PartsLib', 'PCB_REFBOARDS', 'IC_DATA',
- 'NetRules', 'Ratsnest', 'AutoRoute', 'Stackup', 'Padstack', 'Backdrill'].forEach(k => { global[k] = global.window[k]; });
+ 'NetRules', 'Ratsnest', 'AutoRoute', 'Stackup', 'Padstack', 'Backdrill', 'FabProfiles'].forEach(k => { global[k] = global.window[k]; });
 
 // ---------- 載入 pcb.js，但移除檔尾 init() ----------
 let src = fs.readFileSync('./pcb.js', 'utf8');
@@ -449,6 +450,112 @@ const minDistToSegs = (px, py, segs) =>
   const st2 = { layerStack: app.buildLayerStack(2) };
   eq(SK.load(st2).diel.length, 1, '15 縮回 2 層應只剩 1 層介電');
   localStorage.removeItem('vs-stackup-v1');
+}
+
+// 16) FabProfiles：中立多廠 DFM。重點是「未公開的欄位要誠實跳過」，不是硬湊數字
+{
+  const FP = window.FabProfiles;
+  ok(!!FP, 'FabProfiles 應載入');
+  const padAbs = (c, p) => ({ x: c.x + p.x, y: c.y + p.y });
+
+  // 每個 profile 都要有出處與擷取日期，否則規格無從查證
+  FP.list.forEach(p => {
+    ok(/^https?:\/\//.test(p.source || ''), `16 ${p.id} 應有官方出處 URL`);
+    ok(/^\d{4}-\d{2}-\d{2}$/.test(p.fetched || ''), `16 ${p.id} 應標擷取日期`);
+    ok(p.tiers && p.tiers.length > 0, `16 ${p.id} 應至少有一個檔位`);
+  });
+
+  // 檔位要依板層數選：OSH Park 2 層與 4 層線寬不同（6mil vs 5mil）
+  const osh = FP.byId('oshpark');
+  const t2 = FP.tierFor(osh, 2), t4 = FP.tierFor(osh, 4);
+  ok(Math.abs(t2.rules.minTrace - 0.1524) < 1e-6, '16 OSH Park 2 層最小線寬 6mil');
+  ok(Math.abs(t4.rules.minTrace - 0.127) < 1e-6, '16 OSH Park 4 層最小線寬 5mil');
+  eq(FP.tierFor(osh, 6), null, '16 OSH Park 不做 6 層，應回 null');
+  eq(FP.tierFor(FP.byId('pcbway'), 20), null, '16 PCBWay standard 檔上限 14 層');
+
+  // 一片乾淨的板：4 層、線寬 0.2、via 0.6/0.3、都離板邊夠遠 → 各廠都該過
+  const clean = {
+    boardWidth: 50, boardHeight: 40, layers: 4,
+    layerStack: app.buildLayerStack(4),
+    traces: [{ x1: -10, y1: 0, x2: 10, y2: 0, width: 0.2, layer: 'F.Cu', net: 'A' }],
+    vias: [{ x: 0, y: 5, od: 0.6, id: 0.3, net: 'A' }],
+    components: [], texts: []
+  };
+  const rJ = FP.check(clean, 'jlcpcb', padAbs);
+  ok(rJ.ok, '16 乾淨板在 JLCPCB 應通過');
+  eq(rJ.findings.filter(f => f.severity === 'error').length, 0, '16 乾淨板不應有 error');
+
+  // 線寬 0.08 < 各家下限（JLC/PCBWay 0.10、OSH 0.127、Seeed 0.1016）→ 全部要抓到
+  const thin = JSON.parse(JSON.stringify(clean));
+  thin.layerStack = app.buildLayerStack(4);
+  thin.traces[0].width = 0.08;
+  ['jlcpcb', 'pcbway', 'seeed'].forEach(id => {
+    const r = FP.check(thin, id, padAbs);
+    const f = r.findings.find(x => x.code === 'traceTooThin');
+    ok(!!f, `16 ${id} 應抓到線寬過細`);
+    ok(Math.abs(f.actual - 0.08) < 1e-9, `16 ${id} 應回報實際線寬 0.08`);
+    eq(f.severity, 'error', `16 ${id} 線寬過細屬 error`);
+  });
+
+  // 環寬：JLCPCB 4 層絕對下限 0.15、建議 0.20 → 0.17 應是 warn 而不是 error
+  const ring = JSON.parse(JSON.stringify(clean));
+  ring.layerStack = app.buildLayerStack(4);
+  ring.vias = [{ x: 0, y: 5, od: 0.64, id: 0.30, net: 'A' }];   // 環寬 0.17
+  const rr = FP.check(ring, 'jlcpcb', padAbs);
+  const fw = rr.findings.find(f => f.code === 'annularBelowRec');
+  ok(!!fw && fw.severity === 'warn', '16 環寬 0.17 應是「低於建議值」的 warn');
+  ok(rr.ok, '16 只有 warn 時整體仍算可製造');
+
+  // 環寬 0.10 < 0.15 → error
+  const ring2 = JSON.parse(JSON.stringify(ring));
+  ring2.layerStack = app.buildLayerStack(4);
+  ring2.vias = [{ x: 0, y: 5, od: 0.50, id: 0.30, net: 'A' }];
+  const rr2 = FP.check(ring2, 'jlcpcb', padAbs);
+  ok(rr2.findings.some(f => f.code === 'annularTooThin' && f.severity === 'error'), '16 環寬 0.10 應是 error');
+  ok(!rr2.ok, '16 有 error 時不可宣稱可製造');
+
+  // 誠實條款：Seeed 官方頁沒公開環寬/板邊/絲印 → 必須列進 skipped，不可拿別家的值頂替
+  const rS = FP.check(clean, 'seeed', padAbs);
+  ['minAnnular', 'minEdgeClearance', 'minSilkHeight'].forEach(k =>
+    ok(rS.skipped.indexOf(k) >= 0, `16 Seeed 未公開 ${k}，應列入 skipped`));
+  ok(!rS.findings.some(f => f.code === 'annularTooThin' || f.code === 'edgeClearance'),
+     '16 未公開的規則不可產生 finding（等於編數字）');
+
+  // 板邊淨空：走線壓到離邊 0.1mm，JLCPCB(0.20) 與 OSH Park(0.381) 都該抓，PCBWay(0.25) 也是
+  const edge = JSON.parse(JSON.stringify(clean));
+  edge.layerStack = app.buildLayerStack(4);
+  edge.traces = [{ x1: -24.95, y1: 0, x2: 0, y2: 0, width: 0.2, layer: 'F.Cu', net: 'A' }];
+  const re1 = FP.check(edge, 'jlcpcb', padAbs);
+  ok(re1.findings.some(f => f.code === 'edgeClearance'), '16 貼板邊走線 JLCPCB 應抓到');
+
+  // 超出板廠尺寸上限
+  const big = JSON.parse(JSON.stringify(clean));
+  big.layerStack = app.buildLayerStack(4);
+  big.boardWidth = 900; big.boardHeight = 700;
+  ok(FP.check(big, 'jlcpcb', padAbs).findings.some(f => f.code === 'boardTooBig'), '16 900×700 超過 JLCPCB 上限');
+
+  // 層數超過該廠能力 → 直接回 layerCount error，不是靜靜通過
+  const many = JSON.parse(JSON.stringify(clean));
+  many.layerStack = app.buildLayerStack(20);
+  const rM = FP.check(many, 'oshpark', padAbs);
+  ok(!rM.ok && rM.findings.some(f => f.code === 'layerCount'), '16 20 層在 OSH Park 應回 layerCount error');
+
+  // compare：能做的排前面
+  const cmp = FP.compare(thin, padAbs);
+  eq(cmp.length, FP.list.length, '16 compare 應涵蓋所有板廠');
+  // 可製造的排前面；同組內「公開規格越完整」排越前。
+  // 刻意不讓 error 數當第一鍵：公開得少的廠可檢查點少、錯誤自然少，
+  // 用 error 數排會把資料最不透明的廠捧到第一名（Seeed 沒公開環寬/板邊就是這種情形）。
+  const errCount = r => r.findings.filter(f => f.severity === 'error').length;
+  for (let i = 1; i < cmp.length; i++) {
+    const a = cmp[i - 1], b = cmp[i];
+    ok(!(b.ok && !a.ok), '16 compare 應把可製造的排在前面');
+    if (a.ok === b.ok) ok(a.skipped.length <= b.skipped.length, '16 同組內揭露越完整應排越前');
+  }
+  const seeed = cmp.findIndex(r => r.profile.id === 'seeed');
+  const jlc = cmp.findIndex(r => r.profile.id === 'jlcpcb');
+  ok(jlc < seeed, '16 Seeed 未公開 4 項，不可因錯誤數少就排在 JLCPCB 之前');
+  ok(errCount(cmp[seeed]) <= errCount(cmp[jlc]), '16 （前提）Seeed 的 error 數確實比較少，排序仍不該被它騙過去');
 }
 
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
