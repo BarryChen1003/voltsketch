@@ -1,4 +1,4 @@
-# NEW SESSION — 接手指南（2026-08-24）
+# NEW SESSION — 接手指南（2026-08-24，第二次更新）
 
 先讀本檔，再讀 `HANDOFF.md`（長期規矩、開發環境、踩過的坑）。兩份衝突時**以本檔為準**。
 
@@ -26,6 +26,9 @@
 10. **新視窗裡的 inline script 與 inline onclick 一律不會執行**（繼承本站 CSP）。
     用 `window.open` + `document.write` 開出來的頁面，動作要由開啟它的那一頁掛 listener 或直接呼叫。
     已中招兩次：2nd source 報告的列印鈕、線路圖的 PDF 匯出。
+11. **`core.autocrlf=true`：本機 HTML 是 CRLF，git 與線上是 LF**。任何「比對檔案位元組」的
+    檢查器都要先 `.replace(/\r\n/g, '\n')`。`csp-hash.js` 已修（2026-08-24）；
+    再寫類似的工具記得比照，否則會出現「本機紅、線上綠」或更糟的「本機重算後上線全炸」。
 
 ---
 
@@ -51,8 +54,10 @@
 
 | 檔 | 行數 | 內容 | 有沒有測試 |
 |---|---|---|---|
-| `pcb.js` | 3036 | 編輯器主體：擺件、走線、鋪銅、DRC、autoRoute、差分對、等長調諧、KiCad 匯出 | 🟡 `pcb-logic.test.js` 只測 9 個純邏輯點 |
-| `pcb-stackup.js` | 228 | 疊層編輯器、Via padstack、Backdrill 殘樁計算 | ❌ 無 |
+| `pcb.js` | 3038 | 編輯器主體：擺件、走線、鋪銅、DRC、autoRoute、差分對、等長調諧、KiCad 匯出 | 🟡 `pcb-logic.test.js` 148 條斷言（§8 階段 A 做掉一半） |
+| `pcb-stackup.js` | 290 | 疊層編輯器、Via padstack、Backdrill 殘樁、`geomFor()` 層感知阻抗幾何 | ✅ 背鑽與 geomFor 已測 |
+| `pcb-fabs.js` | 250 | **中立多廠 DFM**：JLCPCB／PCBWay／OSH Park／Seeed 能力檔＋檢查器 | ✅ 含「未公開欄位不可編數字」的斷言 |
+| `pcb-rules.js` | 373 | NetRules、Ratsnest、AutoRoute（A* 單層繞線） | ✅ 淨空遵從、板邊淨空已測 |
 | `footprint-gen.js` | 268 | 依封裝產 footprint | 🟡 `reffp-check.js` 只驗公版對得上 |
 | `supabase/functions/_shared/gerber.mjs` | 592 | Gerber / Excellon / CPL / IPC 產生（後端） | ✅ `gerber-check.js` 473 條斷言、跨 8 片公版 |
 | `pcb-refboards.js` | — | 8 片參考公版（2／4／8 層） | ✅ 被 gerber-check 用 |
@@ -218,14 +223,32 @@ done
 
 每一項的驗收條件都要**可判定真假**，不接受「看起來正常」。
 
+**2026-08-24 進度**：A-1、A-5、A-6 已完成（見下表 ✅）；A-2、A-3、A-4 仍未動。
+`pcb-logic.test.js` 從 9 個邏輯點長到 148 條斷言，第 9～16 節是這一輪加的。
+
 | # | 項目 | 驗收條件 |
 |---|---|---|
-| A-1 | **等長調諧 `meanderTune()`** | 新增 `pcb-length.test.js`：給定走線與目標長度，蛇形後的**實際長度**與目標差 < 0.05mm；bump 數與補償量的數學要有斷言；補不到目標時要誠實回報而不是靜默 |
+| A-1 ✅ | **等長調諧 `meanderTune()`** | （實作在 `pcb-logic.test.js` 第 11 節，沒另開檔）給定走線與目標長度，蛇形後的**實際長度**與目標差 < 0.05mm；bump 數與補償量的數學要有斷言；補不到目標時要誠實回報而不是靜默 |
 | A-2 | **差分對 `diffGapOf()` 與收尾 fanout** | 間距優先序（Constraint Manager class pairGap > NetRules gap > 0.2mm）逐條測；收尾展開後兩條線**平行且等長**，端點落在 pad 上 |
 | A-3 | **走線規則稽核 `checkTraceRules()`** | 線寬下限、長度上限、差分長度差三種違規各造一個案例，要抓得到；合規的案例不可誤報 |
 | A-4 | **`runDrc()`** | 間距不足、線壓 pad、線出板框、via 落在禁佈區——各一個案例。**沿用線路圖那次的教訓：先確認 8 片公版自己過得了 DRC** |
-| A-5 | **疊層與背鑽 `pcb-stackup.js`** | `buildLayerStack(n)` 對 n=2/4/6/8 的層序與命名要對；Backdrill 殘樁長度＝板厚 − 目標層深度，數學要有斷言 |
-| A-6 | **`autoRoute()`** | 完成率要誠實（回報的成功數＝實際連上的數）；**不准產生短路或穿越禁佈區**；`cap=30` 這個上限要嘛拿掉、要嘛在 UI 講清楚 |
+| A-5 ✅ | **疊層與背鑽 `pcb-stackup.js`** | `buildLayerStack(n)` 對 n=2/4/6/8 的層序與命名要對；Backdrill 殘樁長度＝板厚 − 目標層深度，數學要有斷言 |
+| A-6 ✅ | **`autoRoute()`** | 完成率要誠實（回報的成功數＝實際連上的數）；**不准產生短路或穿越禁佈區**；`cap=30` 這個上限要嘛拿掉、要嘛在 UI 講清楚（**淨空已修並鎖住；cap=30 仍在，只在 toast 提示**） |
+
+### 主軸：中立多廠 DFM（2026-08-24 使用者選定）
+
+比不贏 EasyEDA 的地方不要比：它有 LCSC 百萬料號、JLCPCB 一鍵下單、Pro 版撐 5000 元件 / 10000 pad，
+我們 `autoRoute` 單層、`cap=30`。那是垂直整合，不是功能。
+
+要打的是它**結構上不能跟進**的：EasyEDA 是嘉立創的前端，永遠不會告訴你 PCBWay 這片更便宜或做得了。
+
+| 進度 | 項目 |
+|---|---|
+| ✅ | 四廠能力檔（官方出處＋擷取日期）、DFM 檢查器、四語比較面板 |
+| ✅ | 誠實條款：官方未公開的欄位一律 null／skipped，有 mutation 測試守著 |
+| ⬜ | **報價比較**——刻意還沒做。板廠報價是動態的，靜態表會過期騙人；要嘛接官方 API、要嘛只給「成本驅動因子」。這題要先決定路線 |
+| ⬜ | 依選定板廠**回填 DRC 規則**（現在是兩套規則各自為政：DRC 面板一套、板廠檔一套） |
+| ⬜ | 匯出 Gerber 前自動跑一次選定板廠的 DFM，不過就擋下來 |
 
 ### 階段 B：功能強化（A 有網子之後才動）
 
@@ -259,6 +282,10 @@ Edge Function 500,000 次/月、MAU 50,000、閒置暫停 1 週（`keepalive.yml
 
 ## 教訓
 
+- 2026-08-24 | CSP 雜湊 | `csp-hash.js` 直接雜湊工作區位元組，Windows 的 CRLF 讓 16 段只有 1 段命中；照「改完 HTML 要重跑」在本機重算會把 CRLF 雜湊寫進 `_headers`，上線後 inline script 全被擋 | 任何比對檔案內容的檢查器一律先正規化換行
+- 2026-08-24 | 面板選單 | 標題 i18n key 存在 `data-panel-data-i18n-title`，程式讀的是 `dataset.panelTitle`（沒人設），四語選單一路顯示 `rules`／`stackup` 這種原始 id | JS 產生的字沒被 `data-i18n` 掃到，要自己在 `vs-lang-change` 重貼
+- 2026-08-24 | 排序會說謊 | 多廠比較若以「錯誤數」排序，公開規格最少的廠（Seeed 沒公開環寬／板邊）錯誤最少，被捧成第一名 | 比較類功能先問「這個排序會不會獎勵資訊不透明」
+- 2026-08-24 | 面板快照 | 疊層面板把 `sk`／`ids` 抓在 `renderPanel` 當下的閉包裡，板層數改了就過期，存檔還會把 3 層介電覆蓋成 1 層 | 面板事件處理器要當場重讀 state，不要信 render 當時的快照
 - 2026-08-21 | 對外文案 | 把「直流模擬：節點電壓、支路電流」寫進介紹文，一實測發現是單迴路估算、根本不看接線 | 要寫進文案的每一句功能描述，先在瀏覽器跑一次；跑不出來就不要寫
 - 2026-08-21 | 內建範例 | 範例電路的導線端點差幾個 px 沒落在腳位上，按「範例」再按 DRC 出 9 個警告 | 內建範例／公版要納入自動檢查，它是新訪客看到的第一個東西
 - 2026-08-21 | 新視窗 | `window.open`＋`document.write` 出來的頁面繼承本站 CSP，inline script／onclick 全部不執行 | 那種頁面的互動一律由開啟者掛 listener；已中招兩次（報告列印、PDF 匯出）
