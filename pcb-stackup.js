@@ -30,6 +30,40 @@
       return d;
     },
     save(d) { store.set(SK_KEY, d); },
+    // 依銀層推導阻抗幾何（純函數，node 可測）。
+    // 外層 → microstrip；內層 → stripline。h 用 IPC-2141 的定義：單側介電厚。
+    // 回 {kind, h, er, t, ref, warn[]}；推不出來回 null。
+    // warn: 'asym' 上下介電不對稱（對稱 stripline 公式不適用）
+    //       'refsig' 參考層是訊號層，不是完整平面，回流路徑不連續
+    geomFor(d, state, layerId) {
+      const ids = copperIds(state);
+      const i = ids.indexOf(layerId);
+      if (i < 0 || ids.length < 2) return null;
+      const stack = state.layerStack || [];
+      const typeOf = id => (stack.find(l => l.id === id) || {}).type || 'Signal';
+      const t = (d.oz[layerId] || 1) * OZ_MM;
+      const above = i > 0 ? d.diel[i - 1] : null;          // 本層與上一銀層之間
+      const below = i < ids.length - 1 ? d.diel[i] : null; // 本層與下一銀層之間
+      const warn = [];
+      let kind, h, er, refIds;
+      if (i === 0 || i === ids.length - 1) {
+        kind = 'microstrip';
+        const die = i === 0 ? below : above;
+        if (!die || !(die.t > 0)) return null;
+        h = die.t; er = die.er;
+        refIds = [i === 0 ? ids[1] : ids[ids.length - 2]];
+      } else {
+        kind = 'stripline';
+        if (!above || !below || !(above.t > 0) || !(below.t > 0)) return null;
+        h = (above.t + below.t) / 2;
+        er = (above.er * above.t + below.er * below.t) / (above.t + below.t);
+        refIds = [ids[i - 1], ids[i + 1]];
+        if (Math.abs(above.t - below.t) / h > 0.2) warn.push('asym');
+      }
+      if (refIds.some(id => typeOf(id) === 'Signal')) warn.push('refsig');
+      return { kind, h, er, t, ref: refIds.join('/'), warn };
+    },
+
     totalThickness(d, state) {
       const ids = copperIds(state);
       let t = 0;
@@ -177,6 +211,14 @@
       </div>`;
 
     const persistSk = () => {
+      // 面板開著時板層數可能被改掉（套用板框設定）。不先對齊的話，
+      // DOM 上新多出來的介電列會因為 sk.diel[i] 不存在而被丟掉，
+      // 緊接著 Stackup.save 又把舊的短陣列寫回 localStorage，覆蓋掉正確資料。
+      const curIds = copperIds(st);
+      curIds.forEach(id => { if (!(sk.oz[id] > 0)) sk.oz[id] = 1; });
+      const need = Math.max(0, curIds.length - 1);
+      while (sk.diel.length < need) sk.diel.push({ t: 0.2, er: 4.4 });
+      sk.diel.length = need;
       host.querySelectorAll('.sk-oz').forEach(s => sk.oz[s.dataset.id] = parseFloat(s.value) || 1);
       host.querySelectorAll('.sk-t').forEach(inp => { const i = +inp.dataset.i; if (sk.diel[i]) sk.diel[i].t = parseFloat(inp.value) || 0.2; });
       host.querySelectorAll('.sk-er').forEach(inp => { const i = +inp.dataset.i; if (sk.diel[i]) sk.diel[i].er = parseFloat(inp.value) || 4.4; });
@@ -193,11 +235,21 @@
     });
     host.querySelector('#skToImp').addEventListener('click', () => {
       persistSk();
+      // 舊版固定拿 diel[0] 與頂層銀，不管使用者實際在哪一層走線，
+      // 內層走線會拿到錯的 h/εr 而且結構還用 microstrip。改成依當前畫線層推導。
+      const layer = (pcbApp.state && pcbApp.state.traceLayer) || copperIds(st)[0];
+      const gm = Stackup.geomFor(sk, st, layer);
+      if (!gm) { if (pcbApp.toast) pcbApp.toast(T('sk_imp_nogeom', { layer }), 'warn'); return; }
       const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
-      set('impH', sk.diel[0] ? sk.diel[0].t : 0.2);
-      set('impEr', sk.diel[0] ? sk.diel[0].er : 4.4);
-      set('impT', ((sk.oz[ids[0]] || 1) * OZ_MM).toFixed(3));
-      if (pcbApp.toast) pcbApp.toast(T('sk_applied'), 'info');
+      const kindSel = document.getElementById('impKind');
+      const wantDiff = kindSel && /^diff-/.test(kindSel.value);
+      set('impH', +gm.h.toFixed(4));
+      set('impEr', +gm.er.toFixed(3));
+      set('impT', gm.t.toFixed(3));
+      if (kindSel) kindSel.value = (wantDiff ? 'diff-' : '') + gm.kind;
+      if (pcbApp.runImpedance) pcbApp.runImpedance();
+      const notes = gm.warn.map(w => T('sk_imp_' + w)).join('　│ ');
+      if (pcbApp.toast) pcbApp.toast(T('sk_applied', { layer, kind: gm.kind, ref: gm.ref }) + (notes ? ' │ ' + notes : ''), gm.warn.length ? 'warn' : 'info');
     });
     host.querySelector('#psApply').addEventListener('click', () => {
       const p = Padstack.load();

@@ -2213,7 +2213,11 @@ const pcbApp = {
     const out = document.getElementById('impOut');
     if (!out) return;
     if (!r) { out.textContent = pcbT('pj_imp_bad'); return; }
-    out.textContent = `Z0 ≈ ${r.z0.toFixed(1)} Ω` + (r.zdiff ? `；Zdiff ≈ ${r.zdiff.toFixed(1)} Ω` : '');
+    // 誤差帶要講出來：IPC-2141 是近似式，只給單一數字會讓使用者以為可以直接下單。
+    const band = z => `${(z * 0.9).toFixed(1)}–${(z * 1.1).toFixed(1)}`;
+    out.textContent = `Z0 ≈ ${r.z0.toFixed(1)} Ω (${band(r.z0)})`
+      + (r.zdiff ? `；Zdiff ≈ ${r.zdiff.toFixed(1)} Ω (${band(r.zdiff)})` : '')
+      + ` │ ${pcbT('pj_imp_tol')}`;
   },
 
   populateTraceLayerSel() {

@@ -55,7 +55,13 @@ let count = 0;
 const inlineHandlers = [];
 
 for (const rel of pages) {
-  const src = fs.readFileSync(path.join(root, rel), 'utf8');
+  // CRLF → LF 正規化。Windows 上 core.autocrlf=true 會把 HTML 簽出成 CRLF，
+  // 但 git（與 Cloudflare 上實際送出的檔）存的是 LF。不正規化的話：
+  //   1) --check 在 Windows 一律假紅（16 段只有 1 段命中）；
+  //   2) 更糟的是照著「改完 HTML 要重跑」在 Windows 執行一次重算，
+  //      會把 CRLF 雜湊寫進 _headers，上線後每一段 inline script 都被 CSP 擋掉。
+  // 瀏覽器算的是送出去的位元組＝LF，所以一律以 LF 為準。
+  const src = fs.readFileSync(path.join(root, rel), 'utf8').replace(/\r\n/g, '\n');
   for (const m of src.matchAll(INLINE)) {
     if (isDataBlock(m[1])) continue;
     // CSP 的雜湊算的是「元素內的原始文字」，一個位元組都不能差

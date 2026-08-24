@@ -5,7 +5,8 @@
  *       直接測純邏輯方法與狀態變化。渲染類方法覆寫成 no-op。
  * 涵蓋：nextRef / snapTarget / traceHit / traceEndpointHit / padAbs /
  *       PcbHistory undo-redo / pasteClipboard / 多選刪除 filter / refBoardParts /
- *       AutoRoute 淨空遵從 / autoRoute 讀 DRC 規則 / meanderTune 長度數學 / Backdrill 殘樁。
+ *       AutoRoute 淨空遵從 / autoRoute 讀 DRC 規則 / meanderTune 長度數學 / Backdrill 殘樁 /
+ *       Stackup.geomFor 層感知阻抗幾何 / calcImpedance 已知值與單調性。
  * 過 = exit 0；任何斷言失敗 = exit 1。
  */
 'use strict';
@@ -337,6 +338,117 @@ const minDistToSegs = (px, py, segs) =>
     traces: copper.map((L, i) => ({ x1: 0, y1: 0, x2: i + 1, y2: 0, layer: L, net: 'D1' }))
   };
   eq(BD.compute(stFull, copper, null).length, 0, '12 貫穿全層的 via 無殘樁');
+}
+
+// 13) Stackup.geomFor：阻抗幾何必須跟著「實際走線層」跑，不是永遠拿頂層
+{
+  const SK = window.Stackup;
+  ok(!!SK, 'Stackup 應載入');
+  const st4 = { layerStack: app.buildLayerStack(4) };
+  const ids4 = st4.layerStack.filter(l => l.kind === 'copper').map(l => l.id);
+  eq(ids4.join(','), 'F.Cu,In1.Cu,In2.Cu,B.Cu', '13 4 層銅層順序');
+  const d4 = {
+    oz: { 'F.Cu': 1, 'In1.Cu': 0.5, 'In2.Cu': 0.5, 'B.Cu': 1 },
+    diel: [{ t: 0.2, er: 4.4 }, { t: 1.0, er: 4.6 }, { t: 0.2, er: 4.4 }]
+  };
+
+  // 外層 → microstrip，h 取緊鄰的第一層介電，參考層是 In1（GND 平面）
+  const gTop = SK.geomFor(d4, st4, 'F.Cu');
+  ok(!!gTop, '13 F.Cu 應推得出幾何');
+  eq(gTop.kind, 'microstrip', '13 外層應為 microstrip');
+  ok(Math.abs(gTop.h - 0.2) < 1e-9, '13 F.Cu 的 h 應取第 1 介電層 0.2mm');
+  ok(Math.abs(gTop.er - 4.4) < 1e-9, '13 F.Cu 的 εr 應為 4.4');
+  ok(Math.abs(gTop.t - 0.035) < 1e-9, '13 F.Cu 銅厚 1oz = 0.035mm');
+  eq(gTop.ref, 'In1.Cu', '13 F.Cu 參考層為 In1.Cu');
+  eq(gTop.warn.length, 0, '13 參考 GND 平面時不應有警告');
+
+  // 底層 → 取最後一層介電，銅厚各自算
+  const gBot = SK.geomFor(d4, st4, 'B.Cu');
+  eq(gBot.kind, 'microstrip', '13 B.Cu 應為 microstrip');
+  ok(Math.abs(gBot.h - 0.2) < 1e-9, '13 B.Cu 的 h 應取最後一層介電');
+  eq(gBot.ref, 'In2.Cu', '13 B.Cu 參考層為 In2.Cu');
+
+  // 內層 → stripline，h 取上下平均、εr 取厚度加權；不對稱與參考訊號層都要示警
+  const gIn = SK.geomFor(d4, st4, 'In1.Cu');
+  eq(gIn.kind, 'stripline', '13 內層應為 stripline');
+  ok(Math.abs(gIn.h - 0.6) < 1e-9, `13 In1 的 h 應為上下平均 0.6（得 ${gIn.h}）`);
+  ok(Math.abs(gIn.er - (4.4 * 0.2 + 4.6 * 1.0) / 1.2) < 1e-9, '13 In1 的 εr 應為厚度加權平均');
+  ok(Math.abs(gIn.t - 0.0175) < 1e-9, '13 In1 銅厚 0.5oz = 0.0175mm');
+  eq(gIn.ref, 'F.Cu/In2.Cu', '13 In1 參考層為上下兩銅層');
+  ok(gIn.warn.indexOf('asym') >= 0, '13 上下介電 0.2 vs 1.0 應報 asym');
+  ok(gIn.warn.indexOf('refsig') >= 0, '13 參考層含訊號層 F.Cu 應報 refsig');
+
+  // 2 層板：參考層是另一面訊號層，必須示警（回流路徑不連續）
+  const st2 = { layerStack: app.buildLayerStack(2) };
+  const d2 = { oz: { 'F.Cu': 1, 'B.Cu': 1 }, diel: [{ t: 1.5, er: 4.5 }] };
+  const g2 = SK.geomFor(d2, st2, 'F.Cu');
+  ok(Math.abs(g2.h - 1.5) < 1e-9, '13 2 層板 h = 1.5mm');
+  ok(g2.warn.indexOf('refsig') >= 0, '13 2 層板參考面是訊號層，應示警');
+
+  // 不存在的層回 null，不亂編
+  eq(SK.geomFor(d4, st4, 'In7.Cu'), null, '13 未知層應回 null');
+}
+
+// 14) calcImpedance：已知值 + 單調性（公式接錯參數會被抓到）
+{
+  const ci = app.calcImpedance.bind(app);
+  // microstrip w=0.35 h=0.2 t=0.035 εr=4.4 → 87/√5.81·ln(1.196/0.315) ≈ 48.2Ω
+  const z = ci('microstrip', 0.35, 0.2, 0.035, 4.4);
+  ok(z && Math.abs(z.z0 - 48.2) < 0.5, `14 已知 microstrip 應約 48.2Ω（得 ${z && z.z0.toFixed(2)}）`);
+
+  // 單調性：線寬↑ → Z0↓；介電厚↑ → Z0↑；εr↑ → Z0↓
+  const zw = ci('microstrip', 0.50, 0.2, 0.035, 4.4).z0;
+  const zh = ci('microstrip', 0.35, 0.3, 0.035, 4.4).z0;
+  const ze = ci('microstrip', 0.35, 0.2, 0.035, 4.9).z0;
+  ok(zw < z.z0, `14 線寬變大 Z0 應變小（${zw.toFixed(2)} < ${z.z0.toFixed(2)}）`);
+  ok(zh > z.z0, `14 介電變厚 Z0 應變大（${zh.toFixed(2)} > ${z.z0.toFixed(2)}）`);
+  ok(ze < z.z0, `14 εr 變大 Z0 應變小（${ze.toFixed(2)} < ${z.z0.toFixed(2)}）`);
+
+  // 同幾何下 stripline 應低於 microstrip（兩面被平面夾住，電容大）
+  const sl = ci('stripline', 0.35, 0.2, 0.035, 4.4).z0;
+  ok(sl < z.z0, `14 同幾何 stripline 應低於 microstrip（${sl.toFixed(2)} < ${z.z0.toFixed(2)}）`);
+
+  // 差分：Zdiff < 2×Z0，且間距拉開會趨近 2×Z0
+  const dNear = ci('diff-microstrip', 0.35, 0.2, 0.035, 4.4, 0.15);
+  const dFar = ci('diff-microstrip', 0.35, 0.2, 0.035, 4.4, 0.60);
+  ok(dNear.zdiff < 2 * dNear.z0, '14 Zdiff 應小於 2×Z0（耦合拉低）');
+  ok(dFar.zdiff > dNear.zdiff, `14 間距拉開 Zdiff 應變大（${dFar.zdiff.toFixed(2)} > ${dNear.zdiff.toFixed(2)}）`);
+  ok(dFar.zdiff < 2 * dFar.z0, '14 間距再大仍不應超過 2×Z0');
+
+  // 參數不合法要回 null，不回 NaN
+  eq(ci('microstrip', 0, 0.2, 0.035, 4.4), null, '14 w=0 應回 null');
+  eq(ci('microstrip', 0.35, 0.2, 0.035, 0.5), null, '14 εr<1 應回 null');
+  eq(ci('diff-microstrip', 0.35, 0.2, 0.035, 4.4), null, '14 差分缺 s 應回 null');
+}
+
+// 15) 板層數變多後，疊層資料要對齊銅層數（瀏覽器實測抓到的洞）
+//     舊行為：面板開著時把板子從 2 層改成 4 層，疊層仍是 1 層介電，
+//     內層阻抗推導直接回 null，而且存檔會把正確的 3 層介電覆蓋成 1 層。
+{
+  const SK = window.Stackup;
+  const st4 = { layerStack: app.buildLayerStack(4) };
+  // 模擬「這片板本來是 2 層」留下的舊資料
+  localStorage.setItem('vs-stackup-v1', JSON.stringify({ oz: { 'F.Cu': 1, 'B.Cu': 1 }, diel: [{ t: 1.5, er: 4.5 }] }));
+
+  const loaded = SK.load(st4);
+  eq(loaded.diel.length, 3, '15 4 層板應補齊成 3 層介電');
+  ok(loaded.diel.every(d => d.t > 0 && d.er > 1), '15 補出來的介電層要有合法預設值');
+  ['F.Cu', 'In1.Cu', 'In2.Cu', 'B.Cu'].forEach(id => ok(loaded.oz[id] > 0, `15 ${id} 應有銅厚預設`));
+  ok(Math.abs(loaded.diel[0].t - 1.5) < 1e-9, '15 既有的第 1 層介電值不可被覆蓋');
+
+  // 對齊後內層才推得出幾何（沒對齊會是 null）
+  const gIn = SK.geomFor(loaded, st4, 'In1.Cu');
+  ok(!!gIn, '15 對齊後內層應推得出阻抗幾何');
+  eq(gIn.kind, 'stripline', '15 內層應為 stripline');
+
+  // 反向：沒對齊的短陣列就是會回 null，這正是瀏覽器上看到的症狀
+  eq(SK.geomFor({ oz: { 'In1.Cu': 1 }, diel: [{ t: 1.5, er: 4.5 }] }, st4, 'In1.Cu'), null,
+     '15 介電層數不足時應誠實回 null，不是硬編一個數字');
+
+  // 縮回 2 層要截斷，不留下多餘介電層
+  const st2 = { layerStack: app.buildLayerStack(2) };
+  eq(SK.load(st2).diel.length, 1, '15 縮回 2 層應只剩 1 層介電');
+  localStorage.removeItem('vs-stackup-v1');
 }
 
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
