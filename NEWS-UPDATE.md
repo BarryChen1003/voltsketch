@@ -11,7 +11,8 @@
 | `news` | 媒體報導、廠商新聞稿、新產品、商業消息 | **每天 09:00 / 12:00 / 21:00**（來源橫跨美台日韓中，發布時間不同） | `hardwareai-news-daily` |
 | `paper` | 期刊論文、研討會／論壇發表（ISSCC、APEC、PCIM、EMC+SIPI、ECTC、DesignCon…） | **每月 1 號 09:00** | `hardwareai-news-monthly` |
 
-兩支都**直接 push main**（使用者 2026-08-14 決定），GitHub Pages 約一分鐘後生效。
+兩支都**直接 push main**（使用者 2026-08-14 決定）。main 由 Cloudflare Workers 自動部署到
+<https://hardware-ai.org/news.html>，約一分鐘後生效（2026-08-24 實測：push 後線上 `news-data.js` 已更新）。
 沒有新項目就什麼都不做——不 commit、不 push。一天三次，大多數時候本來就該是「沒有新項目」。
 **去重是每日任務最容易出事的地方**：同一件事會在不同媒體以不同標題與 URL 出現，寫之前先比對現有的 `id` 與 `url`。
 
