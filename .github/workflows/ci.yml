@@ -77,6 +77,10 @@ jobs:
       - name: crossprobe（選取連動）
         run: node crossprobe.test.js
 
+      # 2c-9) STEP 3D 匯出：參照完整性、流形性（每條邊剛好兩用且反向）、尤拉示性數
+      - name: step（3D 匯出）
+        run: node step.test.js
+
       # 2d) i18n key 完整性：pcbT/I18N.t 用到的 key 必須有定義（防 UI 顯示原始 key）
       - name: i18n-check（key 完整性）
         run: node i18n-check.js

@@ -900,6 +900,12 @@
             </div>
             <div id="dxfOut" style="font-size:11px;opacity:.85;margin-top:4px"></div>
 
+            <div style="display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:6px;align-items:end;font-size:12px">
+              <label style="display:grid;gap:2px"><span data-i18n="step_thick">板厚 (mm)</span><input type="number" id="stepThick" value="1.6" step="0.1" min="0.2" style="padding:3px"></label>
+              <button class="small-button" id="stepExport" data-i18n="step_export">匯出 STEP (3D)</button>
+            </div>
+            <div id="stepOut" style="font-size:11px;opacity:.85;margin-top:4px"></div>
+
             <div style="font-size:12px;font-weight:600;margin-top:4px" data-i18n="mfg_td">淚滴</div>
             <div style="display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:end;font-size:12px">
               <label style="display:grid;gap:2px"><span data-i18n="mfg_td_ratio">長度 / pad 半徑</span><input type="number" id="tdRatio" value="2" step="0.1" min="1" style="padding:3px"></label>
@@ -1004,7 +1010,7 @@
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./observe.js?v=1"></script>
     <script src="./auth.js?v=2026-08-18a"></script>
-    <script src="./i18n.js?v=2026-08-25d"></script>
+    <script src="./i18n.js?v=2026-08-25e"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
@@ -1019,14 +1025,15 @@
     <script src="./pcb-rules.js?v=6"></script>
     <script src="./pcb-3d.js?v=3"></script>
     <script src="./pcb-crossprobe.js?v=1"></script>
-    <script src="./pcb.js?v=42"></script>
+    <script src="./pcb.js?v=43"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-07-16a"></script>
     <script src="./pcb-stackup.js?v=2026-08-24b"></script>
     <script src="./pcb-fabs.js?v=4"></script>
-    <script src="./pcb-mfg.js?v=2"></script>
+    <script src="./pcb-mfg.js?v=3"></script>
     <script src="./pcb-sch2pcb.js?v=2"></script>
     <script src="./pcb-dxf.js?v=1"></script>
+    <script src="./pcb-step.js?v=1"></script>
     <!-- 面板停靠：設定型 section 從側欄搬進可拖曳浮動視窗，由「▤ 面板」選單開關 -->
     <script src="./pcb-panels.js?v=5"></script>
 </body>

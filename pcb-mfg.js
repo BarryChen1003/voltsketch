@@ -488,6 +488,29 @@
       say('dxfOut', T('dxf_exported'));
     });
 
+    on('stepExport', () => {
+      if (!window.PcbStep) return;
+      const th = num('stepThick', 1.6);
+      const r = window.PcbStep.build(app.state, { thickness: th, name: 'hardwareai-board' });
+      const v = window.PcbStep.verify(r.text);
+      if (!v.ok) {   // 產出壞檔就不要給使用者，寧可什麼都不給
+        say('stepOut', T('step_bad', { why: v.problems.map(x => x.code).join(', ') }));
+        toast(T('step_bad', { why: v.problems.map(x => x.code).join(', ') }), 'error');
+        return;
+      }
+      const blob = new Blob([r.text], { type: 'application/step' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'board-3d.step';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      let msg = T('step_done', { n: r.stats.solids, p: r.stats.parts, e: r.entities, th });
+      if (r.warnings.some(x => x.code === 'outlineNotClosed')) msg += ' │ ' + T('step_openoutline');
+      msg += ' │ ' + T('step_caveat');
+      say('stepOut', msg);
+      toast(msg, r.warnings.length ? 'warn' : 'info');
+    });
+
     // --- 淚滴 ---
     on('tdRun', () => {
       app.hist();
