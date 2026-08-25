@@ -434,8 +434,61 @@
       return { prof, tier: FabProfiles.tierFor(prof, cu) };
     };
 
-    // --- 淚滴 ---
     const on = (id, fn) => { const el = $(id); if (el && !el._mfgBound) { el._mfgBound = true; el.addEventListener('click', fn); } };
+
+    // --- 板框 DXF ---
+    const dxfFile = $('dxfFile');
+    if (dxfFile && !dxfFile._mfgBound) {
+      dxfFile._mfgBound = true;
+      dxfFile.addEventListener('change', e => {
+        const f = e.target.files && e.target.files[0];
+        if (!f || !window.PcbDxf) return;
+        const rd = new FileReader();
+        rd.onload = () => {
+          const layer = ($('dxfLayer') || {}).value || '';
+          const unit = ($('dxfUnit') || {}).value || 'mm';
+          const r = window.PcbDxf.parse(String(rd.result), { layer: layer.trim() || null, assumeUnit: unit });
+          if (!r.segs.length) { say('dxfOut', T('dxf_empty')); toast(T('dxf_empty'), 'warn'); return; }
+          const b = window.PcbDxf.toBoard(r.segs);
+          const chk = window.PcbDxf.checkClosed(r.segs, 0.01);
+          app.hist();
+          app.state.edgeSegs = b.edgeSegs;
+          app.state.boardWidth = Math.max(1, Math.ceil(b.w));
+          app.state.boardHeight = Math.max(1, Math.ceil(b.h));
+          const wI = $('boardWidth'), hI = $('boardHeight');
+          if (wI) wI.value = app.state.boardWidth;
+          if (hI) hI.value = app.state.boardHeight;
+          app.render();
+          let msg = T('dxf_done', {
+            n: r.segs.length, w: b.w, h: b.h,
+            unit: r.unitSource, ent: Object.keys(r.entities).join('/') || '-'
+          });
+          // 板框沒封閉板廠切不出來——這是匯入之後最該先知道的事，不能等送件才發現
+          if (!chk.closed) {
+            const at = chk.openEnds.slice(0, 3)
+              .map(pt => '(' + pt.x.toFixed(2) + ',' + pt.y.toFixed(2) + ')').join(' ');
+            msg += ' │ ' + T('dxf_open', { n: chk.openEnds.length, at });
+          }
+          if (r.warnings.some(w => w.code === 'unitsAssumed')) msg += ' │ ' + T('dxf_unitwarn', { unit });
+          say('dxfOut', msg);
+          toast(msg, chk.closed && !r.warnings.length ? 'info' : 'warn');
+        };
+        rd.readAsText(f);
+      });
+    }
+    on('dxfExport', () => {
+      if (!window.PcbDxf) return;
+      const text = window.PcbDxf.build(app.state, {});
+      const blob = new Blob([text], { type: 'application/dxf' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'board-outline.dxf';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      say('dxfOut', T('dxf_exported'));
+    });
+
+    // --- 淚滴 ---
     on('tdRun', () => {
       app.hist();
       const r = Teardrops.build(app.state, app.padAbs.bind(app), {
