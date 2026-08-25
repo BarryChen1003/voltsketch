@@ -81,6 +81,10 @@ jobs:
       - name: step（3D 匯出）
         run: node step.test.js
 
+      # 2c-10) 圖片轉絲印：像素→mm 換算、區塊合併、**太細的絲印印不出來**要抓得到
+      - name: silkimg（圖片轉絲印）
+        run: node silkimg.test.js
+
       # 2d) i18n key 完整性：pcbT/I18N.t 用到的 key 必須有定義（防 UI 顯示原始 key）
       - name: i18n-check（key 完整性）
         run: node i18n-check.js

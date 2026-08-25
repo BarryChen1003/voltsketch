@@ -2025,6 +2025,14 @@ const pcbApp = {
       ctx.strokeStyle = g.side === 'B' ? colB : colF;
       ctx.lineWidth = Math.max(0.6, (g.w || 0.12) * scale);
       ctx.beginPath();
+      if (g.kind === 'region') {
+        // 圖片轉絲印產生的填充區域：畫實心，不是描邊
+        ctx.fillStyle = g.side === 'B' ? colB : colF;
+        g.pts.forEach((pt, i) => { const a = toAbs(pt[0], pt[1]); i ? ctx.lineTo(X(a.x), Y(a.y)) : ctx.moveTo(X(a.x), Y(a.y)); });
+        ctx.closePath();
+        ctx.fill();
+        return;
+      }
       if (g.kind === 'line') {
         const a = toAbs(g.x1, g.y1), b = toAbs(g.x2, g.y2);
         ctx.moveTo(X(a.x), Y(a.y)); ctx.lineTo(X(b.x), Y(b.y));

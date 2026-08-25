@@ -929,6 +929,20 @@
             <button class="small-button" id="dtRun" data-i18n="mfg_gen" style="width:100%">產生</button>
             <pre id="dtOut" style="font-size:10.5px;margin:4px 0 0;white-space:pre;overflow:auto;max-height:150px"></pre>
 
+            <div style="font-size:12px;font-weight:600;margin-top:10px" data-i18n="silk_title">圖片轉絲印</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:12px">
+              <label style="display:grid;gap:2px"><span data-i18n="silk_size">寬度 (mm)</span><input type="number" id="silkW" value="20" step="1" min="1" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="silk_level">門檻 0-255</span><input type="number" id="silkLevel" value="128" step="8" min="1" max="254" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="silk_side">層</span>
+                <select id="silkSide" style="padding:3px"><option value="F">F.SilkS</option><option value="B">B.SilkS</option></select></label>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr auto auto;gap:6px;margin-top:6px;align-items:center">
+              <input type="file" id="silkFile" accept="image/*" style="font-size:11px">
+              <label style="font-size:11px;display:flex;align-items:center;gap:3px"><input type="checkbox" id="silkInvert"><span data-i18n="silk_invert">反相</span></label>
+              <button class="small-button" id="silkClear" data-i18n="mfg_clear">清除</button>
+            </div>
+            <div id="silkOut" style="font-size:11px;opacity:.85;margin-top:4px"></div>
+
             <div style="font-size:12px;font-weight:600;margin-top:10px" data-i18n="mfg_pn">拼板</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:12px">
               <label style="display:grid;gap:2px"><span data-i18n="mfg_pn_cols">欄</span><input type="number" id="pnCols" value="2" min="1" step="1" style="padding:3px"></label>
@@ -1010,7 +1024,7 @@
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./observe.js?v=1"></script>
     <script src="./auth.js?v=2026-08-18a"></script>
-    <script src="./i18n.js?v=2026-08-25e"></script>
+    <script src="./i18n.js?v=2026-08-25f"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
@@ -1025,15 +1039,16 @@
     <script src="./pcb-rules.js?v=6"></script>
     <script src="./pcb-3d.js?v=3"></script>
     <script src="./pcb-crossprobe.js?v=1"></script>
-    <script src="./pcb.js?v=43"></script>
+    <script src="./pcb.js?v=44"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-07-16a"></script>
     <script src="./pcb-stackup.js?v=2026-08-24b"></script>
     <script src="./pcb-fabs.js?v=4"></script>
-    <script src="./pcb-mfg.js?v=3"></script>
+    <script src="./pcb-mfg.js?v=4"></script>
     <script src="./pcb-sch2pcb.js?v=2"></script>
     <script src="./pcb-dxf.js?v=1"></script>
     <script src="./pcb-step.js?v=1"></script>
+    <script src="./pcb-silkimg.js?v=1"></script>
     <!-- 面板停靠：設定型 section 從側欄搬進可拖曳浮動視窗，由「▤ 面板」選單開關 -->
     <script src="./pcb-panels.js?v=5"></script>
 </body>

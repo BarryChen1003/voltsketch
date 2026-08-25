@@ -511,6 +511,68 @@
       toast(msg, r.warnings.length ? 'warn' : 'info');
     });
 
+    // --- 圖片轉絲印 ---
+    const silkFile = $('silkFile');
+    if (silkFile && !silkFile._mfgBound) {
+      silkFile._mfgBound = true;
+      silkFile.addEventListener('change', e => {
+        const f = e.target.files && e.target.files[0];
+        if (!f || !window.PcbSilkImg) return;
+        const url = URL.createObjectURL(f);
+        const im = new Image();
+        im.onload = () => {
+          URL.revokeObjectURL(url);
+          // 上限 400px：再細也印不出來，只會讓區域數爆掉
+          const maxPx = 400;
+          const sc = Math.min(1, maxPx / Math.max(im.width, im.height));
+          const cw = Math.max(1, Math.round(im.width * sc)), chh = Math.max(1, Math.round(im.height * sc));
+          const cv = document.createElement('canvas');
+          cv.width = cw; cv.height = chh;
+          const cx2 = cv.getContext('2d');
+          cx2.drawImage(im, 0, 0, cw, chh);
+          const gray = window.PcbSilkImg.grayFrom(cx2.getImageData(0, 0, cw, chh));
+          const wantW = num('silkW', 20);
+          const mmPerPx = wantW / cw;
+          // 太細的絲印印不出來——拿選定板廠的下限來判，不是猜一個數字
+          const ft = fabTier();
+          const minW = (ft && ft.tier && ft.tier.rules && typeof ft.tier.rules.minSilkWidth === 'number')
+            ? ft.tier.rules.minSilkWidth : null;
+          const r = window.PcbSilkImg.build(gray, cw, chh, {
+            level: num('silkLevel', 128),
+            invert: !!($('silkInvert') || {}).checked,
+            mmPerPx, side: ($('silkSide') || {}).value || 'F',
+            ox: -wantW / 2, oy: -(chh * mmPerPx) / 2,
+            minSilkWidth: minW
+          });
+          if (!r.shapes.length) { say('silkOut', T('silk_empty')); toast(T('silk_empty'), 'warn'); return; }
+          app.hist();
+          app.state.silkGr = (app.state.silkGr || []).filter(g => !g.fromImage)
+            .concat(r.shapes.map(x => Object.assign({ fromImage: true }, x)));
+          app.render();
+          let msg = T('silk_done', {
+            n: r.stats.rects, w: r.stats.widthMm, h: r.stats.heightMm, px: cw + '×' + chh
+          });
+          if (minW != null && r.stats.tooThin) {
+            msg += ' │ ' + T('silk_thin', {
+              n: r.stats.tooThin, thin: r.stats.thinnestMm, lim: minW,
+              name: (ft && ft.prof) ? ft.prof.name : ''
+            });
+          }
+          say('silkOut', msg);
+          toast(msg, r.stats.tooThin ? 'warn' : 'info');
+        };
+        im.onerror = () => { URL.revokeObjectURL(url); say('silkOut', T('silk_badimg')); toast(T('silk_badimg'), 'error'); };
+        im.src = url;
+      });
+    }
+    on('silkClear', () => {
+      const before = (app.state.silkGr || []).length;
+      app.hist();
+      app.state.silkGr = (app.state.silkGr || []).filter(g => !g.fromImage);
+      app.render();
+      say('silkOut', T('silk_cleared', { n: before - app.state.silkGr.length }));
+    });
+
     // --- 淚滴 ---
     on('tdRun', () => {
       app.hist();

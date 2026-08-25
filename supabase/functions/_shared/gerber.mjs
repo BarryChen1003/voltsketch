@@ -415,6 +415,9 @@ function build(state, padAbsFn, baseName) {
         // 整圓：兩段半圓 G75 圓弧
         gf.arc3(cc.x - g.r, cc.y, cc.x, cc.y - g.r, cc.x + g.r, cc.y, g.w || 0.12);
         gf.arc3(cc.x + g.r, cc.y, cc.x, cc.y + g.r, cc.x - g.r, cc.y, g.w || 0.12);
+      } else if (g.kind === 'region') {
+        // 填充區域（圖片轉絲印用）：矩形/多邊形直接以 G36/G37 畫實心
+        gf.region(g.pts.map(pt => { const a = toAbs(pt[0], pt[1]); return [a.x, a.y]; }));
       } else if (g.kind === 'arc') {
         const a = toAbs(g.x1, g.y1), m = toAbs(g.xm, g.ym), b = toAbs(g.x2, g.y2);
         gf.arc3(a.x, a.y, m.x, m.y, b.x, b.y, g.w || 0.12);
