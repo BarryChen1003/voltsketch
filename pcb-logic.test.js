@@ -1148,5 +1148,192 @@ const minDistToSegs = (px, py, segs) =>
   documentStub.querySelector = savedQS;
 }
 
+// 28) RouteAll：順序、拆線、以及「拆線只准變好」
+{
+  const RA = window.RouteAll;
+  ok(!!RA, '28 RouteAll 應載入');
+  const padAbs = (c, p) => ({ x: c.x + p.x, y: c.y + p.y });
+  const rules = app.loadDrcRules();
+  const baseOpt = {
+    layers: ['F.Cu'], width: 0.25, clearance: rules.clearance,
+    viaOd: 0.7, viaDrill: 0.3, grid: 0.2
+  };
+
+  // 刻意造壅塞：一道牆只留一個容得下一條線的窄口。
+  // A 短、會先繞而佔掉窄口；B 只有窄口可走。不拆 → B 失敗；拆 → 兩條都成。
+  const congested = () => {
+    const st = {
+      boardWidth: 60, boardHeight: 40, traces: [], vias: [], keepouts: [], components: []
+    };
+    const wall = { id: 'w', ref: 'W1', x: 0, y: 0, rot: 0, pads: [] };
+    for (let y = -19; y <= 19; y += 0.8) {
+      if (Math.abs(y) < 0.9) continue;
+      wall.pads.push({ num: 'w', x: 0, y, w: 0.8, h: 0.8, side: 'F', net: 'WALL', cu: true });
+    }
+    st.components.push(wall);
+    const pin = (id, x, net) => ({ id, ref: id, x, y: 0, rot: 0,
+      pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', net, cu: true }] });
+    st.components.push(pin('a1', -4, 'A'), pin('a2', 4, 'A'), pin('b1', -25, 'B'), pin('b2', 25, 'B'));
+    return st;
+  };
+  const linesOf = st => window.Ratsnest.compute(st, padAbs);
+
+  const st1 = congested();
+  const noRip = RA.run(st1, padAbs, linesOf(st1), Object.assign({ ripup: false }, baseOpt));
+  const st2 = congested();
+  const withRip = RA.run(st2, padAbs, linesOf(st2), Object.assign({ ripup: true, passes: 3 }, baseOpt));
+
+  ok(withRip.routed.length >= noRip.routed.length,
+     `28 拆線只准變好或持平（不拆 ${noRip.routed.length}、拆 ${withRip.routed.length}）`);
+  ok(withRip.routed.length > noRip.routed.length,
+     `28 這個壅塞情境拆線應該要多救回至少一條（${noRip.routed.length} → ${withRip.routed.length}）`);
+  ok(withRip.ripped > 0, '28 應該真的有拆到東西');
+
+  // 空輸入
+  eq(RA.run(congested(), padAbs, [], baseOpt).routed.length, 0, '28 沒有飛線時回空');
+
+  // 決定性：同樣的輸入跑兩次結果要一樣（順序排序有做對）
+  const a = RA.run(congested(), padAbs, linesOf(congested()), Object.assign({ ripup: true, passes: 3 }, baseOpt));
+  const b = RA.run(congested(), padAbs, linesOf(congested()), Object.assign({ ripup: true, passes: 3 }, baseOpt));
+  eq(a.routed.length, b.routed.length, '28 同輸入兩次的成功數應相同');
+  eq(JSON.stringify(a.routed.map(x => x.line.net)), JSON.stringify(b.routed.map(x => x.line.net)),
+     '28 同輸入兩次繞成的 net 順序應相同');
+
+  // 短的先繞：把順序關掉不可讓結果變好（只是驗排序有生效、不會亂）
+  const noOrder = RA.run(congested(), padAbs, linesOf(congested()),
+    Object.assign({ ripup: false, order: 'none' }, baseOpt));
+  ok(noOrder.routed.length <= withRip.routed.length, '28 關掉排序不該比開著還好');
+
+  // **拆線只准變好**。第一版寫成「拆了就繼續」，拆線連鎖把已經繞好的一起帶走，
+  // 20 顆元件的板從 95% 掉到 10%。單一情境測不出這件事——要嘛第一階段全過（第二階段
+  // 根本不跑），要嘛拆線剛好都有賺。所以改成性質測試：一組不同密度／不同擺位的板，
+  // 每一片都必須滿足「拆 >= 不拆」。只要有任何一片走進破壞路徑，這裡就會紅。
+  {
+    const mkBoard = (n, span, seedInit) => {
+      let seed = seedInit;
+      const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+      const st = { boardWidth: 60, boardHeight: 60, traces: [], vias: [], keepouts: [], components: [] };
+      const cols = Math.max(2, Math.round(Math.sqrt(n)));
+      for (let i = 0; i < n; i++) {
+        const b = window.PartsLib.build('res', '0603');
+        const pads = b.pads.map(q => Object.assign({}, q));
+        pads[0].net = 'N' + i;
+        pads[1].net = 'N' + ((i + 1) % n);          // 串成環：拆一條就牽動鄰居
+        st.components.push({
+          id: 'c' + i, ref: 'R' + (i + 1),
+          x: -span / 2 + (i % cols) * (span / cols) + rnd() * 0.6,
+          y: -span / 2 + Math.floor(i / cols) * (span / cols) + rnd() * 0.6,
+          rot: (rnd() < 0.5 ? 0 : 90), w: b.body.w, h: b.body.h, pads
+        });
+      }
+      return st;
+    };
+    // 後面幾片刻意排得很密（間距 2～3mm），第一階段一定會有繞不過的，
+    // 第二階段（拆線）才真的被走到。密度不夠的話這個測試等於沒測。
+    const cases = [[12, 14, 7], [20, 20, 13], [30, 26, 19],
+                   [24, 9, 31], [30, 10, 37], [40, 12, 41]];
+    let worse = 0, exercised = 0, checked = 0;
+    for (const [n, span, sd] of cases) {
+      const a = mkBoard(n, span, sd), b = mkBoard(n, span, sd);
+      const plain = RA.run(a, padAbs, window.Ratsnest.compute(a, padAbs),
+        Object.assign({ ripup: false }, baseOpt));
+      const rip = RA.run(b, padAbs, window.Ratsnest.compute(b, padAbs),
+        Object.assign({ ripup: true, passes: 3 }, baseOpt));
+      checked++;
+      if (plain.failed.length) exercised++;          // 第一階段有失敗＝第二階段真的跑了
+      if (rip.routed.length < plain.routed.length) worse++;
+    }
+    eq(worse, 0, '28 任何一片板都不可因為拆線而變差（這是回滾守衛在守的事）');
+    ok(checked === cases.length, '28 每一片都要跑到');
+    ok(exercised > 0, `28 至少要有一片板的第一階段會失敗，第二階段才真的被走到（得 ${exercised}/${checked}）`);
+  }
+
+  // 失敗原因與線寬提示要有內容
+  const tight = {
+    boardWidth: 30, boardHeight: 20, traces: [], vias: [], keepouts: [],
+    components: [{
+      id: 'u', ref: 'U1', x: 0, y: 0, rot: 0, pads: [
+        // 目標腳被上下兩顆異網 pad 夾住，0.25mm 線寬出不來
+        { num: '1', x: 0, y: 0, w: 0.4, h: 0.4, side: 'F', net: 'SIG', cu: true },
+        { num: '2', x: 0, y: 0.55, w: 0.4, h: 0.4, side: 'F', net: 'X', cu: true },
+        { num: '3', x: 0, y: -0.55, w: 0.4, h: 0.4, side: 'F', net: 'Y', cu: true },
+        { num: '4', x: 0.55, y: 0, w: 0.4, h: 0.4, side: 'F', net: 'Z', cu: true },
+        { num: '5', x: -0.55, y: 0, w: 0.4, h: 0.4, side: 'F', net: 'W', cu: true }
+      ]
+    }, {
+      id: 'j', ref: 'J1', x: 10, y: 0, rot: 0,
+      pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'SIG', cu: true }]
+    }]
+  };
+  const rt = RA.run(tight, padAbs, window.Ratsnest.compute(tight, padAbs), Object.assign({ ripup: false }, baseOpt));
+  ok(rt.failed.length > 0, '28 被夾住的腳位應該繞不出來');
+  ok(rt.reasons.rule_ep_blocked > 0, '28 失敗原因應為「起點被封住」');
+  ok(rt.widthHint != null && rt.widthHint >= 0,
+     `28 應給得出線寬提示（得 ${rt.widthHint}）`);
+  ok(rt.widthHint < 0.25, `28 提示的線寬應小於目前用的 0.25（得 ${rt.widthHint}）`);
+}
+
+// 29) 等長調諧跨段：舊版只挑最長那一段，塞不下就整個放棄
+{
+  const savedState = app.state;
+  const savedGet = documentStub.getElementById;
+  const stub = (netV, targetV) => {
+    const els = { tuneNet: { value: netV }, tuneTarget: { value: String(targetV) }, tuneMsg: { textContent: '' } };
+    documentStub.getElementById = id => (Object.prototype.hasOwnProperty.call(els, id) ? els[id] : null);
+  };
+  const setTraces = arr => {
+    app.state = Object.assign({}, savedState, { traces: arr, vias: [], ratsnest: null });
+  };
+  const len = () => window.NetRules.netLength(app.state.traces, 'CLK');
+
+  // 單段就夠：行為與舊版一致
+  setTraces([{ id: 'a', x1: -20, y1: 0, x2: 20, y2: 0, width: 0.3, layer: 'F.Cu', net: 'CLK' }]);
+  stub('CLK', 45);
+  app.meanderTune();
+  ok(Math.abs(len() - 45) < 0.05, `29 單段：長度應命中 45（得 ${len().toFixed(3)}）`);
+
+  // **跨段**：三小段，任何一段都吃不下全部補償量，加起來才夠。
+  // 每段 6mm、線寬 0.3 → s=1.2、kMax=floor(5/1.2)=4 → 單段容量 2×4×3=24mm。
+  // 要補 30mm：舊版挑最長那段（6mm，容量 24）塞不下就放棄，新版要攤到多段。
+  setTraces([
+    { id: 'a', x1: -9, y1: 0, x2: -3, y2: 0, width: 0.3, layer: 'F.Cu', net: 'CLK' },
+    { id: 'b', x1: -3, y1: 0, x2: 3, y2: 0, width: 0.3, layer: 'F.Cu', net: 'CLK' },
+    { id: 'c', x1: 3, y1: 0, x2: 9, y2: 0, width: 0.3, layer: 'F.Cu', net: 'CLK' }
+  ]);
+  const before = len();
+  eq(Math.round(before * 100) / 100, 18, '29 起始長度 18mm');
+  stub('CLK', before + 30);
+  app.meanderTune();
+  const after = len();
+  ok(Math.abs(after - (before + 30)) < 0.05,
+     `29 跨段：三段合力應補到 ${(before + 30).toFixed(2)}（得 ${after.toFixed(3)}）`);
+  ok(app.state.traces.length > 3, '29 蛇形後段數應變多');
+  ok(app.state.traces.every(t => t.net === 'CLK' && t.width === 0.3), '29 蛇形段應保留 net 與線寬');
+  // 端點不可跑掉
+  const xs = app.state.traces.reduce((a, t) => a.concat([t.x1, t.x2]), []);
+  ok(Math.min.apply(null, xs) <= -9 + 1e-6 && Math.max.apply(null, xs) >= 9 - 1e-6, '29 兩端仍接回原位');
+
+  // 容量算式本身
+  const cap = app.meanderCapacity({ x1: 0, y1: 0, x2: 6, y2: 0, width: 0.3 }, 3.0);
+  eq(cap.kMax, 4, '29 6mm 段、s=1.2、兩端留 1mm → 4 個彎');
+  ok(Math.abs(cap.cap - 24) < 1e-9, '29 容量 = 2 × 4 × 3.0 = 24mm');
+  eq(app.meanderCapacity({ x1: 0, y1: 0, x2: 1, y2: 0, width: 0.3 }, 3.0).cap, 0, '29 太短的段容量為 0');
+
+  // 全部段加起來都不夠 → 要講出「差多少、只塞得下多少」，不是丟一句失敗
+  setTraces([{ id: 'a', x1: 0, y1: 0, x2: 3, y2: 0, width: 0.3, layer: 'F.Cu', net: 'CLK' }]);
+  const shortBefore = len();
+  stub('CLK', shortBefore + 500);
+  const msgs = [];
+  const savedToast = app.toast;
+  app.toast = m => msgs.push(String(m));
+  app.meanderTune();
+  app.toast = savedToast;
+  ok(Math.abs(len() - shortBefore) < 1e-9, '29 補不夠時不可改動走線');
+  ok(msgs.length > 0, '29 補不夠時要有訊息');
+
+  app.state = savedState;
+  documentStub.getElementById = savedGet;
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

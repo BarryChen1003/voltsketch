@@ -326,14 +326,22 @@
     route(state, padAbs, line, opt) {
       opt = Object.assign({
         grid: 0.25, clearance: 0.15, width: 0.25, layer: 'F.Cu',
-        maxCells: 500000, viaCost: 12, viaOd: 0.7, viaDrill: 0.3, layers: null
+        maxCells: 4000000, viaCost: 12, viaOd: 0.7, viaDrill: 0.3, layers: null
       }, opt || {});
       const layers = (Array.isArray(opt.layers) && opt.layers.length) ? opt.layers.slice() : [opt.layer];
       const L = layers.length;
       const W = state.boardWidth || 100, H = state.boardHeight || 80;
-      const g = opt.grid, ox = -W / 2, oy = -H / 2;
-      const nx = Math.floor(W / g) + 1, ny = Math.floor(H / g) + 1;
+      // 格點太細會超過上限。舊版直接回「格點太大」放棄——但使用者要的是繞線，
+      // 不是一句錯誤訊息。改成自動放粗到塞得下為止，並回報實際用了多粗，
+      // 因為放粗代表窄通道可能過不去，那是他該知道的事。
+      let g = opt.grid, coarsened = false;
+      let nx = Math.floor(W / g) + 1, ny = Math.floor(H / g) + 1;
+      while (nx * ny * L > opt.maxCells && g < 2) {
+        g *= 1.5; coarsened = true;
+        nx = Math.floor(W / g) + 1; ny = Math.floor(H / g) + 1;
+      }
       if (nx * ny * L > opt.maxCells) return { ok: false, reason: T('rule_grid_too_big') };
+      const ox = -W / 2, oy = -H / 2;
 
       const plane = nx * ny;
       const blocked = new Uint8Array(plane * L);   // 每層各一張：走線能不能走
@@ -447,8 +455,27 @@
         return [...set];
       };
       const startLs = layersAtEnd(line.x1, line.y1), endLs = layersAtEnd(line.x2, line.y2);
-      if (startLs.every(il => blocked[idx(sx, sy, il)]) || endLs.every(il => blocked[idx(ex, ey, il)]))
-        return { ok: false, reason: T('rule_ep_blocked') };
+      if (startLs.every(il => blocked[idx(sx, sy, il)]) || endLs.every(il => blocked[idx(ex, ey, il)])) {
+        // 起點／終點的格子本身就被鄰近物件的淨空蓋住＝這個腳位用目前線寬出不來。
+        // 「失敗」對使用者沒用，「用 0.15mm 就出得來」才有用，所以順手算一下。
+        const which = startLs.every(il => blocked[idx(sx, sy, il)]) ? 'start' : 'end';
+        const px = which === 'start' ? line.x1 : line.x2;
+        const py = which === 'start' ? line.y1 : line.y2;
+        let room = Infinity;
+        (state.components || []).forEach(c => (c.pads || []).forEach(pd => {
+          if (pd.cu === false) return;
+          if (net && (pd.net || '') === net) return;
+          const a = padAbs(c, pd);
+          const d = Math.hypot(a.x - px, a.y - py) - Math.hypot(pd.w || 0.5, pd.h || 0.5) / 2;
+          if (d < room) room = d;
+        }));
+        // room = 到最近異網 pad 邊緣的距離；扣掉淨空之後乘 2 就是還塞得下的線寬
+        const fits = (room === Infinity) ? null : Math.max(0, (room - cPad) * 2);
+        return {
+          ok: false, reason: T('rule_ep_blocked'),
+          detail: { at: which, x: px, y: py, maxWidth: fits == null ? null : Math.floor(fits * 1000) / 1000 }
+        };
+      }
 
       // 板邊淨空（traceToEdge）。擺在端點檢查之後：靠邊的 pad 本身可能違規，
       // 但那是 DRC 該報的事，不該讓繞線直接失敗，所以最後幫端點開逃逸泡泡。
@@ -557,10 +584,173 @@
         const first = segs[0];
         if (Math.hypot(first.x1 - line.x1, first.y1 - line.y1) < g * 1.5) { first.x1 = line.x1; first.y1 = line.y1; }
       }
-      return { ok: true, segs, vias };
+      return { ok: true, segs, vias, grid: g, coarsened };
     }
   };
 
+  // 多條一起繞的策略層。route() 是「繞一條」的原語，這裡負責決定順序、
+  // 以及繞不過去時要不要拆掉別人重來。
+  //
+  // 舊版就是照飛線原順序一條一條繞，繞不過就算了——公版實測成功率 70%。
+  // 失敗幾乎都不是「真的沒有路」，而是先繞的那幾條剛好把路堵死了。
+  // 兩個標準做法：
+  //   ① 短的先繞：短線選擇少、長線繞路空間大，先做選擇少的那些。
+  //   ② rip-up & retry：繞不過去時把擋路的（別的 net、且是自動繞的）拆掉，
+  //      讓這條先過，再把被拆的重新排隊。設回合上限，避免兩條互相拆到天荒地老。
+  const RouteAll = {
+    /**
+     * lines: [{x1,y1,x2,y2,net}]；opts 同 route()，另外：
+     *   order 'short'|'none'（預設 short）、ripup（預設 true）、passes（預設 3）、budgetMs
+     * 回 { routed:[{line,segs,vias}], failed:[line], passes, ripped, ms }
+     */
+    run(state, padAbs, lines, opts) {
+      opts = Object.assign({ order: 'short', ripup: true, passes: 3, budgetMs: 8000 }, opts || {});
+      const t0 = (typeof performance !== 'undefined' && performance.now) ? () => performance.now() : () => Date.now();
+      const start = t0();
+
+      // 在自己的暫存 state 上繞，成功才回給呼叫端套用
+      const work = Object.assign({}, state, {
+        traces: (state.traces || []).slice(),
+        vias: (state.vias || []).slice()
+      });
+
+      const queue = lines.map((l, i) => ({ l, i }));
+      if (opts.order === 'short') {
+        queue.sort((a, b) =>
+          (Math.hypot(a.l.x2 - a.l.x1, a.l.y2 - a.l.y1) - Math.hypot(b.l.x2 - b.l.x1, b.l.y2 - b.l.y1))
+          || (a.i - b.i));                       // 同長度照原順序，結果才是決定性的
+      }
+
+      const routed = new Map();                  // i → {line, segs, vias}
+      let ripped = 0;
+
+      // ---- 第一階段：不拆，照順序繞一輪 ----
+      let failed = [];
+      for (const item of queue) {
+        if (t0() - start > opts.budgetMs) { failed.push(item); continue; }
+        const r = AutoRoute.route(work, padAbs, item.l, opts);
+        if (r.ok) { this.commit(work, item, r); routed.set(item.i, { line: item.l, segs: r.segs, vias: r.vias || [] }); }
+        else failed.push(item);
+      }
+
+      // ---- 第二階段：對繞不過的嘗試拆線，但**只准變好** ----
+      // 第一版寫成「拆了就繼續跑」，結果拆線連鎖把已經繞好的一起帶走，
+      // 20 顆元件的板從 95% 掉到 10%。拆線本來是要救失敗的那幾條，
+      // 不是拿已經成功的去換。所以改成：每次嘗試前存檔，總數沒變多就整個回滾。
+      if (opts.ripup && failed.length) {
+        for (let pass = 0; pass < opts.passes && failed.length; pass++) {
+          const before = failed.length;
+          const still = [];
+          for (const item of failed) {
+            if (t0() - start > opts.budgetMs) { still.push(item); continue; }
+            const snap = {
+              traces: work.traces.slice(), vias: work.vias.slice(),
+              routed: new Map(routed), count: routed.size
+            };
+            const victims = this.blockers(work, item.l, opts);
+            if (!victims.length) { still.push(item); continue; }
+            this.remove(work, victims);
+            const victimIds = [...new Set(victims.map(v => v._ri))];
+            victimIds.forEach(id => routed.delete(id));
+
+            const r = AutoRoute.route(work, padAbs, item.l, opts);
+            if (r.ok) {
+              this.commit(work, item, r);
+              routed.set(item.i, { line: item.l, segs: r.segs, vias: r.vias || [] });
+              // 被拆的那幾條當場重繞回去
+              for (const id of victimIds) {
+                const src = queue.find(q => q.i === id);
+                if (!src) continue;
+                const rr = AutoRoute.route(work, padAbs, src.l, opts);
+                if (rr.ok) { this.commit(work, src, rr); routed.set(id, { line: src.l, segs: rr.segs, vias: rr.vias || [] }); }
+              }
+            }
+            if (routed.size > snap.count) {
+              ripped += victims.length;
+            } else {
+              // 沒賺到就回滾，維持第一階段的成果
+              work.traces = snap.traces; work.vias = snap.vias;
+              routed.clear(); snap.routed.forEach((v, k) => routed.set(k, v));
+              still.push(item);
+            }
+          }
+          failed = still;
+          if (failed.length === before) break;   // 這一輪一條都沒救回來就停
+        }
+      }
+
+      const out = [];
+      [...routed.keys()].sort((a, b) => a - b).forEach(k => out.push(routed.get(k)));
+
+      // 把失敗原因彙整出來。只說「失敗 N 條」使用者不知道要改什麼；
+      // 「23 條的起點被鄰近 pad 封住，改用 0.15mm 就出得來」才是可行動的資訊。
+      const reasons = {};
+      let widthHint = null;
+      for (const item of failed) {
+        const r = AutoRoute.route(work, padAbs, item.l, opts);
+        const key = r.ok ? 'wouldRouteNow' : (r.reason || 'unknown');
+        reasons[key] = (reasons[key] || 0) + 1;
+        // 取最小值：那是「全部都出得來」的上限，也就是真正卡住的那一腳。
+        // 取最大值會報出最寬鬆那條的數字，看起來很好但照著改仍然繞不過。
+        if (r.detail && r.detail.maxWidth > 0)
+          widthHint = widthHint == null ? r.detail.maxWidth : Math.min(widthHint, r.detail.maxWidth);
+      }
+      return {
+        routed: out,
+        failed: failed.map(x => x.l),
+        reasons, widthHint,
+        ripped,
+        ms: Math.round(t0() - start)
+      };
+    },
+
+    commit(work, item, r) {
+      r.segs.forEach((sg, k) => work.traces.push({
+        id: 'ra-' + item.i + '-' + k, _ri: item.i, _auto: true,
+        x1: sg.x1, y1: sg.y1, x2: sg.x2, y2: sg.y2,
+        width: sg.width || 0.25, layer: sg.layer, net: item.l.net
+      }));
+      (r.vias || []).forEach((v, k) => work.vias.push({
+        id: 'rv-' + item.i + '-' + k, _ri: item.i, _auto: true,
+        x: v.x, y: v.y, od: v.od, id2: v.drill, net: item.l.net
+      }));
+    },
+
+    // 擋路的：走線起訖點連線附近、**別的 net**、而且是這一輪自動繞出來的。
+    // 只拆自己剛剛放的，不動使用者手繞的線——那是他的設計意圖。
+    blockers(work, line, opts) {
+      const pad = (opts.width || 0.25) / 2 + 2;
+      const minx = Math.min(line.x1, line.x2) - pad, maxx = Math.max(line.x1, line.x2) + pad;
+      const miny = Math.min(line.y1, line.y2) - pad, maxy = Math.max(line.y1, line.y2) + pad;
+      const hit = [];
+      for (const t of work.traces) {
+        if (!t._auto) continue;
+        if ((t.net || '') === (line.net || '')) continue;
+        if (Math.min(t.x1, t.x2) > maxx || Math.max(t.x1, t.x2) < minx) continue;
+        if (Math.min(t.y1, t.y2) > maxy || Math.max(t.y1, t.y2) < miny) continue;
+        hit.push(t);
+      }
+      // 依所屬飛線去重：要拆就整條拆掉，拆一半會留下斷線
+      const ids = new Set(hit.map(t => t._ri));
+      return work.traces.filter(t => t._auto && ids.has(t._ri))
+        .concat(work.vias.filter(v => v._auto && ids.has(v._ri)));
+    },
+
+    remove(work, victims) {
+      const set = new Set(victims);
+      work.traces = work.traces.filter(t => !set.has(t));
+      work.vias = work.vias.filter(v => !set.has(v));
+      work._ripped = (work._ripped || []).concat(victims);
+    },
+
+    restore(work, victims) {
+      victims.forEach(v => { (v.x1 !== undefined ? work.traces : work.vias).push(v); });
+      const set = new Set(victims);
+      work._ripped = (work._ripped || []).filter(v => !set.has(v));
+    }
+  };
+
+  window.RouteAll = RouteAll;
   window.NetRules = NetRules;
   window.Ratsnest = Ratsnest;
   window.AutoRoute = AutoRoute;

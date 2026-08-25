@@ -1888,36 +1888,28 @@ const pcbApp = {
   },
 
   // 等長調諧：把 net 的最長段換成蛇形，補到目標長（空目標＝對齊配對網路）
-  meanderTune() {
-    const msg = document.getElementById('tuneMsg');
-    const say = (t, k) => { if (msg) msg.textContent = t; this.toast(t, k || 'info'); };
-    const net = document.getElementById('tuneNet')?.value?.trim();
-    if (!net) { say(pcbT('pj_tune_nonet'), 'warn'); return; }
-    if (!window.NetRules) return;
-    const L = NetRules.netLength(this.state.traces, net);
-    if (!(L > 0)) { say(pcbT('pj_tune_notrace', { net }), 'warn'); return; }
-    let target = parseFloat(document.getElementById('tuneTarget')?.value);
-    let pair = null;
-    if (!(target > 0)) {
-      pair = this.pairNetOf(net);
-      if (!pair) { say(pcbT('pj_tune_nopair', { net }), 'warn'); return; }
-      target = NetRules.netLength(this.state.traces, pair);
-    }
-    const dL = target - L;
-    if (dL < 0.05) { say(pcbT('pj_tune_already', { len: L.toFixed(2), target: target.toFixed(2) }), 'info'); return; }
-    const segs = this.state.traces.filter(t => (t.net || '') === net);
-    let seg = null, best = 0;
-    for (const t of segs) { const l = Math.hypot(t.x2 - t.x1, t.y2 - t.y1); if (l > best) { best = l; seg = t; } }
+  // 一段走線最多能塞多少額外長度（單側方波蛇形）。
+  // 每個 bump 沿線吃掉 s、額外貢獻 2A；振幅上限 ampMax，兩端各留 0.5mm 引線。
+  meanderCapacity(seg, ampMax) {
+    const len = Math.hypot(seg.x2 - seg.x1, seg.y2 - seg.y1);
     const w = seg.width || 0.3;
-    const s = Math.max(4 * w, 1.2);            // 每 bump 沿線耗長
-    const kMax = Math.floor((best - 1.0) / s); // 兩端留 0.5 lead
-    if (kMax < 1) { say(pcbT('pj_tune_nofit'), 'error'); return; }
-    let k = Math.min(kMax, Math.max(1, Math.ceil(dL / (2 * 2.0)))); // 振幅上限 2mm 起算
-    let A = dL / (2 * k);
-    if (A > 3.0) { say(pcbT('pj_tune_nofit'), 'error'); return; }   // 段不夠長塞不下
-    // 蛇形折線（單側方波；每 bump 額外 +2A）
-    const ux = (seg.x2 - seg.x1) / best, uy = (seg.y2 - seg.y1) / best, pxv = -uy, pyv = ux;
-    const lead = (best - k * s) / 2;
+    const s = Math.max(4 * w, 1.2);
+    const kMax = Math.floor((len - 1.0) / s);
+    if (kMax < 1) return { len, s, kMax: 0, cap: 0 };
+    return { len, s, kMax, cap: 2 * kMax * (ampMax > 0 ? ampMax : 3.0) };
+  },
+
+  // 把一段走線換成蛇形，額外補上 extra 的長度。回傳新的線段陣列。
+  meanderSegment(seg, extra, net) {
+    const len = Math.hypot(seg.x2 - seg.x1, seg.y2 - seg.y1);
+    const w = seg.width || 0.3;
+    const s = Math.max(4 * w, 1.2);
+    const kMax = Math.floor((len - 1.0) / s);
+    if (kMax < 1 || extra <= 0) return null;
+    const k = Math.min(kMax, Math.max(1, Math.ceil(extra / (2 * 2.0))));
+    const A = extra / (2 * k);
+    const ux = (seg.x2 - seg.x1) / len, uy = (seg.y2 - seg.y1) / len, pxv = -uy, pyv = ux;
+    const lead = (len - k * s) / 2;
     const pts = [[seg.x1, seg.y1]];
     let cx = seg.x1 + ux * lead, cy = seg.y1 + uy * lead;
     pts.push([cx, cy]);
@@ -1930,17 +1922,71 @@ const pcbApp = {
       pts.push([cx, cy]);
     }
     pts.push([seg.x2, seg.y2]);
+    const out = [];
+    for (let i = 1; i < pts.length; i++) {
+      const [x1, y1] = pts[i - 1], [x2, y2] = pts[i];
+      if (Math.hypot(x2 - x1, y2 - y1) < 1e-6) continue;
+      out.push({ id: `trace-${Date.now()}-${out.length}`, x1, y1, x2, y2, width: w, layer: seg.layer, net });
+    }
+    return { traces: out, k, amp: A };
+  },
+
+  meanderTune() {
+    const msg = document.getElementById('tuneMsg');
+    const say = (t, k) => { if (msg) msg.textContent = t; this.toast(t, k || 'info'); };
+    const net = document.getElementById('tuneNet')?.value?.trim();
+    if (!net) { say(pcbT('pj_tune_nonet'), 'warn'); return; }
+    if (!window.NetRules) return;
+    const L = NetRules.netLength(this.state.traces, net);
+    if (!(L > 0)) { say(pcbT('pj_tune_notrace', { net }), 'warn'); return; }
+    let target = parseFloat(document.getElementById('tuneTarget')?.value);
+    if (!(target > 0)) {
+      const pair = this.pairNetOf(net);
+      if (!pair) { say(pcbT('pj_tune_nopair', { net }), 'warn'); return; }
+      target = NetRules.netLength(this.state.traces, pair);
+    }
+    const dL = target - L;
+    if (dL < 0.05) { say(pcbT('pj_tune_already', { len: L.toFixed(2), target: target.toFixed(2) }), 'info'); return; }
+
+    // 舊版只挑最長那一段，塞不下就整個放棄。實際上補償量可以攤到好幾段——
+    // 一條 net 常常是好幾段折線，每段都能吃一點。由長到短依序吃，
+    // 每段最多吃到自己的容量上限（bump 數 × 振幅上限）。
+    const AMP_MAX = 3.0;
+    const segs = this.state.traces
+      .filter(t => (t.net || '') === net)
+      .map(t => ({ t, ...this.meanderCapacity(t, AMP_MAX) }))
+      .filter(x => x.cap > 0)
+      .sort((a, b) => b.cap - a.cap);
+    if (!segs.length) { say(pcbT('pj_tune_nofit'), 'error'); return; }
+
+    const totalCap = segs.reduce((a, x) => a + x.cap, 0);
+    if (totalCap < dL - 1e-9) {
+      say(pcbT('pj_tune_short', { need: dL.toFixed(2), cap: totalCap.toFixed(2), n: segs.length }), 'error');
+      return;
+    }
+
     this.hist();
-    this.state.traces.splice(this.state.traces.indexOf(seg), 1);
-    pts.forEach((p, i) => {
-      if (i === 0) return;
-      const [x1, y1] = pts[i - 1], [x2, y2] = p;
-      if (Math.hypot(x2 - x1, y2 - y1) < 1e-6) return;
-      this.state.traces.push({ id: `trace-${Date.now()}-${i}`, x1, y1, x2, y2, width: w, layer: seg.layer, net });
+    let left = dL, used = 0, bumps = 0;
+    const replaced = [];
+    for (const x of segs) {
+      if (left <= 1e-9) break;
+      const take = Math.min(left, x.cap);
+      const r = this.meanderSegment(x.t, take, net);
+      if (!r) continue;
+      replaced.push({ old: x.t, add: r.traces });
+      left -= take; used++; bumps += r.k;
+    }
+    replaced.forEach(r => {
+      const i = this.state.traces.indexOf(r.old);
+      if (i >= 0) this.state.traces.splice(i, 1);
+      r.add.forEach(t => this.state.traces.push(t));
     });
     this.state.ratsnest = null;
     const after = NetRules.netLength(this.state.traces, net);
-    say(pcbT('pj_tune_done', { net, before: L.toFixed(2), after: after.toFixed(2), target: target.toFixed(2), k, amp: A.toFixed(2) }), 'info');
+    say(pcbT('pj_tune_done2', {
+      net, before: L.toFixed(2), after: after.toFixed(2), target: target.toFixed(2),
+      segs: used, k: bumps
+    }), Math.abs(after - target) < 0.05 ? 'info' : 'warn');
     this.render();
   },
 
@@ -2314,59 +2360,51 @@ const pcbApp = {
   },
 
   autoRoute() {
-    if (!window.Ratsnest || !window.AutoRoute) return;
+    if (!window.Ratsnest || !window.AutoRoute || !window.RouteAll) return;
     const lines = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
     if (!lines.length) { this.toast(pcbT('pj_ar_none'), 'info'); return; }
     this.hist();
     // 用使用者當下的 DRC 規則繞線。舊版這裡硬寫 clearance 0.15，
     // 使用者把淨空調大後自動繞線仍照 0.15 走，繞完直接違規而且不會報。
     const rules = this.loadDrcRules();
-    const layers = this.routableLayers();
     const ps = window.Padstack ? window.Padstack.load() : { od: 0.7, drill: 0.3 };
-    // 舊版硬性只繞前 30 條，剩下的靜靜不繞。改成時間預算：能繞多少繞多少，
-    // 沒繞完就把「還剩幾條」講出來，不要讓使用者以為已經繞完了。
-    const BUDGET_MS = 4000;
-    let okN = 0, failN = 0, done = 0;
-    const t0 = performance.now();
-    for (const line of lines) {
-      if (performance.now() - t0 > BUDGET_MS) break;
-      done++;
-      const r = window.AutoRoute.route(this.state, this.padAbs.bind(this), line, {
-        layers,
-        layer: this.state.traceLayer || layers[0],
+    const r = window.RouteAll.run(this.state, this.padAbs.bind(this), lines, {
+      layers: this.routableLayers(),
+      layer: this.state.traceLayer || 'F.Cu',
+      width: this.state.traceWidth || 0.25,
+      clearance: rules.clearance,
+      viaOd: ps.od, viaDrill: ps.drill,
+      grid: 0.25, order: 'short', ripup: true, passes: 3, budgetMs: 8000
+    });
+
+    r.routed.forEach((x, i) => {
+      x.segs.forEach((sg, k) => this.state.traces.push({
+        id: `trace-${Date.now()}-${i}-${k}`,
+        x1: sg.x1, y1: sg.y1, x2: sg.x2, y2: sg.y2,
         width: this.state.traceWidth || 0.25,
-        clearance: rules.clearance,
-        viaOd: ps.od, viaDrill: ps.drill,
-        grid: 0.25
-      });
-      if (!r.ok) { failN++; continue; }
-      for (const sg of r.segs) {
-        this.state.traces.push({
-          id: `trace-${Date.now()}-${this.state.traces.length}`,
-          x1: sg.x1, y1: sg.y1, x2: sg.x2, y2: sg.y2,
-          width: this.state.traceWidth || 0.25,
-          layer: sg.layer || this.state.traceLayer || 'F.Cu', net: line.net
-        });
-      }
-      for (const v of (r.vias || [])) {
-        this.state.vias.push({
-          id: `via-${Date.now()}-${this.state.vias.length}`,
-          // 鑽徑欄位叫 id 不是 drill：Gerber/Excellon 匯出讀的是 v.id，
-          // 寫成 drill 會讓匯出靜靜退回預設 0.3mm，使用者改了鑽徑也沒作用。
-          x: v.x, y: v.y, od: v.od, id: v.drill, net: line.net, auto: true
-        });
-      }
-      okN++;
-    }
-    const ms = Math.round(performance.now() - t0);
-    const left = lines.length - done;
+        layer: sg.layer || this.state.traceLayer || 'F.Cu', net: x.line.net
+      }));
+      (x.vias || []).forEach((v, k) => this.state.vias.push({
+        id: `via-${Date.now()}-${i}-${k}`,
+        x: v.x, y: v.y, od: v.od, id: v.drill, net: x.line.net, auto: true
+      }));
+    });
+
     this.state.ratsnest = null;
     this.renderPartsList();
     this.render();
-    this.toast(pcbT('pj_ar_done', {
-      ok: okN, fail: failN, ms,
-      cap: left > 0 ? pcbT('pj_ar_cap', { cap: left }) : ''
-    }), (failN || left) ? 'warn' : 'info');
+
+    // 失敗要講得出「為什麼」與「怎麼改」。只報數字使用者無從下手。
+    let msg = pcbT('pj_ar_done', {
+      ok: r.routed.length, fail: r.failed.length, ms: r.ms,
+      cap: r.ripped ? pcbT('pj_ar_ripped', { n: r.ripped }) : ''
+    });
+    if (r.failed.length) {
+      const parts = Object.keys(r.reasons).map(k => pcbT('pj_ar_why_' + k, { n: r.reasons[k] }));
+      msg += ' │ ' + parts.join('、');
+      if (r.widthHint > 0) msg += ' │ ' + pcbT('pj_ar_width_hint', { w: r.widthHint });
+    }
+    this.toast(msg, r.failed.length ? 'warn' : 'info');
   },
 
   // 阻抗計算（IPC-2141 近似式；±10% 等級，正式設計用場型解算器）
