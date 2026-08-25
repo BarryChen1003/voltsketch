@@ -326,7 +326,7 @@
     route(state, padAbs, line, opt) {
       opt = Object.assign({
         grid: 0.25, clearance: 0.15, width: 0.25, layer: 'F.Cu',
-        maxCells: 4000000, viaCost: 12, viaOd: 0.7, viaDrill: 0.3, layers: null
+        maxCells: 4000000, viaCost: 12, viaOd: 0.7, viaDrill: 0.3, layers: null, blindBuried: false
       }, opt || {});
       const layers = (Array.isArray(opt.layers) && opt.layers.length) ? opt.layers.slice() : [opt.layer];
       const L = layers.length;
@@ -345,9 +345,12 @@
 
       const plane = nx * ny;
       const blocked = new Uint8Array(plane * L);   // 每層各一張：走線能不能走
-      const viaBlk = new Uint8Array(plane);        // 穿孔能不能下在這一格
+      // 逐層的「這一格能不能有 via 銅柱」。穿孔要整根柱子都空；
+      // 盲埋孔只要跨到的那一段層空著就行，所以不能共用一張圖。
+      const viaBlk = new Uint8Array(plane * L);
       const idx = (ix, iy, il) => il * plane + iy * nx + ix;
-      const vidx = (ix, iy) => iy * nx + ix;
+      const vidx = (ix, iy, il) => (il || 0) * plane + iy * nx + ix;
+      const vall = (ix, iy) => { for (let il = 0; il < L; il++) viaBlk[vidx(ix, iy, il)] = 1; };
       const inb = (ix, iy) => ix >= 0 && iy >= 0 && ix < nx && iy < ny;
 
       const stamp = (arr, at, x, y, r) => {
@@ -355,6 +358,12 @@
         const y0 = Math.max(0, Math.floor((y - r - oy) / g)), y1 = Math.min(ny - 1, Math.ceil((y + r - oy) / g));
         for (let iy = y0; iy <= y1; iy++) for (let ix = x0; ix <= x1; ix++)
           if (Math.hypot(ox + ix * g - x, oy + iy * g - y) <= r) arr[at(ix, iy)] = 1;
+      };
+      const stampAllLayers = (x, y, r) => {
+        for (let il = 0; il < L; il++) stamp(viaBlk, (ix, iy) => vidx(ix, iy, il), x, y, r);
+      };
+      const stampSegAllLayers = (x1, y1, x2, y2, r) => {
+        for (let il = 0; il < L; il++) stampSeg(viaBlk, (ix, iy) => vidx(ix, iy, il), x1, y1, x2, y2, r);
       };
       const stampSeg = (arr, at, x1, y1, x2, y2, r) => {
         const len = Math.hypot(x2 - x1, y2 - y1), n = Math.max(1, Math.ceil(len / (g / 2)));
@@ -390,21 +399,26 @@
         const rad = Math.hypot(p.w || 0.5, p.h || 0.5) / 2;
         const mine = net && (p.net || '') === net;
         if (!mine) for (const il of padLayers(p)) stamp(blocked, (ix, iy) => idx(ix, iy, il), a.x, a.y, rad + cPad + half);
-        // 穿孔 via 會鑽穿整疊板，所以不管 pad 在哪一面都擋得住它
-        if (!mine) stamp(viaBlk, vidx, a.x, a.y, rad + cPad + vHalf);
+        // pad 的銅柱阻擋：穿孔 pad 每一層都有銅，SMD 只有自己那一面。
+        // 舊版一律擋所有層，那對穿孔 via 是對的，但會讓盲埋孔沒地方下。
+        if (!mine) {
+          if (p.side === '*') stampAllLayers(a.x, a.y, rad + cPad + vHalf);
+          else padLayers(p).forEach(il =>
+            stamp(viaBlk, (ix, iy) => vidx(ix, iy, il), a.x, a.y, rad + cPad + vHalf));
+        }
       }));
       (state.traces || []).forEach(t => {
         if (net && (t.net || '') === net) return;
         const il = layerIdx(t.layer || 'F.Cu');
         const rad = (t.width || 0.3) / 2;
         if (il >= 0) stampSeg(blocked, (ix, iy) => idx(ix, iy, il), t.x1, t.y1, t.x2, t.y2, rad + cTrace + half);
-        stampSeg(viaBlk, vidx, t.x1, t.y1, t.x2, t.y2, rad + cTrace + vHalf);
+        if (il >= 0) stampSeg(viaBlk, (ix, iy) => vidx(ix, iy, il), t.x1, t.y1, t.x2, t.y2, rad + cTrace + vHalf);
       });
       (state.vias || []).forEach(v => {
         if (net && (v.net || '') === net) return;
         const rad = (v.od || 0.6) / 2;
         for (let il = 0; il < L; il++) stamp(blocked, (ix, iy) => idx(ix, iy, il), v.x, v.y, rad + cTrace + half);
-        stamp(viaBlk, vidx, v.x, v.y, rad + cVia + vHalf);
+        stampAllLayers(v.x, v.y, rad + cVia + vHalf);
       });
 
       // 禁佈區：DRC 會事後抓（drc_keepout），但路由器不該先產生違規再讓人去修。
@@ -433,7 +447,7 @@
           if (!inPoly(ox + ix * g, oy + iy * g, k.pts)) continue;
           if (all) { for (let il = 0; il < L; il++) blocked[idx(ix, iy, il)] = 1; }
           else if (li >= 0) blocked[idx(ix, iy, li)] = 1;
-          viaBlk[vidx(ix, iy)] = 1;
+          if (all) vall(ix, iy); else if (li >= 0) viaBlk[vidx(ix, iy, li)] = 1; else vall(ix, iy);
         }
       });
 
@@ -491,7 +505,7 @@
               if (!blocked[k]) edgeOnly[k] = 1;
               blocked[k] = 1;
             }
-            if (d < cEdge + vHalf) viaBlk[vidx(ix, iy)] = 1;
+            if (d < cEdge + vHalf) vall(ix, iy);
           }
         }
         const bubble = (cx, cy) => {
@@ -540,12 +554,20 @@
           const ng = gc[cur] + w;
           if (ng < gc[ni] - 1e-9) { gc[ni] = ng; par[ni] = cur; push(ng + hOf(ni), ni); }
         }
-        // 換層：穿孔 via 必須整根柱子都空，所以只看 viaBlk 一張圖
-        if (L > 1 && !viaBlk[c]) {
+        // 換層。穿孔要整根柱子都空；盲埋孔只要跨到的那一段層空著。
+        // 預設只做穿孔——四家板廠的一般線上下單都不接盲埋孔（見 pcb-fabs.js），
+        // 想用要自己開，開了之後板廠檢查會擋下來提醒。
+        if (L > 1) {
           for (let jl = 0; jl < L; jl++) {
             if (jl === il) continue;
             const ni = idx(cx0, cy0, jl);
             if (blocked[ni]) continue;
+            const lo = Math.min(il, jl), hi = Math.max(il, jl);
+            const spanLo = opt.blindBuried ? lo : 0;
+            const spanHi = opt.blindBuried ? hi : L - 1;
+            let free = true;
+            for (let k = spanLo; k <= spanHi && free; k++) if (viaBlk[vidx(cx0, cy0, k)]) free = false;
+            if (!free) continue;
             const ng = gc[cur] + opt.viaCost;
             if (ng < gc[ni] - 1e-9) { gc[ni] = ng; par[ni] = cur; push(ng + hOf(ni), ni); }
           }
@@ -569,7 +591,12 @@
         const xy = XY(cur);
         if (il !== runLayer) {                       // 換層：先收掉這一層的線，再放 via
           flush(prevXY, runLayer);
-          vias.push({ x: prevXY[0], y: prevXY[1], od: opt.viaOd, drill: opt.viaDrill });
+          // 帶上跨層：盲埋孔匯出要照跨層分檔，沒有這兩個欄位板廠不知道鑽多深
+          vias.push({
+            x: prevXY[0], y: prevXY[1], od: opt.viaOd, drill: opt.viaDrill,
+            from: opt.blindBuried ? layers[Math.min(runLayer, il)] : layers[0],
+            to: opt.blindBuried ? layers[Math.max(runLayer, il)] : layers[L - 1]
+          });
           runStart = prevXY; runLayer = il; pd = null;
           continue;
         }

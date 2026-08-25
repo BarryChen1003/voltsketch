@@ -470,7 +470,23 @@ function build(state, padAbsFn, baseName) {
     return lines.join('\n') + '\n';
   }
   const pth = [], npth = [], slots = [];
-  (state.vias || []).forEach(v => pth.push({ x: v.x, y: v.y, d: v.id || 0.3 }));
+  // via 的跨層：v.from / v.to 是銅層 id，沒填就是穿孔（貫穿全部銅層）。
+  // 盲埋孔一定要分檔：板廠是照「哪一段層」分次鑽的，混在同一個檔裡他們無從判斷。
+  const cuIds = (state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+  const spanKey = v => {
+    if (!v.from || !v.to) return 'through';
+    const a = cuIds.indexOf(v.from), b = cuIds.indexOf(v.to);
+    if (a < 0 || b < 0 || (a === 0 && b === cuIds.length - 1)) return 'through';
+    return (a < b ? v.from : v.to) + '-' + (a < b ? v.to : v.from);
+  };
+  const bySpan = new Map();
+  (state.vias || []).forEach(v => {
+    const k = spanKey(v);
+    if (k === 'through') { pth.push({ x: v.x, y: v.y, d: v.id || 0.3 }); return; }
+    let a = bySpan.get(k);
+    if (!a) { a = []; bySpan.set(k, a); }
+    a.push({ x: v.x, y: v.y, d: v.id || 0.3 });
+  });
   (state.components || []).forEach(c => {
     (c.pads || []).forEach(pad => {
       if (!pad.drill || pad.drill <= 0) return;
@@ -491,6 +507,11 @@ function build(state, padAbsFn, baseName) {
   (state.panelBites || []).forEach(b => npth.push({ x: b.x, y: b.y, d: b.d || 0.6 }));
   const drills = [{ name: base + '-PTH.drl', text: drillFile(pth, slots) }];
   if (npth.length) drills.push({ name: base + '-NPTH.drl', text: drillFile(npth, []) });
+  // 盲埋孔：一個跨層一個檔，檔名與表頭都標明起訖層
+  [...bySpan.keys()].sort().forEach(k => {
+    const head = '; Blind/buried via span: ' + k.replace('-', ' to ') + '\n';
+    drills.push({ name: base + '-' + k.replace(/\./g, '_') + '.drl', text: head + drillFile(bySpan.get(k), []) });
+  });
   // 背鑽（depth-controlled；per-side 檔＋must-not-cut 註解，板廠依此設鑽深）
   const bds = state.backdrills || [];
   if (bds.length) {
@@ -601,6 +622,8 @@ function build(state, padAbsFn, baseName) {
     pth.forEach(e => add(e.d, true));
     npth.forEach(e => add(e.d, false));
     slots.forEach(e => add(e.d, true));
+    // 盲埋孔另計：跟穿孔同尺寸也是不同刀次，併成一列板廠會鑽錯
+    bySpan.forEach(list => list.forEach(e => add(e.d, true)));
     const list = [...rows.entries()].map(([k, n]) => {
       const [d, kind] = k.split('|');
       return { size: +d, plated: kind === 'PTH', count: n };

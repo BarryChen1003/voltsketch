@@ -136,6 +136,16 @@
 
   const num = v => typeof v === 'number' && isFinite(v);
 
+  // 盲埋孔支援。四家的**一般線上下單流程**都不接（要走客製報價），所以填 false。
+  // 沒查到的一律留 null 走 skipped，當「未公開」而不是「不支援」——
+  // 這份檔的規矩是不憑印象填數字，這一條也一樣。
+  const BLIND_SUPPORT = {
+    jlcpcb: { blindBuried: false, note: 'standard online order' },
+    pcbway: { blindBuried: false, note: 'standard online order' },
+    seeed: { blindBuried: false, note: 'standard online order' },
+    oshpark: { blindBuried: false, note: 'standard service' }
+  };
+
   // 線段對線段最短距離。線距檢查要用，不能只比端點——兩條線可能在中段最近。
   function segSegDist(ax1, ay1, ax2, ay2, bx1, by1, bx2, by2) {
     const ptSeg = (px, py, x1, y1, x2, y2) => {
@@ -266,6 +276,25 @@
         let worst = Infinity, n = 0;
         for (const v of vias) { const od = v.od || 0; if (od > 0 && od < R.minViaPad - 1e-9) { n++; worst = Math.min(worst, od); } }
         if (n) findings.push({ code: 'viaPadTooSmall', severity: 'error', limit: R.minViaPad, actual: worst, n });
+      }
+
+      // 盲埋孔：板廠做不做得了
+      {
+        const spans = new Set();
+        const cuIds = (state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+        (state.vias || []).forEach(v => {
+          if (!v.from || !v.to) return;
+          const a = cuIds.indexOf(v.from), b = cuIds.indexOf(v.to);
+          if (a < 0 || b < 0) return;
+          if (a === 0 && b === cuIds.length - 1) return;      // 這其實是穿孔
+          spans.add(v.from + '-' + v.to);
+        });
+        if (spans.size) {
+          const sup = BLIND_SUPPORT[profile.id];
+          if (sup && sup.blindBuried === false)
+            findings.push({ code: 'blindBuriedUnsupported', severity: 'error', n: spans.size, actual: [...spans].join(', ') });
+          else if (!sup) skipped.push('blindBuried');
+        }
       }
 
       // 銅到板邊
