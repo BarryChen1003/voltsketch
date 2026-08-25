@@ -338,6 +338,36 @@
         stamp(viaBlk, vidx, v.x, v.y, rad + cVia + vHalf);
       });
 
+      // 禁佈區：DRC 會事後抓（drc_keepout），但路由器不該先產生違規再讓人去修。
+      // 穿孔 via 鑽穿整疊板，所以任一層的禁佈區都擋得住它。
+      const inPoly = (px, py, pts) => {
+        let inside = false;
+        for (let a = 0, b = pts.length - 1; a < pts.length; b = a++) {
+          const xi = pts[a][0], yi = pts[a][1], xj = pts[b][0], yj = pts[b][1];
+          if (((yi > py) !== (yj > py)) && (px < (xj - xi) * (py - yi) / (yj - yi) + xi)) inside = !inside;
+        }
+        return inside;
+      };
+      (state.keepouts || []).forEach(k => {
+        if (!k.pts || k.pts.length < 3) return;
+        const kx = k.pts.map(p => p[0]), ky = k.pts.map(p => p[1]);
+        const x0 = Math.max(0, Math.floor((Math.min.apply(null, kx) - ox) / g));
+        const x1 = Math.min(nx - 1, Math.ceil((Math.max.apply(null, kx) - ox) / g));
+        const y0 = Math.max(0, Math.floor((Math.min.apply(null, ky) - oy) / g));
+        const y1 = Math.min(ny - 1, Math.ceil((Math.max.apply(null, ky) - oy) / g));
+        // 三種情況要分清楚，混在一起會讓別層的禁佈區擋住這一層：
+        //   未指定層（或 '*'）→ 擋所有層；指定層在繞線層裡 → 只擋那一層；
+        //   指定層不在繞線層裡 → 走線不受影響，但穿孔 via 仍要避開（它鑽穿整疊板）。
+        const all = !k.layer || k.layer === '*';
+        const li = all ? -1 : layerIdx(k.layer);
+        for (let iy = y0; iy <= y1; iy++) for (let ix = x0; ix <= x1; ix++) {
+          if (!inPoly(ox + ix * g, oy + iy * g, k.pts)) continue;
+          if (all) { for (let il = 0; il < L; il++) blocked[idx(ix, iy, il)] = 1; }
+          else if (li >= 0) blocked[idx(ix, iy, li)] = 1;
+          viaBlk[vidx(ix, iy)] = 1;
+        }
+      });
+
       const toCell = (x, y) => [Math.round((x - ox) / g), Math.round((y - oy) / g)];
       const [sx, sy] = toCell(line.x1, line.y1), [ex, ey] = toCell(line.x2, line.y2);
       if (!inb(sx, sy) || !inb(ex, ey)) return { ok: false, reason: T('rule_ep_outside') };

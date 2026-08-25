@@ -908,6 +908,58 @@ const minDistToSegs = (px, py, segs) =>
   ok(legacy.segs.every(sg => sg.layer === 'F.Cu'), '22 單層的段別應全是 F.Cu');
 }
 
+// 22b) 禁佈區：路由器不該先產生違規再讓 DRC 去抓
+{
+  const AR = window.AutoRoute;
+  const padAbs = (c, p) => ({ x: c.x + p.x, y: c.y + p.y });
+  const mk = ko => ({
+    boardWidth: 40, boardHeight: 30, traces: [], vias: [],
+    components: [
+      { id: 'a', ref: 'J1', x: -15, y: 0, rot: 0, pads: [{ x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'SIG' }] },
+      { id: 'b', ref: 'J2', x: 15, y: 0, rot: 0, pads: [{ x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'SIG' }] }
+    ],
+    keepouts: ko
+  });
+  const line = { x1: -15, y1: 0, x2: 15, y2: 0, net: 'SIG' };
+  const opt = { layers: ['F.Cu'], width: 0.25, clearance: { traceToTrace: 0.15, traceToPad: 0.15, traceToEdge: 0 }, grid: 0.25 };
+  const poly = [[-6, -6], [6, -6], [6, 6], [-6, 6]];
+  const inPoly = (x, y, pts) => {
+    let v = false;
+    for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+      const xi = pts[i][0], yi = pts[i][1], xj = pts[j][0], yj = pts[j][1];
+      if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) v = !v;
+    }
+    return v;
+  };
+  const inside = r => {
+    let n = 0;
+    (r.segs || []).forEach(s => { for (let t = 0; t <= 1; t += 0.02) {
+      if (inPoly(s.x1 + (s.x2 - s.x1) * t, s.y1 + (s.y2 - s.y1) * t, poly)) n++; } });
+    return n;
+  };
+
+  const r = AR.route(mk([{ layer: 'F.Cu', pts: poly }]), padAbs, line, opt);
+  ok(r.ok, '22b 有禁佈區時應繞得過去');
+  eq(inside(r), 0, '22b 走線一個點都不可落在禁佈區內');
+  ok(r.segs.length > 1, '22b 應該是繞過去而不是直線穿過');
+
+  // 沒有禁佈區時走直線（證明上面的繞路真的是禁佈區造成的）
+  const free = AR.route(mk([]), padAbs, line, opt);
+  eq(free.segs.length, 1, '22b 沒有禁佈區時應走直線');
+
+  // 禁佈區封死整條路徑 → 誠實回報繞不出來，不可硬穿
+  const sealed = AR.route(mk([{ layer: 'F.Cu', pts: [[-6, -15], [6, -15], [6, 15], [-6, 15]] }]), padAbs, line, opt);
+  eq(sealed.ok, false, '22b 禁佈區封死時應回報繞不出來');
+
+  // 別層的禁佈區不該擋住這一層
+  const otherLayer = AR.route(mk([{ layer: 'B.Cu', pts: poly }]), padAbs, line, opt);
+  eq(otherLayer.segs.length, 1, '22b 別層的禁佈區不應擋住 F.Cu');
+
+  // layer 未指定（'*'）代表所有層
+  const allLayers = AR.route(mk([{ pts: poly }]), padAbs, line, opt);
+  eq(inside(allLayers), 0, '22b 未指定層的禁佈區應擋住所有層');
+}
+
 // 23) routableLayers：訊號不該從 GND／PWR 平面穿過去
 {
   const saved = app.state.layerStack;
