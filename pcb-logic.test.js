@@ -1093,5 +1093,60 @@ const minDistToSegs = (px, py, segs) =>
   app.renderThermalResults = savedRender;
 }
 
+// 27) 大板效能：防止 DRC / 飛線退回二次方
+//     這幾段原本是全比對：1000 條走線 789ms、20000 條 58 秒。
+//     加了空間網格與惰性 Prim 之後是 26ms / 1.9 秒。門檻放得比實測寬很多，
+//     不是在追效能數字，是在擋「有人把網格拿掉」這種回歸。
+{
+  const savedState = app.state;
+  const savedQS = documentStub.querySelector;
+  const drcBox = { innerHTML: '' };
+  documentStub.querySelector = sel => (sel === '#drcResults' ? drcBox : (sel === '#pcbCanvas' ? canvasStub : null));
+
+  const mkBoard = n => {
+    let seed = 12345;
+    const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+    const st = {
+      boardWidth: 200, boardHeight: 150, layers: 2, layerStack: app.buildLayerStack(2),
+      visibleLayers: ['F.Cu', 'B.Cu'], components: [], traces: [], vias: [],
+      zones: [], zoneFills: [], userZones: [], keepouts: [], texts: [], netRules: [],
+      selectedSet: [], selected: null
+    };
+    for (let i = 0; i < n; i++) {
+      const x = -95 + rnd() * 190, y = -70 + rnd() * 140;
+      st.traces.push({ id: 't' + i, x1: x, y1: y, x2: x + rnd() * 8 - 4, y2: y + rnd() * 8 - 4,
+        width: 0.25, layer: 'F.Cu', net: 'N' + (i % 50) });
+    }
+    return st;
+  };
+
+  app.state = mkBoard(1000);
+  let t0 = Date.now();
+  app.runDrc();
+  const ms1k = Date.now() - t0;
+  ok(ms1k < 400, `27 1000 條走線的 runDrc 應在 400ms 內（實測 ${ms1k}ms；二次方版本是 789ms）`);
+
+  app.state = mkBoard(4000);
+  t0 = Date.now();
+  app.runDrc();
+  const ms4k = Date.now() - t0;
+  ok(ms4k < 3000, `27 4000 條走線的 runDrc 應在 3s 內（實測 ${ms4k}ms）`);
+
+  // 成長率：四倍資料量不該變成十六倍時間。門檻取 8 倍，留給常數項與雜訊。
+  const ratio = ms4k / Math.max(1, ms1k);
+  ok(ratio < 8, `27 資料量 ×4 時耗時不該 ×8 以上（實測 ×${ratio.toFixed(1)}；二次方會是 ×16 起跳）`);
+
+  // 飛線本身也要守住
+  app.state = mkBoard(4000);
+  t0 = Date.now();
+  const rl = window.Ratsnest.compute(app.state, app.padAbs.bind(app));
+  const msR = Date.now() - t0;
+  ok(msR < 3000, `27 4000 條走線的飛線計算應在 3s 內（實測 ${msR}ms）`);
+  ok(rl.length >= 0, '27 飛線應回傳結果');
+
+  app.state = savedState;
+  documentStub.querySelector = savedQS;
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

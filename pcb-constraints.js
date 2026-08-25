@@ -103,19 +103,80 @@
       // 2) 矩陣間距（不同 net、同層、要求 > 全域才另報，避免與 PadDrc 全域檢查重複）
       const fb = globalClearance || 0;
       const reported = new Set();
-      for (let i = 0; i < traces.length; i++) for (let j = i + 1; j < traces.length; j++) {
+      // 原本是 n² 全比對，而且每一對都先呼叫 clearanceBetween（要查 class 再查矩陣）。
+      // 1000 條走線＝50 萬次查表，量到 535ms，是整個 DRC 最慢的一段。
+      // 兩件事：① class 與 net-pair 的查表結果記起來 ② 用空間網格只比可能靠近的。
+      // 網格桶邊長取矩陣裡的最大要求間距，所以候選一定涵蓋所有可能違規的配對。
+      const clsCache = new Map();
+      const classOfCached = net => {
+        if (clsCache.has(net)) return clsCache.get(net);
+        const c = this.classOf(data, net);
+        clsCache.set(net, c);
+        return c;
+      };
+      const reqCache = new Map();
+      const reqOf = (netA, netB) => {
+        const k = netA < netB ? netA + '\u0000' + netB : netB + '\u0000' + netA;
+        if (reqCache.has(k)) return reqCache.get(k);
+        const ca = classOfCached(netA), cb = classOfCached(netB);
+        let v = fb;
+        if (ca && cb) {
+          const m = data.matrix[pairKey(ca.id, cb.id)];
+          v = (typeof m === 'number' && m > 0) ? Math.max(m, fb) : fb;
+        }
+        reqCache.set(k, v);
+        return v;
+      };
+      let maxReq = fb;
+      Object.keys(data.matrix || {}).forEach(k => {
+        const v = data.matrix[k];
+        if (typeof v === 'number' && v > maxReq) maxReq = v;
+      });
+
+      const cell = Math.max(1, 2 * (maxReq + 1));
+      const buckets = new Map();
+      const bkey = (ix, iy) => ix + ',' + iy;
+      const bboxOf = t => {
+        const m = (t.width || 0.3) / 2 + maxReq;
+        return { minx: Math.min(t.x1, t.x2) - m, maxx: Math.max(t.x1, t.x2) + m,
+                 miny: Math.min(t.y1, t.y2) - m, maxy: Math.max(t.y1, t.y2) + m };
+      };
+      const boxes = traces.map(bboxOf);
+      traces.forEach((t, i) => {
+        const b = boxes[i];
+        for (let iy = Math.floor(b.miny / cell); iy <= Math.floor(b.maxy / cell); iy++)
+          for (let ix = Math.floor(b.minx / cell); ix <= Math.floor(b.maxx / cell); ix++) {
+            const k = bkey(ix, iy);
+            let a = buckets.get(k);
+            if (!a) { a = []; buckets.set(k, a); }
+            a.push(i);
+          }
+      });
+
+      for (let i = 0; i < traces.length; i++) {
+        const b = boxes[i];
+        const cand = new Set();
+        for (let iy = Math.floor(b.miny / cell); iy <= Math.floor(b.maxy / cell); iy++)
+          for (let ix = Math.floor(b.minx / cell); ix <= Math.floor(b.maxx / cell); ix++) {
+            const a = buckets.get(bkey(ix, iy));
+            if (a) for (let n = 0; n < a.length; n++) if (a[n] > i) cand.add(a[n]);
+          }
+        // 照原始索引順序處理：報告有數量上限，順序變了會列出不同的結果
+        const list = [...cand].sort((x, y) => x - y);
+        for (const j of list) {
         const A = traces[i], B = traces[j];
         if (!A.net || !B.net || A.net === B.net) continue;
         if ((A.layer || 'F.Cu') !== (B.layer || 'F.Cu')) continue;
-        const req = this.clearanceBetween(data, A.net, B.net, fb);
+        const req = reqOf(A.net, B.net);
         if (req <= fb) continue; // 全域檢查已涵蓋
         const d = segDist(A, B) - ((A.width || 0.3) + (B.width || 0.3)) / 2;
         if (d < req - 1e-9) {
           const k = pairKey(A.net, B.net);
           if (reported.has(k)) continue;
           reported.add(k);
-          const ca = this.classOf(data, A.net), cb = this.classOf(data, B.net);
+          const ca = classOfCached(A.net), cb = classOfCached(B.net);
           res.push({ type: 'error', message: T('cm_e_clear', { netA: A.net, clsA: ca.name, netB: B.net, clsB: cb.name, d: Math.max(0, d).toFixed(3), req }) });
+        }
         }
       }
 

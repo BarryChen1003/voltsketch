@@ -21,6 +21,39 @@ window.PadDrc = (() => {
 
   const orient = (ax, ay, bx, by, cx, cy) => (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
 
+  // 空間網格：只拿「可能靠近」的東西去做精算。
+  // 走線↔走線與走線↔pad 原本是 n×m 全比對，1000 條走線的板要 789ms；
+  // 桶化之後只比鄰桶，結果完全一樣（網格只是候選篩選，精算沒動）。
+  function SpatialGrid(cell) {
+    const c = cell > 0 ? cell : 1;
+    const map = new Map();
+    const key = (ix, iy) => ix + ',' + iy;
+    return {
+      cell: c,
+      insert(item, minx, miny, maxx, maxy) {
+        const x0 = Math.floor(minx / c), x1 = Math.floor(maxx / c);
+        const y0 = Math.floor(miny / c), y1 = Math.floor(maxy / c);
+        for (let iy = y0; iy <= y1; iy++) for (let ix = x0; ix <= x1; ix++) {
+          const k = key(ix, iy);
+          let a = map.get(k);
+          if (!a) { a = []; map.set(k, a); }
+          a.push(item);
+        }
+      },
+      // 回傳可能與這個範圍重疊的項目（可能重複，呼叫端自行去重）
+      query(minx, miny, maxx, maxy, out) {
+        const res = out || new Set();
+        const x0 = Math.floor(minx / c), x1 = Math.floor(maxx / c);
+        const y0 = Math.floor(miny / c), y1 = Math.floor(maxy / c);
+        for (let iy = y0; iy <= y1; iy++) for (let ix = x0; ix <= x1; ix++) {
+          const a = map.get(key(ix, iy));
+          if (a) for (let i = 0; i < a.length; i++) res.add(a[i]);
+        }
+        return res;
+      }
+    };
+  }
+
   const segSegDist = (ax, ay, bx, by, cx, cy, dx, dy) => {
     const o1 = orient(ax, ay, bx, by, cx, cy), o2 = orient(ax, ay, bx, by, dx, dy);
     const o3 = orient(cx, cy, dx, dy, ax, ay), o4 = orient(cx, cy, dx, dy, bx, by);
@@ -130,7 +163,7 @@ window.PadDrc = (() => {
       if (!hasCopper) return;
       const sh = padShape(c, p, padAbs);
       if (sh.approx) customCount++;
-      pads.push({ sh, p, net: p.net || '', side: p.side || 'F',
+      pads.push({ _i: pads.length, sh, p, net: p.net || '', side: p.side || 'F',
                   plated: p.drill > 0, label: `${c.ref || c.label}.${p.num}` });
     }));
     (state.vias || []).forEach((v, i) => {
@@ -174,9 +207,20 @@ window.PadDrc = (() => {
 
     // 2) 走線 ↔ pad 淨距
     const traces = state.traces || [];
+    // pad 先進空間網格；桶邊長取 pad 外接圓與淨空的量級，桶太小會讓查詢次數暴增
+    const padCell = Math.max(1, 2 * (cl.traceToPad + 1));
+    const padGrid = SpatialGrid(padCell);
+    for (const P of pads) padGrid.insert(P, P.sh.cx - P.sh.circ, P.sh.cy - P.sh.circ,
+      P.sh.cx + P.sh.circ, P.sh.cy + P.sh.circ);
     for (const t of traces) {
       const tw = (t.width || 0.3) / 2, tl = t.layer || 'F.Cu';
-      for (const P of pads) {
+      const r = tw + cl.traceToPad;
+      // 依原始索引排序：每類發現有 30 筆上限，桶的順序會決定「留下哪 30 筆」，
+      // 不排的話同一片板跑兩次可能列出不同的結果。
+      const cand = [...padGrid.query(Math.min(t.x1, t.x2) - r, Math.min(t.y1, t.y2) - r,
+                                     Math.max(t.x1, t.x2) + r, Math.max(t.y1, t.y2) + r)]
+        .sort((a, b) => a._i - b._i);
+      for (const P of cand) {
         if (t.net && t.net === P.net) continue;
         if (!padOnLayer(P.side, tl)) continue;
         if (ptSegDist(P.sh.cx, P.sh.cy, t.x1, t.y1, t.x2, t.y2) - P.sh.circ - tw >= cl.traceToPad) continue;
@@ -194,7 +238,15 @@ window.PadDrc = (() => {
       return { minx: Math.min(t.x1, t.x2) - m, maxx: Math.max(t.x1, t.x2) + m,
                miny: Math.min(t.y1, t.y2) - m, maxy: Math.max(t.y1, t.y2) + m };
     });
-    for (let i = 0; i < traces.length; i++) for (let j = i + 1; j < traces.length; j++) {
+    const ttCell = Math.max(1, 2 * (cl.traceToTrace + 1));
+    const ttGrid = SpatialGrid(ttCell);
+    for (let i = 0; i < traces.length; i++) ttGrid.insert(i, tb[i].minx, tb[i].miny, tb[i].maxx, tb[i].maxy);
+    for (let i = 0; i < traces.length; i++) {
+      const cand = [...ttGrid.query(tb[i].minx - cl.traceToTrace, tb[i].miny - cl.traceToTrace,
+                                    tb[i].maxx + cl.traceToTrace, tb[i].maxy + cl.traceToTrace)]
+        .sort((a, b) => a - b);
+      for (const j of cand) {
+      if (j <= i) continue;                 // 每一對只比一次，維持原本 i<j 的順序與編號
       const a = traces[i], b = traces[j];
       if ((a.layer || 'F.Cu') !== (b.layer || 'F.Cu')) continue;
       if (a.net && b.net && a.net === b.net) continue;
@@ -209,6 +261,7 @@ window.PadDrc = (() => {
       } else {
         add('drc_cat_tt', 'error',
           T('drc_tt', { a: a.net, b: b.net, layer: a.layer || 'F.Cu', d: fmt(Math.max(0, d)), lim: cl.traceToTrace, x: a.x1.toFixed(1), y: a.y1.toFixed(1) }));
+      }
       }
     }
 

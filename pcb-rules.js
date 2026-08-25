@@ -181,20 +181,67 @@
       const union = (arr, a, b) => { const ra = find(arr, a.id), rb = find(arr, b.id); if (ra !== rb) arr[ra].parent = rb; };
       const layerOk = (a, b) => a === '*' || b === '*' || a === b;
 
+      // traceNodes 先照 net 分桶：原本每個 net 都掃過整份 traceNodes 做字串前綴比對，
+      // 50 個 net × 2 萬條走線＝100 萬次 startsWith，光這裡就佔掉大半時間。
+      const tnByNet = new Map();
+      Object.entries(traceNodes).forEach(entry => {
+        const k = entry[0];
+        const at = k.indexOf('|');
+        const n = at < 0 ? '' : k.slice(0, at);
+        let a = tnByNet.get(n);
+        if (!a) { a = []; tnByNet.set(n, a); }
+        a.push(entry[1]);
+      });
+
       for (const [net, arr] of Object.entries(byNet)) {
+        const tns = tnByNet.get(net) || [];
         // 走線自身兩端相連
-        Object.entries(traceNodes).forEach(([k, [a, b]]) => { if (k.startsWith(net + '|')) union(arr, a, b); });
+        tns.forEach(v => union(arr, v[0], v[1]));
+
+        // 節點鄰近合併與 T 接原本都是全比對（節點² 與 走線×節點）。
+        // 這裡用空間網格只比鄰桶：判定條件一字未改，網格只是候選篩選。
+        let maxR = EPS;
+        for (const n of arr) if ((n.r || EPS) > maxR) maxR = n.r || EPS;
+        const cell = Math.max(0.5, 2 * maxR);
+        const nodeBuckets = new Map();
+        const bk = (ix, iy) => ix + ',' + iy;
+        arr.forEach((n, i) => {
+          if (n.key === 'zone') return;
+          const k = bk(Math.floor(n.x / cell), Math.floor(n.y / cell));
+          let a = nodeBuckets.get(k);
+          if (!a) { a = []; nodeBuckets.set(k, a); }
+          a.push(i);
+        });
+        const nearIdx = (x, y, r) => {
+          const out = [];
+          const x0 = Math.floor((x - r) / cell), x1 = Math.floor((x + r) / cell);
+          const y0 = Math.floor((y - r) / cell), y1 = Math.floor((y + r) / cell);
+          for (let iy = y0; iy <= y1; iy++) for (let ix = x0; ix <= x1; ix++) {
+            const a = nodeBuckets.get(bk(ix, iy));
+            if (a) for (let t = 0; t < a.length; t++) out.push(a[t]);
+          }
+          return out;
+        };
+
         // 節點鄰近合併（pad/via 半徑、端點 EPS；跨層不併——via 是 '*' 可跨）
-        for (let i = 0; i < arr.length; i++) for (let j = i + 1; j < arr.length; j++) {
-          const a = arr[i], b = arr[j];
-          if (a.key === 'zone' || b.key === 'zone') continue;
-          if (!layerOk(a.layer, b.layer)) continue;
-          if (Math.hypot(a.x - b.x, a.y - b.y) <= Math.max(a.r || EPS, b.r || EPS)) union(arr, a, b);
+        for (let i = 0; i < arr.length; i++) {
+          const a = arr[i];
+          if (a.key === 'zone') continue;
+          for (const j of nearIdx(a.x, a.y, maxR)) {
+            if (j <= i) continue;
+            const b = arr[j];
+            if (b.key === 'zone') continue;
+            if (!layerOk(a.layer, b.layer)) continue;
+            if (Math.hypot(a.x - b.x, a.y - b.y) <= Math.max(a.r || EPS, b.r || EPS)) union(arr, a, b);
+          }
         }
         // T 接：pad/via 落在走線段上
-        Object.entries(traceNodes).forEach(([k, [a, , t]]) => {
-          if (!k.startsWith(net + '|')) return;
-          for (const n of arr) {
+        tns.forEach(v => {
+          const a = v[0], t = v[2];
+          const cx = (t.x1 + t.x2) / 2, cy = (t.y1 + t.y2) / 2;
+          const half = Math.hypot(t.x2 - t.x1, t.y2 - t.y1) / 2 + maxR;
+          for (const idx of nearIdx(cx, cy, half)) {
+            const n = arr[idx];
             if (n.key === 'te' || n.key === 'zone') continue;
             if (!layerOk(n.layer, t.layer || 'F.Cu')) continue;
             if (ptSeg(n.x, n.y, t.x1, t.y1, t.x2, t.y2) <= (n.r || EPS)) union(arr, a, n);
@@ -214,18 +261,32 @@
         arr.forEach(n => { const r = find(arr, n.id); (comps[r] = comps[r] || []).push(n); });
         const groups = Object.values(comps).filter(g => g.some(n => n.key !== 'zone'));
         if (groups.length <= 1) continue;
-        while (groups.length > 1) {
-          let best = null;
-          for (let i = 1; i < groups.length; i++) {
-            for (const a of groups[0]) for (const b of groups[i]) {
-              if (a.key === 'zone' || b.key === 'zone') continue;
+        // 這就是 Prim：每次把離「已連起來那一堆」最近的分量接上。
+        // 舊寫法每一輪都重掃整個已合併集合 × 所有剩餘分量，比二次方還差
+        //（2 萬條走線的板量到 51 秒）。改成惰性更新：每個未併入的分量只記
+        // 自己對已併入集合的最近點對，新併入一塊時只拿「新加入的點」去更新。
+        // 產生的邊與舊寫法相同（同樣是最小生成樹，取最近者併入）。
+        const real = g => g.filter(n => n.key !== 'zone');
+        const rest = [];
+        for (let i = 1; i < groups.length; i++) {
+          const nodes = real(groups[i]);
+          if (nodes.length) rest.push({ nodes, best: null });
+        }
+        let frontier = real(groups[0]);
+        while (rest.length && frontier.length) {
+          for (const r of rest) {
+            for (const a of frontier) for (const b of r.nodes) {
               const d = Math.hypot(a.x - b.x, a.y - b.y);
-              if (!best || d < best.d) best = { d, a, b, gi: i };
+              if (!r.best || d < r.best.d) r.best = { d, a, b };
             }
           }
-          if (!best) break; // 分量只剩 zone 點，無實體節點可拉線
-          lines.push({ x1: best.a.x, y1: best.a.y, x2: best.b.x, y2: best.b.y, net });
-          groups[0] = groups[0].concat(groups.splice(best.gi, 1)[0]);
+          let bi = -1;
+          for (let i = 0; i < rest.length; i++)
+            if (rest[i].best && (bi < 0 || rest[i].best.d < rest[bi].best.d)) bi = i;
+          if (bi < 0) break;   // 剩下的分量只有 zone 點，沒有實體節點可拉線
+          const pick = rest.splice(bi, 1)[0];
+          lines.push({ x1: pick.best.a.x, y1: pick.best.a.y, x2: pick.best.b.x, y2: pick.best.b.y, net });
+          frontier = pick.nodes;
         }
       }
       return lines;
