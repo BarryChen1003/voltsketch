@@ -47,17 +47,20 @@ require('./pcb-refboards.js');
 require('./pcb-history.js');
 require('./pcb-rules.js');
 require('./pcb-stackup.js');
+require('./pcb-constraints.js');
+require('./pcb-drc.js');
 require('./pcb-fabs.js');
 
 // pcb.js 內部以「裸全域」引用這些（瀏覽器 window 屬性＝全域）；node 需手動鏡射到 global
 ['PcbHistory', 'FootprintGen', 'RefFP', 'PartsLib', 'PCB_REFBOARDS', 'IC_DATA',
- 'NetRules', 'Ratsnest', 'AutoRoute', 'Stackup', 'Padstack', 'Backdrill', 'FabProfiles'].forEach(k => { global[k] = global.window[k]; });
+ 'NetRules', 'Ratsnest', 'AutoRoute', 'Stackup', 'Padstack', 'Backdrill', 'FabProfiles', 'ConstraintMgr', 'PadDrc'].forEach(k => { global[k] = global.window[k]; });
 
 // ---------- 載入 pcb.js，但移除檔尾 init() ----------
 let src = fs.readFileSync('./pcb.js', 'utf8');
 src = src.replace(/pcbApp\.init\(\);\s*/m, '/* init skipped in test */');
 eval(src);                       // 內含 window.pcbApp = pcbApp
 const app = global.window.pcbApp;
+global.pcbApp = app;          // pcb-stackup.js 等模組用裸全域 pcbApp 引用（瀏覽器有、node 要手動鏡射）
 
 // 覆寫渲染/DOM 類方法為 no-op（測邏輯不測畫面）
 ['render', 'renderPartsList', 'syncSelPanel', 'populateEmiSelects', 'renderLayerList',
@@ -556,6 +559,293 @@ const minDistToSegs = (px, py, segs) =>
   const jlc = cmp.findIndex(r => r.profile.id === 'jlcpcb');
   ok(jlc < seeed, '16 Seeed 未公開 4 項，不可因錯誤數少就排在 JLCPCB 之前');
   ok(errCount(cmp[seeed]) <= errCount(cmp[jlc]), '16 （前提）Seeed 的 error 數確實比較少，排序仍不該被它騙過去');
+}
+
+// 17) 線距與 via 焊環：資料檔裡有這兩條規則，但一直沒被檢查
+{
+  const FP = window.FabProfiles;
+  const padAbs = (c, p) => ({ x: c.x + p.x, y: c.y + p.y });
+  const base = () => ({
+    boardWidth: 50, boardHeight: 40, layers: 2, layerStack: app.buildLayerStack(2),
+    components: [], texts: [], vias: [],
+    traces: [
+      { x1: -10, y1: 0, x2: 10, y2: 0, width: 0.2, layer: 'F.Cu', net: 'A' },
+      { x1: -10, y1: 0.25, x2: 10, y2: 0.25, width: 0.2, layer: 'F.Cu', net: 'B' }
+    ]
+  });
+  // 兩條中心距 0.25、各半寬 0.1 → 邊到邊 0.05 < 0.10
+  const tight = FP.check(base(), 'jlcpcb', padAbs);
+  const fs = tight.findings.find(f => f.code === 'spaceTooTight');
+  ok(!!fs, '17 應抓到線距不足');
+  ok(Math.abs(fs.actual - 0.05) < 1e-9, `17 應回報邊到邊實際間距 0.05（得 ${fs && fs.actual}）`);
+  eq(fs.severity, 'error', '17 線距不足屬 error');
+
+  // 同一個 net 不算違規（同網相接本來就會靠在一起）
+  const sameNet = base(); sameNet.traces[1].net = 'A';
+  ok(!FP.check(sameNet, 'jlcpcb', padAbs).findings.some(f => f.code === 'spaceTooTight'), '17 同 net 不應報線距');
+
+  // 不同層不算
+  const otherLayer = base(); otherLayer.traces[1].layer = 'B.Cu';
+  ok(!FP.check(otherLayer, 'jlcpcb', padAbs).findings.some(f => f.code === 'spaceTooTight'), '17 異層不應報線距');
+
+  // 拉開到 0.4 中心距（邊到邊 0.2）就該過
+  const wide = base(); wide.traces[1].y1 = 0.4; wide.traces[1].y2 = 0.4;
+  ok(!FP.check(wide, 'jlcpcb', padAbs).findings.some(f => f.code === 'spaceTooTight'), '17 間距足夠不應誤報');
+
+  // 交叉的兩條線距離 0，一定要抓到（只比端點會漏）
+  const cross = base();
+  cross.traces[1] = { x1: 0, y1: -5, x2: 0, y2: 5, width: 0.2, layer: 'F.Cu', net: 'B' };
+  ok(FP.check(cross, 'jlcpcb', padAbs).findings.some(f => f.code === 'spaceTooTight'), '17 交叉走線必須抓到（端點都很遠）');
+
+  // via 焊環外徑：JLCPCB 下限 0.25
+  const vp = base();
+  vp.vias = [{ x: 0, y: 10, od: 0.2, id: 0.15, net: 'A' }];
+  ok(FP.check(vp, 'jlcpcb', padAbs).findings.some(f => f.code === 'viaPadTooSmall'), '17 via 焊環 0.2 < 0.25 應抓到');
+  // PCBWay 沒公開這項 → 必須列 skipped，不可借用 JLCPCB 的值
+  const rp = FP.check(vp, 'pcbway', padAbs);
+  ok(rp.skipped.indexOf('minViaPad') >= 0, '17 PCBWay 未公開 minViaPad，應列 skipped');
+  ok(!rp.findings.some(f => f.code === 'viaPadTooSmall'), '17 未公開的規則不可產生 finding');
+}
+
+// 18) 選定板廠：DRC 與匯出閘門都讀這裡，所以要能存、能過期、能給回填值
+{
+  const FP = window.FabProfiles;
+  localStorage.removeItem(FP.SEL_KEY);
+  eq(FP.selectedId(), FP.list[0].id, '18 沒選過時回第一家，不回 undefined');
+  ok(FP.select('pcbway'), '18 select 合法 id 應成功');
+  eq(FP.selectedId(), 'pcbway', '18 選擇要持久化');
+  eq(FP.select('not-a-fab'), false, '18 不存在的 id 應拒絕');
+  eq(FP.selectedId(), 'pcbway', '18 拒絕後不可污染既有選擇');
+  localStorage.setItem(FP.SEL_KEY, 'ghost-fab');
+  eq(FP.selectedId(), FP.list[0].id, '18 存了不存在的 id 要退回預設，不可回 ghost');
+
+  // 過期判定
+  const jl = FP.byId('jlcpcb');
+  const soon = Date.parse(jl.fetched + 'T00:00:00Z') + 30 * 24 * 3600 * 1000;
+  const later = Date.parse(jl.fetched + 'T00:00:00Z') + 400 * 24 * 3600 * 1000;
+  eq(FP.isStale(jl, 12, soon), false, '18 擷取後一個月不算過期');
+  eq(FP.isStale(jl, 12, later), true, '18 擷取後 400 天應算過期');
+  eq(FP.isStale({ fetched: '' }, 12, later), true, '18 沒有擷取日期一律當過期');
+
+  // DRC 回填值：要對得上該廠該檔位的公開數字
+  const r2 = FP.drcRulesFor('jlcpcb', 2);
+  ok(Math.abs(r2.clearance - 0.10) < 1e-9, '18 JLCPCB 線距回填 0.10');
+  ok(Math.abs(r2.minTrace - 0.10) < 1e-9, '18 JLCPCB 線寬回填 0.10');
+  ok(Math.abs(r2.edge - 0.20) < 1e-9, '18 JLCPCB 板邊回填 0.20');
+  const ro = FP.drcRulesFor('oshpark', 4);
+  ok(Math.abs(ro.minTrace - 0.127) < 1e-6, '18 OSH Park 4 層線寬回填 5mil');
+  ok(Math.abs(ro.edge - 0.381) < 1e-6, '18 OSH Park 板邊回填 15mil');
+  // 未公開的要回 null，讓 UI 保留原值而不是填 0
+  const rs = FP.drcRulesFor('seeed', 2);
+  eq(rs.edge, null, '18 Seeed 未公開板邊，應回 null 而不是 0');
+  eq(FP.drcRulesFor('oshpark', 8), null, '18 該廠做不了的層數應回 null');
+  // mil 換算的浮點尾巴不可外流到 DRC 欄位（6mil = 0.15239999999999998）
+  const r6 = FP.drcRulesFor('oshpark', 2);
+  ok(String(r6.minTrace).length <= 6, `18 回填值應四捨五入到 4 位（得 ${r6.minTrace}）`);
+  eq(r6.minTrace, 0.1524, '18 OSH Park 2 層線寬應為乾淨的 0.1524');
+  Object.values(FP.list).forEach(pf => [2, 4].forEach(n => {
+    const r = FP.drcRulesFor(pf.id, n);
+    if (!r) return;
+    Object.values(r).forEach(v => { if (v != null) ok(String(v).length <= 7, `18 ${pf.id} 回填值不可有浮點尾巴（得 ${v}）`); });
+  }));
+  localStorage.removeItem(FP.SEL_KEY);
+
+  // 內建的 via 預設值必須過得了各家的絕對下限，
+  // 否則使用者什麼都還沒改就先被退件（舊預設 0.6/0.3 環寬 0.15 < JLC 0.18）
+  {
+    localStorage.removeItem('vs-padstack-v1');
+    const ps = window.Padstack.load();
+    const ring = (ps.od - ps.drill) / 2;
+    ok(ring >= 0.18 - 1e-9, `18 預設 via 環寬 ${ring} 應 >= JLCPCB 絕對下限 0.18`);
+    const padAbs2 = (c, pd) => ({ x: c.x + pd.x, y: c.y + pd.y });
+    const st18 = {
+      boardWidth: 50, boardHeight: 40, layers: 2, layerStack: app.buildLayerStack(2),
+      components: [], texts: [], traces: [],
+      vias: [{ x: 0, y: 0, od: ps.od, id: ps.drill, net: 'A' }]
+    };
+    FP.list.forEach(pf => {
+      const r = FP.check(st18, pf.id, padAbs2);
+      ok(!r.findings.some(f => f.code === 'annularTooThin'),
+         `18 預設 via 不應在 ${pf.name} 被判環寬不足`);
+      ok(!r.findings.some(f => f.code === 'drillTooSmall'),
+         `18 預設鄜徑不應在 ${pf.name} 被判過小`);
+    });
+  }
+}
+
+// 19) A-2 差分對間距優先序：Constraint class pairGap > NetRules gap > 0.2 預設
+{
+  const CM = window.ConstraintMgr;
+  ok(!!CM, '19 ConstraintMgr 應載入');
+  const savedNR = app.state.netRules;
+  localStorage.removeItem('vs-constraints-v1');
+
+  eq(app.diffGapOf('SOME_NET'), 0.2, '19 什麼規則都沒有時回 0.2 預設');
+
+  // NetRules 有 gap → 蓋過預設
+  app.state.netRules = [{ pattern: 'USB', minW: 0, maxLen: 0, gap: 0.35 }];
+  ok(Math.abs(app.diffGapOf('USB_DP') - 0.35) < 1e-9, '19 NetRules 的 gap 應蓋過 0.2 預設');
+  ok(Math.abs(app.diffGapOf('CLK') - 0.2) < 1e-9, '19 不匹配的 net 仍回預設');
+
+  // Constraint class pairGap → 再蓋過 NetRules（DIFF class 內建 pairGap 0.2）
+  const cls = CM.load();
+  const diff = cls.classes.find(c => c.id === 'diff');
+  diff.elec.pairGap = 0.45;
+  diff.patterns = ['/_[PN]$/'];
+  CM.save(cls);
+  ok(Math.abs(app.diffGapOf('USB_P') - 0.45) < 1e-9,
+     `19 Constraint pairGap 應蓋過 NetRules（得 ${app.diffGapOf('USB_P')}）`);
+  // pairGap 為 0 視為沒設，要往下退回 NetRules（0.35），不是當成 0mm 間距、也不是直接跳到預設
+  diff.elec.pairGap = 0;
+  CM.save(cls);
+  ok(Math.abs(app.diffGapOf('USB_P') - 0.35) < 1e-9,
+     `19 pairGap=0 應退回 NetRules 的 0.35（得 ${app.diffGapOf('USB_P')}）`);
+  ok(app.diffGapOf('USB_P') > 0, '19 任何情況都不可回 0mm 間距');
+  ok(Math.abs(app.diffGapOf('NO_MATCH_NET') - 0.2) < 1e-9, '19 三層都不匹配才回 0.2 預設');
+
+  localStorage.removeItem('vs-constraints-v1');
+  app.state.netRules = savedNR;
+}
+
+// 20) A-3 走線規則稽核：三種違規各一個案例，合規的不可誤報
+{
+  const NR = window.NetRules;
+  const rules = [
+    { pattern: 'PWR', minW: 0.5, maxLen: 0, pairTol: 0 },
+    { pattern: 'CLK', minW: 0, maxLen: 30, pairTol: 0 },
+    { pattern: '/_[PN]$/', minW: 0, maxLen: 0, pairTol: 0.5 }
+  ];
+  const mkState = traces => ({ traces, vias: [], components: [] });
+
+  // 線寬下限
+  const thin = mkState([{ x1: 0, y1: 0, x2: 10, y2: 0, width: 0.3, layer: 'F.Cu', net: 'PWR_5V' }]);
+  ok(NR.audit(rules, thin).length > 0, '20 線寬 0.3 < 下限 0.5 應被抓到');
+  const okW = mkState([{ x1: 0, y1: 0, x2: 10, y2: 0, width: 0.6, layer: 'F.Cu', net: 'PWR_5V' }]);
+  eq(NR.audit(rules, okW).length, 0, '20 線寬 0.6 合規不可誤報');
+
+  // 長度上限
+  const long = mkState([{ x1: 0, y1: 0, x2: 40, y2: 0, width: 0.2, layer: 'F.Cu', net: 'CLK0' }]);
+  ok(NR.audit(rules, long).length > 0, '20 長度 40 > 上限 30 應被抓到');
+  const okL = mkState([{ x1: 0, y1: 0, x2: 20, y2: 0, width: 0.2, layer: 'F.Cu', net: 'CLK0' }]);
+  eq(NR.audit(rules, okL).length, 0, '20 長度 20 合規不可誤報');
+
+  // 差分長度差
+  const skew = mkState([
+    { x1: 0, y1: 0, x2: 20, y2: 0, width: 0.2, layer: 'F.Cu', net: 'D0_P' },
+    { x1: 0, y1: 1, x2: 25, y2: 1, width: 0.2, layer: 'F.Cu', net: 'D0_N' }
+  ]);
+  ok(NR.audit(rules, skew).length > 0, '20 差分長度差 5mm > 容差 0.5 應被抓到');
+  const okS = mkState([
+    { x1: 0, y1: 0, x2: 20, y2: 0, width: 0.2, layer: 'F.Cu', net: 'D0_P' },
+    { x1: 0, y1: 1, x2: 20.3, y2: 1, width: 0.2, layer: 'F.Cu', net: 'D0_N' }
+  ]);
+  eq(NR.audit(rules, okS).length, 0, '20 差分長度差 0.3 < 容差 0.5 不可誤報');
+
+  // 完全沒有規則時不可憑空產出違規
+  eq(NR.audit([], skew).length, 0, '20 沒有規則就不該有違規');
+}
+
+// 21) A-4 runDrc：先確認 8 片公版自己過得了（線路圖那次的教訓）
+{
+  const savedState = app.state;
+  const savedQS = documentStub.querySelector;
+  const drcBox = { innerHTML: '' };
+  documentStub.querySelector = sel => (sel === '#drcResults' ? drcBox : (sel === '#pcbCanvas' ? canvasStub : null));
+
+  function mkPlain(extra) {
+    const ls = app.buildLayerStack(2);
+    return Object.assign({
+      boardWidth: 50, boardHeight: 40, layers: 2, layerStack: ls,
+      visibleLayers: ls.map(l => l.id),
+      components: [], traces: [], vias: [], zones: [], userZones: [], keepouts: [], texts: [],
+      netRules: [], selectedSet: [], selected: null
+    }, extra || {});
+  }
+
+  // 21a 公版的 DRC 現況：**它們自己過不了**，而且不是誤判。
+  //     實測（2026-08-24）：VBUS 走線直接橫越 J1 整排 pad，回報距離 d=0；
+  //     U1 與 C3 的 pad 只隔 0.095mm，連 JLCPCB 的 0.10mm 下限都不到。
+  //     公版的走線是「示意直線」不是真的繞線，所以幾何上確實不可製造。
+  //     這裡不假裝它是綠的，改用「只能往下、不能往上」的缺陷預算鎖住現況，
+  //     哪天有人把公版重畫好，數字掉下來就把預算一起調低。
+  //     修法屬於重畫 8 片板，不在這一輪範圍（見 NEW-SESSION §7 已知缺陷）。
+  const BUDGET = {
+    'rp2040-pico30': 43, 'arduino-uno-r3': 47, 'esp32-poe2': 63, 'a20-lime': 55,
+    'imx233-maxi': 32, 'openrex-imx6': 64, 'imx8mp-som': 54, 'librevna': 30
+  };
+  const boards = (window.PCB_REFBOARDS || []).map(b => b.id).filter(Boolean);
+  eq(boards.length, 8, '21 應有 8 片公版');
+  const worse = [];
+  for (const id of boards) {
+    app.loadRefBoard(id);
+    const errs = app.runDrc().filter(r => r.type === 'error').length;
+    const cap = BUDGET[id];
+    ok(cap != null, `21 公版 ${id} 應列在缺陷預算裡（新增公版要一起登記）`);
+    if (cap != null && errs > cap) worse.push(`${id}: ${errs} > ${cap}`);
+  }
+  eq(worse.join(' │ '), '', '21 公版的 DRC error 只准變少，不准變多');
+
+  // assignPadNets：公版 pad 原本完全沒有 net，走線端點要能把 net 回填回去
+  {
+    app.loadRefBoard('rp2040-pico30');
+    const pads = [];
+    app.state.components.forEach(c => (c.pads || []).forEach(x => pads.push(x)));
+    ok(pads.filter(x => x.net).length > 0, '21 載入公版後應有 pad 帶著 net');
+    // 純函式行為：清掉再跑一次，數量要一致（冪等）
+    const n1 = pads.filter(x => x.net).length;
+    pads.forEach(x => { x.net = ''; });
+    const r1 = app.assignPadNets(app.state.components, app.state.traces);
+    eq(r1.assigned, n1, '21 assignPadNets 重跑應回填同樣數量');
+    const r2 = app.assignPadNets(app.state.components, app.state.traces);
+    eq(r2.assigned, 0, '21 已經有 net 的 pad 不可被重複指派');
+    // 走線沒有 net 就不該亂指派
+    const comps = [{ id: 'c', ref: 'R1', x: 0, y: 0, rot: 0, pads: [{ x: 0, y: 0, w: 1, h: 1, side: 'F', net: '' }] }];
+    eq(app.assignPadNets(comps, [{ x1: 0, y1: 0, x2: 5, y2: 0, net: '' }]).assigned, 0,
+       '21 走線沒有 net 時不可憑空給 pad 指派');
+    // 端點落在 pad 上才算，離太遠不算
+    eq(app.assignPadNets(comps, [{ x1: 0, y1: 0, x2: 5, y2: 0, net: 'SIG' }]).assigned, 1, '21 端點落在 pad 上應指派');
+    comps[0].pads[0].net = '';
+    eq(app.assignPadNets(comps, [{ x1: 9, y1: 9, x2: 5, y2: 5, net: 'SIG' }]).assigned, 0, '21 端點離很遠不可指派');
+  }
+
+  // PadDrc 缺席時 DRC 是「不完整」不是「通過」：要看得到警告，不能只是一條 info
+  {
+    const savedPD = window.PadDrc;
+    app.state = mkPlain();
+    delete window.PadDrc; delete global.PadDrc;
+    const res = app.runDrc();
+    ok(res.some(r => r.type === 'warning'), '21 PadDrc 沒載入時應升級為 warning，不可只給 info');
+    window.PadDrc = savedPD; global.PadDrc = savedPD;
+  }
+
+  // 21b 造出來的違規要抓得到
+  const mk = mkPlain;
+
+  // 線距不足
+  app.state = mk({ traces: [
+    { x1: -10, y1: 0, x2: 10, y2: 0, width: 0.2, layer: 'F.Cu', net: 'A' },
+    { x1: -10, y1: 0.2, x2: 10, y2: 0.2, width: 0.2, layer: 'F.Cu', net: 'B' }
+  ] });
+  ok(app.runDrc().some(r => r.type === 'error'), '21 間距不足應報 error');
+
+  // via 落在禁佈區
+  app.state = mk({
+    vias: [{ x: 0, y: 0, od: 0.6, id: 0.3, net: 'A' }],
+    keepouts: [{ layer: 'F.Cu', pts: [[-5, -5], [5, -5], [5, 5], [-5, 5]] }],
+    traces: [{ x1: 0, y1: 0, x2: 3, y2: 0, width: 0.2, layer: 'F.Cu', net: 'A' }]
+  });
+  const koRes = app.runDrc();
+  ok(koRes.some(r => r.type === 'error'), '21 禁佈區內的銅應報 error');
+
+  // 合規的板不可誤報 error
+  app.state = mk({ traces: [
+    { x1: -10, y1: 0, x2: 10, y2: 0, width: 0.2, layer: 'F.Cu', net: 'A' },
+    { x1: -10, y1: 3, x2: 10, y2: 3, width: 0.2, layer: 'F.Cu', net: 'B' }
+  ] });
+  eq(app.runDrc().filter(r => r.type === 'error').length, 0, '21 合規板不可誤報 error');
+
+  app.state = savedState;
+  documentStub.querySelector = savedQS;
 }
 
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);

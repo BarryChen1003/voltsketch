@@ -878,7 +878,9 @@ const pcbApp = {
 
     // pad 級 DRC：真 pad 幾何算間距/環寬/鑽孔餘裕（pcb-drc.js）
     if (window.PadDrc) results.push(...window.PadDrc.run(this.state, this.padAbs.bind(this), rules));
-    else results.push({ type: 'info', message: pcbT('pj_drc_no_paddrc') });
+    // 線距/pad 級檢查全靠這個模組。它沒載入時 DRC 是「不完整」而不是「通過」，
+    // 用 info 帶過會讓使用者看到 0 error 就以為線距沒問題。
+    else results.push({ type: 'warning', message: pcbT('pj_drc_no_paddrc') });
 
     // Layout 規則稽核（net 線寬下限/線長上限/差分對長度差）
     if (window.NetRules) results.push(...window.NetRules.audit(this.state.netRules || [], this.state));
@@ -1089,6 +1091,23 @@ const pcbApp = {
     if (!token) { say('⚠ ' + pcbT('pj_gerber_need_login')); return; }
 
     const s = this.state;
+
+    // 匯出製造包＝要送板廠了。這裡是最後一道關：拿選定板廠的公開能力檢查一次，
+    // 有會被退件的項目就攔下來讓使用者決定，不要讓他花錢送一份做不出來的檔。
+    if (window.FabProfiles) {
+      const chk = window.FabProfiles.check(s, window.FabProfiles.selectedId(), this.padAbs.bind(this));
+      const errs = chk ? chk.findings.filter(f => f.severity === 'error') : [];
+      if (errs.length) {
+        const list = errs.map(f => '\u2022 ' + pcbT('fab_' + f.code, {
+          limit: Math.round(f.limit * 1000) / 1000,
+          actual: Math.round(f.actual * 1000) / 1000,
+          n: f.n || 1
+        })).join('\n');
+        const go = confirm(pcbT('fab_gate_fail', { name: chk.profile.name, n: errs.length, list }));
+        if (!go) { say('\u26a0 ' + pcbT('fab_gate_stop')); return; }
+      }
+    }
+
     const base = s.kicad ? s.kicad.fileName : 'hardwareai';
     say(pcbT('pj_gerber_working'));
 
@@ -1239,6 +1258,38 @@ const pcbApp = {
     return (b.blocks || []).map((blk, i) => ({ id: `ref-${b.id}-${i}`, type: 'ic', x: blk.x, y: blk.y, label: blk.label }));
   },
 
+  // 公版的 pad 是 footprint 產生器造出來的，身上沒有 net；走線卻有。
+  // 結果 DRC 的「同 net 略過」永遠不成立，每條線碰到自己的 pad 都報一次淨距錯誤
+  // （8 片公版各 32～64 個 error，全是假的）。這裡用走線端點把 net 回填到 pad 上。
+  // 純函式化：吃 components/traces，回統計，方便 node 測。
+  assignPadNets(components, traces, tol) {
+    const t0 = (typeof tol === 'number' && tol >= 0) ? tol : 0.05;
+    let assigned = 0, conflicts = 0;
+    const ends = [];
+    for (const t of (traces || [])) {
+      if (!t.net) continue;
+      ends.push([t.x1, t.y1, t.net], [t.x2, t.y2, t.net]);
+    }
+    if (!ends.length) return { assigned, conflicts };
+    for (const c of (components || [])) {
+      for (const p of (c.pads || [])) {
+        if (p.cu === false) continue;
+        const a = this.padAbs(c, p);
+        // 端點落在 pad 範圍內（含容差）就算接上。公版走線都是拉到 pad 中心，
+        // 用外接圓半徑判定即可，不必做旋轉矩形的精確內含測試。
+        const r = Math.hypot(p.w || 0.5, p.h || 0.5) / 2 + t0;
+        let hit = '';
+        for (const [x, y, net] of ends) {
+          if (Math.hypot(x - a.x, y - a.y) > r) continue;
+          if (!hit) { hit = net; continue; }
+          if (hit !== net) { conflicts++; break; }   // 同一個 pad 被兩個 net 拉到＝資料本身矛盾
+        }
+        if (hit && !p.net) { p.net = hit; assigned++; }
+      }
+    }
+    return { assigned, conflicts };
+  },
+
   loadRefBoard(id) {
     const b = (window.PCB_REFBOARDS || []).find(x => x.id === id);
     if (!b) return;
@@ -1252,6 +1303,7 @@ const pcbApp = {
     this.state.components = this.refBoardParts(b);
     this.state.traces = (b.traces || []).map((t, i) => ({ id: `ref-t-${i}`, ...t }));
     this.state.vias = (b.vias || []).map(v => ({ ...v }));
+    this.assignPadNets(this.state.components, this.state.traces);
     this.state.refBoard = null; this.state.refOverlayId = null; this.state.selected = null;
     this.state.ratsnest = null;
     this.syncSelPanel();

@@ -75,7 +75,11 @@
 
   // ---------------- Via Padstack ----------------
   const Padstack = {
-    load() { const d = store.get(PS_KEY, { od: 0.6, drill: 0.3 }); if (!(d.od > 0)) d.od = 0.6; if (!(d.drill > 0)) d.drill = 0.3; return d; },
+    // 預設 0.7/0.3 → 環寬 0.2mm。舊預設是 0.6/0.3，環寬只有 0.15mm，
+    // 低於 JLCPCB 1–2 層的絕對下限 0.18mm：使用者拿預設值畫的板一律會被退件。
+    // 0.2mm 過得了四家的絕對下限（JLC 0.18 / PCBWay 0.15 / OSH Park 0.127），
+    // 但仍低於 JLC 的建議值 0.25，所以板廠檢查還是會給一條 warn，這是誠實的。
+    load() { const d = store.get(PS_KEY, { od: 0.7, drill: 0.3 }); if (!(d.od > 0)) d.od = 0.7; if (!(d.drill > 0)) d.drill = 0.3; return d; },
     save(d) { store.set(PS_KEY, d); }
   };
 
