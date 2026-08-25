@@ -256,131 +256,217 @@
 
   // ---------- 單網 A* 佈線（試驗性：單層、格點 0.25mm、8 向、無推擠無 via 插入） ----------
   const AutoRoute = {
+    // 網格 A* 繞線。opt.layers 給銅層 id 陣列就會做多層繞線（穿孔 via 換層）；
+    // 不給就退回單層，行為與舊版一致（既有呼叫端不必改）。
+    //
+    // 只做穿孔 via，不做盲埋孔：穿孔會鑽穿整疊板，所以換層的那一格必須「每一層都空」，
+    // 這用另一張 viaBlocked 圖判定（半徑取 via 外徑，比走線寬）。
+    // 回傳 segs 每段帶 layer，換層處回傳 vias。
     route(state, padAbs, line, opt) {
-      opt = Object.assign({ grid: 0.25, clearance: 0.15, width: 0.25, layer: 'F.Cu', maxCells: 500000 }, opt || {});
+      opt = Object.assign({
+        grid: 0.25, clearance: 0.15, width: 0.25, layer: 'F.Cu',
+        maxCells: 500000, viaCost: 12, viaOd: 0.7, viaDrill: 0.3, layers: null
+      }, opt || {});
+      const layers = (Array.isArray(opt.layers) && opt.layers.length) ? opt.layers.slice() : [opt.layer];
+      const L = layers.length;
       const W = state.boardWidth || 100, H = state.boardHeight || 80;
       const g = opt.grid, ox = -W / 2, oy = -H / 2;
       const nx = Math.floor(W / g) + 1, ny = Math.floor(H / g) + 1;
-      if (nx * ny > opt.maxCells) return { ok: false, reason: T('rule_grid_too_big') };
-      const blocked = new Uint8Array(nx * ny);
-      const idx = (ix, iy) => iy * nx + ix;
+      if (nx * ny * L > opt.maxCells) return { ok: false, reason: T('rule_grid_too_big') };
+
+      const plane = nx * ny;
+      const blocked = new Uint8Array(plane * L);   // 每層各一張：走線能不能走
+      const viaBlk = new Uint8Array(plane);        // 穿孔能不能下在這一格
+      const idx = (ix, iy, il) => il * plane + iy * nx + ix;
+      const vidx = (ix, iy) => iy * nx + ix;
       const inb = (ix, iy) => ix >= 0 && iy >= 0 && ix < nx && iy < ny;
-      const mark = (x, y, r) => {
+
+      const stamp = (arr, at, x, y, r) => {
         const x0 = Math.max(0, Math.floor((x - r - ox) / g)), x1 = Math.min(nx - 1, Math.ceil((x + r - ox) / g));
         const y0 = Math.max(0, Math.floor((y - r - oy) / g)), y1 = Math.min(ny - 1, Math.ceil((y + r - oy) / g));
         for (let iy = y0; iy <= y1; iy++) for (let ix = x0; ix <= x1; ix++)
-          if (Math.hypot(ox + ix * g - x, oy + iy * g - y) <= r) blocked[idx(ix, iy)] = 1;
+          if (Math.hypot(ox + ix * g - x, oy + iy * g - y) <= r) arr[at(ix, iy)] = 1;
       };
-      const markSeg = (x1, y1, x2, y2, r) => {
-        const L = Math.hypot(x2 - x1, y2 - y1), n = Math.max(1, Math.ceil(L / (g / 2)));
-        for (let i = 0; i <= n; i++) mark(x1 + (x2 - x1) * i / n, y1 + (y2 - y1) * i / n, r);
+      const stampSeg = (arr, at, x1, y1, x2, y2, r) => {
+        const len = Math.hypot(x2 - x1, y2 - y1), n = Math.max(1, Math.ceil(len / (g / 2)));
+        for (let i = 0; i <= n; i++) stamp(arr, at, x1 + (x2 - x1) * i / n, y1 + (y2 - y1) * i / n, r);
       };
+
       // clearance 可給數字（全障礙共用，舊呼叫相容）或 DRC 規則物件
       // {traceToTrace, traceToPad, traceToEdge, ...}。這裡繞的是「走線」，所以：
       // 對 pad 用 traceToPad、對走線與 via 用 traceToTrace（via 對走線而言就是一塊銅）、
-      // 對板邊用 traceToEdge。viaToVia/padToPad/holeToHole 管的是別的組合，不適用。
+      // 對板邊用 traceToEdge。padToPad/holeToHole 管的是別的組合，不適用。
       const clObj = (opt.clearance && typeof opt.clearance === 'object') ? opt.clearance : null;
       const clNum = (typeof opt.clearance === 'number' && opt.clearance >= 0) ? opt.clearance : 0.15;
       const clOf = (k, d) => { const v = clObj ? clObj[k] : clNum; return (typeof v === 'number' && v >= 0) ? v : d; };
       const half = opt.width / 2;
-      const mPad = clOf('traceToPad', clNum) + half;
-      const mTrace = clOf('traceToTrace', clNum) + half;
-      const mEdge = clOf('traceToEdge', 0) + half;
+      const cPad = clOf('traceToPad', clNum), cTrace = clOf('traceToTrace', clNum);
+      const cVia = clOf('viaToVia', cTrace), cEdge = clOf('traceToEdge', 0);
+      const vHalf = opt.viaOd / 2;
+      const mEdge = cEdge + half;
       const net = line.net || '';
+
+      const layerIdx = id => layers.indexOf(id);
+      const padLayers = p => {
+        // 穿孔 pad（side '*'）在每一層都是障礙；SMD 只擋自己那一面。
+        if (p.side === '*') return layers.map((_, i) => i);
+        const id = p.side === 'B' ? 'B.Cu' : 'F.Cu';
+        const i = layerIdx(id);
+        return i >= 0 ? [i] : [];
+      };
+
       (state.components || []).forEach(c => (c.pads || []).forEach(p => {
         if (p.cu === false) return;
-        if (net && (p.net || '') === net) return;
-        const sideOk = p.side === '*' || (opt.layer === 'F.Cu' && p.side === 'F') || (opt.layer === 'B.Cu' && p.side === 'B');
-        if (!sideOk) return;
         const a = padAbs(c, p);
-        mark(a.x, a.y, Math.hypot(p.w || 0.5, p.h || 0.5) / 2 + mPad);
+        const rad = Math.hypot(p.w || 0.5, p.h || 0.5) / 2;
+        const mine = net && (p.net || '') === net;
+        if (!mine) for (const il of padLayers(p)) stamp(blocked, (ix, iy) => idx(ix, iy, il), a.x, a.y, rad + cPad + half);
+        // 穿孔 via 會鑽穿整疊板，所以不管 pad 在哪一面都擋得住它
+        if (!mine) stamp(viaBlk, vidx, a.x, a.y, rad + cPad + vHalf);
       }));
       (state.traces || []).forEach(t => {
-        if ((t.layer || 'F.Cu') !== opt.layer) return;
         if (net && (t.net || '') === net) return;
-        markSeg(t.x1, t.y1, t.x2, t.y2, (t.width || 0.3) / 2 + mTrace);
+        const il = layerIdx(t.layer || 'F.Cu');
+        const rad = (t.width || 0.3) / 2;
+        if (il >= 0) stampSeg(blocked, (ix, iy) => idx(ix, iy, il), t.x1, t.y1, t.x2, t.y2, rad + cTrace + half);
+        stampSeg(viaBlk, vidx, t.x1, t.y1, t.x2, t.y2, rad + cTrace + vHalf);
       });
       (state.vias || []).forEach(v => {
         if (net && (v.net || '') === net) return;
-        mark(v.x, v.y, (v.od || 0.6) / 2 + mTrace);
+        const rad = (v.od || 0.6) / 2;
+        for (let il = 0; il < L; il++) stamp(blocked, (ix, iy) => idx(ix, iy, il), v.x, v.y, rad + cTrace + half);
+        stamp(viaBlk, vidx, v.x, v.y, rad + cVia + vHalf);
       });
+
       const toCell = (x, y) => [Math.round((x - ox) / g), Math.round((y - oy) / g)];
       const [sx, sy] = toCell(line.x1, line.y1), [ex, ey] = toCell(line.x2, line.y2);
       if (!inb(sx, sy) || !inb(ex, ey)) return { ok: false, reason: T('rule_ep_outside') };
-      if (blocked[idx(sx, sy)] || blocked[idx(ex, ey)]) return { ok: false, reason: T('rule_ep_blocked') };
+
+      // 端點可以落在哪些層：由該處同 net 的 pad 決定。找不到 pad（端點是走線端或 via）就都可以。
+      const layersAtEnd = (x, y) => {
+        const set = new Set();
+        (state.components || []).forEach(c => (c.pads || []).forEach(p => {
+          if (p.cu === false) return;
+          if (net && (p.net || '') !== net) return;
+          const a = padAbs(c, p);
+          if (Math.hypot(a.x - x, a.y - y) > Math.hypot(p.w || 0.5, p.h || 0.5) / 2 + g) return;
+          padLayers(p).forEach(i => set.add(i));
+        }));
+        if (!set.size) for (let i = 0; i < L; i++) set.add(i);
+        return [...set];
+      };
+      const startLs = layersAtEnd(line.x1, line.y1), endLs = layersAtEnd(line.x2, line.y2);
+      if (startLs.every(il => blocked[idx(sx, sy, il)]) || endLs.every(il => blocked[idx(ex, ey, il)]))
+        return { ok: false, reason: T('rule_ep_blocked') };
+
       // 板邊淨空（traceToEdge）。擺在端點檢查之後：靠邊的 pad 本身可能違規，
       // 但那是 DRC 該報的事，不該讓繞線直接失敗，所以最後幫端點開逃逸泡泡。
       if (mEdge > 0) {
-        const edgeOnly = new Uint8Array(nx * ny);
+        const edgeOnly = new Uint8Array(plane * L);
         for (let iy = 0; iy < ny; iy++) {
           const y = oy + iy * g, dy = Math.min(y - oy, oy + H - y);
           for (let ix = 0; ix < nx; ix++) {
             const x = ox + ix * g;
-            if (Math.min(x - ox, ox + W - x, dy) < mEdge) {
-              if (!blocked[idx(ix, iy)]) edgeOnly[idx(ix, iy)] = 1;
-              blocked[idx(ix, iy)] = 1;
+            const d = Math.min(x - ox, ox + W - x, dy);
+            if (d < mEdge) for (let il = 0; il < L; il++) {
+              const k = idx(ix, iy, il);
+              if (!blocked[k]) edgeOnly[k] = 1;
+              blocked[k] = 1;
             }
+            if (d < cEdge + vHalf) viaBlk[vidx(ix, iy)] = 1;
           }
         }
-        // 端點若本來就落在板邊淨空帶內（靠邊的 pad），只放行它自己那一格是不夠的：
-        // 整圈鄰格都被擋，A* 第一步就走不出去。開一個半徑 mEdge+g 的逃逸泡泡，
-        // 讓它離開淨空帶，其餘板邊仍受限。
         const bubble = (cx, cy) => {
           const r = mEdge + g;
-          const x0 = Math.max(0, Math.floor((ox + cx * g - r - ox) / g)), x1c = Math.min(nx - 1, Math.ceil((ox + cx * g + r - ox) / g));
-          const y0 = Math.max(0, Math.floor((oy + cy * g - r - oy) / g)), y1c = Math.min(ny - 1, Math.ceil((oy + cy * g + r - oy) / g));
-          for (let iy = y0; iy <= y1c; iy++) for (let ix = x0; ix <= x1c; ix++)
-            if (Math.hypot((ix - cx) * g, (iy - cy) * g) <= r) blocked[idx(ix, iy)] = edgeOnly[idx(ix, iy)] ? 0 : blocked[idx(ix, iy)];
+          const x0 = Math.max(0, Math.floor(cx - r / g)), x1 = Math.min(nx - 1, Math.ceil(cx + r / g));
+          const y0 = Math.max(0, Math.floor(cy - r / g)), y1 = Math.min(ny - 1, Math.ceil(cy + r / g));
+          for (let iy = y0; iy <= y1; iy++) for (let ix = x0; ix <= x1; ix++) {
+            if (Math.hypot((ix - cx) * g, (iy - cy) * g) > r) continue;
+            for (let il = 0; il < L; il++) { const k = idx(ix, iy, il); if (edgeOnly[k]) blocked[k] = 0; }
+          }
         };
         bubble(sx, sy); bubble(ex, ey);
       }
-      // A*（binary heap）
-      const gc = new Float32Array(nx * ny).fill(Infinity);
-      const par = new Int32Array(nx * ny).fill(-1);
+
+      // A*（binary heap）。狀態＝(格, 層)；換層是一條額外的邊，成本 viaCost。
+      const N = plane * L;
+      const gc = new Float32Array(N).fill(Infinity);
+      const par = new Int32Array(N).fill(-1);
       const heap = [];
       const push = (f, i) => { heap.push([f, i]); let k = heap.length - 1; while (k > 0) { const p = (k - 1) >> 1; if (heap[p][0] <= heap[k][0]) break; [heap[p], heap[k]] = [heap[k], heap[p]]; k = p; } };
       const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let k = 0; for (;;) { const l = 2 * k + 1, r = l + 1; let m = k; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (r < heap.length && heap[r][0] < heap[m][0]) m = r; if (m === k) break; [heap[m], heap[k]] = [heap[k], heap[m]]; k = m; } } return top; };
-      const h = (ix, iy) => { const dx = Math.abs(ix - ex), dy = Math.abs(iy - ey); return (dx + dy) + (1.41421356 - 2) * Math.min(dx, dy); };
-      const s0 = idx(sx, sy);
-      gc[s0] = 0; push(h(sx, sy), s0);
+      // 啟發式只看平面距離：換層成本非負，所以仍然可採納（不會高估）
+      const hOf = i => { const c = i % plane; const dx = Math.abs((c % nx) - ex), dy = Math.abs(Math.floor(c / nx) - ey); return (dx + dy) + (1.41421356 - 2) * Math.min(dx, dy); };
       const DIR = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, 1.41421356], [1, -1, 1.41421356], [-1, 1, 1.41421356], [-1, -1, 1.41421356]];
-      const goal = idx(ex, ey);
-      let found = false, guard = 0;
+      const goalSet = new Set(endLs.map(il => idx(ex, ey, il)));
+
+      for (const il of startLs) {
+        const s0 = idx(sx, sy, il);
+        if (blocked[s0]) continue;
+        gc[s0] = 0; push(hOf(s0), s0);
+      }
+      let found = -1, guard = 0;
       while (heap.length) {
-        if (++guard > nx * ny * 12) break;
+        if (++guard > N * 12) break;
         const [f, cur] = pop();
-        if (f > gc[cur] + h(cur % nx, Math.floor(cur / nx)) + 1e-6) continue; // 淘汰 stale 項（lazy deletion）
-        if (cur === goal) { found = true; break; }
-        const cy0 = Math.floor(cur / nx), cx0 = cur % nx;
+        if (f > gc[cur] + hOf(cur) + 1e-6) continue;      // 淘汰 stale 項（lazy deletion）
+        if (goalSet.has(cur)) { found = cur; break; }
+        const il = Math.floor(cur / plane), c = cur % plane;
+        const cx0 = c % nx, cy0 = Math.floor(c / nx);
         for (const [dx, dy, w] of DIR) {
           const ix = cx0 + dx, iy = cy0 + dy;
           if (!inb(ix, iy)) continue;
-          const ni = idx(ix, iy);
+          const ni = idx(ix, iy, il);
           if (blocked[ni]) continue;
-          if (dx && dy && (blocked[idx(cx0 + dx, cy0)] || blocked[idx(cx0, cy0 + dy)])) continue; // 禁切角
+          if (dx && dy && (blocked[idx(cx0 + dx, cy0, il)] || blocked[idx(cx0, cy0 + dy, il)])) continue; // 禁切角
           const ng = gc[cur] + w;
-          if (ng < gc[ni] - 1e-9) { gc[ni] = ng; par[ni] = cur; push(ng + h(ix, iy), ni); }
+          if (ng < gc[ni] - 1e-9) { gc[ni] = ng; par[ni] = cur; push(ng + hOf(ni), ni); }
+        }
+        // 換層：穿孔 via 必須整根柱子都空，所以只看 viaBlk 一張圖
+        if (L > 1 && !viaBlk[c]) {
+          for (let jl = 0; jl < L; jl++) {
+            if (jl === il) continue;
+            const ni = idx(cx0, cy0, jl);
+            if (blocked[ni]) continue;
+            const ng = gc[cur] + opt.viaCost;
+            if (ng < gc[ni] - 1e-9) { gc[ni] = ng; par[ni] = cur; push(ng + hOf(ni), ni); }
+          }
         }
       }
-      if (!found) return { ok: false, reason: T('rule_no_path') };
-      // 回溯 + 共線合併
-      const cells = [];
-      for (let cur = goal; cur !== -1; cur = par[cur]) cells.push([cur % nx, Math.floor(cur / nx)]);
-      cells.reverse();
-      const pts = [[line.x1, line.y1]];
-      let pd = null;
-      for (let i = 1; i < cells.length; i++) {
-        const d = [cells[i][0] - cells[i - 1][0], cells[i][1] - cells[i - 1][1]];
-        if (pd && (d[0] !== pd[0] || d[1] !== pd[1])) pts.push([ox + cells[i - 1][0] * g, oy + cells[i - 1][1] * g]);
-        pd = d;
+      if (found < 0) return { ok: false, reason: T('rule_no_path') };
+
+      // 回溯：同層連續格合併成線段，換層處吐一顆 via
+      const path = [];
+      for (let cur = found; cur !== -1; cur = par[cur]) path.push(cur);
+      path.reverse();
+      const segs = [], vias = [];
+      const XY = i => { const c = i % plane; return [ox + (c % nx) * g, oy + Math.floor(c / nx) * g]; };
+      let runStart = XY(path[0]), runLayer = Math.floor(path[0] / plane), pd = null, prevXY = runStart;
+      const flush = (to, layer) => {
+        if (Math.hypot(to[0] - runStart[0], to[1] - runStart[1]) > 1e-9)
+          segs.push({ x1: runStart[0], y1: runStart[1], x2: to[0], y2: to[1], layer: layers[layer] });
+      };
+      for (let i = 1; i < path.length; i++) {
+        const cur = path[i], il = Math.floor(cur / plane);
+        const xy = XY(cur);
+        if (il !== runLayer) {                       // 換層：先收掉這一層的線，再放 via
+          flush(prevXY, runLayer);
+          vias.push({ x: prevXY[0], y: prevXY[1], od: opt.viaOd, drill: opt.viaDrill });
+          runStart = prevXY; runLayer = il; pd = null;
+          continue;
+        }
+        const d = [Math.round((xy[0] - prevXY[0]) / g), Math.round((xy[1] - prevXY[1]) / g)];
+        if (pd && (d[0] !== pd[0] || d[1] !== pd[1])) { flush(prevXY, runLayer); runStart = prevXY; }
+        pd = d; prevXY = xy;
       }
-      pts.push([line.x2, line.y2]);
-      const segs = [];
-      for (let i = 1; i < pts.length; i++) {
-        if (Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]) < 1e-9) continue;
-        segs.push({ x1: pts[i - 1][0], y1: pts[i - 1][1], x2: pts[i][0], y2: pts[i][1] });
+      // 收尾：最後一段拉到真正的端點座標（不是格點），才會準確落在 pad 上
+      flush([line.x2, line.y2], runLayer);
+      // 起點同理：把第一段的起點換成真實座標
+      if (segs.length) {
+        const first = segs[0];
+        if (Math.hypot(first.x1 - line.x1, first.y1 - line.y1) < g * 1.5) { first.x1 = line.x1; first.y1 = line.y1; }
       }
-      return { ok: true, segs };
+      return { ok: true, segs, vias };
     }
   };
 

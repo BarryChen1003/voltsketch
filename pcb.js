@@ -1440,9 +1440,12 @@ const pcbApp = {
 
   // 本機簡估（免費）：粗略 Tj + 最小線寬；不含逐條走線精算（精算需解鎖）
   runThermalSimple(p) {
-    const k = 0.048, mm2mil = 0.03937, tMil = p.oz * 1.378;
+    // IPC-2221 外層：I = k × ΔT^0.44 × A^0.725（A 單位 mil²、k=0.048）。
+    // 舊版把 mil 乘上 0.03937（那是 mm→mil 的係數）而不是 0.0254（mil→mm），
+    // 1A / ΔT10℃ / 1oz 算出 0.466mm，正確值是 0.300mm，高估 55%。
+    const k = 0.048, MIL_MM = 0.0254, tMil = p.oz * 1.378;
     const Aneed = Math.pow(p.I / (k * Math.pow(p.dT, 0.44)), 1 / 0.725);
-    const wNeedMm = (Aneed / tMil) * mm2mil;
+    const wNeedMm = (Aneed / tMil) * MIL_MM;
     const theta = Math.max(20, 80 / (1 + p.areaCm2 * 0.6 + p.vias * 0.08));
     const Tj = p.Ta + p.P * theta;
     const sev = Tj > 125 ? 'err' : Tj > 85 ? 'warn' : 'ok';
@@ -2204,23 +2207,37 @@ const pcbApp = {
   },
 
   // 自動佈線：把目前所有飛線逐條丟給 A*（單層試驗，無推擠、不插 via）
+  // 可繞線的銅層：訊號層與混合層。GND／PWR 是整片平面，訊號不該從那裡穿過去。
+  routableLayers() {
+    const cu = (this.state.layerStack || []).filter(l => l.kind === 'copper');
+    const sig = cu.filter(l => l.type === 'Signal' || l.type === 'Mixed').map(l => l.id);
+    return sig.length ? sig : cu.slice(0, 1).map(l => l.id);
+  },
+
   autoRoute() {
     if (!window.Ratsnest || !window.AutoRoute) return;
     const lines = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
     if (!lines.length) { this.toast(pcbT('pj_ar_none'), 'info'); return; }
     this.hist();
-    const cap = 30;
-    const todo = lines.slice(0, cap);
-    let okN = 0, failN = 0;
     // 用使用者當下的 DRC 規則繞線。舊版這裡硬寫 clearance 0.15，
     // 使用者把淨空調大後自動繞線仍照 0.15 走，繞完直接違規而且不會報。
     const rules = this.loadDrcRules();
+    const layers = this.routableLayers();
+    const ps = window.Padstack ? window.Padstack.load() : { od: 0.7, drill: 0.3 };
+    // 舊版硬性只繞前 30 條，剩下的靜靜不繞。改成時間預算：能繞多少繞多少，
+    // 沒繞完就把「還剩幾條」講出來，不要讓使用者以為已經繞完了。
+    const BUDGET_MS = 4000;
+    let okN = 0, failN = 0, done = 0;
     const t0 = performance.now();
-    for (const line of todo) {
+    for (const line of lines) {
+      if (performance.now() - t0 > BUDGET_MS) break;
+      done++;
       const r = window.AutoRoute.route(this.state, this.padAbs.bind(this), line, {
-        layer: this.state.traceLayer || 'F.Cu',
+        layers,
+        layer: this.state.traceLayer || layers[0],
         width: this.state.traceWidth || 0.25,
         clearance: rules.clearance,
+        viaOd: ps.od, viaDrill: ps.drill,
         grid: 0.25
       });
       if (!r.ok) { failN++; continue; }
@@ -2228,16 +2245,27 @@ const pcbApp = {
         this.state.traces.push({
           id: `trace-${Date.now()}-${this.state.traces.length}`,
           x1: sg.x1, y1: sg.y1, x2: sg.x2, y2: sg.y2,
-          width: this.state.traceWidth || 0.25, layer: this.state.traceLayer || 'F.Cu', net: line.net
+          width: this.state.traceWidth || 0.25,
+          layer: sg.layer || this.state.traceLayer || 'F.Cu', net: line.net
+        });
+      }
+      for (const v of (r.vias || [])) {
+        this.state.vias.push({
+          id: `via-${Date.now()}-${this.state.vias.length}`,
+          x: v.x, y: v.y, od: v.od, drill: v.drill, net: line.net, auto: true
         });
       }
       okN++;
     }
     const ms = Math.round(performance.now() - t0);
+    const left = lines.length - done;
     this.state.ratsnest = null;
     this.renderPartsList();
     this.render();
-    this.toast(pcbT('pj_ar_done', { ok: okN, fail: failN, cap: lines.length > cap ? pcbT('pj_ar_cap', { cap }) : '', ms }), failN ? 'warn' : 'info');
+    this.toast(pcbT('pj_ar_done', {
+      ok: okN, fail: failN, ms,
+      cap: left > 0 ? pcbT('pj_ar_cap', { cap: left }) : ''
+    }), (failN || left) ? 'warn' : 'info');
   },
 
   // 阻抗計算（IPC-2141 近似式；±10% 等級，正式設計用場型解算器）

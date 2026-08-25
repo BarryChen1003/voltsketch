@@ -285,8 +285,10 @@ const minDistToSegs = (px, py, segs) =>
   app.autoRoute();
   const routed = app.state.traces;
   ok(routed.length > 0, '10 autoRoute 應產生走線');
-  const d10 = minDistToSegs(0, 0, routed);
-  ok(d10 > 2.5, `10 autoRoute 必須套用 DRC 淨空 2.0（得 ${d10.toFixed(3)}；硬寫 0.15 會 <1.6）`);
+  // 淨空是「同層」才算：障礙是 F 面的 SMD pad，走線從 B.Cu 從它底下穿過是合法的。
+  const f10 = routed.filter(t => (t.layer || 'F.Cu') === 'F.Cu');
+  const d10 = minDistToSegs(0, 0, f10);
+  ok(d10 > 2.5, `10 autoRoute 必須套用 DRC 淨空 2.0（F.Cu 得 ${d10.toFixed(3)}；硬寫 0.15 會 <1.6）`);
   app.state = savedState;
   app.loadDrcRules = savedRules;
 }
@@ -846,6 +848,197 @@ const minDistToSegs = (px, py, segs) =>
 
   app.state = savedState;
   documentStub.querySelector = savedQS;
+}
+
+// 22) 多層繞線：舊版只在單層繞、不會下 via，兩層以上的板等於沒有 autoRoute
+{
+  const AR = window.AutoRoute;
+  const padAbs = (c, p) => ({ x: c.x + p.x, y: c.y + p.y });
+  // 一道從上到下貫穿板子的牆（F.Cu 走線），單層時必定繞不過去
+  const wallState = () => {
+    const traces = [];
+    for (let y = -15; y <= 15; y += 0.4) traces.push({ x1: 0, y1: y, x2: 0.01, y2: y, width: 0.5, layer: 'F.Cu', net: 'WALL' });
+    return {
+      boardWidth: 40, boardHeight: 30, traces, vias: [],
+      components: [
+        // 兩端是 F 面 SMD：路徑一定要從 F.Cu 起、F.Cu 終，中間才有換層的必要。
+        // 若用穿孔 pad（side '*'），路由器會整條走 B.Cu、一顆 via 都不用——那也是對的。
+        { id: 'a', ref: 'J1', x: -15, y: 0, rot: 0, pads: [{ x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'SIG' }] },
+        { id: 'b', ref: 'J2', x: 15, y: 0, rot: 0, pads: [{ x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'SIG' }] }
+      ]
+    };
+  };
+  const line = { x1: -15, y1: 0, x2: 15, y2: 0, net: 'SIG' };
+  const optBase = { clearance: { traceToTrace: 0.15, traceToPad: 0.15, traceToEdge: 0.2 }, width: 0.25, grid: 0.25 };
+
+  const one = AR.route(wallState(), padAbs, line, Object.assign({ layers: ['F.Cu'] }, optBase));
+  eq(one.ok, false, '22 單層時被 F.Cu 的牆擋死，應該繞不出來');
+
+  const two = AR.route(wallState(), padAbs, line, Object.assign({ layers: ['F.Cu', 'B.Cu'] }, optBase));
+  ok(two.ok, '22 兩層時應該能換層繞過去');
+  ok(two.vias.length >= 2, `22 換層必須成對下 via（得 ${two.vias.length}）`);
+  const used = new Set(two.segs.map(sg => sg.layer));
+  ok(used.has('F.Cu') && used.has('B.Cu'), '22 路徑應同時用到兩層');
+  ok(two.segs.every(sg => sg.layer), '22 每一段都必須標明層別');
+
+  // via 落點不可壓在障礙上（穿孔會鑽穿整疊板）
+  for (const v of two.vias) {
+    let clear = true;
+    for (const t of wallState().traces) {
+      const d = Math.hypot(v.x - t.x1, v.y - t.y1);
+      if (d < (t.width / 2) + (v.od / 2)) { clear = false; break; }
+    }
+    ok(clear, `22 via @(${v.x.toFixed(2)},${v.y.toFixed(2)}) 不可壓在既有銅上`);
+  }
+
+  // via 成本要有作用：成本拉到極高時，寧可繞遠也不換層
+  const st2 = wallState();
+  st2.traces = st2.traces.filter(t => t.y1 > -10);      // 牆下方開個口，讓平面繞得過去
+  const cheap = AR.route(st2, padAbs, line, Object.assign({ layers: ['F.Cu', 'B.Cu'], viaCost: 1 }, optBase));
+  const dear = AR.route(st2, padAbs, line, Object.assign({ layers: ['F.Cu', 'B.Cu'], viaCost: 9999 }, optBase));
+  ok(cheap.ok && dear.ok, '22 兩種 via 成本下都應繞得出來');
+  eq(dear.vias.length, 0, '22 via 成本極高時應完全不換層');
+  ok(cheap.vias.length > 0, '22 via 成本極低時應該樂於換層');
+
+  // 單層呼叫（不給 layers）行為不變，且不可產生 via
+  const legacy = AR.route(wallState(), padAbs,
+    { x1: -15, y1: 0, x2: -5, y2: 0, net: 'SIG' }, Object.assign({ layer: 'F.Cu' }, optBase));
+  ok(legacy.ok, '22 舊式單層呼叫仍應可用');
+  eq(legacy.vias.length, 0, '22 單層不可產生 via');
+  ok(legacy.segs.every(sg => sg.layer === 'F.Cu'), '22 單層的段別應全是 F.Cu');
+}
+
+// 23) routableLayers：訊號不該從 GND／PWR 平面穿過去
+{
+  const saved = app.state.layerStack;
+  app.state.layerStack = app.buildLayerStack(2);
+  eq(app.routableLayers().join(','), 'F.Cu,B.Cu', '23 2 層板兩面都可繞');
+
+  app.state.layerStack = app.buildLayerStack(4);
+  eq(app.routableLayers().join(','), 'F.Cu,B.Cu', '23 4 層板的 In1(GND)/In2(PWR) 不可繞訊號');
+
+  // 把內層改成 Signal 就該納入
+  app.state.layerStack = app.buildLayerStack(4);
+  app.state.layerStack.find(l => l.id === 'In1.Cu').type = 'Signal';
+  eq(app.routableLayers().join(','), 'F.Cu,In1.Cu,B.Cu', '23 內層改成 Signal 後應可繞');
+
+  // Mixed 也算可繞
+  app.state.layerStack = app.buildLayerStack(4);
+  app.state.layerStack.find(l => l.id === 'In2.Cu').type = 'Mixed';
+  eq(app.routableLayers().join(','), 'F.Cu,In2.Cu,B.Cu', '23 Mixed 層應可繞');
+
+  // 全部都是平面時不可回空陣列（會讓 autoRoute 整個不能用）
+  app.state.layerStack = app.buildLayerStack(4);
+  app.state.layerStack.filter(l => l.kind === 'copper').forEach(l => { l.type = 'GND'; });
+  ok(app.routableLayers().length >= 1, '23 全是平面時仍要至少回一層，不可回空');
+
+  app.state.layerStack = saved;
+}
+
+// 24) polyArea（鞋帶公式）：EMI 迴路面積全靠它
+{
+  const P = (x, y) => ({ x, y });
+  eq(app.polyArea([P(0, 0), P(4, 0), P(4, 3), P(0, 3)]), 12, '24 4x3 矩形面積 12');
+  eq(app.polyArea([P(0, 0), P(4, 0), P(0, 3)]), 6, '24 直角三角形面積 6');
+  // 反向繞行不可變成負的（面積沒有方向）
+  eq(app.polyArea([P(0, 3), P(4, 3), P(4, 0), P(0, 0)]), 12, '24 反向繞行面積相同');
+  eq(app.polyArea([P(0, 0), P(1, 1)]), 0, '24 少於 3 點回 0');
+  eq(app.polyArea([]), 0, '24 空陣列回 0');
+  // 共線三點面積 0，不可回 NaN
+  eq(app.polyArea([P(0, 0), P(1, 1), P(2, 2)]), 0, '24 共線三點面積 0');
+}
+
+// 25) EMI 迴路檢查：面積分級與距離告警
+{
+  const savedQSA = documentStub.querySelectorAll;
+  const savedRender = app.renderEmiResults;
+  let got = null;
+  app.renderEmiResults = issues => { got = issues; };
+
+  const run = (roles, comps) => {
+    app.state.components = comps;
+    documentStub.querySelectorAll = sel => (sel === '.emi-role'
+      ? Object.keys(roles).map(r => ({ dataset: { role: r }, value: roles[r] }))
+      : []);
+    app.runEmiCheck();
+    return got;
+  };
+  const C = (id, x, y) => ({ id, ref: id, x, y, rot: 0, pads: [] });
+
+  // 緊湊佈局：輸入迴路 <25mm² → green
+  let comps = [C('cin', 0, 0), C('ic', 2, 0), C('d', 2, 2), C('l', 4, 2), C('cout', 4, 0)];
+  let iss = run({ cin: 'cin', ic: 'ic', d: 'd' }, comps);
+  ok(iss.some(i => i.sev === 'ok'), '25 緊湊輸入迴路應評為 ok');
+  ok(Math.abs(app.state.emiLoops.inArea - 2) < 1e-9, `25 (0,0)(2,0)(2,2) 面積應為 2（得 ${app.state.emiLoops.inArea}）`);
+
+  // 拉開到 >100mm² → err
+  comps = [C('cin', 0, 0), C('ic', 20, 0), C('d', 20, 20)];
+  iss = run({ cin: 'cin', ic: 'ic', d: 'd' }, comps);
+  ok(app.state.emiLoops.inArea > 100, '25 拉開後面積應 >100mm²');
+  ok(iss.some(i => i.sev === 'err'), '25 面積 >100mm² 應評為 err');
+  // Cin 離 IC 20mm > 5mm 門檻
+  ok(iss.length >= 2, '25 應同時回面積與距離告警');
+
+  // 中間帶：25~100mm² → warn
+  comps = [C('cin', 0, 0), C('ic', 10, 0), C('d', 10, 10)];
+  iss = run({ cin: 'cin', ic: 'ic', d: 'd' }, comps);
+  ok(app.state.emiLoops.inArea > 25 && app.state.emiLoops.inArea < 100, '25 面積應落在 25~100 之間');
+  ok(iss.some(i => i.sev === 'warn'), '25 中間帶應評為 warn');
+
+  // 角色不足 3 個 → 只能給 info，不可硬算面積
+  iss = run({ cin: 'cin' }, [C('cin', 0, 0)]);
+  ok(iss.every(i => i.sev === 'info'), '25 角色不足時只給 info');
+  eq(app.state.emiLoops.inArea, 0, '25 角色不足時面積應為 0，不可亂算');
+
+  app.renderEmiResults = savedRender;
+  documentStub.querySelectorAll = savedQSA;
+  app.state.components = [];
+}
+
+// 26) 熱簡估：IPC-2221 最小線寬要對得上手冊查表值
+{
+  const savedRender = app.renderThermalResults;
+  let got = null;
+  app.renderThermalResults = issues => { got = issues; };
+  const run = p => { app.runThermalSimple(p); return got; };
+  // 訊息裡的線寬字串抽回來（i18n 未載時 pcbT 回 key，所以直接重算比對）
+  const widthOf = (I, dT, oz) => {
+    const A = Math.pow(I / (0.048 * Math.pow(dT, 0.44)), 1 / 0.725);
+    return (A / (oz * 1.378)) * 0.0254;
+  };
+  // 手冊查表：1A / ΔT10℃ / 1oz 外層 ≈ 11~12mil ≈ 0.30mm
+  ok(Math.abs(widthOf(1, 10, 1) - 0.300) < 0.005, `26 1A/10℃/1oz 應約 0.30mm（得 ${widthOf(1, 10, 1).toFixed(4)}）`);
+  ok(Math.abs(widthOf(2, 20, 1) - 0.513) < 0.005, `26 2A/20℃/1oz 應約 0.513mm（得 ${widthOf(2, 20, 1).toFixed(4)}）`);
+
+  // 驗程式「實際算出來的數字」而不是原始碼字串：註解裡提到舊常數也不該讓測試變紅
+  {
+    const savedI18N = window.I18N;
+    window.I18N = { t: (k, v) => JSON.stringify(v || {}) };
+    const r = run({ oz: 1, dT: 10, Ta: 25, I: 1, P: 0.1, areaCm2: 10, vias: 20 });
+    window.I18N = savedI18N;
+    const w = JSON.parse(r[0].msg).w;
+    ok(Math.abs(parseFloat(w) - 0.30) < 0.01,
+       `26 runThermalSimple 實際回報的線寬應約 0.30mm（得 ${w}；換算寫反會變 0.47）`);
+  }
+
+  // 單調性：電流大→線寬大；容許溫升大→線寬小；銅厚→線寬小
+  ok(widthOf(2, 10, 1) > widthOf(1, 10, 1), '26 電流變大線寬應變大');
+  ok(widthOf(1, 20, 1) < widthOf(1, 10, 1), '26 容許溫升變大線寬應變小');
+  ok(widthOf(1, 10, 2) < widthOf(1, 10, 1), '26 銅厚加倍線寬應減半左右');
+  ok(Math.abs(widthOf(1, 10, 2) - widthOf(1, 10, 1) / 2) < 1e-9, '26 線寬與銅厚成反比');
+
+  // Tj 分級：>125 err、>85 warn、其餘 ok
+  const sevOf = p => { const r = run(p); return r[1].sev; };
+  eq(sevOf({ oz: 1, dT: 10, Ta: 25, I: 1, P: 0.1, areaCm2: 10, vias: 20 }), 'ok', '26 低功耗大面積應 ok');
+  eq(sevOf({ oz: 1, dT: 10, Ta: 25, I: 1, P: 3, areaCm2: 1, vias: 0 }), 'err', '26 3W 小面積應 err');
+  // 散熱面積變大 → Tj 變低（θ 單調）
+  const tj = p => { const th = Math.max(20, 80 / (1 + p.areaCm2 * 0.6 + p.vias * 0.08)); return p.Ta + p.P * th; };
+  ok(tj({ Ta: 25, P: 1, areaCm2: 5, vias: 0 }) < tj({ Ta: 25, P: 1, areaCm2: 1, vias: 0 }), '26 散熱面積變大 Tj 應變低');
+  ok(tj({ Ta: 25, P: 1, areaCm2: 1, vias: 30 }) < tj({ Ta: 25, P: 1, areaCm2: 1, vias: 0 }), '26 散熱 via 變多 Tj 應變低');
+  // θ 有下限 20，不可因為面積灌很大就算出室溫
+  ok(tj({ Ta: 25, P: 1, areaCm2: 1000, vias: 0 }) >= 45 - 1e-9, '26 θ 有下限 20，Tj 不可無限降');
+
+  app.renderThermalResults = savedRender;
 }
 
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
