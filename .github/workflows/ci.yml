@@ -46,6 +46,11 @@ jobs:
       - name: gerber-check（匯出正確性）
         run: node gerber-check.js
 
+      # 2c-2) Gerber 讀回驗證：把匯出的 Gerber 解析回幾何，跟原始板逐條比對。
+      #       gerber-check 只驗結構，線寬全給錯它照樣是綠的——這支才擋得住。
+      - name: gerber-readback（讀回幾何比對）
+        run: node gerber-readback.js
+
       # 2d) i18n key 完整性：pcbT/I18N.t 用到的 key 必須有定義（防 UI 顯示原始 key）
       - name: i18n-check（key 完整性）
         run: node i18n-check.js
