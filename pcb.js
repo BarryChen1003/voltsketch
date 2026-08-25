@@ -2101,6 +2101,13 @@ const pcbApp = {
           const c = z.clearance || 0.3;
           const thermalOn = z.thermal !== false && !!z.net;
           const spokes = [];
+          // 孤島也要在畫面上挖掉，否則使用者看到的跟送廠的檔不一樣
+          (z.orphanCuts || []).forEach(cut => {
+            o.beginPath();
+            cut.pts.forEach((pt, i) => { i ? o.lineTo(X(pt[0]), Y(pt[1])) : o.moveTo(X(pt[0]), Y(pt[1])); });
+            o.closePath();
+            o.fill();
+          });
           for (const comp of state.components) for (const p of (comp.pads || [])) {
             if (p.cu === false) continue;
             const sideOk = p.side === '*' || (z.layer === 'F.Cu' && p.side === 'F') || (z.layer === 'B.Cu' && p.side === 'B');

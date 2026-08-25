@@ -215,5 +215,51 @@ const fcuOf = st => {
   ok(cu(-10, 0), '3 沒有鋪銅時 pad 本身仍要有銅');
 }
 
+
+// ---------- 4) 孤島：偵測出來的要真的沒進 Gerber ----------
+{
+  const Pour = require('./pcb-pour.js');
+  // 20x20 GND 鋪銅，中間一條 SIG 走線切成上下兩半；GND 連接點只在下半。
+  const st = {
+    boardWidth: 40, boardHeight: 30, layers: 2,
+    layerStack: [
+      { id: 'F.Cu', kind: 'copper', type: 'Signal' }, { id: 'B.Cu', kind: 'copper', type: 'Signal' },
+      { id: 'F.SilkS', kind: 'silk' }, { id: 'B.SilkS', kind: 'silk' }, { id: 'Edge.Cuts', kind: 'edge' }
+    ],
+    visibleLayers: ['F.Cu', 'B.Cu', 'F.SilkS', 'B.SilkS', 'Edge.Cuts'],
+    components: [{ id: 'g', ref: 'J1', x: 0, y: -8, rot: 0, pads: [{ x: 0, y: 0, w: 1, h: 1, shape: 'rect', side: 'F', net: 'GND' }] }],
+    traces: [{ x1: -12, y1: 0, x2: 12, y2: 0, width: 1.0, layer: 'F.Cu', net: 'SIG' }],
+    vias: [], zones: [], zoneFills: [], texts: [], keepouts: [], kicadArcs: [], teardrops: [],
+    userZones: [{ layer: 'F.Cu', net: 'GND', clearance: 0.3, thermal: true, user: true,
+                  pts: [[-10, -10], [10, -10], [10, 10], [-10, 10]] }]
+  };
+
+  // 挖除之前：上半有銅（那就是孤島）
+  const before = fcuOf(st);
+  ok(before(0, 5), '4 未處理時上半有銅——那塊就是孤島');
+  ok(before(0, -5), '4 下半本來就有銅');
+
+  const rep = Pour.apply(st, padAbs, { res: 0.2 });
+  ok(rep.islands >= 1, `4 應偵測到孤島（得 ${rep.islands}）`);
+  ok(rep.areaMm2 > 100, `4 孤島面積應可觀（得 ${rep.areaMm2}）`);
+
+  // 挖除之後：上半不可再有銅，下半不受影響
+  const after = fcuOf(st);
+  ok(!after(0, 5), '4 孤島挖除後上半不可再有鋪銅');
+  ok(!after(-8, 8), '4 孤島角落也要挖乾淨');
+  ok(!after(8, 3), '4 孤島右側也要挖乾淨');
+  ok(after(0, -5), '4 有連接的下半必須保留');
+  ok(after(-8, -8), '4 下半角落也要保留');
+  ok(after(0, -8), '4 GND pad 本體仍在');
+
+  // 上半補一顆 GND via → 不再是孤島，銅要回來
+  st.userZones[0].orphanCuts = [];
+  st.vias = [{ x: 0, y: 5, od: 0.7, id: 0.3, net: 'GND' }];
+  const rep2 = Pour.apply(st, padAbs, { res: 0.2 });
+  ok(rep2.islands === 0, `4 上半接上 GND 後不應再有孤島（得 ${rep2.islands}）`);
+  const back = fcuOf(st);
+  ok(back(3, 5), '4 接上之後上半的鋪銅應該回來');
+}
+
 console.log(`\ngerber-pour.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

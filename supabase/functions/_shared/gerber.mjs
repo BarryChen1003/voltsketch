@@ -341,6 +341,9 @@ function build(state, padAbsFn, baseName) {
           if (z.net && (v.net || '') === z.net) return; // 同網 via＝實心連接（業界常規）
           gf.flash(v.x, v.y, 'C,' + AP((v.od || 0.6) + 2 * cl));
         });
+        // 孤島：跟自己網路斷開的那幾塊銅，一起在清除極性挖掉。
+        // 它們不違反任何間距規則所以 DRC 不報，但那是浮空的天線。
+        (z.orphanCuts || []).forEach(o => gf.region(o.pts));
       }
       gf.lpd();
       spokes.forEach(s => gf.line(s[0], s[1], s[2], s[3], 0.4)); // 輻條 0.4mm

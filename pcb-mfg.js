@@ -573,6 +573,29 @@
       say('silkOut', T('silk_cleared', { n: before - app.state.silkGr.length }));
     });
 
+    // --- 鋪銅孤島 ---
+    on('pourRun', () => {
+      if (!window.PcbPour) return;
+      const zones = (app.state.userZones || []);
+      if (!zones.length) { say('pourOut', T('mfg_st_nozone')); toast(T('mfg_st_nozone'), 'warn'); return; }
+      app.hist();
+      const r = window.PcbPour.apply(app.state, app.padAbs.bind(app), {
+        res: 0.1, minAreaMm2: num('pourMin', 0.5)
+      });
+      app.render();
+      const msg = r.islands
+        ? T('pour_found', { n: r.islands, z: r.zones, a: r.areaMm2 })
+        : T('pour_none');
+      say('pourOut', msg);
+      toast(msg, r.islands ? 'warn' : 'info');
+    });
+    on('pourClear', () => {
+      app.hist();
+      (app.state.userZones || []).forEach(z => { z.orphanCuts = []; });
+      app.render();
+      say('pourOut', T('pour_restored'));
+    });
+
     // --- 淚滴 ---
     on('tdRun', () => {
       app.hist();
