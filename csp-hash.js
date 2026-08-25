@@ -90,6 +90,45 @@ if (inlineHandlers.length) {
   process.exit(1);
 }
 
+// ---- 外部腳本主機檢查 ----
+// CSP 的 script-src 收成 'self' 之後，程式碼裡任何「從外部網域載腳本」的寫法上線都會被擋。
+// 本機 dev server 不套 _headers，所以那種東西在本機一路正常、上線才死，而且畫面上
+// 只會看到功能沒反應。2026-08-25 實例：pcb-3d.js 從 cdn.jsdelivr.net 抓 Three.js，
+// 線上 3D 檢視必定打不開。這裡把它擋在 CI。
+{
+  const allowed = new Set(['static.cloudflareinsights.com', 'fonts.googleapis.com', 'fonts.gstatic.com']);
+  const srcFiles = [];
+  (function walkJs(dir) {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, e.name);
+      const rel = path.relative(root, full);
+      if (NOT_DEPLOYED.some((re) => re.test(rel))) continue;
+      if (rel.startsWith('vendor')) continue;          // vendor/ 是自行代管的檔案本身
+      if (e.isDirectory()) walkJs(full);
+      else if (/\.(js|html)$/.test(e.name)) srcFiles.push(rel);
+    }
+  })(root);
+
+  const offenders = [];
+  // 只抓「會變成腳本來源」的寫法：script src=、動態 .src=、import()
+  const PAT = /(?:<script[^>]+src\s*=\s*["']|\.src\s*=\s*["']|import\s*\(\s*["'])(https?:\/\/[^"']+)/gi;
+  for (const rel of srcFiles) {
+    const txt = fs.readFileSync(path.join(root, rel), 'utf8');
+    for (const m of txt.matchAll(PAT)) {
+      let host;
+      try { host = new URL(m[1]).host; } catch (e) { continue; }
+      if (allowed.has(host)) continue;
+      offenders.push(rel + ' → ' + host);
+    }
+  }
+  if (offenders.length) {
+    console.log('FAIL: 這些檔案從 CSP 不允許的主機載腳本，上線會被擋掉（本機看不出來）：');
+    [...new Set(offenders)].forEach((o) => console.log('  ' + o));
+    console.log("修法：把該函式庫放進 vendor/ 自行代管，或在 _headers 的 script-src 明確加上該主機。");
+    process.exit(1);
+  }
+}
+
 const list = [...hashes.keys()].sort();
 const hashPart = list.map((h) => `'${h}'`).join(' ');
 

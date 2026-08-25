@@ -41,6 +41,8 @@ const pcbApp = {
     dims: [],            // 尺寸標註 {x1,y1,x2,y2}
     keepouts: [],        // 禁止區 {layer,pts}
     teardrops: [],       // 淚滴 {layer,net,pts}（Mfg.Teardrops 產生；匯出為 region）
+    fpOverrides: {},     // 線路圖轉 PCB 的封裝覆寫 {schId: {lib, variant}}
+    schUnresolved: [],   // 上次轉換對不出封裝的元件（誠實留著，不清掉）
     panel: null,         // 拼板計畫（Mfg.Panel.plan 的結果，套用後留著給匯出參考）
     dimDraw: null,       // 進行中尺寸標註 {x1,y1,cx,cy}
     keepoutDraw: null,   // 進行中禁止區 {pts, cursor:[x,y]}
@@ -2169,7 +2171,7 @@ const pcbApp = {
   // netlist 同步：讀線路圖（localStorage voltsketch-project）→ 建 PCB 元件+pad net，飛線引導佈線
   syncFromSchematic() {
     if (!window.CircuitEngine) { this.toast(pcbT('pj_sync_noeng'), 'error'); return; }
-    this.hist();
+    if (!window.Sch2Pcb) { this.toast(pcbT('pj_sync_noeng'), 'error'); return; }
     let proj = null;
     try { proj = JSON.parse(localStorage.getItem('voltsketch-project') || 'null'); } catch (e) {}
     const sComps = (proj && proj.components || []).filter(c => c && c.type);
@@ -2177,68 +2179,78 @@ const pcbApp = {
     if (this.state.components.length || this.state.traces.length) {
       if (!confirm(pcbT('pj_sync_confirm'))) return;
     }
+    this.hist();
     const eng = window.CircuitEngine;
     const nets = eng.computeNets(sComps, proj.wires || []);
     const byId = {}; sComps.forEach(c => { byId[c.id] = c; });
     // net 命名：含 ground → GND；含 source/battery + 腳 → VCC；其餘 N$n
     const rootName = new Map();
     for (let i = 0; i < nets.pts.length; i++) {
-      const p = nets.pts[i];
-      if (p.kind !== 'pin') continue;
+      const pt = nets.pts[i];
+      if (pt.kind !== 'pin') continue;
       const r = nets.find(i);
-      const c = byId[p.key.split(':')[0]];
+      const c = byId[pt.key.split(':')[0]];
       if (!c) continue;
       if (/ground/i.test(c.type)) rootName.set(r, 'GND');
       else if (/source|battery|vcc|vdd/i.test(c.type) && !rootName.has(r)) rootName.set(r, 'VCC');
     }
     let serial = 1;
-    const netNameOf = key => {
+    const netOf = (schId, pinIndex) => {
+      const key = schId + ':' + pinIndex;
       if (!nets.connectedPins.has(key)) return '';
       const r = nets.pinNet.get(key);
       if (!rootName.has(r)) rootName.set(r, 'N$' + serial++);
       return rootName.get(r);
     };
-    // 建 PCB 元件：pad 位置照線路圖 pin 幾何縮放（px→mm）
-    const SC = 0.08;
-    const newComps = [];
-    const grid = { cols: 8, dx: 16, dy: 14 };
-    sComps.forEach((c, i) => {
-      const pins = eng.getPins(c);
-      if (!pins.length) return;
-      const rel = pins.map(p => ({ x: (p.x - c.x) * SC, y: (p.y - c.y) * SC, name: String(p.name || ''), index: p.index }));
-      const ext = rel.reduce((m, p) => ({
-        minx: Math.min(m.minx, p.x), maxx: Math.max(m.maxx, p.x),
-        miny: Math.min(m.miny, p.y), maxy: Math.max(m.maxy, p.y)
-      }), { minx: 0, maxx: 0, miny: 0, maxy: 0 });
-      const col = i % grid.cols, row = Math.floor(i / grid.cols);
-      newComps.push({
-        id: `sync-${c.id}`, type: 'ic', kind: 'ic',
-        x: (col - (grid.cols - 1) / 2) * grid.dx,
-        y: (row - 1.5) * grid.dy,
-        rot: 0, side: 'top',
-        w: Math.max(3, ext.maxx - ext.minx + 2.4), h: Math.max(3, ext.maxy - ext.miny + 2.4),
-        ref: c.label || (c.type.toUpperCase().slice(0, 3) + (i + 1)), part: c.type, label: c.label || c.type,
-        pads: rel.map((p, k) => ({
-          num: String(k + 1), name: p.name, type: 'smd', shape: 'rect',
-          x: p.x, y: p.y, rot: 0, w: 1.2, h: 1.2, drill: 0, slot: null, rr: 0,
-          side: 'F', cu: true, net: netNameOf(c.id + ':' + p.index)
-        }))
-      });
+
+    // 封裝來自 PartsLib / FootprintGen，不再拿線路圖符號的腳位座標當 footprint。
+    // 對不出來的不編一個假的塞進去，列出來讓使用者處理。
+    const conv = window.Sch2Pcb.convert(sComps, c => eng.getPins(c), netOf, {
+      overrides: this.state.fpOverrides || {},
+      scale: 0.15,
+      spacing: Math.max(1, this.loadDrcRules().compSpacing / 2)
     });
-    const s = this.state;
-    s.components = newComps;
-    s.traces = []; s.vias = []; s.zones = []; s.zoneFills = []; s.userZones = [];
-    s.kicad = null; s.kicadArcs = []; s.edgeSegs = []; s.silkGr = [];
-    s.refBoard = null; s.refOverlayId = null; s.selected = null; s.ratsnest = null;
-    s.showRatsnest = true;
+
+    const s2 = this.state;
+    s2.components = conv.components;
+    s2.traces = []; s2.vias = []; s2.zones = []; s2.zoneFills = []; s2.userZones = [];
+    s2.kicad = null; s2.kicadArcs = []; s2.edgeSegs = []; s2.silkGr = []; s2.teardrops = [];
+    s2.refBoard = null; s2.refOverlayId = null; s2.selected = null; s2.selectedSet = [];
+    s2.ratsnest = null; s2.showRatsnest = true;
+    s2.schUnresolved = conv.unresolved;
+    s2.schAssumed = conv.assumed;
+    const bd = window.Sch2Pcb.suggestBoard(conv.components, 5);
+    s2.boardWidth = bd.w; s2.boardHeight = bd.h;
+    const wI = document.getElementById('boardWidth'), hI = document.getElementById('boardHeight');
+    if (wI) wI.value = bd.w; if (hI) hI.value = bd.h;
     const tgl = document.getElementById('ratsnestToggle');
     if (tgl) tgl.checked = true;
     this.syncSelPanel();
     this.renderPartsList();
     this.populateEmiSelects();
     this.render();
+
     const netN = new Set([...rootName.values()]).size;
-    this.toast(pcbT('pj_sync_done', { c: newComps.length, n: netN }), 'info');
+    let msg = pcbT('pj_sync_done2', {
+      c: conv.components.length, n: netN,
+      lib: conv.stats.bySource.partslib, ic: conv.stats.bySource.ic,
+      w: bd.w, h: bd.h
+    });
+    if (conv.assumed.length) {
+      const who = conv.assumed.slice(0, 6).map(a => (a.label || a.type) + '→' + a.variant).join(', ');
+      msg += ' │ ' + pcbT('pj_sync_assumed', { n: conv.assumed.length, who });
+    }
+    if (conv.unresolved.length) {
+      const why = [...new Set(conv.unresolved.map(u => u.reason))].join(', ');
+      const who = conv.unresolved.slice(0, 6).map(u => u.label || u.type).join(', ');
+      msg += ' │ ' + pcbT('pj_sync_unres', { n: conv.unresolved.length, who, why });
+    }
+    this.toast(msg, (conv.unresolved.length || conv.assumed.length) ? 'warn' : 'info');
+    const box = document.getElementById('netlistContent');
+    if (box) {
+      box.innerHTML = '<div style="font-size:12px;white-space:pre-wrap">' +
+        msg.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch])) + '</div>';
+    }
   },
 
   // 自動佈線：把目前所有飛線逐條丟給 A*（單層試驗，無推擠、不插 via）

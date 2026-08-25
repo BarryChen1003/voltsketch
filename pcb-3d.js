@@ -5,20 +5,24 @@ window.Pcb3D = (() => {
   // 硬規矩 6：畫面上的字一律四語。I18N 沒載入就退回 key。
   const T = (k, v) => (window.I18N ? window.I18N.t(k, v) : k);
   let loaded = null;
+  // Three.js 一律從 vendor/ 自行代管載入，不走 CDN。
+  // 原本這裡抓 cdn.jsdelivr.net：本機 dev server 不套 _headers 所以看起來正常，
+  // 上線 CSP 是 `script-src 'self' https://static.cloudflareinsights.com`，一定被擋，
+  // 使用者只會看到「3D 檢視按了沒反應」。（2026-08-25 發現；csp-hash.js 已加守門）
+  const THREE_FILES = ['./vendor/three-0.128.0.min.js', './vendor/three-orbitcontrols-0.128.0.js'];
   function loadThree() {
     if (loaded) return loaded;
     loaded = new Promise((resolve, reject) => {
-      const s1 = document.createElement('script');
-      s1.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js';
-      s1.onload = () => {
-        const s2 = document.createElement('script');
-        s2.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js';
-        s2.onload = () => resolve();
-        s2.onerror = () => reject(new Error(T('p3d_err_orbit')));
-        document.head.appendChild(s2);
+      const next = i => {
+        if (i >= THREE_FILES.length) return resolve();
+        const el = document.createElement('script');
+        el.src = THREE_FILES[i];
+        el.onload = () => next(i + 1);
+        // 檔案不在 vendor/ 就直說「尚未代管」，不要退回 CDN 假裝可用
+        el.onerror = () => reject(new Error(T('p3d_err_vendor', { file: THREE_FILES[i] })));
+        document.head.appendChild(el);
       };
-      s1.onerror = () => reject(new Error(T('p3d_err_three')));
-      document.head.appendChild(s1);
+      next(0);
     });
     return loaded;
   }

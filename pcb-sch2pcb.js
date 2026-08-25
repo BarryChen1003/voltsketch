@@ -1,0 +1,231 @@
+// 線路圖 → PCB 轉換
+//
+// 為什麼重寫：舊的 syncFromSchematic 把每個元件都當成 IC，pad 一律 1.2×1.2mm SMD，
+// 位置直接拿線路圖符號的腳位座標乘 0.08。電阻符號兩腳距 60px → 4.8mm 腳距、1.2mm 方 pad，
+// 那不是任何真實封裝。飛線會出來、DRC 跑得動、看起來像成功了，但那片板做不出來。
+//
+// 這裡改成用真封裝：被動件走 PartsLib（15 類、含 0201～2512 與各種 SOT/SOD），
+// IC 走 FootprintGen.fromIC（IC_DATA 全覆蓋）。**對不出來的就標出來讓使用者指定，
+// 不編一個假的方塊塞過去**——這是跟 EasyEDA 最大的差別：它要求你在線路圖階段就綁好封裝，
+// 我們允許你之後補，但絕不假裝已經有了。
+//
+// 純函式（不碰 DOM），node 可直接測。
+(() => {
+  'use strict';
+
+  // 線路圖元件型別 → 真實封裝。變體選預設值，之後可由 UI 覆寫。
+  // 選變體的原則：讓封裝腳數與符號腳數對得上（例如石英振盪器選 2-pad 而不是 4-pad）。
+  const MAP = {
+    resistor: { lib: 'res', variant: '0603' },
+    capacitor: { lib: 'cap', variant: '0603' },
+    inductor: { lib: 'ind', variant: '0603' },
+    bead: { lib: 'bead', variant: '0603' },
+    led: { lib: 'led', variant: '0603' },
+    diode: { lib: 'dio', variant: 'SOD-123' },
+    tvs: { lib: 'dio', variant: 'SMA (DO-214AC)' },
+    varistor: { lib: 'dio', variant: 'SMB (DO-214AA)' },
+    gdt: { lib: 'dio', variant: 'SMC (DO-214AB)' },
+    fuse: { lib: 'fuse', variant: '1206' },
+    xtal: { lib: 'xtal', variant: '5032 (2-pad)' },
+    npn: { lib: 'tran', variant: 'SOT-23' },
+    pnp: { lib: 'tran', variant: 'SOT-23' },
+    nmos: { lib: 'tran', variant: 'SOT-23' },
+    pmos: { lib: 'tran', variant: 'SOT-23' },
+    dualnmos: { lib: 'tran', variant: 'SOT-23-5' },
+    dualpmos: { lib: 'tran', variant: 'SOT-23-5' },
+    // 以下幾種符號沒有唯一正解，給常見預設但標 assumed：
+    // 電源符號在真板上可能是端子台、桶插、排針或電池座；I/O 埠可能是測試點或接頭。
+    // 標出來讓使用者知道「這是我替你選的」，而不是讓他以為線路圖裡本來就指定好了。
+    source: { lib: 'term', variant: '2P', assumed: true },
+    io: { lib: 'tp', variant: 'Ø1.5', assumed: true },
+    vrail: { lib: 'tp', variant: 'Ø1.5', assumed: true },
+    lamp: { lib: 'led', variant: '1206', assumed: true }
+  };
+
+  // 這些是線路圖上的符號，不是板子上的零件。跳過但要說出來，不要靜靜消失。
+  const NON_PHYSICAL = ['ground', 'text', 'grid', 'shield', 'ammeter', 'voltmeter'];
+
+  // 走 IC 封裝產生器的型別（用 comp.name 去 IC_DATA 查）
+  const IC_TYPES = ['ic', 'opamp', 'comparator', 'buffer', 'dcdc',
+    'and', 'or', 'nand', 'nor', 'xor', 'xnor', 'not'];
+
+  const libs = () => ({
+    PartsLib: (typeof window !== 'undefined' && window.PartsLib) || (typeof global !== 'undefined' && global.PartsLib),
+    FootprintGen: (typeof window !== 'undefined' && window.FootprintGen) || (typeof global !== 'undefined' && global.FootprintGen),
+    IC_DATA: (typeof window !== 'undefined' && window.IC_DATA) || (typeof global !== 'undefined' && global.IC_DATA) || []
+  });
+
+  // 一個線路圖元件 → 封裝。回 {ok:true, pads, body, source, variant} 或 {ok:false, reason}
+  function mapFootprint(sch, opts) {
+    opts = opts || {};
+    const { PartsLib, FootprintGen, IC_DATA } = libs();
+    const type = sch.type || '';
+    if (NON_PHYSICAL.indexOf(type) >= 0) return { ok: false, reason: 'nonPhysical' };
+
+    // 使用者指定的覆寫優先（UI 之後可以逐顆改）
+    const ov = (opts.overrides || {})[sch.id];
+    const m = ov || MAP[type];
+
+    if (m && PartsLib) {
+      const b = PartsLib.build(m.lib, m.variant);
+      if (b && b.ok) return {
+        ok: true, pads: b.pads, body: b.body, source: 'partslib',
+        lib: m.lib, variant: m.variant, assumed: !ov && !!m.assumed
+      };
+      return { ok: false, reason: 'variantNotFound', lib: m.lib, variant: m.variant };
+    }
+
+    if (IC_TYPES.indexOf(type) >= 0) {
+      if (!FootprintGen) return { ok: false, reason: 'noGenerator' };
+      const part = sch.name || sch.part || '';
+      const ic = IC_DATA.find(x => x.part === part) ||
+                 IC_DATA.find(x => String(x.part || '').toLowerCase() === String(part).toLowerCase());
+      if (!ic) return { ok: false, reason: 'icNotInLibrary', part };
+      const f = FootprintGen.fromIC(ic);
+      if (!f || !f.ok) return { ok: false, reason: 'footprintGenFailed', part };
+      return { ok: true, pads: f.pads, body: f.body, source: 'ic', part, meta: f.meta };
+    }
+
+    return { ok: false, reason: 'noMapping', type };
+  }
+
+  // pad ↔ 線路圖腳位對應。IC 走「pad.num = 腳號」，其餘走順序。
+  // 對不起來就照實回報，不要把 net 掛到錯的腳上——那種錯板子做出來才會發現。
+  function bindNets(pads, schPins, netOf, schId) {
+    const out = pads.map(p => Object.assign({}, p));
+    const notes = [];
+    const byName = new Map();
+    schPins.forEach(p => byName.set(String(p.name), p));
+    let matchedByNum = 0;
+    out.forEach((pad, i) => {
+      let pin = byName.get(String(pad.num));
+      if (pin) matchedByNum++;
+      else pin = schPins[i];
+      pad.net = pin ? (netOf(schId, pin.index) || '') : '';
+      if (!pin) pad.net = '';
+    });
+    if (out.length > schPins.length) notes.push('extraPads');
+    return { pads: out, notes, matchedByNum };
+  }
+
+  /**
+   * 主轉換。
+   * schComps: 線路圖元件陣列；getPins: (comp)=>[{name,index,x,y}]；
+   * netOf: (schId, pinIndex)=>netName；opts: {overrides, scale, spacing}
+   * 回 { components, unresolved, stats }
+   */
+  function convert(schComps, getPins, netOf, opts) {
+    opts = Object.assign({ scale: 0.15, spacing: 1.5 }, opts || {});
+    const components = [], unresolved = [], assumed = [];
+    const bySource = { partslib: 0, ic: 0 };
+    let refSeq = {};
+
+    (schComps || []).forEach((sch, i) => {
+      const fp = mapFootprint(sch, opts);
+      if (!fp.ok) {
+        if (fp.reason !== 'nonPhysical') {
+          unresolved.push({ id: sch.id, type: sch.type, label: sch.label || '', reason: fp.reason, part: fp.part || '' });
+        }
+        return;
+      }
+      const schPins = getPins(sch) || [];
+      if (fp.pads.length < schPins.length) {
+        unresolved.push({
+          id: sch.id, type: sch.type, label: sch.label || '',
+          reason: 'pinCountMismatch', pads: fp.pads.length, pins: schPins.length
+        });
+        return;
+      }
+      const bound = bindNets(fp.pads, schPins, netOf, sch.id);
+      if (fp.assumed) assumed.push({ id: sch.id, type: sch.type, label: sch.label || '', lib: fp.lib, variant: fp.variant });
+      const prefix = (sch.label || '').replace(/\d+$/, '') || 'U';
+      refSeq[prefix] = (refSeq[prefix] || 0) + 1;
+      components.push({
+        id: 'sch-' + sch.id,
+        type: fp.source === 'ic' ? 'ic' : 'part', kind: fp.source === 'ic' ? 'ic' : 'part',
+        x: 0, y: 0, rot: 0, side: 'top',
+        w: Math.max(1, fp.body.w), h: Math.max(1, fp.body.h),
+        ref: sch.label || (prefix + refSeq[prefix]),
+        part: fp.source === 'ic' ? fp.part : (fp.lib + ' ' + fp.variant),
+        label: sch.label || sch.type,
+        footprintSource: fp.source, footprintVariant: fp.variant || (fp.meta && fp.meta.family) || '',
+        footprintAssumed: !!fp.assumed,
+        notes: bound.notes,
+        pads: bound.pads,
+        _sch: { x: sch.x || 0, y: sch.y || 0 }
+      });
+      bySource[fp.source]++;
+    });
+
+    place(components, opts);
+
+    return {
+      components, unresolved, assumed,
+      stats: {
+        total: (schComps || []).length, placed: components.length,
+        unresolved: unresolved.length, assumed: assumed.length, bySource
+      }
+    };
+  }
+
+  /**
+   * 擺位：照線路圖的相對位置縮放過來，再把重疊的推開。
+   * 比「排成格子」有用得多——PCB 一眼看得出對應線路圖的哪一塊。
+   */
+  function place(components, opts) {
+    opts = Object.assign({ scale: 0.15, spacing: 1.5, iterations: 60 }, opts || {});
+    if (!components.length) return components;
+    const S = opts.scale;
+    let cx = 0, cy = 0;
+    components.forEach(c => { cx += c._sch.x; cy += c._sch.y; });
+    cx /= components.length; cy /= components.length;
+    components.forEach(c => {
+      c.x = (c._sch.x - cx) * S;
+      c.y = (c._sch.y - cy) * S;
+    });
+    // 推開重疊：以包圍盒 + 間距判定，重疊就沿中心連線推開一半
+    const gap = opts.spacing;
+    for (let it = 0; it < opts.iterations; it++) {
+      let moved = false;
+      for (let i = 0; i < components.length; i++) {
+        for (let j = i + 1; j < components.length; j++) {
+          const a = components[i], b = components[j];
+          const needX = (a.w + b.w) / 2 + gap, needY = (a.h + b.h) / 2 + gap;
+          const dx = b.x - a.x, dy = b.y - a.y;
+          const ox = needX - Math.abs(dx), oy = needY - Math.abs(dy);
+          if (ox <= 0 || oy <= 0) continue;          // 沒重疊
+          moved = true;
+          // 推最少的那一軸，位移比較不會把版面攪亂
+          if (ox < oy) {
+            const s = (dx >= 0 ? 1 : -1) * ox / 2 + (dx === 0 ? ox / 2 : 0);
+            a.x -= s; b.x += s;
+          } else {
+            const s = (dy >= 0 ? 1 : -1) * oy / 2 + (dy === 0 ? oy / 2 : 0);
+            a.y -= s; b.y += s;
+          }
+        }
+      }
+      if (!moved) break;
+    }
+    return components;
+  }
+
+  // 板框建議：包住所有元件再加邊距，取整到 1mm
+  function suggestBoard(components, margin) {
+    const m = margin > 0 ? margin : 5;
+    if (!components.length) return { w: 50, h: 40 };
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    components.forEach(c => {
+      x0 = Math.min(x0, c.x - c.w / 2); x1 = Math.max(x1, c.x + c.w / 2);
+      y0 = Math.min(y0, c.y - c.h / 2); y1 = Math.max(y1, c.y + c.h / 2);
+    });
+    return {
+      w: Math.max(10, Math.ceil((x1 - x0) + 2 * m)),
+      h: Math.max(10, Math.ceil((y1 - y0) + 2 * m))
+    };
+  }
+
+  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard };
+  if (typeof window !== 'undefined') window.Sch2Pcb = Sch2Pcb;
+  if (typeof module !== 'undefined' && module.exports) module.exports = Sch2Pcb;
+})();
