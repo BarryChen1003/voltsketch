@@ -40,6 +40,8 @@ const pcbApp = {
     texts: [],           // 絲印文字 {x,y,text,layer,size}
     dims: [],            // 尺寸標註 {x1,y1,x2,y2}
     keepouts: [],        // 禁止區 {layer,pts}
+    teardrops: [],       // 淚滴 {layer,net,pts}（Mfg.Teardrops 產生；匯出為 region）
+    panel: null,         // 拼板計畫（Mfg.Panel.plan 的結果，套用後留著給匯出參考）
     dimDraw: null,       // 進行中尺寸標註 {x1,y1,cx,cy}
     keepoutDraw: null,   // 進行中禁止區 {pts, cursor:[x,y]}
     selectedSet: [],     // 多選元件（Shift+點 加選、Shift+拖 框選）
@@ -260,6 +262,9 @@ const pcbApp = {
     // Draw traces
     this.drawTraces(scale);
 
+    // 淚滴（畫在走線之後、via 之前：它是走線與 pad 的補強銅）
+    this.drawTeardrops(scale);
+
     // Draw vias
     this.drawVias(scale);
 
@@ -429,6 +434,26 @@ const pcbApp = {
     ctx.translate(x - 10, y + h / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(`${boardHeight}mm`, 0, 0);
+    ctx.restore();
+  },
+
+  drawTeardrops(scale) {
+    const tds = this.state.teardrops;
+    if (!tds || !tds.length) return;
+    const { ctx } = this;
+    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const vis = this.state.visibleLayers || [];
+    ctx.save();
+    for (const t of tds) {
+      const layer = t.layer || 'F.Cu';
+      if (vis.length && vis.indexOf(layer) < 0) continue;
+      const l = (this.state.layerStack || []).find(x => x.id === layer);
+      ctx.fillStyle = (l && l.color) || '#e74c3c';
+      ctx.beginPath();
+      t.pts.forEach((p, i) => { const sx = X(p[0]), sy = Y(p[1]); i ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy); });
+      ctx.closePath();
+      ctx.fill();
+    }
     ctx.restore();
   },
 
@@ -1107,6 +1132,16 @@ const pcbApp = {
         if (!go) { say('\u26a0 ' + pcbT('fab_gate_stop')); return; }
       }
     }
+
+    // 鑽孔表要標「哪支刀過不了板廠」，所以把選定板廠的下限一起送過去
+    try {
+      if (window.FabProfiles) {
+        const prof = window.FabProfiles.byId(window.FabProfiles.selectedId());
+        const cu = (s.layerStack || []).filter(l => l.kind === 'copper').length || 2;
+        const tier = window.FabProfiles.tierFor(prof, cu);
+        if (tier && tier.rules && typeof tier.rules.minDrill === 'number') s.fabMinDrill = tier.rules.minDrill;
+      }
+    } catch (e) { /* 帶不過去就只是少一欄註記，不該擋住匯出 */ }
 
     const base = s.kicad ? s.kicad.fileName : 'hardwareai';
     say(pcbT('pj_gerber_working'));
@@ -2252,7 +2287,9 @@ const pcbApp = {
       for (const v of (r.vias || [])) {
         this.state.vias.push({
           id: `via-${Date.now()}-${this.state.vias.length}`,
-          x: v.x, y: v.y, od: v.od, drill: v.drill, net: line.net, auto: true
+          // 鑽徑欄位叫 id 不是 drill：Gerber/Excellon 匯出讀的是 v.id，
+          // 寫成 drill 會讓匯出靜靜退回預設 0.3mm，使用者改了鑽徑也沒作用。
+          x: v.x, y: v.y, od: v.od, id: v.drill, net: line.net, auto: true
         });
       }
       okN++;

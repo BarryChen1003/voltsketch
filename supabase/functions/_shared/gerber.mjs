@@ -292,6 +292,8 @@ function build(state, padAbsFn, baseName) {
     const gf = GerberFile('Copper,L' + (idx + 1) + ',' + posTag);
     // 鋪銅（墊底）
     (state.zoneFills || []).forEach(z => { if (z.layer === layer.id) gf.region(z.pts); });
+    // 淚滴：pad/via 與走線接合處的補強銅，跟走線同層、同 net
+    (state.teardrops || []).forEach(t => { if ((t.layer || 'F.Cu') === layer.id) gf.region(t.pts); });
     // 使用者鋪銅：暗區域 + LPC 清除極性避讓（標準 Gerber 技法；後續暗物件會蓋回）
     const uz = (state.userZones || []).filter(z => z.layer === layer.id);
     if (uz.length) {
@@ -479,6 +481,8 @@ function build(state, padAbsFn, baseName) {
       } else bucket.push({ x: p.x, y: p.y, d: pad.drill });
     });
   });
+  // 拼板郵票孔：非鍍通、掰斷用
+  (state.panelBites || []).forEach(b => npth.push({ x: b.x, y: b.y, d: b.d || 0.6 }));
   const drills = [{ name: base + '-PTH.drl', text: drillFile(pth, slots) }];
   if (npth.length) drills.push({ name: base + '-NPTH.drl', text: drillFile(npth, []) });
   // 背鑽（depth-controlled；per-side 檔＋must-not-cut 註解，板廠依此設鑽深）
@@ -579,12 +583,40 @@ function build(state, padAbsFn, baseName) {
   if (cplSkipped) warnings.push(T('ge_w_cpl', { n: cplSkipped }));
   warnings.push(T('ge_w_ipc'));
 
+  // 鑽孔表：板廠除了鑽孔檔還要一張可以對的表（哪支刀、幾個孔、鍍不鍍通）。
+  // 這裡的分組規則必須與前端 pcb-mfg.js 的 DrillTable.build 一致，
+  // gerber-mfg.test.js 會拿兩邊逐列比對，分岔就會紅。
+  const drillTableText = (() => {
+    const rows = new Map();
+    const add = (d, plated) => {
+      const k = (Math.round(d * 1000) / 1000) + '|' + (plated ? 'PTH' : 'NPTH');
+      rows.set(k, (rows.get(k) || 0) + 1);
+    };
+    pth.forEach(e => add(e.d, true));
+    npth.forEach(e => add(e.d, false));
+    slots.forEach(e => add(e.d, true));
+    const list = [...rows.entries()].map(([k, n]) => {
+      const [d, kind] = k.split('|');
+      return { size: +d, plated: kind === 'PTH', count: n };
+    }).sort((a, b) => a.size - b.size || (a.plated === b.plated ? 0 : a.plated ? -1 : 1));
+    const minDrill = (state.fabMinDrill > 0) ? state.fabMinDrill : null;
+    const L = ['G04 Drill table for ' + base + '*', 'Tool  Size(mm)  Plated  Qty  Note'];
+    list.forEach((r, i) => {
+      const warn = (minDrill != null && r.size < minDrill - 1e-9) ? ('  BELOW FAB MIN ' + minDrill + 'mm') : '';
+      L.push([('T' + (i + 1)).padEnd(5), r.size.toFixed(3).padStart(8),
+              (r.plated ? 'PTH' : 'NPTH').padStart(7), String(r.count).padStart(5), warn].join(' '));
+    });
+    L.push('Total holes: ' + list.reduce((a, r) => a + r.count, 0));
+    return L.join('\n') + '\n';
+  })();
+
   const out = files.map(f => ({ name: f.name, text: f.gf.text(), stats: f.gf.stats }))
     .concat(drills.map(d => ({ name: d.name, text: d.text, stats: null })))
     .concat([
       { name: base + '-CPL.csv', text: cplText, stats: null },
       { name: base + '.ipc', text: ipc.text, stats: null },
-      { name: base + '-job.gbrjob', text: jobText, stats: null }
+      { name: base + '-job.gbrjob', text: jobText, stats: null },
+      { name: base + '-DrillTable.txt', text: drillTableText, stats: null }
     ]);
   return { files: out, warnings, drillCounts: { pth: pth.length, npth: npth.length, slots: slots.length }, cplCount: cplRows.length - 1, ipcRecords: ipc.recs };
 }

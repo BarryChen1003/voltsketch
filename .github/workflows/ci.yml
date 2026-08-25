@@ -56,6 +56,14 @@ jobs:
       - name: gerber-pour（鋪銅避讓幾何）
         run: node gerber-pour.test.js
 
+      # 2c-4) 製造功能（淚滴／縫合孔／鑽孔表／拼板）：算出來的幾何合不合法
+      - name: pcb-mfg（製造功能幾何）
+        run: node pcb-mfg.test.js
+
+      # 2c-5) 那些幾何有沒有真的進到匯出檔；並把前後端兩份鑽孔表釘在一起
+      - name: gerber-mfg（製造功能匯出）
+        run: node gerber-mfg.test.js
+
       # 2d) i18n key 完整性：pcbT/I18N.t 用到的 key 必須有定義（防 UI 顯示原始 key）
       - name: i18n-check（key 完整性）
         run: node i18n-check.js
