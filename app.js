@@ -385,6 +385,7 @@ const app = {
     // （放置後刪除網址參數），重複呼叫安全。
     setTimeout(() => this.handleAddICParam(), 500);
     this.initAuth();
+    this.initCrossProbe();
   },
 
   // 帳號/雲端同步（需設定 Supabase；未設定則維持本機 demo）
@@ -1334,6 +1335,22 @@ const app = {
     this.state.selectedId = ids.length === 1 ? ids[0] : null;
     this.syncInspector();
     this.render();
+    // 選取連動：告訴另一個分頁的 PCB。CrossProbe 內建回音防護，
+    // 套用遠端選取造成的這一次呼叫不會再廣播回去。
+    if (this._crossProbe) this._crossProbe.notify();
+  },
+
+  // 線路圖 ↔ PCB 選取連動。PCB 那邊的元件 id 是 `sch-<這裡的 id>`（見 pcb-sch2pcb.js）。
+  initCrossProbe() {
+    if (!window.CrossProbe || this._crossProbe) return;
+    this._crossProbe = window.CrossProbe.attach({
+      side: 'sch',
+      getSelection: () => (this.state.selectedIds || []).slice(),
+      applySelection: ids => {
+        const known = new Set((this.state.components || []).map(c => c.id));
+        this.setSelection(ids.filter(id => known.has(id)));
+      }
+    });
   },
 
   toggleSelection(id) {

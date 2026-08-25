@@ -73,6 +73,10 @@ jobs:
       - name: dxf（板框匯入匯出）
         run: node dxf.test.js
 
+      # 2c-8) 線路圖 ↔ PCB 選取連動：回音防護與訊息驗證（雙向連動最容易壞在這兩處）
+      - name: crossprobe（選取連動）
+        run: node crossprobe.test.js
+
       # 2d) i18n key 完整性：pcbT/I18N.t 用到的 key 必須有定義（防 UI 顯示原始 key）
       - name: i18n-check（key 完整性）
         run: node i18n-check.js

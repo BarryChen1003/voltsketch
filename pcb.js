@@ -69,6 +69,7 @@ const pcbApp = {
     this.renderPartsList();
     this.populateEmiSelects();
     this.renderRefBoards();
+    this.initCrossProbe();
     this.populateIcPicker();
     this.populatePartsPicker();
     this.state.netRules = window.NetRules ? window.NetRules.load() : [];
@@ -1711,7 +1712,43 @@ const pcbApp = {
     this.render();
   },
 
+  // 線路圖 ↔ PCB 選取連動。只有從線路圖轉過來的元件（id 前綴 sch-）對得上，
+  // 公版／KiCad 匯入／手動放的本來就沒有對應，略過不猜。
+  initCrossProbe() {
+    if (!window.CrossProbe || this._crossProbe) return;
+    this._crossProbe = window.CrossProbe.attach({
+      side: 'pcb',
+      getSelection: () => {
+        const sel = (this.state.selectedSet && this.state.selectedSet.length)
+          ? this.state.selectedSet : (this.state.selected ? [this.state.selected] : []);
+        return sel.map(c => window.CrossProbe.schIdOf(c)).filter(Boolean);
+      },
+      applySelection: ids => {
+        const want = new Set(ids.map(id => window.CrossProbe.pcbIdOf(id)).filter(Boolean));
+        const hit = (this.state.components || []).filter(c => want.has(c.id));
+        this.state.selectedSet = hit;
+        this.state.selected = hit.length === 1 ? hit[0] : null;
+        this.state.selectedTrace = null;
+        if (hit.length) this.centerOn(hit);
+        this.syncSelPanel();
+        this.render();
+      }
+    });
+  },
+
+  // 把畫面平移到這幾顆元件的中心（連動選取時用；不改縮放，避免畫面亂跳）
+  centerOn(comps) {
+    if (!comps || !comps.length || !this.canvas) return;
+    let x = 0, y = 0;
+    comps.forEach(c => { x += c.x; y += c.y; });
+    x /= comps.length; y /= comps.length;
+    const scale = 10 * (this.state.zoom || 1);
+    this.state.panX = -x * scale;
+    this.state.panY = -y * scale;
+  },
+
   syncSelPanel() {
+    if (this._crossProbe) this._crossProbe.notify();
     const c = this.state.selected;
     const fields = document.getElementById('selFields'), info = document.getElementById('selInfo');
     if (!fields) return;
