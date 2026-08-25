@@ -51,6 +51,11 @@ jobs:
       - name: gerber-readback（讀回幾何比對）
         run: node gerber-readback.js
 
+      # 2c-3) 鋪銅幾何：依序重放 Gerber 的極性（LPD/LPC），量避讓間隙與熱風焊盤輻條。
+      #       避讓少挖 0.1mm 板子就是短路，只數行數看不出來。
+      - name: gerber-pour（鋪銅避讓幾何）
+        run: node gerber-pour.test.js
+
       # 2d) i18n key 完整性：pcbT/I18N.t 用到的 key 必須有定義（防 UI 顯示原始 key）
       - name: i18n-check（key 完整性）
         run: node i18n-check.js
