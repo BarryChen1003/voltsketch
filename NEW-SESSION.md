@@ -73,7 +73,7 @@ node pcb-logic.test.js && node gerber-check.js && node gerber-readback.js
 | `pcb-step.js` | `PcbStep` | STEP (AP214) 3D 匯出 |
 | `pcb-silkimg.js` | `PcbSilkImg` | 圖片轉絲印 |
 | `pcb-crossprobe.js` | `CrossProbe` | 線路圖 ↔ PCB 選取連動 |
-| `pcb-3d.js` | `Pcb3D` | 教學級 3D 檢視（**Three.js 尚未代管，見 §8**） |
+| `pcb-3d.js` | `Pcb3D` | 3D 板面檢視（Three.js 自 `vendor/` 載入；元件為方塊近似） |
 | `pcb-panels.js` | — | 浮動面板：自動收集 `.panel-section[data-panel]`，加一段 HTML 就會出現 |
 | `pcb-refboards.js` | `PCB_REFBOARDS` | 8 片參考公版（4500 行資料） |
 | `supabase/functions/_shared/gerber.mjs` | — | 後端 Gerber／Excellon／CPL／IPC-356／鑽孔表 |
@@ -175,7 +175,7 @@ node tools/refboard-rebuild.js rp2040-pico30  # 只重建一片
 
 ---
 
-## 6. 檢查（CI 45 關的本地版）
+## 6. 檢查（CI 46 關的本地版）
 
 ```bash
 # PCB 地基
@@ -192,6 +192,7 @@ node dead-button-check.js
 node pcb-mfg.test.js
 node pour.test.js
 node blindvia.test.js
+node pcb3d.test.js
 node sch2pcb.test.js
 node dxf.test.js
 node step.test.js
@@ -257,7 +258,7 @@ node plan-dates.test.mjs
 |---|---|
 | **8 片公版的佈局是重建出來的** | 🟡 2026-08-26 用 `tools/refboard-rebuild.js` 重跑過一輪：丟掉示意走線、擺位鬆弛推開太近的元件、再用真的繞線器重繞，DRC error 從 **388 降到 0**。代價是繞不完的 net 沒有走線（143/197 條繞成），板子變成「幾何上乾淨、電性上仍是近似」。缺陷預算鎖在 `pcb-logic.test.js` 第 21 節，**只准往下** |
 | **公版的 pad 大多沒有 net** | 🟡 根因是公版資料本來就沒有 netlist（只有 20~29 條帶 net 的示意走線）。pad 的 net 只能從走線端點回推，openrex 1436 顆 pad 裡仍有 1400+ 顆沒有 net。沒 net 的 pad 對繞線器一律是障礙，這是重建後仍有 net 繞不完的主因。真正的解是匯入原廠 netlist |
-| **3D 檢視實質不可用** | 🔴 `pcb-3d.js` 需要自行代管的 Three.js，**目前不在 `vendor/`**。已改成只從 `vendor/` 載並明講「尚未代管」，不再退回 CDN（退回去線上一定被 CSP 擋）。**要不要把 Three.js（約 600KB）收進 vendor 是使用者的決定** |
+| **3D 檢視** | 🟡 2026-08-26 Three.js r128 已代管進 `vendor/`（雜湊記錄在 `vendor/README.md`，`vendor-check.js` 顧著）。畫得出真實板框、頂／底面元件與走線、pad 與鍍通孔、鋪銅；同材質合併成 InstancedMesh，openrex（1432 pad）建場 130ms。**元件是方塊不是原廠 3D 模型**，內層走線與絲印不畫 |
 | **ODB++ 匯出** | 🟡 v1 是**子集**：銅層／鑽孔／板框有，阻焊、絲印、鋼網、元件、netlist 沒有。弧走弦線近似、roundrect 當 rect。`odb-check.js` 驗結構與 readback（379 條），但**沒有人用真的 CAM 開過** |
 | **autoRoute 差分對** | 🟡 中心線繞一次再展開，耦合度實測 98.8%。但不做 push-and-shove、轉角處靠補段連接、長度差只回報不自動補（要自己按等長調諧） |
 | **STEP 匯出** | 🟡 拓樸與參照程式驗過（流形、尤拉、參照完整），但**沒有人用真的 CAD 開過**；元件是佔位方塊不是原廠模型 |
@@ -306,7 +307,6 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 
 另外兩件與路線圖無關但還欠著：
 
-1. **Three.js 是否收進 `vendor/`**：使用者決定；3D 檢視在那之前都不可用。
 2. **ODB++ 的元件與 netlist**：v1 只有銅層／鑽孔／板框（見 §8）。
 
 ---
@@ -362,7 +362,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 
 | 缺什麼 | 影響 | 現況 |
 |---|---|---|
-| 🔴 **3D 檢視不可用** | Three.js 尚未代管，按了只會跳提示 | 等使用者決定要不要收 600KB 進 `vendor/` |
+| ⬜ **原廠 3D 模型** | 元件是依封裝尺寸估高度的方塊，不是真模型；要出機構圖仍以 STEP 匯出為準（那也是佔位方塊） | Three.js 已代管，3D 可用 |
 | 🟡 **ODB++ 沒有元件與 netlist** | CAM 端只能看銅層與鑽孔關係，不能做電測比對 | v1 子集（§8） |
 | 🟡 **鋪銅是柵格近似** | 解析度以下的細頸會被當成斷開 | 刻意取捨，`pcb-pour.js` 檔頭寫明（路線圖 #6） |
 | 🟡 **阻抗只有 IPC-2141 近似** | ±10%，量產要以板廠場解為準 | UI 有標 |

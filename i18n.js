@@ -192,8 +192,10 @@ window.I18N = (function () {
     sh_rename:    { zh: '頁名稱：', en: 'Sheet name:', ja: 'シート名：', ko: '시트 이름:' },
 
     // ---- 3D 板面檢視（pcb-3d.js）----
-    p3d_hint:     { zh: '🧊 3D 板面檢視（教學級近似：元件=方塊、無鋪銅顯示；拖曳旋轉、滾輪縮放、Esc 關閉）', en: '🧊 3D board view (teaching-grade approximation: parts as blocks, no copper pour. Drag to rotate, scroll to zoom, Esc to close)', ja: '🧊 3D 基板ビュー（教育用の近似：部品＝ブロック、銅箔表示なし。ドラッグで回転、ホイールで拡大、Esc で閉じる）', ko: '🧊 3D 보드 뷰(교육용 근사: 부품=블록, 카퍼 표시 없음. 드래그 회전, 휠 확대, Esc 닫기)' },
+    p3d_hint:     { zh: '🧊 3D 板面檢視（元件為方塊近似、無原廠 3D 模型；內層走線與絲印不畫。拖曳旋轉、滾輪縮放、Esc 關閉）', en: '🧊 3D board view (parts are box approximations, no vendor 3D models; inner-layer traces and silkscreen are not drawn. Drag to rotate, scroll to zoom, Esc to close)', ja: '🧊 3D 基板ビュー（部品はブロック近似、メーカー 3D モデルなし。内層配線とシルクは非表示。ドラッグで回転、ホイールで拡大、Esc で閉じる）', ko: '🧊 3D 보드 뷰(부품은 블록 근사, 제조사 3D 모델 없음. 내층 배선과 실크는 표시하지 않음. 드래그 회전, 휠 확대, Esc 닫기)' },
     p3d_close:    { zh: '✕ 關閉', en: '✕ Close', ja: '✕ 閉じる', ko: '✕ 닫기' },
+    p3d_stats:    { zh: '元件 {comps}｜pad {pads}｜走線 {traces}｜via {vias}｜鋪銅 {zones}｜板厚 {th}mm／{cu} 層', en: '{comps} parts | {pads} pads | {traces} traces | {vias} vias | {zones} pours | {th}mm board, {cu} layers', ja: '部品 {comps}｜パッド {pads}｜配線 {traces}｜ビア {vias}｜ベタ {zones}｜板厚 {th}mm／{cu} 層', ko: '부품 {comps}｜패드 {pads}｜배선 {traces}｜비아 {vias}｜카퍼 {zones}｜두께 {th}mm／{cu}층' },
+    p3d_rect_outline: { zh: '（沒有 Edge.Cuts 幾何，板框以外接矩形近似）', en: '(no Edge.Cuts geometry — board outline approximated by its bounding rectangle)', ja: '（Edge.Cuts 形状がないため、外形は外接矩形で近似）', ko: '(Edge.Cuts 형상이 없어 외형을 외접 사각형으로 근사)' },
     p3d_err_orbit:{ zh: 'OrbitControls 載入失敗', en: 'Failed to load OrbitControls', ja: 'OrbitControls の読み込みに失敗', ko: 'OrbitControls 로드 실패' },
     p3d_err_three:{ zh: 'Three.js 載入失敗（離線或 CDN 被擋）', en: 'Failed to load Three.js (offline or CDN blocked)', ja: 'Three.js の読み込みに失敗（オフラインまたは CDN ブロック）', ko: 'Three.js 로드 실패(오프라인 또는 CDN 차단)' },
 
