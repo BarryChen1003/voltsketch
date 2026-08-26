@@ -9,6 +9,8 @@
 # 改完一定要重新部署再實測一次（見本檔最後的驗收指令）。
 
 # --- 版本控制與 CI ---
+.wrangler
+.wrangler/**
 .git
 .git/**
 .github
