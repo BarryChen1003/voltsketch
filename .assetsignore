@@ -25,6 +25,30 @@ tools/**
 *.ps1
 *.sh
 
+# --- 本機資料集（原廠 datasheet PDF 與抽取結果） ---
+#
+# .gitignore 擋的是 git，擋不住這裡：wrangler 從**工作目錄**上傳，不看 git。
+# 2026-08-26 部署實際撞到：pdf_parser 裡一支 51.8 MiB 的 json 超過 Workers 的 25 MiB 上限，
+# 部署直接失敗——而這一撞也進一步暴露：不擋的話連 hardware-pdfs（1.9 GB 原廠 PDF）
+# 與 IC-spec（718 MB）都會被放上公開網站，那是著作權問題，不只是頻寬問題。
+#
+# 站上不靠這些檔：ic-data.js 的 `datasheet: "IC-spec/xxx.pdf"` 只是來源註記，
+# 實際連結由 ic-datasheet.js 換成原廠網址（該檔檔頭有實測紀錄）。
+hardware-pdfs
+hardware-pdfs/**
+IC-spec
+IC-spec/**
+pdf_parser
+pdf_parser/**
+datasheets
+datasheets/**
+
+# --- 其他本機參考材料（同樣 gitignore，站上無任何連結指到） ---
+rtk
+rtk/**
+Ref
+Ref/**
+
 # --- 內部索引（沒有任何頁面或程式讀它） ---
 knowledge-db
 knowledge-db/**
