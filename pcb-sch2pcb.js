@@ -63,7 +63,18 @@
     if (NON_PHYSICAL.indexOf(type) >= 0) return { ok: false, reason: 'nonPhysical' };
 
     // 使用者指定的覆寫優先（UI 之後可以逐顆改）
-    const ov = (opts.overrides || {})[sch.id];
+    // 封裝的決定有三個來源，由近到遠：
+    //   1. 這次轉換傳進來的 overrides（PCB 端剛改的）
+    //   2. 線路圖元件自己帶的 footprint（back-annotation 寫回去的，跨 session 存活）
+    //   3. MAP 的預設值（猜的，會被標成 assumed）
+    // 沒有第 2 項的話，使用者在 PCB 挑好的封裝只活在這一頁分頁的記憶體裡。
+    const fromSch = (() => {
+      const f = String(sch.footprint || "");
+      const at = f.indexOf(":");
+      if (at <= 0) return null;
+      return { lib: f.slice(0, at), variant: f.slice(at + 1) };
+    })();
+    const ov = (opts.overrides || {})[sch.id] || fromSch;
     const m = ov || MAP[type];
 
     if (m && PartsLib) {
@@ -274,7 +285,37 @@
     return (traces || []).filter(t => t.net && !live.has(t.net));
   }
 
-  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces };
+  // ---- back-annotation ----
+  // 把 PCB 端的封裝決定寫回線路圖頁資料。純函式：吃 pages 陣列（sheets.js 的形狀）、
+  // 直接改上面的元件物件，回報改了幾筆。呼叫端負責存回 localStorage。
+  //
+  // 為什麼要回寫而不是只存在 PCB：封裝是「這顆料是什麼」的一部分，屬於線路圖。
+  // 只存 PCB 的話，換一台機器、清一次快取、或重新轉換，選擇就沒了。
+  function annotateFootprint(pages, schId, footprint) {
+    let changed = 0, found = 0;
+    for (const pg of (pages || [])) {
+      const comps = (pg && pg.data && pg.data.components) || [];
+      for (const c of comps) {
+        if (!c || c.id !== schId) continue;
+        found++;
+        if (c.footprint === footprint) continue;
+        c.footprint = footprint;
+        changed++;
+      }
+    }
+    return { changed, found };
+  }
+
+  // PCB 元件 id → 線路圖元件 id。`sch-r1` → `r1`；多頁的 `sch-p2-r1` → `r1`。
+  function schIdOf(pcbId) {
+    const s = String(pcbId || "");
+    if (s.indexOf("sch-") !== 0) return null;
+    const rest = s.slice(4);
+    const m = /^p(\d+)-(.+)$/.exec(rest);
+    return m ? m[2] : rest;
+  }
+
+  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces, annotateFootprint, schIdOf };
   if (typeof window !== 'undefined') window.Sch2Pcb = Sch2Pcb;
   if (typeof module !== 'undefined' && module.exports) module.exports = Sch2Pcb;
 })();

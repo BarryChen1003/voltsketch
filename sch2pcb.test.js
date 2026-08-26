@@ -293,5 +293,49 @@ const netOf = (id, i) => 'N_' + id + '_' + i;
   eq(S.orphanTraces([], comps).length, 0, '8 沒有走線時回空');
 }
 
+// 9) back-annotation：PCB 端挑的封裝要寫回線路圖，而且下次轉換要認得
+{
+  // schIdOf：PCB 元件 id → 線路圖元件 id
+  eq(S.schIdOf('sch-r1'), 'r1', '9 單頁 id 去掉前綴');
+  eq(S.schIdOf('sch-p3-r1'), 'r1', '9 多頁 id 要去掉頁號');
+  eq(S.schIdOf('manual-1'), null, '9 不是線路圖來源的元件回 null');
+  eq(S.schIdOf(undefined), null, '9 沒有 id 也不可爆');
+
+  // annotateFootprint：寫進對應的那顆，其他頁不動
+  const pages = [
+    { data: { components: [{ id: 'r1', type: 'resistor', label: 'R1' }, { id: 'c1', type: 'capacitor', label: 'C1' }] } },
+    { data: { components: [{ id: 'r1', type: 'resistor', label: 'R1' }] } }
+  ];
+  const r = S.annotateFootprint(pages, 'c1', 'cap:0805');
+  eq(r.changed, 1, '9 只改到一顆');
+  eq(pages[0].data.components[1].footprint, 'cap:0805', '9 封裝要寫進去');
+  ok(!pages[0].data.components[0].footprint, '9 同頁其他元件不可被寫到');
+
+  // 同名 id 出現在多頁時全部更新（同一顆料被畫在兩頁的情況）
+  const r2 = S.annotateFootprint(pages, 'r1', 'res:0402');
+  eq(r2.changed, 2, '9 兩頁的同 id 元件都要更新');
+  eq(r2.found, 2, '9 要回報找到幾筆');
+
+  // 值沒變就不算改（避免無謂寫檔）
+  eq(S.annotateFootprint(pages, 'r1', 'res:0402').changed, 0, '9 值相同不算變更');
+
+  // 找不到的 id 不可亂寫
+  eq(S.annotateFootprint(pages, 'nope', 'res:0402').found, 0, '9 找不到就回 0');
+
+  // 轉換要認得線路圖自帶的 footprint（跨 session 存活的關鍵）
+  const getPins = () => [{ index: 0, x: 0, y: 0 }, { index: 1, x: 10, y: 0 }];
+  const netOf = () => 'N1';
+  const plain = S.convert([{ id: 'x1', type: 'resistor', label: 'R9' }], getPins, netOf, {});
+  const pinned = S.convert([{ id: 'x1', type: 'resistor', label: 'R9', footprint: 'res:1206' }], getPins, netOf, {});
+  ok(plain.components[0].part !== pinned.components[0].part, '9 帶 footprint 的結果要與預設不同');
+  eq(pinned.components[0].part, 'res 1206', '9 要照線路圖指定的封裝走');
+  eq(pinned.components[0].footprintAssumed, false, '9 使用者指定過就不算「猜的」');
+
+  // overrides 優先於線路圖自帶（PCB 端剛改的最新）
+  const both = S.convert([{ id: 'x1', type: 'resistor', label: 'R9', footprint: 'res:1206' }], getPins, netOf,
+    { overrides: { x1: { lib: 'res', variant: '0402' } } });
+  eq(both.components[0].part, 'res 0402', '9 overrides 要蓋過線路圖自帶的');
+}
+
 console.log(`\nsch2pcb.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

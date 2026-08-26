@@ -1800,6 +1800,103 @@ const pcbApp = {
     this.state.panY = -y * scale;
   },
 
+  // ---- 封裝指定 + 回寫線路圖（back-annotation）----
+  // 轉換器對不出封裝時會挑一個預設值（電阻預設 0603）並標成 assumed。
+  // 使用者需要能改，而且改完要留得住——所以除了改板上的 pad，也寫回線路圖那顆元件。
+  // 只寫「封裝」這一項：它是「這顆料是什麼」的一部分，本來就屬於線路圖。
+  // 位置、走線那些是 Layout 的事，不回寫。
+  populateSelFp() {
+    const row = document.getElementById("selFpRow");
+    const cat = document.getElementById("selFpCat");
+    const varSel = document.getElementById("selFpVar");
+    const msg = document.getElementById("selFpMsg");
+    const c = this.state.selected;
+    if (!row || !cat || !varSel) return;
+    const lib = window.PartsLib;
+    // IC 的封裝由 IC 資料決定（腳位是規格的一部分），這裡只處理被動件
+    const eligible = !!(c && lib && c.type !== "ic");
+    row.style.display = eligible ? "grid" : "none";
+    if (msg) msg.textContent = "";
+    if (!eligible) return;
+    const cats = lib.list();
+    if (!cat.options.length) {
+      cat.innerHTML = cats.map(x => "<option value='" + x.id + "'>" + x.id + "</option>").join("");
+      cat.addEventListener("change", () => this.populateSelFpVariants());
+    }
+    // 目前封裝：part 欄位是 "lib variant"（見 Sch2Pcb.convert）
+    const cur = String(c.part || "").split(" ");
+    if (cur.length === 2 && cats.some(x => x.id === cur[0])) cat.value = cur[0];
+    this.populateSelFpVariants(cur.length === 2 ? cur[1] : null);
+    if (msg && c.footprintAssumed) msg.textContent = pcbT("pj_fp_assumed");
+  },
+
+  populateSelFpVariants(want) {
+    const cat = document.getElementById("selFpCat");
+    const varSel = document.getElementById("selFpVar");
+    if (!cat || !varSel || !window.PartsLib) return;
+    const found = window.PartsLib.list().find(x => x.id === cat.value);
+    const vs = (found && found.variants) || [];
+    varSel.innerHTML = vs.map(v => "<option value='" + v + "'>" + v + "</option>").join("");
+    if (want && vs.indexOf(want) >= 0) varSel.value = want;
+  },
+
+  applySelFootprint() {
+    const c = this.state.selected;
+    const cat = document.getElementById("selFpCat");
+    const varSel = document.getElementById("selFpVar");
+    const msg = document.getElementById("selFpMsg");
+    const say = t => { if (msg) msg.textContent = t; };
+    if (!c || !cat || !varSel || !window.PartsLib) return false;
+    const built = window.PartsLib.build(cat.value, varSel.value);
+    if (!built || !built.ok) { say(pcbT("pj_fp_bad")); return false; }
+    this.hist();
+    // 換 pad 但保住 net：net 是按 pad 編號對應的，換封裝不該把接線關係弄丟
+    const oldNet = {};
+    (c.pads || []).forEach(pd => { if (pd.net) oldNet[pd.num] = pd.net; });
+    c.pads = built.pads.map(pd => Object.assign({}, pd, { net: oldNet[pd.num] || "" }));
+    c.w = Math.max(1, built.body.w); c.h = Math.max(1, built.body.h);
+    c.part = cat.value + " " + varSel.value;
+    c.footprintVariant = varSel.value;
+    c.footprintAssumed = false;
+    const schId = window.Sch2Pcb ? Sch2Pcb.schIdOf(c.id) : null;
+    if (schId) {
+      this.state.fpOverrides = this.state.fpOverrides || {};
+      this.state.fpOverrides[schId] = { lib: cat.value, variant: varSel.value };
+    }
+    const back = this.backAnnotateFootprint(c, cat.value + ":" + varSel.value);
+    this.state.ratsnest = null;
+    this.renderPartsList();
+    this.renderNetPanel();
+    this.render();
+    const m = pcbT("pj_fp_done", { part: c.part, n: back.changed });
+    say(m); this.toast(m, "info");
+    return true;
+  },
+
+  // 寫回線路圖：多頁存檔（vs-sheets-v1）與目前頁的鏡射（voltsketch-project）都要更新，
+  // 只更新其中一個的話，切頁一次就被舊資料蓋回去。
+  backAnnotateFootprint(comp, footprint) {
+    if (!window.Sch2Pcb) return { changed: 0 };
+    const schId = Sch2Pcb.schIdOf(comp.id);
+    if (!schId) return { changed: 0 };
+    let changed = 0;
+    try {
+      const sh = JSON.parse(localStorage.getItem("vs-sheets-v1") || "null");
+      if (sh && Array.isArray(sh.pages)) {
+        changed += Sch2Pcb.annotateFootprint(sh.pages, schId, footprint).changed;
+        if (changed) localStorage.setItem("vs-sheets-v1", JSON.stringify(sh));
+      }
+    } catch (e) { /* 存檔壞了就只寫目前頁 */ }
+    try {
+      const proj = JSON.parse(localStorage.getItem("voltsketch-project") || "null");
+      if (proj) {
+        const r = Sch2Pcb.annotateFootprint([{ data: proj }], schId, footprint);
+        if (r.changed) { localStorage.setItem("voltsketch-project", JSON.stringify(proj)); changed += r.changed; }
+      }
+    } catch (e) { }
+    return { changed };
+  },
+
   syncSelPanel() {
     if (this._crossProbe) this._crossProbe.notify();
     const c = this.state.selected;
@@ -1818,6 +1915,7 @@ const pcbApp = {
     // 顏色欄反映目前生效色（自訂色優先，否則顯示預設色）
     const col = document.getElementById('selColor');
     if (col && document.activeElement !== col) col.value = c.color || this.compFill(c) || '#34495e';
+    this.populateSelFp();
   },
 
   toast(msg, kind) {
@@ -2850,6 +2948,7 @@ const pcbApp = {
 
     // netlist 同步（線路圖 → PCB）
     document.getElementById('syncNetlistBtn')?.addEventListener('click', () => this.syncFromSchematic());
+    document.getElementById("selFpApply")?.addEventListener("click", () => this.applySelFootprint());
     document.getElementById("netRefresh")?.addEventListener("click", () => this.renderNetPanel());
     document.getElementById("netOnlyOpen")?.addEventListener("change", () => this.renderNetPanel());
     document.getElementById("netRows")?.addEventListener("click", (e) => {
