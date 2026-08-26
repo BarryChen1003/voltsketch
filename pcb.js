@@ -2453,61 +2453,109 @@ const pcbApp = {
   syncFromSchematic() {
     if (!window.CircuitEngine) { this.toast(pcbT('pj_sync_noeng'), 'error'); return; }
     if (!window.Sch2Pcb) { this.toast(pcbT('pj_sync_noeng'), 'error'); return; }
-    let proj = null;
-    try { proj = JSON.parse(localStorage.getItem('voltsketch-project') || 'null'); } catch (e) {}
-    const sComps = (proj && proj.components || []).filter(c => c && c.type);
-    if (!sComps.length) { this.toast(pcbT('pj_sync_nodata'), 'warn'); return; }
+    // 線路圖可以有多頁（sheets.js）。`voltsketch-project` 只鏡射「目前這一頁」，
+    // 所以舊版同步等於「只把你現在看的那一頁做成板子」——多區塊產品永遠只轉到一塊。
+    // 這裡改成把所有頁一起轉進同一片板。
+    //
+    // 跨頁怎麼連：頁與頁之間沒有導線，只有**同名的網路標籤**能連（GND、VCC、使用者標籤）。
+    // 沒有標籤的自動網名一律帶頁號，避免兩頁各自的 N$C1.0 被誤認成同一個網路。
+    const eng = window.CircuitEngine;
+    let pages = [];
+    try {
+      const sh = JSON.parse(localStorage.getItem("vs-sheets-v1") || "null");
+      if (sh && Array.isArray(sh.pages) && sh.pages.length) {
+        pages = sh.pages.map((pg, i) => ({ name: pg.name || ("P" + (i + 1)), data: pg.data || {} }));
+      }
+    } catch (err) { /* 多頁存檔壞了就退回單頁，不要因此不能同步 */ }
+    if (!pages.length) {
+      let proj = null;
+      try { proj = JSON.parse(localStorage.getItem("voltsketch-project") || "null"); } catch (err) {}
+      pages = [{ name: "P1", data: proj || {} }];
+    }
+    const totalComps = pages.reduce((n, pg) => n + ((pg.data.components || []).filter(c => c && c.type).length), 0);
+    if (!totalComps) { this.toast(pcbT("pj_sync_nodata"), "warn"); return; }
     if (this.state.components.length || this.state.traces.length) {
-      if (!confirm(pcbT('pj_sync_confirm'))) return;
+      if (!confirm(pcbT("pj_sync_confirm"))) return;
     }
     this.hist();
-    const eng = window.CircuitEngine;
-    const nets = eng.computeNets(sComps, proj.wires || []);
-    const byId = {}; sComps.forEach(c => { byId[c.id] = c; });
-    // net 命名：含 ground → GND；含 source/battery + 腳 → VCC；其餘 N$n
-    const rootName = new Map();
-    for (let i = 0; i < nets.pts.length; i++) {
-      const pt = nets.pts[i];
-      if (pt.kind !== 'pin') continue;
-      const r = nets.find(i);
-      const c = byId[pt.key.split(':')[0]];
-      if (!c) continue;
-      if (/ground/i.test(c.type)) rootName.set(r, 'GND');
-      else if (/source|battery|vcc|vdd/i.test(c.type) && !rootName.has(r)) rootName.set(r, 'VCC');
-    }
-    // 自動網名要「同一組連線永遠得到同一個名字」。
-    // 舊版用流水號 N$1、N$2…，順序一變（線路圖加一顆元件）名字就全部位移，
-    // 板上既有走線的 net 會突然變成不存在的網路——線路圖與 Layout 就永遠合不起來。
-    // 改成用「這組連線裡排序最前面的那支腳」命名：內容一樣，名字就一樣。
-    const rootMembers = new Map();
-    for (const key of nets.connectedPins) {
-      const r = nets.pinNet.get(key);
-      if (!rootMembers.has(r)) rootMembers.set(r, []);
-      rootMembers.get(r).push(key);
-    }
-    const autoName = r => {
-      const mem = (rootMembers.get(r) || []).slice().sort();
-      if (!mem.length) return "N$?";
-      const [schId, pin] = mem[0].split(":");
-      const c = byId[schId];
-      const ref = (c && (c.label || c.ref)) || schId;
-      return "N$" + ref + "." + pin;
-    };
-    const netOf = (schId, pinIndex) => {
-      const key = schId + ":" + pinIndex;
-      if (!nets.connectedPins.has(key)) return "";
-      const r = nets.pinNet.get(key);
-      if (!rootName.has(r)) rootName.set(r, autoName(r));
-      return rootName.get(r);
-    };
 
-    // 封裝來自 PartsLib / FootprintGen，不再拿線路圖符號的腳位座標當 footprint。
-    // 對不出來的不編一個假的塞進去，列出來讓使用者處理。
-    const conv = window.Sch2Pcb.convert(sComps, c => eng.getPins(c), netOf, {
-      overrides: this.state.fpOverrides || {},
-      scale: 0.15,
-      spacing: Math.max(1, this.loadDrcRules().compSpacing / 2)
+    const conv = { components: [], unresolved: [], assumed: [], stats: { bySource: { partslib: 0, ic: 0 } } };
+    const allNets = new Set();
+    const usedRefs = new Set();
+    let yOffset = 0;
+    pages.forEach((pg, pi) => {
+      const sComps = (pg.data.components || []).filter(c => c && c.type);
+      if (!sComps.length) return;
+      const nets = eng.computeNets(sComps, pg.data.wires || []);
+      const byId = {}; sComps.forEach(c => { byId[c.id] = c; });
+      // net 命名：含 ground → GND；含 source/battery + 腳 → VCC；其餘照腳位命名
+      const rootName = new Map();
+      for (let i = 0; i < nets.pts.length; i++) {
+        const pt = nets.pts[i];
+        if (pt.kind !== "pin") continue;
+        const r = nets.find(i);
+        const c = byId[pt.key.split(":")[0]];
+        if (!c) continue;
+        if (/ground/i.test(c.type)) rootName.set(r, "GND");
+        else if (/source|battery|vcc|vdd/i.test(c.type) && !rootName.has(r)) rootName.set(r, "VCC");
+      }
+      // 自動網名要「同一組連線永遠得到同一個名字」。舊版用流水號 N$1、N$2…，
+      // 順序一變（加一顆元件）名字就全部位移，板上既有走線的 net 會突然變成不存在的網路。
+      const rootMembers = new Map();
+      for (const key of nets.connectedPins) {
+        const r = nets.pinNet.get(key);
+        if (!rootMembers.has(r)) rootMembers.set(r, []);
+        rootMembers.get(r).push(key);
+      }
+      const tag = pages.length > 1 ? ("P" + (pi + 1) + ".") : "";
+      const autoName = r => {
+        const mem = (rootMembers.get(r) || []).slice().sort();
+        if (!mem.length) return "N$?";
+        const [schId, pin] = mem[0].split(":");
+        const c = byId[schId];
+        const ref = (c && (c.label || c.ref)) || schId;
+        return "N$" + tag + ref + "." + pin;
+      };
+      const netOf = (schId, pinIndex) => {
+        const key = schId + ":" + pinIndex;
+        if (!nets.connectedPins.has(key)) return "";
+        // 使用者給的網路標籤是跨頁連接的唯一途徑，優先採用（不加頁號）
+        const labelled = nets.nameOfPin ? nets.nameOfPin(key) : "";
+        if (labelled) { allNets.add(labelled); return labelled; }
+        const r = nets.pinNet.get(key);
+        if (!rootName.has(r)) rootName.set(r, autoName(r));
+        const nm = rootName.get(r);
+        allNets.add(nm);
+        return nm;
+      };
+
+      // 封裝來自 PartsLib / FootprintGen，不再拿線路圖符號的腳位座標當 footprint。
+      // 對不出來的不編一個假的塞進去，列出來讓使用者處理。
+      const one = window.Sch2Pcb.convert(sComps, c => eng.getPins(c), netOf, {
+        overrides: this.state.fpOverrides || {},
+        scale: 0.15,
+        spacing: Math.max(1, this.loadDrcRules().compSpacing / 2)
+      });
+      // 第二頁之後：id 帶頁號（避免兩頁的 r1 撞在一起），refdes 撞名時也加頁號。
+      // 第一頁維持 `sch-<id>`，才不會讓既有板子的元件全部被當成「新增」而失去擺位。
+      let maxY = 0;
+      one.components.forEach(c => {
+        if (pi > 0 && typeof c.id === "string" && c.id.indexOf("sch-") === 0) {
+          c.id = "sch-p" + (pi + 1) + "-" + c.id.slice(4);
+        }
+        if (usedRefs.has(c.ref)) c.ref = c.ref + "-P" + (pi + 1);
+        usedRefs.add(c.ref);
+        c.y += yOffset;
+        maxY = Math.max(maxY, Math.abs(c.y) + (c.h || 2) / 2);
+      });
+      yOffset = maxY + 5;   // 下一頁排到這一頁下面，不要疊在一起
+      conv.components.push(...one.components);
+      conv.unresolved.push(...one.unresolved);
+      conv.assumed.push(...one.assumed);
+      conv.stats.bySource.partslib += (one.stats && one.stats.bySource && one.stats.bySource.partslib) || 0;
+      conv.stats.bySource.ic += (one.stats && one.stats.bySource && one.stats.bySource.ic) || 0;
     });
+    const rootName = new Map(allNets ? [...allNets].map(n => [n, n]) : []);   // 給下方統計網路數用
 
     const s2 = this.state;
     // 增量更新（ECO）：對得起來的元件保留擺位、走線與鋪銅一律不動。
