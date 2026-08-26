@@ -12,7 +12,7 @@
  *
  * 一定要從「git 上的原始資料」跑：這支會把結果寫回 pcb-refboards.js，
  * 對著已經重建過的資料再跑一次，等於拿上一輪的走線端點當輸入，一代一代漂移，
- * 也就不再能從原始檔重現。重跑前先 。
+ * 也就不再能從原始檔重現。重跑前先 `git checkout pcb-refboards.js`。
  *
  * 用法：
  *   node tools/refboard-rebuild.js            # 全部 8 片，寫回 pcb-refboards.js

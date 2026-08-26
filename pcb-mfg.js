@@ -697,9 +697,34 @@
       say('pourOut', msg);
       toast(msg, r.islands ? 'warn' : 'info');
     });
+    // 布林重算：用 Clipper 算出鋪銅實際留下的多邊形，存在 zone.fillPolys 上。
+    // 與柵格版並存的理由：柵格版的輸出（orphanCuts）是匯出端目前吃的格式，
+    // 一次換掉會同時動到畫面、DRC 與 Gerber，那要另外一輪驗證。
+    // 所以這裡先讓使用者看得到精確結果，預設路徑不變。
+    on('pourBool', () => {
+      const zones = (app.state.userZones || []);
+      if (!zones.length) { say('pourOut', T('mfg_st_nozone')); toast(T('mfg_st_nozone'), 'warn'); return; }
+      if (!window.PourGeom || !window.PourGeom.available()) {
+        say('pourOut', T('pour_bool_noclipper')); toast(T('pour_bool_noclipper'), 'error'); return;
+      }
+      app.hist();
+      const cl = rules();
+      let area = 0, dropped = 0, islands = 0, failed = 0;
+      for (const z of zones) {
+        const r = window.PourGeom.build(app.state, app.padAbs.bind(app), z, { clearance: cl });
+        if (!r.ok) { failed++; z.fillPolys = null; continue; }
+        z.fillPolys = r.islands;
+        area += r.area; dropped += r.dropped; islands += r.islands.length;
+      }
+      app.render();
+      const msg = T('pour_bool_done', { n: islands, a: area.toFixed(1), drop: dropped, fail: failed });
+      say('pourOut', msg);
+      toast(msg, (dropped || failed) ? 'warn' : 'info');
+    });
+
     on('pourClear', () => {
       app.hist();
-      (app.state.userZones || []).forEach(z => { z.orphanCuts = []; });
+      (app.state.userZones || []).forEach(z => { z.orphanCuts = []; z.fillPolys = null; });
       app.render();
       say('pourOut', T('pour_restored'));
     });

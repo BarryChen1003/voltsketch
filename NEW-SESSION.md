@@ -176,7 +176,7 @@ node tools/refboard-rebuild.js rp2040-pico30  # 只重建一片
 
 ---
 
-## 6. 檢查（CI 47 關的本地版）
+## 6. 檢查（CI 48 關的本地版）
 
 ```bash
 # PCB 地基
@@ -195,6 +195,7 @@ node pour.test.js
 node blindvia.test.js
 node pcb3d.test.js
 node shove.test.js
+node pourgeom.test.js
 node sch2pcb.test.js
 node dxf.test.js
 node step.test.js

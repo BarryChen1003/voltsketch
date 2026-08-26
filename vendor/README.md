@@ -17,12 +17,18 @@
 | `qrcodejs-1.0.0.min.js` | https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js | `c541ef06327885a8415bca8df6071e14189b4855336def4f36db54bde8484f36` |
 | `three-0.128.0.min.js` | https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js | `9274bbcec8d96168626c732b5d31c775aa8cfb7eaa0599bec0c175908a2c1ce2` |
 | `three-orbitcontrols-0.128.0.js` | https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js | `02bb4ade710f3e607329e37a21f098bc3ac70eb6e33daf8a65e79f4db785e7b2` |
+| `clipper-6.4.2.js` | https://cdn.jsdelivr.net/npm/clipper-lib@6.4.2/clipper.js | `a650c6946682edc1a64016f6553eeb5c32ce45eb7ca0ad5d8221961af011d97c` |
 
 備註：`pdf-3.11.174.worker.min.js` 的**檔名不能亂改**。pdf.js 在沒有設定
 `GlobalWorkerOptions.workerSrc` 時，會拿主檔名把 `.min.js` 換成 `.worker.min.js` 去猜 worker 路徑。
 第一版命名成 `pdf.worker-3.11.174.min.js`，猜出來的路徑就不存在，解析 PDF 直接失敗。
 
 
+
+備註：`clipper-6.4.2.js`（199KB）是鋪銅的多邊形布林運算（`pcb-pour-geom.js` 用它）。
+Angus Johnson 的 Clipper 的 JS 移植，CAM 業界用了十幾年；整數座標，自交與共線由它處理。
+下載後掃過：外部網址只有註解裡的論文與參考連結（citeseerx、wikipedia、acm…），
+**沒有任何 fetch / XMLHttpRequest / WebSocket / sendBeacon**（grep 計數 0）。
 備註：`three-0.128.0.min.js`（590KB）與 OrbitControls 是 3D 板面檢視用的。
 選 r128 而不是最新版：`pcb-3d.js` 用的是全域 `THREE.*` 與非模組版的 OrbitControls，
 r0.129 之後 examples/js 全面改成 ES module，換版要一併改寫載入方式與呼叫端。

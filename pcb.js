@@ -2418,6 +2418,27 @@ const pcbApp = {
     };
     for (const z of zs) {
       const col = (layerOf(z.layer) || {}).color || '#16a085';
+      // 布林重算過的鋪銅：直接畫算出來的多邊形（含內孔）。
+      // 不能同時畫原始外框——那會讓畫面上的銅比實際多，而鋪銅正是
+      // 「畫面與實際不一致最危險」的地方（避讓少挖 0.1mm 就是短路）。
+      if (z.fillPolys && z.fillPolys.length) {
+        ctx.save();
+        ctx.fillStyle = col;
+        ctx.globalAlpha = 0.45;
+        for (const is of z.fillPolys) {
+          ctx.beginPath();
+          is.outer.forEach((pt, k) => k ? ctx.lineTo(X(pt[0]), Y(pt[1])) : ctx.moveTo(X(pt[0]), Y(pt[1])));
+          ctx.closePath();
+          for (const h of (is.holes || [])) {
+            // 內孔要反向繞，evenodd 才會把它當成洞
+            h.slice().reverse().forEach((pt, k) => k ? ctx.lineTo(X(pt[0]), Y(pt[1])) : ctx.moveTo(X(pt[0]), Y(pt[1])));
+            ctx.closePath();
+          }
+          ctx.fill("evenodd");
+        }
+        ctx.restore();
+        continue;
+      }
       if (fillMode !== 'disabled') {
         const off = document.createElement('canvas');
         off.width = this.canvas.width; off.height = this.canvas.height;
