@@ -2382,6 +2382,54 @@ const pcbApp = {
     return sig.length ? sig : cu.slice(0, 1).map(l => l.id);
   },
 
+  // 差分對優先：先成對繞，剩下的才交給 RouteAll 一條一條繞。
+  // 順序不能反過來——差分對要一條夠寬的走廊，等單線把空間切碎就再也塞不進去。
+  // 繞好的走線直接寫進 state，所以後面的單線繞線會把它們當成障礙，不會壓上去。
+  autoRoutePairs(lines, opts) {
+    const out = { pairs: 0, failed: 0, skew: 0, rest: lines };
+    if (!(window.AutoRoute && AutoRoute.routePair)) return out;
+    const used = new Set();
+    const rest = [];
+    for (let i = 0; i < lines.length; i++) {
+      if (used.has(i)) continue;
+      const a = lines[i];
+      const partner = this.pairNetOf(a.net);
+      if (!partner) { rest.push(a); continue; }
+      // 同 net 可能有好幾段飛線；要配的是「兩端都在附近」的那一段，不是隨便一段
+      let j = -1, bestD = Infinity;
+      for (let k = i + 1; k < lines.length; k++) {
+        if (used.has(k) || lines[k].net !== partner) continue;
+        const b = lines[k];
+        const d = Math.min(
+          Math.hypot(a.x1 - b.x1, a.y1 - b.y1) + Math.hypot(a.x2 - b.x2, a.y2 - b.y2),
+          Math.hypot(a.x1 - b.x2, a.y1 - b.y2) + Math.hypot(a.x2 - b.x1, a.y2 - b.y1));
+        if (d < bestD) { bestD = d; j = k; }
+      }
+      if (j < 0 || bestD > 10) { rest.push(a); continue; }
+      const r = AutoRoute.routePair(this.state, this.padAbs.bind(this), a, lines[j],
+        Object.assign({}, opts, { pairGap: this.diffGapOf(a.net) }));
+      used.add(j);
+      if (!r.ok) { out.failed++; rest.push(a, lines[j]); continue; }
+      const stamp = Date.now();
+      [r.a, r.b].forEach((side, si) => {
+        side.segs.forEach((sg, k) => this.state.traces.push({
+          id: 'trace-' + stamp + '-dp' + i + '-' + si + '-' + k,
+          x1: sg.x1, y1: sg.y1, x2: sg.x2, y2: sg.y2,
+          width: opts.width, layer: sg.layer || opts.layer || 'F.Cu', net: side.net
+        }));
+        (side.vias || []).forEach((v, k) => this.state.vias.push({
+          id: 'via-' + stamp + '-dp' + i + '-' + si + '-' + k,
+          x: v.x, y: v.y, od: v.od, drill: v.drill, net: side.net, auto: true
+        }));
+      });
+      out.pairs++;
+      out.skew = Math.max(out.skew, r.skew);
+      used.add(i);
+    }
+    out.rest = rest;
+    return out;
+  },
+
   autoRoute() {
     if (!window.Ratsnest || !window.AutoRoute || !window.RouteAll) return;
     const lines = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
@@ -2391,14 +2439,18 @@ const pcbApp = {
     // 使用者把淨空調大後自動繞線仍照 0.15 走，繞完直接違規而且不會報。
     const rules = this.loadDrcRules();
     const ps = window.Padstack ? window.Padstack.load() : { od: 0.7, drill: 0.3 };
-    const r = window.RouteAll.run(this.state, this.padAbs.bind(this), lines, {
+    const opts = {
       layers: this.routableLayers(),
       layer: this.state.traceLayer || 'F.Cu',
       width: this.state.traceWidth || 0.25,
       clearance: rules.clearance,
       viaOd: ps.od, viaDrill: ps.drill,
-      grid: 0.25, order: 'short', ripup: true, passes: 3, budgetMs: 8000
-    });
+      grid: 0.25
+    };
+    // 差分對先成對繞（走廊要夠寬，等單線切碎空間就進不去了），剩下的才單條繞
+    const dp = this.autoRoutePairs(lines, opts);
+    const r = window.RouteAll.run(this.state, this.padAbs.bind(this), dp.rest,
+      Object.assign({ order: 'short', ripup: true, passes: 3, budgetMs: 8000 }, opts));
 
     r.routed.forEach((x, i) => {
       x.segs.forEach((sg, k) => this.state.traces.push({
@@ -2427,6 +2479,8 @@ const pcbApp = {
       msg += ' │ ' + parts.join('、');
       if (r.widthHint > 0) msg += ' │ ' + pcbT('pj_ar_width_hint', { w: r.widthHint });
     }
+    if (dp.pairs) msg += ' │ ' + pcbT('pj_ar_pairs', { n: dp.pairs, skew: dp.skew.toFixed(2) });
+    if (dp.failed) msg += ' │ ' + pcbT('pj_ar_pairs_fail', { n: dp.failed });
     this.toast(msg, r.failed.length ? 'warn' : 'info');
   },
 

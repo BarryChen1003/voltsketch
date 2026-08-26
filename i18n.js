@@ -753,6 +753,8 @@ window.I18N = (function () {
     pj_ar_why_rule_grid_too_big: { zh: '{n} 條的板面太大、格點放不下', en: '{n} need a grid too large for this board', ja: '{n} 本はグリッドが大きすぎます', ko: '{n}개는 그리드가 너무 큼' },
     pj_ar_why_wouldRouteNow: { zh: '{n} 條在時間預算內沒輪到（再按一次就會繞）', en: '{n} ran out of time budget (press again to continue)', ja: '{n} 本は時間切れ（もう一度押すと続行）', ko: '{n}개는 시간 초과(다시 누르면 계속)' },
     pj_ar_why_unknown: { zh: '{n} 條原因不明', en: '{n} failed for an unknown reason', ja: '{n} 本は原因不明', ko: '{n}개는 원인 불명' },
+    pj_ar_pairs:     { zh: '差分對 {n} 對（最大長度差 {skew}mm）', en: '{n} differential pairs (max skew {skew}mm)', ja: '差動ペア {n} 組（最大長さ差 {skew}mm）', ko: '차동 쌍 {n}개(최대 길이차 {skew}mm)' },
+    pj_ar_pairs_fail:{ zh: '差分對 {n} 對繞不過，已改用單線繞', en: '{n} differential pairs could not be routed as pairs; routed individually', ja: '差動ペア {n} 組はペアで配線できず、単線で配線しました', ko: '차동 쌍 {n}개는 쌍으로 배선하지 못해 단선으로 배선했습니다' },
     pj_ar_width_hint: { zh: '把線寬改到 {w}mm 以下才出得來', en: 'a trace width of {w}mm or less is needed to escape', ja: '線幅を {w}mm 以下にする必要があります', ko: '선폭을 {w}mm 이하로 해야 함' },
     pour_title: { zh: '鋪銅孤島', en: 'Pour islands', ja: 'ベタの孤立島', ko: '폴리곤 고립 섬' },
     pour_min: { zh: '忽略小於 (mm²)', en: 'Ignore below (mm²)', ja: 'これ未満は無視 (mm²)', ko: '이하 무시 (mm²)' },

@@ -382,7 +382,11 @@
       const cVia = clOf('viaToVia', cTrace), cEdge = clOf('traceToEdge', 0);
       const vHalf = opt.viaOd / 2;
       const mEdge = cEdge + half;
-      const net = line.net || '';
+      // 繞一條時 net 是單一字串。差分對繞的是「中心線」，兩個 net 的 pad／走線都算自己人，
+      // 由 line.nets 傳進來（見 routePair）；沒給就退回單 net，行為與舊版一致。
+      const nets = (Array.isArray(line.nets) && line.nets.length) ? line.nets.filter(Boolean) : (line.net ? [line.net] : []);
+      const net = nets.length === 1 ? nets[0] : '';
+      const isMine = v => nets.length > 0 && nets.indexOf(v || '') >= 0;
 
       const layerIdx = id => layers.indexOf(id);
       const padLayers = p => {
@@ -397,7 +401,7 @@
         if (p.cu === false) return;
         const a = padAbs(c, p);
         const rad = Math.hypot(p.w || 0.5, p.h || 0.5) / 2;
-        const mine = net && (p.net || '') === net;
+        const mine = isMine(p.net);
         if (!mine) for (const il of padLayers(p)) stamp(blocked, (ix, iy) => idx(ix, iy, il), a.x, a.y, rad + cPad + half);
         // pad 的銅柱阻擋：穿孔 pad 每一層都有銅，SMD 只有自己那一面。
         // 舊版一律擋所有層，那對穿孔 via 是對的，但會讓盲埋孔沒地方下。
@@ -408,14 +412,14 @@
         }
       }));
       (state.traces || []).forEach(t => {
-        if (net && (t.net || '') === net) return;
+        if (isMine(t.net)) return;
         const il = layerIdx(t.layer || 'F.Cu');
         const rad = (t.width || 0.3) / 2;
         if (il >= 0) stampSeg(blocked, (ix, iy) => idx(ix, iy, il), t.x1, t.y1, t.x2, t.y2, rad + cTrace + half);
         if (il >= 0) stampSeg(viaBlk, (ix, iy) => vidx(ix, iy, il), t.x1, t.y1, t.x2, t.y2, rad + cTrace + vHalf);
       });
       (state.vias || []).forEach(v => {
-        if (net && (v.net || '') === net) return;
+        if (isMine(v.net)) return;
         const rad = (v.od || 0.6) / 2;
         for (let il = 0; il < L; il++) stamp(blocked, (ix, iy) => idx(ix, iy, il), v.x, v.y, rad + cTrace + half);
         stampAllLayers(v.x, v.y, rad + cVia + vHalf);
@@ -460,7 +464,7 @@
         const set = new Set();
         (state.components || []).forEach(c => (c.pads || []).forEach(p => {
           if (p.cu === false) return;
-          if (net && (p.net || '') !== net) return;
+          if (nets.length && !isMine(p.net)) return;
           const a = padAbs(c, p);
           if (Math.hypot(a.x - x, a.y - y) > Math.hypot(p.w || 0.5, p.h || 0.5) / 2 + g) return;
           padLayers(p).forEach(i => set.add(i));
@@ -612,6 +616,98 @@
         if (Math.hypot(first.x1 - line.x1, first.y1 - line.y1) < g * 1.5) { first.x1 = line.x1; first.y1 = line.y1; }
       }
       return { ok: true, segs, vias, grid: g, coarsened };
+    },
+
+    // 差分對繞線：繞一次「中心線」，再往兩側展開成兩條平行走線。
+    //
+    // 為什麼不各繞各的：兩條各自找路就會各自繞路，耦合度與長度差都不受控，
+    // 差分對要的共模抑制與差動阻抗也就沒了。中心線只走一次，展開後兩條天生平行、
+    // 長度只在轉角與扇出處差一點（回傳 skew 讓呼叫端決定要不要補償）。
+    //
+    // 走廊寬度＝2×線寬＋間距：用這個寬度去繞中心線，展開後兩條才真的塞得下，
+    // 不會出現「中心線過得去、展開後壓到別人」。
+    //
+    // 回 { ok, a:{segs,vias}, b:{segs,vias}, gap, skew, grid, coarsened } 或 { ok:false, reason }
+    routePair(state, padAbs, lineA, lineB, opt) {
+      opt = Object.assign({ width: 0.25, pairGap: 0.2 }, opt || {});
+      const w = opt.width, gap = opt.pairGap;
+      if (!(gap > 0)) return { ok: false, reason: 'pair_gap' };
+      if (!lineA || !lineB || !lineA.net || !lineB.net || lineA.net === lineB.net) return { ok: false, reason: 'pair_nets' };
+
+      // 飛線兩端的方向不保證一致（A 從左到右、B 可能從右到左）。
+      // 照原方向配對會把中心線接成交叉的 X，所以取兩種配法裡距離小的那個。
+      const dStraight = Math.hypot(lineA.x1 - lineB.x1, lineA.y1 - lineB.y1) + Math.hypot(lineA.x2 - lineB.x2, lineA.y2 - lineB.y2);
+      const dSwapped = Math.hypot(lineA.x1 - lineB.x2, lineA.y1 - lineB.y2) + Math.hypot(lineA.x2 - lineB.x1, lineA.y2 - lineB.y1);
+      const B = dSwapped < dStraight
+        ? { x1: lineB.x2, y1: lineB.y2, x2: lineB.x1, y2: lineB.y1, net: lineB.net }
+        : lineB;
+
+      const center = {
+        x1: (lineA.x1 + B.x1) / 2, y1: (lineA.y1 + B.y1) / 2,
+        x2: (lineA.x2 + B.x2) / 2, y2: (lineA.y2 + B.y2) / 2,
+        nets: [lineA.net, B.net]
+      };
+      const r = AutoRoute.route(state, padAbs, center, Object.assign({}, opt, { width: 2 * w + gap }));
+      if (!r.ok) return { ok: false, reason: r.reason || 'no_path' };
+      if (!r.segs.length) return { ok: false, reason: 'no_path' };
+
+      const off = (gap + w) / 2;
+      // 展開：每段沿法線位移 d。轉角處兩段位移後接不起來，補一小段連接；
+      // 換層處不補（那裡本來就要放 via）。
+      const offsetPath = (segs, d) => {
+        const out = [];
+        let prev = null;
+        for (const sg of segs) {
+          const dx = sg.x2 - sg.x1, dy = sg.y2 - sg.y1, len = Math.hypot(dx, dy);
+          if (len < 1e-9) continue;
+          const nx2 = -dy / len * d, ny2 = dx / len * d;
+          const cur = { x1: sg.x1 + nx2, y1: sg.y1 + ny2, x2: sg.x2 + nx2, y2: sg.y2 + ny2, layer: sg.layer };
+          if (prev && prev.layer === cur.layer && Math.hypot(cur.x1 - prev.x2, cur.y1 - prev.y2) > 1e-9)
+            out.push({ x1: prev.x2, y1: prev.y2, x2: cur.x1, y2: cur.y1, layer: cur.layer });
+          out.push(cur);
+          prev = cur;
+        }
+        return out;
+      };
+      // via 也要跟著分開兩顆：取離它最近那一段的法線方向位移
+      const offsetVias = (vias, d) => (vias || []).map(v => {
+        let best = null;
+        for (const sg of r.segs) {
+          const dd = Math.min(Math.hypot(sg.x1 - v.x, sg.y1 - v.y), Math.hypot(sg.x2 - v.x, sg.y2 - v.y));
+          if (!best || dd < best.d) best = { d: dd, sg };
+        }
+        if (!best) return Object.assign({}, v);
+        const dx = best.sg.x2 - best.sg.x1, dy = best.sg.y2 - best.sg.y1, len = Math.hypot(dx, dy) || 1;
+        return Object.assign({}, v, { x: v.x + (-dy / len) * d, y: v.y + (dx / len) * d });
+      });
+
+      // 哪一條走哪一側：看 A 的起點落在中心線方向的左邊還右邊，
+      // 選錯邊會讓兩條在扇出處交叉。
+      const f0 = r.segs[0];
+      const cx = (f0.x2 - f0.x1) * (lineA.y1 - center.y1) - (f0.y2 - f0.y1) * (lineA.x1 - center.x1);
+      const sideA = cx >= 0 ? off : -off;
+
+      // 扇出：展開後的頭尾在中心線兩側，要接回各自真正的 pad 座標
+      const fanout = (path, sx, sy, ex, ey) => {
+        if (!path.length) return path;
+        const first = path[0], last = path[path.length - 1];
+        if (Math.hypot(first.x1 - sx, first.y1 - sy) > 1e-9)
+          path.unshift({ x1: sx, y1: sy, x2: first.x1, y2: first.y1, layer: first.layer });
+        if (Math.hypot(last.x2 - ex, last.y2 - ey) > 1e-9)
+          path.push({ x1: last.x2, y1: last.y2, x2: ex, y2: ey, layer: last.layer });
+        return path;
+      };
+      const pathA = fanout(offsetPath(r.segs, sideA), lineA.x1, lineA.y1, lineA.x2, lineA.y2);
+      const pathB = fanout(offsetPath(r.segs, -sideA), B.x1, B.y1, B.x2, B.y2);
+      const total = segs2 => segs2.reduce((a, sg) => a + Math.hypot(sg.x2 - sg.x1, sg.y2 - sg.y1), 0);
+
+      return {
+        ok: true,
+        a: { net: lineA.net, segs: pathA, vias: offsetVias(r.vias, sideA) },
+        b: { net: B.net, segs: pathB, vias: offsetVias(r.vias, -sideA) },
+        gap, skew: Math.abs(total(pathA) - total(pathB)),
+        grid: r.grid, coarsened: r.coarsened
+      };
     }
   };
 

@@ -1382,5 +1382,123 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
 }
 
 
+// 31) 差分對自動繞線：中心線繞一次再展開，兩條要真的平行、等長、各自接回自己的 pad
+// 舊版 autoRoute 完全不認差分對（pcb-rules.js 200 行以後沒有任何 pair 邏輯），
+// 兩條各繞各的：耦合度與長度差都不受控。
+{
+  const AR = window.AutoRoute;
+  ok(!!(AR && AR.routePair), '31 AutoRoute.routePair 應存在');
+  const padAbs = (c, p2) => ({ x: c.x + p2.x, y: c.y + p2.y });
+  const rules = app.loadDrcRules();
+  const W = 0.25, GAP = 0.3;
+  const conn = (id, x) => ({ id, ref: id, x, y: 0, rot: 0, pads: [
+    { num: '1', x: 0, y: -0.5, w: 0.6, h: 0.6, side: 'F', net: 'USB_P', cu: true },
+    { num: '2', x: 0, y: 0.5, w: 0.6, h: 0.6, side: 'F', net: 'USB_N', cu: true }] });
+  const mk = () => ({ boardWidth: 60, boardHeight: 40, traces: [], vias: [], keepouts: [],
+    components: [conn('j1', -20), conn('u1', 20)] });
+  const opt = { layers: ['F.Cu'], layer: 'F.Cu', width: W, clearance: rules.clearance,
+    viaOd: 0.7, viaDrill: 0.3, grid: 0.25, pairGap: GAP };
+  const lp = { x1: -20, y1: -0.5, x2: 20, y2: -0.5, net: 'USB_P' };
+  const ln = { x1: -20, y1: 0.5, x2: 20, y2: 0.5, net: 'USB_N' };
+  const near = (x, y, X, Y) => Math.hypot(x - X, y - Y) < 1e-6;
+  const ptSeg = (px, py, x1, y1, x2, y2) => {
+    const dx = x2 - x1, dy = y2 - y1, l2 = dx * dx + dy * dy;
+    let t = l2 ? ((px - x1) * dx + (py - y1) * dy) / l2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px - (x1 + dx * t), py - (y1 + dy * t));
+  };
+  // 沿 A 逐點取樣量到 B 的邊到邊距離，算耦合佔比（做法與 NetRules 的差分對檢查一致）
+  const coupling = res => {
+    const tol = Math.max(0.05, GAP * 0.25);
+    let total = 0, coupled = 0, tooClose = 0;
+    for (const sg of res.a.segs) {
+      const len = Math.hypot(sg.x2 - sg.x1, sg.y2 - sg.y1);
+      const n = Math.max(2, Math.ceil(len / 0.5));
+      for (let i = 0; i < n; i++) {
+        const f = (i + 0.5) / n;
+        const px = sg.x1 + (sg.x2 - sg.x1) * f, py = sg.y1 + (sg.y2 - sg.y1) * f;
+        let best = Infinity;
+        for (const sb of res.b.segs) best = Math.min(best, ptSeg(px, py, sb.x1, sb.y1, sb.x2, sb.y2));
+        const gap = best - W;
+        total += len / n;
+        if (Math.abs(gap - GAP) <= tol) coupled += len / n;
+        if (gap < GAP - tol) tooClose += len / n;
+      }
+    }
+    return { ratio: total ? coupled / total : 0, tooClose };
+  };
+
+  const r = AR.routePair(mk(), padAbs, lp, ln, opt);
+  ok(r.ok, '31 淨空板上差分對要繞得過');
+  if (r.ok) {
+    const aFirst = r.a.segs[0], aLast = r.a.segs[r.a.segs.length - 1];
+    const bFirst = r.b.segs[0], bLast = r.b.segs[r.b.segs.length - 1];
+    ok(near(aFirst.x1, aFirst.y1, lp.x1, lp.y1) && near(aLast.x2, aLast.y2, lp.x2, lp.y2), '31 P 兩端要接在自己的 pad 上');
+    ok(near(bFirst.x1, bFirst.y1, ln.x1, ln.y1) && near(bLast.x2, bLast.y2, ln.x2, ln.y2), '31 N 兩端要接在自己的 pad 上');
+    const c = coupling(r);
+    ok(c.ratio >= 0.8, '31 耦合長度佔比要 >= 80%（實際 ' + (100 * c.ratio).toFixed(1) + '%）');
+    ok(c.tooClose === 0, '31 不可有任何一段比目標間距還近（實際 ' + c.tooClose.toFixed(2) + 'mm）');
+    ok(r.skew <= 0.5, '31 兩條長度差要 <= 0.5mm（實際 ' + r.skew.toFixed(3) + 'mm）');
+    eq(r.gap, GAP, '31 回報的間距要是要求的那個');
+  }
+
+  // 飛線方向相反：照原方向配對會接成交叉的 X，耦合度會爛掉
+  const rev = AR.routePair(mk(), padAbs, lp, { x1: ln.x2, y1: ln.y2, x2: ln.x1, y2: ln.y1, net: 'USB_N' }, opt);
+  ok(rev.ok, '31 反向飛線也要繞得過');
+  if (rev.ok) {
+    const c2 = coupling(rev);
+    ok(c2.ratio >= 0.8, '31 反向時耦合佔比仍要 >= 80%（實際 ' + (100 * c2.ratio).toFixed(1) + '%）');
+    const bF = rev.b.segs[0], bL = rev.b.segs[rev.b.segs.length - 1];
+    ok((near(bF.x1, bF.y1, ln.x1, ln.y1) && near(bL.x2, bL.y2, ln.x2, ln.y2))
+       || (near(bF.x1, bF.y1, ln.x2, ln.y2) && near(bL.x2, bL.y2, ln.x1, ln.y1)),
+       '31 反向時兩端仍要各自接回自己的 pad');
+  }
+
+  // 拒絕不合理輸入，而不是繞出爛東西
+  eq(AR.routePair(mk(), padAbs, lp, ln, Object.assign({}, opt, { pairGap: 0 })).ok, false, '31 沒給間距不可繞');
+  eq(AR.routePair(mk(), padAbs, lp, lp, opt).ok, false, '31 同一個 net 不算差分對');
+
+  // 單條繞線的行為不可被 nets 改動（回歸）
+  const single = AR.route(mk(), padAbs, lp, opt);
+  ok(single.ok, '31 單條繞線仍要正常（沒被 line.nets 改壞）');
+}
+
+// 32) autoRoute 的差分對整合：成對的先繞，非成對的原樣交給 RouteAll
+{
+  const savedState = app.state;
+  const pads = (net1, net2) => [
+    { num: '1', x: 0, y: -0.5, w: 0.6, h: 0.6, side: 'F', net: net1, cu: true },
+    { num: '2', x: 0, y: 0.5, w: 0.6, h: 0.6, side: 'F', net: net2, cu: true }];
+  app.state = Object.assign({}, savedState, {
+    boardWidth: 60, boardHeight: 40, traces: [], vias: [], keepouts: [], userZones: [],
+    components: [
+      { id: 'j1', ref: 'J1', x: -20, y: 0, rot: 0, pads: pads('USB_P', 'USB_N') },
+      { id: 'u1', ref: 'U1', x: 20, y: 0, rot: 0, pads: pads('USB_P', 'USB_N') },
+      { id: 'r1', ref: 'R1', x: -20, y: 10, rot: 0, pads: [{ num: '1', x: 0, y: 0, w: 0.6, h: 0.6, side: 'F', net: 'SDA', cu: true }] },
+      { id: 'r2', ref: 'R2', x: 20, y: 10, rot: 0, pads: [{ num: '1', x: 0, y: 0, w: 0.6, h: 0.6, side: 'F', net: 'SDA', cu: true }] }
+    ]
+  });
+  const opts = { layers: ['F.Cu'], layer: 'F.Cu', width: 0.25, clearance: app.loadDrcRules().clearance,
+    viaOd: 0.7, viaDrill: 0.3, grid: 0.25 };
+  const lines = window.Ratsnest.compute(app.state, app.padAbs.bind(app));
+  eq(lines.length, 3, '32 三條飛線（USB_P、USB_N、SDA）');
+  const dp = app.autoRoutePairs(lines, opts);
+  eq(dp.pairs, 1, '32 應該認出一對差分對');
+  eq(dp.failed, 0, '32 淨空板上不該有繞不過的對');
+  eq(dp.rest.length, 1, '32 非成對的 SDA 要留給 RouteAll');
+  eq(dp.rest[0].net, 'SDA', '32 留下來的要是 SDA');
+  ok(app.state.traces.some(t => t.net === 'USB_P'), '32 P 的走線要寫進版面');
+  ok(app.state.traces.some(t => t.net === 'USB_N'), '32 N 的走線要寫進版面');
+  ok(!app.state.traces.some(t => t.net === 'SDA'), '32 這一步不可順手把 SDA 繞掉');
+  ok(dp.skew <= 0.5, '32 回報的長度差要在 0.5mm 內（實際 ' + dp.skew.toFixed(3) + 'mm）');
+  // 沒有配對網名的板子：一對都不該認出來，飛線原樣交回
+  app.state.traces = [];
+  const solo = app.autoRoutePairs(
+    [{ x1: -20, y1: 10, x2: 20, y2: 10, net: 'SDA' }], opts);
+  eq(solo.pairs, 0, '32 沒有配對網名時不可硬湊成對');
+  eq(solo.rest.length, 1, '32 沒配對時飛線原樣交回');
+  app.state = savedState;
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
