@@ -764,22 +764,22 @@ const minDistToSegs = (px, py, segs) =>
     }, extra || {});
   }
 
-  // 21a 公版的 DRC 現況：**它們自己過不了**，而且不是誤判。
-  //     實測（2026-08-24）：VBUS 走線直接橫越 J1 整排 pad，回報距離 d=0；
-  //     U1 與 C3 的 pad 只隔 0.095mm，連 JLCPCB 的 0.10mm 下限都不到。
-  //     公版的走線是「示意直線」不是真的繞線，所以幾何上確實不可製造。
-  //     這裡不假裝它是綠的，改用「只能往下、不能往上」的缺陷預算鎖住現況，
-  //     哪天有人把公版重畫好，數字掉下來就把預算一起調低。
-  //     修法屬於重畫 8 片板，不在這一輪範圍（見 NEW-SESSION §7 已知缺陷）。
+  // 21a 公版的 DRC 現況。2026-08-26 用 tools/refboard-rebuild.js 重建過一輪：
+  //     示意走線換成真的繞線、擺位鬆弛推開太近的元件、8 種 footprint 的 pad 互疊也修掉了。
+  //     合計 388 -> 0。
+  //     預算只准往下：哪天再降就把數字一起調低，變多就是有人把板子改壞了。
   const BUDGET = {
-    'rp2040-pico30': 43, 'arduino-uno-r3': 47, 'esp32-poe2': 63, 'a20-lime': 55,
-    'imx233-maxi': 32, 'openrex-imx6': 64, 'imx8mp-som': 54, 'librevna': 30
+    'rp2040-pico30': 0, 'arduino-uno-r3': 0, 'esp32-poe2': 0, 'a20-lime': 0,
+    'imx233-maxi': 0, 'openrex-imx6': 0, 'imx8mp-som': 0, 'librevna': 0
   };
   const boards = (window.PCB_REFBOARDS || []).map(b => b.id).filter(Boolean);
   eq(boards.length, 8, '21 應有 8 片公版');
   const worse = [];
   for (const id of boards) {
     app.loadRefBoard(id);
+    // 瀏覽器的 init() 會載入 NetRules（預設含 VIN 0.5mm / GND 0.3mm）。
+    // node 不跑 init，不補這行的話這裡永遠是綠的，使用者打開卻看得到違規。
+    app.state.netRules = window.NetRules ? window.NetRules.load() : [];
     const errs = app.runDrc().filter(r => r.type === 'error').length;
     const cap = BUDGET[id];
     ok(cap != null, `21 公版 ${id} 應列在缺陷預算裡（新增公版要一起登記）`);
@@ -787,17 +787,19 @@ const minDistToSegs = (px, py, segs) =>
   }
   eq(worse.join(' │ '), '', '21 公版的 DRC error 只准變少，不准變多');
 
-  // assignPadNets：公版 pad 原本完全沒有 net，走線端點要能把 net 回填回去
+  // pad 的 net 有兩個來源：公版資料自帶的 padNets 表，以及走線端點回推（assignPadNets）。
+  // 2026-08-26 之前只有後者，所以多數 pad 沒有 net、繞線器只能把它們當障礙。
   {
     app.loadRefBoard('rp2040-pico30');
     const pads = [];
     app.state.components.forEach(c => (c.pads || []).forEach(x => pads.push(x)));
-    ok(pads.filter(x => x.net).length > 0, '21 載入公版後應有 pad 帶著 net');
-    // 純函式行為：清掉再跑一次，數量要一致（冪等）
-    const n1 = pads.filter(x => x.net).length;
+    const loaded = pads.filter(x => x.net).length;
+    ok(loaded > 0, '21 載入公版後應有 pad 帶著 net');
+    // 純函式行為：清掉之後只靠走線回推，數量不會超過載入時（padNets 的那些回不來）
     pads.forEach(x => { x.net = ''; });
     const r1 = app.assignPadNets(app.state.components, app.state.traces);
-    eq(r1.assigned, n1, '21 assignPadNets 重跑應回填同樣數量');
+    ok(r1.assigned > 0, '21 走線端點要能回推出 net');
+    ok(r1.assigned <= loaded, '21 只靠走線回推不該多過載入時的數量（實際 ' + r1.assigned + ' vs ' + loaded + '）');
     const r2 = app.assignPadNets(app.state.components, app.state.traces);
     eq(r2.assigned, 0, '21 已經有 net 的 pad 不可被重複指派');
     // 走線沒有 net 就不該亂指派
@@ -1497,6 +1499,207 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
     [{ x1: -20, y1: 10, x2: 20, y2: 10, net: 'SDA' }], opts);
   eq(solo.pairs, 0, '32 沒有配對網名時不可硬湊成對');
   eq(solo.rest.length, 1, '32 沒配對時飛線原樣交回');
+  app.state = savedState;
+}
+
+// 33) 機構孔（NPTH）要擋得住自動繞線
+// 舊版 route() 看到 cu:false 就整個略過，於是走線與 via 會大方地穿過 M3 安裝孔。
+// 畫面上完全正常，做出來那條線被鑽頭吃掉。
+{
+  const AR = window.AutoRoute;
+  const padAbs2 = (c, p2) => ({ x: c.x + p2.x, y: c.y + p2.y });
+  const rules33 = app.loadDrcRules();
+  // 一道牆只留一個 6mm 的口，口的正中央放一個 3.2mm 的安裝孔。
+  // 繞得過去就必須繞過孔；穿過去＝沒看見孔。
+  const mk = (withHole) => {
+    const st = { boardWidth: 40, boardHeight: 30, traces: [], vias: [], keepouts: [], components: [] };
+    const wall = { id: 'w', ref: 'W1', x: 0, y: 0, rot: 0, pads: [] };
+    for (let y = -14; y <= 14; y += 0.8) {
+      if (Math.abs(y) < 3) continue;
+      wall.pads.push({ num: 'w' + y, x: 0, y, w: 0.8, h: 0.8, side: 'F', net: 'WALL', cu: true });
+    }
+    st.components.push(wall);
+    if (withHole) st.components.push({ id: 'mh', ref: 'MH1', x: 0, y: 0, rot: 0,
+      pads: [{ num: '1', x: 0, y: 0, w: 3.2, h: 3.2, shape: 'circle', drill: 3.2, type: 'np_thru_hole', side: '*', cu: false }] });
+    const pin = (id, x) => ({ id, ref: id, x, y: 0, rot: 0,
+      pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'A', cu: true }] });
+    st.components.push(pin('a1', -12), pin('a2', 12));
+    return st;
+  };
+  const opt33 = { layers: ['F.Cu'], layer: 'F.Cu', width: 0.25, clearance: rules33.clearance,
+    viaOd: 0.7, viaDrill: 0.3, grid: 0.2 };
+  const line33 = { x1: -12, y1: 0, x2: 12, y2: 0, net: 'A' };
+
+  const open = AR.route(mk(false), padAbs2, line33, opt33);
+  ok(open.ok, '33 沒有安裝孔時這個缺口繞得過（對照組）');
+
+  const holed = AR.route(mk(true), padAbs2, line33, opt33);
+  if (holed.ok) {
+    // 繞得過去也可以，但不准從孔裡穿過去
+    const holeR = 1.6, need = holeR + rules33.clearance.traceToPad + 0.125;
+    const ptSeg = (px, py, x1, y1, x2, y2) => {
+      const dx = x2 - x1, dy = y2 - y1, l2 = dx * dx + dy * dy;
+      let t = l2 ? ((px - x1) * dx + (py - y1) * dy) / l2 : 0;
+      t = Math.max(0, Math.min(1, t));
+      return Math.hypot(px - (x1 + dx * t), py - (y1 + dy * t));
+    };
+    let closest = Infinity;
+    holed.segs.forEach(s => { closest = Math.min(closest, ptSeg(0, 0, s.x1, s.y1, s.x2, s.y2)); });
+    ok(closest >= holeR - 1e-6, '33 走線不可穿過安裝孔（最近 ' + closest.toFixed(2) + 'mm、孔半徑 ' + holeR + 'mm）');
+  } else {
+    ok(true, '33 孔把唯一的缺口塞住時，繞不過去也是正確答案');
+  }
+}
+
+// 34) 逃逸繞線：pad 中心被鄰居的淨空蓋住時，要能從 pad 邊緣出來
+// 舊版只把 pad 正中央那一格當起點，被蓋住就直接回 rule_ep_blocked。
+// 公版實測 25 條裡有 7 條卡在這裡，而實務上從 pad 邊緣出線是標準做法。
+{
+  const AR = window.AutoRoute;
+  const padAbs34 = (c, p2) => ({ x: c.x + p2.x, y: c.y + p2.y });
+  const rules34 = app.loadDrcRules();
+  // A 是 2×2 的大 pad；正上方 1.6mm 處放一顆異網 pad，它的淨空正好蓋住 A 的中心，
+  // 但蓋不到 A 的下緣。中心被蓋住 → 舊版失敗；下緣還空著 → 新版該繞得出來。
+  const st34 = {
+    boardWidth: 40, boardHeight: 30, traces: [], vias: [], keepouts: [],
+    components: [
+      { id: 'a1', ref: 'A1', x: -10, y: 0, rot: 0, pads: [{ num: '1', x: 0, y: 0, w: 2, h: 2, side: 'F', net: 'NET1', cu: true }] },
+      { id: 'b1', ref: 'B1', x: -10, y: -1.6, rot: 0, pads: [{ num: '1', x: 0, y: 0, w: 2, h: 2, side: 'F', net: 'OTHER', cu: true }] },
+      { id: 'a2', ref: 'A2', x: 10, y: 0, rot: 0, pads: [{ num: '1', x: 0, y: 0, w: 2, h: 2, side: 'F', net: 'NET1', cu: true }] }
+    ]
+  };
+  const opt34 = { layers: ['F.Cu'], layer: 'F.Cu', width: 0.25, clearance: rules34.clearance,
+    viaOd: 0.7, viaDrill: 0.3, grid: 0.1 };
+  const r34 = AR.route(st34, padAbs34, { x1: -10, y1: 0, x2: 10, y2: 0, net: 'NET1' }, opt34);
+  ok(r34.ok, '34 pad 中心被蓋住時仍要從 pad 邊緣繞出來' + (r34.ok ? '' : '（' + JSON.stringify(r34.reason) + '）'));
+  if (r34.ok) {
+    // 起點必須仍在 A1 的銅箔內（不是憑空從旁邊開始）
+    const s = r34.segs[0];
+    ok(Math.abs(s.x1 - (-10)) <= 1 && Math.abs(s.y1) <= 1,
+       '34 起點要落在 A1 的 pad 銅箔內（實際 ' + s.x1.toFixed(2) + ',' + s.y1.toFixed(2) + '）');
+    const e = r34.segs[r34.segs.length - 1];
+    ok(Math.abs(e.x2 - 10) <= 1 && Math.abs(e.y2) <= 1,
+       '34 終點要落在 A2 的 pad 銅箔內（實際 ' + e.x2.toFixed(2) + ',' + e.y2.toFixed(2) + '）');
+  }
+
+  // 真的被封死時仍要誠實回報，不可假裝繞得過
+  const boxed = JSON.parse(JSON.stringify(st34));
+  [[0, 2.2], [0, -2.2], [2.2, 0], [-2.2, 0]].forEach((d, i) => boxed.components.push({
+    id: 'w' + i, ref: 'W' + i, x: -10 + d[0], y: d[1], rot: 0,
+    pads: [{ num: '1', x: 0, y: 0, w: 2, h: 2, side: 'F', net: 'WALL', cu: true }]
+  }));
+  const r34b = AR.route(boxed, padAbs34, { x1: -10, y1: 0, x2: 10, y2: 0, net: 'NET1' }, opt34);
+  eq(r34b.ok, false, '34 四面被異網 pad 圍死時要照實回報失敗');
+}
+
+// 35) 繞線時的即時淨空：pad / via / 板邊 / 禁佈區都要算，不是只比走線
+// 舊版只比「同層異網走線」，所以畫過一整排 pad 也一聲不吭，等按下去才被 DRC 罵。
+// 測試環境沒有載 I18N，pcbT 直接回 key，所以這裡比對的是 key 本身。
+{
+  const savedState = app.state;
+  const mk = extra => Object.assign({
+    boardWidth: 40, boardHeight: 30, layers: 2, layerStack: app.buildLayerStack(2),
+    visibleLayers: ['F.Cu', 'B.Cu'], components: [], traces: [], vias: [], keepouts: [],
+    userZones: [], texts: [], netRules: [], selectedSet: [], selected: null,
+    traceLayer: 'F.Cu', traceWidth: 0.3
+  }, extra || {});
+
+  // pad：距離要算得出來，而且要指名是哪一顆
+  app.state = mk({ components: [{ id: 'r1', ref: 'R1', x: 0, y: 1, rot: 0,
+    pads: [{ num: '2', x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'VCC', cu: true }] }] });
+  const nearPad = app.previewClearance({ x1: -5, y1: 0, x2: 5, y2: 0, net: 'SDA' });
+  ok(!!nearPad, '35 應該回報最近的物件');
+  if (nearPad) {
+    eq(nearPad.what, 'R1.2', '35 要指名是哪一顆 pad');
+    // pad 下緣在 y=0.5，走線半寬 0.15 → 淨距 0.35
+    ok(Math.abs(nearPad.d - 0.35) < 1e-6, '35 pad 淨距要算對（實際 ' + nearPad.d.toFixed(3) + '）');
+  }
+
+  // 同 net 的 pad 不算違規（本來就要接上去）
+  const sameNet = app.previewClearance({ x1: -5, y1: 0, x2: 5, y2: 0, net: 'VCC' });
+  ok(!sameNet || sameNet.what !== 'R1.2', '35 同 net 的 pad 不該被當成障礙');
+
+  // via
+  app.state = mk({ vias: [{ x: 0, y: 0.8, od: 0.7, drill: 0.3, net: 'GND' }] });
+  const nearVia = app.previewClearance({ x1: -5, y1: 0, x2: 5, y2: 0, net: 'SDA' });
+  ok(nearVia && Math.abs(nearVia.d - (0.8 - 0.35 - 0.15)) < 1e-6,
+     '35 via 淨距要算對（實際 ' + (nearVia ? nearVia.d.toFixed(3) : 'null') + '）');
+
+  // 板邊：40×30 的板，y=14.8 那條線離上緣 0.2，扣半寬剩 0.05
+  app.state = mk({});
+  const nearEdge = app.previewClearance({ x1: -5, y1: 14.8, x2: 5, y2: 14.8, net: 'SDA' });
+  ok(nearEdge && nearEdge.what === 'pj_obj_edge', '35 靠板邊時要回報板邊');
+  ok(nearEdge && Math.abs(nearEdge.d - 0.05) < 1e-6,
+     '35 板邊淨距要算對（實際 ' + (nearEdge ? nearEdge.d.toFixed(3) : 'null') + '）');
+
+  // 禁佈區：穿過去就是負值
+  app.state = mk({ keepouts: [{ layer: 'F.Cu', pts: [[-2, -2], [2, -2], [2, 2], [-2, 2]] }] });
+  const inKeep = app.previewClearance({ x1: -5, y1: 0, x2: 5, y2: 0, net: 'SDA' });
+  ok(inKeep && inKeep.d < 0, '35 走線穿過禁佈區要回報負淨距');
+
+  // 空板：沒有東西可比也不可以爆
+  app.state = mk({ boardWidth: 400, boardHeight: 400 });
+  const empty = app.previewClearance({ x1: -5, y1: 0, x2: 5, y2: 0, net: 'SDA' });
+  ok(empty && empty.what === 'pj_obj_edge', '35 空板時最近的東西就是板邊');
+
+  app.state = savedState;
+}
+
+// 36) 橡皮筋：拖元件時走線端點要跟著 pad 走
+// 舊版拖動元件時走線原地不動——畫面上還連著、電性上已經斷了，而且 DRC 不會報
+// （斷開的走線沒有違反任何間距規則）。
+{
+  const savedState = app.state;
+  const mkBoard = () => {
+    const c1 = { id: 'r1', ref: 'R1', x: 0, y: 0, rot: 0, pads: [
+      { num: '1', x: -1, y: 0, w: 1, h: 1, side: 'F', net: 'N1', cu: true },
+      { num: '2', x: 1, y: 0, w: 1, h: 1, side: 'F', net: 'N2', cu: true }] };
+    const c2 = { id: 'r2', ref: 'R2', x: 10, y: 0, rot: 0, pads: [
+      { num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'N2', cu: true }] };
+    return Object.assign({}, savedState, {
+      boardWidth: 60, boardHeight: 40, layers: 2, layerStack: app.buildLayerStack(2),
+      components: [c1, c2], vias: [], keepouts: [], userZones: [], selectedSet: [], selected: null,
+      traces: [
+        { id: 't1', x1: 1, y1: 0, x2: 10, y2: 0, width: 0.3, layer: 'F.Cu', net: 'N2' },
+        { id: 't2', x1: -1, y1: 0, x2: -8, y2: 0, width: 0.3, layer: 'F.Cu', net: 'N1' },
+        { id: 't3', x1: 4, y1: 6, x2: 8, y2: 6, width: 0.3, layer: 'F.Cu', net: 'N9' }
+      ]
+    });
+  };
+
+  app.state = mkBoard();
+  const r1 = app.state.components[0];
+  const n = app.beginRubber([r1]);
+  eq(n, 2, '36 R1 的兩支腳各接一條走線');
+  ok(!app.state.rubber.some(x => x.t.id === 't3'), '36 沒有接在 pad 上的走線不可被抓進來');
+
+  r1.x = 5; r1.y = 3;
+  app.updateRubber();
+  const t1 = app.state.traces.find(t => t.id === 't1');
+  const t2 = app.state.traces.find(t => t.id === 't2');
+  const t3 = app.state.traces.find(t => t.id === 't3');
+  ok(Math.abs(t1.x1 - 6) < 1e-9 && Math.abs(t1.y1 - 3) < 1e-9, '36 接在 pad2 的那端要跟到 (6,3)（實際 ' + t1.x1 + ',' + t1.y1 + '）');
+  ok(Math.abs(t1.x2 - 10) < 1e-9 && Math.abs(t1.y2) < 1e-9, '36 另一端接在 R2 上，不可被拖走');
+  ok(Math.abs(t2.x1 - 4) < 1e-9 && Math.abs(t2.y1 - 3) < 1e-9, '36 接在 pad1 的那端要跟到 (4,3)');
+  ok(Math.abs(t3.x1 - 4) < 1e-9 && Math.abs(t3.y1 - 6) < 1e-9, '36 沒接上的走線不可被動到');
+
+  // 端點不在 pad 正中央時，偏移要保留（不可被吸到中心）
+  app.state = mkBoard();
+  const r1b = app.state.components[0];
+  app.state.traces[0].x1 = 1.3; app.state.traces[0].y1 = 0.2;
+  app.beginRubber([r1b]);
+  r1b.x = 5;
+  app.updateRubber();
+  const t1b = app.state.traces[0];
+  ok(Math.abs(t1b.x1 - 6.3) < 1e-9 && Math.abs(t1b.y1 - 0.2) < 1e-9,
+     '36 端點相對 pad 的偏移要保留（實際 ' + t1b.x1.toFixed(2) + ',' + t1b.y1.toFixed(2) + '）');
+
+  // 異網的走線端點不可被抓（幾何上重疊也不行）
+  app.state = mkBoard();
+  app.state.traces.push({ id: 't4', x1: 1, y1: 0, x2: 3, y2: 5, width: 0.3, layer: 'F.Cu', net: 'OTHER' });
+  app.beginRubber([app.state.components[0]]);
+  ok(!app.state.rubber.some(x => x.t.id === 't4'), '36 異網走線就算端點壓在 pad 上也不可跟著走');
+
   app.state = savedState;
 }
 

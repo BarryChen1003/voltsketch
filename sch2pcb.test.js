@@ -239,5 +239,59 @@ const netOf = (id, i) => 'N_' + id + '_' + i;
   ok(Math.abs(one[0].x) < 1e-9 && Math.abs(one[0].y) < 1e-9, '6 單一元件應置中於原點');
 }
 
+// 7) merge（ECO）：線路圖改動時保留佈局，不要把整片板洗掉
+{
+  const mk = (id, ref, x, y, nets) => ({
+    id, ref, x, y, rot: 0, w: 2, h: 1,
+    pads: (nets || []).map((n, i) => ({ num: String(i + 1), x: i, y: 0, w: 0.6, h: 0.6, side: 'F', net: n, cu: true }))
+  });
+
+  // 使用者擺好的板：R1 在 (10,5)，另外有一顆手動放的元件（非線路圖來源）
+  const existing = [mk('sch-r1', 'R1', 10, 5, ['N1', 'GND']), mk('manual-1', 'X1', -8, -3, ['A'])];
+  // 線路圖重新轉出來：R1 還在（但轉換器給的位置是 0,0）、新增 C1、
+  const converted = [mk('sch-r1', 'R1', 0, 0, ['N1', 'GND']), mk('sch-c1', 'C1', 3, 0, ['N1', 'GND'])];
+  const r = S.merge(existing, converted);
+
+  eq(r.kept, 1, '7 R1 應該被保留');
+  eq(r.added, 1, '7 C1 應該是新增');
+  eq(r.removed, 0, '7 沒有元件被移除');
+  const r1 = r.components.find(c => c.id === 'sch-r1');
+  ok(r1 && r1.x === 10 && r1.y === 5, '7 保留的元件要留在使用者擺的位置，不可被轉換器的座標蓋掉');
+  ok(r.components.some(c => c.id === 'manual-1'), '7 非線路圖來源的元件不可被動到');
+  eq(r.components.length, 3, '7 合併後 = 手動 1 + 保留 1 + 新增 1');
+
+  // 線路圖刪掉 R1 → 板上要移除
+  const r2 = S.merge(existing, [mk('sch-c1', 'C1', 3, 0, ['N1'])]);
+  eq(r2.removed, 1, '7 線路圖刪掉的元件要移除');
+  eq(r2.removedRefs[0], 'R1', '7 要講出移除的是誰');
+  ok(!r2.components.some(c => c.id === 'sch-r1'), '7 移除後不可還留在板上');
+
+  // net 改名要被抓到（走線可能因此接到錯的網路）
+  const r3 = S.merge(existing, [mk('sch-r1', 'R1', 0, 0, ['N9', 'GND'])]);
+  eq(r3.netChanged, 1, '7 net 有變要記一筆');
+  const r4 = S.merge(existing, [mk('sch-r1', 'R1', 0, 0, ['N1', 'GND'])]);
+  eq(r4.netChanged, 0, '7 net 沒變就不要亂報');
+
+  // 空板：全部都是新增
+  const r5 = S.merge([], converted);
+  eq(r5.added, 2, '7 空板時全部算新增');
+  eq(r5.kept, 0, '7 空板時沒有可保留的');
+}
+
+// 8) orphanTraces：線路圖刪掉電路之後，板上留下的孤兒走線要報出來
+{
+  const comps = [{ id: 'sch-r1', ref: 'R1', x: 0, y: 0, rot: 0,
+    pads: [{ num: '1', x: 0, y: 0, w: 0.6, h: 0.6, side: 'F', net: 'N1', cu: true }] }];
+  const traces = [
+    { x1: 0, y1: 0, x2: 1, y2: 0, net: 'N1' },
+    { x1: 0, y1: 1, x2: 1, y2: 1, net: 'GONE' },
+    { x1: 0, y1: 2, x2: 1, y2: 2, net: '' }
+  ];
+  const orphans = S.orphanTraces(traces, comps);
+  eq(orphans.length, 1, '8 只有 net 已不存在的那條算孤兒');
+  eq(orphans[0].net, 'GONE', '8 要指出是哪一條');
+  eq(S.orphanTraces([], comps).length, 0, '8 沒有走線時回空');
+}
+
 console.log(`\nsch2pcb.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

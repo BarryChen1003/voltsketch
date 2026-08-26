@@ -49,6 +49,7 @@ const pcbApp = {
     selectedSet: [],     // 多選元件（Shift+點 加選、Shift+拖 框選）
     dragEndpoint: null,  // 走線端點拖曳 {trace, end:'a'|'b'}
     dragGroup: null,     // 群組拖曳快照 [{c, ox, oy}]＋dragAnchor
+    rubber: null,        // 拖曳中要跟著 pad 走的走線端點（beginRubber 建表）
     dragAnchor: null,    // 群組拖曳起點（board 座標）
     boxSel: null,        // 進行中框選 {x1,y1,x2,y2}
     clipboard: []        // 複製暫存（Ctrl+C/V）
@@ -1377,6 +1378,16 @@ const pcbApp = {
     this.state.layerStack = this.buildLayerStack(this.state.layers);
     this.state.visibleLayers = this.state.layerStack.map(l => l.id);
     this.state.components = this.refBoardParts(b);
+    // 公版資料可以直接帶 pad 的 net（由 tools/refboard-rebuild.js 產生）。
+    // 沒有這張表的話，pad 的 net 只能從走線端點回推，多數 pad 會是無 net——
+    // 而無 net 的 pad 對繞線器一律是障礙，這是公版繞不過的主因。
+    if (b.padNets) {
+      for (const c of this.state.components) {
+        const m = b.padNets[c.ref];
+        if (!m) continue;
+        for (const p of (c.pads || [])) { const n = m[p.num]; if (n && !p.net) p.net = n; }
+      }
+    }
     this.state.traces = (b.traces || []).map((t, i) => ({ id: `ref-t-${i}`, ...t }));
     this.state.vias = (b.vias || []).map(v => ({ ...v }));
     this.assignPadNets(this.state.components, this.state.traces);
@@ -2042,6 +2053,113 @@ const pcbApp = {
     }
   },
 
+  // 繞線時的即時淨空檢查：只算「進行中的那一段」對周圍物件的距離。
+  // 為什麼不直接跑 runDrc：1436 個 pad 的公版跑一次要 240ms，放進 mousemove 等於卡死；
+  // 這裡只掃一條線對鄰域的距離，openrex 實測 <2ms。
+  // 回傳最糟的那一項 { d, req, what }（d 是實際淨距、req 是規則下限），沒有東西可比就回 null。
+  // ---- 橡皮筋（拖元件時走線跟著走）----
+  // 舊版拖動元件時走線原地不動，pad 一走就跟走線斷開：畫面上還連著、電性上已經沒接。
+  // 這裡在拖曳開始時記下「哪一條走線的哪一端貼在哪顆 pad 上、偏移多少」，
+  // 拖曳過程中把那些端點跟著 pad 搬。偏移要記下來——端點不一定正好在 pad 中心。
+  beginRubber(comps) {
+    const list = [];
+    const set = new Set(comps || []);
+    for (const c of set) {
+      for (const pad of (c.pads || [])) {
+        if (pad.cu === false) continue;
+        const a = this.padAbs(c, pad);
+        const r = Math.hypot(pad.w || 0.5, pad.h || 0.5) / 2 + 0.05;
+        for (const t of this.state.traces) {
+          // 同 net 才算接上；任一邊沒有 net 時只能靠幾何判斷，允許
+          const pn = pad.net || "", tn = t.net || "";
+          if (pn && tn && pn !== tn) continue;
+          if (Math.hypot(t.x1 - a.x, t.y1 - a.y) <= r) list.push({ t, end: "a", c, pad, dx: t.x1 - a.x, dy: t.y1 - a.y });
+          if (Math.hypot(t.x2 - a.x, t.y2 - a.y) <= r) list.push({ t, end: "b", c, pad, dx: t.x2 - a.x, dy: t.y2 - a.y });
+        }
+      }
+    }
+    this.state.rubber = list.length ? list : null;
+    return list.length;
+  },
+
+  updateRubber() {
+    const list = this.state.rubber;
+    if (!list) return;
+    for (const r of list) {
+      const a = this.padAbs(r.c, r.pad);
+      if (r.end === "a") { r.t.x1 = a.x + r.dx; r.t.y1 = a.y + r.dy; }
+      else { r.t.x2 = a.x + r.dx; r.t.y2 = a.y + r.dy; }
+    }
+    this.state.ratsnest = null;
+  },
+
+  previewClearance(td) {
+    const gm = window.PadDrc && window.PadDrc._geom;
+    if (!gm || !td) return null;
+    const lay = this.state.traceLayer || "F.Cu";
+    const w2 = (this.state.traceWidth || 0.3) / 2;
+    const cl = this.loadDrcRules().clearance;
+    const cmData = window.ConstraintMgr ? ConstraintMgr.load() : null;
+    const padAbsFn = this.padAbs.bind(this);
+    let worst = null;
+    // 比的是「離下限還差多少」，不是絕對距離——0.05mm 的 pad 淨空可能比 0.3mm 的板邊淨空更危險
+    const consider = (d, req, what) => {
+      if (!Number.isFinite(d)) return;
+      if (!worst || (d - req) < (worst.d - worst.req)) worst = { d, req, what };
+    };
+
+    // 同層異網走線（Constraint Manager 的矩陣可以逐對指定淨空）
+    for (const t of this.state.traces) {
+      if ((t.layer || "F.Cu") !== lay) continue;
+      if (td.net && t.net && t.net === td.net) continue;
+      const d = gm.segSegDist(td.x1, td.y1, td.x2, td.y2, t.x1, t.y1, t.x2, t.y2) - w2 - (t.width || 0.3) / 2;
+      const req = cmData ? ConstraintMgr.clearanceBetween(cmData, td.net || "", t.net || "", cl.traceToTrace) : cl.traceToTrace;
+      consider(d, req, pcbT("pj_obj_trace", { net: t.net || "?" }));
+    }
+
+    // pad：最常撞到的就是這個，舊版完全沒查
+    const segMinX = Math.min(td.x1, td.x2), segMaxX = Math.max(td.x1, td.x2);
+    const segMinY = Math.min(td.y1, td.y2), segMaxY = Math.max(td.y1, td.y2);
+    for (const c of this.state.components) for (const pd of (c.pads || [])) {
+      if (pd.cu === false) continue;
+      if (td.net && (pd.net || "") === td.net) continue;
+      const side = pd.side;
+      if (!(side === "*" || (side === "B" ? lay === "B.Cu" : lay === "F.Cu"))) continue;
+      const a = padAbsFn(c, pd);
+      const rOuter = Math.hypot(pd.w || 0.5, pd.h || 0.5) / 2 + w2 + 1;
+      if (a.x < segMinX - rOuter || a.x > segMaxX + rOuter || a.y < segMinY - rOuter || a.y > segMaxY + rOuter) continue;
+      const d = gm.segPadDist(td.x1, td.y1, td.x2, td.y2, gm.padShape(c, pd, padAbsFn)) - w2;
+      consider(d, cl.traceToPad, (c.ref || "?") + "." + (pd.num != null ? pd.num : ""));
+    }
+
+    // via（穿孔在每一層都是銅）
+    for (const v of (this.state.vias || [])) {
+      if (td.net && (v.net || "") === td.net) continue;
+      const d = gm.ptSegDist(v.x, v.y, td.x1, td.y1, td.x2, td.y2) - (v.od || 0.7) / 2 - w2;
+      consider(d, cl.traceToTrace, pcbT("pj_obj_via", { net: v.net || "?" }));
+    }
+
+    // 板邊：矩形板框，取線段最外側到板邊的距離
+    const hw = (this.state.boardWidth || 100) / 2, hh = (this.state.boardHeight || 80) / 2;
+    const dEdge = Math.min(hw - Math.max(Math.abs(td.x1), Math.abs(td.x2)),
+                           hh - Math.max(Math.abs(td.y1), Math.abs(td.y2))) - w2;
+    consider(dEdge, cl.traceToEdge, pcbT("pj_obj_edge"));
+
+    // 禁佈區：碰到就是違規，沒有「淨空下限」可談（與 runDrc 的判定一致）
+    for (const k of (this.state.keepouts || [])) {
+      if (!k.pts || k.pts.length < 3) continue;
+      if (k.layer && k.layer !== "*" && k.layer !== lay) continue;
+      let d = Infinity;
+      for (let a = 0; a < k.pts.length; a++) {
+        const p1 = k.pts[a], p2 = k.pts[(a + 1) % k.pts.length];
+        d = Math.min(d, gm.segSegDist(td.x1, td.y1, td.x2, td.y2, p1[0], p1[1], p2[0], p2[1]));
+      }
+      if (gm.ptInPoly(td.x1, td.y1, k.pts) || gm.ptInPoly(td.x2, td.y2, k.pts)) d = -w2;
+      consider(d - w2, 0, pcbT("pj_obj_keepout"));
+    }
+    return worst;
+  },
+
   drawTracePreview(scale) {
     const td = this.state.traceDraw;
     if (!td) return;
@@ -2058,23 +2176,22 @@ const pcbApp = {
       }
       if (r && r.minW > 0 && (this.state.traceWidth || 0.3) < r.minW) { over = true; label += ' │ ' + pcbT('pj_draw_thin', { lim: r.minW }); }
     }
-    // 即時間距提示：預覽段 vs 同層異網走線（Constraint 矩陣感知）
-    if (window.PadDrc && window.PadDrc._geom) {
-      const gm = window.PadDrc._geom;
-      const lay = this.state.traceLayer || 'F.Cu';
-      const w2 = (this.state.traceWidth || 0.3) / 2;
-      const cmData = window.ConstraintMgr ? ConstraintMgr.load() : null;
-      let worstD = Infinity, worstReq = 0;
-      for (const t of this.state.traces) {
-        if ((t.layer || 'F.Cu') !== lay) continue;
-        if (td.net && t.net && t.net === td.net) continue;
-        const d = gm.segSegDist(td.x1, td.y1, td.x2, td.y2, t.x1, t.y1, t.x2, t.y2) - w2 - (t.width || 0.3) / 2;
-        const req = cmData ? ConstraintMgr.clearanceBetween(cmData, td.net || '', t.net || '', 0.15) : 0.15;
-        if (d - req < worstD - worstReq) { worstD = d; worstReq = req; }
-      }
-      if (worstD < worstReq) { over = true; label += ' │ ' + pcbT('pj_draw_clr', { d: Math.max(0, worstD).toFixed(2), lim: worstReq }); }
+    // 即時淨空：預覽段 vs 走線／pad／via／板邊／禁佈區（見 previewClearance）
+    const near = this.previewClearance(td);
+    const req = near ? near.req : 0.15;
+    if (near && near.d < near.req) {
+      over = true;
+      label += " │ " + pcbT("pj_draw_near", { what: near.what, d: Math.max(0, near.d).toFixed(2), lim: near.req });
     }
+
     ctx.save();
+    // 淨空光暈：把「這條線＋規則要求的淨空」實際佔多寬畫出來，
+    // 使用者才看得出「還差多少」，而不是等按下去之後才被 DRC 罵。
+    ctx.lineCap = "round";
+    ctx.strokeStyle = over ? "rgba(231,76,60,0.22)" : "rgba(46,204,113,0.16)";
+    ctx.lineWidth = Math.max(2, ((this.state.traceWidth || 0.3) + 2 * req) * scale);
+    ctx.beginPath(); ctx.moveTo(X(td.x1), Y(td.y1)); ctx.lineTo(X(td.x2), Y(td.y2)); ctx.stroke();
+    ctx.lineCap = "butt";
     ctx.strokeStyle = over ? '#e74c3c' : '#2ecc71';
     ctx.lineWidth = Math.max(1, (this.state.traceWidth || 0.3) * scale);
     ctx.globalAlpha = 0.75;
@@ -2330,12 +2447,29 @@ const pcbApp = {
       if (/ground/i.test(c.type)) rootName.set(r, 'GND');
       else if (/source|battery|vcc|vdd/i.test(c.type) && !rootName.has(r)) rootName.set(r, 'VCC');
     }
-    let serial = 1;
-    const netOf = (schId, pinIndex) => {
-      const key = schId + ':' + pinIndex;
-      if (!nets.connectedPins.has(key)) return '';
+    // 自動網名要「同一組連線永遠得到同一個名字」。
+    // 舊版用流水號 N$1、N$2…，順序一變（線路圖加一顆元件）名字就全部位移，
+    // 板上既有走線的 net 會突然變成不存在的網路——線路圖與 Layout 就永遠合不起來。
+    // 改成用「這組連線裡排序最前面的那支腳」命名：內容一樣，名字就一樣。
+    const rootMembers = new Map();
+    for (const key of nets.connectedPins) {
       const r = nets.pinNet.get(key);
-      if (!rootName.has(r)) rootName.set(r, 'N$' + serial++);
+      if (!rootMembers.has(r)) rootMembers.set(r, []);
+      rootMembers.get(r).push(key);
+    }
+    const autoName = r => {
+      const mem = (rootMembers.get(r) || []).slice().sort();
+      if (!mem.length) return "N$?";
+      const [schId, pin] = mem[0].split(":");
+      const c = byId[schId];
+      const ref = (c && (c.label || c.ref)) || schId;
+      return "N$" + ref + "." + pin;
+    };
+    const netOf = (schId, pinIndex) => {
+      const key = schId + ":" + pinIndex;
+      if (!nets.connectedPins.has(key)) return "";
+      const r = nets.pinNet.get(key);
+      if (!rootName.has(r)) rootName.set(r, autoName(r));
       return rootName.get(r);
     };
 
@@ -2348,17 +2482,30 @@ const pcbApp = {
     });
 
     const s2 = this.state;
-    s2.components = conv.components;
-    s2.traces = []; s2.vias = []; s2.zones = []; s2.zoneFills = []; s2.userZones = [];
-    s2.kicad = null; s2.kicadArcs = []; s2.edgeSegs = []; s2.silkGr = []; s2.teardrops = [];
-    s2.refBoard = null; s2.refOverlayId = null; s2.selected = null; s2.selectedSet = [];
-    s2.ratsnest = null; s2.showRatsnest = true;
+    // 增量更新（ECO）：對得起來的元件保留擺位、走線與鋪銅一律不動。
+    // 舊版是「重新產生一片板」，線路圖改一顆電阻佈局就從頭來過，
+    // 等於逼使用者永遠不要改線路圖——線路圖與 Layout 就永遠合不起來。
+    const hadLayout = (s2.components || []).some(c => (c.pads || []).length) || (s2.traces || []).length > 0;
+    const eco = window.Sch2Pcb.merge(s2.components, conv.components);
+    s2.components = eco.components;
     s2.schUnresolved = conv.unresolved;
     s2.schAssumed = conv.assumed;
-    const bd = window.Sch2Pcb.suggestBoard(conv.components, 5);
-    s2.boardWidth = bd.w; s2.boardHeight = bd.h;
-    const wI = document.getElementById('boardWidth'), hI = document.getElementById('boardHeight');
-    if (wI) wI.value = bd.w; if (hI) hI.value = bd.h;
+    s2.selected = null; s2.selectedSet = [];
+    s2.ratsnest = null; s2.showRatsnest = true;
+
+    let bd = { w: s2.boardWidth, h: s2.boardHeight };
+    if (!hadLayout) {
+      // 空板：第一次轉換，照舊整片重來並把板框調到剛好
+      s2.traces = []; s2.vias = []; s2.zones = []; s2.zoneFills = []; s2.userZones = [];
+      s2.kicad = null; s2.kicadArcs = []; s2.edgeSegs = []; s2.silkGr = []; s2.teardrops = [];
+      s2.refBoard = null; s2.refOverlayId = null;
+      bd = window.Sch2Pcb.suggestBoard(conv.components, 5);
+      s2.boardWidth = bd.w; s2.boardHeight = bd.h;
+      const wI0 = document.getElementById("boardWidth"), hI0 = document.getElementById("boardHeight");
+      if (wI0) wI0.value = bd.w; if (hI0) hI0.value = bd.h;
+    }
+    // 線路圖刪掉的電路會留下接不到任何 pad 的孤兒走線。不自動刪（那是使用者的銅），但要報。
+    const orphans = window.Sch2Pcb.orphanTraces(s2.traces, s2.components);
     const tgl = document.getElementById('ratsnestToggle');
     if (tgl) tgl.checked = true;
     this.syncSelPanel();
@@ -2381,7 +2528,12 @@ const pcbApp = {
       const who = conv.unresolved.slice(0, 6).map(u => u.label || u.type).join(', ');
       msg += ' │ ' + pcbT('pj_sync_unres', { n: conv.unresolved.length, who, why });
     }
-    this.toast(msg, (conv.unresolved.length || conv.assumed.length) ? 'warn' : 'info');
+    if (hadLayout) {
+      msg += " │ " + pcbT("pj_sync_eco", { kept: eco.kept, added: eco.added, removed: eco.removed });
+      if (eco.netChanged) msg += " │ " + pcbT("pj_sync_netchg", { n: eco.netChanged });
+      if (orphans.length) msg += " │ " + pcbT("pj_sync_orphan", { n: orphans.length });
+    }
+    this.toast(msg, (conv.unresolved.length || conv.assumed.length || orphans.length) ? "warn" : "info");
     const box = document.getElementById('netlistContent');
     if (box) {
       box.innerHTML = '<div style="font-size:12px;white-space:pre-wrap">' +
@@ -2745,10 +2897,12 @@ const pcbApp = {
           if (this.state.selectedSet.includes(hit) && this.state.selectedSet.length > 1) {
             this.state.dragGroup = this.state.selectedSet.map(c => ({ c, ox: c.x, oy: c.y }));
             this.state.dragAnchor = { x: b.x, y: b.y };
+            this.beginRubber(this.state.selectedSet);
           } else {
             this.state.selectedSet = [hit];
             this.state.dragComp = hit;
             this.state.dragOff = { x: hit.x - b.x, y: hit.y - b.y };
+            this.beginRubber([hit]);
           }
           this.state.selected = hit;
           this.canvas.style.cursor = 'move';
@@ -2977,6 +3131,7 @@ const pcbApp = {
         const ddx = this.snap(b.x - this.state.dragAnchor.x, g);
         const ddy = this.snap(b.y - this.state.dragAnchor.y, g);
         this.state.dragGroup.forEach(s => { s.c.x = s.ox + ddx; s.c.y = s.oy + ddy; });
+        this.updateRubber();
         this.syncSelPanel();
         this.render();
         return;
@@ -2993,6 +3148,7 @@ const pcbApp = {
         const c = this.state.dragComp;
         c.x = this.snap(b.x + this.state.dragOff.x, g);
         c.y = this.snap(b.y + this.state.dragOff.y, g);
+        this.updateRubber();
         this.syncSelPanel();
         this.render();
       } else if (this.state.isPanning) {
@@ -3021,6 +3177,7 @@ const pcbApp = {
         return;
       }
       if (this.state.dragGroup) {
+        this.state.rubber = null;
         this.state.dragGroup = null;
         this.state.dragAnchor = null;
         this.state.ratsnest = null;
@@ -3109,6 +3266,7 @@ const pcbApp = {
         return;
       }
       if (this.state.dragComp) {
+        this.state.rubber = null;
         this.state.dragComp = null;
         this.state.ratsnest = null;
         this.canvas.style.cursor = 'crosshair';

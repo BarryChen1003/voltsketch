@@ -13,7 +13,7 @@ window.PcbHistory = (function () {
   // 執行期/檢視用欄位不進快照（selected 等物件參照在還原後會失效，一律清掉重建）
   const SKIP = new Set(['tool', 'selected', 'selectedTrace', 'dragComp', 'dragOff', 'isDragging', 'isPanning',
     'lastMouse', 'ratsnest', 'traceDraw', 'zoneDraw', 'dimDraw', 'keepoutDraw',
-    'refBoard', 'refOverlayId', 'kicad', 'palette', 'showRatsnest', 'zoom', 'panX', 'panY']);
+    'rubber', 'dragGroup', 'dragAnchor', 'boxSel', 'dragEndpoint', 'refBoard', 'refOverlayId', 'kicad', 'palette', 'showRatsnest', 'zoom', 'panX', 'panY']);
 
   let undoStack = [];
   let redoStack = [];

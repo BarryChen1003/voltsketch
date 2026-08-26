@@ -380,6 +380,7 @@
       const half = opt.width / 2;
       const cPad = clOf('traceToPad', clNum), cTrace = clOf('traceToTrace', clNum);
       const cVia = clOf('viaToVia', cTrace), cEdge = clOf('traceToEdge', 0);
+      const cHole = clOf('holeToHole', cTrace);   // 機構孔用孔對孔淨距，不是銅箔淨距
       const vHalf = opt.viaOd / 2;
       const mEdge = cEdge + half;
       // 繞一條時 net 是單一字串。差分對繞的是「中心線」，兩個 net 的 pad／走線都算自己人，
@@ -398,8 +399,17 @@
       };
 
       (state.components || []).forEach(c => (c.pads || []).forEach(p => {
-        if (p.cu === false) return;
         const a = padAbs(c, p);
+        if (p.cu === false) {
+          // 無銅的機構孔（NPTH，例如 M3 安裝孔）：沒有銅箔，但鑽頭照樣會把
+          // 上面的走線與 via 一起吃掉。舊版在這裡直接 return，於是自動繞線
+          // 會大方地穿過安裝孔——畫面上看起來很正常，做出來那條線是斷的。
+          if (!(p.drill > 0)) return;
+          const hr = p.drill / 2;
+          for (let il = 0; il < L; il++) stamp(blocked, (ix, iy) => idx(ix, iy, il), a.x, a.y, hr + cTrace + half);
+          stampAllLayers(a.x, a.y, hr + cHole + vHalf);
+          return;
+        }
         const rad = Math.hypot(p.w || 0.5, p.h || 0.5) / 2;
         const mine = isMine(p.net);
         if (!mine) for (const il of padLayers(p)) stamp(blocked, (ix, iy) => idx(ix, iy, il), a.x, a.y, rad + cPad + half);
@@ -473,10 +483,38 @@
         return [...set];
       };
       const startLs = layersAtEnd(line.x1, line.y1), endLs = layersAtEnd(line.x2, line.y2);
-      if (startLs.every(il => blocked[idx(sx, sy, il)]) || endLs.every(il => blocked[idx(ex, ey, il)])) {
+
+      // 端點不必固定在 pad 正中央：走線本來就可以從自己這顆 pad 的任何一處出發。
+      // 只認中心那一格的話，密腳封裝一律「起點就被封住」——公版實測 25 條裡有 7 條卡在這裡，
+      // 而實務上這叫逃逸繞線（escape routing），從 pad 邊緣出來是標準做法。
+      // 取內切圓（min(w,h)/2）而不是外接圓：保證挑到的格子真的在 pad 銅箔內。
+      const cellsInPadAt = (px, py, layersOf) => {
+        const cells = [];
+        (state.components || []).forEach(c => (c.pads || []).forEach(pd => {
+          if (pd.cu === false) return;
+          const a = padAbs(c, pd);
+          const rOuter = Math.hypot(pd.w || 0.5, pd.h || 0.5) / 2;
+          if (Math.hypot(a.x - px, a.y - py) > rOuter + g) return;
+          const rIn = Math.max(g, Math.min(pd.w || 0.5, pd.h || 0.5) / 2);
+          const x0 = Math.max(0, Math.floor((a.x - rIn - ox) / g)), x1 = Math.min(nx - 1, Math.ceil((a.x + rIn - ox) / g));
+          const y0 = Math.max(0, Math.floor((a.y - rIn - oy) / g)), y1 = Math.min(ny - 1, Math.ceil((a.y + rIn - oy) / g));
+          for (let iy = y0; iy <= y1; iy++) for (let ix = x0; ix <= x1; ix++) {
+            if (Math.hypot(ox + ix * g - a.x, oy + iy * g - a.y) > rIn) continue;
+            for (const il of layersOf) cells.push(idx(ix, iy, il));
+          }
+        }));
+        return cells;
+      };
+      const startCells = cellsInPadAt(line.x1, line.y1, startLs);
+      const endCells = cellsInPadAt(line.x2, line.y2, endLs);
+      const freeStart = startCells.filter(k => !blocked[k]);
+      const freeEnd = endCells.filter(k => !blocked[k]);
+      const startDead = startLs.every(il => blocked[idx(sx, sy, il)]) && !freeStart.length;
+      const endDead = endLs.every(il => blocked[idx(ex, ey, il)]) && !freeEnd.length;
+      if (startDead || endDead) {
         // 起點／終點的格子本身就被鄰近物件的淨空蓋住＝這個腳位用目前線寬出不來。
         // 「失敗」對使用者沒用，「用 0.15mm 就出得來」才有用，所以順手算一下。
-        const which = startLs.every(il => blocked[idx(sx, sy, il)]) ? 'start' : 'end';
+        const which = startDead ? 'start' : 'end';
         const px = which === 'start' ? line.x1 : line.x2;
         const py = which === 'start' ? line.y1 : line.y2;
         let room = Infinity;
@@ -534,10 +572,10 @@
       // 啟發式只看平面距離：換層成本非負，所以仍然可採納（不會高估）
       const hOf = i => { const c = i % plane; const dx = Math.abs((c % nx) - ex), dy = Math.abs(Math.floor(c / nx) - ey); return (dx + dy) + (1.41421356 - 2) * Math.min(dx, dy); };
       const DIR = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, 1.41421356], [1, -1, 1.41421356], [-1, 1, 1.41421356], [-1, -1, 1.41421356]];
-      const goalSet = new Set(endLs.map(il => idx(ex, ey, il)));
+      const goalSet = new Set(freeEnd.length ? freeEnd : endLs.map(il => idx(ex, ey, il)));
 
-      for (const il of startLs) {
-        const s0 = idx(sx, sy, il);
+      const seeds = freeStart.length ? freeStart : startLs.map(il => idx(sx, sy, il));
+      for (const s0 of seeds) {
         if (blocked[s0]) continue;
         gc[s0] = 0; push(hOf(s0), s0);
       }
@@ -608,8 +646,14 @@
         if (pd && (d[0] !== pd[0] || d[1] !== pd[1])) { flush(prevXY, runLayer); runStart = prevXY; }
         pd = d; prevXY = xy;
       }
-      // 收尾：最後一段拉到真正的端點座標（不是格點），才會準確落在 pad 上
-      flush([line.x2, line.y2], runLayer);
+      // 收尾：終點落在自己這顆 pad 的銅箔內就夠了（逃逸繞線可能從 pad 邊緣進出）。
+      // 只有離真正的端點夠近才拉過去——那一段沒有經過 A* 的淨空檢查，硬拉會擦到鄰居的 pad。
+      // arduino-uno-r3 實測就是這樣多出一個 drc_trace_pad。
+      // opt.snapEnds：差分對的中心線兩端是「兩顆 pad 的中點」，不在任何 pad 上，
+      // 不拉到底會讓展開後的兩條扇出長度不一樣（skew 從 0.05 變 0.8mm）。
+      const endNear = opt.snapEnds === true ||
+        Math.hypot(prevXY[0] - line.x2, prevXY[1] - line.y2) < g * 1.5;
+      flush(endNear ? [line.x2, line.y2] : prevXY, runLayer);
       // 起點同理：把第一段的起點換成真實座標
       if (segs.length) {
         const first = segs[0];
@@ -647,7 +691,7 @@
         x2: (lineA.x2 + B.x2) / 2, y2: (lineA.y2 + B.y2) / 2,
         nets: [lineA.net, B.net]
       };
-      const r = AutoRoute.route(state, padAbs, center, Object.assign({}, opt, { width: 2 * w + gap }));
+      const r = AutoRoute.route(state, padAbs, center, Object.assign({}, opt, { width: 2 * w + gap, snapEnds: true }));
       if (!r.ok) return { ok: false, reason: r.reason || 'no_path' };
       if (!r.segs.length) return { ok: false, reason: 'no_path' };
 

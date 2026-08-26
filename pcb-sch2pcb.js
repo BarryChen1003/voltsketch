@@ -225,7 +225,63 @@
     };
   }
 
-  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard };
+  // ---- 增量更新（ECO）----
+  // 為什麼要這個：舊的同步是「重新產生一片板」——components 換掉、traces/vias/鋪銅全清空。
+  // 線路圖改一顆電阻，佈局就從頭來過，等於逼使用者永遠不要改線路圖。
+  // 真正的 EDA 做法是把線路圖的改動當成 ECO：對得起來的保留位置與走線，
+  // 新增的放進來，刪掉的移走，並且把差異列出來讓人確認。
+  //
+  // 對應鍵：線路圖轉出來的元件 id 是 `sch-<線路圖元件 id>`（與 cross-probe 同一套）。
+  // 沒有這個前綴的（公版、KiCad 匯入、手動放的）不屬於這張線路圖，一律不動。
+  //
+  // 回 { components, kept, added, removed, netChanged, keptRefs, addedRefs, removedRefs }
+  function merge(existing, converted) {
+    const isSch = c => typeof c.id === "string" && c.id.indexOf("sch-") === 0;
+    const byId = new Map();
+    (existing || []).forEach(c => { if (isSch(c)) byId.set(c.id, c); });
+    const out = (existing || []).filter(c => !isSch(c));   // 非線路圖來源的原樣留著
+    const keptRefs = [], addedRefs = [], removedRefs = [];
+    let netChanged = 0;
+
+    for (const nc of (converted || [])) {
+      const old = byId.get(nc.id);
+      if (!old) { out.push(nc); addedRefs.push(nc.ref); continue; }
+      byId.delete(nc.id);
+      // 位置與旋轉是使用者辛苦擺的，保留；封裝與 net 以線路圖為準，換新的。
+      const merged = Object.assign({}, nc, { x: old.x, y: old.y, rot: old.rot != null ? old.rot : nc.rot });
+      // net 有變的話要記一筆：走線可能因此接到錯的網路上
+      const oldNets = (old.pads || []).map(pd => (pd.num != null ? pd.num : "") + "=" + (pd.net || "")).join(",");
+      const newNets = (merged.pads || []).map(pd => (pd.num != null ? pd.num : "") + "=" + (pd.net || "")).join(",");
+      if (oldNets !== newNets) netChanged++;
+      out.push(merged);
+      keptRefs.push(nc.ref);
+    }
+    // 線路圖裡已經沒有的，從板上移除
+    for (const gone of byId.values()) removedRefs.push(gone.ref);
+
+    return {
+      components: out,
+      kept: keptRefs.length, added: addedRefs.length, removed: removedRefs.length,
+      netChanged, keptRefs, addedRefs, removedRefs
+    };
+  }
+
+  // 走線的 net 還在不在：線路圖刪掉一段電路之後，板上會留下接不到任何 pad 的孤兒走線。
+  // 不自動刪（那是使用者的銅），但一定要報出來。
+  function orphanTraces(traces, components) {
+    const live = new Set();
+    (components || []).forEach(c => (c.pads || []).forEach(pd => { if (pd.net) live.add(pd.net); }));
+    return (traces || []).filter(t => t.net && !live.has(t.net));
+  }
+
+  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces };
   if (typeof window !== 'undefined') window.Sch2Pcb = Sch2Pcb;
   if (typeof module !== 'undefined' && module.exports) module.exports = Sch2Pcb;
 })();
+
+
+
+
+
+
+
