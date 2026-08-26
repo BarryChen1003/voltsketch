@@ -66,6 +66,7 @@ knowledge-assets/**
 art-i18n-check.js
 circuit-check.js
 gerber-check.js
+dead-button-check.js
 html-i18n-check.js
 i18n-check.js
 interview-diagram-check.js

@@ -124,7 +124,19 @@ window.PcbHistory = (function () {
     return true;
   }
 
+  // ---- 新建（頂列「新建」）----
+  // pristineJson 是 pcbApp 在 init() 還原自動存檔「之前」拍的原始狀態。
+  // 一定要順手清掉 LS_KEY：不清的話下次開頁 boot() 會把剛清掉的版面又還原回來，
+  // 使用者會看到「按了新建，重整又全部回來」。
+  function newBoard(app, pristineJson) {
+    if (!pristineJson) return false;
+    push(app.state);
+    applySnap(app, pristineJson);
+    try { localStorage.removeItem(LS_KEY); } catch (e) { /* localStorage 被停用就算了，不擋操作 */ }
+    return true;
+  }
+
   const depth = () => ({ undo: undoStack.length, redo: redoStack.length });
 
-  return { push, undo, redo, boot, saveSoon, exportBoard, importBoard, depth };
+  return { push, undo, redo, boot, saveSoon, exportBoard, importBoard, newBoard, depth };
 })();

@@ -148,6 +148,8 @@ jobs:
         run: node ui-i18n-check.js --strict
       - name: html-i18n-check（HTML 不准寫死中文）
         run: node html-i18n-check.js --strict
+      - name: dead-button-check（按鈕都要接上處理器，不准有死按鈕）
+        run: node dead-button-check.js
       - name: vendor-check（不准回頭用 CDN；vendor 檔要與紀錄的雜湊相符）
         run: node vendor-check.js --strict
       - name: csp-hash（inline script 的雜湊要與 _headers 同步）

@@ -1335,5 +1335,52 @@ const minDistToSegs = (px, py, segs) =>
   documentStub.getElementById = savedGet;
 }
 
+// 30) 頂列「新建」：清版面、可 Ctrl+Z 救回、順手清掉自動存檔
+// 這三顆頂列按鈕（新建/儲存/匯出）在 2026-08-26 之前完全沒接處理器，點了沒反應。
+// 接上之後這裡守著行為；「按鈕有沒有接上」則由 dead-button-check.js 守著。
+if (window.PcbHistory && typeof app.newBoard === 'function') {
+  const savedState = app.state;
+  const savedConfirm = global.window.confirm;
+  const LS = 'hardwareai-pcb-autosave';
+
+  app.state = JSON.parse(JSON.stringify(savedState));
+  app.state.components = [];
+  app.state.traces = [];
+  app._pristine = JSON.stringify(app.state);            // init() 拍的原始狀態
+
+  app.state.components = [{ id: 'c1', ref: 'R1', x: 5, y: 5, pads: [] }];
+  app.state.traces = [{ id: 't1', x1: 0, y1: 0, x2: 4, y2: 0, width: 0.3, layer: 'F.Cu', net: 'N1' }];
+  localStorage.setItem(LS, JSON.stringify({ v: 1, t: Date.now(), data: '{}' }));
+
+  // 使用者按「取消」→ 什麼都不能動
+  global.window.confirm = () => false;
+  eq(app.newBoard(), false, '30 取消時 newBoard 回 false');
+  eq(app.state.components.length, 1, '30 取消時元件不可被清掉');
+  ok(localStorage.getItem(LS) !== null, '30 取消時自動存檔不可被清掉');
+
+  // 使用者按「確定」→ 清空、且自動存檔一起清掉
+  global.window.confirm = () => true;
+  eq(app.newBoard(), true, '30 確認後 newBoard 回 true');
+  eq(app.state.components.length, 0, '30 新建後元件清空');
+  eq(app.state.traces.length, 0, '30 新建後走線清空');
+  eq(localStorage.getItem(LS), null, '30 新建要清掉自動存檔（不清會在重整後復活）');
+
+  // Ctrl+Z 救得回來
+  ok(window.PcbHistory.undo(app), '30 新建後 undo 應成功');
+  eq(app.state.components.length, 1, '30 undo 後元件回來');
+  eq(app.state.traces.length, 1, '30 undo 後走線回來');
+
+  // 沒拍過原始狀態就不准動（init 沒跑完的情況）
+  const noPristine = app._pristine;
+  app._pristine = null;
+  eq(app.newBoard(), false, '30 沒有原始狀態快照時不可清版面');
+  eq(app.state.components.length, 1, '30 沒有快照時元件必須留著');
+  app._pristine = noPristine;
+
+  global.window.confirm = savedConfirm;
+  app.state = savedState;
+}
+
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -74,9 +74,32 @@ const pcbApp = {
     this.populatePartsPicker();
     this.state.netRules = window.NetRules ? window.NetRules.load() : [];
     this.renderNetRules();
+    // 頂列「新建」要回到的原始狀態：趁自動存檔還原之前拍一份
+    this._pristine = JSON.stringify(this.state);
     // 自動存檔還原（有上次版面就接續；空版面不還原）
     if (window.PcbHistory && PcbHistory.boot(this)) this.toast(pcbT('pj_hist_restored'), 'info');
     this.render();
+  },
+
+  // 頂列「新建」：回到開站時的空版面。有東西才問，問過才清；清完可 Ctrl+Z 救回。
+  newBoard() {
+    const hasWork = this.state.components.length || this.state.traces.length;
+    if (hasWork && typeof window.confirm === "function" && !window.confirm(pcbT("pj_new_confirm"))) return false;
+    if (!(window.PcbHistory && PcbHistory.newBoard(this, this._pristine))) return false;
+    this.toast(pcbT("pj_new_done"), "info");
+    return true;
+  },
+
+  // 頂列「匯出」：匯出動作分散在數個面板（製造包 / KiCad / STEP / DXF），
+  // 這顆只負責把人帶到那一區並聚焦，不替使用者選格式。
+  revealExportPanel() {
+    const btn = document.getElementById('exportGerberBtn');
+    if (!btn) return false;
+    const sec = btn.closest ? (btn.closest('.panel-section') || btn) : btn;
+    if (sec.scrollIntoView) sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (btn.focus) btn.focus({ preventScroll: true });
+    this.toast(pcbT("pj_export_hint"), "info");
+    return true;
   },
 
   // 變更動作前呼叫：現狀進復原疊（Ctrl+Z 可回）
@@ -3115,6 +3138,10 @@ const pcbApp = {
     document.getElementById('redoBtn')?.addEventListener('click', () => {
       if (!(window.PcbHistory && PcbHistory.redo(this))) this.toast(pcbT('pj_hist_none'), 'warn');
     });
+    // 頂列 新建/儲存/匯出：與側欄按鈕共用同一套邏輯，不另開一套
+    document.getElementById('newPcb')?.addEventListener('click', () => this.newBoard());
+    document.getElementById('savePcb')?.addEventListener('click', () => { if (window.PcbHistory) PcbHistory.exportBoard(this); });
+    document.getElementById('exportPcb')?.addEventListener('click', () => this.revealExportPanel());
     document.getElementById('saveBoardBtn')?.addEventListener('click', () => {
       if (window.PcbHistory) PcbHistory.exportBoard(this);
     });
