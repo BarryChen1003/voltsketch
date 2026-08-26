@@ -71,7 +71,11 @@ window.PadDrc = (() => {
       const cr = (b[0] - a[0]) * (py - a[1]) - (b[1] - a[1]) * (px - a[0]);
       if (cr !== 0) { const s = cr > 0 ? 1 : -1; if (sign === 0) sign = s; else if (s !== sign) return false; }
     }
-    return true;
+    // 所有外積都是 0＝退化多邊形（一個點或一條線），沒有內部可言。
+    // 舊版這裡回 true，於是核心退化成線段的 oval pad（hw 或 hh 為 0，例如 USB-C 的
+    // 外殼腳 1.2×2.2）會把任何點都當成「在裡面」：polyDist 回 0、padDist 變 -(rA+rB)，
+    // 兩顆相隔 2.6mm 的 pad 被報成重疊 1.2mm。公版的假錯有一大半出在這裡。
+    return sign !== 0;
   };
 
   const edges = pts => {

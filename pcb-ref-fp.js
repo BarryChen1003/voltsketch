@@ -242,9 +242,13 @@ window.RefFP = (function () {
   // USB A/B THT（4 訊號＋2 殼）
   function usbTht(w, h, dual) {
     const names = ['VBUS', 'D-', 'D+', 'GND'];
-    const pads = names.map((n, i) => P(i + 1, n, (i - 1.5) * 2.0, -h / 2 + 2, 1.7, 1.7, Object.assign({}, THT, { drill: 0.9 })));
-    pads.push(P('S1', 'SHELL', -w / 2 + 0.8, 0, 2.4, 2.4, Object.assign({}, THT, { drill: 1.6 })));
-    pads.push(P('S2', 'SHELL', w / 2 - 0.8, 0, 2.4, 2.4, Object.assign({}, THT, { drill: 1.6 })));
+    const sigY = -h / 2 + 2;
+    const pads = names.map((n, i) => P(i + 1, n, (i - 1.5) * 2.0, sigY, 1.7, 1.7, Object.assign({}, THT, { drill: 0.9 })));
+    // 殼腳原本固定放 y=0，body 一矮就與訊號排等高，2.4mm 的殼腳直接壓上 1.7mm 的訊號 pad。
+    // 需要的中心距＝1.7/2 + 2.4/2 + 淨距 0.15 = 2.2，這裡取 2.4 留餘裕。
+    const shY = Math.max(0, sigY + 2.4);
+    pads.push(P('S1', 'SHELL', -w / 2 + 0.8, shY, 2.4, 2.4, Object.assign({}, THT, { drill: 1.6 })));
+    pads.push(P('S2', 'SHELL', w / 2 - 0.8, shY, 2.4, 2.4, Object.assign({}, THT, { drill: 1.6 })));
     return { pads, body: { w, h }, pkg: 'USB THT', warnings: dual ? ['雙埠簡化為單組腳位'] : [] };
   }
 
@@ -252,16 +256,24 @@ window.RefFP = (function () {
     'CLK+', 'CLK SH', 'CLK-', 'CEC', 'UTIL', 'SCL', 'SDA', 'GND', '+5V', 'HPD'];
   function hdmi(w, h) {
     const pads = HDMI_NAMES.map((n, i) => P(i + 1, n, (i - 9) * 0.5, -h / 2 + 0.8, 0.3, 1.4));
-    [[-w / 2 + 1, 1], [w / 2 - 1, 1], [-w / 2 + 1, h / 2 - 0.8], [w / 2 - 1, h / 2 - 0.8]].forEach((s, i) =>
+    // 殼腳兩排的間距不能只照 body 高度算：a20-lime 的 HDMI body 矮，
+    // h/2-0.8 會落到上排殼腳身上（實測疊 0.6mm）。取「宣告位置」與「最小安全距」的較大者。
+    const shTop = 1, shBot = Math.max(h / 2 - 0.8, shTop + 1.8 + 0.2);
+    [[-w / 2 + 1, shTop], [w / 2 - 1, shTop], [-w / 2 + 1, shBot], [w / 2 - 1, shBot]].forEach((s, i) =>
       pads.push(P('S' + (i + 1), 'SHELL', s[0], s[1], 1.6, 1.8, Object.assign({}, THT, { drill: 0.9 }))));
     return { pads, body: { w, h }, pkg: 'HDMI-A 19P', warnings: [] };
   }
 
   const RJ45_NAMES = ['TRD0+', 'TRD0-', 'TRD1+', 'TRD2+', 'TRD2-', 'TRD1-', 'TRD3+', 'TRD3-'];
   function rj45(w, h) {
-    const pads = RJ45_NAMES.map((n, i) => P(i + 1, n, (i - 3.5) * 1.27, -h / 2 + 1.6, 1.5, 1.5, Object.assign({}, THT, { drill: 0.9 })));
-    pads.push(P('S1', 'SHELL', -w / 2 + 1, h / 2 - 3, 2.6, 2.6, Object.assign({}, THT, { drill: 1.6 })));
-    pads.push(P('S2', 'SHELL', w / 2 - 1, h / 2 - 3, 2.6, 2.6, Object.assign({}, THT, { drill: 1.6 })));
+    // 1.27mm pitch 塞不下 1.5mm 的圓 pad（相鄰疊 0.23mm）。
+    // 實務值：drill 0.8、pad 1.1 → 環寬 0.15、相鄰淨距 0.17，兩邊都過得去。
+    const sigY = -h / 2 + 1.6;
+    const pads = RJ45_NAMES.map((n, i) => P(i + 1, n, (i - 3.5) * 1.27, sigY, 1.1, 1.1, Object.assign({}, THT, { drill: 0.8 })));
+    // 殼腳同理：body 一矮就會壓到訊號排
+    const shY = Math.max(h / 2 - 3, sigY + 0.55 + 1.3 + 0.2);
+    pads.push(P('S1', 'SHELL', -w / 2 + 1, shY, 2.6, 2.6, Object.assign({}, THT, { drill: 1.6 })));
+    pads.push(P('S2', 'SHELL', w / 2 - 1, shY, 2.6, 2.6, Object.assign({}, THT, { drill: 1.6 })));
     return { pads, body: { w, h }, pkg: 'RJ45 8P', warnings: [] };
   }
 
@@ -278,9 +290,16 @@ window.RefFP = (function () {
     const S = ['GND', 'A+', 'A-', 'GND', 'B-', 'B+', 'GND'];
     const PWR = ['3V3', '3V3', '3V3', 'GND', 'GND', 'GND', '5V', '5V', '5V', 'GND', 'GND', 'GND', '12V', '12V', '12V'];
     const pads = [];
-    S.forEach((n, i) => pads.push(P('S' + (i + 1), n, 0, -h / 2 + 0.8 + i * 0.7, 2.0, 0.4)));
-    PWR.forEach((n, i) => pads.push(P('P' + (i + 1), n, 0, -h / 2 + 6.6 + i * 0.42, 2.0, 0.3)));
-    return { pads, body: { w, h }, pkg: 'SATA 7+15', warnings: [] };
+    // SATA 兩段的實際 pitch 都是 1.27mm。舊值（資料 0.7、電源 0.42）是憑印象填的，
+    // 電源排的淨距只剩 0.12mm，比 0.15 的下限還小。
+    // 改成橫排＝實體插座的樣子（資料段 7 腳、電源段 15 腳並排），body 由這裡算，
+    // 不再用板子宣告的 6×13——22 個 1.27mm 的腳位在 13mm 裡本來就放不下。
+    const PITCH = 1.27;
+    const rowY = -1.5, pwrY = 1.5;
+    S.forEach((n, i) => pads.push(P('S' + (i + 1), n, (i - (S.length - 1) / 2) * PITCH - 5.5, rowY, 0.6, 2.0)));
+    PWR.forEach((n, i) => pads.push(P('P' + (i + 1), n, (i - (PWR.length - 1) / 2) * PITCH, pwrY, 0.6, 2.0)));
+    const halfW = Math.max(5.5 + (S.length - 1) / 2 * PITCH, (PWR.length - 1) / 2 * PITCH) + 1;
+    return { pads, body: { w: halfW * 2, h: 7 }, pkg: 'SATA 7+15', warnings: ['資料段與電源段並排為近似佈置'] };
   }
 
   // Mini PCIe 52 邊接指（奇下偶上，0.5 近似）
@@ -321,9 +340,11 @@ window.RefFP = (function () {
 
   function barrel(w, h) {
     return {
-      pads: [P(1, 'TIP(+)', -w / 2 + 1.5, 0, 2.4, 3.2, Object.assign({}, THT, { shape: 'oval', drill: 1.1 })),
-        P(2, 'SLEEVE(-)', w / 2 - 1.5, 0, 2.4, 3.2, Object.assign({}, THT, { shape: 'oval', drill: 1.1 })),
-        P(3, 'SHUNT', 0, h / 2 - 1, 2.4, 3.2, Object.assign({}, THT, { shape: 'oval', drill: 1.1 }))],
+      // 2.4×3.2 的 oval：短軸方向的中心距至少要 2.55 才不會互疊。
+      // 宣告的 body 比實際插座小時（imx233-maxi），照 w/h 擺會讓 TIP 與 SHUNT 疊 0.068mm。
+      pads: [P(1, 'TIP(+)', -Math.max(w / 2 - 1.5, 2.0), 0, 2.4, 3.2, Object.assign({}, THT, { shape: 'oval', drill: 1.1 })),
+        P(2, 'SLEEVE(-)', Math.max(w / 2 - 1.5, 2.0), 0, 2.4, 3.2, Object.assign({}, THT, { shape: 'oval', drill: 1.1 })),
+        P(3, 'SHUNT', 0, Math.max(h / 2 - 1, 2.8), 2.4, 3.2, Object.assign({}, THT, { shape: 'oval', drill: 1.1 }))],
       body: { w, h }, pkg: 'DC Jack 3P', warnings: []
     };
   }
@@ -356,6 +377,10 @@ window.RefFP = (function () {
     const pre = (String(c.ref || '').match(/^[A-Za-z]+/) || [''])[0].toUpperCase();
     // 開關類
     if (pre === 'SW') return /DIP/i.test(part) ? dipSw2() : tact(c.w, c.h);
+    // ICSP 要排在 USB 前面：Arduino 的那顆叫「ICSP 6P (USB)」，
+    // 照字面先撞到 /USB/ 就會被當成 USB 插座配一組 2.4mm 殼腳，
+    // 但它其實是 2×3 排針（殼腳擺在 ±1.2mm 剛好互相貼死）。
+    if (pre === 'ICSP' || /ICSP/i.test(part)) return header(2, 3, ISP_NAMES);
     // 具名連接器
     if (/USB-?C/i.test(part)) return usbC();
     if (/OTG|micro\b(?!SD)/i.test(part) && /USB/i.test(part)) return usbMicro();

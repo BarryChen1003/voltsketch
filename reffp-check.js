@@ -1,6 +1,8 @@
 /**
  * reffp-check.js — 公版 footprint 解析器程式化檢查（node reffp-check.js）
- * 驗：覆蓋率、pad 幾何健全（NaN/零尺寸/編號重複）、pad 不離 body 過遠、指標料件 pad 數。
+ * 驗：覆蓋率、pad 幾何健全（NaN/零尺寸/編號重複）、pad 不離 body 過遠、指標料件 pad 數、
+ *     以及同一顆 footprint 內兩個 pad 的淨距（2026-08-26 新增：8 種連接器的 pad 本來就互疊，
+ *     RJ45 相鄰腳疊 0.23mm、HDMI 殼腳疊 0.6mm，畫面上看不出來，只有量幾何才知道）。
  * 過 = exit 0；任何 FAIL = exit 1。
  */
 'use strict';
@@ -11,6 +13,9 @@ require('./footprint-gen.js');
 require('./parts-lib.js');
 require('./pcb-refboards.js');
 require('./pcb-ref-fp.js');
+require('./pcb-drc.js');   // 只用它的幾何（padShape/padDist），不跑整套 DRC
+const GEOM = window.PadDrc._geom;
+const PAD_GAP_MIN = 0.15;  // 與 pcbApp 預設 DRC 的 padToPad 同值
 
 const boards = window.PCB_REFBOARDS || [];
 let fails = 0, warns = 0;
@@ -51,6 +56,19 @@ for (const b of boards) {
       if (p.type === 'thru_hole' && !(p.drill > 0)) { FAIL(tag + ` pad ${p.num} THT 無鑽孔`); break; }
       if (p.drill > 0 && p.type !== 'np_thru_hole' && p.drill >= Math.min(p.w, p.h)) { FAIL(tag + ` pad ${p.num} 鑽孔 ≥ pad（環寬 ≤0）`); break; }
     }
+
+    // 同一顆 footprint 內的 pad 淨距（不同 net 才算；同 net 的腳本來就可以併）
+    const origin = { x: 0, y: 0, rot: 0 };
+    const abs = (comp, pad) => ({ x: pad.x, y: pad.y });
+    let worstPair = null;
+    for (let i = 0; i < r.pads.length; i++) for (let j = i + 1; j < r.pads.length; j++) {
+      const A = r.pads[i], B = r.pads[j];
+      if (A.net && A.net === B.net) continue;
+      if (!(A.side === '*' || B.side === '*' || A.side === B.side)) continue;
+      const d = GEOM.padDist(GEOM.padShape(origin, A, abs), GEOM.padShape(origin, B, abs));
+      if (d < PAD_GAP_MIN - 1e-9 && (!worstPair || d < worstPair.d)) worstPair = { a: A.num, b: B.num, d };
+    }
+    if (worstPair) FAIL(tag + ` pad ${worstPair.a} 與 ${worstPair.b} 淨距 ${worstPair.d.toFixed(3)}mm < ${PAD_GAP_MIN}mm`);
 
     // 指標 pad 數
     for (const [re, n] of EXPECT)
