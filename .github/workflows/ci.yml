@@ -50,6 +50,8 @@ jobs:
       #       gerber-check 只驗結構，線寬全給錯它照樣是綠的——這支才擋得住。
       - name: gerber-readback（讀回幾何比對）
         run: node gerber-readback.js
+      - name: odb-check（ODB++ 結構與 readback）
+        run: node odb-check.js
 
       # 2c-3) 鋪銅幾何：依序重放 Gerber 的極性（LPD/LPC），量避讓間隙與熱風焊盤輻條。
       #       避讓少挖 0.1mm 板子就是短路，只數行數看不出來。

@@ -1132,7 +1132,13 @@ const pcbApp = {
   // Gerber 由後端產生（supabase/functions/pcb-export）。
   // 產生器不在前端：它送給每個訪客的話，PCB 這個付費功能真正的價值——
   // 那包拿去打版的檔案——等於免費送。這裡只負責送出板子狀態與收下 ZIP。
-  async exportGerber() {
+  async exportGerber() { return this.exportFab("gerber"); },
+
+  // ODB++ 走同一條路（同一支 Edge Function、同一個額度計數器），只差 format。
+  async exportOdb() { return this.exportFab("odb"); },
+
+  // 匯出製造包。format：gerber＝Gerber＋鑽孔＋鋼網＋CPL＋IPC-356；odb＝ODB++ 子集。
+  async exportFab(format) {
     const el = document.getElementById('kicadIoMsg');
     const say = (html) => { if (el) el.innerHTML = html; };
 
@@ -1177,7 +1183,7 @@ const pcbApp = {
       res = await fetch((window.AUTH_CONFIG.url) + '/functions/v1/pcb-export', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify({ state: s, baseName: base })
+        body: JSON.stringify({ state: s, baseName: base, format })
       });
     } catch (e) { say('⚠ ' + pcbT('pj_gerber_failed', { err: e.message })); return; }
 
@@ -1202,11 +1208,20 @@ const pcbApp = {
     const blob = await res.blob();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = base.replace(/\.kicad_pcb$/i, '') + '-gerber.zip';
+    a.download = base.replace(/\.kicad_pcb$/i, '') + (format === 'odb' ? '-odbpp.zip' : '-gerber.zip');
     a.click();
     URL.revokeObjectURL(a.href);
 
     if (meta) {
+      const warnsOdb = (meta.warnings || []).map(w => pcbT(w.k, w.v));
+      if (format === "odb") {
+        const st2 = meta.stats || {};
+        say(pcbT("pj_odb_exported", {
+          n: meta.files.length, layers: st2.layers || 0,
+          pads: st2.pads || 0, traces: st2.traces || 0, drills: st2.drills || 0
+        }) + (warnsOdb.length ? "<br>⚠ " + warnsOdb.join("<br>⚠ ") : ""));
+        return;
+      }
       const names = meta.files.map(f => f.replace(/^.*?-/, '')).join('、');
       const warns = (meta.warnings || []).map(w => pcbT(w.k, w.v));
       say(pcbT('pj_gerber_exported', {
@@ -2656,6 +2671,7 @@ const pcbApp = {
     });
     document.querySelector('#exportKicadBtn')?.addEventListener('click', () => this.exportKicad());
     document.querySelector('#exportGerberBtn')?.addEventListener('click', () => this.exportGerber());
+    document.querySelector('#exportOdbBtn')?.addEventListener('click', () => this.exportOdb());
 
     // IC 庫放料
     document.querySelector('#placeIcBtn')?.addEventListener('click', () => {

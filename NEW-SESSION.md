@@ -163,16 +163,18 @@ npx --yes supabase functions deploy <名稱> --project-ref dmkxjawjrmltmrmkebbs 
 
 ---
 
-## 6. 檢查（CI 43 關的本地版）
+## 6. 檢查（CI 45 關的本地版）
 
 ```bash
 # PCB 地基
 node pcb-logic.test.js
 node gerber-check.js
 node gerber-readback.js
+node odb-check.js
 node gerber-pour.test.js
 node gerber-mfg.test.js
 node reffp-check.js
+node dead-button-check.js
 
 # PCB 功能模組
 node pcb-mfg.test.js
@@ -244,6 +246,8 @@ node plan-dates.test.mjs
 | **8 片公版自己過不了 DRC** | 🔴 合計 **388 個 error**，實測確認不是誤判。VBUS 走線直接橫越 J1 整排 pad（回報距離 `d=0`，做出來就是短路）；U1 與 C3 的 pad 只隔 0.095mm，連 JLCPCB 的 0.10mm 下限都不到。公版的走線是「示意直線」不是真的繞線。用多層路由器全部重繞只降到 252，剩下是 `drc_padgap`（**擺位問題，重繞救不了**）。已用缺陷預算鎖住（`pcb-logic.test.js` 第 21 節），**只准往下不准往上**。修＝重新設計 8 片板 |
 | **公版的 pad 大多沒有 net** | 🔴 上一條的根因之一，也是 autoRoute 在公版上只有 70% 的主因：沒有 net 的 pad 一律當障礙，密腳封裝的目標腳被自己人包死（26 個失敗裡 23 個是「起點就被封住」）。`assignPadNets()` 從走線端點回推了一部分，但走線只覆蓋少數 net |
 | **3D 檢視實質不可用** | 🔴 `pcb-3d.js` 需要自行代管的 Three.js，**目前不在 `vendor/`**。已改成只從 `vendor/` 載並明講「尚未代管」，不再退回 CDN（退回去線上一定被 CSP 擋）。**要不要把 Three.js（約 600KB）收進 vendor 是使用者的決定** |
+| **ODB++ 匯出** | 🟡 v1 是**子集**：銅層／鑽孔／板框有，阻焊、絲印、鋼網、元件、netlist 沒有。弧走弦線近似、roundrect 當 rect。`odb-check.js` 驗結構與 readback（379 條），但**沒有人用真的 CAM 開過** |
+| **autoRoute 差分對** | 🟡 中心線繞一次再展開，耦合度實測 98.8%。但不做 push-and-shove、轉角處靠補段連接、長度差只回報不自動補（要自己按等長調諧） |
 | **STEP 匯出** | 🟡 拓樸與參照程式驗過（流形、尤拉、參照完整），但**沒有人用真的 CAD 開過**；元件是佔位方塊不是原廠模型 |
 | **KiCad 匯出** | 🟡 結構驗過，**沒有人用真的 KiCad 開過** |
 | **autoRoute** | 🟡 沒有 push-and-shove、一次一條不看全局、4 秒預算。合成板（net 完整）60／120 顆元件都 100%；公版 70%（原因見上） |
@@ -277,10 +281,10 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 
 ## 10. 待辦（依序）
 
-1. **autoRoute 差分對**：互動繪製已有成對模式，自動繞線還沒有。
-2. **ODB++ 匯出**：比 Gerber 完整但格式龐大；Gerber X2（`.gbrjob`）已在輸出，邊際價值待評估。
-3. **8 片公版重做**：擺位＋走線一起重來。同時解掉 §8 的前兩條，但屬於重新設計，**要使用者點頭**。
-4. **Three.js 是否收進 `vendor/`**：使用者決定；照規矩要先做安全檢查。
+1. **8 片公版重做**：擺位＋走線一起重來，同時解掉 §8 的前兩條。屬於重新設計，工程量最大。
+2. **Three.js 是否收進 `vendor/`**：使用者決定；照規矩要先做安全檢查。3D 檢視在那之前都是不可用的。
+3. **差分對的等長補償自動化**：`routePair` 回報 skew，但要不要補、補多少還是手動按等長調諧。
+4. **ODB++ 的元件與 netlist**：v1 只有銅層／鑽孔／板框（見 §8）。要當成 Gerber 的替代品得補 CMP 與 cadnet。
 
 ---
 

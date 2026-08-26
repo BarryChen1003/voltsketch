@@ -73,6 +73,7 @@ interview-diagram-check.js
 interview-i18n-check.js
 knowledge-art-audit.js
 news-i18n-check.js
+odb-check.js
 reffp-check.js
 svg-overlap-check.js
 symbol-overlap-check.js

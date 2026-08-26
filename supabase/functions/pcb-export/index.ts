@@ -17,6 +17,7 @@
 
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { build, zipStore } from "../_shared/gerber.mjs";
+import { build as buildOdb } from "../_shared/odbpp.mjs";
 
 // 只認自家網域（與 create-order 同一套理由）
 const ALLOWED_ORIGINS = new Set([
@@ -83,6 +84,8 @@ Deno.serve(async (req) => {
     if (!allowed) return json({ error: "pcb_access_required" }, 403);
 
     // 3) 匯出額度：跟其它格式走同一個計數器，額度也擋得住
+    // ODB++ 與 Gerber 共用同一個額度計數器：兩者都是可以送板廠的製造包，
+    // 分開計等於多送一份免費額度。
     const { data: quota, error: qErr } = await anon.rpc("consume_export_quota", { p_export_type: "gerber" });
     if (qErr) return json({ error: "quota_error" }, 500);
     const q = Array.isArray(quota) ? quota[0] : quota;
@@ -91,7 +94,7 @@ Deno.serve(async (req) => {
     // 4) 板子狀態
     const raw = await req.text();
     if (raw.length > MAX_BODY) return json({ error: "board_too_large" }, 413);
-    let body: { state?: unknown; baseName?: string };
+let body: { state?: unknown; baseName?: string; format?: string };
     try { body = JSON.parse(raw); } catch { return json({ error: "bad_json" }, 400); }
     const state = body?.state as Record<string, unknown> | undefined;
     if (!state || typeof state !== "object") return json({ error: "missing_state" }, 400);
@@ -106,15 +109,19 @@ Deno.serve(async (req) => {
 
     // 5) 產生
     const baseName = String(body.baseName || "hardwareai").replace(/[^\w.-]/g, "_").slice(0, 64);
-    const r = build(state, padAbs, baseName);
+    // format 預設 gerber；odb 走 ODB++ 子集（銅層/鑽孔/板框，見 _shared/odbpp.mjs 檔頭）
+    const isOdb = body.format === "odb";
+    const r = isOdb ? buildOdb(state, padAbs, baseName) : build(state, padAbs, baseName);
     const zip = zipStore(r.files.map((f: any) => ({ name: f.name, text: f.text })));
 
     // 統計與警告走標頭（本體是 ZIP 位元組）。警告是 { k, v }，由前端翻成四語。
     const meta = {
       files: r.files.map((f: any) => f.name),
-      drillCounts: r.drillCounts,
-      cplCount: r.cplCount,
-      ipcRecords: r.ipcRecords,
+      format: isOdb ? "odb" : "gerber",
+      stats: (r as any).stats ?? null,
+      drillCounts: (r as any).drillCounts ?? null,
+      cplCount: (r as any).cplCount ?? null,
+      ipcRecords: (r as any).ipcRecords ?? null,
       warnings: r.warnings,
       remaining: q.remaining,
     };
@@ -124,7 +131,7 @@ Deno.serve(async (req) => {
       headers: {
         ...cors,
         "Content-Type": "application/zip",
-        "Content-Disposition": `attachment; filename="${baseName}-gerber.zip"`,
+        "Content-Disposition": `attachment; filename="${baseName}-${isOdb ? "odbpp" : "gerber"}.zip"`,
         // 標頭只能放 ASCII；中文會在 warnings 的 v 裡，所以整包做 base64
         "X-Gerber-Meta": btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(meta)))),
       },

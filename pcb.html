@@ -773,6 +773,7 @@
               </label>
               <button class="small-button" id="exportKicadBtn" data-i18n="pcb_exp_kicad">💾 匯出 .kicad_pcb</button>
               <button class="small-button" id="exportGerberBtn" data-i18n="pcb_exp_gerber">🏭 匯出製造包（Gerber+鑽孔+鋼網+CPL+IPC-356）</button>
+              <button class="small-button" id="exportOdbBtn" data-i18n="pcb_exp_odb">🧩 匯出 ODB++（銅層／鑽孔／板框子集）</button>
               <div id="kicadIoMsg" style="color:var(--muted);line-height:1.5"></div>
               <div style="color:var(--muted);line-height:1.5" data-i18n="pcbf_h_kicad">匯入檔會保留整棵原始資料樹；匯出時未編輯的幾何 100% 原樣回寫（零落差）。.brd 為 Cadence 專有二進位：匯入走「板面檢視」分頁的 SKILL 抽取，匯出走 SKILL 重建腳本。</div>
             </div>
@@ -1032,7 +1033,7 @@
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./observe.js?v=1"></script>
     <script src="./auth.js?v=2026-08-18a"></script>
-    <script src="./i18n.js?v=2026-08-26b"></script>
+    <script src="./i18n.js?v=2026-08-26c"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-07-08b"></script>
@@ -1047,7 +1048,7 @@
     <script src="./pcb-rules.js?v=11"></script>
     <script src="./pcb-3d.js?v=3"></script>
     <script src="./pcb-crossprobe.js?v=1"></script>
-    <script src="./pcb.js?v=49"></script>
+    <script src="./pcb.js?v=50"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-08-25a"></script>
     <script src="./pcb-stackup.js?v=2026-08-24b"></script>
