@@ -695,6 +695,7 @@
                 <button class="small-button" id="tuneBtn" data-i18n="pcbf_tune_btn">〰 產生蛇形</button>
                 <div id="tuneMsg" style="font-size:11px;color:var(--muted);line-height:1.5"></div>
               </div>
+              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer" data-i18n-title="pcbf_shove_hint" title="畫線碰到別的網路時，把那條平行的鄰居往旁邊推開；端點卡在 pad/via 上的不動"><input type="checkbox" id="shoveToggle" checked><span data-i18n="pcbf_shove">繞線時自動推擠鄰居</span></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ratsnestToggle"><span data-i18n="pcbf_ratsnest">顯示飛線（未連線）</span></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="pinNumToggle" checked><span data-i18n="pcbf_pinnum">顯示 pin number</span></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="pinNameToggle" checked><span data-i18n="pcbf_pinname">顯示腳名 / 網路</span></label>
@@ -1053,7 +1054,7 @@
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./observe.js?v=1"></script>
     <script src="./auth.js?v=2026-08-18a"></script>
-    <script src="./i18n.js?v=2026-08-26i"></script>
+    <script src="./i18n.js?v=2026-08-26j"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-08-26a"></script>
@@ -1066,9 +1067,10 @@
     <script src="./kicad-io.js?v=10"></script>
     <script src="./pcb-drc.js?v=6"></script>
     <script src="./pcb-rules.js?v=12"></script>
+    <script src="./pcb-shove.js?v=1"></script>
     <script src="./pcb-3d.js?v=2"></script>
     <script src="./pcb-crossprobe.js?v=1"></script>
-    <script src="./pcb.js?v=56"></script>
+    <script src="./pcb.js?v=57"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-08-25a"></script>
     <script src="./pcb-stackup.js?v=2026-08-24b"></script>

@@ -2195,6 +2195,12 @@ const pcbApp = {
     this.state.ratsnest = null;
   },
 
+  // 推擠開關：預設開。關掉就回到「只警告不動別人的線」的舊行為。
+  shoveEnabled() {
+    const el = document.getElementById("shoveToggle");
+    return el ? !!el.checked : true;
+  },
+
   previewClearance(td) {
     const gm = window.PadDrc && window.PadDrc._geom;
     if (!gm || !td) return null;
@@ -3446,6 +3452,21 @@ const pcbApp = {
           this.hist();
           this.state.traces.push(tr);
           this.state.ratsnest = null;
+          // 推擠：擋路的鄰居往旁邊挪，而不是留下一個違規讓使用者自己收拾。
+          // 推不動就照實說（保留原本的規則警告），不要假裝成功——
+          // 使用者看到「已推開」卻其實沒推，比看到「推不動」危險得多。
+          if (this.shoveEnabled() && window.Shove) {
+            const plan = Shove.plan(this.state, this.padAbs.bind(this), tr,
+              { clearance: this.loadDrcRules().clearance });
+            if (plan.blockers) {
+              if (plan.ok) {
+                const n = Shove.apply(this.state, plan);
+                if (n) this.toast(pcbT("pj_shove_done", { n }), "info");
+              } else {
+                this.toast(pcbT("pj_shove_fail", { n: plan.blockers, why: pcbT("pj_shove_why_" + String(plan.reason).split(":")[0]) }), "warn");
+              }
+            }
+          }
           this.checkTraceRules(tr);
           this.renderPartsList();
         }

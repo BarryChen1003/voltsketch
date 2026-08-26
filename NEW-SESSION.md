@@ -62,6 +62,7 @@ node pcb-logic.test.js && node gerber-check.js && node gerber-readback.js
 |---|---|---|
 | `pcb.js` | `pcbApp` | 編輯器主體：擺件、走線、渲染、DRC 呼叫、匯出入口 |
 | `pcb-rules.js` | `NetRules` `Ratsnest` `AutoRoute` `RouteAll` | net 規則、飛線、單條繞線原語、多條繞線策略 |
+| `pcb-shove.js` | `Shove` | 推擠：把擋路的平行鄰居側推（只平移、不重繞、不連鎖） |
 | `pcb-drc.js` | `PadDrc` | pad 級 DRC（線距／環寬／孔距／sliver／courtyard…） |
 | `pcb-constraints.js` | `ConstraintMgr` | net class、間距矩陣、銳角 |
 | `pcb-stackup.js` | `Stackup` `Padstack` `Backdrill` | 疊層、via 預設、背鑽 |
@@ -175,7 +176,7 @@ node tools/refboard-rebuild.js rp2040-pico30  # 只重建一片
 
 ---
 
-## 6. 檢查（CI 46 關的本地版）
+## 6. 檢查（CI 47 關的本地版）
 
 ```bash
 # PCB 地基
@@ -193,6 +194,7 @@ node pcb-mfg.test.js
 node pour.test.js
 node blindvia.test.js
 node pcb3d.test.js
+node shove.test.js
 node sch2pcb.test.js
 node dxf.test.js
 node step.test.js
@@ -302,7 +304,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 | 2 | 拖元件時走線橡皮筋 | ✅ 2026-08-26（`beginRubber`/`updateRubber`） |
 | 3 | 弧線／45° 圓角走線 | 🟡 2026-08-26 做了轉角導角（`Mfg.Mitre`，45° 斜切／圓弧逼近）。**輸出是線段不是真圓弧**——下游 DRC／鋪銅／匯出全部吃線段，真圓弧要動 DRC 的距離運算 |
 | 4 | net 升級成一級物件 | 🟡 已完成：公版帶 `padNets`、ECO 增量同步、網名穩定化、多頁一起同步、網路清單／未接線面板、封裝 back-annotation。**還缺**：net 物件與屬性、refdes/net 改名回寫 |
-| 5 | push-and-shove | ⬜ 要建立在 4 之上 |
+| 5 | push-and-shove | 🟡 2026-08-26 做了**平行鄰居側推**（`pcb-shove.js`）：畫線擠到別的網路時把那條整條平移讓路。端點卡在 pad/via 上的不動、推出去會撞到別人就拒絕、不做連鎖推擠 |
 | 6 | Clipper 布林鋪銅 | ⬜ 目前柵格夠用且誠實標註 |
 
 另外兩件與路線圖無關但還欠著：
@@ -342,7 +344,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 
 | 缺什麼 | 影響 | 現況 |
 |---|---|---|
-| 🟡 **push-and-shove** | 走線遇到既有線只能自己繞開，不能推開它 | 沒有（路線圖 #5） |
+| 🟡 **完整 push-and-shove** | 目前只推得動「平行的鄰居」，而且只平移不重繞；真正的 PNS 會邊繞邊擠、還會連鎖推開後面那幾條 | `pcb-shove.js` 是子集 |
 | 🟡 **真圓弧走線** | 導角輸出的是線段逼近；高速線要真圓弧 | `Mfg.Mitre` 產生線段；真圓弧要改 DRC 的距離運算 |
 | 🟡 **連續多段繪製** | 一次拖一段，轉彎要放開再拉 | 起點會自動吸附上一段的端點，但不是連續模式 |
 | 🟡 **整條走線拖曳** | 只能拖端點，不能整段平移 | `dragEndpoint` 只處理端點 |

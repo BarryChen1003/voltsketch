@@ -54,6 +54,8 @@ jobs:
         run: node odb-check.js
       - name: pcb3d.test（3D 板框串接與元件高度）
         run: node pcb3d.test.js
+      - name: shove.test（推擠：不該推的時候不可推）
+        run: node shove.test.js
 
       # 2c-3) 鋪銅幾何：依序重放 Gerber 的極性（LPD/LPC），量避讓間隙與熱風焊盤輻條。
       #       避讓少挖 0.1mm 板子就是短路，只數行數看不出來。
