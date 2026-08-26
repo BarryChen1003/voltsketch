@@ -414,7 +414,115 @@
     }
   };
 
-  const Mfg = { Teardrops, Stitch, DrillTable, Panel, _geom: { segDist, inPoly, padRadius } };
+  // ---------- 5) 轉角導角 ----------
+  // 為什麼要：直角轉彎在蝕刻時內側會積蝕刻液（acid trap），而且轉角處阻抗不連續。
+  // 業界慣例是 45° 斜切，高速線走圓弧。這個編輯器原本只畫得出直角。
+  //
+  // 誠實界定：**輸出的是線段，不是真的圓弧**。圓弧模式用貝茲取樣成短線段逼近，
+  // 段數由 `seg` 控制。這樣做的理由是下游全部吃線段——DRC、飛線、鋪銅避讓、
+  // Gerber、ODB++ 都不必改；真圓弧要動到 DRC 的距離運算，那是另一件事。
+  //
+  // 只處理「乾淨的轉角」：兩條走線共用一個端點，同層同網，而且那個點上沒有別的東西
+  // （第三條走線、via、pad）。T 接點導角會把接點切斷，寧可跳過也不要弄壞連線。
+  const Mitre = {
+    EPS: 0.02,
+
+    // 找出可以導角的轉角。回 [{ ia, ib, x, y, deg }]（ia/ib 是 traces 的索引）
+    corners(state, padAbs) {
+      const traces = state.traces || [];
+      const out = [];
+      const near = (ax, ay, bx, by) => Math.hypot(ax - bx, ay - by) <= this.EPS;
+      // 那個點上有沒有 pad / via（有的話不是轉角，是接點）
+      const occupied = (x, y) => {
+        for (const v of (state.vias || [])) if (Math.hypot(v.x - x, v.y - y) <= (v.od || 0.7) / 2) return true;
+        for (const c of (state.components || [])) for (const pd of (c.pads || [])) {
+          if (pd.cu === false) continue;
+          const a = padAbs(c, pd);
+          if (Math.hypot(a.x - x, a.y - y) <= Math.hypot(pd.w || 0.5, pd.h || 0.5) / 2) return true;
+        }
+        return false;
+      };
+      for (let a = 0; a < traces.length; a++) for (let b = a + 1; b < traces.length; b++) {
+        const ta = traces[a], tb = traces[b];
+        if ((ta.layer || "F.Cu") !== (tb.layer || "F.Cu")) continue;
+        if ((ta.net || "") !== (tb.net || "")) continue;
+        // 找共用端點
+        let ax, ay, ua, ub;
+        if (near(ta.x2, ta.y2, tb.x1, tb.y1)) { ax = ta.x2; ay = ta.y2; ua = [ta.x1 - ax, ta.y1 - ay]; ub = [tb.x2 - ax, tb.y2 - ay]; }
+        else if (near(ta.x2, ta.y2, tb.x2, tb.y2)) { ax = ta.x2; ay = ta.y2; ua = [ta.x1 - ax, ta.y1 - ay]; ub = [tb.x1 - ax, tb.y1 - ay]; }
+        else if (near(ta.x1, ta.y1, tb.x1, tb.y1)) { ax = ta.x1; ay = ta.y1; ua = [ta.x2 - ax, ta.y2 - ay]; ub = [tb.x2 - ax, tb.y2 - ay]; }
+        else if (near(ta.x1, ta.y1, tb.x2, tb.y2)) { ax = ta.x1; ay = ta.y1; ua = [ta.x2 - ax, ta.y2 - ay]; ub = [tb.x1 - ax, tb.y1 - ay]; }
+        else continue;
+        // 第三條走線也接在這裡＝T 接，不動
+        let others = 0;
+        for (let k = 0; k < traces.length; k++) {
+          if (k === a || k === b) continue;
+          const t = traces[k];
+          if ((t.layer || "F.Cu") !== (ta.layer || "F.Cu")) continue;
+          if (near(t.x1, t.y1, ax, ay) || near(t.x2, t.y2, ax, ay)) others++;
+        }
+        if (others) continue;
+        if (occupied(ax, ay)) continue;
+        const la = Math.hypot(ua[0], ua[1]), lb = Math.hypot(ub[0], ub[1]);
+        if (la < 1e-6 || lb < 1e-6) continue;
+        const cos = (ua[0] * ub[0] + ua[1] * ub[1]) / (la * lb);
+        const deg = Math.acos(Math.max(-1, Math.min(1, cos))) * 180 / Math.PI;
+        out.push({ ia: a, ib: b, x: ax, y: ay, deg, la, lb });
+      }
+      return out;
+    },
+
+    // 導角。opts: { radius(mm), mode: "45"|"arc", seg（arc 取樣段數，預設 6）, minDeg, maxDeg }
+    // 回 { changed, skipped, added:[新線段] }；state 不會被改，由呼叫端套用。
+    apply(state, padAbs, opts) {
+      opts = Object.assign({ radius: 0.5, mode: "45", seg: 6, minDeg: 30, maxDeg: 150 }, opts || {});
+      const traces = (state.traces || []).map(t => Object.assign({}, t));
+      const cs = this.corners({ traces, vias: state.vias, components: state.components }, padAbs);
+      const added = [];
+      let changed = 0, skipped = 0;
+      const touched = new Set();
+      for (const c of cs) {
+        // 太直（幾乎不算轉角）或太尖（髮夾彎，切了會變形）都不動
+        if (c.deg >= opts.maxDeg || c.deg <= opts.minDeg) { skipped++; continue; }
+        // 同一條走線只導一次，避免兩端互相把對方切光
+        if (touched.has(c.ia) || touched.has(c.ib)) { skipped++; continue; }
+        const ta = traces[c.ia], tb = traces[c.ib];
+        const cut = Math.min(opts.radius, c.la / 2, c.lb / 2);
+        if (cut < 0.05) { skipped++; continue; }
+        const dirOf = (t, x, y) => {
+          const atStart = Math.hypot(t.x1 - x, t.y1 - y) <= this.EPS;
+          const ox = atStart ? t.x2 : t.x1, oy = atStart ? t.y2 : t.y1;
+          const len = Math.hypot(ox - x, oy - y) || 1;
+          return { ux: (ox - x) / len, uy: (oy - y) / len, atStart };
+        };
+        const da = dirOf(ta, c.x, c.y), db = dirOf(tb, c.x, c.y);
+        const A = { x: c.x + da.ux * cut, y: c.y + da.uy * cut };
+        const B = { x: c.x + db.ux * cut, y: c.y + db.uy * cut };
+        if (da.atStart) { ta.x1 = A.x; ta.y1 = A.y; } else { ta.x2 = A.x; ta.y2 = A.y; }
+        if (db.atStart) { tb.x1 = B.x; tb.y1 = B.y; } else { tb.x2 = B.x; tb.y2 = B.y; }
+        const base = { width: ta.width || 0.3, layer: ta.layer || "F.Cu", net: ta.net || "" };
+        if (opts.mode === "arc") {
+          // 二次貝茲：A →（控制點＝原轉角）→ B。取樣成短線段（見檔頭的誠實界定）。
+          const n = Math.max(2, opts.seg | 0);
+          let px = A.x, py = A.y;
+          for (let k = 1; k <= n; k++) {
+            const t = k / n, m = 1 - t;
+            const qx = m * m * A.x + 2 * m * t * c.x + t * t * B.x;
+            const qy = m * m * A.y + 2 * m * t * c.y + t * t * B.y;
+            added.push(Object.assign({ x1: px, y1: py, x2: qx, y2: qy }, base));
+            px = qx; py = qy;
+          }
+        } else {
+          added.push(Object.assign({ x1: A.x, y1: A.y, x2: B.x, y2: B.y }, base));
+        }
+        touched.add(c.ia); touched.add(c.ib);
+        changed++;
+      }
+      return { changed, skipped, traces, added, total: cs.length };
+    }
+  };
+
+  const Mfg = { Teardrops, Stitch, DrillTable, Panel, Mitre, _geom: { segDist, inPoly, padRadius } };
 
   // ---------- UI 綁定（只有瀏覽器才跑；node 測試載入時整段跳過）----------
   function bindUI() {
@@ -613,6 +721,22 @@
       const n = (app.state.teardrops || []).length;
       app.hist(); app.state.teardrops = []; app.render();
       say('tdOut', T('mfg_td_cleared', { n }));
+    });
+
+    // --- 轉角導角 ---
+    on('mitRun', () => {
+      const mode = (document.getElementById("mitMode") || {}).value || "45";
+      const r = Mitre.apply(app.state, app.padAbs.bind(app), { radius: num("mitR", 0.5), mode });
+      if (!r.changed) {
+        const msg = T("mfg_mit_none", { total: r.total, skip: r.skipped });
+        say("mitOut", msg); toast(msg, "warn"); return;
+      }
+      app.hist();
+      app.state.traces = r.traces.concat(r.added);
+      app.state.ratsnest = null;
+      app.render();
+      const msg = T("mfg_mit_done", { n: r.changed, skip: r.skipped, add: r.added.length, mode: T(mode === "arc" ? "mfg_mit_arc" : "mfg_mit_45") });
+      say("mitOut", msg); toast(msg, "info");
     });
 
     // --- 縫合孔 ---

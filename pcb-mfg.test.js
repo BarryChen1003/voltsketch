@@ -353,5 +353,76 @@ const { segDist, inPoly } = M._geom;
   ok(!panVc.panelBites, '6 V-Cut 拼板不應有郵票孔');
 }
 
+// 轉角導角：直角要被切掉，T 接點與端點上的 pad/via 不可動
+{
+  const MIT = M.Mitre;
+  const corner = () => ({
+    traces: [
+      { id: 'a', x1: 0, y1: 0, x2: 10, y2: 0, width: 0.3, layer: 'F.Cu', net: 'N1' },
+      { id: 'b', x1: 10, y1: 0, x2: 10, y2: 10, width: 0.3, layer: 'F.Cu', net: 'N1' }
+    ], vias: [], components: []
+  });
+
+  const cs = MIT.corners(corner(), padAbs);
+  eq(cs.length, 1, 'mitre 應找到一個轉角');
+  ok(Math.abs(cs[0].deg - 90) < 1e-6, 'mitre 90 度角要算對（實際 ' + cs[0].deg.toFixed(1) + '）');
+
+  const r = MIT.apply(corner(), padAbs, { radius: 1, mode: '45' });
+  eq(r.changed, 1, 'mitre 應導角一次');
+  eq(r.added.length, 1, 'mitre 45 度只加一段');
+  const a = r.traces[0], b = r.traces[1], c = r.added[0];
+  ok(Math.abs(a.x2 - 9) < 1e-9 && Math.abs(a.y2) < 1e-9, 'mitre 第一段要退到 (9,0)');
+  ok(Math.abs(b.x1 - 10) < 1e-9 && Math.abs(b.y1 - 1) < 1e-9, 'mitre 第二段要退到 (10,1)');
+  ok(Math.abs(c.x1 - 9) < 1e-9 && Math.abs(c.y2 - 1) < 1e-9, 'mitre 斜切段要接在兩個退點之間');
+  eq(c.net, 'N1', 'mitre 斜切段要沿用同一個 net');
+  eq(c.layer, 'F.Cu', 'mitre 斜切段要沿用同一層');
+  // 導角之後總長度應該變短（切掉直角走捷徑）
+  const len = ts => ts.reduce((s, t) => s + Math.hypot(t.x2 - t.x1, t.y2 - t.y1), 0);
+  ok(len(r.traces.concat(r.added)) < len(corner().traces) + 1e-9, 'mitre 導角後總長不該變長');
+
+  // 圓弧模式：段數要照 seg
+  const rArc = MIT.apply(corner(), padAbs, { radius: 1, mode: 'arc', seg: 6 });
+  eq(rArc.added.length, 6, 'mitre 圓弧模式要照 seg 取樣段數');
+  ok(rArc.added.every(s => s.net === 'N1'), 'mitre 圓弧每一段都要帶 net');
+
+  // T 接點：第三條線也接在轉角上 → 不可動（動了會把接點切斷）
+  const tee = corner();
+  tee.traces.push({ id: 'c', x1: 10, y1: 0, x2: 16, y2: -6, width: 0.3, layer: 'F.Cu', net: 'N1' });
+  eq(MIT.corners(tee, padAbs).length, 0, 'mitre T 接點不算轉角');
+
+  // 轉角上有 via → 那是接點不是轉角
+  const withVia = corner();
+  withVia.vias.push({ x: 10, y: 0, od: 0.7, drill: 0.3, net: 'N1' });
+  eq(MIT.corners(withVia, padAbs).length, 0, 'mitre 轉角上有 via 就不動');
+
+  // 轉角上有 pad → 同理
+  const withPad = corner();
+  withPad.components.push({ id: 'u1', ref: 'U1', x: 10, y: 0, rot: 0,
+    pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'N1', cu: true }] });
+  eq(MIT.corners(withPad, padAbs).length, 0, 'mitre 轉角上有 pad 就不動');
+
+  // 異網或異層的兩條線不算同一個轉角
+  const diffNet = corner(); diffNet.traces[1].net = 'N2';
+  eq(MIT.corners(diffNet, padAbs).length, 0, 'mitre 異網不算轉角');
+  const diffLayer = corner(); diffLayer.traces[1].layer = 'B.Cu';
+  eq(MIT.corners(diffLayer, padAbs).length, 0, 'mitre 異層不算轉角');
+
+  // 幾乎直的線不該被切
+  const almostStraight = { traces: [
+    { id: 'a', x1: 0, y1: 0, x2: 10, y2: 0, width: 0.3, layer: 'F.Cu', net: 'N1' },
+    { id: 'b', x1: 10, y1: 0, x2: 20, y2: 0.2, width: 0.3, layer: 'F.Cu', net: 'N1' }
+  ], vias: [], components: [] };
+  eq(MIT.apply(almostStraight, padAbs, { radius: 1, mode: '45' }).changed, 0, 'mitre 幾乎直的轉角不動');
+
+  // 切角長度不可超過線段一半（否則會把線切光）
+  const shortLegs = { traces: [
+    { id: 'a', x1: 0, y1: 0, x2: 1, y2: 0, width: 0.3, layer: 'F.Cu', net: 'N1' },
+    { id: 'b', x1: 1, y1: 0, x2: 1, y2: 1, width: 0.3, layer: 'F.Cu', net: 'N1' }
+  ], vias: [], components: [] };
+  const rShort = MIT.apply(shortLegs, padAbs, { radius: 5, mode: '45' });
+  const remain = Math.hypot(rShort.traces[0].x2 - rShort.traces[0].x1, rShort.traces[0].y2 - rShort.traces[0].y1);
+  ok(remain > 0.4, 'mitre 切角不可超過線段一半（剩 ' + remain.toFixed(2) + 'mm）');
+}
+
 console.log(`\npcb-mfg.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
