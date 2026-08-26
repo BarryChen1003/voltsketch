@@ -1703,5 +1703,43 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   app.state = savedState;
 }
 
+// 37) 網路清單 / 未接線統計
+// 「還有幾條沒接」原本只能看飛線用眼睛數。這裡列成表，數字要跟飛線一致。
+{
+  const savedState = app.state;
+  const pad = (num, x, y, net) => ({ num, x, y, w: 1, h: 1, side: 'F', net, cu: true });
+  app.state = Object.assign({}, savedState, {
+    boardWidth: 60, boardHeight: 40, layers: 2, layerStack: app.buildLayerStack(2),
+    components: [
+      { id: 'r1', ref: 'R1', x: -10, y: 0, rot: 0, pads: [pad('1', 0, 0, 'VCC'), pad('2', 2, 0, 'SDA')] },
+      { id: 'r2', ref: 'R2', x: 10, y: 0, rot: 0, pads: [pad('1', 0, 0, 'VCC'), pad('2', 2, 0, 'SDA')] }
+    ],
+    traces: [{ id: 't1', x1: -10, y1: 0, x2: 10, y2: 0, width: 0.3, layer: 'F.Cu', net: 'VCC' }],
+    vias: [], keepouts: [], userZones: [], selectedSet: [], selected: null, highlightNet: null
+  });
+
+  const s = app.netSummary();
+  eq(s.netCount, 2, '37 應該有 VCC 與 SDA 兩個網路');
+  const vcc = s.list.find(r => r.net === 'VCC');
+  const sda = s.list.find(r => r.net === 'SDA');
+  eq(vcc.pads, 2, '37 VCC 有兩顆 pad');
+  eq(vcc.traces, 1, '37 VCC 有一段走線');
+  ok(Math.abs(vcc.len - 20) < 1e-9, '37 VCC 長度 20mm（實際 ' + vcc.len + '）');
+  eq(vcc.open, 0, '37 VCC 已接完，未接線 0');
+  eq(sda.traces, 0, '37 SDA 還沒有走線');
+  ok(sda.open > 0, '37 SDA 要算成未接線');
+  eq(s.openTotal, sda.open, '37 未接線總數要等於各網路加總');
+
+  // 排序：未接線多的排前面（佈線時要先看那些）
+  eq(s.list[0].net, 'SDA', '37 未接線的網路要排在前面');
+
+  // 沒有 net 的 pad 與走線不可混進來
+  app.state.components[0].pads.push(pad('3', 4, 0, ''));
+  app.state.traces.push({ id: 't2', x1: 0, y1: 5, x2: 5, y2: 5, width: 0.3, layer: 'F.Cu', net: '' });
+  eq(app.netSummary().netCount, 2, '37 無 net 的 pad/走線不算一個網路');
+
+  app.state = savedState;
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

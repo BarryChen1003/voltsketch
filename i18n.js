@@ -871,6 +871,10 @@ window.I18N = (function () {
     pj_zone_done:    { zh: '鋪銅完成：{net} / {layer}（避讓 0.3mm，匯出 Gerber 生效）', en: 'Copper pour done: {net} / {layer} (0.3mm clearance, takes effect in Gerber export)', ja: 'カッパープア完了：{net} / {layer}（クリアランス 0.3mm、Gerber エクスポートで有効）', ko: '카퍼 푸어 완료: {net} / {layer}(이격 0.3mm, Gerber 내보내기에 적용)' },
     pj_net_mismatch: { zh: '警告：兩端網路不同（{a} ↔ {b}），可能短路', en: 'Warning: endpoints on different nets ({a} ↔ {b}), possible short', ja: '警告：両端のネットが異なります（{a} ↔ {b}）。ショートの可能性', ko: '경고: 양 끝의 네트가 다름({a} ↔ {b}), 단락 가능성' },
     pj_netlist_empty: { zh: '尚無 Netlist 資料', en: 'No netlist data yet', ja: 'まだ Netlist データがありません', ko: '아직 Netlist 데이터 없음' },
+    pj_net_summary:  { zh: '{nets} 個網路，{open} 段未接線', en: '{nets} nets, {open} unrouted connections', ja: 'ネット {nets} 件、未接続 {open} 本', ko: '네트 {nets}개, 미배선 {open}개' },
+    pj_net_none:     { zh: '沒有符合的網路', en: 'No matching nets', ja: '該当するネットはありません', ko: '해당하는 네트가 없습니다' },
+    pcb_net_refresh: { zh: '↻ 重新計算', en: '↻ Recalculate', ja: '↻ 再計算', ko: '↻ 다시 계산' },
+    pcb_net_onlyopen:{ zh: '只看未接線', en: 'Unrouted only', ja: '未接続のみ', ko: '미배선만' },
 
     // --- PCB JS 執行期動態字串：pcb-tutorial.js（課程內容＋導覽 UI）---
     tut_steps_n:   { zh: '{n} 個步驟', en: '{n} steps', ja: '{n} ステップ', ko: '{n}단계' },

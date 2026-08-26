@@ -50,6 +50,7 @@ const pcbApp = {
     dragEndpoint: null,  // 走線端點拖曳 {trace, end:'a'|'b'}
     dragGroup: null,     // 群組拖曳快照 [{c, ox, oy}]＋dragAnchor
     rubber: null,        // 拖曳中要跟著 pad 走的走線端點（beginRubber 建表）
+    highlightNet: null,  // 網路清單點選的高亮網路（純檢視狀態，不進快照）
     dragAnchor: null,    // 群組拖曳起點（board 座標）
     boxSel: null,        // 進行中框選 {x1,y1,x2,y2}
     clipboard: []        // 複製暫存（Ctrl+C/V）
@@ -70,6 +71,7 @@ const pcbApp = {
     this.renderPartsList();
     this.populateEmiSelects();
     this.renderRefBoards();
+    this.renderNetPanel();
     this.initCrossProbe();
     this.populateIcPicker();
     this.populatePartsPicker();
@@ -300,6 +302,7 @@ const pcbApp = {
 
     // 飛線與畫線預覽
     this.drawRatsnest(scale);
+    this.drawNetHighlight(scale);
     this.drawTracePreview(scale);
 
     // Draw EMI 環路疊圖
@@ -1402,6 +1405,7 @@ const pcbApp = {
     this.renderLayerList();
     this.renderPartsList();
     this.populateEmiSelects();
+    this.renderNetPanel();
     this.render();
     // 切到 Layout 分頁（觸發 pcb.html 的分頁 handler）
     const t = document.querySelector('#tabLayout'); if (t) t.click();
@@ -2160,6 +2164,30 @@ const pcbApp = {
     return worst;
   },
 
+  // 高亮某個網路：走線加粗一層、pad 畫圈。只是檢視，不改資料。
+  drawNetHighlight(scale) {
+    const net = this.state.highlightNet;
+    if (!net) return;
+    const { ctx } = this;
+    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    ctx.save();
+    ctx.strokeStyle = "rgba(241,196,15,0.85)";
+    ctx.lineCap = "round";
+    for (const t of (this.state.traces || [])) {
+      if ((t.net || "") !== net) continue;
+      ctx.lineWidth = Math.max(2, ((t.width || 0.3) + 0.25) * scale);
+      ctx.beginPath(); ctx.moveTo(X(t.x1), Y(t.y1)); ctx.lineTo(X(t.x2), Y(t.y2)); ctx.stroke();
+    }
+    ctx.lineWidth = 2;
+    for (const c of (this.state.components || [])) for (const pd of (c.pads || [])) {
+      if (pd.cu === false || (pd.net || "") !== net) continue;
+      const a = this.padAbs(c, pd);
+      const rr = Math.hypot(pd.w || 0.5, pd.h || 0.5) / 2 * scale + 2;
+      ctx.beginPath(); ctx.arc(X(a.x), Y(a.y), rr, 0, Math.PI * 2); ctx.stroke();
+    }
+    ctx.restore();
+  },
+
   drawTracePreview(scale) {
     const td = this.state.traceDraw;
     if (!td) return;
@@ -2633,6 +2661,7 @@ const pcbApp = {
     });
 
     this.state.ratsnest = null;
+    this.renderNetPanel();
     this.renderPartsList();
     this.render();
 
@@ -2773,6 +2802,17 @@ const pcbApp = {
 
     // netlist 同步（線路圖 → PCB）
     document.getElementById('syncNetlistBtn')?.addEventListener('click', () => this.syncFromSchematic());
+    document.getElementById("netRefresh")?.addEventListener("click", () => this.renderNetPanel());
+    document.getElementById("netOnlyOpen")?.addEventListener("change", () => this.renderNetPanel());
+    document.getElementById("netRows")?.addEventListener("click", (e) => {
+      const row = e.target.closest ? e.target.closest(".net-row") : null;
+      if (!row) return;
+      const net = row.getAttribute("data-net");
+      // 再點一次取消高亮：不做這件事的話高亮會黏在畫面上拿不掉
+      this.state.highlightNet = (this.state.highlightNet === net) ? null : net;
+      this.renderNetPanel();
+      this.render();
+    });
 
     // 3D 檢視
     document.getElementById('view3dBtn')?.addEventListener('click', () => {
@@ -3477,6 +3517,63 @@ const pcbApp = {
     this.state.nets = Object.values(nets);
     this.renderNetlist();
     return this.state.nets;
+  },
+
+  // ---- 網路清單 / 未接線 ----
+  // 「還有幾條沒接」是佈線時最常問的問題。原本只能看畫面上的飛線用眼睛數，
+  // 而且飛線一多就看不出哪一條屬於哪個網路。這裡把它列成表：每個 net 幾顆 pad、
+  // 幾段走線、總長多少、還有幾段沒接起來，點一下就在板上高亮。
+  //
+  // 資料一律現算，不存快取：net 是 pad 與走線上的欄位，任何編輯都可能改到它，
+  // 存了就會有「面板說 3 條沒接、畫面上明明接完了」這種不一致。
+  netSummary() {
+    const rows = new Map();
+    const get = net => {
+      if (!rows.has(net)) rows.set(net, { net, pads: 0, traces: 0, len: 0, open: 0 });
+      return rows.get(net);
+    };
+    for (const c of (this.state.components || [])) for (const pd of (c.pads || [])) {
+      if (pd.cu === false || !pd.net) continue;
+      get(pd.net).pads++;
+    }
+    for (const t of (this.state.traces || [])) {
+      if (!t.net) continue;
+      const r = get(t.net);
+      r.traces++;
+      r.len += Math.hypot(t.x2 - t.x1, t.y2 - t.y1);
+    }
+    // 未接線＝飛線（Ratsnest 算的是同 net 之間還沒連通的部分）
+    let openTotal = 0;
+    if (window.Ratsnest) {
+      for (const l of window.Ratsnest.compute(this.state, this.padAbs.bind(this))) {
+        if (!l.net) continue;
+        get(l.net).open++;
+        openTotal++;
+      }
+    }
+    const list = [...rows.values()].sort((a, b) => (b.open - a.open) || a.net.localeCompare(b.net));
+    return { list, openTotal, netCount: list.length };
+  },
+
+  renderNetPanel() {
+    const box = document.getElementById("netRows");
+    const sum = document.getElementById("netSummary");
+    if (!box) return;
+    const s = this.netSummary();
+    const onlyOpen = !!(document.getElementById("netOnlyOpen") || {}).checked;
+    if (sum) sum.textContent = pcbT("pj_net_summary", { nets: s.netCount, open: s.openTotal });
+    const rows = onlyOpen ? s.list.filter(r => r.open > 0) : s.list;
+    if (!rows.length) { box.innerHTML = "<p style='color:var(--muted)'>" + pcbT("pj_net_none") + "</p>"; return; }
+    const esc = t => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[ch]));
+    box.innerHTML = rows.map(r => {
+      const on = this.state.highlightNet === r.net;
+      return "<div class='net-row' data-net='" + esc(r.net) + "' style='display:grid;grid-template-columns:1fr auto auto;gap:6px;padding:4px 6px;cursor:pointer;border-bottom:1px solid var(--line);" +
+        (on ? "background:rgba(46,204,113,.15)" : "") + "'>" +
+        "<span>" + esc(r.net) + "</span>" +
+        "<span style='color:var(--muted)'>" + r.pads + "p / " + r.traces + "s / " + r.len.toFixed(1) + "mm</span>" +
+        "<span style='color:" + (r.open ? "#e67e22" : "var(--muted)") + "'>" + (r.open ? "✗" + r.open : "✓") + "</span>" +
+        "</div>";
+    }).join("");
   },
 
   renderNetlist() {
