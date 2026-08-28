@@ -39,9 +39,8 @@
 </head>
 <body class="editor-lock">
   <script>
-    // 存取判準與 pcb.html 一致：profiles.pcb_access（或 admin）。
-    // 舊版看的是 localStorage 的 pcb-invite-ok 旗標，任何人開 F12 打一行 setItem
-    // 就能繞過；改成問後端的權限，並清掉那個殘留旗標。
+    // 2026-08-28 起這一頁不做存取檢查（PCB 對所有人開放）。
+    // 清 pcb-invite-ok 留著：那是更早的邀請碼旗標，舊瀏覽器可能還有殘留。
     // ?embed=1 = pcb.html 分頁內嵌，隱藏自身 topbar。
     try { localStorage.removeItem('pcb-invite-ok'); } catch (e) { }
     if (/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('vs-embed');
@@ -368,23 +367,8 @@ ${rows}
     });
   </script>
 
-  <!-- 權限檢查需要這三支：這一頁原本完全沒有載 auth，所以問不到 pcb_access。 -->
-  <script src="./vendor/supabase-js-2.112.3.min.js"></script>
-  <script src="./auth-config.js?v=2026-07-04a"></script>
-  <script src="./auth.js?v=2026-08-18a"></script>
-  <script>
-    // 權限檢查放在頁尾：auth.js 載入之後才問得到。沒有權限就退回 pcb.html
-    // （那一頁會顯示「12 個月方案專屬」的說明）。查不到也退回——失敗要鎖住不是放行。
-    (function waitAuth(tries) {
-      if (window.Auth && Auth.enabled && Auth.enabled()) {
-        Auth.entitlements()
-          .then(function (e) { if (!(e && (e.pcb_access || e.role === 'admin'))) location.replace('pcb.html'); })
-          .catch(function () { location.replace('pcb.html'); });
-        return;
-      }
-      if (tries > 0) { setTimeout(function () { waitAuth(tries - 1); }, 200); return; }
-      location.replace('pcb.html');
-    })(25);
-  </script>
+  <!-- 2026-08-28：存取檢查移除，這一頁對所有人開放（與 pcb.html 同一個決定）。
+       supabase-js / auth-config / auth.js 原本只為了問 pcb_access 才載，一起拿掉：
+       這一頁沒有其它地方用到 Auth，留著等於白載三支。 -->
 </body>
 </html>

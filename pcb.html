@@ -495,56 +495,12 @@
     </style>
   </head>
   <body>
-    <!-- PCB 存取閘門：12 個月方案專屬。
-         2026-08-18 拿掉邀請碼那條路——可轉發的秘密本質上就會外流（先前 5 組明碼
-         直接寫在這個公開頁面裡），而「給特定人權限」用 admin 一行 SQL 就能做，
-         既不能被轉發也知道給了誰：
-           update public.profiles set pcb_access = true
-           where id = (select id from auth.users where email = '...');
-         唯一的判準是 profiles.pcb_access（webhook 在 12 個月方案付款成功時寫入）。 -->
-    <div id="pcbGate" style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.96);display:flex;align-items:center;justify-content:center;padding:16px">
-      <div style="background:#fff;border-radius:14px;padding:32px 28px;max-width:400px;width:100%;text-align:center">
-        <div style="font-size:40px">🔒</div>
-        <h2 style="margin:8px 0;color:#0f172a;font-size:20px" data-i18n="pcb_gate_title">PCB Layout 為 12 個月方案專屬</h2>
-        <p id="pcbGateMsg" style="color:#64748b;font-size:13px;margin:0 0 16px;line-height:1.7"></p>
-        <a href="upgrade.html" class="primary-button" style="display:block;width:100%;box-sizing:border-box;padding:11px;font-size:14px;text-decoration:none" data-i18n="pcb_gate_buy">查看 12 個月方案</a>
-        <a id="pcbLoginLink" href="login.html" style="display:inline-block;margin-top:12px;font-size:12px;color:#2563eb" data-i18n="pcb_gate_login">已經購買了？請先登入</a>
-      </div>
-    </div>
-    <script>
-      (function () {
-        var gate = document.getElementById('pcbGate');
-        // 這一頁的權限只認 profiles.pcb_access（或 admin）。
-        // 舊版還會看 localStorage 的 pcb-invite-ok 旗標，那等於任何人開 F12
-        // 打一行 setItem 就進得來，所以連同邀請碼一起移除了。
-        try { localStorage.removeItem('pcb-invite-ok'); } catch (e) { }
-
-        var MSG = {
-          zh: 'PCB Layout（含佈線、鋪銅、疊層與 Gerber 匯出）隨 <a href="upgrade.html">12 個月方案</a>開通。洽談合作請見<a href="contact.html">聯絡資訊</a>。',
-          en: 'PCB Layout (routing, copper pour, stackup and Gerber export) is included with the <a href="upgrade.html">12-month plan</a>. For partnerships, see <a href="contact.html">Contact</a>.',
-          ja: 'PCB Layout（配線・ベタ・積層・Gerber 出力）は<a href="upgrade.html">12か月プラン</a>に含まれます。提携のご相談は<a href="contact.html">お問い合わせ</a>へ。',
-          ko: 'PCB Layout(배선, 카퍼 포어, 적층, Gerber 내보내기)는 <a href="upgrade.html">12개월 플랜</a>에 포함됩니다. 협력 문의는 <a href="contact.html">문의</a>를 참조하세요.'
-        };
-        function L() { return (window.I18N && I18N.lang) || 'zh'; }
-        function paintGate() { var p = document.getElementById('pcbGateMsg'); if (p) p.innerHTML = MSG[L()] || MSG.zh; }
-        paintGate();
-        document.addEventListener('vs-lang-change', paintGate);
-
-        function unlock() { if (gate && gate.parentNode) gate.remove(); }
-
-        // auth.js 在頁尾才載入，這裡等它就緒再問一次。等不到就維持鎖著——
-        // 失敗時要鎖住而不是放行，這是閘門的預設方向。
-        (function waitAuth(tries) {
-          if (window.Auth && Auth.enabled && Auth.enabled()) {
-            Auth.entitlements().then(function (e) {
-              if (e && (e.pcb_access || e.role === 'admin')) unlock();
-            }).catch(function () { });
-            return;
-          }
-          if (tries > 0) setTimeout(function () { waitAuth(tries - 1); }, 200);
-        })(25);   // 最多等 5 秒
-      })();
-    </script>
+    <!-- 2026-08-28：PCB Layout 的存取閘門整個移除，這一頁對所有人開放。
+         原本是「12 個月方案專屬」，只認 profiles.pcb_access（webhook 付款時寫入）；
+         2026-08-18 那次改的是拿掉邀請碼，不是拿掉閘門，所以它一直都在。
+         profiles.pcb_access 這個欄位與 webhook 的寫入**刻意保留**：
+         後端匯出（pcb-export）與熱精算（pcb-thermal）仍然靠它，
+         而且留著才有辦法一行改回來。 -->
     <div class="pcb-page">
       <header class="topbar">
         <div class="brand">
