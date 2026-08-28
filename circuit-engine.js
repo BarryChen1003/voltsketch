@@ -52,7 +52,10 @@
     cmchoke:  [[-30, -14, '1'], [30, -14, '2'], [-30, 14, '3'], [30, 14, '4']],
     shield:   [[0, 34, 'g']],
     // 電壓符號（power rail）：橫桿在中心、單腳朝下。名稱寫在橫桿上方。
-    vrail:    [[0, 14, 'p']]
+    vrail:    [[0, 14, 'p']],
+    // 階層式圖紙的對外接點（sch-hier.js）：單腳朝右，名字寫在框裡。
+    // sheetref（圖紙符號）不在這裡——它的腳數由子圖的 port 決定，走 icLayout 那條路。
+    port:     [[24, 0, 'p']]
   };
 
   // Falstad 可直接匯出的二端元件（其餘列為未支援）
@@ -99,7 +102,9 @@
   function getPins(comp) {
     const k = comp.scale || 1;   // 連接點位置隨大小縮放（點本身大小不變）
     const sx = (comp.flipH ? -1 : 1) * k, sy = (comp.flipV ? -1 : 1) * k;
-    if (comp.type === 'ic') {
+    // sheetref（階層圖紙符號）跟 ic 走同一條：腳數與腳名都由資料決定（icPins），
+    // 差別只在那份資料是從子圖的 port 同步過來的。
+    if (comp.type === 'ic' || comp.type === 'sheetref') {
       return icLayout(comp).pins.map((p, i) => {
         const [rx, ry] = rot(p.x * sx, p.y * sy, comp.rotation);
         return { name: p.num, x: comp.x + rx, y: comp.y + ry, comp, index: i };

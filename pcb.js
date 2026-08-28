@@ -2769,7 +2769,40 @@ const pcbApp = {
     const allNets = new Set();
     const usedRefs = new Set();
     let yOffset = 0;
-    pages.forEach((pg, pi) => {
+
+    // ---- 階層式圖紙（SchHier）----
+    // 有圖紙符號時，多頁不再是「各自獨立、只靠 net 標籤跨頁」，而是一棵樹。
+    // 先攤平成一份元件清單 + 一個 netOf()，再走跟平面情況完全同一條 convert()。
+    // 沒有階層就完全不進這一段，既有的板子行為一個位元組都不變。
+    const hier = window.SchHier;
+    const useHier = !!(hier && hier.hasHierarchy(pages));
+    if (useHier) {
+      const built = hier.build(pages, hier.rootIndex(pages), eng);
+      const hardErr = built.findings.filter(f => f.type === 'error');
+      if (hardErr.length) {
+        // 遞迴、參照不存在的圖紙這類錯誤下展開的結果一定是錯的。
+        // 硬轉出一片「看起來像那麼回事」的板子比擋下來糟糕得多。
+        this.toast(pcbT('pj_sync_hier_err', { n: hardErr.length, why: hardErr[0].message }), 'error');
+        return;
+      }
+      for (const f of built.findings) this.toast(f.message, 'warn');
+      const one = window.Sch2Pcb.convert(built.comps, c => eng.getPins(c), built.netOf, {
+        overrides: this.state.fpOverrides || {},
+        scale: 0.15,
+        spacing: Math.max(1, this.loadDrcRules().compSpacing / 2)
+      });
+      one.components.forEach(c => { usedRefs.add(c.ref); });
+      for (const c of built.comps) for (let i = 0; i < eng.getPins(c).length; i++) {
+        const n = built.netOf(c.id, i); if (n) allNets.add(n);
+      }
+      conv.components.push(...one.components);
+      conv.unresolved.push(...one.unresolved);
+      conv.assumed.push(...one.assumed);
+      conv.stats.bySource.partslib += (one.stats && one.stats.bySource && one.stats.bySource.partslib) || 0;
+      conv.stats.bySource.ic += (one.stats && one.stats.bySource && one.stats.bySource.ic) || 0;
+    }
+
+    if (!useHier) pages.forEach((pg, pi) => {
       const sComps = (pg.data.components || []).filter(c => c && c.type);
       if (!sComps.length) return;
       const nets = eng.computeNets(sComps, pg.data.wires || []);

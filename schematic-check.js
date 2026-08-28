@@ -201,6 +201,24 @@ window.SchematicCheck = (function () {
       }
     }
 
+    // 12) 階層式圖紙（SchHier）。這一項是**跨頁**的，所以要自己去讀多頁存檔——
+    //     run() 只拿得到當前這一頁。目前這一頁用畫面上的即時資料覆寫，
+    //     不然使用者剛加的 port 要等自動存檔（4 秒）才會被檢查到。
+    if (window.SchHier) {
+      try {
+        const store = JSON.parse(localStorage.getItem('vs-sheets-v1') || 'null');
+        if (store && Array.isArray(store.pages) && store.pages.length) {
+          const pages = store.pages.map((p, i) => (i === store.cur)
+            ? { name: p.name, data: { components: comps, wires: wires || [] } }
+            : { name: p.name, data: p.data || {} });
+          for (const f of window.SchHier.validate(pages)) {
+            const bucket = f.type === 'error' ? out.errors : f.type === 'warning' ? out.warns : out.infos;
+            bucket.push({ msg: f.message, comps: [] });
+          }
+        }
+      } catch (e) { /* 多頁存檔壞了不該讓整個檢查掛掉 */ }
+    }
+
     return out;
   }
 

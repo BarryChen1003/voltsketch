@@ -647,6 +647,7 @@ const app = {
     document.getElementById('rotateSelected').addEventListener('click', () => this.rotateSelected());
     document.getElementById('flipHSelected').addEventListener('click', () => this.flipSelected('h'));
     document.getElementById('flipVSelected').addEventListener('click', () => this.flipSelected('v'));
+    document.getElementById('resyncSheets')?.addEventListener('click', () => this.resyncSheetRefs());
     document.getElementById('deleteSelected').addEventListener('click', () => this.deleteSelected());
 
     // Simulation
@@ -1121,6 +1122,16 @@ const app = {
       this.setSelection([id]); this.render(); this.schedulePersist();
       return;
     }
+    // 階層式圖紙：對外接點（port）與圖紙符號（sheetref）
+    if (this.state.tool === 'port' || this.state.tool === 'sheetref') {
+      const hit = this.hitTest(pt.x, pt.y);
+      if (hit) { this.setSelection([hit.id]); return; }
+      const g = this.snapPoint(pt.x, pt.y);
+      const made = this.state.tool === 'port' ? this.makePort(g) : this.makeSheetRef(g);
+      if (made) { this.setSelection([made]); this.render(); }
+      return;
+    }
+
     // 元件放置工具（select 由 mousedown/up 處理，這裡略過）
     const componentTypes = ['resistor','source','ground','vrail','switch','lamp','led','diode','capacitor','inductor','tvs','bead','cmchoke','varistor','gdt','fuse','xtal','shield','ammeter','voltmeter','nmos','pmos','dualnmos','dualpmos','npn','pnp','opamp','comparator','dcdc','and','or','nand','nor','xor','xnor','not','buffer'];
     if (componentTypes.includes(this.state.tool)) {
@@ -2751,6 +2762,87 @@ const app = {
     modal.hidden = false;
   },
 
+  // ---- 階層式圖紙（SchHier）----
+  // 多頁存檔是 sheets.js 的私有狀態（沒有對外 API），所以這裡直接讀那個 key，
+  // 跟 pcb.js 的同步走同一條路。目前這一頁用畫面上的即時資料覆寫：
+  // 不覆寫的話，使用者剛加的 port 要等 4 秒自動存檔才看得到。
+  readSheets() {
+    try {
+      const st = JSON.parse(localStorage.getItem('vs-sheets-v1') || 'null');
+      if (!st || !Array.isArray(st.pages) || !st.pages.length) return null;
+      const pages = st.pages.map((p, i) => (i === st.cur)
+        ? { name: p.name, data: { components: this.state.components, wires: this.state.wires } }
+        : { name: p.name, data: p.data || {} });
+      return { pages, cur: st.cur };
+    } catch (e) { return null; }
+  },
+
+  makePort(g) {
+    const name = window.prompt(uiT('對外接點名稱（母圖上會變成同名的腳）'), 'IN');
+    if (name == null) return '';
+    const nm = String(name).trim();
+    if (!nm) return '';
+    this.saveUndo();
+    const id = 'c' + (++this.state.componentIdCounter);
+    this.state.components.push({
+      id, type: 'port', name: nm, dir: 'bidir', x: g.x, y: g.y, rotation: 0,
+      label: nm, color: this.state.activeColor, scale: this.state.activeSize
+    });
+    return id;
+  },
+
+  makeSheetRef(g) {
+    const H = window.SchHier;
+    const sh = this.readSheets();
+    if (!H || !sh) { this.showToast(uiT('圖紙符號需要多頁存檔，先新增第二頁')); return ''; }
+    // 只列「不是目前這一頁」的頁：放自己等於無窮遞迴，直接不給選比事後報錯好。
+    const choices = sh.pages.map((p, i) => ({ name: p.name, i })).filter(x => x.i !== sh.cur);
+    if (!choices.length) { this.showToast(uiT('只有一頁，沒有可以放進來的子圖')); return ''; }
+    const ans = window.prompt(
+      uiT('要放哪一張圖紙？{list}', { list: choices.map(c => c.name).join(' / ') }),
+      choices[0].name);
+    if (ans == null) return '';
+    const want = String(ans).trim();
+    const pick = choices.find(c => c.name === want);
+    if (!pick) { this.showToast(uiT('沒有這一張圖紙：{name}', { name: want })); return ''; }
+    const ports = H.portsOf(sh.pages[pick.i].data);
+    if (!ports.length) { this.showToast(uiT('「{name}」還沒有對外接點，先在那一頁放 port', { name: want })); return ''; }
+    this.saveUndo();
+    const id = 'c' + (++this.state.componentIdCounter);
+    const c = {
+      id, type: 'sheetref', sheet: want, x: g.x, y: g.y, rotation: 0,
+      label: this.nextSheetRefLabel(), name: want,
+      color: this.state.activeColor, scale: this.state.activeSize
+    };
+    H.syncInstance(c, ports);
+    this.state.components.push(c);
+    return id;
+  },
+
+  nextSheetRefLabel() {
+    const used = new Set(this.state.components.filter(c => c.type === 'sheetref').map(c => String(c.label || '')));
+    for (let n = 1; n < 999; n++) { const lb = 'U' + n; if (!used.has(lb)) return lb; }
+    return 'U';
+  },
+
+  // 子圖的 port 改了之後，母圖上的符號要重新長腳。不做的話畫面上的腳位是舊的，
+  // 而使用者接上去的線會連到一隻已經不存在的腳——看起來接好了，實際上沒有。
+  resyncSheetRefs() {
+    const H = window.SchHier;
+    const sh = this.readSheets();
+    if (!H || !sh) return 0;
+    let n = 0;
+    for (const c of this.state.components) {
+      if (c.type !== 'sheetref') continue;
+      const pi = H.pageIndex(sh.pages, c.sheet);
+      if (pi < 0) continue;
+      if (H.instanceStatus(c, sh.pages) === 'stale') { H.syncInstance(c, H.portsOf(sh.pages[pi].data)); n++; }
+    }
+    if (n) { this.render(); this.showToast(uiT('已更新 {n} 個圖紙符號的腳位', { n })); }
+    else this.showToast(uiT('圖紙符號的腳位都是最新的'));
+    return n;
+  },
+
   // ---- 匯流排 ----
   // 幹線名字問一次就好：轉角會切成好幾段，每段都問一次沒有人受得了。
   // 預設值取「畫面上最後一條幹線」，所以接著畫轉角直接按 Enter 就對了。
@@ -2843,6 +2935,36 @@ const app = {
       let inner = '';
 
       switch(c.type) {
+        case 'port': {
+          // 階層圖紙的對外接點：五角形箭頭指出圖外，名字寫在裡面。
+          // 方向只是給人看的註記，不影響連接（電氣上就是一個接點）。
+          const pc = sc || '#7c3aed';
+          const nm = String(c.name || c.label || '').trim() || '?';
+          const escP = t => String(t).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+          const w = Math.max(44, nm.length * 7 + 22);
+          inner = `<path d="M ${-w} -12 L ${w - 12} -12 L ${w} 0 L ${w - 12} 12 L ${-w} 12 Z" fill="#faf5ff" stroke="${pc}" stroke-width="${sw}"/>`
+            + `<text x="${(-w + w - 12) / 2}" y="4" text-anchor="middle" font-size="12" font-weight="600" fill="${pc}" font-family="ui-monospace,monospace">${escP(nm)}</text>`
+            + `<line x1="${w}" y1="0" x2="24" y2="0" stroke="${pc}" stroke-width="2"/>`;
+          break;
+        }
+        case 'sheetref': {
+          // 圖紙符號：跟 IC 走同一個方框佈局（腳位資料驅動），但畫成雙線框 + 紫色，
+          // 一眼分得出「這不是一顆料，是另一張圖」。
+          const hc = sc || '#7c3aed';
+          const lay = window.CircuitEngine ? window.CircuitEngine.icLayout(c) : { w: 120, h: 80, pins: [] };
+          const escH = t => String(t == null ? '' : t).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+          inner = `<rect x="${-lay.w / 2}" y="${-lay.h / 2}" width="${lay.w}" height="${lay.h}" rx="4" fill="#faf5ff" stroke="${hc}" stroke-width="${sw + 1}"/>`
+            + `<rect x="${-lay.w / 2 + 5}" y="${-lay.h / 2 + 5}" width="${lay.w - 10}" height="${lay.h - 10}" rx="3" fill="none" stroke="${hc}" stroke-width="0.8" opacity="0.6"/>`
+            + `<text x="0" y="-4" text-anchor="middle" font-size="12" font-weight="700" fill="${hc}" font-family="system-ui,sans-serif">${escH(c.label || '')}</text>`
+            + `<text x="0" y="11" text-anchor="middle" font-size="10" fill="${hc}" opacity="0.85" font-family="ui-monospace,monospace">${escH(c.sheet || '')}</text>`;
+          for (const p of lay.pins) {
+            const out = p.side === 'L' ? -1 : p.side === 'R' ? 1 : 0;
+            const vy = p.side === 'T' ? -1 : p.side === 'B' ? 1 : 0;
+            inner += `<line x1="${p.bx}" y1="${p.by}" x2="${p.x}" y2="${p.y}" stroke="${hc}" stroke-width="1.4"/>`;
+            inner += `<text x="${p.bx + out * 6}" y="${p.by + (vy ? vy * 12 : 3.5)}" text-anchor="${out < 0 ? 'start' : out > 0 ? 'end' : 'middle'}" font-size="10" fill="${hc}" font-family="ui-monospace,monospace">${escH(p.num)}</text>`;
+          }
+          break;
+        }
         case 'ic': {
           // 自訂多腳 IC 方框（資料驅動，仿 datasheet pin 圖：號內名外、字級統一）
           const cc = sc || (window.Sym ? Sym.color : '#1f4fd1');

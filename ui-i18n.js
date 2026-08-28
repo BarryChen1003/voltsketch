@@ -21,6 +21,16 @@
     '存進元件庫失敗：{err}': { en: 'Could not save to the library: {err}', ja: '部品ライブラリへの保存に失敗：{err}', ko: '부품 라이브러리 저장 실패: {err}' },
     '從 datasheet 建 IC 需要登入，這樣抽出來的腳位才留得住': { en: 'Building an IC from a datasheet needs an account, so the pins you extract are kept', ja: 'datasheet から IC を作るにはログインが必要です。抽出したピンを保持するためです', ko: 'datasheet로 IC를 만들려면 로그인이 필요합니다. 추출한 핀을 보관하기 위해서입니다' },
 
+    // ── 階層式圖紙（sch-hier.js）──
+    '對外接點名稱（母圖上會變成同名的腳）': { en: 'Port name (becomes a pin of the same name on the parent sheet)', ja: '対外接続点の名前（親図面では同名のピンになります）', ko: '외부 접점 이름(상위 도면에서 같은 이름의 핀이 됩니다)' },
+    '圖紙符號需要多頁存檔，先新增第二頁': { en: 'A sheet symbol needs more than one sheet — add a second one first', ja: '図面シンボルには複数ページが必要です。まず 2 ページ目を追加してください', ko: '도면 심벌은 여러 페이지가 필요합니다. 먼저 두 번째 페이지를 추가하세요' },
+    '只有一頁，沒有可以放進來的子圖': { en: 'Only one sheet exists, so there is no sub-sheet to place', ja: 'ページが 1 枚しかないため、配置できる子図面がありません', ko: '페이지가 하나뿐이라 배치할 하위 도면이 없습니다' },
+    '要放哪一張圖紙？{list}': { en: 'Which sheet do you want to place? {list}', ja: 'どの図面を配置しますか？{list}', ko: '어느 도면을 배치할까요? {list}' },
+    '沒有這一張圖紙：{name}': { en: 'No such sheet: {name}', ja: 'そのような図面はありません：{name}', ko: '그런 도면이 없습니다: {name}' },
+    '「{name}」還沒有對外接點，先在那一頁放 port': { en: '“{name}” has no ports yet — place a port on that sheet first', ja: '「{name}」にはまだ対外接続点がありません。先にそのページに port を置いてください', ko: '“{name}”에는 아직 외부 접점이 없습니다. 먼저 그 페이지에 port를 두세요' },
+    '已更新 {n} 個圖紙符號的腳位': { en: 'Refreshed the pins on {n} sheet symbols', ja: '{n} 個の図面シンボルのピンを更新しました', ko: '도면 심벌 {n}개의 핀을 갱신했습니다' },
+    '圖紙符號的腳位都是最新的': { en: 'Every sheet symbol already matches its sheet', ja: '図面シンボルのピンはすべて最新です', ko: '도면 심벌의 핀이 모두 최신입니다' },
+
     // ── 匯流排（bus）──
     '匯流排：再點一下決定終點': { en: 'Bus: click once more to set the end point', ja: 'バス：もう一度クリックして終点を決めます', ko: '버스: 한 번 더 클릭해 끝점을 정하세요' },
     '分支：再點一下決定終點': { en: 'Bus tap: click once more to set the end point', ja: 'バス分岐：もう一度クリックして終点を決めます', ko: '버스 분기: 한 번 더 클릭해 끝점을 정하세요' },

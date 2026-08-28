@@ -43,7 +43,10 @@
   };
 
   // 這些是線路圖上的符號，不是板子上的零件。跳過但要說出來，不要靜靜消失。
-  const NON_PHYSICAL = ['ground', 'text', 'grid', 'shield', 'ammeter', 'voltmeter'];
+  // port / sheetref 是階層式圖紙的記號（sch-hier.js），不是料件。
+  // sheetref 正常情況下在 SchHier.build 就被展開掉了；列在這裡是為了
+  // 「沒有走展開那條路」的舊資料也不會被當成一顆要買的零件。
+  const NON_PHYSICAL = ['ground', 'text', 'grid', 'shield', 'ammeter', 'voltmeter', 'port', 'sheetref'];
 
   // 走 IC 封裝產生器的型別（用 comp.name 去 IC_DATA 查）
   const IC_TYPES = ['ic', 'opamp', 'comparator', 'buffer', 'dcdc',
