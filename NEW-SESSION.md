@@ -23,10 +23,19 @@
    2026-08-26 中招兩次：改完 footprint 產生器與公版資料，瀏覽器還是舊的，差點以為修法沒效。
 5. **只驗「有沒有產出」不算驗**。每個功能都要有「算出來的數字／幾何對不對」的斷言。
 6. **新增或修改的任何內容一律四語**（zh / en / ja / ko），不只新功能。
-7. **做完就 commit + push，然後部署上站**，不要停在「未指示」。CI **沒有** deploy step：
-   靜態站 `npx wrangler deploy`（要 `wrangler login` 或 `CLOUDFLARE_API_TOKEN`，**只有使用者能做**）；
-   動到 `supabase/functions/` 就再 `supabase functions deploy <函式>`。
-   自己登不了就把完整指令貼給使用者（見規矩 8），不要默默當做完了。
+7. **做完就 commit + push；靜態站 push 完會自動上線，Edge Function 不會。**
+   - **靜態站：Cloudflare 端接了 GitHub，push 到 main 就自動部署**（2026-08-28 實測：
+     拆閘門的 commit push 完，線上馬上就沒有閘門、新檔 `pcb-nets.js` 也已 200，
+     而當時 `wrangler deploy` 還沒成功跑過一次；之後手動跑，回的是
+     `No updated asset files to upload`——資產早就在上面了）。
+     手動 `npx wrangler deploy` 仍然可用，是備援與緊急回滾用，不是每次都要跑。
+     **`.github/workflows/ci.yml` 沒有 deploy step**，自動部署是 Cloudflare 那一端做的，
+     從 repo 這邊看不出來——別再照舊文件叫使用者每次手動部署。
+   - **Edge Function 一定要手動**：動到 `supabase/functions/` 就得
+     `npx --yes supabase functions deploy <函式> --project-ref dmkxjawjrmltmrmkebbs --use-api`。
+     不部署＝前端已更新、後端還是舊的，**安靜給錯東西**（見 §4）。
+   - 兩種部署都要互動式登入，**只有使用者做得了**。指令照規矩 8 貼完整，
+     **自帶 `cd "C:\Users\User\Documents\Web"`、用 PowerShell 語法、一段一個指令**。
 8. **要使用者跑 SQL 或指令時，把完整內容貼進對話**，不要只給檔案路徑。
 9. **宣稱「完成／修好」前先實際驗證**：跑測試、貼 exit code、實際呼叫一次。
    要寫進對外文案的功能，先在瀏覽器實跑一次。
@@ -568,6 +577,9 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 - 2026-08-28 | 加面板 | 新面板只在 init 與按鈕時重畫，載入公版／復原之後停在上一片板的數字（看起來像功能沒作用） | 「換一批元件就會變」的面板一律掛進既有的重畫路徑（這裡是 `renderNetPanel` 與 `PcbHistory.applySnap`）
 - 2026-08-28 | CI | §6 本機清單一路加到 63 支，`ci.yml` 停在 45 支——2026-08-27 新增的 18 支一支都沒進 CI，本機全綠而 push 上去根本不擋 | 清單型的東西要有「兩邊對照」的檢查（§6 開頭那段一行指令），不要靠記得同時改兩個地方
 - 2026-08-28 | 付費鎖 | 前端閘門寫「12 個月方案專屬」，webhook 其實四種方案都給 `pcb_access`——文案與實作講的是兩件事，沒有人會回報 | 權限文案要從**授權的那一段程式**推導（這裡是 webhook 的 PLAN_RULES），不要各寫各的
+- 2026-08-28 | 部署 | 文件寫「CI 沒有 deploy step，所以要手動 wrangler」，於是一直叫使用者手動跑——但 Cloudflare 那端早就接了 GitHub，push 就自動上線 | 「哪裡沒有做這件事」推不出「沒有人在做這件事」；部署與否要**直接量線上內容**，不要從 repo 這端的設定推論
+- 2026-08-28 | 比對線上 | 第一輪 md5 比對報「3 個檔不同」，其實是本機 CRLF、線上 LF——差點誤判成沒部署 | 硬規矩 11 不是只給檢查腳本用的，**手打的 curl 比對也要先把 CR 去掉**
+- 2026-08-28 | wrangler | `npx wrangler` 那包的 optionalDependencies 沒裝完（缺 `@cloudflare/workerd-windows-64`），載入階段就 throw，看起來像 wrangler 壞了 | 刪掉 `AppData/Local/npm-cache/_npx/<hash>` 那個目錄重跑即可；**不要**改成專案內 `npm i -D wrangler`——assets 目錄是 `.` 而 `.assetsignore` 沒擋 `node_modules`
 
 只留還會再犯的。同型的已升級成 §0 硬規矩，不重複列。
 
