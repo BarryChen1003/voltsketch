@@ -161,6 +161,8 @@ jobs:
         run: node ic-extract.test.js
       - name: net-label.test（net 命名：同名相連、空白不亂併）
         run: node net-label.test.js
+      - name: sch-bus.test（匯流排：幹線不可以把整束訊號短在一起）
+        run: node sch-bus.test.js
       - name: knowledge-art-audit（知識卡圖：接腳接上、字不貼圖）
         run: node knowledge-art-audit.js --strict --quiet
 
@@ -209,6 +211,8 @@ jobs:
         run: node csp-hash.js --check
       - name: asset-leak-check（.assetsignore 雙向：檢查腳本不上公開站、站台在用的檔不被誤擋）
         run: node asset-leak-check.js
+      - name: ci-parity-check（§6 清單與這個檔必須一致，缺一支就是 push 上去不會擋）
+        run: node ci-parity-check.js
       - name: interview-i18n-check（面試題庫四語齊全）
         run: node interview-i18n-check.js --strict
       - name: news-i18n-check（新技術：四語＋每則都要有出處）

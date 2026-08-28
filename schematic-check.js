@@ -192,6 +192,15 @@ window.SchematicCheck = (function () {
     if (!comps.some(c => c.type === 'source')) out.warns.push({ msg: '電路沒有電源', comps: [] });
     if (!comps.some(c => c.type === 'ground')) out.warns.push({ msg: '電路沒有接地參考', comps: [] });
 
+    // 11) 匯流排（SchBus）。分支接歪了、成員名字不在那束裡——這兩種錯畫面上都看不出來，
+    //     而且會一路帶到 PCB：net 名字對不上就變成一條沒有人接的網路。
+    if (window.SchBus) {
+      for (const f of window.SchBus.audit(comps, wires || [])) {
+        const bucket = f.type === 'error' ? out.errors : f.type === 'warning' ? out.warns : out.infos;
+        bucket.push({ msg: f.message, comps: [] });
+      }
+    }
+
     return out;
   }
 

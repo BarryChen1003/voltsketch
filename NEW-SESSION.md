@@ -115,6 +115,7 @@ for f in pcb.js pcb-rules.js i18n.js; do L=$(md5sum $f | cut -c1-8); R=$(curl -s
 | `spice.js` | `Spice` | MNA 求解器：DC／瞬態／AC（一階元件模型） |
 | `sch-spice.js` | `SchSpice` | 線路圖 → SPICE 網表（認不得的元件拒絕分析，不硬塞） |
 | `annotate.js` | `Annotate` | 線路圖 refdes 自動編號（做在線路圖端才不會被同步蓋掉） |
+| `sch-bus.js` | `SchBus` | 匯流排：寫法解析、分支幾何、稽核（幹線「不導電」那條規則在 `circuit-engine.js`） |
 | `pcb-autoplace.js` | `AutoPlace` | 自動擺件粗排（無亂數、可重現） |
 | `footprint-editor.js` | `FootprintEditor` | 自製封裝：dual/quad/grid/chip ＋ 幾何檢查 |
 | `fp-lib.js` | `FpLib` | 封裝庫存取：沒登入落 localStorage、登入落雲端，介面相同 |
@@ -186,6 +187,7 @@ PCB 相關 34 支、合計 **約 3100 條斷言**，另有 `dead-button-check` �
 | **`backannotate.test.js`** | 27 | refdes／net 回寫；含「沒回寫就會被同步蓋掉」的反例 |
 | **`drc-incremental.test.js`** | 25 | 增量 DRC：只擔心漏報 |
 | **`drc-arc.test.js`** | 15 | DRC 對真弧：差 0.001mm 的違規也要抓到 |
+| **`sch-bus.test.js`** | 67 | 匯流排：**幹線不可以把整束訊號短在一起**、寫法解析、分支幾何、稽核 |
 | **`netmodel.test.js`** | 118 | net 一級物件：六種圖元的改名列舉、IPC-2141 閉式解、解算器 round-trip、差分對量測 |
 | **`fpinst.test.js`** | 87 | 元件實例／封裝庫分離：**手改過的幾何不可被一鍵更新蓋掉**、同步不可弄丟 net |
 
@@ -253,10 +255,10 @@ node tools/refboard-rebuild.js rp2040-pico30  # 只重建一片
 
 2026-08-28 對齊過一次：這份清單的 63 支與 `.github/workflows/ci.yml` **完全相同**。
 （在那之前 2026-08-27 新增的 18 支一支都不在 CI 裡——本機跑得到、push 上去不會擋。）
-**加測試就要同時加進 `ci.yml`**，用這段驗有沒有漏：
+**加測試就要同時加進 `ci.yml`**，用這支驗有沒有漏（它自己也在 CI 裡）：
 
 ```bash
-node -e "const fs=require('fs'),d=fs.readFileSync('NEW-SESSION.md','utf8'),s=d.slice(d.indexOf('## 6. 檢查'),d.indexOf('## 7. 使用者')),L=[...new Set([...s.matchAll(/^node ([\w.-]+\.m?js)/gm)].map(m=>m[1]))],C=new Set([...fs.readFileSync('.github/workflows/ci.yml','utf8').matchAll(/node ([\w.-]+\.m?js)/g)].map(m=>m[1]));console.log('CI 缺:',L.filter(f=>!C.has(f)).join(', ')||'無')"
+node ci-parity-check.js
 ```
 
 ```bash
@@ -311,6 +313,7 @@ node svg-overlap-check.js --strict
 node knowledge-art-audit.js --strict --quiet
 node knowledge-format.test.js
 node net-label.test.js
+node sch-bus.test.js
 node interview-diagram-check.test.js && node interview-diagram-check.js
 
 # 資料抽取
@@ -332,6 +335,7 @@ node news-i18n-check.js --strict
 node vendor-check.js --strict
 node csp-hash.js --check
 node asset-leak-check.js
+node ci-parity-check.js
 
 # 金流
 node ecpay-config.test.mjs
@@ -440,13 +444,20 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 **這一批的界線**：net 屬性目前只進 DRC 與面板，**沒有寫進匯出檔**（ODB++／IPC-2581 的網表仍只有 net 名）。
 封裝同步只做「庫 → 板」，不做「板 → 庫」。
 
-### 批次 4 — 線路圖 ⬜
+### 批次 4 — 線路圖 🔶 做到 7
 
-| # | 項目 | 為什麼難 |
+| # | 項目 | 狀態 |
 |---|---|---|
-| 7 | 匯流排（bus） | 要新的圖元型別與展開規則 |
-| 8 | 階層式圖紙（子圖當符號） | 多頁已有，但沒有「圖紙即符號」的層級 |
-| 9 | pin / gate swap | back-annotation 只差這一項；要動 `Sch2Pcb.merge` 的配對鍵 |
+| 7 | 匯流排（bus） | ✅ `sch-bus.js`。幹線是**記號不是導體**，分支展開成成員名，靠既有的「同名 net 標籤 union」相連 |
+| 8 | 階層式圖紙（子圖當符號） | ⬜ 多頁已有，但沒有「圖紙即符號」的層級 |
+| 9 | pin / gate swap | ⬜ back-annotation 只差這一項；要動 `Sch2Pcb.merge` 的配對鍵 |
+
+**匯流排為什麼不必動節點演算法**：`computeNets` 本來就會把**同名 net 標籤 union**，
+所以分支只要拿到成員名字（`D3`），相隔十萬八千里的兩處 `D3` 自動就是同一條 net。
+真正要小心的只有一件事——**幹線不可以導電**。它在幾何上是一條線，分支端點又落在它身上，
+照 T 型接點的規則會把 D0..D7 全部短在一起，而且畫面上完全正常。
+這條規則放在 `circuit-engine.js` 的 `normalizeBuses`（`computeNets` 與 `junctions` 共用），
+**不是**呼叫端的前置步驟：computeNets 有六個呼叫端，少一個記得就中招。
 
 ### 批次 5 — 互動 ⬜
 
@@ -499,7 +510,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 | 缺什麼 | 影響 |
 |---|---|
 | 🟡 **封裝不在線路圖階段綁定** | 轉換時挑預設變體並標成「猜的」，要在 PCB 選那顆改 |
-| 🟡 **沒有匯流排（bus）** | 位址／資料線只能一條一條畫（批次 4） |
+| 🟡 **匯流排不進 PCB 端** | 線路圖畫得了匯流排了（2026-08-28），但轉 PCB 之後就只是一條條獨立的 net，沒有「這 8 條是一束」的概念 |
 | 🟡 **沒有階層式圖紙** | 多頁有了，但沒有「子圖當成一個符號」（批次 4） |
 | 🟡 **net class 沒從線路圖帶過來** | class 是 PCB 端用 pattern 猜的 |
 | 🟡 gate / pin swap | back-annotation 只差這一項（批次 4） |
@@ -580,6 +591,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 - 2026-08-28 | 部署 | 文件寫「CI 沒有 deploy step，所以要手動 wrangler」，於是一直叫使用者手動跑——但 Cloudflare 那端早就接了 GitHub，push 就自動上線 | 「哪裡沒有做這件事」推不出「沒有人在做這件事」；部署與否要**直接量線上內容**，不要從 repo 這端的設定推論
 - 2026-08-28 | 比對線上 | 第一輪 md5 比對報「3 個檔不同」，其實是本機 CRLF、線上 LF——差點誤判成沒部署 | 硬規矩 11 不是只給檢查腳本用的，**手打的 curl 比對也要先把 CR 去掉**
 - 2026-08-28 | wrangler | `npx wrangler` 那包的 optionalDependencies 沒裝完（缺 `@cloudflare/workerd-windows-64`），載入階段就 throw，看起來像 wrangler 壞了 | 刪掉 `AppData/Local/npm-cache/_npx/<hash>` 那個目錄重跑即可；**不要**改成專案內 `npm i -D wrangler`——assets 目錄是 `.` 而 `.assetsignore` 沒擋 `node_modules`
+- 2026-08-28 | 自檢指令 | 在 §6 內文寫了一行 `node -e` 用 `indexOf('## 6. 檢查')` 找章節，結果它找到的是**自己那行指令裡的字串**，掃出 0 支測試然後回報「CI 缺：無」 | 檢查腳本要有「掃到 0 筆就算失敗」的下限守衛；文件裡放檔名（`ci-parity-check.js`），不要放會掃到自己的一行指令
 
 只留還會再犯的。同型的已升級成 §0 硬規矩，不重複列。
 

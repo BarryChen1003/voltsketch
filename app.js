@@ -1079,6 +1079,37 @@ const app = {
       return;
     }
 
+    // 匯流排：幹線與分支跟導線走同一套「兩次點擊 + 吸附」，差別只在畫完貼哪個欄位。
+    // 沿用 wireSegments 是刻意的——轉角規則、吸附、undo 全部照舊；另寫一套遲早會
+    // 出現「匯流排的轉角跟導線不一樣」這種說不出理由的差異。
+    if (this.state.tool === 'bus' || this.state.tool === 'bustap') {
+      const isBus = this.state.tool === 'bus';
+      const snap = this.snapPoint(pt.x, pt.y);
+      if (!this.state.wireStart) {
+        this.state.wireStart = { x: snap.x, y: snap.y, bind: null };
+        // 兩個字面各自呼叫一次：寫成 uiT(cond ? 'A' : 'B') 的話
+        // ui-i18n-check 靜態掃不到，那兩條會安靜地只剩中文。
+        this.updateStatus(isBus ? uiT('匯流排：再點一下決定終點') : uiT('分支：再點一下決定終點'));
+      } else {
+        if (snap.x !== this.state.wireStart.x || snap.y !== this.state.wireStart.y) {
+          const label = isBus ? this.askBusSpec() : this.askBusTap(this.state.wireStart, { x: snap.x, y: snap.y });
+          if (label) {
+            this.saveUndo();
+            this.wireSegments(this.state.wireStart, { x: snap.x, y: snap.y }, null, null).forEach(s => {
+              s.color = this.state.activeColor;
+              if (isBus) s.bus = label; else s.busTap = label;
+              this.state.wires.push(s);
+            });
+          }
+        }
+        this.state.wireStart = null;
+        this.state.snapHint = null;
+        this.updateStatus();
+      }
+      this.render();
+      return;
+    }
+
     // 自訂文字標註（net 命名等）
     if (this.state.tool === 'text') {
       const hit = this.hitTest(pt.x, pt.y);
@@ -2720,12 +2751,76 @@ const app = {
     modal.hidden = false;
   },
 
+  // ---- 匯流排 ----
+  // 幹線名字問一次就好：轉角會切成好幾段，每段都問一次沒有人受得了。
+  // 預設值取「畫面上最後一條幹線」，所以接著畫轉角直接按 Enter 就對了。
+  askBusSpec() {
+    const B = window.SchBus;
+    const last = [...this.state.wires].reverse().find(w => w && w.bus);
+    const def = (last && last.bus) || 'D[0..7]';
+    const s = window.prompt(uiT('匯流排名稱（D[0..7]、ADDR[0:15]、{CLK,RST,EN}）'), def);
+    if (s == null) return '';
+    const spec = String(s).trim();
+    if (!spec) return '';
+    if (B) {
+      const p = B.parse(spec);
+      // 寫法不對就當場擋下來。放它進去的話，畫面上有一條線、DRC 會叫，
+      // 但使用者已經忘記自己那時打了什麼。
+      if (!p.ok) { this.showToast(uiT('匯流排寫法看不懂：{spec}', { spec })); return ''; }
+    }
+    return spec;
+  },
+
+  // 分支的預設成員名：看這條分支會碰到哪條幹線，給它下一個還沒用掉的成員。
+  // 使用者最常做的事就是「一條一條往下接」，預設值猜對就少打一次字。
+  askBusTap(a, b) {
+    const B = window.SchBus;
+    let def = '';
+    if (B) {
+      const probe = this.state.wires.concat([{ x1: a.x, y1: a.y, x2: b.x, y2: b.y, busTap: '?' }]);
+      const link = B.attach(probe).find(l => l.tapIndex === probe.length - 1);
+      if (link && link.spec) def = B.nextFree(this.state.wires, link.spec) || '';
+    }
+    const s = window.prompt(uiT('這條分支接哪一個訊號？'), def);
+    if (s == null) return '';
+    return String(s).trim();
+  },
+
   renderWires() {
     const selW = new Set(this.state.selectedWireIndices);
     let html = this.state.wires.map((w, i) => {
       const sel = selW.has(i);
-      return `<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${sel ? '#f97316' : (w.color || '#2563eb')}" stroke-width="${sel ? 3.5 : 2}" stroke-linecap="round"/>`;
+      // 匯流排幹線畫粗：它不是導體，看起來就不該跟導線一樣。
+      // 分支維持導線粗細——它是真的導線。
+      const bus = !!(w.bus);
+      const width = sel ? (bus ? 7 : 3.5) : (bus ? 6 : 2);
+      return `<line x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}" stroke="${sel ? '#f97316' : (w.color || '#2563eb')}" stroke-width="${width}" stroke-linecap="round"${bus ? ' opacity="0.75"' : ''}/>`;
     }).join('');
+    // 幹線與分支的名字要畫出來：匯流排的全部意義就是那個名字，
+    // 看不到名字的話畫面上只是幾條粗線，使用者分不出哪條是哪條。
+    const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    html += this.state.wires.map(w => {
+      const txt = w.bus || w.busTap;
+      if (!txt) return '';
+      const mx = (w.x1 + w.x2) / 2, my = (w.y1 + w.y2) / 2;
+      const vertical = Math.abs(w.x2 - w.x1) < Math.abs(w.y2 - w.y1);
+      return `<text x="${mx + (vertical ? 6 : 0)}" y="${my - (vertical ? 0 : 8)}" text-anchor="${vertical ? 'start' : 'middle'}" font-size="11" font-family="ui-monospace,monospace" fill="${w.bus ? '#7c3aed' : '#2563eb'}">${esc(txt)}</text>`;
+    }).join('');
+    // 分支接上匯流排的記號。**不能用實心接點**：那個點的意思是「同一條 net」，
+    // 而同一條匯流排上的兩個分支並不同 net。用一小段斜線（業界畫法），
+    // 而且只畫「真的接上」的那些——接歪了就看不到記號，等於當場告訴使用者。
+    if (window.SchBus) {
+      html += window.SchBus.attach(this.state.wires).map(l => {
+        if (l.busIndex == null) return '';
+        const t = this.state.wires[l.tapIndex], b = this.state.wires[l.busIndex];
+        if (!t || !b) return '';
+        const d = (ax, ay) => Math.hypot(ax - b.x1, ay - b.y1) + Math.hypot(ax - b.x2, ay - b.y2);
+        // 分支貼在幹線上的那一端（離幹線兩端距離和較小者）
+        const onA = Math.abs(d(t.x1, t.y1) - Math.hypot(b.x2 - b.x1, b.y2 - b.y1)) < Math.abs(d(t.x2, t.y2) - Math.hypot(b.x2 - b.x1, b.y2 - b.y1));
+        const px = onA ? t.x1 : t.x2, py = onA ? t.y1 : t.y2;
+        return `<line x1="${px - 6}" y1="${py + 6}" x2="${px + 6}" y2="${py - 6}" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/>`;
+      }).join('');
+    }
     // 導線接點實心點：讓「線與線相連」一眼可見
     if (window.CircuitEngine) {
       const js = window.CircuitEngine.junctions(this.state.components, this.state.wires);

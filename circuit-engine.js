@@ -190,13 +190,45 @@
   }
 
   /**
+   * 匯流排正規化：把畫面上的匯流排換成節點計算看得懂的東西。
+   *
+   * **這件事一定要在引擎裡做，不可以當成呼叫端的前置步驟。**
+   * 匯流排幹線只是畫給人看的記號，不是導體；但它在幾何上就是一條線，
+   * 分支線的端點又剛好落在它身上——照 T 型接點的規則，
+   * 一條 8 位元匯流排會把 D0..D7 **全部短在一起**，而且畫面上完全正常。
+   * computeNets 有六個呼叫端（app.js ×4、pcb.js、sch-spice、schematic-check、sim-bench），
+   * 少一個記得先正規化就會踩到這個，所以規則只放這裡一份。
+   *
+   * 規則兩條：
+   *   w.bus    → 幹線，整條不參與節點計算（不是導體）
+   *   w.busTap → 分支，net 取成員名（同名成員因此自動 union，跟 net 標籤同一條路）
+   * 已經自己寫了 net 的分支以 net 為準：使用者明講的名字不該被展開蓋掉。
+   */
+  function normalizeBuses(wires) {
+    if (!wires || !wires.length) return wires || [];
+    let touched = false;
+    for (const w of wires) if (w && (w.bus || w.busTap)) { touched = true; break; }
+    if (!touched) return wires;                       // 沒有匯流排就原樣回去（不多配一個陣列）
+    const out = [];
+    for (const w of wires) {
+      if (!w) continue;
+      if (w.bus) continue;                            // 幹線不是導體
+      if (w.busTap && !w.net) out.push(Object.assign({}, w, { net: String(w.busTap) }));
+      else out.push(w);
+    }
+    return out;
+  }
+
+  /**
    * 節點計算：union-find 把同電位點併在一起。
    * 規則：每條導線兩端同電位；任何空間重合(≤EPS)的點同電位；
    *       net 標籤併入所在的 net，且**同名標籤互相 union**（等同接在一起）。
+   *       匯流排先經 normalizeBuses 正規化（幹線不導電、分支取成員名）。
    * 回傳 { pinNet, connectedPins, netCount, find, pts, netName:Map(root->名字), nameOfPin(key) }
    */
   function computeNets(components, wires, eps) {
     eps = eps || 6;
+    wires = normalizeBuses(wires);
     const pts = []; // {x,y,kind,key}
     (components || []).forEach(c => {
       getPins(c).forEach(p => pts.push({ x: p.x, y: p.y, kind: 'pin', key: c.id + ':' + p.index }));
@@ -292,10 +324,15 @@
    * 導線接點(顯示用)：回傳 [{x,y}]，在「電氣相連」處畫實心點。
    * 規則：連接數 = 重合的導線端點數 + 2×(內部穿過此點的導線數)，≥3 才畫點。
    * → T 型(端點落在線中)、三線交會 會畫；單純轉角(2端)或無共點交叉 不畫。
+   *
+   * 這裡跟 computeNets 走**同一份** normalizeBuses：實心點的意思是「同一條 net」，
+   * 兩邊用不同的線集合就會出現「畫面上有接點、引擎說沒接」——
+   * 那種不一致使用者只會相信畫面，然後拿去做板子。
+   * 分支接上匯流排另外畫記號（app.js 的 renderWires），不用這個點。
    */
   function junctions(components, wires, eps) {
     eps = eps || 6;
-    wires = wires || [];
+    wires = normalizeBuses(wires || []);
     const ends = [];
     wires.forEach(w => { ends.push([w.x1, w.y1]); ends.push([w.x2, w.y2]); });
     const used = ends.map(() => false);
@@ -395,6 +432,7 @@
 
   global.CircuitEngine = {
     PinDefs, FALSTAD_SUPPORTED, getPins, snapTarget, computeNets, toFalstad, falstadURL, dist, junctions, icLayout, onSegInterior,
+    normalizeBuses,
     collectNetLabels, parseVolt
   };
 })(typeof window !== 'undefined' ? window : this);

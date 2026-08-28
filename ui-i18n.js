@@ -21,6 +21,13 @@
     '存進元件庫失敗：{err}': { en: 'Could not save to the library: {err}', ja: '部品ライブラリへの保存に失敗：{err}', ko: '부품 라이브러리 저장 실패: {err}' },
     '從 datasheet 建 IC 需要登入，這樣抽出來的腳位才留得住': { en: 'Building an IC from a datasheet needs an account, so the pins you extract are kept', ja: 'datasheet から IC を作るにはログインが必要です。抽出したピンを保持するためです', ko: 'datasheet로 IC를 만들려면 로그인이 필요합니다. 추출한 핀을 보관하기 위해서입니다' },
 
+    // ── 匯流排（bus）──
+    '匯流排：再點一下決定終點': { en: 'Bus: click once more to set the end point', ja: 'バス：もう一度クリックして終点を決めます', ko: '버스: 한 번 더 클릭해 끝점을 정하세요' },
+    '分支：再點一下決定終點': { en: 'Bus tap: click once more to set the end point', ja: 'バス分岐：もう一度クリックして終点を決めます', ko: '버스 분기: 한 번 더 클릭해 끝점을 정하세요' },
+    '匯流排名稱（D[0..7]、ADDR[0:15]、{CLK,RST,EN}）': { en: 'Bus name (D[0..7], ADDR[0:15], {CLK,RST,EN})', ja: 'バス名（D[0..7]、ADDR[0:15]、{CLK,RST,EN}）', ko: '버스 이름(D[0..7], ADDR[0:15], {CLK,RST,EN})' },
+    '匯流排寫法看不懂：{spec}': { en: 'Cannot read that bus name: {spec}', ja: 'バス名を解釈できません：{spec}', ko: '버스 이름을 해석할 수 없습니다: {spec}' },
+    '這條分支接哪一個訊號？': { en: 'Which signal does this tap carry?', ja: 'この分岐はどの信号ですか？', ko: '이 분기는 어떤 신호입니까?' },
+
     // ── Net 清單匯出 ──
     '未命名': { en: 'unnamed', ja: '未命名', ko: '이름 없음' },
     '畫布沒有任何 net': { en: 'There are no nets on the canvas', ja: 'キャンバスに net がありません', ko: '캔버스에 net이 없습니다' },
