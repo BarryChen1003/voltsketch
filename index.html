@@ -405,6 +405,55 @@
           </section>
 
           <section class="panel-section">
+            <h2 data-i18n="pj_sp_title">📈 內建模擬（MNA）</h2>
+            <div style="display:grid;gap:6px;font-size:12px">
+              <div style="display:flex;gap:4px;flex-wrap:wrap">
+                <button class="small-button" id="spDc" data-i18n="pj_sp_dc">DC 工作點</button>
+                <button class="small-button" id="spTran" data-i18n="pj_sp_tran">瞬態</button>
+                <button class="small-button" id="spAc" data-i18n="pj_sp_ac">AC 掃描</button>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_wave">激勵訊號</span>
+                  <select id="spWave" style="padding:3px">
+                    <option value="step" data-i18n="pj_sp_w_step">步階</option>
+                    <option value="sine" data-i18n="pj_sp_w_sine">正弦</option>
+                    <option value="pulse" data-i18n="pj_sp_w_pulse">脈波</option>
+                    <option value="dc" data-i18n="pj_sp_w_dc">固定直流</option>
+                  </select></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_freq">激勵頻率 Hz</span><input type="number" id="spFreq" value="1000" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_stop">瞬態長度 s</span><input type="number" id="spStop" value="0.005" step="0.001" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_f0">起始 Hz</span><input type="number" id="spF0" value="1" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_f1">終止 Hz</span><input type="number" id="spF1" value="1000000" style="padding:3px"></label>
+              </div>
+              <div id="spOut" style="display:grid;gap:3px;line-height:1.5"></div>
+              <div id="spHint" style="color:var(--muted);line-height:1.5"></div>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2 data-i18n="pj_an_title">🔢 自動編號 refdes</h2>
+            <div style="display:grid;gap:6px;font-size:12px">
+              <button class="small-button" id="anFill" data-i18n="pj_an_fill">補編未命名的</button>
+              <button class="small-button" id="anAll" data-i18n="pj_an_all">全部重新編號</button>
+              <div id="anOut" style="color:var(--muted);line-height:1.5"></div>
+              <div id="anHint" style="color:var(--muted);line-height:1.5"></div>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2 data-i18n="pj_dz_title">☁️ 雲端專案</h2>
+            <div style="display:grid;gap:6px;font-size:12px">
+              <div id="dzCur" style="color:var(--muted)"></div>
+              <button class="small-button" id="dzSave" data-i18n="pj_dz_save">💾 存回目前專案</button>
+              <button class="small-button" id="dzNew" data-i18n="pj_dz_new">＋ 存成新專案</button>
+              <button class="small-button" id="dzRefresh" data-i18n="pj_dz_refresh">🔄 重新整理清單</button>
+              <div id="dzCount" style="color:var(--muted);font-size:11px"></div>
+              <div id="dzList" style="display:grid;gap:6px"></div>
+              <div id="dzHint" style="color:var(--muted);line-height:1.5"></div>
+            </div>
+          </section>
+
+          <section class="panel-section">
             <h2 data-i18n="readings">元件讀值</h2>
             <div class="table-wrap">
               <table>
@@ -581,15 +630,23 @@
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./observe.js?v=1"></script>
     <script src="./auth.js?v=2026-08-18a"></script>
+    <script src="./designs.js?v=1"></script>
     <script src="./schematic-symbols.js?v=31"></script>
     <script src="./circuit-engine.js?v=37"></script>
     <script src="./ic-data.js?v=44"></script>
-    <script src="./ui-i18n.js?v=2026-08-19b"></script>
+    <script src="./ui-i18n.js?v=2026-08-26a"></script>
     <script src="./pcb-crossprobe.js?v=1"></script>
-    <script src="./app.js?v=66"></script>
+    <script src="./app.js?v=67"></script>
+    <script src="./annotate.js?v=1"></script>
+    <script src="./designs-ui.js?v=1"></script>
+    <script src="./sch-designs-ui.js?v=1"></script>
+    <script src="./sch-annotate-ui.js?v=1"></script>
+    <script src="./spice.js?v=1"></script>
+    <script src="./sch-spice.js?v=1"></script>
+    <script src="./sch-spice-ui.js?v=2"></script>
     <script src="./instruments.js"></script>
     <script src="./sim-bench.js"></script>
     <script src="./sheets.js?v=2026-08-06a"></script>
-    <script src="./i18n.js?v=2026-08-26k"></script>
+    <script src="./i18n.js?v=2026-08-27a"></script>
 </body>
 </html>

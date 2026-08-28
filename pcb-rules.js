@@ -203,25 +203,28 @@
         let maxR = EPS;
         for (const n of arr) if ((n.r || EPS) > maxR) maxR = n.r || EPS;
         const cell = Math.max(0.5, 2 * maxR);
-        const nodeBuckets = new Map();
-        const bk = (ix, iy) => ix + ',' + iy;
-        arr.forEach((n, i) => {
-          if (n.key === 'zone') return;
-          const k = bk(Math.floor(n.x / cell), Math.floor(n.y / cell));
-          let a = nodeBuckets.get(k);
-          if (!a) { a = []; nodeBuckets.set(k, a); }
-          a.push(i);
-        });
-        const nearIdx = (x, y, r) => {
-          const out = [];
-          const x0 = Math.floor((x - r) / cell), x1 = Math.floor((x + r) / cell);
-          const y0 = Math.floor((y - r) / cell), y1 = Math.floor((y + r) / cell);
-          for (let iy = y0; iy <= y1; iy++) for (let ix = x0; ix <= x1; ix++) {
-            const a = nodeBuckets.get(bk(ix, iy));
-            if (a) for (let t = 0; t < a.length; t++) out.push(a[t]);
-          }
-          return out;
-        };
+
+        // 空間索引走共用的 PcbIndex（pcb-index.js）。原本這裡有一份手寫的桶化，
+        // DRC 有一份、鋪銅有一份——同一份幾何被整理三次，而且三套的邊界處理
+        // 細節不完全一樣，改了其中一套另外兩套不會跟著改。
+        //
+        // 判定條件一字未改：索引只負責挑候選，真正的距離比較還在下面那幾行。
+        const IXM = (typeof window !== 'undefined' && window.PcbIndex) ||
+                    (typeof globalThis !== 'undefined' && globalThis.PcbIndex) || null;
+        let nearIdx;
+        if (IXM) {
+          const nodeIx = IXM.create(cell);
+          arr.forEach((n, i) => {
+            if (n.key === 'zone') return;
+            const r = n.r || EPS;
+            nodeIx.insert(i, IXM.box(n.x - r, n.y - r, n.x + r, n.y + r));
+          });
+          nearIdx = (x, y, r) => [...nodeIx.query(IXM.box(x - r, y - r, x + r, y + r))];
+        } else {
+          // PcbIndex 沒載入時退回全比對。慢，但**結果一樣**——
+          // 少挑一個候選就是少一次合併，那種錯會讓網路莫名其妙斷開。
+          nearIdx = () => arr.map((_, i) => i);
+        }
 
         // 節點鄰近合併（pad/via 半徑、端點 EPS；跨層不併——via 是 '*' 可跨）
         for (let i = 0; i < arr.length; i++) {

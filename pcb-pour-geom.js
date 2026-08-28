@@ -164,11 +164,38 @@
       let current = C.Clipper.PolyTreeToPaths(tree);
       if (!current.length) return { ok: true, islands: [], dropped: 0, area: 0, warnings };
 
+      // 這塊 zone 的影響範圍：外框再往外一個淨空。範圍外的 pad／走線／via
+      // 不可能與它相交，連 clip 都不必送進去。
+      //
+      // 為什麼值得做：cuts 是全掃整塊板收集的，1600 pad 的板子上
+      // 一塊小鋪銅也要跑 1600 次 padPaths（每次都在算旋轉矩形與圓的頂點），
+      // 而真正會相交的可能只有十幾個。**篩選不改判定**——
+      // 範圍是用 zone 外框膨脹 gap 算的，被篩掉的必然不相交。
+      const IXM = (typeof window !== 'undefined' && window.PcbIndex) ||
+                  (typeof globalThis !== 'undefined' && globalThis.PcbIndex) || null;
+      // 只在「東西夠多」時才做範圍篩選。小板上建索引比省下來的還貴——
+      // 實測 1600 pad 的板子上篩選有效，但幾十個 pad 的板子反而慢 2 倍。
+      // 門檻取 200 個 pad：那大約是 25 顆 SOIC-8，再往下就不值得。
+      const padTotal = (state.components || []).reduce((n, c) => n + ((c.pads || []).length), 0);
+      const worthIndex = padTotal + (state.traces || []).length + (state.vias || []).length > 200;
+      let nearZone = null;
+      if (IXM && worthIndex) {
+        const zb = IXM.polyBox(zone.pts, Math.max(gap, cl.traceToPad || 0, cl.traceToEdge || 0) + 0.05);
+        nearZone = box => (box ? IXM.overlaps(box, zb) : true);
+      }
+      // 沒有 PcbIndex 就一律通過（等於維持原本的全掃行為）
+      const inZone = box => (nearZone ? nearZone(box) : true);
+
       // 2) 扣掉異網的銅（各自膨脹淨空）
       const cuts = [];
       const spokes = [];
       for (const c of (state.components || [])) for (const p of (c.pads || [])) {
         if (p.cu === false) continue;
+        if (nearZone) {
+          const a0 = padAbs(c, p);
+          const rr = Math.hypot(p.w || 0.5, p.h || 0.5) / 2 + gap;
+          if (!inZone(IXM.box(a0.x - rr, a0.y - rr, a0.x + rr, a0.y + rr))) continue;
+        }
         const side = p.side;
         if (!(side === '*' || (side === 'B' ? lay === 'B.Cu' : lay === 'F.Cu'))) continue;
         const isMine = net && (p.net || '') === net;
@@ -191,10 +218,12 @@
       for (const t of (state.traces || [])) {
         if ((t.layer || 'F.Cu') !== lay) continue;
         if (net && (t.net || '') === net) continue;         // 同網走線本來就該連在一起
+        if (nearZone && !inZone(IXM.traceBox(t, gap))) continue;
         cuts.push(...tracePaths(t, gap));
       }
       for (const v of (state.vias || [])) {
         if (net && (v.net || '') === net) continue;
+        if (nearZone && !inZone(IXM.viaBox({ x: v.x, y: v.y, d: (v.od || 0.7) }, gap))) continue;
         cuts.push(circlePath(v.x, v.y, (v.od || 0.7) / 2 + gap));
       }
       for (const k of (state.keepouts || [])) {
@@ -241,6 +270,45 @@
 
       const area = islands.reduce((sum, is) => sum + areaOf(is.outer) - is.holes.reduce((h, p) => h + areaOf(p), 0), 0);
       return { ok: true, islands, dropped, area, warnings };
+    },
+
+    /**
+     * 對板上每一塊鋪銅算一次，結果就地存進 `zone.fillPolys`。
+     *
+     * 為什麼把結果掛在 zone 上：畫面、DRC、Gerber、ODB++ 四個地方都要用同一份幾何。
+     * 各自呼叫 build() 會算四次（openrex 一次幾十毫秒），而且四邊的參數只要有一個
+     * 不一樣就會畫出不同的銅——那種不一致在畫面上看不出來，
+     * 要等板廠問「你這裡到底要不要銅」才會發現。
+     *
+     * Clipper 沒載入或算失敗時**不寫** fillPolys，下游自動退回柵格版。
+     * 寧可用舊的那條路，也不要留一個半成品的 fillPolys 讓匯出畫錯。
+     */
+    applyAll(state, padAbs, opts) {
+      const zones = (state.userZones || []);
+      let ok = 0, failed = 0, islands = 0, dropped = 0, area = 0;
+      const warnings = [];
+      for (const z of zones) {
+        const r = this.build(state, padAbs, z, opts);
+        if (!r.ok) {
+          delete z.fillPolys;
+          failed++;
+          if (r.reason && !warnings.some(w => w.k === 'pourgeom_' + r.reason)) {
+            warnings.push({ k: 'pourgeom_' + r.reason, v: {} });
+          }
+          continue;
+        }
+        z.fillPolys = r.islands;
+        ok++; islands += r.islands.length; dropped += r.dropped; area += r.area;
+        for (const w of (r.warnings || [])) warnings.push(w);
+      }
+      return { zones: zones.length, ok, failed, islands, dropped, area: +area.toFixed(3), warnings };
+    },
+
+    /** 把 fillPolys 清掉（切回柵格版時用）。 */
+    clearAll(state) {
+      let n = 0;
+      for (const z of (state.userZones || [])) if (z.fillPolys) { delete z.fillPolys; n++; }
+      return n;
     },
 
     _rectPath: rectPath, _circlePath: circlePath, _tracePaths: tracePaths, _areaOf: areaOf, _ptInPoly: ptInPoly

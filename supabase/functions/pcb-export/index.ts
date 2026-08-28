@@ -18,6 +18,8 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { build, zipStore } from "../_shared/gerber.mjs";
 import { build as buildOdb } from "../_shared/odbpp.mjs";
+import { build as buildIpc } from "../_shared/ipc2581.mjs";
+import { build as buildAsm } from "../_shared/assembly.mjs";
 
 // 只認自家網域（與 create-order 同一套理由）
 const ALLOWED_ORIGINS = new Set([
@@ -109,15 +111,23 @@ let body: { state?: unknown; baseName?: string; format?: string };
 
     // 5) 產生
     const baseName = String(body.baseName || "hardwareai").replace(/[^\w.-]/g, "_").slice(0, 64);
-    // format 預設 gerber；odb 走 ODB++ 子集（銅層/鑽孔/板框，見 _shared/odbpp.mjs 檔頭）
-    const isOdb = body.format === "odb";
-    const r = isOdb ? buildOdb(state, padAbs, baseName) : build(state, padAbs, baseName);
+    // 四種格式共用同一支 API 與同一份額度（都是「可以送出去製造的東西」）。
+    // 用表而不是 `isOdb ? A : B`：二元判斷加第三種格式時，很容易改了產生器
+    // 卻忘了改下面的檔名，結果是「拿到 IPC-2581 卻叫 -gerber.zip」那種安靜的錯。
+    const BUILDERS: Record<string, { fn: Function; suffix: string }> = {
+      gerber:   { fn: build,    suffix: "gerber" },
+      odb:      { fn: buildOdb, suffix: "odbpp" },
+      ipc2581:  { fn: buildIpc, suffix: "ipc2581" },
+      assembly: { fn: buildAsm, suffix: "assembly" },
+    };
+    const fmt = BUILDERS[String(body.format || "")] ? String(body.format) : "gerber";
+    const r = BUILDERS[fmt].fn(state, padAbs, baseName, body.opts || {});
     const zip = zipStore(r.files.map((f: any) => ({ name: f.name, text: f.text })));
 
     // 統計與警告走標頭（本體是 ZIP 位元組）。警告是 { k, v }，由前端翻成四語。
     const meta = {
       files: r.files.map((f: any) => f.name),
-      format: isOdb ? "odb" : "gerber",
+      format: fmt,
       stats: (r as any).stats ?? null,
       drillCounts: (r as any).drillCounts ?? null,
       cplCount: (r as any).cplCount ?? null,
@@ -131,7 +141,7 @@ let body: { state?: unknown; baseName?: string; format?: string };
       headers: {
         ...cors,
         "Content-Type": "application/zip",
-        "Content-Disposition": `attachment; filename="${baseName}-${isOdb ? "odbpp" : "gerber"}.zip"`,
+        "Content-Disposition": `attachment; filename="${baseName}-${BUILDERS[fmt].suffix}.zip"`,
         // 標頭只能放 ASCII；中文會在 warnings 的 v 裡，所以整包做 base64
         "X-Gerber-Meta": btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(meta)))),
       },

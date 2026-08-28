@@ -19,6 +19,7 @@ global.document = {
   readyState: 'complete', body: {}
 };
 global.window.document = global.document;
+require('./pcb-index.js');   // 繞線的節點索引走共用的那一份
 require('./pcb-rules.js');
 require('./pcb-fabs.js');
 const GerberExport = require('./supabase/functions/_shared/gerber.mjs');

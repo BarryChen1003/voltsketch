@@ -52,6 +52,10 @@ jobs:
         run: node gerber-readback.js
       - name: odb-check（ODB++ 結構與 readback）
         run: node odb-check.js
+      - name: netmodel.test（net 一級物件：改名列舉／阻抗閉式解／差分對量測）
+        run: node netmodel.test.js
+      - name: fpinst.test（元件實例／封裝庫分離：手改過的不可被蓋掉）
+        run: node fpinst.test.js
       - name: pcb3d.test（3D 板框串接與元件高度）
         run: node pcb3d.test.js
       - name: shove.test（推擠：不該推的時候不可推）
@@ -101,9 +105,50 @@ jobs:
       - name: blindvia（盲埋孔）
         run: node blindvia.test.js
 
+      # 2c-13) 2026-08-27 那一批：本機 §6 一直有跑，但沒有一支進過 CI，
+      #        於是 push 上去不會擋。2026-08-28 補齊。
+      - name: ipc2581（IPC-2581 ＋ 組裝圖）
+        run: node ipc2581.test.js
+      - name: odb-cmp（ODB++ 元件與 netlist）
+        run: node odb-cmp.test.js
+      - name: pour-default（布林鋪銅成為匯出預設，重算冪等）
+        run: node pour-default.test.js
+      - name: true-arc（真圓弧端到端：導角→DRC→G02/G03→解析回來）
+        run: node true-arc.test.js
+      - name: pcb-index（共用空間索引：不可以漏候選）
+        run: node pcb-index.test.js
+      - name: pcb-arc（圓弧幾何：細分誤差要真的量弦高）
+        run: node pcb-arc.test.js
+      - name: drc-arc（DRC 對真弧：差 0.001mm 也要抓到）
+        run: node drc-arc.test.js
+      - name: drc-incremental（增量 DRC：只擔心漏報）
+        run: node drc-incremental.test.js
+      - name: gerber-import（Gerber/Excellon 匯入 round-trip）
+        run: node gerber-import.test.js
+      - name: alien-import（Eagle／LTspice：認不得的不可硬塞）
+        run: node alien-import.test.js
+      - name: spice（MNA：全對閉式解）
+        run: node spice.test.js
+      - name: sch-spice（線路圖轉網表：拒絕分析的時機）
+        run: node sch-spice.test.js
+      - name: footprint-editor（自製封裝：對規格書數字）
+        run: node footprint-editor.test.js
+      - name: fp-lib（封裝庫：登入後本機那份不可以不見）
+        run: node fp-lib.test.js
+      - name: designs（雲端專案：清單不可撈 data、存一半不可清掉另一半）
+        run: node designs.test.js
+      - name: autoplace（自動擺件：不重疊、可重現、鎖定的不動）
+        run: node autoplace.test.js
+      - name: annotate（refdes 編號：fill 不可動既有編號）
+        run: node annotate.test.js
+      - name: backannotate（refdes／net 回寫）
+        run: node backannotate.test.js
+
       # 2d) i18n key 完整性：pcbT/I18N.t 用到的 key 必須有定義（防 UI 顯示原始 key）
       - name: i18n-check（key 完整性）
         run: node i18n-check.js
+      - name: i18n-quad-check（字典本身四語齊全：少一個 ja 不會報錯，只是日文看到中文）
+        run: node i18n-quad-check.js
 
       # 2e) 知識卡原理說明排版器：分段只改排版、內容零丟失
       - name: knowledge-format.test（排版不改內容）
@@ -162,6 +207,8 @@ jobs:
         run: node vendor-check.js --strict
       - name: csp-hash（inline script 的雜湊要與 _headers 同步）
         run: node csp-hash.js --check
+      - name: asset-leak-check（.assetsignore 雙向：檢查腳本不上公開站、站台在用的檔不被誤擋）
+        run: node asset-leak-check.js
       - name: interview-i18n-check（面試題庫四語齊全）
         run: node interview-i18n-check.js --strict
       - name: news-i18n-check（新技術：四語＋每則都要有出處）

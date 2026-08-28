@@ -766,6 +766,74 @@
             </div>
           </section>
 
+          <section class="panel-section" data-panel="import" data-panel-data-i18n-title="pj_t_import" title="匯入其它 EDA">
+            <h2 data-i18n="pj_imp_title">📥 匯入其它 EDA</h2>
+            <div style="display:grid;gap:6px;font-size:12px">
+              <label class="small-button" style="text-align:center;cursor:pointer">
+                <span data-i18n="pj_imp_pick">選擇檔案（可多選）</span>
+                <input type="file" id="impFiles" multiple accept=".gbr,.gtl,.gbl,.gts,.gbs,.gto,.gbo,.gko,.gm1,.g1,.g2,.g3,.g4,.drl,.xln,.txt,.nc,.exc,.brd,.sch,.asc,.PcbDoc,.SchDoc" style="display:none">
+              </label>
+              <button class="small-button" id="impApply" disabled data-i18n="pj_imp_apply">套用到板子</button>
+              <div id="impOut2" style="display:grid;gap:2px;line-height:1.5"></div>
+              <div id="impHint2" style="color:var(--muted);line-height:1.5"></div>
+            </div>
+          </section>
+
+          <section class="panel-section" data-panel="fpedit" data-panel-data-i18n-title="pj_t_fp" title="封裝編輯器">
+            <h2 data-i18n="pj_fp_title">🧱 封裝編輯器</h2>
+            <div style="display:grid;gap:6px;font-size:12px">
+              <label style="display:grid;gap:2px"><span data-i18n="pj_fp_kind">排列方式</span>
+                <select id="fpKind" style="padding:3px">
+                  <option value="dual" data-i18n="pj_fp_k_dual">兩排（SOIC / DIP）</option>
+                  <option value="quad" data-i18n="pj_fp_k_quad">四排（QFP / QFN）</option>
+                  <option value="grid" data-i18n="pj_fp_k_grid">網格（BGA）</option>
+                  <option value="chip" data-i18n="pj_fp_k_chip">兩 pad（被動件）</option>
+                </select></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pj_fp_name">名稱</span><input id="fpName" placeholder="SOIC-8" style="padding:3px"></label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                <label style="display:grid;gap:2px"><span data-i18n="pj_fp_pins">腳數</span><input type="number" id="fpPins" value="8" min="2" step="2" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_fp_pitch">間距 mm</span><input type="number" id="fpPitch" value="1.27" step="0.05" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_fp_span">排距 mm</span><input type="number" id="fpSpan" value="5.4" step="0.1" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_fp_padw">pad 長 mm</span><input type="number" id="fpPadW" value="1.5" step="0.05" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_fp_padh">pad 寬 mm</span><input type="number" id="fpPadH" value="0.6" step="0.05" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_fp_rows">列數（BGA）</span><input type="number" id="fpRows" value="4" min="1" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_fp_cols">行數（BGA）</span><input type="number" id="fpCols" value="4" min="1" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_fp_drill">孔徑 mm</span><input type="number" id="fpDrill" value="0.8" step="0.05" style="padding:3px"></label>
+              </div>
+              <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="fpTht"><span data-i18n="pj_fp_tht">通孔（有鑽孔）</span></label>
+              <div id="fpPreview"></div>
+              <div id="fpOut" style="display:grid;gap:2px;line-height:1.5"></div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap">
+                <button class="small-button" id="fpPlace" data-i18n="pj_fp_place">放到板子上</button>
+                <button class="small-button" id="fpSave" data-i18n="pj_fp_save">存進元件庫</button>
+                <button class="small-button" id="fpFromSel" data-i18n="pj_fp_from">從選取的元件建立</button>
+              </div>
+              <div id="fpLib" style="display:grid;gap:2px"></div>
+              <div id="fpHint" style="color:var(--muted);line-height:1.5"></div>
+            </div>
+          </section>
+          <section class="panel-section" data-panel="autoplace" data-panel-data-i18n-title="pj_t_autoplace" title="自動擺件">
+            <h2 data-i18n="pj_ap_title">🧲 自動擺件（粗排）</h2>
+            <div style="display:grid;gap:6px;font-size:12px">
+              <button class="small-button" id="apRun" data-i18n="pj_ap_run">重排未鎖定的元件</button>
+              <div id="apOut" style="color:var(--muted);line-height:1.5"></div>
+              <div id="apHint" style="color:var(--muted);line-height:1.5"></div>
+            </div>
+          </section>
+
+          <section class="panel-section" data-panel="designs" data-panel-data-i18n-title="pj_t_designs" title="雲端專案">
+            <h2 data-i18n="pj_dz_title">☁️ 雲端專案</h2>
+            <div style="display:grid;gap:6px;font-size:12px">
+              <div id="dzCur" style="color:var(--muted)"></div>
+              <button class="small-button" id="dzSave" data-i18n="pj_dz_save">💾 存回目前專案</button>
+              <button class="small-button" id="dzNew" data-i18n="pj_dz_new">＋ 存成新專案</button>
+              <button class="small-button" id="dzRefresh" data-i18n="pj_dz_refresh">🔄 重新整理清單</button>
+              <div id="dzCount" style="color:var(--muted);font-size:11px"></div>
+              <div id="dzList" style="display:grid;gap:6px"></div>
+              <div id="dzHint" style="color:var(--muted);line-height:1.5"></div>
+            </div>
+          </section>
+
           <section class="panel-section" data-panel="kicad" data-panel-data-i18n-title="pj_t_kicad" title="KiCad 匯入 / 匯出">
             <h2 data-i18n="pcb_kicad">KiCad 匯入 / 匯出</h2>
             <div style="display:grid;gap:6px;font-size:12px">
@@ -774,7 +842,9 @@
               </label>
               <button class="small-button" id="exportKicadBtn" data-i18n="pcb_exp_kicad">💾 匯出 .kicad_pcb</button>
               <button class="small-button" id="exportGerberBtn" data-i18n="pcb_exp_gerber">🏭 匯出製造包（Gerber+鑽孔+鋼網+CPL+IPC-356）</button>
-              <button class="small-button" id="exportOdbBtn" data-i18n="pcb_exp_odb">🧩 匯出 ODB++（銅層／鑽孔／板框子集）</button>
+              <button class="small-button" id="exportOdbBtn" data-i18n="pcb_exp_odb">🧩 匯出 ODB++（含元件／netlist）</button>
+              <button class="small-button" id="exportIpcBtn" data-i18n="pcb_exp_ipc">📋 匯出 IPC-2581（開放標準單一 XML）</button>
+              <button class="small-button" id="exportAsmBtn" data-i18n="pcb_exp_asm">🔧 匯出組裝圖（頂／底 SVG ＋ 放置清單）</button>
               <div id="kicadIoMsg" style="color:var(--muted);line-height:1.5"></div>
               <div style="color:var(--muted);line-height:1.5" data-i18n="pcbf_h_kicad">匯入檔會保留整棵原始資料樹；匯出時未編輯的幾何 100% 原樣回寫（零落差）。.brd 為 Cadence 專有二進位：匯入走「板面檢視」分頁的 SKILL 抽取，匯出走 SKILL 重建腳本。</div>
             </div>
@@ -841,7 +911,10 @@
             <h2 data-i18n="pcb_selcomp">選取元件</h2>
             <div id="selInfo" data-i18n="pcbf_selinfo" style="font-size:12px;color:var(--muted)">select 工具點擊元件選取；拖曳移動（格點吸附）、R 鍵旋轉 90°、Esc 取消。</div>
             <div id="selFields" style="display:none;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
-              <div id="selRef" style="grid-column:1/-1;font-family:monospace;color:var(--accent-strong)"></div>
+              <div style="grid-column:1/-1;display:flex;gap:6px;align-items:center">
+                <div id="selRef" style="flex:1;font-family:monospace;color:var(--accent-strong)"></div>
+                <button class="small-button" id="selRenameBtn" data-i18n="pj_ref_rename">✎ 改名</button>
+              </div>
               <label style="display:grid;gap:2px">X (mm)<input type="number" id="selX" step="0.05" style="padding:3px"></label>
               <label style="display:grid;gap:2px">Y (mm)<input type="number" id="selY" step="0.05" style="padding:3px"></label>
               <label style="display:grid;gap:2px"><span data-i18n="pcbf_angle">角度 (°)</span><input type="number" id="selRot" step="90" style="padding:3px"></label>
@@ -925,7 +998,7 @@
             <div style="font-size:12px;font-weight:600;margin-top:4px" data-i18n="mfg_mit">轉角導角</div>
             <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:end;font-size:12px">
               <label style="display:grid;gap:2px"><span data-i18n="mfg_mit_r">切角長度 (mm)</span><input type="number" id="mitR" value="0.5" step="0.1" min="0.05" style="padding:3px"></label>
-              <label style="display:grid;gap:2px"><span data-i18n="mfg_mit_mode">方式</span><select id="mitMode" style="padding:3px"><option value="45" data-i18n="mfg_mit_45">45° 斜切</option><option value="arc" data-i18n="mfg_mit_arc">圓弧逼近</option></select></label>
+              <label style="display:grid;gap:2px"><span data-i18n="mfg_mit_mode">方式</span><select id="mitMode" style="padding:3px"><option value="45" data-i18n="mfg_mit_45">45° 斜切</option><option value="trueArc" data-i18n="mfg_mit_true">真圓弧（G02/G03）</option><option value="arc" data-i18n="mfg_mit_arc">圓弧逼近（折線）</option></select></label>
               <button class="small-button" id="mitRun" data-i18n="mfg_gen">產生</button>
             </div>
             <div id="mitOut" style="font-size:11px;opacity:.85;margin-top:4px"></div>
@@ -935,7 +1008,7 @@
               <label style="display:grid;gap:2px"><span data-i18n="pour_min">忽略小於 (mm²)</span><input type="number" id="pourMin" value="0.5" step="0.1" min="0" style="padding:3px"></label>
               <button class="small-button" id="pourRun" data-i18n="pour_run">偵測並移除</button>
               <button class="small-button" id="pourClear" data-i18n="mfg_clear">還原</button>
-            <button class="small-button" id="pourBool" data-i18n="pour_bool" style="width:100%;margin-top:4px" data-i18n-title="pour_bool_hint" title="用多邊形布林重算這些鋪銅的實際銅箔（Clipper），比柵格版精確；目前只影響畫面與統計，匯出仍走原本的路徑">▦ 布林重算（精確）</button>
+            <button class="small-button" id="pourBool" data-i18n="pour_bool" style="width:100%;margin-top:4px" data-i18n-title="pour_bool_hint" title="用多邊形布林算出鋪銅實際留下的銅箔（Clipper）。這是匯出的預設路徑，匯出前會自動重算；算不出來的那一塊自動退回柵格版">▦ 布林重算（精確）</button>
             </div>
             <div id="pourOut" style="font-size:11px;opacity:.85;margin-top:4px"></div>
 
@@ -1029,8 +1102,44 @@
             </div>
             <div id="netSummary" style="font-size:12px;color:var(--muted);margin-bottom:4px"></div>
             <div id="netRows" style="font-size:12px;max-height:220px;overflow-y:auto"></div>
+            <div id="netPropsBox" style="display:none;margin-top:8px;border-top:1px solid var(--line);padding-top:8px;font-size:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <strong id="netPropsName"></strong>
+                <span id="netPropsCls" style="color:var(--muted);font-size:11px"></span>
+              </div>
+              <p style="font-size:11px;color:var(--muted);margin:0 0 6px" data-i18n="pcbf_h_netprops">目標阻抗與差分對配對記在 net 身上，不是靠名字猜。設了之後 DRC 會拿實際線寬／間距對照，並算出該用多少線寬。</p>
+              <div style="display:grid;grid-template-columns:auto 1fr;gap:4px 6px;align-items:center">
+                <label for="npZ0" data-i18n="pcb_np_z0">目標 Z0 (Ω)</label>
+                <input type="number" id="npZ0" min="0" step="0.5" style="width:100%">
+                <label for="npZdiff" data-i18n="pcb_np_zdiff">目標 Zdiff (Ω)</label>
+                <input type="number" id="npZdiff" min="0" step="0.5" style="width:100%">
+                <label for="npZtol" data-i18n="pcb_np_ztol">容差 (%)</label>
+                <input type="number" id="npZtol" min="1" step="1" style="width:100%">
+                <label for="npPair" data-i18n="pcb_np_pair">差分對</label>
+                <select id="npPair" style="width:100%"></select>
+                <label for="npNote" data-i18n="pcb_np_note">備註</label>
+                <input type="text" id="npNote" maxlength="120" style="width:100%">
+              </div>
+              <div id="npHint" style="color:var(--muted);font-size:11px;margin:6px 0"></div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="small-button" id="npApply" data-i18n="pcb_np_apply">套用</button>
+                <button class="small-button" id="npClear" data-i18n="pcb_np_clear">清除這條的屬性</button>
+                <button class="small-button" id="npGc" data-i18n="pcb_np_gc">清掉過期屬性</button>
+              </div>
+            </div>
             <div id="netlistContent" style="font-size: 13px; max-height: 200px; overflow-y: auto;">
               <p style="color: var(--muted);" data-i18n="pcb_no_netlist">尚無 Netlist 資料</p>
+            </div>
+          </section>
+
+          <section class="panel-section" data-panel="fpsync" data-panel-data-i18n-title="pj_t_fpsync" title="封裝與庫">
+            <h2 data-i18n="pcb_fpsync">🔗 封裝與庫</h2>
+            <p style="font-size:11px;color:var(--muted);margin:0 0 8px" data-i18n="pcbf_h_fpsync">元件身上的 pad 是從封裝庫展開來的快取。庫改了，這裡會列出不同步的元件。手改過幾何的不會被一鍵更新蓋掉。</p>
+            <div id="fpSyncSummary" style="font-size:12px;color:var(--muted);margin-bottom:6px"></div>
+            <div id="fpSyncRows" style="font-size:12px;max-height:200px;overflow-y:auto"></div>
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <button class="small-button" id="fpSyncScan" data-i18n="pcb_fps_scan">↻ 重新檢查</button>
+              <button class="small-button" id="fpSyncAll" data-i18n="pcb_fps_all">更新全部可更新的</button>
             </div>
           </section>
 
@@ -1055,7 +1164,7 @@
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./observe.js?v=1"></script>
     <script src="./auth.js?v=2026-08-18a"></script>
-    <script src="./i18n.js?v=2026-08-26k"></script>
+    <script src="./i18n.js?v=2026-08-27a"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-08-26a"></script>
@@ -1064,27 +1173,42 @@
     <script src="./footprint-gen.js?v=4"></script>
     <script src="./parts-lib.js?v=1"></script>
     <script src="./pcb-ref-fp.js?v=2"></script>
-    <script src="./pcb-history.js?v=3"></script>
+    <script src="./pcb-history.js?v=5"></script>
     <script src="./kicad-io.js?v=10"></script>
-    <script src="./pcb-drc.js?v=6"></script>
-    <script src="./pcb-rules.js?v=12"></script>
+    <script src="./pcb-index.js?v=1"></script>
+    <script src="./pcb-arc.js?v=1"></script>
+    <script src="./pcb-drc.js?v=9"></script>
+    <script src="./pcb-rules.js?v=13"></script>
     <script src="./pcb-shove.js?v=1"></script>
     <script src="./pcb-3d.js?v=2"></script>
     <script src="./pcb-crossprobe.js?v=1"></script>
-    <script src="./pcb.js?v=58"></script>
+    <script src="./pcb-nets.js?v=1"></script>
+    <script src="./pcb-fpinst.js?v=1"></script>
+    <script src="./pcb.js?v=63"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-08-25a"></script>
     <script src="./pcb-stackup.js?v=2026-08-24b"></script>
     <script src="./pcb-fabs.js?v=5"></script>
-    <script src="./pcb-mfg.js?v=7"></script>
-    <script src="./pcb-sch2pcb.js?v=4"></script>
+    <script src="./pcb-mfg.js?v=10"></script>
+    <script src="./pcb-sch2pcb.js?v=6"></script>
     <script src="./pcb-dxf.js?v=1"></script>
     <script src="./pcb-step.js?v=1"></script>
     <script src="./pcb-silkimg.js?v=1"></script>
     <script src="./pcb-pour.js?v=1"></script>
     <script src="./vendor/clipper-6.4.2.js"></script>
-    <script src="./pcb-pour-geom.js?v=1"></script>
+    <script src="./pcb-pour-geom.js?v=3"></script>
     <!-- 面板停靠：設定型 section 從側欄搬進可拖曳浮動視窗，由「▤ 面板」選單開關 -->
+    <script src="./designs.js?v=1"></script>
+    <script src="./designs-ui.js?v=1"></script>
+    <script src="./pcb-designs-ui.js?v=2"></script>
+    <script src="./pcb-autoplace.js?v=1"></script>
+    <script src="./pcb-autoplace-ui.js?v=1"></script>
+    <script src="./gerber-import.js?v=1"></script>
+    <script src="./alien-import.js?v=1"></script>
+    <script src="./pcb-import-ui.js?v=1"></script>
+    <script src="./footprint-editor.js?v=1"></script>
+    <script src="./fp-lib.js?v=1"></script>
+    <script src="./pcb-fp-ui.js?v=4"></script>
     <script src="./pcb-panels.js?v=5"></script>
 </body>
 </html>

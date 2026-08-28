@@ -50,6 +50,9 @@ window.PcbHistory = (function () {
     app.renderLayerList();
     app.renderPartsList();
     app.populateEmiSelects();
+    // net 面板（含 net 屬性與封裝同步狀態）也要跟著換：復原／開雲端專案／匯入版面
+    // 都是整批換掉 components 與 traces，不重畫的話面板會停在上一片板的數字。
+    if (app.renderNetPanel) app.renderNetPanel();
     app.syncSelPanel();
     app.render();
   }
@@ -136,7 +139,21 @@ window.PcbHistory = (function () {
     return true;
   }
 
+  // ---- 給雲端存檔用（designs.js / pcb-designs-ui.js）----
+  // 刻意走跟版面檔同一條 serialize/applySnap：兩條路分家的話，遲早會出現
+  // 「下載的 .json 打得開、雲端存的打不開」這種只在其中一邊復現的 bug。
+  // snapshot 回物件不回字串，因為要直接當 jsonb 送進 Supabase。
+  function snapshot(app) { return JSON.parse(serialize(app.state)); }
+
+  function restore(app, obj) {
+    if (!obj || typeof obj !== 'object') return false;
+    push(app.state);              // 開啟雲端專案之後還可以 Ctrl+Z 退回原本的板子
+    applySnap(app, JSON.stringify(obj));
+    saveSoon(app);
+    return true;
+  }
+
   const depth = () => ({ undo: undoStack.length, redo: redoStack.length });
 
-  return { push, undo, redo, boot, saveSoon, exportBoard, importBoard, newBoard, depth };
+  return { push, undo, redo, boot, saveSoon, exportBoard, importBoard, newBoard, depth, snapshot, restore };
 })();

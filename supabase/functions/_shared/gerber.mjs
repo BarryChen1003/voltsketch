@@ -294,8 +294,27 @@ function build(state, padAbsFn, baseName) {
     (state.zoneFills || []).forEach(z => { if (z.layer === layer.id) gf.region(z.pts); });
     // 淚滴：pad/via 與走線接合處的補強銅，跟走線同層、同 net
     (state.teardrops || []).forEach(t => { if ((t.layer || 'F.Cu') === layer.id) gf.region(t.pts); });
-    // 使用者鋪銅：暗區域 + LPC 清除極性避讓（標準 Gerber 技法；後續暗物件會蓋回）
-    const uz = (state.userZones || []).filter(z => z.layer === layer.id);
+    // 使用者鋪銅。兩條路的表達方式是**相反**的：
+    //   布林版（PourGeom）—— fillPolys 已經是最終該留下的銅（clearance、
+    //     熱風焊盤、輻條、keepout、板邊淨空全部算進去了），直接畫外環＋挖內孔。
+    //   柵格版（PcbPour）—— 畫整片鋪銅，再用清除極性把 pad/走線/via/孤島挖掉。
+    //     解析度以下的細頸挖不乾淨，會被當成「還連著」。
+    //
+    // 混用會出事：布林結果再跑一次減法等於把已經扣過的淨空再扣一次。
+    // 所以這裡是完全的分岔，不是「先畫布林再補挖」。
+    const allZones = (state.userZones || []).filter(z => z.layer === layer.id);
+    for (const z of allZones.filter(z => Array.isArray(z.fillPolys))) {
+      for (const is of z.fillPolys) {
+        gf.region(is.outer);
+        if (is.holes && is.holes.length) {
+          gf.lpc();
+          is.holes.forEach(h => gf.region(h));
+          gf.lpd();
+        }
+      }
+    }
+
+    const uz = allZones.filter(z => !Array.isArray(z.fillPolys));
     if (uz.length) {
       uz.forEach(z => gf.region(z.pts));
       gf.lpc();
@@ -348,10 +367,25 @@ function build(state, padAbsFn, baseName) {
       gf.lpd();
       spokes.forEach(s => gf.line(s[0], s[1], s[2], s[3], 0.4)); // 輻條 0.4mm
     }
-    // 走線（跳過弧線折線，改出真圓弧）
+    // 走線。帶 arc 的走真圓弧（G02/G03），其餘照舊走線段。
+    //
+    // 為什麼不能只輸出弦線：Gerber 是製造用的最終資料，弦線近似的弧
+    // 在板廠端就是一串折線——半徑越小、段數越少，實際做出來的銅就越偏離設計。
+    // 我們自己的 DRC 已經能量真弧（pcb-arc.js），匯出卻退回折線的話，
+    // 等於「檢查的是弧、做出來的是折線」，兩邊對不上。
     (state.traces || []).forEach(t => {
-      if (t.fromArc) return;
-      if ((t.layer || 'F.Cu') === layer.id) gf.line(t.x1, t.y1, t.x2, t.y2, t.width || 0.3);
+      if (t.fromArc) return;                       // kicadArcs 展開的折線，由下面那段輸出真弧
+      if ((t.layer || 'F.Cu') !== layer.id) return;
+      const a = t.arc;
+      if (a && Number.isFinite(a.cx) && Number.isFinite(a.cy) && a.r > 0) {
+        // arc3 吃的是三點（起、中、終）。用弧的中點角算出中間那一點。
+        const mid = a.a0 + (a.a1 - a.a0) / 2;
+        gf.arc3(t.x1, t.y1,
+          a.cx + a.r * Math.cos(mid), a.cy + a.r * Math.sin(mid),
+          t.x2, t.y2, t.width || 0.3);
+        return;
+      }
+      gf.line(t.x1, t.y1, t.x2, t.y2, t.width || 0.3);
     });
     (state.kicadArcs || []).forEach(a => {
       if (a.layer === layer.id) gf.arc3(a.x1, a.y1, a.xm, a.ym, a.x2, a.y2, a.width || 0.3);

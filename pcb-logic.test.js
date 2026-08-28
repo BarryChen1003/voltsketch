@@ -45,6 +45,9 @@ require('./parts-lib.js');
 require('./pcb-ref-fp.js');
 require('./pcb-refboards.js');
 require('./pcb-history.js');
+require('./pcb-index.js');   // 繞線的節點索引走共用的那一份
+require('./pcb-nets.js');    // calcImpedance 的公式本體在這裡（pcb.js 只轉呼叫）
+require('./pcb-fpinst.js');  // 元件實例／封裝庫分離
 require('./pcb-rules.js');
 require('./pcb-stackup.js');
 require('./pcb-constraints.js');
@@ -53,7 +56,8 @@ require('./pcb-fabs.js');
 
 // pcb.js 內部以「裸全域」引用這些（瀏覽器 window 屬性＝全域）；node 需手動鏡射到 global
 ['PcbHistory', 'FootprintGen', 'RefFP', 'PartsLib', 'PCB_REFBOARDS', 'IC_DATA',
- 'NetRules', 'Ratsnest', 'AutoRoute', 'Stackup', 'Padstack', 'Backdrill', 'FabProfiles', 'ConstraintMgr', 'PadDrc'].forEach(k => { global[k] = global.window[k]; });
+ 'NetRules', 'Ratsnest', 'AutoRoute', 'Stackup', 'Padstack', 'Backdrill', 'FabProfiles', 'ConstraintMgr', 'PadDrc',
+ 'NetModel', 'FpInst'].forEach(k => { global[k] = global.window[k]; });
 
 // ---------- 載入 pcb.js，但移除檔尾 init() ----------
 let src = fs.readFileSync('./pcb.js', 'utf8');

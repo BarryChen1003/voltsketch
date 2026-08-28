@@ -4,12 +4,15 @@
  * 為什麼有這支：Gerber 是一疊互不相識的影像檔，板廠要靠檔名猜哪張是哪層；
  * ODB++ 把層別、疊構、鑽孔跨層關係寫在資料裡（matrix），CAM 端不必猜。
  *
- * 誠實界定（v1 就這麼多，不要對外宣稱「完整 ODB++」）：
+ * 誠實界定（v3 就這麼多，不要對外宣稱「完整 ODB++」）：
  *   有：matrix/matrix、misc/info、steps/pcb/stephdr、profile（板框）、
- *       每個銅層的 features（pad / 走線 / via / 鋪銅 / 淚滴）、drill 層。
- *   沒有：阻焊、絲印、鋼網、元件（CMP）、netlist（cadnet）、attributes、字型。
- *       這幾樣仍以 Gerber 打版包為準——ODB++ 這包是給 CAM 端看層別與鑽孔關係的，
- *       不是拿來取代打版包。build() 會把這件事放進 warnings 帶回前端。
+ *       每個銅層的 features（pad / 走線 / via / 鋪銅 / 淚滴）、drill 層、
+ *       元件（components/comp_+_top|bot 的 CMP 與 TOP 記錄）、
+ *       netlist（eda/data 的 NET / PKG / PIN）、
+ *       **鋪銅的內孔（surface 的 I/H contour，2026-08-27 補上）**。
+ *   沒有：阻焊、絲印、鋼網、屬性（ATTR）、字型、subnet 的完整分類
+ *       （TRACE/VIA/PLANE 沒有分開標）。這幾樣仍以 Gerber 打版包為準。
+ *       build() 會把這件事放進 warnings 帶回前端。
  *   幾何：弧輸出成弦線近似（與 Gerber 的 arc3 不同），roundrect pad 用 rect 近似。
  *       兩者都在 warnings 裡講明。
  *
@@ -78,10 +81,41 @@ function outlineOf(state, warnings) {
   return pts;
 }
 
-function surface(pts) {
-  const out = ['S P 0', 'OB ' + N(pts[0][0]) + ' ' + NY(pts[0][1]) + ' I'];
+// 一個 surface 可以由多個 contour 組成：`OB … I` 是實心島、`OB … H` 是挖出來的洞。
+// v2 只畫外環（洞沒挖），CAM 端看到的銅會比實際多——那是 odb_w_pour_holes 那條警告。
+// v3 把洞補上：布林鋪銅算出來的 islands 本來就帶 holes，直接一個一個寫成 H 迴圈。
+//
+// 繞向：ODB++ 靠 I/H 標記判定，不像 Gerber 靠繞向。但多數 CAM 仍會用繞向
+// 再確認一次，繞向一致的洞有機會被當成重疊的實心島。
+//
+// 不可以「無條件把洞反轉」：Clipper 的 PolyTree 產出的 hole contour 本來就已經
+// 與外環反向，再反一次就變成同向了（第一版就是這樣錯的，測試 5.7 抓到）。
+// 正確做法是先量有向面積，同號才反——這樣對 Clipper 來的、手寫的都成立。
+const signedArea = pts => {
+  let a = 0;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    a += pts[j][0] * pts[i][1] - pts[i][0] * pts[j][1];
+  }
+  return a / 2;
+};
+
+function ring(pts, kind) {
+  const out = ['OB ' + N(pts[0][0]) + ' ' + NY(pts[0][1]) + ' ' + kind];
   for (let i = 1; i < pts.length; i++) out.push('OS ' + N(pts[i][0]) + ' ' + NY(pts[i][1]));
-  out.push('OS ' + N(pts[0][0]) + ' ' + NY(pts[0][1]), 'OE', 'SE');
+  out.push('OS ' + N(pts[0][0]) + ' ' + NY(pts[0][1]), 'OE');
+  return out;
+}
+
+function surface(pts, holes) {
+  const out = ['S P 0'].concat(ring(pts, 'I'));
+  const outerSign = Math.sign(signedArea(pts));
+  for (const h of (holes || [])) {
+    if (!h || h.length < 3) continue;
+    const hs = Math.sign(signedArea(h));
+    // 同號（含退化的 0）才反轉；已經反向的原樣寫出去
+    out.push.apply(out, ring(hs === outerSign ? h.slice().reverse() : h, 'H'));
+  }
+  out.push('SE');
   return out;
 }
 
@@ -91,6 +125,95 @@ function featureFile(symLines, feats) {
     .concat(['#', '#Layer features', '#'])
     .concat(feats)
     .join(NL) + NL;
+}
+
+// ---------- 元件與 netlist ----------
+
+// net 名 → 編號。ODB++ 的 feature 與 toeprint 都用編號互指，名字只出現在 eda/data 一次。
+// 排序用名稱字典序而不是「出現順序」：同一塊板匯出兩次要位元組相同，
+// 出現順序會隨元件陣列的順序變動。
+function netTable(state) {
+  const set = new Set();
+  (state.components || []).forEach(c => (c.pads || []).forEach(p => { if (p.net) set.add(String(p.net)); }));
+  (state.traces || []).forEach(t => { if (t.net) set.add(String(t.net)); });
+  (state.vias || []).forEach(v => { if (v.net) set.add(String(v.net)); });
+  const order = [...set].sort();
+  const index = new Map();
+  order.forEach((n, i) => index.set(n, i));
+  return { order, index, numOf: n => (n && index.has(String(n)) ? index.get(String(n)) : -1) };
+}
+
+// 封裝表。同一種封裝只寫一次，元件用編號指過去（ODB++ 的 PKG 段就是這個意思）。
+// 判定「同一種」用 part 名 ＋ pad 數 ＋ 外框，不用物件參照——
+// 同一顆料在 state 裡是各自獨立的物件。
+function packageTable(state) {
+  const order = [];
+  const index = new Map();
+  for (const c of (state.components || [])) {
+    const pads = c.pads || [];
+    const key = (c.part || c.ref || 'PKG') + '|' + pads.length + '|' + (c.w || 0) + 'x' + (c.h || 0);
+    if (index.has(key)) continue;
+    index.set(key, order.length);
+    order.push({ key, name: String(c.part || c.ref || 'PKG').replace(/[^\w.-]/g, '_'), pads, w: c.w || 0, h: c.h || 0 });
+  }
+  return { order, index, numOf: c => index.get((c.part || c.ref || 'PKG') + '|' + (c.pads || []).length + '|' + (c.w || 0) + 'x' + (c.h || 0)) };
+}
+
+// steps/pcb/eda/data —— 網表與封裝定義。
+// 這是子集：NET/PKG/PIN 有，屬性（ATTR）、subnet 的完整分類（VIA/TRACE/PLANE）沒有。
+function edaData(state, cuStack, nets, packages, layerName) {
+  const L = [];
+  L.push('HDR UNITS=MM');
+  L.push('HDR SOURCE=HardwareAI');
+  cuStack.forEach((layer, i) => L.push('LYR ' + layerName(layer, i).toUpperCase()));
+
+  packages.order.forEach((pk, i) => {
+    L.push('PKG ' + pk.name + ' ' + N(pk.h) + ' ' + N(-pk.w / 2) + ' ' + N(-pk.h / 2) + ' ' + N(pk.w / 2) + ' ' + N(pk.h / 2) + ' ' + pk.pads.length);
+    pk.pads.forEach((p, j) => {
+      // PIN <name> <type> <x> <y> <fhs> <etype> <mtype>
+      // type 0=通孔 1=SMD；etype 0=電氣 1=機械
+      const tht = p.drill > 0 ? 0 : 1;
+      L.push('PIN ' + (p.num != null ? p.num : (j + 1)) + ' ' + tht + ' ' + N(p.x) + ' ' + NY(p.y) + ' ' + N(p.drill || 0) + ' 0 0');
+    });
+    L.push('#PKG ' + i);
+  });
+
+  nets.order.forEach((name, i) => {
+    L.push('NET ' + name);
+    L.push('#NET ' + i);
+  });
+  L.push('');
+  return L.join(NL);
+}
+
+// steps/pcb/components/comp_+_{top,bot} —— 元件與它的 toeprint（每個 pad 屬於哪個 net）。
+function componentsFile(state, padAbsFn, side, nets, packages) {
+  const L = ['UNITS=MM', '#'];
+  let count = 0;
+  (state.components || []).forEach(cp => {
+    const cside = (cp.side === 'bottom' || cp.side === 'B') ? 'bot' : 'top';
+    if (cside !== side) return;
+    const pads = (cp.pads || []).filter(p => p.cu !== false);
+    if (!pads.length) return;
+    const pkg = packages.numOf(cp);
+    const rot = ((cp.rot || 0) % 360 + 360) % 360;
+    // CMP <pkg_ref> <x> <y> <rot> <mirror> <comp_name> <part_name>
+    L.push('CMP ' + (pkg == null ? 0 : pkg) + ' ' + N(cp.x) + ' ' + NY(cp.y) + ' ' + N(rot) +
+      ' ' + (side === 'bot' ? 'M' : 'N') + ' ' + (cp.ref || 'REF') + ' ' + String(cp.part || cp.ref || '').replace(/\s+/g, '_'));
+    pads.forEach((pad, i) => {
+      const p = padAbsFn(cp, pad);
+      const nn = nets.numOf(pad.net);
+      const prot = ((pad.rot || 0) % 360 + 360) % 360;
+      // TOP <index> <x> <y> <rot> <mirror> <net_num> <subnet_num> <name>
+      // net_num = -1 代表這個 pad 沒有接任何網路（機構孔、未接腳），CAM 端靠這個排除電測點
+      L.push('TOP ' + i + ' ' + N(p.x) + ' ' + NY(p.y) + ' ' + N(prot) +
+        ' ' + (side === 'bot' ? 'M' : 'N') + ' ' + nn + ' -1 ' + (pad.num != null ? pad.num : (i + 1)));
+    });
+    L.push('#CMP ' + count);
+    count++;
+  });
+  L.push('');
+  return { text: L.join(NL), count };
 }
 
 // ---------- 主流程 ----------
@@ -144,11 +267,30 @@ function build(state, padAbsFn, baseName) {
       feats.push('P ' + N(v.x) + ' ' + NY(v.y) + ' ' + s + ' P 0');
     });
 
+    // 鋪銅：布林版（fillPolys）已經是最終該留下的銅，外環寫成 I、內孔寫成 H；
+    // 沒有布林結果的才退回畫整塊 zone 外框（那條路本來就沒有內孔可講）。
+    const cuZones = (state.userZones || []).filter(z => z.layer === layer.id);
+    const pourSurfaces = [];
+    let holeCount = 0;
+    for (const z of cuZones) {
+      if (Array.isArray(z.fillPolys)) {
+        for (const is of z.fillPolys) {
+          pourSurfaces.push({ outer: is.outer, holes: is.holes || [] });
+          holeCount += (is.holes || []).length;
+        }
+      } else {
+        pourSurfaces.push({ outer: z.pts, holes: [] });
+      }
+    }
+    stats.pourHoles = (stats.pourHoles || 0) + holeCount;
+
     const surfaces = []
-      .concat((state.zoneFills || []).filter(z => z.layer === layer.id).map(z => z.pts))
-      .concat((state.userZones || []).filter(z => z.layer === layer.id).map(z => z.pts))
-      .concat((state.teardrops || []).filter(t => (t.layer || 'F.Cu') === layer.id).map(t => t.pts));
-    surfaces.forEach(pts => { if (pts && pts.length >= 3) feats.push.apply(feats, surface(pts)); });
+      .concat((state.zoneFills || []).filter(z => z.layer === layer.id).map(z => ({ outer: z.pts, holes: [] })))
+      .concat(pourSurfaces)
+      .concat((state.teardrops || []).filter(t => (t.layer || 'F.Cu') === layer.id).map(t => ({ outer: t.pts, holes: [] })));
+    surfaces.forEach(s => {
+      if (s.outer && s.outer.length >= 3) feats.push.apply(feats, surface(s.outer, s.holes));
+    });
 
     files.push({
       name: root + '/steps/' + stepName + '/layers/' + layerName(layer, idx) + '/features',
@@ -183,6 +325,28 @@ function build(state, padAbsFn, baseName) {
     name: root + '/steps/' + stepName + '/profile',
     text: surface(outlineOf(state, warnings)).join(NL) + NL
   });
+
+  // --- 元件 ＋ netlist（v2 補上）---
+  // 為什麼要有：CAM 端拿 ODB++ 最想要的兩件事就是「哪個 pad 屬於哪顆料」與
+  // 「哪些 pad 該是同一個網路」。前者決定貼片程式，後者決定電測治具生不生得出來。
+  // 只有銅層的話，這包 ODB++ 的資訊量其實跟一疊 Gerber 一樣。
+  const nets = netTable(state);
+  const packages = packageTable(state);
+  {
+    files.push({
+      name: root + '/steps/' + stepName + '/eda/data',
+      text: edaData(state, cuStack, nets, packages, layerName)
+    });
+    for (const side of ['top', 'bot']) {
+      const cmp = componentsFile(state, padAbsFn, side, nets, packages);
+      // 那一面沒有元件就不要產生空檔：CAM 工具看到空的 components 檔會當成錯誤
+      if (cmp.count) {
+        files.push({ name: root + '/steps/' + stepName + '/components/comp_+_' + side, text: cmp.text });
+        stats.components = (stats.components || 0) + cmp.count;
+      }
+    }
+    stats.nets = nets.order.length;
+  }
 
   // --- stephdr ---
   const W = state.boardWidth || 100, H = state.boardHeight || 80;
@@ -224,6 +388,21 @@ function build(state, padAbsFn, baseName) {
     '    START_NAME=' + layerName(cuStack[0], 0).toUpperCase(),
     '    END_NAME=' + layerName(cuStack[cuStack.length - 1], cuStack.length - 1).toUpperCase(),
     '}');
+  // 元件層要進 matrix，CAM 端才找得到 components/ 底下的檔。
+  // 只列實際有產出的那一面——列了但檔案不存在，等於叫對方去開一個不存在的檔。
+  let row = cuStack.length + 1;
+  for (const side of ['top', 'bot']) {
+    if (!files.some(f => f.name.endsWith('/components/comp_+_' + side))) continue;
+    matrix.push('LAYER {',
+      '    ROW=' + (++row),
+      '    CONTEXT=BOARD',
+      '    TYPE=COMPONENT',
+      '    NAME=COMP_+_' + side.toUpperCase(),
+      '    POLARITY=POSITIVE',
+      '    START_NAME=',
+      '    END_NAME=',
+      '}');
+  }
   files.push({ name: root + '/matrix/matrix', text: matrix.join(NL) + NL });
 
   // --- misc/info：不放時間戳，同一塊板匯出兩次要位元組相同（測試要對得起來） ---

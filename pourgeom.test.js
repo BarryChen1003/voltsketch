@@ -11,6 +11,7 @@
 
 global.window = {};
 global.ClipperLib = require('./vendor/clipper-6.4.2.js');
+require('./pcb-index.js');   // 鋪銅的範圍篩選走共用索引
 const P = require('./pcb-pour-geom.js');
 
 let pass = 0, fail = 0;
@@ -134,6 +135,53 @@ ok(P.available(), 'Clipper 應該載得到');
   eq(r.ok, false, '點數不足的鋪銅要拒絕');
   eq(r.reason, 'badZone', '要說明原因');
 }
+// ---------- 空間索引的範圍篩選不可以改變結果 ----------
+// build() 在元件夠多時會用 PcbIndex 先篩掉「離這塊 zone 太遠」的 pad／走線／via，
+// 省下大量 padPaths 計算。那是純粹的效能優化——**篩掉的必然不相交**，
+// 所以面積、島數、連多邊形頂點都必須完全相同。
+// 門檻或範圍算錯的話這裡會立刻紅（實測大板 3 倍加速、結果逐一相同）。
+{
+  const FE = require('./footprint-editor.js');
+  const fp = FE.dual({ pins: 8, pitch: 1.27, span: 5.4, padW: 1.5, padH: 0.6 });
+  const mk = () => {
+    const comps = [];
+    for (let r = 0; r < 6; r++) for (let c = 0; c < 10; c++) {
+      const i = r * 10 + c;
+      const cc = FE.toComponent(fp, 'U' + i, 10 + c * 12, 10 + r * 10);
+      cc.pads.forEach((p, k) => { p.net = (c < 3 && r < 3 && k === 0) ? 'GND' : 'N' + (i * 8 + k); p.side = 'F'; });
+      comps.push(cc);
+    }
+    const traces = [];
+    for (let i = 0; i < 300; i++) {
+      const x = 5 + (i % 20) * 6, y = 5 + Math.floor(i / 20) * 6.5;
+      traces.push({ x1: x, y1: y, x2: x + 5, y2: y, width: 0.25, layer: 'F.Cu', net: 'T' + i });
+    }
+    return {
+      boardWidth: 160, boardHeight: 90,
+      layerStack: [{ id: 'F.Cu', kind: 'copper' }, { id: 'B.Cu', kind: 'copper' }],
+      components: comps, traces, vias: [{ x: 20, y: 20, od: 0.7, drill: 0.3, net: 'GND' }], keepouts: [],
+      userZones: [{ layer: 'F.Cu', net: 'GND', pts: [[2, 2], [45, 2], [45, 35], [2, 35]], clearance: 0.3, thermal: true }],
+    };
+  };
+  const a = mk();
+  const withIx = P.build(a, padAbs, a.userZones[0], { clearance: CL });
+
+  const saved = globalThis.PcbIndex, savedW = global.window.PcbIndex;
+  delete globalThis.PcbIndex; delete global.window.PcbIndex;
+  const b = mk();
+  const without = P.build(b, padAbs, b.userZones[0], { clearance: CL });
+  globalThis.PcbIndex = saved; global.window.PcbIndex = savedW;
+
+  ok(withIx.islands.length > 0, '索引篩選不改結果：有算出東西可以比');
+  eq(withIx.islands.length, without.islands.length, '索引篩選不改結果：島數相同');
+  near(withIx.area, without.area, 1e-9, '索引篩選不改結果：面積相同');
+  eq(withIx.islands.reduce((n, i) => n + i.holes.length, 0),
+     without.islands.reduce((n, i) => n + i.holes.length, 0),
+     '索引篩選不改結果：內孔數相同');
+  eq(JSON.stringify(withIx.islands), JSON.stringify(without.islands),
+     '索引篩選不改結果：連多邊形頂點都逐一相同');
+}
+
 
 console.log(`\npourgeom.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -98,7 +98,13 @@ function parseFeatures(text) {
     const matrix = get('/matrix/matrix');
     if (matrix) {
       const rows = (matrix.text.match(/LAYER \{/g) || []).length;
-      ok(rows === cu.length + 1, `${tag}: matrix LAYER 筆數 ${rows} = 銅層 ${cu.length} + drill`);
+      // v2 起 matrix 還會有元件層（comp_+_top / comp_+_bot），而且只列實際產出的那幾面。
+      // 期望值因此是「銅層 + drill + 實際存在的 components 檔數」，不是寫死的 +1。
+      const compFiles = r.files.filter(f => /\/components\/comp_\+_(top|bot)$/.test(f.name)).length;
+      ok(rows === cu.length + 1 + compFiles,
+        `${tag}: matrix LAYER 筆數 ${rows} = 銅層 ${cu.length} + drill + 元件層 ${compFiles}`);
+      ok((matrix.text.match(/TYPE=COMPONENT/g) || []).length === compFiles,
+        `${tag}: matrix 的 COMPONENT 筆數與實際檔案數一致（不可以列出不存在的檔）`);
       ok(matrix.text.includes('START_NAME=' + nameOf(0).toUpperCase()),
          `${tag}: drill 起始層 = ${nameOf(0).toUpperCase()}`);
       ok(matrix.text.includes('END_NAME=' + nameOf(cu.length - 1).toUpperCase()),

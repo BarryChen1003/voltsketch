@@ -47,6 +47,8 @@
     '已載入雲端專案': { en: 'Cloud project loaded', ja: 'クラウドのプロジェクトを読み込みました', ko: '클라우드 프로젝트를 불러왔습니다' },
     '已同步到雲端': { en: 'Synced to cloud', ja: 'クラウドに同期しました', ko: '클라우드에 동기화했습니다' },
     '同步失敗：{err}': { en: 'Sync failed: {err}', ja: '同期に失敗：{err}', ko: '동기화 실패: {err}' },
+    '專案名稱': { en: 'Project name', ja: 'プロジェクト名', ko: '프로젝트 이름' },
+    '我的專案': { en: 'My project', ja: 'マイプロジェクト', ko: '내 프로젝트' },
     '已儲存': { en: 'Saved', ja: '保存しました', ko: '저장했습니다' },
     '匯入成功': { en: 'Import complete', ja: 'インポート完了', ko: '가져오기 완료' },
     '匯入失敗: {err}': { en: 'Import failed: {err}', ja: 'インポート失敗：{err}', ko: '가져오기 실패: {err}' },

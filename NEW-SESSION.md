@@ -1,4 +1,4 @@
-# NEW SESSION — 接手指南（2026-08-26）
+# NEW SESSION — 接手指南（2026-08-28）
 
 `Documents/Web`，repo `voltsketch`，線上 <https://hardware-ai.org>（Cloudflare Workers）。
 
@@ -94,7 +94,23 @@ for f in pcb.js pcb-rules.js i18n.js; do L=$(md5sum $f | cut -c1-8); R=$(curl -s
 | `pcb-panels.js` | — | 浮動面板：自動收集 `.panel-section[data-panel]`，加一段 HTML 就會出現 |
 | `pcb-refboards.js` | `PCB_REFBOARDS` | 8 片參考公版（7009 行，**產生出來的**，見 §4） |
 | `supabase/functions/_shared/gerber.mjs` | — | 後端 Gerber／Excellon／CPL／IPC-356／鑽孔表 |
-| `supabase/functions/_shared/odbpp.mjs` | — | 後端 ODB++（銅層／鑽孔／板框子集） |
+| `supabase/functions/_shared/odbpp.mjs` | — | 後端 ODB++（銅層／鑽孔／板框／元件／netlist／**鋪銅內孔**） |
+| `supabase/functions/_shared/ipc2581.mjs` | — | 後端 IPC-2581（開放標準單一 XML；真圓弧＋鋪銅 Cutout） |
+| `supabase/functions/_shared/assembly.mjs` | — | 後端組裝圖（頂／底 SVG ＋ 放置清單；**底面鏡射**） |
+| `pcb-index.js` | `PcbIndex` | 共用空間索引（可增刪）＋各種圖元外框；增量 DRC 的地基 |
+| `pcb-nets.js` | `NetModel` | net 一級物件：屬性表（阻抗目標／成對關係）、**唯一一份** net 參照列舉與 IPC-2141 公式 |
+| `pcb-fpinst.js` | `FpInst` | 元件實例 ／ 封裝庫分離：fpRef＋幾何雜湊，判斷跟庫同不同步、安全同步 |
+| `pcb-arc.js` | `PcbArc` | 圓弧幾何：點到弧精確解、弧對線段/弧的有界誤差細分 |
+| `gerber-import.js` | `GerberImport` | Gerber RS-274X ＋ Excellon 匯入（有損，見 §8） |
+| `alien-import.js` | `AlienImport` | Eagle .sch/.brd、LTspice .asc 匯入；Altium 只辨識不解析 |
+| `spice.js` | `Spice` | MNA 求解器：DC／瞬態／AC（一階元件模型） |
+| `sch-spice.js` | `SchSpice` | 線路圖 → SPICE 網表（認不得的元件拒絕分析，不硬塞） |
+| `annotate.js` | `Annotate` | 線路圖 refdes 自動編號（做在線路圖端才不會被同步蓋掉） |
+| `pcb-autoplace.js` | `AutoPlace` | 自動擺件粗排（無亂數、可重現） |
+| `footprint-editor.js` | `FootprintEditor` | 自製封裝：dual/quad/grid/chip ＋ 幾何檢查 |
+| `fp-lib.js` | `FpLib` | 封裝庫存取：沒登入落 localStorage、登入落雲端，介面相同 |
+| `designs.js` | `Designs` | 雲端多專案存檔（sch ＋ pcb 同一列） |
+| `designs-ui.js` | `DesignsUI` | 專案清單 UI，線路圖頁與 PCB 頁共用 |
 
 ### `pcb.js` 裡找得到的東西
 
@@ -120,7 +136,8 @@ for f in pcb.js pcb-rules.js i18n.js; do L=$(md5sum $f | cut -c1-8); R=$(curl -s
 
 ## 3. 測試地圖
 
-PCB 相關 17 支、合計 **約 2136 條斷言**，另有 `dead-button-check` 掃 117 顆按鈕。
+PCB 相關 34 支、合計 **約 3100 條斷言**，另有 `dead-button-check` 掃 136 顆按鈕。
+2026-08-27 新增 13 支、2026-08-28 再 2 支（下表加粗者），全部對**解析解**或 **round-trip** 比對，不對「上次跑出來的數字」比對。
 改哪裡就先看對應那一支。
 
 | 測試 | 斷言 | 守什麼 |
@@ -142,6 +159,26 @@ PCB 相關 17 支、合計 **約 2136 條斷言**，另有 `dead-button-check` �
 | `shove.test.js` | 26 | 推擠：**不該推的時候不可推**（端點被釘住、會撞到別人、距離太遠） |
 | `pourgeom.test.js` | 25 | 鋪銅布林：每個案例對**面積的解析解** |
 | `pcb3d.test.js` | 18 | 3D 的自算部分：板框串接、元件高度 |
+| **`gerber-import.test.js`** | 76 | Gerber/Excellon 匯入：拿自家產生器的輸出 round-trip |
+| **`footprint-editor.test.js`** | 73 | 自製封裝：對 SOIC-8／TSSOP-20／QFP-32／0603 的規格書數字 |
+| **`alien-import.test.js`** | 63 | Eagle／LTspice：認不得的元件**不可以**被硬塞成別的 |
+| **`spice.test.js`** | 62 | MNA：分壓、RC/RL 時間常數、−3dB、LC 諧振全對閉式解 |
+| **`pcb-arc.test.js`** | 62 | 圓弧幾何；細分誤差要真的量一次最大弦高 |
+| **`designs.test.js`** | 61 | 雲端專案：清單**不可以**撈 data、存一半不可以清掉另一半 |
+| **`pcb-index.test.js`** | 60 | 空間索引：300 物件 × 60 查詢與全比對逐一對照 |
+| **`fp-lib.test.js`** | 42 | 封裝庫：登入後本機那份不可以不見 |
+| **`sch-spice.test.js`** | 37 | 線路圖轉網表：接地認定、單位換算、拒絕分析的時機 |
+| **`true-arc.test.js`** | 38 | 真圓弧端到端：導角 → DRC → Gerber G02/G03 → 解析回來 |
+| **`ipc2581.test.js`** | 66 | IPC-2581 ＋ 組裝圖；第一條就是 **well-formed XML** 檢查 |
+| **`autoplace.test.js`** | 32 | 自動擺件：不重疊、在框內、可重現、鎖定的不動 |
+| **`odb-cmp.test.js`** | 30 | ODB++ 元件與 netlist（公版沒有 pad，驗不到，另造合成板） |
+| **`pour-default.test.js`** | 29 | 布林鋪銅成為匯出預設；重算必須冪等 |
+| **`annotate.test.js`** | 29 | refdes 編號：fill 模式不可以動既有編號 |
+| **`backannotate.test.js`** | 27 | refdes／net 回寫；含「沒回寫就會被同步蓋掉」的反例 |
+| **`drc-incremental.test.js`** | 25 | 增量 DRC：只擔心漏報 |
+| **`drc-arc.test.js`** | 15 | DRC 對真弧：差 0.001mm 的違規也要抓到 |
+| **`netmodel.test.js`** | 118 | net 一級物件：六種圖元的改名列舉、IPC-2141 閉式解、解算器 round-trip、差分對量測 |
+| **`fpinst.test.js`** | 87 | 元件實例／封裝庫分離：**手改過的幾何不可被一鍵更新蓋掉**、同步不可弄丟 net |
 
 **`gerber-check` 綠不代表匯出對**：把所有走線孔徑改成固定 0.25，它照樣全綠，
 `gerber-readback` 才抓得到。結構與幾何是兩件事。
@@ -203,7 +240,15 @@ node tools/refboard-rebuild.js rp2040-pico30  # 只重建一片
 
 ---
 
-## 6. 檢查（CI 48 關的本地版）
+## 6. 檢查（與 `ci.yml` 一一對應）
+
+2026-08-28 對齊過一次：這份清單的 63 支與 `.github/workflows/ci.yml` **完全相同**。
+（在那之前 2026-08-27 新增的 18 支一支都不在 CI 裡——本機跑得到、push 上去不會擋。）
+**加測試就要同時加進 `ci.yml`**，用這段驗有沒有漏：
+
+```bash
+node -e "const fs=require('fs'),d=fs.readFileSync('NEW-SESSION.md','utf8'),s=d.slice(d.indexOf('## 6. 檢查'),d.indexOf('## 7. 使用者')),L=[...new Set([...s.matchAll(/^node ([\w.-]+\.m?js)/gm)].map(m=>m[1]))],C=new Set([...fs.readFileSync('.github/workflows/ci.yml','utf8').matchAll(/node ([\w.-]+\.m?js)/g)].map(m=>m[1]));console.log('CI 缺:',L.filter(f=>!C.has(f)).join(', ')||'無')"
+```
 
 ```bash
 # PCB 地基
@@ -211,8 +256,12 @@ node pcb-logic.test.js
 node gerber-check.js
 node gerber-readback.js
 node odb-check.js
+node odb-cmp.test.js
 node gerber-pour.test.js
+node pour-default.test.js
 node gerber-mfg.test.js
+node true-arc.test.js
+node ipc2581.test.js
 node reffp-check.js
 node dead-button-check.js
 
@@ -228,6 +277,22 @@ node dxf.test.js
 node step.test.js
 node silkimg.test.js
 node crossprobe.test.js
+node pcb-arc.test.js
+node drc-arc.test.js
+node pcb-index.test.js
+node drc-incremental.test.js
+node netmodel.test.js
+node fpinst.test.js
+node designs.test.js
+node annotate.test.js
+node autoplace.test.js
+node backannotate.test.js
+node gerber-import.test.js
+node alien-import.test.js
+node spice.test.js
+node sch-spice.test.js
+node footprint-editor.test.js
+node fp-lib.test.js
 
 # 線路圖與知識庫
 node circuit-check.js --strict
@@ -246,6 +311,7 @@ node ds-compare.test.js
 
 # 四語
 node i18n-check.js
+node i18n-quad-check.js
 node ui-i18n-check.js --strict
 node html-i18n-check.js --strict
 node art-i18n-check.js --strict
@@ -256,6 +322,7 @@ node news-i18n-check.js --strict
 # 供應鏈與 CSP
 node vendor-check.js --strict
 node csp-hash.js --check
+node asset-leak-check.js
 
 # 金流
 node ecpay-config.test.mjs
@@ -290,31 +357,30 @@ node plan-dates.test.mjs
 
 | 功能 | 實際狀況 |
 |---|---|
-| **8 片公版的佈局是重建出來的** | 🟡 2026-08-26 用 `tools/refboard-rebuild.js` 重跑：DRC error 從 **388 降到 0**。代價是繞不完的 net 沒有走線（143/197 條繞成），板子是「幾何上乾淨、電性上仍是近似」。缺陷預算鎖在 `pcb-logic.test.js` 第 21 節（**全 0，只准往下**） |
-| **公版的 pad 大多沒有 net** | 🟡 公版資料本來就沒有 netlist（只有 20~29 條帶 net 的示意走線）。openrex 1436 顆 pad 裡仍有 1400+ 顆沒 net；沒 net 的 pad 對繞線器一律是障礙，這是繞不完的主因。真正的解是匯入原廠 netlist |
-| **鋪銅有兩套實作** | 🟡 柵格版（`pcb-pour.js`）是**匯出實際吃的那條路**；布林版（`pcb-pour-geom.js`，Clipper）目前是面板上的「布林重算」按鈕，只影響畫面與統計。要把布林版變成預設，得同時改畫面、DRC 與 Gerber，並重驗 `gerber-pour.test` |
-| **3D 檢視** | 🟡 Three.js r128 已代管。畫得出真實板框、頂／底面元件與走線、pad 與鍍通孔、鋪銅；InstancedMesh 合併，openrex（1432 pad）建場 130ms。**元件是方塊不是原廠 3D 模型**，內層走線與絲印不畫 |
-| **ODB++ 匯出** | 🟡 v1 是**子集**：銅層／鑽孔／板框有，阻焊、絲印、鋼網、元件、netlist 沒有。弧走弦線近似。`odb-check.js` 驗結構與 readback（379 條），但**沒有人用真的 CAM 開過** |
-| **轉角導角** | 🟡 `Mfg.Mitre` 輸出的是**線段不是真圓弧**（貝茲取樣逼近）。下游 DRC／鋪銅／匯出全部吃線段，真圓弧要改 DRC 的距離運算 |
-| **推擠** | 🟡 只推得動「平行的鄰居」，只平移不重繞、不連鎖。端點卡在 pad/via 上的不動，推不動就照實回報 |
-| **autoRoute 差分對** | 🟡 中心線繞一次再展開，耦合度實測 98.8%。長度差只回報不自動補（要自己按等長調諧） |
-| **back-annotation** | 🟡 只有**封裝**這一項會回寫線路圖。refdes 改名、net 改名、pin/gate swap 都不會 |
-| **STEP 匯出** | 🟡 拓樸與參照程式驗過（流形、尤拉、參照完整），但**沒有人用真的 CAD 開過**；元件是佔位方塊 |
-| **KiCad 匯出** | 🟡 結構驗過，**沒有人用真的 KiCad 開過** |
-| **阻抗** | 🟡 IPC-2141 近似 **±10%**，量產以板廠場解為準。UI 有標 |
-| **熱** | 🟡 本機只有「簡估」，精算在後端且要 `pcb_access`。θ 公式是擬合值、無出處 |
-| **EMI** | 🟡 只算迴路面積，不做場模擬 |
+| **8 片公版的佈局是重建出來的** | 🟡 DRC error 0，但繞不完的 net 沒有走線（143/197 繞成）。缺陷預算鎖在 `pcb-logic.test.js` 第 21 節（**全 0，只准往下**） |
+| **公版的 pad 大多沒有 net** | 🟡 公版資料本來就沒有 netlist。openrex 1436 顆 pad 裡 1400+ 沒 net。真正的解是匯入原廠 netlist |
+| **四種匯出格式沒有人用真工具開過** | 🔴 **目前風險最高的一項**。結構與 round-trip 共 900+ 條斷言全綠，但那證明的是「我們自己讀得回來」。測試板與逐步清單已備妥：`node tools/make-verify-boards.js` ＋ `VERIFY-EXPORTS.md` |
+| **ODB++ 仍缺** | 🟡 阻焊、絲印、鋼網、屬性（ATTR）、subnet 的完整分類。元件、netlist、鋪銅內孔都已補（2026-08-27） |
+| **IPC-2581 是可製造子集** | 🟡 疊構只有順序與厚度（沒有材料與介電常數，我們沒那資料）、沒有阻抗需求與 DFX 規則集 |
+| **組裝圖的元件外形是方框** | 🟡 courtyard 矩形近似，不是真實輪廓；極性只靠 refdes 前綴判斷 |
+| **Altium 匯入只辨識不解析** | ⬜ 刻意的。`.PcbDoc` 是二進位 OLE、無公開規格，半套逆向會把元件放在錯的位置，比匯入失敗更糟 |
+| **Gerber 匯入是有損的** | 🟡 Gerber 沒有 net、沒有元件。匯入後 net 全空、閃光包成一顆假元件。用途是「看別人的板子與量距離」 |
+| **Eagle 匯入不還原封裝圖形** | 🟡 元件用佔位尺寸放上去、pads 空的，要自己指定封裝 |
+| **SPICE 是一階模型** | 🟡 二極體 Shockley、BJT Ebers-Moll、MOSFET 平方律。看偏壓／時間常數／轉角頻率夠用；預測真實元件的邊界行為不夠。AC 的非線性小訊號模型是簡化的（有警告） |
+| **線路圖的舊「模擬」按鈕** | 🟡 單迴路估算，不看拓樸。留著不動（快），新的走 `sch-spice.js` 的 MNA |
+| **推擠** | 🟡 只推得動平行鄰居、只平移、不連鎖 |
+| **autoRoute 差分對** | 🟡 耦合度 98.8%。長度差只回報不自動補 |
+| **back-annotation** | 🟡 封裝、refdes、net 都會回寫了。**pin/gate swap 仍不會** |
+| **阻抗／熱／EMI** | 🟡 IPC-2141 ±10%；θ 公式是擬合值無出處；EMI 只算迴路面積。目標阻抗稽核（2026-08-28）用的是同一條近似式，而且**只在 IPC-2141 標示的有效範圍內**給建議線寬（microstrip 0.1 ≤ w/h ≤ 3、stripline w ≤ 0.35(2h+t)），超出就明說做不到 |
 | **datasheet PDF 抽腳位** | 🟡 193 顆實測：完全正確 77、部分正確 37、錯得多 34、明講讀不出來 35 |
-| **線路圖的「模擬」** | 🟡 是**單迴路估算**，不看接線拓樸、不處理並聯與多迴路 |
-| **2nd source 比對** | 🟡 可用於「講差異與注意事項」，不可用於「判定能不能換」 |
-| **自訂多腳 IC 存元件庫** | ⬜ 要登入才測得到，**沒人驗過** |
+| **2nd source 比對** | 🟡 可用於「講差異」，不可用於「判定能不能換」 |
+| **3D 檢視** | 🟡 元件是方塊不是原廠模型，內層走線與絲印不畫 |
+| **自訂多腳 IC 存元件庫** | ⬜ 要登入才測得到，**沒人驗過**（封裝庫那條路已驗，這是線路圖端的 IC） |
 | **贊助流程** | ⬜ `plan='sponsor'` 只入帳不發權益那條路從沒實測 |
 | **備份還原** | ⬜ `restore-drill.sh` 用合成 dump 自我驗證過，**沒跑過真的 artifact** |
 | **練習模式／教學導覽** | ⬜ `pcb-practice.js`、`pcb-tutorial.js` 存在但**沒有任何頁面載入**，13KB 死碼 |
 
-**沒有 Allegro SKILL 匯出**，只有 json / kicad / csv / tcl。
-
----
+**沒有 Allegro SKILL 匯出**，只有 json / kicad / gerber / odb++ / ipc2581 / assembly / csv / tcl。
 
 ## 9. 只存在本機、不在 git 的報告
 
@@ -332,27 +398,73 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 
 ## 10. 待辦（依序）
 
-使用者 2026-08-26 核定的路線圖，目標是「線路圖與 Layout 能一起用」。
-生態系（LCSC 那種料庫與庫存）明確不做。
+2026-08-27：使用者核定「剩下的 15 項全部要做」。這裡是那 15 項的現況。
+分批做的原則是**先低風險純新增、再動核心資料模型**，每批做完跑全套並更新這份文件。
 
-| # | 項目 | 狀態 |
+### 批次 1 — 匯出正確性 ✅
+
+| # | 項目 | 結果 |
 |---|---|---|
-| 1 | 繞線時的即時碰撞與淨空光暈 | ✅ `previewClearance`，openrex 實測 0.65ms/次 |
-| 2 | 拖元件時走線橡皮筋 | ✅ `beginRubber`／`updateRubber` |
-| 3 | 弧線／45° 圓角走線 | 🟡 導角完成（`Mfg.Mitre`）；**真圓弧未做**，要先改 DRC 的距離運算 |
-| 4 | net 升級成一級物件 | 🟡 ECO 增量同步、網名穩定化、多頁一起同步、網路清單／未接線面板、封裝回寫都完成；**還缺** net 物件與屬性、refdes／net 改名回寫 |
-| 5 | push-and-shove | 🟡 平行鄰居側推完成（`pcb-shove.js`）；**完整 PNS**（邊繞邊擠、連鎖）未做 |
-| 6 | Clipper 布林鋪銅 | 🟡 幾何與測試完成（`pcb-pour-geom.js`，25 條對解析解）；**還是選用**，要變預設得一起改畫面／DRC／Gerber |
+| 1 | ODB++ 鋪銅內孔 | ✅ `surface` 的 I/H contour。測試直接讀輸出文字驗繞向，不猜實作 |
+| 2 | IPC-2581 | ✅ 新格式。真圓弧 `<Arc>`、鋪銅 `<Cutout>`、BOM、網表 |
+| 3 | 組裝圖 | ✅ 頂／底 SVG ＋ 放置清單。**底面鏡射**（旋轉方向也反） |
 
-接下來最值得做的（依「使用者會不會感覺到」排）：
+### 批次 2 — 效能與架構 ✅
 
-1. **把布林鋪銅變成預設**：畫面、DRC、Gerber 三邊一起換，重驗 `gerber-pour.test`。
-2. **真圓弧走線**：DRC 的 `segSegDist` 要能處理弧，之後導角與高速線才是真的。
-3. **refdes／net 改名的雙向同步**：back-annotation 目前只有封裝那一項。
-4. **增量 DRC ＋ 共用空間索引**：現在改一條線就全板重掃 240ms，而且三個模組各自建網格。
-5. **ODB++ 的元件與 netlist**：補了才能拿去做電測比對。
+| # | 項目 | 結果 |
+|---|---|---|
+| 4 | 繞線與鋪銅改用共用索引 | ✅ 繞線的節點索引換成 `PcbIndex`；鋪銅的 cuts 收集加範圍篩選（大板 **3 倍**，結果逐一相同） |
 
----
+### 批次 3 — 資料模型 ✅
+
+| # | 項目 | 結果 |
+|---|---|---|
+| 5 | net 升級成一級物件 | ✅ `pcb-nets.js`。屬性放 `state.netProps[名字]`（**識別仍是名字**，見下）；阻抗目標與成對關係進 DRC，會算出「該改成多少線寬／間距」 |
+| 6 | 元件實例 ／ 封裝庫分離 | ✅ `pcb-fpinst.js`。**pads 不搬家**，另記 fpRef＋幾何雜湊；同不同步＝一次雜湊比對，手改過的永遠不會被一鍵更新蓋掉 |
+
+**為什麼 net 沒有改成 id**：pad／走線／via／鋪銅上的 net 換成 id，等於每一張存過的板子都要遷移，
+而且 net 名字本來就是線路圖與板子之間的共同語言（改名已有雙向同步）。
+所以識別仍然是名字，屬性另外放，改名時由 `NetModel.rename` 一起搬。
+**副作用（好的那種）**：net 參照列舉從此只有一份，順手修掉「改名漏掉 `userZones` 與 `teardrops`」的舊 bug。
+
+**這一批的界線**：net 屬性目前只進 DRC 與面板，**沒有寫進匯出檔**（ODB++／IPC-2581 的網表仍只有 net 名）。
+封裝同步只做「庫 → 板」，不做「板 → 庫」。
+
+### 批次 4 — 線路圖 ⬜
+
+| # | 項目 | 為什麼難 |
+|---|---|---|
+| 7 | 匯流排（bus） | 要新的圖元型別與展開規則 |
+| 8 | 階層式圖紙（子圖當符號） | 多頁已有，但沒有「圖紙即符號」的層級 |
+| 9 | pin / gate swap | back-annotation 只差這一項；要動 `Sch2Pcb.merge` 的配對鍵 |
+
+### 批次 5 — 互動 ⬜
+
+| # | 項目 |
+|---|---|
+| 10 | 連續多段繪製（轉彎不必放開） |
+| 11 | 整條走線拖曳（現在只能拖端點） |
+| 12 | 拖曳時的對齊輔助線 |
+| 13 | 完整 push-and-shove（邊繞邊擠、連鎖） |
+
+### 批次 6 — 模擬 ⬜
+
+| # | 項目 |
+|---|---|
+| 14 | SPICE 探針與游標量測 |
+| 15 | 蒙地卡羅 ／ 參數掃描 |
+
+### 批次 7 — 其它 ⬜
+
+| # | 項目 | 界定 |
+|---|---|---|
+| 16 | 變更歷史（版本樹） | 雲端目前只存最新一版 |
+| 17 | 原廠 3D 模型 | **做的是「匯入你自己的 STEP 並綁到封裝」**，不是內建模型庫——那是別人的商業資料，跟明確不做的 LCSC 生態同一條線 |
+
+### 插隊項（做完批次 2 之後最該做的）
+
+**用真工具開一次匯出檔**。這是 §8 唯一的 🔴，而且只有站主做得了。
+測試板與逐步清單已備妥，見 `VERIFY-EXPORTS.md`。
 
 ## 11. 額度與成本
 
@@ -365,70 +477,95 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 
 ---
 
-## 12. 與業界工具的差距（2026-08-26 盤點）
+## 12. 與業界工具的差距（2026-08-27 盤點）
 
 對照組是 EasyEDA。這一節只列**還缺什麼**，已經有的看 §2。
 生態系（LCSC 料庫與庫存）已明確不做，不列在這裡。
 
-判讀：🔴 擋住「能不能用」；🟡 影響體感或正確性但有替代路徑；⬜ 想要但不急。
+判讀：🔴 擋住「能不能用」／🟡 影響體感或正確性但有替代路徑／⬜ 想要但不急。
 
 ### A. 線路圖 ↔ Layout
 
 | 缺什麼 | 影響 |
 |---|---|
-| 🟡 **back-annotation 只有封裝** | refdes 改名、net 改名、pin/gate swap 都不會回寫 |
-| 🟡 **封裝不在線路圖階段綁定** | 轉換時挑預設變體（電阻 0603）並標成「猜的」，要在 PCB 選那顆改 |
-| 🟡 **沒有匯流排（bus）** | 位址／資料線只能一條一條畫；跨頁只能靠同名網路標籤 |
-| 🟡 **net class 沒從線路圖帶過來** | class 是 PCB 端用 pattern 猜的（比對 GND/VCC 字樣） |
-| ⬜ gate / pin swap | 多閘 IC 不能交換以縮短走線 |
+| 🟡 **封裝不在線路圖階段綁定** | 轉換時挑預設變體並標成「猜的」，要在 PCB 選那顆改 |
+| 🟡 **沒有匯流排（bus）** | 位址／資料線只能一條一條畫（批次 4） |
+| 🟡 **沒有階層式圖紙** | 多頁有了，但沒有「子圖當成一個符號」（批次 4） |
+| 🟡 **net class 沒從線路圖帶過來** | class 是 PCB 端用 pattern 猜的 |
+| 🟡 gate / pin swap | back-annotation 只差這一項（批次 4） |
 
 ### B. 互動與手感
 
 | 缺什麼 | 影響 |
 |---|---|
-| 🟡 **完整 push-and-shove** | 只推得動平行鄰居、只平移、不連鎖 |
-| 🟡 **真圓弧走線** | 導角是線段逼近；高速線要真圓弧 |
-| 🟡 **連續多段繪製** | 一次拖一段，轉彎要放開再拉 |
-| 🟡 **整條走線拖曳** | 只能拖端點（`dragEndpoint`） |
-| ⬜ 拖曳時的對齊輔助線、完整快捷鍵 | 對齊只能事後按鈕 |
+| 🟡 **完整 push-and-shove** | 只推得動平行鄰居、只平移、不連鎖（批次 5） |
+| 🟡 **連續多段繪製** | 一次拖一段，轉彎要放開再拉（批次 5） |
+| 🟡 **整條走線拖曳** | 只能拖端點（批次 5） |
+| 🟡 拖曳時的對齊輔助線 | 對齊只能事後按鈕（批次 5） |
 
 ### C. 資料模型
 
 | 缺什麼 | 影響 |
 |---|---|
-| 🟡 **net 仍是字串欄位** | 改名要逐一掃 pad 與走線；net 沒有屬性（阻抗目標、成對關係靠命名推斷） |
-| 🟡 **元件沒有實例／封裝庫分離** | footprint 直接展開成 pads 存進元件，改庫不會回頭更新既有板 |
-| ⬜ 存檔格式沒有遷移機制、沒有變更歷史 | board JSON 只有 `v: 1`；只有 50 步 undo |
+| 🟡 **net 屬性沒進匯出檔** | 阻抗目標／成對關係只在編輯器與 DRC，板廠拿到的網表仍只有 net 名 |
+| 🟡 **封裝同步是單向的** | 庫 → 板可以，板上改好的幾何回寫成庫需要手動走「從選取建封裝」 |
+| 🟡 沒有變更歷史 | 雲端只存最新一版，沒有版本樹（批次 7） |
 
 ### D. 製造與驗證
 
 | 缺什麼 | 影響 |
 |---|---|
-| 🟡 **鋪銅布林還不是預設** | 匯出仍走柵格版，解析度以下的細頸會被當成斷開 |
-| 🟡 **ODB++ 沒有元件與 netlist** | CAM 端不能做電測比對 |
+| 🔴 **沒有人用真的 CAM／CAD 開過匯出檔** | 六種格式的結構都驗過，但「打得開」是另一回事。**目前風險最高** |
+| 🟡 **IPC-2581 的疊構沒有材料** | 只有順序與厚度，沒有 Dk／Df——我們沒有那些資料 |
+| 🟡 **組裝圖的元件外形是方框** | courtyard 矩形近似，不是真實輪廓 |
 | 🟡 **阻抗只有 IPC-2141 近似** | ±10%，量產以板廠場解為準 |
-| ⬜ **原廠 3D 模型** | 3D 與 STEP 的元件都是佔位方塊 |
-| ⬜ IPC-2581、組裝圖 | 沒有 |
+| ⬜ **原廠 3D 模型** | 3D 與 STEP 的元件都是佔位方塊（批次 7 做匯入自己的 STEP） |
 
-### E. 規模與效能（2026-08-26 openrex-imx6 實測，1436 pad）
+### E. 模擬
 
-| 項目 | 實測 | 風險 |
+| 缺什麼 | 影響 |
+|---|---|
+| 🟡 **元件模型是一階的** | 沒有 BSIM、溫度、雜訊 |
+| 🟡 **AC 的非線性小訊號模型簡化** | 含電晶體的頻率響應僅供參考（有警告） |
+| 🟡 **沒有探針與游標量測** | 波形畫得出來，不能點某點讀數值（批次 6） |
+| 🟡 沒有蒙地卡羅、參數掃描 | 批次 6 |
+
+### F. 規模與效能（2026-08-27 實測）
+
+| 項目 | 實測 | 備註 |
 |---|---|---|
-| 整張重畫 | 2.5ms（約 400fps） | 目前不是瓶頸 |
-| 全板 DRC | 240ms | 沒有增量檢查，改一條線就全掃 |
-| undo 快照 | 1.9ms、狀態 219KB | 整份 state JSON × 50 步；十倍規模會吃掉記憶體 |
-| 即時淨空 | 0.65ms/次 | 只掃單一線段的鄰域，可接受 |
+| 整張重畫 | 2.5ms（openrex 1436 pad） | 不是瓶頸 |
+| 全板 DRC | 210ms（1600 pad 合成板） | — |
+| **區域 DRC** | **0.46ms** | 畫線當下就檢查（460×） |
+| **布林鋪銅（大板）** | **7.1ms**（原 21.5ms） | 範圍篩選，**結果逐一相同**（3×） |
+| 空間索引查詢 | 與全比對逐一對照一致 | — |
+| undo 快照 | 1.9ms、狀態 219KB | 十倍規模會吃記憶體 |
 | 3D 建場 | 130ms | InstancedMesh 合併後 |
 
-共通問題：**沒有共用的空間索引**。DRC、繞線、鋪銅各自臨時建網格，同一份幾何被重複整理。
+共用空間索引（`pcb-index.js`）現在 **DRC、繞線、鋪銅三邊都在用**。
+柵格鋪銅（`pcb-pour.js`）仍有自己的柵格，但那是洪水填充的演算法本體，
+不是空間索引——那個不該換。
 
-### F. 不做的
+### G. 不做的
 
-料件庫存與採購整合（LCSC/JLCPCB 那一層）。那是商業資料授權，不是工程問題，追不上也不該追。
-
----
+料件庫存與採購整合（LCSC/JLCPCB 那一層）。那是商業資料授權，不是工程問題。
 
 ## 教訓
+
+- 2026-08-27 | 改既有檔 | 用多行字串當 replace 的 anchor 一再失敗（空白/行尾看不出差異），而且 replace 不匹配時不報錯，腳本還印「已完成」 | 改檔一律逐行定位（findIndex + splice），改完立刻 grep 驗證真的改到
+- 2026-08-27 | 效能優化 | 鋪銅加了空間索引反而慢 2 倍——小板上建索引比省下來的還貴 | 優化要量兩種規模；加門檻（這裡是 200 個 pad），並寫「篩選不改結果」的測試守住
+- 2026-08-27 | ODB++ 內孔 | 無條件把洞的繞向反轉，但 Clipper 產出的 hole 本來就已經反向，再反一次變同向 | 先量有向面積、同號才反；測試直接讀輸出文字比繞向，不猜實作
+- 2026-08-27 | 加匯出格式 | exportFab 的檔名是 `format === odb ? A : B`，加了第三第四種格式就變成「拿到 IPC-2581 卻叫 -gerber.zip」 | 前後端都改成表驅動；二元判斷遇到第三個選項一定要改表
+- 2026-08-27 | 部署 | `.assetsignore` 逐檔列檢查腳本，新增一支就漏一支（實際漏了 4 支到公開網域） | 用 pattern 不用清單，並由 `asset-leak-check.js` 在 CI 雙向守住（也要防 pattern 誤擋站台在用的檔）
+- 2026-08-27 | 布林鋪銅 | 使用者按過「布林重算」之後又改走線，fillPolys 就過期了，畫面看起來完全正常 | 匯出前無條件重算一次；算失敗的那一塊不寫 fillPolys，讓下游退回柵格版
+- 2026-08-27 | 加新模式 | Mitre 的訊息用二元判斷（arc 或 45），加了 trueArc 之後顯示成「45° 斜切」 | 模式名對應改成表；功能對但訊息騙人的錯沒有人會回報
+- 2026-08-27 | 增量 DRC | 只過濾走線只快 1.6 倍，pad↔pad 的 O(n²) 才是主成本 | 要濾就連 pad 一起濾（濾完 210ms → 0.46ms）
+- 2026-08-27 | 匯入 | Gerber 的 Excellon 座標同一個 `X20` 可能是 20mm 也可能是 0.02mm | 先掃全檔決定十進位還是格式化整數，不要靠單行猜
+- 2026-08-28 | net 改名 | 六個帶 net 的陣列被手抄成四個，漏掉 `userZones` 與 `teardrops`；改完名字使用者畫的鋪銅還掛在舊網路上，畫面上完全看不出來 | 同一份清單被抄第二次就抽成單一列舉（`NetModel.refs`），改名/統計/稽核共用
+- 2026-08-28 | 曲線擬合式 | 拿 IPC-2141 反解線寬，搜尋區間隨手給 [0.02, 10]，寬線讓 ln 引數 < 1、阻抗算成負的，於是「1Ω」也解得出答案 | 反解一定要把搜尋區間限在該式子**標示的有效範圍**內，超出回 null 不回邊界值
+- 2026-08-28 | 重建封裝 | `RefFP.resolve` 吃的是公版規格表那一列（part+kind+ref+w/h），而 w/h 放上板後已被封裝本體蓋掉；只存 part 就回推，整片板被判成「庫裡找不到」 | 要能重算的來源，把**當初的輸入**整組抄一份存起來，不要事後從產物回推
+- 2026-08-28 | 加面板 | 新面板只在 init 與按鈕時重畫，載入公版／復原之後停在上一片板的數字（看起來像功能沒作用） | 「換一批元件就會變」的面板一律掛進既有的重畫路徑（這裡是 `renderNetPanel` 與 `PcbHistory.applySnap`）
+- 2026-08-28 | CI | §6 本機清單一路加到 63 支，`ci.yml` 停在 45 支——2026-08-27 新增的 18 支一支都沒進 CI，本機全綠而 push 上去根本不擋 | 清單型的東西要有「兩邊對照」的檢查（§6 開頭那段一行指令），不要靠記得同時改兩個地方
 
 只留還會再犯的。同型的已升級成 §0 硬規矩，不重複列。
 

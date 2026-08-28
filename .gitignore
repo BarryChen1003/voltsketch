@@ -33,3 +33,6 @@ tools/pin-gen-out.js
 # 建庫覆核清單是本機產物，不進 git
 tools/ic-extract/out/
 .wrangler/
+
+# 匯出驗證用的測試板產物（node tools/make-verify-boards.js 隨時可重生）
+verify-out/

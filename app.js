@@ -400,7 +400,16 @@ const app = {
       if (el('authEmail')) el('authEmail').textContent = has ? (user.email || '') : '';
       if (has) {
         try {
-          const cloud = await Auth.loadProject();
+          // 雲端存檔走 designs 表（一列＝一個專案，線路圖與板子放同一列，
+          // 跟 PCB 頁共用 Designs.currentId() 這個指標）。
+          // 沒有連結專案時退回舊的 projects 表：還沒存過新專案的使用者照樣載得回來。
+          let cloud = null;
+          const curId = window.Designs && Designs.currentId();
+          if (curId) {
+            const d = await Designs.load(curId);
+            cloud = d && d.sch;
+          }
+          if (!cloud) cloud = await Auth.loadProject();
           if (cloud && cloud.components) {
             this.state.components = cloud.components;
             this.state.wires = cloud.wires || [];
@@ -415,10 +424,25 @@ const app = {
     Auth.onChange(update);
     document.getElementById('logoutBtn')?.addEventListener('click', async () => { await Auth.signOut(); location.reload(); });
     document.getElementById('cloudSync')?.addEventListener('click', async () => {
+      const sch = { components: this.state.components, wires: this.state.wires, componentIdCounter: this.state.componentIdCounter };
       try {
-        await Auth.saveProject({ components: this.state.components, wires: this.state.wires, componentIdCounter: this.state.componentIdCounter });
+        if (!window.Designs) {                       // designs.js 沒載入就走舊路，不讓同步整個壞掉
+          await Auth.saveProject(sch);
+          this.showToast(uiT('已同步到雲端'));
+          return;
+        }
+        const curId = Designs.currentId();
+        if (curId) {
+          // 只送 sch。送 pcb: null 會把同一列裡的板子清掉——那是靜默的資料遺失。
+          await Designs.save(curId, { sch });
+        } else {
+          const name = window.prompt(uiT('專案名稱'), uiT('我的專案'));
+          if (name === null) return;
+          const made = await Designs.create(name, sch);
+          Designs.setCurrent(made.id);
+        }
         this.showToast(uiT('已同步到雲端'));
-      } catch (e) { this.showToast(uiT('同步失敗：{err}', { err: e.message || e })); }
+      } catch (e) { this.showToast(uiT('同步失敗：{err}', { err: (e && e.message) || e })); }
     });
   },
 

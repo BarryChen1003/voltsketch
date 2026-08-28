@@ -151,7 +151,7 @@
       if (fp.assumed) assumed.push({ id: sch.id, type: sch.type, label: sch.label || '', lib: fp.lib, variant: fp.variant });
       const prefix = (sch.label || '').replace(/\d+$/, '') || 'U';
       refSeq[prefix] = (refSeq[prefix] || 0) + 1;
-      components.push({
+      const comp = {
         id: 'sch-' + sch.id,
         type: fp.source === 'ic' ? 'ic' : 'part', kind: fp.source === 'ic' ? 'ic' : 'part',
         x: 0, y: 0, rot: 0, side: 'top',
@@ -164,7 +164,14 @@
         notes: bound.notes,
         pads: bound.pads,
         _sch: { x: sch.x || 0, y: sch.y || 0 }
-      });
+      };
+      // 元件實例 ／ 封裝庫分離：記下這顆的 pad 是從哪個庫展開的、當時長什麼樣。
+      // 沒有這一章，之後庫改了就只能靠人眼比對（FpInst.status → unverified）。
+      const FI = (typeof window !== 'undefined' && window.FpInst) || (typeof global !== 'undefined' && global.FpInst);
+      if (FI) FI.stamp(comp, fp.source === 'ic'
+        ? { src: 'ic', part: fp.part }
+        : { src: 'partslib', lib: fp.lib, variant: fp.variant }, comp.pads);
+      components.push(comp);
       bySource[fp.source]++;
     });
 
@@ -306,6 +313,68 @@
     return { changed, found };
   }
 
+  // 把 PCB 端改的 refdes 寫回線路圖。
+  //
+  // 為什麼一定要回寫：merge() 合併時寫的是 Object.assign({}, nc, { x, y, rot })
+  // ——ref 以線路圖為準。只改 PCB 的話，下一次 ECO 同步就被蓋回去，
+  // 使用者會看到「我明明改過，同步一次又變回來」。
+  //
+  // 撞名不改：兩顆 R1 會讓 BOM、網表、電測全部對不上，寧可回報讓使用者決定。
+  function annotateRef(pages, schId, label) {
+    const want = String(label == null ? "" : label).trim();
+    if (!want) return { changed: 0, found: 0, conflict: null };
+    let changed = 0, found = 0, conflict = null;
+    for (const pg of (pages || [])) {
+      const comps = (pg && pg.data && pg.data.components) || [];
+      for (const c of comps) {
+        if (!c || c.id === schId) continue;
+        if (String(c.label || "") === want) { conflict = c.id; break; }
+      }
+      if (conflict) break;
+    }
+    if (conflict) return { changed: 0, found: 0, conflict };
+    for (const pg of (pages || [])) {
+      const comps = (pg && pg.data && pg.data.components) || [];
+      for (const c of comps) {
+        if (!c || c.id !== schId) continue;
+        found++;
+        if (String(c.label || "") === want) continue;
+        c.label = want;
+        changed++;
+      }
+    }
+    return { changed, found, conflict: null };
+  }
+
+  // 把 PCB 端改的 net 名寫回線路圖。
+  // net 名字存在**導線的 net 欄位**上（模型見 net-label.test.js 的檔頭），
+  // 不是綁在文字元件或某個座標上，所以改名就是掃過所有 wire 換字串。
+  //
+  // 新名字已經被別的 net 用掉時不改：那是「把兩條網路合併」，屬於電性變更，
+  // 不可以當成改名靜靜做掉。
+  function renameNet(pages, oldName, newName) {
+    const from = String(oldName == null ? "" : oldName).trim();
+    const to = String(newName == null ? "" : newName).trim();
+    if (!from || !to || from === to) return { changed: 0, pages: 0, conflict: null };
+    for (const pg of (pages || [])) {
+      for (const w of ((pg && pg.data && pg.data.wires) || [])) {
+        if (w && String(w.net || "") === to) return { changed: 0, pages: 0, conflict: to };
+      }
+    }
+    let changed = 0, touched = 0;
+    for (const pg of (pages || [])) {
+      const wires = (pg && pg.data && pg.data.wires) || [];
+      let any = 0;
+      for (const w of wires) {
+        if (!w || String(w.net || "") !== from) continue;
+        w.net = to;
+        changed++; any++;
+      }
+      if (any) touched++;
+    }
+    return { changed, pages: touched, conflict: null };
+  }
+
   // PCB 元件 id → 線路圖元件 id。`sch-r1` → `r1`；多頁的 `sch-p2-r1` → `r1`。
   function schIdOf(pcbId) {
     const s = String(pcbId || "");
@@ -315,7 +384,7 @@
     return m ? m[2] : rest;
   }
 
-  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces, annotateFootprint, schIdOf };
+  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces, annotateFootprint, annotateRef, renameNet, schIdOf };
   if (typeof window !== 'undefined') window.Sch2Pcb = Sch2Pcb;
   if (typeof module !== 'undefined' && module.exports) module.exports = Sch2Pcb;
 })();

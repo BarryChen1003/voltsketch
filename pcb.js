@@ -17,6 +17,10 @@ const pcbApp = {
     traces: [],
     vias: [],
     nets: [],
+    // net 屬性表（NetModel）。key = net 名字，值 {z0, zdiff, ztol, pair, note}。
+    // net 的識別仍然是名字（線路圖與板子共通、改名已有雙向同步）；
+    // 屬性放這裡才有地方掛「這條要 50Ω」「這兩條是一對」。改名由 NetModel.rename 一起搬。
+    netProps: {},
     selected: null,
     isDragging: false,
     isPanning: false,
@@ -729,8 +733,19 @@ const pcbApp = {
       ctx.lineWidth = Math.max(1, (trace.width || 0.3) * scale);
       ctx.globalAlpha = lid === 'F.Cu' ? 1 : 0.85;
       ctx.beginPath();
-      ctx.moveTo(this.canvas.width / 2 + trace.x1 * scale, this.canvas.height / 2 + trace.y1 * scale);
-      ctx.lineTo(this.canvas.width / 2 + trace.x2 * scale, this.canvas.height / 2 + trace.y2 * scale);
+      const a = trace.arc;
+      if (a && Number.isFinite(a.cx) && Number.isFinite(a.cy) && a.r > 0) {
+        // 真圓弧走線。canvas 的 arc() 角度方向與螢幕 y 向下一致，
+        // 而 PcbArc 的角度是用 atan2(y−cy, x−cx) 算的（同一個座標系），
+        // 所以 a0/a1 可以直接餵進去，anticlockwise 一律 false（a1 一定 > a0）。
+        ctx.arc(
+          this.canvas.width / 2 + a.cx * scale,
+          this.canvas.height / 2 + a.cy * scale,
+          a.r * scale, a.a0, a.a1, false);
+      } else {
+        ctx.moveTo(this.canvas.width / 2 + trace.x1 * scale, this.canvas.height / 2 + trace.y1 * scale);
+        ctx.lineTo(this.canvas.width / 2 + trace.x2 * scale, this.canvas.height / 2 + trace.y2 * scale);
+      }
       ctx.stroke();
     });
     // 選取中的走線：橘色外框高亮（Delete 可刪）
@@ -943,6 +958,12 @@ const pcbApp = {
     // Constraint Manager：class 線寬/線長/類別間距矩陣/銳角
     if (window.ConstraintMgr) results.push(...window.ConstraintMgr.audit(window.ConstraintMgr.load(), this.state, rules.clearance.traceToTrace));
 
+    // net 屬性稽核（目標阻抗 vs 實際線寬/間距、差分對配對完整性）
+    if (window.NetModel) results.push(...window.NetModel.audit(this.state));
+
+    // 元件封裝與庫是否同步（庫改了、既有板子不知道）
+    if (window.FpInst) results.push(...window.FpInst.auditFindings(this.state));
+
     // Backdrill：已計算的背鑽數＋板況變更後的過期警示
     if (window.Backdrill) {
       const bs = Backdrill.status();
@@ -1140,6 +1161,8 @@ const pcbApp = {
 
   // ODB++ 走同一條路（同一支 Edge Function、同一個額度計數器），只差 format。
   async exportOdb() { return this.exportFab("odb"); },
+  async exportIpc() { return this.exportFab("ipc2581"); },
+  async exportAsm() { return this.exportFab("assembly"); },
 
   // 匯出製造包。format：gerber＝Gerber＋鑽孔＋鋼網＋CPL＋IPC-356；odb＝ODB++ 子集。
   async exportFab(format) {
@@ -1152,6 +1175,20 @@ const pcbApp = {
     if (!token) { say('⚠ ' + pcbT('pj_gerber_need_login')); return; }
 
     const s = this.state;
+
+    // 鋪銅一律在匯出前重算一次。
+    //
+    // 為什麼不能只靠使用者按過「布林重算」：那份 fillPolys 是按下去那一刻的幾何。
+    // 之後只要動過任何一條走線或 pad，它就過期了——而過期的鋪銅在畫面上
+    // 看起來完全正常（銅還在那裡），送到板廠才變成短路或斷路。
+    // 這是整條路上唯一「錯了不會有任何徵兆」的地方，所以寧可每次多花幾十毫秒。
+    //
+    // Clipper 沒載入時 applyAll 不寫 fillPolys，匯出端自動退回柵格版。
+    if (window.PourGeom && window.PourGeom.available() && (s.userZones || []).length) {
+      try {
+        window.PourGeom.applyAll(s, this.padAbs.bind(this), { clearance: this.loadDrcRules().clearance });
+      } catch (e) { /* 算不出來就讓匯出走柵格版，不要擋住匯出 */ }
+    }
 
     // 匯出製造包＝要送板廠了。這裡是最後一道關：拿選定板廠的公開能力檢查一次，
     // 有會被退件的項目就攔下來讓使用者決定，不要讓他花錢送一份做不出來的檔。
@@ -1212,12 +1249,32 @@ const pcbApp = {
     const blob = await res.blob();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = base.replace(/\.kicad_pcb$/i, '') + (format === 'odb' ? '-odbpp.zip' : '-gerber.zip');
+    // 檔名跟著格式走。原本是三元判斷，加了 IPC-2581 與組裝圖之後會變成
+    // 「拿到 IPC-2581 卻叫 -gerber.zip」——安靜給錯東西，跟後端那次同一種錯。
+    const SUFFIX = { gerber: '-gerber.zip', odb: '-odbpp.zip', ipc2581: '-ipc2581.zip', assembly: '-assembly.zip' };
+    a.download = base.replace(/\.kicad_pcb$/i, '') + (SUFFIX[format] || '-gerber.zip');
     a.click();
     URL.revokeObjectURL(a.href);
 
     if (meta) {
       const warnsOdb = (meta.warnings || []).map(w => pcbT(w.k, w.v));
+      // IPC-2581：單一 XML，統計欄位跟 Gerber/ODB++ 都不一樣
+      if (format === "ipc2581") {
+        const st3 = meta.stats || {};
+        say(pcbT("pj_ipc_exported", {
+          layers: st3.layers || 0, nets: st3.nets || 0, comps: st3.components || 0,
+          traces: st3.traces || 0, arcs: st3.arcs || 0, cutouts: st3.cutouts || 0
+        }) + (warnsOdb.length ? "<br>⚠ " + warnsOdb.join("<br>⚠ ") : ""));
+        return;
+      }
+      // 組裝圖：兩張 SVG ＋ 放置清單
+      if (format === "assembly") {
+        const st4 = meta.stats || {};
+        say(pcbT("pj_asm_exported", {
+          n: meta.files.length, top: st4.top || 0, bot: st4.bottom || 0, dnp: st4.dnp || 0
+        }) + (warnsOdb.length ? "<br>⚠ " + warnsOdb.join("<br>⚠ ") : ""));
+        return;
+      }
       if (format === "odb") {
         const st2 = meta.stats || {};
         say(pcbT("pj_odb_exported", {
@@ -1331,6 +1388,11 @@ const pcbApp = {
           if (comp.side === 'bottom') comp.pads.forEach(p => { if (p.side === 'F') p.side = 'B'; });
           if (fp.pkg) comp.package = fp.pkg;
           comp.fpMeta = fp.meta;
+          // 蓋章：記下「從 RefFP 拿的、當時長這樣」。沒有這一步，
+          // 之後 RefFP 改了解析規則，公版板不會知道自己的 pad 已經過期。
+          // spec 一定要帶原始的 c（RefFP 靠 kind/ref/w/h 分流），不能只帶 part：
+          // comp.w/h 在上一行已經被封裝本體蓋掉了，拿它回推會配到別的封裝。
+          if (window.FpInst) FpInst.stamp(comp, { src: 'reffp', part: c.part, spec: c }, comp.pads);
         }
         return comp;
       });
@@ -1857,6 +1919,9 @@ const pcbApp = {
     c.w = Math.max(1, built.body.w); c.h = Math.max(1, built.body.h);
     c.part = cat.value + " " + varSel.value;
     c.footprintVariant = varSel.value;
+    c.footprintSource = "partslib";
+    // 換封裝＝重新綁庫：舊的 fpDetached / 舊 hash 都失效
+    if (window.FpInst) FpInst.stamp(c, { src: "partslib", lib: cat.value, variant: varSel.value }, c.pads);
     c.footprintAssumed = false;
     const schId = window.Sch2Pcb ? Sch2Pcb.schIdOf(c.id) : null;
     if (schId) {
@@ -1875,26 +1940,96 @@ const pcbApp = {
 
   // 寫回線路圖：多頁存檔（vs-sheets-v1）與目前頁的鏡射（voltsketch-project）都要更新，
   // 只更新其中一個的話，切頁一次就被舊資料蓋回去。
-  backAnnotateFootprint(comp, footprint) {
-    if (!window.Sch2Pcb) return { changed: 0 };
-    const schId = Sch2Pcb.schIdOf(comp.id);
-    if (!schId) return { changed: 0 };
+  // mutator 收 pages、就地改、回 { changed, conflict }。
+  // 抽出來的理由：封裝、refdes、net 三種回寫的 localStorage 讀寫完全一樣，
+  // 各寫一份的話遲早有一份忘了更新其中一個 key，症狀是「切頁一次就變回去」。
+  _writeSchPages(mutator) {
     let changed = 0;
     try {
       const sh = JSON.parse(localStorage.getItem("vs-sheets-v1") || "null");
       if (sh && Array.isArray(sh.pages)) {
-        changed += Sch2Pcb.annotateFootprint(sh.pages, schId, footprint).changed;
-        if (changed) localStorage.setItem("vs-sheets-v1", JSON.stringify(sh));
+        const r = mutator(sh.pages) || {};
+        if (r.conflict) return { changed: 0, conflict: r.conflict };
+        if (r.changed) { changed += r.changed; localStorage.setItem("vs-sheets-v1", JSON.stringify(sh)); }
       }
     } catch (e) { /* 存檔壞了就只寫目前頁 */ }
     try {
       const proj = JSON.parse(localStorage.getItem("voltsketch-project") || "null");
       if (proj) {
-        const r = Sch2Pcb.annotateFootprint([{ data: proj }], schId, footprint);
+        const r = mutator([{ data: proj }]) || {};
+        if (r.conflict) return { changed: 0, conflict: r.conflict };
         if (r.changed) { localStorage.setItem("voltsketch-project", JSON.stringify(proj)); changed += r.changed; }
       }
     } catch (e) { }
-    return { changed };
+    return { changed, conflict: null };
+  },
+
+  backAnnotateFootprint(comp, footprint) {
+    if (!window.Sch2Pcb) return { changed: 0 };
+    const schId = Sch2Pcb.schIdOf(comp.id);
+    if (!schId) return { changed: 0 };
+    return this._writeSchPages(pages => Sch2Pcb.annotateFootprint(pages, schId, footprint));
+  },
+
+  // refdes 改名。一定要連線路圖一起改——merge() 是拿線路圖的 ref 覆蓋板子的，
+  // 只改板子的話下一次同步就變回去，中間沒有任何提示。
+  renameSelRef() {
+    const c = this.state.selected;
+    if (!c) return;
+    const cur = c.ref || c.label || '';
+    const name = prompt(pcbT('pj_ref_prompt'), cur);
+    if (name === null) return;
+    const want = String(name).trim();
+    if (!want || want === cur) return;
+    // 板子上先查一次撞名：線路圖那邊也會查，但板子上可能有非線路圖來源的元件
+    if ((this.state.components || []).some(o => o !== c && String(o.ref || '') === want)) {
+      this.toast(pcbT('pj_ref_dup', { ref: want }), 'error');
+      return;
+    }
+    const schId = window.Sch2Pcb ? Sch2Pcb.schIdOf(c.id) : null;
+    if (schId) {
+      const r = this._writeSchPages(pages => Sch2Pcb.annotateRef(pages, schId, want));
+      if (r.conflict) { this.toast(pcbT('pj_ref_dup_sch', { ref: want }), 'error'); return; }
+      this.hist();
+      c.ref = want; c.label = want;
+      this.render(); this.renderPartsList(); this.syncSelPanel();
+      this.toast(pcbT('pj_ref_done', { from: cur, to: want, n: r.changed }));
+    } else {
+      // 不是從線路圖來的元件（KiCad 匯入、手動放的）：只改板子，沒有回寫的問題
+      this.hist();
+      c.ref = want; c.label = want;
+      this.render(); this.renderPartsList(); this.syncSelPanel();
+      this.toast(pcbT('pj_ref_done_local', { from: cur, to: want }));
+    }
+  },
+
+  // net 改名。線路圖端的 net 名字存在導線的 net 欄位上（見 net-label.test.js 的模型），
+  // 板子端散在 pad / 走線 / via / KiCad 鋪銅 / 使用者鋪銅 / 淚滴六處。
+  // 這裡不再手抄清單：以前抄漏了 userZones 與 teardrops，改完名字使用者畫的鋪銅
+  // 還掛在舊網路上，而畫面上看不出來。列舉統一由 NetModel.refs 出。
+  renameNetName(oldName) {
+    const from = String(oldName || '').trim();
+    if (!from) return;
+    const name = prompt(pcbT('pj_net_prompt', { net: from }), from);
+    if (name === null) return;
+    const to = String(name).trim();
+    if (!to || to === from) return;
+
+    const all = new Set(window.NetModel ? NetModel.names(this.state) : []);
+    if (all.has(to)) { this.toast(pcbT('pj_net_dup', { net: to }), 'error'); return; }
+
+    let schChanged = 0;
+    if (window.Sch2Pcb) {
+      const r = this._writeSchPages(pages => Sch2Pcb.renameNet(pages, from, to));
+      if (r.conflict) { this.toast(pcbT('pj_net_dup_sch', { net: to }), 'error'); return; }
+      schChanged = r.changed;
+    }
+
+    this.hist();
+    const n = window.NetModel ? NetModel.rename(this.state, from, to) : 0;
+    this.render();
+    if (this.renderNetPanel) this.renderNetPanel();
+    this.toast(pcbT('pj_net_done', { from, to, n, sch: schChanged }));
   },
 
   syncSelPanel() {
@@ -2142,7 +2277,33 @@ const pcbApp = {
   },
 
   // 走線落子後即時規則檢查（超標 toast 警示）
+  // 剛畫完（或剛改完）一條走線之後，只對它周圍那一小塊重跑 DRC。
+  //
+  // 為什麼不直接 runDrc()：1436 pad 的公版全量要 240ms，每畫一段就卡一下。
+  // 這裡把檢查範圍縮到「這條線的新舊位置聯集，再膨脹一個間距規則」，
+  // 剩下的板子完全不碰。region 一定要膨脹，否則剛好在框外的鄰居會被漏掉
+  // ——漏掉的症狀是少報一條違規，沒有任何訊息（見 drc-incremental.test.js §7）。
+  //
+  // 只用 toast 提示，不動「執行 DRC」那份全量清單：兩者的涵蓋範圍不同，
+  // 混在一起會讓使用者不知道清單到底是全板的還是局部的。
+  quickDrc(tr, beforeBox) {
+    if (!window.PcbIndex || !window.PadDrc || !tr) return;
+    const rules = this.loadDrcRules();
+    const cl = rules.clearance.traceToTrace || 0.15;
+    const after = PcbIndex.traceBox(tr, cl);
+    const region = PcbIndex.dirtyRect([{ before: beforeBox || null, after }], cl);
+    if (!region) return;
+    let out = [];
+    try {
+      out = window.PadDrc.run(this.state, this.padAbs.bind(this), rules, { region }) || [];
+    } catch (e) { return; }   // 即時檢查壞掉不可以擋住畫線
+    const errs = out.filter(x => x.type === 'error');
+    if (errs.length) this.toast(pcbT('pj_drc_quick', { n: errs.length }), 'warn');
+  },
+
   checkTraceRules(tr) {
+    // 先做區域 DRC——它不需要 net，所以不能放在下面那個 net 守衛後面。
+    this.quickDrc(tr);
     if (!window.NetRules || !tr.net) return;
     const r = window.NetRules.match(this.state.netRules, tr.net);
     if (!r) return;
@@ -2854,21 +3015,11 @@ const pcbApp = {
   },
 
   // 阻抗計算（IPC-2141 近似式；±10% 等級，正式設計用場型解算器）
+  // 公式本體搬到 NetModel：net 的目標阻抗稽核也要算同一件事，
+  // 兩份實作遲早會分岔（鑽孔表已經教過一次）。這裡只留轉呼叫。
   calcImpedance(kind, w, h, t, er, s) {
-    if (!(w > 0 && h > 0 && t > 0 && er > 1)) return null;
-    const ms = 87 / Math.sqrt(er + 1.41) * Math.log(5.98 * h / (0.8 * w + t));
-    const sl = 60 / Math.sqrt(er) * Math.log(1.9 * (2 * h + t) / (0.8 * w + t));
-    if (kind === 'microstrip') return { z0: ms };
-    if (kind === 'stripline') return { z0: sl };
-    if (kind === 'diff-microstrip') {
-      if (!(s > 0)) return null;
-      return { z0: ms, zdiff: 2 * ms * (1 - 0.48 * Math.exp(-0.96 * s / h)) };
-    }
-    if (kind === 'diff-stripline') {
-      if (!(s > 0)) return null;
-      return { z0: sl, zdiff: 2 * sl * (1 - 0.347 * Math.exp(-2.9 * s / h)) };
-    }
-    return null;
+    if (!window.NetModel) return null;
+    return window.NetModel.impedance(kind, w, h, t, er, s);
   },
 
   runImpedance() {
@@ -2982,10 +3133,29 @@ const pcbApp = {
       const row = e.target.closest ? e.target.closest(".net-row") : null;
       if (!row) return;
       const net = row.getAttribute("data-net");
+      // 改名鈕不可以同時觸發高亮切換，否則按一下改名畫面會跟著閃
+      const btn = e.target.closest ? e.target.closest("button[data-act='rename']") : null;
+      if (btn) { e.stopPropagation(); this.renameNetName(net); return; }
       // 再點一次取消高亮：不做這件事的話高亮會黏在畫面上拿不掉
       this.state.highlightNet = (this.state.highlightNet === net) ? null : net;
       this.renderNetPanel();
       this.render();
+    });
+    document.getElementById("selRenameBtn")?.addEventListener("click", () => this.renameSelRef());
+
+    // net 屬性（NetModel）
+    document.getElementById("npApply")?.addEventListener("click", () => this.applyNetProps());
+    document.getElementById("npClear")?.addEventListener("click", () => this.clearNetProps());
+    document.getElementById("npGc")?.addEventListener("click", () => this.gcNetProps());
+
+    // 封裝與庫同步（FpInst）
+    document.getElementById("fpSyncScan")?.addEventListener("click", () => this.renderFpSync());
+    document.getElementById("fpSyncAll")?.addEventListener("click", () => this.syncFpAll());
+    document.getElementById("fpSyncRows")?.addEventListener("click", (e) => {
+      const btn = e.target.closest ? e.target.closest("button[data-act='fpsync']") : null;
+      if (!btn) return;
+      const row = e.target.closest(".fp-row");
+      if (row) this.syncFpOne(row.getAttribute("data-id"));
     });
 
     // 3D 檢視
@@ -3038,6 +3208,8 @@ const pcbApp = {
     document.querySelector('#exportKicadBtn')?.addEventListener('click', () => this.exportKicad());
     document.querySelector('#exportGerberBtn')?.addEventListener('click', () => this.exportGerber());
     document.querySelector('#exportOdbBtn')?.addEventListener('click', () => this.exportOdb());
+    document.querySelector('#exportIpcBtn')?.addEventListener('click', () => this.exportIpc());
+    document.querySelector('#exportAsmBtn')?.addEventListener('click', () => this.exportAsm());
 
     // IC 庫放料
     document.querySelector('#placeIcBtn')?.addEventListener('click', () => {
@@ -3754,15 +3926,194 @@ const pcbApp = {
     const rows = onlyOpen ? s.list.filter(r => r.open > 0) : s.list;
     if (!rows.length) { box.innerHTML = "<p style='color:var(--muted)'>" + pcbT("pj_net_none") + "</p>"; return; }
     const esc = t => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[ch]));
+    // 有設目標阻抗／差分對的 net 要一眼看得出來，否則屬性設了跟沒設一樣
+    const NM = window.NetModel;
+    const all = NM ? NM.names(this.state) : [];
     box.innerHTML = rows.map(r => {
       const on = this.state.highlightNet === r.net;
-      return "<div class='net-row' data-net='" + esc(r.net) + "' style='display:grid;grid-template-columns:1fr auto auto;gap:6px;padding:4px 6px;cursor:pointer;border-bottom:1px solid var(--line);" +
+      const p = NM ? NM.get(this.state, r.net, all) : null;
+      let tag = "";
+      if (p && p.z0) tag += "<span title='Z0' style='color:var(--accent-strong)'>" + p.z0 + "Ω</span> ";
+      if (p && p.zdiff) tag += "<span title='Zdiff' style='color:var(--accent-strong)'>Δ" + p.zdiff + "Ω</span> ";
+      if (p && p.pair) tag += "<span title='" + esc(p.pair) + "' style='color:" + (p.pairSource === 'explicit' ? "var(--accent-strong)" : "var(--muted)") + "'>⇄</span>";
+      return "<div class='net-row' data-net='" + esc(r.net) + "' style='display:grid;grid-template-columns:1fr auto auto auto auto;gap:6px;padding:4px 6px;cursor:pointer;border-bottom:1px solid var(--line);" +
         (on ? "background:rgba(46,204,113,.15)" : "") + "'>" +
         "<span>" + esc(r.net) + "</span>" +
+        "<span style='font-size:11px'>" + tag + "</span>" +
         "<span style='color:var(--muted)'>" + r.pads + "p / " + r.traces + "s / " + r.len.toFixed(1) + "mm</span>" +
         "<span style='color:" + (r.open ? "#e67e22" : "var(--muted)") + "'>" + (r.open ? "✗" + r.open : "✓") + "</span>" +
+        "<button class='small-button' data-act='rename' title='" + esc(pcbT('pj_net_rename')) + "' style='padding:0 6px'>✎</button>" +
         "</div>";
     }).join("");
+    this.renderNetProps();
+    // 封裝同步狀態掛在這裡一起更新：它跟 net 面板一樣是「換一批元件就會變」的東西，
+    // 只在 init 與按鈕更新的話，載入公版／開雲端專案之後面板會停在上一片板的數字。
+    this.renderFpSync();
+  },
+
+  // ---- net 屬性編輯（NetModel）----
+  // 屬性附在「目前高亮的 net」上：net 清單點一下就是選取，不必再發明一個選取狀態。
+  renderNetProps() {
+    const box = document.getElementById("netPropsBox");
+    if (!box || !window.NetModel) return;
+    const net = this.state.highlightNet;
+    const all = NetModel.names(this.state);
+    if (!net || all.indexOf(net) < 0) { box.style.display = "none"; return; }
+    box.style.display = "";
+    const p = NetModel.get(this.state, net, all);
+    const setV = (id, v) => { const el = document.getElementById(id); if (el && document.activeElement !== el) el.value = v; };
+    const nameEl = document.getElementById("netPropsName");
+    if (nameEl) nameEl.textContent = net;
+    const clsEl = document.getElementById("netPropsCls");
+    if (clsEl) clsEl.textContent = p.cls ? "class: " + p.cls : "";
+    setV("npZ0", p.z0 || "");
+    setV("npZdiff", p.zdiff || "");
+    setV("npZtol", p.ztol);
+    setV("npNote", p.note);
+    const sel = document.getElementById("npPair");
+    if (sel && document.activeElement !== sel) {
+      const opts = ["<option value=''>—</option>"].concat(all.filter(n => n !== net).map(n =>
+        "<option value='" + n.replace(/'/g, "&#39;") + "'>" + n.replace(/</g, "&lt;") + "</option>"));
+      sel.innerHTML = opts.join("");
+      sel.value = p.pair || "";
+    }
+    const hint = document.getElementById("npHint");
+    if (hint) hint.textContent = this.netPropsHint(net, p);
+  },
+
+  // 「現在走成怎樣、目標要多少、該改成多少」一行講完。
+  // 只給計算得出來的東西：疊層推不出幾何就說推不出來，不要給一個假數字。
+  netPropsHint(net, p) {
+    const NM = window.NetModel;
+    if (!NM) return "";
+    const segs = (this.state.traces || []).filter(t => t.net === net && (t.x1 !== t.x2 || t.y1 !== t.y2));
+    if (!segs.length) return pcbT("pj_np_notraces");
+    const layer = segs[0].layer || "F.Cu";
+    const w = Math.round((segs[0].width || 0.3) * 1000) / 1000;
+    if (!window.Stackup) return pcbT("pj_np_nostack");
+    const g = Stackup.geomFor(Stackup.load(this.state), this.state, layer);
+    if (!g) return pcbT("pj_np_nogeom", { layer });
+    const z = NM.impedance(g.kind, w, g.h, g.t, g.er);
+    if (!z) return pcbT("pj_np_nogeom", { layer });
+    let s = pcbT("pj_np_now", { layer, kind: g.kind, w: w.toFixed(3), z: z.z0.toFixed(1) });
+    if (p.z0 > 0) {
+      const want = NM.widthFor(g.kind, p.z0, g.h, g.t, g.er);
+      s += " │ " + (want == null ? pcbT("pj_np_unreachable", { target: p.z0 }) : pcbT("pj_np_want", { target: p.z0, w: want.toFixed(3) }));
+    }
+    if (p.zdiff > 0 && p.pair) {
+      const pg = NM.pairGeometry(this.state, net, p.pair);
+      if (pg.gap != null) {
+        const wantGap = NM.gapFor(g.kind, p.zdiff, (pg.wA + pg.wB) / 2, g.h, g.t, g.er);
+        s += " │ " + pcbT("pj_np_pairnow", { gap: pg.gap.toFixed(3), pct: Math.round(pg.coupled * 100), skew: pg.skew.toFixed(2) });
+        if (wantGap != null) s += " → " + pcbT("pj_np_wantgap", { target: p.zdiff, s: wantGap.toFixed(3) });
+      } else {
+        s += " │ " + pcbT("pj_np_nocouple", { pct: Math.round(pg.coupled * 100) });
+      }
+    }
+    return s;
+  },
+
+  applyNetProps() {
+    const net = this.state.highlightNet;
+    if (!net || !window.NetModel) return false;
+    const v = id => (document.getElementById(id) || {}).value;
+    this.hist();
+    NetModel.set(this.state, net, { z0: v("npZ0"), zdiff: v("npZdiff"), ztol: v("npZtol"), note: v("npNote") });
+    // 配對要對稱寫兩邊，所以走 setPair 而不是 set({pair})
+    NetModel.setPair(this.state, net, String(v("npPair") || "").trim());
+    this.renderNetPanel();
+    this.toast(pcbT("pj_np_saved", { net }), "info");
+    return true;
+  },
+
+  clearNetProps() {
+    const net = this.state.highlightNet;
+    if (!net || !window.NetModel) return false;
+    this.hist();
+    NetModel.setPair(this.state, net, "");
+    NetModel.set(this.state, net, { z0: "", zdiff: "", ztol: "", note: "" });
+    this.renderNetPanel();
+    this.toast(pcbT("pj_np_cleared", { net }), "info");
+    return true;
+  },
+
+  // 板上已經沒有的 net 的屬性。不自動清（可能只是暫時把線刪光重繞），要按才清。
+  gcNetProps() {
+    if (!window.NetModel) return 0;
+    const st = NetModel.stale(this.state);
+    if (!st.length) { this.toast(pcbT("pj_np_nostale"), "info"); return 0; }
+    if (!window.confirm(pcbT("pj_np_gc_ask", { n: st.length, nets: st.slice(0, 8).join(", ") }))) return 0;
+    this.hist();
+    const rm = NetModel.gc(this.state);
+    this.renderNetPanel();
+    this.toast(pcbT("pj_np_gc_done", { n: rm.length }), "info");
+    return rm.length;
+  },
+
+  // ---- 封裝與庫是否同步（FpInst）----
+  renderFpSync() {
+    const box = document.getElementById("fpSyncRows");
+    const sum = document.getElementById("fpSyncSummary");
+    if (!box || !window.FpInst) return;
+    const a = FpInst.audit(this.state);
+    const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[ch]));
+    if (sum) sum.textContent = pcbT("pj_fps_summary", {
+      total: a.total, synced: a.counts.synced, stale: a.counts.stale,
+      edited: a.counts.edited, missing: a.counts.missing, unknown: a.counts.unknown + a.counts.detached
+    });
+    const show = a.rows.filter(r => r.status === "stale" || r.status === "edited" || r.status === "missing");
+    if (!show.length) { box.innerHTML = "<p style='color:var(--muted)'>" + pcbT("pj_fps_none") + "</p>"; return; }
+    const COLOR = { stale: "#e67e22", edited: "var(--muted)", missing: "var(--danger)" };
+    box.innerHTML = show.map(r => {
+      const what = (r.fp ? (r.fp.src + " " + (r.fp.variant || r.fp.part || r.fp.name || r.fp.lib)) : "—");
+      const detail = r.status === "missing" ? r.reason
+        : pcbT("pj_fps_changes", { n: r.changes.length, lost: r.lost.length });
+      return "<div class='fp-row' data-id='" + esc(r.id) + "' style='display:grid;grid-template-columns:auto 1fr auto;gap:6px;padding:4px 6px;border-bottom:1px solid var(--line)'>" +
+        "<span style='color:" + COLOR[r.status] + "'>" + esc(r.ref || r.id) + "</span>" +
+        "<span style='color:var(--muted);font-size:11px'>" + esc(what) + " │ " + esc(detail) + (r.unverified ? " ⚠" : "") + "</span>" +
+        (r.status === "missing" ? "<span></span>"
+          : "<button class='small-button' data-act='fpsync' style='padding:0 6px'>" + pcbT("pj_fps_one") + "</button>") +
+        "</div>";
+    }).join("");
+  },
+
+  // 單顆更新。edited（使用者手改過幾何）要先問——直接蓋掉是最惡的那種資料遺失：
+  // 使用者不會知道自己微調過的 pad 什麼時候不見的。
+  syncFpOne(id) {
+    if (!window.FpInst) return false;
+    const c = (this.state.components || []).find(x => x.id === id);
+    if (!c) return false;
+    const st = FpInst.status(c);
+    if (st.status === "edited" && !window.confirm(pcbT("pj_fps_ask_edited", { ref: c.ref || c.id }))) return false;
+    if (st.unverified && !window.confirm(pcbT("pj_fps_ask_unverified", { ref: c.ref || c.id }))) return false;
+    if (st.lost.length && !window.confirm(pcbT("pj_fps_ask_lost", { ref: c.ref || c.id, n: st.lost.length, nets: st.lost.map(x => x.net).join(", ") }))) return false;
+    this.hist();
+    const r = FpInst.sync(c);
+    this.state.ratsnest = null;
+    this.renderFpSync();
+    this.renderPartsList();
+    this.renderNetPanel();
+    this.render();
+    this.toast(pcbT("pj_fps_done_one", { ref: c.ref || c.id, lost: r.lost.length, added: r.added.length }), r.lost.length ? "warn" : "info");
+    return true;
+  },
+
+  // 一鍵更新只動 stale：edited/unknown/detached/missing 都不碰。
+  syncFpAll() {
+    if (!window.FpInst) return 0;
+    const a = FpInst.audit(this.state);
+    if (!a.counts.stale) { this.toast(pcbT("pj_fps_none"), "info"); return 0; }
+    const lost = a.rows.filter(r => r.status === "stale").reduce((n, r) => n + r.lost.length, 0);
+    if (!window.confirm(pcbT("pj_fps_ask_all", { n: a.counts.stale, lost }))) return 0;
+    this.hist();
+    const r = FpInst.syncAll(this.state);
+    this.state.ratsnest = null;
+    this.renderFpSync();
+    this.renderPartsList();
+    this.renderNetPanel();
+    this.render();
+    this.toast(pcbT("pj_fps_done_all", { n: r.synced, lost: r.lost }), r.lost ? "warn" : "info");
+    return r.synced;
   },
 
   renderNetlist() {

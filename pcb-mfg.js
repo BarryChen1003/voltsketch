@@ -424,6 +424,28 @@
   //
   // 只處理「乾淨的轉角」：兩條走線共用一個端點，同層同網，而且那個點上沒有別的東西
   // （第三條走線、via、pad）。T 接點導角會把接點切斷，寧可跳過也不要弄壞連線。
+  // 真圓角的圓心與方向。PcbArc 沒載入就回 null，呼叫端會退回折線模式
+  // ——寧可畫折線，也不要產出一個下游看不懂的 arc 欄位。
+  function trueArcOf(c, da, db, A, B, cut) {
+    const PA = (typeof window !== "undefined" && window.PcbArc) ||
+               (typeof globalThis !== "undefined" && globalThis.PcbArc);
+    if (!PA) return null;
+    const half = (c.deg * Math.PI / 180) / 2;
+    if (!(half > 1e-6) || half >= Math.PI / 2 - 1e-6) return null;
+    const r = cut * Math.tan(half);
+    if (!(r > 1e-6)) return null;
+    // 圓心在角平分線上（兩條邊的單位向量相加就是平分線方向）
+    let bx = da.ux + db.ux, by = da.uy + db.uy;
+    const bl = Math.hypot(bx, by);
+    if (bl < 1e-9) return null;                    // 兩邊反向＝直線，沒有轉角
+    bx /= bl; by /= bl;
+    const d = r / Math.sin(half);
+    const cx = c.x + bx * d, cy = c.y + by * d;
+    // 走向：(A−圓心) 到 (B−圓心) 的叉積為正就是逆時針
+    const cross = (A.x - cx) * (B.y - cy) - (A.y - cy) * (B.x - cx);
+    return PA.fromCenter(cx, cy, A.x, A.y, B.x, B.y, cross > 0);
+  }
+
   const Mitre = {
     EPS: 0.02,
 
@@ -501,7 +523,15 @@
         if (da.atStart) { ta.x1 = A.x; ta.y1 = A.y; } else { ta.x2 = A.x; ta.y2 = A.y; }
         if (db.atStart) { tb.x1 = B.x; tb.y1 = B.y; } else { tb.x2 = B.x; tb.y2 = B.y; }
         const base = { width: ta.width || 0.3, layer: ta.layer || "F.Cu", net: ta.net || "" };
-        if (opts.mode === "arc") {
+        if (opts.mode === "trueArc" && trueArcOf(c, da, db, A, B, cut)) {
+          // 真圓角：一條帶 arc 欄位的走線，不是取樣的折線。
+          //
+          // 幾何：夾角 θ、切點距轉角 cut，則圓角半徑 r = cut·tan(θ/2)，
+          // 圓心在角平分線上、距轉角 r/sin(θ/2)。
+          // 下游全部吃得動：DRC 走 pcb-arc.js 的精確距離、Gerber 走 G02/G03、
+          // 畫布走 ctx.arc()。折線那條路留在 mode:"arc"，給不支援真弧的舊資料用。
+          added.push(Object.assign({ x1: A.x, y1: A.y, x2: B.x, y2: B.y, arc: trueArcOf(c, da, db, A, B, cut) }, base));
+        } else if (opts.mode === "arc") {
           // 二次貝茲：A →（控制點＝原轉角）→ B。取樣成短線段（見檔頭的誠實界定）。
           const n = Math.max(2, opts.seg | 0);
           let px = A.x, py = A.y;
@@ -697,10 +727,15 @@
       say('pourOut', msg);
       toast(msg, r.islands ? 'warn' : 'info');
     });
-    // 布林重算：用 Clipper 算出鋪銅實際留下的多邊形，存在 zone.fillPolys 上。
-    // 與柵格版並存的理由：柵格版的輸出（orphanCuts）是匯出端目前吃的格式，
-    // 一次換掉會同時動到畫面、DRC 與 Gerber，那要另外一輪驗證。
-    // 所以這裡先讓使用者看得到精確結果，預設路徑不變。
+    // 布林重算：用 Clipper 算出鋪銅實際留下的多邊形，存進 zone.fillPolys。
+    //
+    // 2026-08-26 起 fillPolys 是**匯出端的預設路徑**（Gerber 與 ODB++ 都優先讀它），
+    // 而且匯出前會自動重算一次（見 pcb.js 的 exportFab），所以這顆按鈕的角色
+    // 從「只影響畫面的預覽」變成「立刻看到匯出會長什麼樣」。
+    //
+    // 柵格版（PcbPour）留著當退路：Clipper 沒載入、或某塊 zone 算失敗時，
+    // 那一塊不會有 fillPolys，匯出端自動退回舊路。寧可用舊的那條路，
+    // 也不要留一個半成品的 fillPolys 讓匯出畫錯。
     on('pourBool', () => {
       const zones = (app.state.userZones || []);
       if (!zones.length) { say('pourOut', T('mfg_st_nozone')); toast(T('mfg_st_nozone'), 'warn'); return; }
@@ -708,18 +743,11 @@
         say('pourOut', T('pour_bool_noclipper')); toast(T('pour_bool_noclipper'), 'error'); return;
       }
       app.hist();
-      const cl = rules();
-      let area = 0, dropped = 0, islands = 0, failed = 0;
-      for (const z of zones) {
-        const r = window.PourGeom.build(app.state, app.padAbs.bind(app), z, { clearance: cl });
-        if (!r.ok) { failed++; z.fillPolys = null; continue; }
-        z.fillPolys = r.islands;
-        area += r.area; dropped += r.dropped; islands += r.islands.length;
-      }
+      const r = window.PourGeom.applyAll(app.state, app.padAbs.bind(app), { clearance: rules() });
       app.render();
-      const msg = T('pour_bool_done', { n: islands, a: area.toFixed(1), drop: dropped, fail: failed });
+      const msg = T('pour_bool_done', { n: r.islands, a: r.area.toFixed(1), drop: r.dropped, fail: r.failed });
       say('pourOut', msg);
-      toast(msg, (dropped || failed) ? 'warn' : 'info');
+      toast(msg, (r.dropped || r.failed) ? 'warn' : 'info');
     });
 
     on('pourClear', () => {
@@ -760,7 +788,11 @@
       app.state.traces = r.traces.concat(r.added);
       app.state.ratsnest = null;
       app.render();
-      const msg = T("mfg_mit_done", { n: r.changed, skip: r.skipped, add: r.added.length, mode: T(mode === "arc" ? "mfg_mit_arc" : "mfg_mit_45") });
+      // 訊息裡的模式名要跟實際用的一致。多一個模式就多一個分支，
+      // 用二元判斷（arc 或 45）的話新模式會被顯示成「45° 斜切」——
+      // 功能是對的、訊息在騙人，那種錯沒有人會回報。
+      const MODE_KEY = { trueArc: "mfg_mit_true", arc: "mfg_mit_arc", "45": "mfg_mit_45" };
+      const msg = T("mfg_mit_done", { n: r.changed, skip: r.skipped, add: r.added.length, mode: T(MODE_KEY[mode] || "mfg_mit_45") });
       say("mitOut", msg); toast(msg, "info");
     });
 

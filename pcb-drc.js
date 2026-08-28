@@ -10,6 +10,14 @@ window.PadDrc = (() => {
   const T = (k, vars) => (typeof window !== 'undefined' && window.I18N) ? window.I18N.t(k, vars) : k;
   const NN = net => net || T('drc_nonet');
 
+  // 真圓弧走線的幾何。pcb-arc.js 沒載入時 ARC 為 null，所有弧會退回線段處理
+  // （kicadArcs 那條舊路），不會因此整個 DRC 停擺。
+  const ARC = (typeof window !== 'undefined' && window.PcbArc) ||
+              (typeof globalThis !== 'undefined' && globalThis.PcbArc) || null;
+  // 弧細分的容差：0.002mm 遠小於任何板廠的間距規則（最小 0.075mm），
+  // 而且 DRC 會把細分誤差從距離扣掉，所以偏差只會讓判定更嚴、不會放行違規。
+  const ARC_TOL = 0.002;
+
   // ---------- 基礎幾何 ----------
   const ptSegDist = (px, py, x1, y1, x2, y2) => {
     const dx = x2 - x1, dy = y2 - y1, len2 = dx * dx + dy * dy;
@@ -147,12 +155,25 @@ window.PadDrc = (() => {
   const capsuleGap = (a, b) => segSegDist(a.x1, a.y1, a.x2, a.y2, b.x1, b.y1, b.x2, b.y2) - a.r - b.r;
 
   // ---------- DRC 主流程 ----------
-  const run = (state, padAbs, rules) => {
+  /**
+   * @param opts { region } 只檢查與 region 這個矩形重疊的幾何（增量 DRC 用）。
+   *
+   * region 必須**已經膨脹過間距規則**（見 PcbIndex.dirtyRect 的 margin）。
+   * 沒膨脹的話會漏掉「一個在區域內、一個剛好在區域外」的那些配對——
+   * 而且漏掉的症狀是「少報一條違規」，沒有任何錯誤訊息。
+   */
+  const run = (state, padAbs, rules, opts) => {
     const res = [], tally = {}, CAP = 30;
     const add = (key, type, message) => {
       tally[key] = (tally[key] || 0) + 1;
       if (tally[key] <= CAP) res.push({ type, message });
     };
+    const region = (opts && opts.region) || null;
+    const IXM = (typeof window !== 'undefined' && window.PcbIndex) ||
+                (typeof globalThis !== 'undefined' && globalThis.PcbIndex) || null;
+    // 沒有 PcbIndex 就當作沒有 region（全掃）。少檢查比多檢查危險，
+    // 所以退化方向一律選「檢查得更多」。
+    const inRegion = b => (!region || !IXM ? true : IXM.overlaps(b, region));
     const fmt = n => n.toFixed(3).replace(/0+$/, '').replace(/\.$/, '');
     const at = s => `@(${s.cx.toFixed(1)},${s.cy.toFixed(1)})`;
     const cl = rules.clearance, via = rules.via;
@@ -161,18 +182,32 @@ window.PadDrc = (() => {
     // 展平銅 pad（NPTH 無銅只入孔清單）
     const pads = [], holes = [];
     let customCount = 0;
+    // pad 的過濾一定要跟走線一起做。只濾走線的話，pad↔pad 那圈 O(n²) 還是全掃——
+    // 1600 pad 的板實測全量 387ms、只濾走線 240ms，濾了 pad 之後才真的降下來。
+    const padInRegion = sh => !region || inRegion({
+      x0: sh.cx - sh.circ, y0: sh.cy - sh.circ, x1: sh.cx + sh.circ, y1: sh.cy + sh.circ,
+    });
     (state.components || []).forEach(c => (c.pads || []).forEach(p => {
       const hasCopper = p.type !== 'np_thru_hole' && p.w > 0 && p.h > 0 && p.cu !== false;
-      if (p.drill > 0) holes.push({ cap: holeCapsule(c, p, padAbs), label: `${c.ref || c.label}.${p.num}` });
+      if (p.drill > 0) {
+        const cap = holeCapsule(c, p, padAbs);
+        if (!region || inRegion({ x0: Math.min(cap.x1, cap.x2) - cap.r, y0: Math.min(cap.y1, cap.y2) - cap.r,
+          x1: Math.max(cap.x1, cap.x2) + cap.r, y1: Math.max(cap.y1, cap.y2) + cap.r })) {
+          holes.push({ cap, label: `${c.ref || c.label}.${p.num}` });
+        }
+      }
       if (!hasCopper) return;
       const sh = padShape(c, p, padAbs);
+      if (!padInRegion(sh)) return;
       if (sh.approx) customCount++;
       pads.push({ _i: pads.length, sh, p, net: p.net || '', side: p.side || 'F',
                   plated: p.drill > 0, label: `${c.ref || c.label}.${p.num}` });
     }));
     (state.vias || []).forEach((v, i) => {
       const r = (v.id || 0.3) / 2;
-      holes.push({ cap: { x1: v.x, y1: v.y, x2: v.x, y2: v.y, r, d: r * 2 }, label: `via#${i + 1}` });
+      const cap = { x1: v.x, y1: v.y, x2: v.x, y2: v.y, r, d: r * 2 };
+      if (region && !inRegion({ x0: v.x - r, y0: v.y - r, x1: v.x + r, y1: v.y + r })) return;
+      holes.push({ cap, label: `via#${i + 1}` });
     });
 
     const sideOverlap = (a, b) => a === '*' || b === '*' || a === b;
@@ -210,7 +245,17 @@ window.PadDrc = (() => {
     }
 
     // 2) 走線 ↔ pad 淨距
-    const traces = state.traces || [];
+    // 有 region 時只留與它重疊的走線。過濾放在最前面，後面每一節都吃這份清單，
+    // 所以走線↔pad、走線↔走線、走線↔板框全部自動變成增量檢查。
+    const traces = region
+      ? (state.traces || []).filter(t => {
+        const m = (t.width || 0.3) / 2;
+        return inRegion({
+          x0: Math.min(t.x1, t.x2) - m, y0: Math.min(t.y1, t.y2) - m,
+          x1: Math.max(t.x1, t.x2) + m, y1: Math.max(t.y1, t.y2) + m,
+        });
+      })
+      : (state.traces || []);
     // pad 先進空間網格；桶邊長取 pad 外接圓與淨空的量級，桶太小會讓查詢次數暴增
     const padCell = Math.max(1, 2 * (cl.traceToPad + 1));
     const padGrid = SpatialGrid(padCell);
@@ -256,8 +301,17 @@ window.PadDrc = (() => {
       if (a.net && b.net && a.net === b.net) continue;
       if (tb[i].minx > tb[j].maxx + cl.traceToTrace || tb[j].minx > tb[i].maxx + cl.traceToTrace ||
           tb[i].miny > tb[j].maxy + cl.traceToTrace || tb[j].miny > tb[i].maxy + cl.traceToTrace) continue;
-      const d = segSegDist(a.x1, a.y1, a.x2, a.y2, b.x1, b.y1, b.x2, b.y2)
-        - (a.width || 0.3) / 2 - (b.width || 0.3) / 2;
+      // 真圓弧走線（trace.arc）走 PcbArc 的細分距離，其餘照舊用線段對線段。
+      // 細分一定會把距離量得比真值「大一點點」（弦落在弧的內側），所以要把
+      // 弦高上界 err 從量到的距離扣掉。不扣的話，貼著界線的弧會被判成合格。
+      let d;
+      if (ARC && (a.arc || b.arc)) {
+        const g = ARC.trackGap(a, b, ARC_TOL);
+        d = g.gap - g.err;
+      } else {
+        d = segSegDist(a.x1, a.y1, a.x2, a.y2, b.x1, b.y1, b.x2, b.y2)
+          - (a.width || 0.3) / 2 - (b.width || 0.3) / 2;
+      }
       if (d >= cl.traceToTrace - EPS) continue;
       if (!a.net || !b.net) {
         if (d > 0) add('drc_cat_tt_nonet', 'warning',

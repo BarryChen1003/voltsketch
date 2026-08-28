@@ -63,6 +63,17 @@ knowledge-assets/**
 # --- 測試與 node-only 檢查器（跑在 CI，不是瀏覽器） ---
 *.test.js
 *.test.mjs
+
+# 逐檔列會漏：新增一支檢查腳本就要記得回來加一行，而且漏了不會有任何徵兆
+# （2026-08-27 就這樣漏了 csp-hash.js / vendor-check.js / gerber-readback.js /
+# i18n-quad-check.js 四支）。改用 pattern，並由 asset-leak-check.js 在 CI 守住。
+# 注意 ai-checker.js 是站台在用的，它是 -checker.js 不是 -check.js，不會被這條吃掉。
+*-check.js
+# 例外：這一支是站台在跑的檢查引擎（ai-checker.js 會呼叫它），不是開發用腳本。
+# 被上面那條 pattern 擋掉的話，線路圖檢查會靜靜退回舊的存在性規則。
+!schematic-check.js
+*-readback.js
+csp-hash.js
 art-i18n-check.js
 circuit-check.js
 gerber-check.js
