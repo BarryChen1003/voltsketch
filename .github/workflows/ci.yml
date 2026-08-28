@@ -173,6 +173,10 @@ jobs:
         run: node spice-measure.test.js
       - name: spice-sweep.test（掃描／蒙地卡羅：可重現、不改原始網表、公差不超標）
         run: node spice-sweep.test.js
+      - name: design-history.test（變更歷史：不刪取過名的版本、清單不撈 data）
+        run: node design-history.test.js
+      - name: pcb-step-model.test（匯入 STEP：方向不可被平移、參照不可斷）
+        run: node pcb-step-model.test.js
       - name: knowledge-art-audit（知識卡圖：接腳接上、字不貼圖）
         run: node knowledge-art-audit.js --strict --quiet
 

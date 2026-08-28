@@ -790,6 +790,15 @@
               <div id="dzCount" style="color:var(--muted);font-size:11px"></div>
               <div id="dzList" style="display:grid;gap:6px"></div>
               <div id="dzHint" style="color:var(--muted);line-height:1.5"></div>
+              <div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px">
+                <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">
+                  <strong style="font-size:12px" data-i18n="vh_title">變更歷史</strong>
+                  <button class="small-button" id="vhSave" data-i18n-title="vh_save_hint" title="把目前的線路圖與板子存成一個檢查點；每個專案最多留 20 個，取過名的不會被淘汰" data-i18n="vh_save">＋ 建立檢查點</button>
+                  <button class="small-button" id="vhRefresh" data-i18n="vh_refresh">🔄</button>
+                </div>
+                <div id="vhList" style="display:grid;gap:0;font-size:12px;max-height:200px;overflow-y:auto"></div>
+                <div style="color:var(--muted);font-size:11px;line-height:1.5;margin-top:4px" data-i18n="vh_hint">還原會先自動留一個「還原前」的檢查點，而且新版本會記下它是從哪一版來的——歷史是一棵樹，不會被改寫。</div>
+              </div>
             </div>
           </section>
 
@@ -1102,6 +1111,17 @@
               <button class="small-button" id="fpSyncAll" data-i18n="pcb_fps_all">更新全部可更新的</button>
             </div>
           </section>
+          <section class="panel-section" data-panel="stepmodel" data-panel-data-i18n-title="sm_title" title="3D 模型">
+            <h2 data-i18n="sm_h2">🧊 3D 模型（STEP）</h2>
+            <p style="font-size:11px;color:var(--muted);margin:0 0 8px" data-i18n="sm_hint">匯出的元件預設是佔位方塊。把你自己的 STEP 綁到某個封裝上，之後匯出就放真模型。綁在**封裝**上，所以同一種封裝整片板都用得到。不內建模型庫——那是別人的商業資料。</p>
+            <div id="smCur" style="font-size:11px;color:var(--muted);margin-bottom:6px"></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+              <button class="small-button" id="smBind" data-i18n-title="sm_bind_hint" title="選一顆元件，把 STEP 綁到它的封裝上" data-i18n="sm_bind">綁定 STEP 到選取元件的封裝</button>
+              <button class="small-button" id="smRefresh" data-i18n="sm_refresh">🔄</button>
+              <input type="file" id="smFile" accept=".step,.stp,.STEP,.STP" hidden>
+            </div>
+            <div id="smList" style="font-size:12px;max-height:180px;overflow-y:auto"></div>
+          </section>
 
           <section class="panel-section">
             <h2 data-i18n="pcb_props">屬性</h2>
@@ -1146,7 +1166,7 @@
     <script src="./pcb-drag.js?v=1"></script>
     <script src="./pcb-fpinst.js?v=1"></script>
     <script src="./sch-swap.js?v=1"></script>
-    <script src="./pcb.js?v=66"></script>
+    <script src="./pcb.js?v=67"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-08-25a"></script>
     <script src="./pcb-stackup.js?v=2026-08-24b"></script>
@@ -1154,7 +1174,9 @@
     <script src="./pcb-mfg.js?v=10"></script>
     <script src="./pcb-sch2pcb.js?v=7"></script>
     <script src="./pcb-dxf.js?v=1"></script>
-    <script src="./pcb-step.js?v=1"></script>
+    <script src="./pcb-step.js?v=2"></script>
+    <script src="./pcb-step-model.js?v=1"></script>
+    <script src="./pcb-step-model-ui.js?v=1"></script>
     <script src="./pcb-silkimg.js?v=1"></script>
     <script src="./pcb-pour.js?v=1"></script>
     <script src="./vendor/clipper-6.4.2.js"></script>
@@ -1162,7 +1184,9 @@
     <!-- 面板停靠：設定型 section 從側欄搬進可拖曳浮動視窗，由「▤ 面板」選單開關 -->
     <script src="./designs.js?v=1"></script>
     <script src="./designs-ui.js?v=1"></script>
-    <script src="./pcb-designs-ui.js?v=2"></script>
+    <script src="./design-history.js?v=1"></script>
+    <script src="./design-history-ui.js?v=1"></script>
+    <script src="./pcb-designs-ui.js?v=2026-08-28h"></script>
     <script src="./pcb-autoplace.js?v=1"></script>
     <script src="./pcb-autoplace-ui.js?v=1"></script>
     <script src="./gerber-import.js?v=1"></script>

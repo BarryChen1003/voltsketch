@@ -88,8 +88,10 @@
     const lines = [];
     let id = 0;
     const put = body => { lines.push('#' + (++id) + ' = ' + body + ';'); return id; };
-    return {
-      put,
+    // 匯入的模型自己帶編號（已經平移過），要照原樣寫進去而不是重新配號——
+    // 重配的話實體之間的參照就對不上了。寫完把游標推到最大值之後。
+    const raw = (n, body) => { lines.push('#' + n + ' = ' + body + ';'); if (n > id) id = n; return n; };
+    return { put, raw, raw,
       get count() { return id; },
       lines,
       text(name) {
@@ -196,7 +198,37 @@
     solids.push(solid(w, prism(w, outline, 0, th, stats), 'PCB'));
 
     if (opts.components) {
+      const SM = (typeof window !== 'undefined' && window.StepModel) ||
+                 (typeof global !== 'undefined' && global.StepModel) || null;
+      const models = (opts.models !== undefined) ? opts.models : (SM ? SM.store.all() : {});
       for (const c of (state.components || [])) {
+        const bottomSide = (c.side === 'bottom' || c.side === 'B');
+
+        // 綁了真模型就放真模型，沒綁才放佔位方塊。
+        // 搬進來的實體編號要接在我們現有的後面（w.count），座標直接算好——
+        // 為什麼是「算好」而不是留裝配變換，見 pcb-step-model.js 的檔頭。
+        const key = SM && models ? SM.keyOf(c) : '';
+        const rec = key && models ? models[key] : null;
+        if (rec && rec.text) {
+          const pr = SM.parse(rec.text);
+          if (pr.ok) {
+            const moved = SM.transplant(pr.entities, w.count, {
+              x: c.x, y: c.y,
+              z: bottomSide ? 0 : th,
+              rot: c.rot || 0, mirror: bottomSide,
+              scale: rec.scale > 0 ? rec.scale : 1
+            });
+            let top = 0;
+            for (const e of moved) { w.raw(e.id, e.body); if (e.id > top) top = e.id; }
+            for (const sid of SM.solidsOf(pr.entities)) solids.push(sid + (top - pr.maxId));
+            stats.parts++; stats.models = (stats.models || 0) + 1;
+            continue;
+          }
+          // 解析不了就退回方塊，並且**說出來**——安靜地少一顆模型，
+          // 機構端會以為那顆料真的長這樣。
+          warnings.push({ code: 'modelUnusable', ref: String(c.ref || c.id || ''), why: pr.reason });
+        }
+
         const cw = c.w > 0 ? c.w : 1, ch = c.h > 0 ? c.h : 1;
         const h = heightOf(c);
         if (!(h > 0)) continue;                       // 高度 0（螺絲孔之類）不畫
@@ -204,8 +236,8 @@
         const cs = Math.cos(th2), sn = Math.sin(th2);
         const corners = [[-cw / 2, -ch / 2], [cw / 2, -ch / 2], [cw / 2, ch / 2], [-cw / 2, ch / 2]]
           .map(([x, y]) => [c.x + x * cs - y * sn, c.y + x * sn + y * cs]);
-        const bottom = (c.side === 'bottom' || c.side === 'B') ? -h : th;
-        const top = (c.side === 'bottom' || c.side === 'B') ? 0 : th + h;
+        const bottom = bottomSide ? -h : th;
+        const top = bottomSide ? 0 : th + h;
         solids.push(solid(w, prism(w, corners, bottom, top, stats), String(c.ref || c.id || 'PART')));
         stats.parts++;
       }

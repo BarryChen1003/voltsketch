@@ -14,7 +14,7 @@
 
   function boot() {
     if (!window.DesignsUI) return;
-    window.DesignsUI.mount({
+    const cfgForBoth = {
       field: 'sch',
       snapshot: () => {
         const a = A();
@@ -38,7 +38,12 @@
       },
       // showToast 的第二個參數是毫秒，不是種類——錯誤訊息留久一點
       toast: (msg, kind) => { const a = A(); if (a && a.showToast) a.showToast(msg, kind === 'error' ? 6000 : 3000); },
-    });
+    };
+    window.DesignsUI.mount(cfgForBoth);
+    // 變更歷史用同一組 snapshot / restore：兩條路分家的話，遲早會出現
+    // 「存檔存得進去、還原卻套不回來」這種只在其中一邊復現的 bug。
+    if (window.DesignHistoryUI) window.DesignHistoryUI.mount(cfgForBoth);
+
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

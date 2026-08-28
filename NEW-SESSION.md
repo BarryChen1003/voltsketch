@@ -329,6 +329,8 @@ node sch-swap.test.js
 node pcb-drag.test.js
 node spice-measure.test.js
 node spice-sweep.test.js
+node design-history.test.js
+node pcb-step-model.test.js
 node interview-diagram-check.test.js && node interview-diagram-check.js
 
 # 資料抽取
