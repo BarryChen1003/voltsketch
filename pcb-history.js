@@ -13,7 +13,11 @@ window.PcbHistory = (function () {
   // 執行期/檢視用欄位不進快照（selected 等物件參照在還原後會失效，一律清掉重建）
   const SKIP = new Set(['tool', 'selected', 'selectedTrace', 'dragComp', 'dragOff', 'isDragging', 'isPanning',
     'lastMouse', 'ratsnest', 'traceDraw', 'zoneDraw', 'dimDraw', 'keepoutDraw',
-    'rubber', 'highlightNet', 'dragGroup', 'dragAnchor', 'boxSel', 'dragEndpoint', 'refBoard', 'refOverlayId', 'kicad', 'palette', 'showRatsnest', 'zoom', 'panX', 'panY']);
+    'rubber', 'highlightNet', 'dragGroup', 'dragAnchor', 'boxSel', 'dragEndpoint',
+    // dragTrace 帶著走線物件的**參照**：序列化會把那條線複製一份，還原之後
+    // 畫面上那條跟 state.traces 裡那條就是兩個物件了。guides 純檢視狀態。
+    'dragTrace', 'guides',
+    'refBoard', 'refOverlayId', 'kicad', 'palette', 'showRatsnest', 'zoom', 'panX', 'panY']);
 
   let undoStack = [];
   let redoStack = [];

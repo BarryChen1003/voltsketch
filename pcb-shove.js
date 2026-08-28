@@ -77,24 +77,28 @@
     return null;
   }
 
-  const Shove = {
-    /**
-     * 規劃推擠。state 不會被改動。
-     * seg：剛畫好（或正在畫）的那一段 {x1,y1,x2,y2,width,layer,net}
-     * 回 { ok, moves:[{trace, dx, dy, followers:[{trace,end}]}], blockers, reason }
-     */
-    plan(state, padAbs, seg, opts) {
-      opts = Object.assign({ clearance: null, maxMove: 2 }, opts || {});
+  /**
+   * 算「誰擋路、各要往哪邊挪多少」——**不做驗證**。
+   *
+   * 抽出來是為了連鎖推擠：plan() 在中途就把「移動之後會撞到別人」判為失敗，
+   * 而那正是連鎖存在的理由（A 推 B、B 再推 C）。所以驗證要留給呼叫端決定
+   * 什麼時候做：單輪推擠當場驗，連鎖推擠等整條鏈算完再一次驗。
+   */
+  function computeMoves(state, padAbs, seg, cl, opts) {
+    {
       const gm = geom();
       if (!gm) return { ok: false, reason: 'noGeom', moves: [], blockers: 0 };
-      const cl = opts.clearance;
-      if (!cl) return { ok: false, reason: 'noRules', moves: [], blockers: 0 };
       const lay = layerOf(seg), hw = (seg.width || 0.3) / 2;
 
       // 1) 誰擋路
       const blockers = [];
+      const protect = (opts && opts.protect) || null;
       for (const t of (state.traces || [])) {
         if (t === seg) continue;
+        // protect：**使用者剛畫的那一段永遠不可以被推走**。
+        // 第一輪靠 t === seg 就擋掉了，但連鎖第二輪起是「被推開的線去推別人」，
+        // 那時 seg 只是 traces 裡的一條普通線——會被推走，而且推的是使用者剛畫完的東西。
+        if (protect && protect.indexOf(t) >= 0) continue;
         if (layerOf(t) !== lay) continue;
         if (sameNet(t.net, seg.net)) continue;
         const d = gm.segSegDist(seg.x1, seg.y1, seg.x2, seg.y2, t.x1, t.y1, t.x2, t.y2) - hw - (t.width || 0.3) / 2;
@@ -135,30 +139,150 @@
       const movedSet = new Set(moves.map(m => m.trace));
       for (const m of moves) m.followers = m.followers.filter(f => !movedSet.has(f.trace));
 
-      // 5) 在副本上套用，整份重驗。推動了卻把別的地方弄壞，比推不動嚴重得多。
-      const clone = Object.assign({}, state, {
+      return { ok: true, moves, blockers: blockers.length };
+    }
+  }
+
+  /**
+   * 在副本上套用一組移動並整份重驗。
+   * 推動了卻把別的地方弄壞，比推不動嚴重得多——所以每次都拿全套幾何再驗一遍。
+   * 回 null 表示沒問題，否則回原因字串。
+   */
+  function verifyMoves(state, padAbs, seg, moves, cl) {
+    const clone = Object.assign({}, state, {
+      traces: (state.traces || []).map(t => Object.assign({}, t))
+    });
+    const idxOf = t => (state.traces || []).indexOf(t);
+    const movedClones = [];
+    for (const m of moves) {
+      const ct = clone.traces[idxOf(m.trace)];
+      if (!ct) continue;
+      ct.x1 += m.dx; ct.y1 += m.dy; ct.x2 += m.dx; ct.y2 += m.dy;
+      movedClones.push(ct);
+      for (const f of (m.followers || [])) {
+        const cf = clone.traces[idxOf(f.trace)];
+        if (!cf) continue;
+        if (f.end === 'a') { cf.x1 += m.dx; cf.y1 += m.dy; } else { cf.x2 += m.dx; cf.y2 += m.dy; }
+        movedClones.push(cf);
+      }
+    }
+    // 新畫的那一段也要進副本一起驗（它是造成推擠的原因，必須跟推開後的結果相容）。
+    // **但呼叫端多半已經把它放進 state.traces 了**（先落地再推擠），
+    // 再 push 一份就會出現「它跟自己的分身距離 0」——沒有 net 的線連 sameNet 都不成立，
+    // 於是每次都判成 wouldBreak:trace，推擠看起來壞掉但其實是驗證多算了一條。
+    const segIdx = (state.traces || []).indexOf(seg);
+    const segClone = segIdx >= 0 ? clone.traces[segIdx] : Object.assign({}, seg);
+    if (segIdx < 0) clone.traces.push(segClone);
+    for (const ct of movedClones.concat([segClone])) {
+      const why = violation(clone, padAbs, ct, cl, null);
+      if (why) return 'wouldBreak:' + why;
+    }
+    return null;
+  }
+
+  const Shove = {
+    /**
+     * 規劃推擠（單輪）。state 不會被改動。
+     * seg：剛畫好（或正在畫）的那一段 {x1,y1,x2,y2,width,layer,net}
+     * 回 { ok, moves:[{trace, dx, dy, followers:[{trace,end}]}], blockers, reason }
+     */
+    plan(state, padAbs, seg, opts) {
+      opts = Object.assign({ clearance: null, maxMove: 2 }, opts || {});
+      const cl = opts.clearance;
+      if (!cl) return { ok: false, reason: 'noRules', moves: [], blockers: 0 };
+      const r = computeMoves(state, padAbs, seg, cl, opts);
+      if (!r.ok || !r.moves.length) return r;
+      const why = verifyMoves(state, padAbs, seg, r.moves, cl);
+      if (why) return { ok: false, reason: why, moves: [], blockers: r.blockers };
+      return r;
+    },
+
+    /**
+     * 連鎖推擠：A 推 B、B 再推 C。
+     *
+     * 單輪推擠碰到「B 挪開之後會撞到 C」就整個放棄——但那正是連鎖要處理的情況。
+     * 這裡的做法是：在一份工作副本上一輪一輪往外推，**中途不驗**，
+     * 整條鏈算完再拿全套幾何驗一次。中途驗會把每一個中間狀態都判成失敗。
+     *
+     * 仍然只做平移、不重繞（跟單輪一樣的界線）。差別只在「能不能傳下去」。
+     * depth 是保險絲：沒有它，一片密集的板子可以一路推到板邊，
+     * 使用者畫一條線結果半塊板在動。
+     *
+     * 回 { ok, moves, blockers, rounds, reason }；moves 是**累計**位移（一條線一筆）。
+     */
+    planChain(state, padAbs, seg, opts) {
+      opts = Object.assign({ clearance: null, maxMove: 2, depth: 3 }, opts || {});
+      const cl = opts.clearance;
+      if (!cl) return { ok: false, reason: 'noRules', moves: [], blockers: 0, rounds: 0 };
+      const depth = Math.max(1, Math.min(8, opts.depth | 0 || 3));
+
+      // 工作副本：一輪一輪在上面推，真的 state 一個位元組都不動
+      const idxOf = t => (state.traces || []).indexOf(t);
+      const work = Object.assign({}, state, {
         traces: (state.traces || []).map(t => Object.assign({}, t))
       });
-      const idxOf = t => (state.traces || []).indexOf(t);
-      const movedClones = [];
-      for (const m of moves) {
-        const ct = clone.traces[idxOf(m.trace)];
-        ct.x1 += m.dx; ct.y1 += m.dy; ct.x2 += m.dx; ct.y2 += m.dy;
-        movedClones.push(ct);
-        for (const f of m.followers) {
-          const cf = clone.traces[idxOf(f.trace)];
-          if (f.end === 'a') { cf.x1 += m.dx; cf.y1 += m.dy; } else { cf.x2 += m.dx; cf.y2 += m.dy; }
-          movedClones.push(cf);
+      const accum = new Map();          // 原始 trace → {dx, dy, followers}
+      const bump = (origTrace, dx, dy, followers) => {
+        const cur = accum.get(origTrace) || { trace: origTrace, dx: 0, dy: 0, followers: [] };
+        cur.dx += dx; cur.dy += dy;
+        for (const f of (followers || [])) if (!cur.followers.some(x => x.trace === f.trace && x.end === f.end)) cur.followers.push(f);
+        accum.set(origTrace, cur);
+      };
+
+      // seg 通常已經被呼叫端 push 進 state.traces（先落地再推擠）。
+      // 找出它在工作副本裡的那一份並保護起來，連鎖才不會回頭推使用者剛畫的線。
+      const segIdx = (state.traces || []).indexOf(seg);
+      const protect = segIdx >= 0 ? [work.traces[segIdx]] : [];
+      const roundOpts = Object.assign({}, opts, { protect });
+
+      let pushers = [Object.assign({}, seg)];
+      // 擋路的要算**相異條數**，不是每輪相加：同一條線在第一輪被推、第二輪又被當成
+      // 擋路的算一次，訊息就會變成「4 條推不開」但板上只有 2 條，使用者無從對照。
+      const blockerSet = new Set();
+      let rounds = 0;
+      for (let r = 0; r < depth; r++) {
+        const nextPushers = [];
+        let movedThisRound = 0;
+        for (const pusher of pushers) {
+          const res = computeMoves(work, padAbs, pusher, cl, roundOpts);
+          if (!res.ok) return { ok: false, reason: 'chain:' + res.reason, moves: [], blockers: res.blockers || blockerSet.size, rounds: r };
+          if (!res.moves.length) continue;
+          for (const m of res.moves) {
+            // m.trace 是工作副本裡的物件；換回原始的那一條才記得住
+            const wi = work.traces.indexOf(m.trace);
+            const orig = wi >= 0 ? state.traces[wi] : null;
+            if (!orig) return { ok: false, reason: 'chain:lostTrace', moves: [], blockers: blockerSet.size, rounds: r };
+            const origFollowers = (m.followers || []).map(f => {
+              const fi = work.traces.indexOf(f.trace);
+              return fi >= 0 ? { trace: state.traces[fi], end: f.end } : null;
+            }).filter(Boolean);
+            blockerSet.add(orig);
+            bump(orig, m.dx, m.dy, origFollowers);
+            // 在工作副本上真的移動，下一輪才看得到新的擋路關係
+            m.trace.x1 += m.dx; m.trace.y1 += m.dy; m.trace.x2 += m.dx; m.trace.y2 += m.dy;
+            for (const f of (m.followers || [])) {
+              if (f.end === 'a') { f.trace.x1 += m.dx; f.trace.y1 += m.dy; }
+              else { f.trace.x2 += m.dx; f.trace.y2 += m.dy; }
+            }
+            nextPushers.push(m.trace);   // 被推開的線，下一輪換它去推別人
+            movedThisRound++;
+          }
         }
+        if (!movedThisRound) break;
+        rounds = r + 1;
+        pushers = nextPushers;
       }
-      // 新畫的那一段也要進副本一起驗（它是造成推擠的原因，必須跟推開後的結果相容）
-      const segClone = Object.assign({}, seg);
-      clone.traces.push(segClone);
-      for (const ct of movedClones.concat([segClone])) {
-        const why = violation(clone, padAbs, ct, cl, null);
-        if (why) return { ok: false, reason: 'wouldBreak:' + why, moves: [], blockers: blockers.length };
+
+      const moves = [...accum.values()];
+      if (!moves.length) return { ok: true, moves: [], blockers: 0, rounds: 0 };
+      // 推到 depth 還沒收斂＝還有東西擋著，硬套用會留下違規。照實說。
+      for (const pusher of pushers) {
+        const still = computeMoves(work, padAbs, pusher, cl, roundOpts);
+        if (still.ok && still.moves.length) return { ok: false, reason: 'chain:tooDeep', moves: [], blockers: blockerSet.size, rounds };
       }
-      return { ok: true, moves, blockers: blockers.length };
+      const why = verifyMoves(state, padAbs, seg, moves, cl);
+      if (why) return { ok: false, reason: 'chain:' + why, moves: [], blockers: blockerSet.size, rounds };
+      return { ok: true, moves, blockers: blockerSet.size, rounds };
     },
 
     // 把計畫套用到真的 state 上。回移動了幾條。
@@ -179,6 +303,8 @@
 
     _violation: violation,
     _anchored: anchored,
+    _computeMoves: computeMoves,
+    _verifyMoves: verifyMoves,
     _T: T
   };
 

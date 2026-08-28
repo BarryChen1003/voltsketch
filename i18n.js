@@ -902,6 +902,11 @@ window.I18N = (function () {
     pcbf_shove_hint: { zh: '畫線碰到別的網路時，把那條平行的鄰居往旁邊推開；端點卡在 pad/via 上的不動', en: 'When a new trace crowds another net, slide that parallel neighbour aside; traces anchored to a pad or via are left alone', ja: '新しい配線が他ネットに近づいたら、平行な隣接配線を横へずらします。パッド／ビアに固定された配線は動かしません', ko: '새 배선이 다른 네트에 가까워지면 평행한 이웃 배선을 옆으로 밀어냅니다. 패드나 비아에 고정된 배선은 그대로 둡니다' },
     pj_shove_done:   { zh: '已推開 {n} 條鄰近走線（Ctrl+Z 可復原）', en: 'Shoved {n} neighbouring traces aside (Ctrl+Z to undo)', ja: '隣接配線 {n} 本を押しのけました（Ctrl+Z で復元）', ko: '이웃 배선 {n}개를 밀어냈습니다(Ctrl+Z로 복원)' },
     pj_shove_fail:   { zh: '{n} 條鄰近走線推不開（{why}），這一段仍然違規', en: '{n} neighbouring traces could not be moved ({why}); this segment still violates clearance', ja: '隣接配線 {n} 本を動かせません（{why}）。この配線は違反のままです', ko: '이웃 배선 {n}개를 옮길 수 없습니다({why}). 이 배선은 여전히 위반입니다' },
+    pj_shove_done_chain: { zh: '已連鎖推開 {n} 條走線（{r} 層，Ctrl+Z 可復原）', en: 'Shoved {n} traces aside in a chain ({r} levels, Ctrl+Z to undo)', ja: '{n} 本の配線を連鎖的に押しのけました（{r} 段、Ctrl+Z で復元）', ko: '배선 {n}개를 연쇄적으로 밀어냈습니다({r}단계, Ctrl+Z로 복원)' },
+    pj_shove_why_tooDeep:  { zh: '要推的層數超過上限（可以把「連鎖推擠層數」調大）', en: 'the chain needs more levels than allowed (raise “shove chain depth”)', ja: '必要な連鎖段数が上限を超えています（「連鎖押しのけ段数」を上げてください）', ko: '필요한 연쇄 단계가 상한을 넘습니다(“연쇄 밀어내기 단계”를 늘리세요)' },
+    pj_shove_why_lostTrace: { zh: '推擠過程中對不回原本那條線（資料異常）', en: 'a trace could not be matched back during shoving (unexpected data)', ja: '押しのけ中に元の配線に対応づけられませんでした（データ異常）', ko: '밀어내는 중 원래 배선과 대응시키지 못했습니다(데이터 이상)' },
+    pcbf_shove_depth: { zh: '連鎖推擠層數', en: 'Shove chain depth', ja: '連鎖押しのけ段数', ko: '연쇄 밀어내기 단계' },
+    pcbf_shove_depth_hint: { zh: '1＝只推直接擋路的那一條；大於 1 時被推開的線會再去推它的鄰居。推不完會照實回報，不會留下半套結果', en: '1 = only the trace directly in the way; above 1, a shoved trace pushes its own neighbours in turn. If it cannot finish it says so, and leaves nothing half-applied', ja: '1＝直接ふさいでいる 1 本のみ。1 より大きいと押しのけられた配線がさらに隣を押します。押し切れない場合は正直に報告し、中途半端な結果は残しません', ko: '1 = 직접 막고 있는 배선만. 1보다 크면 밀려난 배선이 다시 이웃을 밉니다. 끝내지 못하면 사실대로 알리고 반쯤 적용된 결과를 남기지 않습니다' },
     pj_shove_why_anchored: { zh: '端點卡在 pad 或 via 上', en: 'an endpoint is anchored to a pad or via', ja: '端点がパッド／ビアに固定されている', ko: '끝점이 패드나 비아에 고정됨' },
     pj_shove_why_tooFar:   { zh: '要推的距離太遠', en: 'the required push is too large', ja: '必要な移動量が大きすぎる', ko: '필요한 이동량이 너무 큼' },
     pj_shove_why_wouldBreak: { zh: '推開後會撞到別的東西', en: 'moving it would collide with something else', ja: '動かすと別のものに当たる', ko: '옮기면 다른 것과 충돌함' },
@@ -1145,6 +1150,11 @@ window.I18N = (function () {
     pj_net_dup:      { zh: '板子上已經有網路 {net} 了。改成同名等於把兩條網路合併，那是電性變更，不會自動做。', en: 'Net {net} already exists on this board. Reusing the name would merge two nets — that is an electrical change and is not done automatically.', ja: 'この基板には既にネット {net} があります。同名にするのは 2 つのネットの統合＝電気的変更なので自動では行いません。', ko: '이 보드에 이미 넷 {net}이(가) 있습니다. 같은 이름으로 바꾸면 두 넷을 병합하는 전기적 변경이므로 자동으로 처리하지 않습니다.' },
     pj_net_dup_sch:  { zh: '線路圖上已經有網路 {net} 了，同理不會自動合併', en: 'Net {net} already exists on the schematic — same reason, no automatic merge', ja: '回路図に既にネット {net} があります。同じ理由で自動統合はしません', ko: '회로도에 이미 넷 {net}이(가) 있습니다. 같은 이유로 자동 병합하지 않습니다' },
     pj_net_done:     { zh: '網路 {from} → {to}（板子 {n} 處、線路圖 {sch} 處）', en: 'Net {from} → {to} ({n} on the board, {sch} on the schematic)', ja: 'ネット {from} → {to}（基板 {n} 箇所、回路図 {sch} 箇所）', ko: '넷 {from} → {to}(보드 {n}곳, 회로도 {sch}곳)' },
+    // ---- 互動：連續繪製與對齊輔助線（pcb-drag.js / TraceDrag）----
+    pcbf_chain:      { zh: '連續多段繪製（轉彎不必放開）', en: 'Draw multiple segments in one go (no need to release at corners)', ja: '連続描画（角で放さなくてよい）', ko: '연속 다중 세그먼트 그리기(모서리에서 놓지 않아도 됨)' },
+    pcbf_chain_hint: { zh: '畫完一段就從終點接著畫下一段；收在 pad 或 via 上、或按 Esc 才結束', en: 'Each segment continues from where the last one ended; it stops when you land on a pad or via, or press Esc', ja: '1 本引き終えるとその終点から次を続けます。pad か via に着いたとき、または Esc で終了', ko: '한 구간을 마치면 그 끝점에서 다음 구간을 이어 그립니다. pad나 via에 도달하거나 Esc를 누르면 끝납니다' },
+    pcbf_guide:      { zh: '拖曳時顯示對齊輔助線', en: 'Show alignment guides while dragging', ja: 'ドラッグ中に整列ガイドを表示', ko: '드래그 중 정렬 가이드 표시' },
+    pcbf_guide_hint: { zh: '拖曳整條走線時，跟附近的 pad／端點／板框中心對齊就畫一條虛線並吸過去', en: 'While dragging a whole trace, a dashed line appears and the trace snaps when it lines up with a nearby pad, endpoint or the board centre', ja: '配線全体をドラッグ中、近くの pad／端点／基板中心と揃うと破線を表示して吸着します', ko: '배선 전체를 드래그할 때 근처 pad·끝점·보드 중심과 정렬되면 점선을 표시하고 붙습니다' },
     // ---- pin / gate swap（sch-swap.js / SchSwap）----
     pj_swap_btn:     { zh: '⇄ 換腳', en: '⇄ Swap pins', ja: '⇄ ピン交換', ko: '⇄ 핀 교환' },
     pj_swap_title:   { zh: '把兩隻電氣等價的腳對調（會回寫線路圖，同步不會蓋掉）', en: 'Swap two electrically equivalent pins (written back to the schematic, so syncing will not undo it)', ja: '電気的に等価な 2 本のピンを入れ替えます（回路図へ書き戻すので同期しても戻りません）', ko: '전기적으로 동등한 두 핀을 교환합니다(회로도에 기록되어 동기화해도 되돌아가지 않습니다)' },

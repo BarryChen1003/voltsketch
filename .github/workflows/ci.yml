@@ -167,6 +167,8 @@ jobs:
         run: node sch-hier.test.js
       - name: sch-swap.test（pin swap：不可以換有極性的腳、換完要活過 ECO）
         run: node sch-swap.test.js
+      - name: pcb-drag.test（拖整段走線：pad 那一端不可以被拖走）
+        run: node pcb-drag.test.js
       - name: knowledge-art-audit（知識卡圖：接腳接上、字不貼圖）
         run: node knowledge-art-audit.js --strict --quiet
 

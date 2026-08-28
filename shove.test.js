@@ -136,5 +136,148 @@ const board = (traces, extra) => Object.assign({
   eq(r.reason, 'noRules', '要說明是缺規則');
 }
 
+// ---------- 連鎖推擠（planChain）：A 推 B、B 再推 C ----------
+// 單輪推擠碰到「B 挪開會撞到 C」就整個放棄——連鎖存在的理由就是這個情況。
+// 這一節同時驗「單輪確實會拒絕」與「連鎖確實成功」，
+// 只驗其中一邊的話，測不出連鎖有沒有真的做事。
+{
+  const B = tr({ x1: 0, y1: 0, x2: 20, y2: 0, net: 'B' });
+  const C = tr({ x1: 0, y1: 0.35, x2: 20, y2: 0.35, net: 'C' });
+  const st = board([B, C]);
+  const seg = tr({ x1: 0, y1: -0.35, x2: 20, y2: -0.35, net: 'A' });
+
+  const one = S.plan(st, padAbs, seg, { clearance: CL });
+  eq(one.ok, false, '連鎖 1：單輪推擠應該拒絕（B 挪開會撞到 C）');
+  ok(String(one.reason).indexOf('wouldBreak') === 0, '連鎖 2：而且理由是「會弄壞別的地方」');
+
+  const ch = S.planChain(st, padAbs, seg, { clearance: CL, depth: 3 });
+  ok(ch.ok, '連鎖 3：連鎖推擠應該成功');
+  eq(ch.moves.length, 2, '連鎖 4：B 與 C 都要移動');
+  ok(ch.rounds >= 2, '連鎖 5：至少兩輪（第二輪才輪到 C）');
+
+  const n = S.apply(st, ch);
+  eq(n, 2, '連鎖 6：套用兩條');
+  eq(ch.blockers, 2, '連鎖 6b：擋路的要算**相異條數**，不是每輪相加（板上只有 2 條就不能報 4）');
+  const need = CL.traceToTrace + 0.3;
+  ok(B.y1 - (-0.35) >= need - 1e-6, '連鎖 7：推完之後 seg↔B 間距足夠');
+  ok(C.y1 - B.y1 >= need - 1e-6, '連鎖 8：**B↔C 間距也足夠**（沒有把違規往外推一格就算了）');
+}
+
+// 連鎖：**使用者剛畫的那一段永遠不可以被推走**
+// 呼叫端是「先把新線放進 traces、再推擠」，所以連鎖第二輪起 seg 只是清單裡的一條普通線。
+// 沒有保護的話，B 被推開之後會回頭把 A（使用者剛畫完的線）推走——
+// 使用者會看到自己剛畫的線自己跑掉，而且完全不知道為什麼。
+{
+  const A = tr({ x1: -6, y1: -0.25, x2: 6, y2: -0.25, net: 'A' });
+  const B = tr({ x1: -9, y1: 0, x2: 9, y2: 0, net: 'B' });
+  const C = tr({ x1: -9, y1: 0.35, x2: 9, y2: 0.35, net: 'C' });
+  const st = board([A, B, C]);          // A 已經在清單裡（跟真的呼叫端一樣）
+  const a0 = A.y1;
+  const ch = S.planChain(st, padAbs, A, { clearance: CL, depth: 3 });
+  ok(ch.ok, '連鎖 10a：連鎖應該成功');
+  ok(!ch.moves.some(m => m.trace === A), '連鎖 10b：計畫裡**不可以**有「移動 A」這一筆');
+  eq(ch.moves.length, 2, '連鎖 10b2：只動 B 與 C');
+  S.apply(st, ch);
+  eq(A.y1, a0, '連鎖 10c：套用之後使用者剛畫的那一段一動也沒動');
+  ok(B.y1 - A.y1 >= CL.traceToTrace + 0.3 - 1e-6, '連鎖 10d：而且 B 真的被推開了（證明 10c 不是因為根本沒推）');
+  ok(C.y1 - B.y1 >= CL.traceToTrace + 0.3 - 1e-6, '連鎖 10e：C 也被推開');
+}
+
+// protect 機制本身（_computeMoves）。
+// 上面 10a–10e 那組幾何裡，被推開的線剛好不會回頭推 A，所以那組測不到這個守衛。
+// 與其湊一個牽強的幾何，直接測機制：把某條線放進 protect，它就不可以出現在擋路清單裡。
+// （這個守衛存在的理由是連鎖第二輪起 seg 只是清單裡的一條普通線，會被當成可推的鄰居。）
+{
+  const B = tr({ x1: -9, y1: 0.2, x2: 9, y2: 0.2, net: 'B' });
+  const st = board([B]);
+  const pusher = tr({ x1: -6, y1: 0, x2: 6, y2: 0, net: 'A' });
+  const free = S._computeMoves(st, padAbs, pusher, CL, { maxMove: 2 });
+  eq(free.moves.length, 1, 'protect 1：沒保護時 B 是擋路的');
+  const guarded = S._computeMoves(st, padAbs, pusher, CL, { maxMove: 2, protect: [B] });
+  eq(guarded.moves.length, 0, 'protect 2：放進 protect 之後就不可以被當成擋路的');
+  eq(guarded.blockers, 0, 'protect 3：也不算進擋路數');
+}
+
+// seg **已經在 state.traces 裡**（呼叫端就是先落地再推擠）時，驗證不可以再複製一份：
+// 那條線會跟自己的分身距離 0，而沒有 net 的線連 sameNet 都不成立 →
+// 每次都判成 wouldBreak，推擠看起來壞掉，實際上是驗證多算了一條。
+{
+  const A = tr({ x1: -6, y1: -0.25, x2: 6, y2: -0.25, net: '' });
+  const B = tr({ x1: -9, y1: 0, x2: 9, y2: 0, net: 'B' });
+  const stIn = board([A, B]);
+  const rIn = S.plan(stIn, padAbs, A, { clearance: CL });
+  ok(rIn.ok, '連鎖 10f：seg 已在清單裡時，單輪推擠仍要成功（不可被自己的分身擋下）');
+  eq(rIn.moves.length, 1, '連鎖 10g：推 B 一條');
+
+  // 對照：seg 不在清單裡時本來就會成功——兩邊結果要一致
+  const A2 = tr({ x1: -6, y1: -0.25, x2: 6, y2: -0.25, net: '' });
+  const B2 = tr({ x1: -9, y1: 0, x2: 9, y2: 0, net: 'B' });
+  const stOut = board([B2]);
+  const rOut = S.plan(stOut, padAbs, A2, { clearance: CL });
+  eq(rIn.ok, rOut.ok, '連鎖 10h：seg 在不在清單裡，結論必須一樣');
+  eq(rIn.moves[0].dy.toFixed(4), rOut.moves[0].dy.toFixed(4), '連鎖 10i：位移量也要一樣');
+}
+
+// 連鎖：深度不夠就要照實說，不可以套用半套結果
+{
+  const rows = [];
+  for (let i = 0; i < 6; i++) rows.push(tr({ x1: 0, y1: i * 0.35, x2: 20, y2: i * 0.35, net: 'N' + i }));
+  const st = board(rows);
+  const seg = tr({ x1: 0, y1: -0.35, x2: 20, y2: -0.35, net: 'A' });
+  const shallow = S.planChain(st, padAbs, seg, { clearance: CL, depth: 1 });
+  eq(shallow.ok, false, '連鎖 9：深度 1 推不完六排，要回失敗');
+  // 理由要說「推不完」，不是含糊的「會弄壞東西」——使用者看到前者知道可以調深度，
+  // 看到後者只會以為這裡根本推不動。這一條也讓「有沒有做深度檢查」測得出來。
+  eq(shallow.reason, 'chain:tooDeep', '連鎖 9b：理由要明確是深度不夠');
+  eq(shallow.moves.length, 0, '連鎖 10：失敗時不可以留下半套移動');
+  const before = rows.map(t => t.y1).join(',');
+  S.apply(st, shallow);
+  eq(rows.map(t => t.y1).join(','), before, '連鎖 11：失敗的計畫套用下去要一個位元組都不動');
+}
+
+// 連鎖：**收斂了但結果違規** —— 這種情況深度檢查不會叫，只有最後那一次全套驗證擋得住。
+// 沒有這一條的話，「連鎖最後有沒有驗證」測不出來（深度檢查會先攔下大部分案例）。
+{
+  const B = tr({ x1: 0, y1: 0, x2: 20, y2: 0, net: 'B' });
+  // 另一個網路的 pad 就在 B 上方一點點：B 被推過去就會撞到它，
+  // 而 pad 不是走線，推不動也不會產生下一輪，所以深度檢查永遠不會觸發。
+  const st = board([B], {
+    components: [{ id: 'U9', x: 10, y: 0.45, pads: [{ num: '1', x: 0, y: 0, w: 0.4, h: 0.4, net: 'P' }] }]
+  });
+  const seg = tr({ x1: 0, y1: -0.3, x2: 20, y2: -0.3, net: 'A' });
+  const ch = S.planChain(st, padAbs, seg, { clearance: CL, depth: 3 });
+  eq(ch.ok, false, '連鎖 11b：推開之後會撞到別的網路的 pad → 要拒絕');
+  ok(String(ch.reason).indexOf('chain:wouldBreak') === 0, '連鎖 11c：理由是「會弄壞別的地方」');
+  eq(ch.moves.length, 0, '連鎖 11d：拒絕時不留半套移動');
+}
+
+// 連鎖：端點釘在 pad 上的仍然不可以推（界線跟單輪一致）
+{
+  const B = tr({ x1: 0, y1: 0, x2: 20, y2: 0, net: 'B' });
+  const st = board([B], { components: [{ id: 'U1', x: 0, y: 0, pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, net: 'B' }] }] });
+  const seg = tr({ x1: 0, y1: -0.1, x2: 20, y2: -0.1, net: 'A' });
+  const ch = S.planChain(st, padAbs, seg, { clearance: CL, depth: 3 });
+  eq(ch.ok, false, '連鎖 12：端點釘在 pad 上的線不可以被連鎖推走');
+  ok(String(ch.reason).indexOf('chain:') === 0, '連鎖 13：理由要標明是連鎖階段擋下的');
+}
+
+// 連鎖：沒東西擋就什麼都不做（不要無中生有）
+{
+  const st = board([tr({ x1: 0, y1: 10, x2: 20, y2: 10, net: 'B' })]);
+  const seg = tr({ x1: 0, y1: -10, x2: 20, y2: -10, net: 'A' });
+  const ch = S.planChain(st, padAbs, seg, { clearance: CL, depth: 3 });
+  eq(ch.ok, true, '連鎖 14：沒有擋路的');
+  eq(ch.moves.length, 0, '連鎖 15：不動任何東西');
+  eq(ch.rounds, 0, '連鎖 16：零輪');
+}
+
+// 連鎖：缺規則跟單輪一樣要擋
+{
+  const st = board([tr({ x1: 0, y1: 0.3, x2: 10, y2: 0.3, net: 'B' })]);
+  const ch = S.planChain(st, padAbs, tr({ x1: 0, y1: 0, x2: 10, y2: 0, net: 'A' }), { depth: 3 });
+  eq(ch.ok, false, '連鎖 17：沒有間距規則時不可推');
+  eq(ch.reason, 'noRules', '連鎖 18：要說明是缺規則');
+}
+
 console.log(`\nshove.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

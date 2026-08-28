@@ -52,6 +52,8 @@ const pcbApp = {
     keepoutDraw: null,   // 進行中禁止區 {pts, cursor:[x,y]}
     selectedSet: [],     // 多選元件（Shift+點 加選、Shift+拖 框選）
     dragEndpoint: null,  // 走線端點拖曳 {trace, end:'a'|'b'}
+    dragTrace: null,     // 整條走線拖曳 {trace, plan, sx, sy}（TraceDrag）
+    guides: [],          // 拖曳中的對齊輔助線（純檢視狀態，不進快照）
     dragGroup: null,     // 群組拖曳快照 [{c, ox, oy}]＋dragAnchor
     rubber: null,        // 拖曳中要跟著 pad 走的走線端點（beginRubber 建表）
     highlightNet: null,  // 網路清單點選的高亮網路（純檢視狀態，不進快照）
@@ -2362,6 +2364,39 @@ const pcbApp = {
     return el ? !!el.checked : true;
   },
 
+  guidesEnabled() {
+    const el = document.getElementById("guideToggle");
+    return el ? !!el.checked : true;
+  },
+
+  // 連鎖推擠深度。1＝只推一層（舊行為）。上限由 Shove 自己夾在 8，
+  // 這裡不重複夾——兩個地方各夾一次，改其中一個就會出現「設了沒用」。
+  shoveDepth() {
+    const el = document.getElementById("shoveDepth");
+    const v = el ? parseInt(el.value, 10) : 3;
+    return Number.isFinite(v) && v > 0 ? v : 3;
+  },
+
+  // 對齊輔助線：拖曳中對齊到什麼就畫一條穿過整片板的細虛線。
+  // 只在拖曳當下畫（state.guides 是純檢視狀態、不進快照），放開就沒了。
+  drawGuides(scale) {
+    const gs = this.state.guides;
+    if (!gs || !gs.length) return;
+    const { ctx } = this;
+    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    ctx.save();
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    for (const g of gs) {
+      ctx.beginPath();
+      if (g.axis === 'x') { ctx.moveTo(X(g.at), 0); ctx.lineTo(X(g.at), this.canvas.height); }
+      else { ctx.moveTo(0, Y(g.at)); ctx.lineTo(this.canvas.width, Y(g.at)); }
+      ctx.stroke();
+    }
+    ctx.restore();
+  },
+
   previewClearance(td) {
     const gm = window.PadDrc && window.PadDrc._geom;
     if (!gm || !td) return null;
@@ -2454,6 +2489,7 @@ const pcbApp = {
   },
 
   drawTracePreview(scale) {
+    this.drawGuides(scale);
     const td = this.state.traceDraw;
     if (!td) return;
     const { ctx } = this;
@@ -3297,6 +3333,21 @@ const pcbApp = {
           this.render();
           return;
         }
+        // 1b) 點在**已選取**的走線身上（不是端點）→ 拖整段。
+        //     限定已選取是刻意的：不然在密集的板子上想框選會一直誤拖到線。
+        if (!this.compHit(b.x, b.y) && window.TraceDrag) {
+          const th = this.traceHit(b.x, b.y);
+          if (th && th === this.state.selectedTrace) {
+            const pl = TraceDrag.plan(this.state, this.padAbs.bind(this), th);
+            if (pl.ok) {
+              this.hist();
+              this.state.dragTrace = { trace: th, plan: pl, sx: b.x, sy: b.y, lx: b.x, ly: b.y };
+              this.canvas.style.cursor = 'move';
+              this.render();
+              return;
+            }
+          }
+        }
         const hit = this.compHit(b.x, b.y);
         if (hit) {
           if (e.shiftKey) {
@@ -3408,6 +3459,13 @@ const pcbApp = {
         }
         this.render();
       } else if (this.state.tool === 'trace') {
+        // 鏈條進行中：這一下按是「這一段畫到這裡，接著畫下一段」，不是重開一條。
+        // 走的是同一個 finishTraceSegment，所以推擠與規則檢查不會有一條路漏掉。
+        if (this.state.traceDraw) {
+          const res = this.finishTraceSegment();
+          if (this.continueTraceChain(res)) { this.render(); return; }
+          if (res.committed) { this.render(); return; }
+        }
         const b = this.screenToBoard(e);
         const g = this.gridStep();
         const hit = this.snapTarget(b.x, b.y);
@@ -3535,6 +3593,33 @@ const pcbApp = {
         this.render();
         return;
       }
+      if (this.state.dragTrace) {
+        const dt = this.state.dragTrace;
+        const b = this.screenToBoard(e);
+        const g = this.gridStep();
+        // 位移先吸格點，再看有沒有對齊目標。順序反過來的話格點吸附會把對齊吸掉。
+        let nx = this.snap(b.x, g), ny = this.snap(b.y, g);
+        const wantDx = nx - dt.sx, wantDy = ny - dt.sy;
+        const probe = { x: dt.trace.x1 + (wantDx - (dt.lx - dt.sx)), y: dt.trace.y1 + (wantDy - (dt.ly - dt.sy)) };
+        const gs = (window.TraceDrag && this.guidesEnabled())
+          ? TraceDrag.guides(this.state, this.padAbs.bind(this), probe, { skip: dt.trace }) : [];
+        this.state.guides = gs;
+        if (gs.length) {
+          const sn = TraceDrag.snapToGuides(probe, gs);
+          nx += sn.x - probe.x; ny += sn.y - probe.y;
+        }
+        const dx = nx - dt.lx, dy = ny - dt.ly;
+        if (dx || dy) {
+          TraceDrag.apply(this.state, dt.plan, dx, dy);
+          // 補線只在第一次位移時建立；之後那條線已經在 traces 裡，
+          // 再 apply 一次會每動一次就多一條。改成之後只移動、不再補。
+          dt.plan = Object.assign({}, dt.plan, { stubs: [] });
+          dt.lx = nx; dt.ly = ny;
+          this.state.ratsnest = null;
+        }
+        this.render();
+        return;
+      }
       if (this.state.dragEndpoint) {
         const b = this.screenToBoard(e);
         const g = this.gridStep();
@@ -3582,6 +3667,16 @@ const pcbApp = {
 
     this.canvas?.addEventListener('mouseup', (e) => {
       // 走線端點拖曳收尾：靠近 pad/via/走線端點就吸附＋接該 net
+      if (this.state.dragTrace) {
+        const dt = this.state.dragTrace;
+        this.state.dragTrace = null;
+        this.state.guides = [];
+        this.canvas.style.cursor = 'crosshair';
+        this.state.ratsnest = null;
+        this.checkTraceRules(dt.trace);
+        this.render();
+        return;
+      }
       if (this.state.dragEndpoint) {
         const { trace, end } = this.state.dragEndpoint;
         const ex = end === 'a' ? trace.x1 : trace.x2, ey = end === 'a' ? trace.y1 : trace.y2;
@@ -3663,40 +3758,7 @@ const pcbApp = {
         return;
       }
       if (this.state.traceDraw) {
-        const td = this.state.traceDraw;
-        this.state.traceDraw = null;
-        if (Math.hypot(td.x2 - td.x1, td.y2 - td.y1) >= 0.05) {
-          const endHit = this.snapTarget(td.x2, td.y2);
-          if (endHit) { td.x2 = endHit.x; td.y2 = endHit.y; }
-          const net = td.net || (endHit ? endHit.net : '');
-          if (td.net && endHit && endHit.net && endHit.net !== td.net)
-            this.toast(pcbT('pj_net_mismatch', { a: td.net, b: endHit.net }), 'error');
-          const tr = {
-            id: `trace-${Date.now()}-${this.state.traces.length}`,
-            x1: td.x1, y1: td.y1, x2: td.x2, y2: td.y2,
-            width: this.state.traceWidth || 0.3, layer: this.state.traceLayer || 'F.Cu', net
-          };
-          this.hist();
-          this.state.traces.push(tr);
-          this.state.ratsnest = null;
-          // 推擠：擋路的鄰居往旁邊挪，而不是留下一個違規讓使用者自己收拾。
-          // 推不動就照實說（保留原本的規則警告），不要假裝成功——
-          // 使用者看到「已推開」卻其實沒推，比看到「推不動」危險得多。
-          if (this.shoveEnabled() && window.Shove) {
-            const plan = Shove.plan(this.state, this.padAbs.bind(this), tr,
-              { clearance: this.loadDrcRules().clearance });
-            if (plan.blockers) {
-              if (plan.ok) {
-                const n = Shove.apply(this.state, plan);
-                if (n) this.toast(pcbT("pj_shove_done", { n }), "info");
-              } else {
-                this.toast(pcbT("pj_shove_fail", { n: plan.blockers, why: pcbT("pj_shove_why_" + String(plan.reason).split(":")[0]) }), "warn");
-              }
-            }
-          }
-          this.checkTraceRules(tr);
-          this.renderPartsList();
-        }
+        this.continueTraceChain(this.finishTraceSegment());
         this.render();
         return;
       }
@@ -3776,6 +3838,13 @@ const pcbApp = {
           this.render();
         } else if (this.state.dimDraw) {
           this.state.dimDraw = null;
+          this.render();
+        } else if (this.state.dragTrace) {
+          // 拖到一半按 Esc：整段拖曳有可能已經補了線、動了鄰居，
+          // 只把 dragTrace 清掉會留下半套結果。走 undo 才乾淨。
+          this.state.dragTrace = null;
+          this.state.guides = [];
+          if (window.PcbHistory) PcbHistory.undo(this);
           this.render();
         } else if (this.state.traceDraw) {
           this.state.traceDraw = null;
@@ -3983,6 +4052,78 @@ const pcbApp = {
     // 封裝同步狀態掛在這裡一起更新：它跟 net 面板一樣是「換一批元件就會變」的東西，
     // 只在 init 與按鈕更新的話，載入公版／開雲端專案之後面板會停在上一片板的數字。
     this.renderFpSync();
+  },
+
+  // ---- 走線收筆 + 連續多段繪製 ----
+  //
+  // 收筆本來寫在 mouseup 裡。抽出來的理由：連續繪製要在**兩個地方**收筆
+  // （放開滑鼠、以及畫下一段時的按下），兩份收筆遲早會分岔——
+  // 其中一條路忘了跑推擠或忘了 checkTraceRules，症狀是「有時候會檢查有時候不會」。
+  //
+  // 回 { committed, terminal }。terminal＝這一段收在 pad/via 上，鏈條到此為止。
+  finishTraceSegment() {
+    const td = this.state.traceDraw;
+    this.state.traceDraw = null;
+    if (!td) return { committed: false, terminal: true };
+    if (Math.hypot(td.x2 - td.x1, td.y2 - td.y1) < 0.05) return { committed: false, terminal: true };
+
+    const endHit = this.snapTarget(td.x2, td.y2);
+    if (endHit) { td.x2 = endHit.x; td.y2 = endHit.y; }
+    const net = td.net || (endHit ? endHit.net : '');
+    if (td.net && endHit && endHit.net && endHit.net !== td.net)
+      this.toast(pcbT('pj_net_mismatch', { a: td.net, b: endHit.net }), 'error');
+    const tr = {
+      id: `trace-${Date.now()}-${this.state.traces.length}`,
+      x1: td.x1, y1: td.y1, x2: td.x2, y2: td.y2,
+      width: this.state.traceWidth || 0.3, layer: this.state.traceLayer || 'F.Cu', net
+    };
+    this.hist();
+    this.state.traces.push(tr);
+    this.state.ratsnest = null;
+    // 推擠：擋路的鄰居往旁邊挪，而不是留下一個違規讓使用者自己收拾。
+    // 推不動就照實說（保留原本的規則警告），不要假裝成功——
+    // 使用者看到「已推開」卻其實沒推，比看到「推不動」危險得多。
+    if (this.shoveEnabled() && window.Shove) {
+      const opt = { clearance: this.loadDrcRules().clearance };
+      // 連鎖開著就走 planChain（A 推 B、B 再推 C）。單輪碰到「B 挪開會撞到 C」
+      // 就整個放棄，而那正是密集板上最常見的情況。
+      const depth = this.shoveDepth();
+      const plan = (depth > 1 && Shove.planChain)
+        ? Shove.planChain(this.state, this.padAbs.bind(this), tr, Object.assign({ depth }, opt))
+        : Shove.plan(this.state, this.padAbs.bind(this), tr, opt);
+      if (plan.blockers) {
+        if (plan.ok) {
+          const n = Shove.apply(this.state, plan);
+          if (n) this.toast(pcbT(plan.rounds > 1 ? "pj_shove_done_chain" : "pj_shove_done", { n, r: plan.rounds }), "info");
+        } else {
+          // 理由可能帶 chain: 前綴，取最後一段當 i18n key 的字尾；
+          // 找不到對應翻譯時 pcbT 會回 key 本身，至少看得出是哪一種失敗。
+          const why = String(plan.reason).replace(/^chain:/, "").split(":")[0];
+          this.toast(pcbT("pj_shove_fail", { n: plan.blockers, why: pcbT("pj_shove_why_" + why) }), "warn");
+        }
+      }
+    }
+    this.checkTraceRules(tr);
+    this.renderPartsList();
+    // 收在 pad 或 via 上＝到站了，鏈條結束。差分對那條路自己有收尾邏輯，也不續。
+    // snapTarget 用 pad / via / trace 三個欄位帶回命中的是什麼（沒有 kind 欄位）。
+    // 到站＝收在 pad 或 via 上；收在別條走線的端點上不算到站（那通常是轉接，還要繼續）。
+    const terminal = !!(td.diff) || !!(endHit && (endHit.pad || endHit.via));
+    return { committed: true, terminal, x: td.x2, y: td.y2, net };
+  },
+
+  // 連續繪製：收完一段就從終點接著畫下一段，轉彎不必放開滑鼠再重按。
+  // 收在 pad/via 上（到站）或按 Esc 才結束。
+  continueTraceChain(res) {
+    if (!this.chainEnabled()) return false;
+    if (!res || !res.committed || res.terminal) return false;
+    this.state.traceDraw = { x1: res.x, y1: res.y, x2: res.x, y2: res.y, net: res.net || '' };
+    return true;
+  },
+
+  chainEnabled() {
+    const el = document.getElementById('traceChain');
+    return el ? !!el.checked : true;   // 沒有這個開關（舊頁面）就當開著
   },
 
   // ---- pin swap（SchSwap）----

@@ -652,6 +652,9 @@
                 <div id="tuneMsg" style="font-size:11px;color:var(--muted);line-height:1.5"></div>
               </div>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer" data-i18n-title="pcbf_shove_hint" title="畫線碰到別的網路時，把那條平行的鄰居往旁邊推開；端點卡在 pad/via 上的不動"><input type="checkbox" id="shoveToggle" checked><span data-i18n="pcbf_shove">繞線時自動推擠鄰居</span></label>
+              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer" data-i18n-title="pcbf_chain_hint" title="畫完一段就從終點接著畫下一段；收在 pad 或 via 上、或按 Esc 才結束"><input type="checkbox" id="traceChain" checked><span data-i18n="pcbf_chain">連續多段繪製（轉彎不必放開）</span></label>
+              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer" data-i18n-title="pcbf_guide_hint" title="拖曳整條走線時，跟附近的 pad／端點／板框中心對齊就畫一條虛線並吸過去"><input type="checkbox" id="guideToggle" checked><span data-i18n="pcbf_guide">拖曳時顯示對齊輔助線</span></label>
+              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center" data-i18n-title="pcbf_shove_depth_hint" title="1＝只推直接擋路的那一條；大於 1 時被推開的線會再去推它的鄰居。推不完會照實回報，不會留下半套結果"><span data-i18n="pcbf_shove_depth">連鎖推擠層數</span><input type="number" id="shoveDepth" value="3" min="1" max="8" step="1" style="width:64px"></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ratsnestToggle"><span data-i18n="pcbf_ratsnest">顯示飛線（未連線）</span></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="pinNumToggle" checked><span data-i18n="pcbf_pinnum">顯示 pin number</span></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="pinNameToggle" checked><span data-i18n="pcbf_pinname">顯示腳名 / 網路</span></label>
@@ -1130,19 +1133,20 @@
     <script src="./footprint-gen.js?v=4"></script>
     <script src="./parts-lib.js?v=1"></script>
     <script src="./pcb-ref-fp.js?v=2"></script>
-    <script src="./pcb-history.js?v=5"></script>
+    <script src="./pcb-history.js?v=6"></script>
     <script src="./kicad-io.js?v=10"></script>
     <script src="./pcb-index.js?v=1"></script>
     <script src="./pcb-arc.js?v=1"></script>
     <script src="./pcb-drc.js?v=9"></script>
     <script src="./pcb-rules.js?v=13"></script>
-    <script src="./pcb-shove.js?v=1"></script>
+    <script src="./pcb-shove.js?v=2"></script>
     <script src="./pcb-3d.js?v=2"></script>
     <script src="./pcb-crossprobe.js?v=1"></script>
     <script src="./pcb-nets.js?v=1"></script>
+    <script src="./pcb-drag.js?v=1"></script>
     <script src="./pcb-fpinst.js?v=1"></script>
     <script src="./sch-swap.js?v=1"></script>
-    <script src="./pcb.js?v=64"></script>
+    <script src="./pcb.js?v=66"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-08-25a"></script>
     <script src="./pcb-stackup.js?v=2026-08-24b"></script>
