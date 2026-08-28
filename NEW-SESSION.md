@@ -117,6 +117,7 @@ for f in pcb.js pcb-rules.js i18n.js; do L=$(md5sum $f | cut -c1-8); R=$(curl -s
 | `annotate.js` | `Annotate` | 線路圖 refdes 自動編號（做在線路圖端才不會被同步蓋掉） |
 | `sch-bus.js` | `SchBus` | 匯流排：寫法解析、分支幾何、稽核（幹線「不導電」那條規則在 `circuit-engine.js`） |
 | `sch-hier.js` | `SchHier` | 階層式圖紙：port／圖紙符號、遞迴偵測、攤平成「元件清單＋netOf」 |
+| `sch-swap.js` | `SchSwap` | pin/gate swap：哪些腳可互換（**保守表**）、排列合成、稽核 |
 | `pcb-autoplace.js` | `AutoPlace` | 自動擺件粗排（無亂數、可重現） |
 | `footprint-editor.js` | `FootprintEditor` | 自製封裝：dual/quad/grid/chip ＋ 幾何檢查 |
 | `fp-lib.js` | `FpLib` | 封裝庫存取：沒登入落 localStorage、登入落雲端，介面相同 |
@@ -190,6 +191,7 @@ PCB 相關 34 支、合計 **約 3100 條斷言**，另有 `dead-button-check` �
 | **`drc-arc.test.js`** | 15 | DRC 對真弧：差 0.001mm 的違規也要抓到 |
 | **`sch-bus.test.js`** | 67 | 匯流排：**幹線不可以把整束訊號短在一起**、寫法解析、分支幾何、稽核 |
 | **`sch-hier.test.js`** | 58 | 階層式圖紙：**多實例必須彼此隔離**、遞迴當場擋下、port 上下接、頂層判定 |
+| **`sch-swap.test.js`** | 66 | pin swap：**有極性的腳不可以換**、排列是合成不是覆寫、換完活得過 ECO |
 | **`netmodel.test.js`** | 118 | net 一級物件：六種圖元的改名列舉、IPC-2141 閉式解、解算器 round-trip、差分對量測 |
 | **`fpinst.test.js`** | 87 | 元件實例／封裝庫分離：**手改過的幾何不可被一鍵更新蓋掉**、同步不可弄丟 net |
 
@@ -317,6 +319,7 @@ node knowledge-format.test.js
 node net-label.test.js
 node sch-bus.test.js
 node sch-hier.test.js
+node sch-swap.test.js
 node interview-diagram-check.test.js && node interview-diagram-check.js
 
 # 資料抽取
@@ -447,13 +450,13 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 **這一批的界線**：net 屬性目前只進 DRC 與面板，**沒有寫進匯出檔**（ODB++／IPC-2581 的網表仍只有 net 名）。
 封裝同步只做「庫 → 板」，不做「板 → 庫」。
 
-### 批次 4 — 線路圖 🔶 做到 8
+### 批次 4 — 線路圖 ✅
 
 | # | 項目 | 狀態 |
 |---|---|---|
 | 7 | 匯流排（bus） | ✅ `sch-bus.js`。幹線是**記號不是導體**，分支展開成成員名，靠既有的「同名 net 標籤 union」相連 |
 | 8 | 階層式圖紙（子圖當符號） | ✅ `sch-hier.js`。`port`（子圖對外接點）＋ `sheetref`（母圖上的圖紙符號）；攤平在 **net 層**做，不複製幾何 |
-| 9 | pin / gate swap | ⬜ back-annotation 只差這一項；要動 `Sch2Pcb.merge` 的配對鍵 |
+| 9 | pin / gate swap | ✅ `sch-swap.js`。交換記在線路圖元件的 `pinSwap`，由 `bindNets` 套用——**沒回寫就活不過下一次 ECO** |
 
 **匯流排為什麼不必動節點演算法**：`computeNets` 本來就會把**同名 net 標籤 union**，
 所以分支只要拿到成員名字（`D3`），相隔十萬八千里的兩處 `D3` 自動就是同一條 net。
@@ -516,7 +519,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 | 🟡 **匯流排不進 PCB 端** | 線路圖畫得了匯流排了（2026-08-28），但轉 PCB 之後就只是一條條獨立的 net，沒有「這 8 條是一束」的概念 |
 | 🟡 **階層只到 net 層** | 子圖當符號可以了（2026-08-28），但沒有「進入子圖」的導覽（要自己切頁），也沒有把階層路徑帶進 PCB 的 refdes |
 | 🟡 **net class 沒從線路圖帶過來** | class 是 PCB 端用 pattern 猜的 |
-| 🟡 gate / pin swap | back-annotation 只差這一項（批次 4） |
+| 🟡 **gate swap 只到「判斷可不可以換」** | pin swap 端到端可用了（2026-08-28）；整組閘對調有 `canSwapGates` 但還沒有 UI |
 
 ### B. 互動與手感
 
@@ -598,6 +601,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 - 2026-08-28 | 階層展開 | 頂層直接取第 0 頁，但使用者通常先畫子圖、子圖就排在前面——會從子圖開始展開，母圖上的東西整批不見而且不報錯 | 「哪一個是根」要用結構推（沒有被任何人參照的那一頁），不要用順序猜
 - 2026-08-28 | 量文字重疊 | 用 SVG 的 `getBBox()` 比對兩個元件的文字，回報一堆假重疊——那是**元件本地座標**，兩顆同型元件的 bbox 本來就一樣 | 跨元件比位置一律用 `getBoundingClientRect()`（畫面座標），`getBBox()` 只能拿來比同一個 `<g>` 裡面的東西
 - 2026-08-28 | 改 HTML | 用 python 以 `
+- 2026-08-28 | pin swap | 排列的 key 是**線路圖腳名**（a/b），但 pad 編號是 1/2；先把 pad 編號換掉再去查腳，交換就靜靜失效、看起來像沒做 | 換位置要在**兩邊命名一致的那一層**做：先照原本的規則解出腳，再換那隻腳
 ` 組多行字串去比對 index.html，assert 一直失敗——那個檔是 CRLF | 硬規矩 11 也適用於**腳本改檔**：先偵測既有換行再組字串，不要假設 LF
 
 只留還會再犯的。同型的已升級成 §0 硬規矩，不重複列。

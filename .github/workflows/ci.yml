@@ -165,6 +165,8 @@ jobs:
         run: node sch-bus.test.js
       - name: sch-hier.test（階層式圖紙：多實例必須彼此隔離、遞迴要當場擋下）
         run: node sch-hier.test.js
+      - name: sch-swap.test（pin swap：不可以換有極性的腳、換完要活過 ECO）
+        run: node sch-swap.test.js
       - name: knowledge-art-audit（知識卡圖：接腳接上、字不貼圖）
         run: node knowledge-art-audit.js --strict --quiet
 

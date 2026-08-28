@@ -105,19 +105,34 @@
 
   // pad ↔ 線路圖腳位對應。IC 走「pad.num = 腳號」，其餘走順序。
   // 對不起來就照實回報，不要把 net 掛到錯的腳上——那種錯板子做出來才會發現。
-  function bindNets(pads, schPins, netOf, schId) {
+  //
+  // pin swap（sch-swap.js）在這裡套用，而且**只在這裡**：pad 要取哪一隻線路圖腳的 net
+  // 是這個函式的職責，交換規則散到別處就會出現「有的路徑套了、有的沒套」。
+  // 交換記在線路圖元件的 pinSwap 上，所以下一次 ECO 同步會照樣套用，不會被蓋回去。
+  function bindNets(pads, schPins, netOf, schId, schComp) {
     const out = pads.map(p => Object.assign({}, p));
     const notes = [];
     const byName = new Map();
     schPins.forEach(p => byName.set(String(p.name), p));
+    const SW = (typeof window !== 'undefined' && window.SchSwap) || (typeof global !== 'undefined' && global.SchSwap);
+    const swapped = (SW && schComp) ? SW.permutationOf(schComp) : {};
+    const hasSwap = Object.keys(swapped).length > 0;
     let matchedByNum = 0;
     out.forEach((pad, i) => {
       let pin = byName.get(String(pad.num));
       if (pin) matchedByNum++;
       else pin = schPins[i];
+      // 交換**在解出線路圖腳之後**才套用。
+      // 反過來（先把 pad 編號換掉再去查）只在「pad 編號就是腳名」時有效——
+      // 被動件的 pad 是 1/2 而腳名是 a/b，那條路會靜靜失效，交換看起來像沒做。
+      if (hasSwap && pin) {
+        const want = SW.mapPin(schComp, pin.name);
+        if (want !== String(pin.name)) { const alt = byName.get(want); if (alt) pin = alt; }
+      }
       pad.net = pin ? (netOf(schId, pin.index) || '') : '';
       if (!pin) pad.net = '';
     });
+    if (hasSwap) notes.push('pinSwap');
     if (out.length > schPins.length) notes.push('extraPads');
     return { pads: out, notes, matchedByNum };
   }
@@ -150,7 +165,7 @@
         });
         return;
       }
-      const bound = bindNets(fp.pads, schPins, netOf, sch.id);
+      const bound = bindNets(fp.pads, schPins, netOf, sch.id, sch);
       if (fp.assumed) assumed.push({ id: sch.id, type: sch.type, label: sch.label || '', lib: fp.lib, variant: fp.variant });
       const prefix = (sch.label || '').replace(/\d+$/, '') || 'U';
       refSeq[prefix] = (refSeq[prefix] || 0) + 1;
@@ -349,6 +364,31 @@
     return { changed, found, conflict: null };
   }
 
+  /**
+   * 把 PCB 端做的 pin swap 寫回線路圖元件的 `pinSwap`。
+   *
+   * 沒有這一步的話，交換只活在板子上：merge() 的 net 以線路圖為準，
+   * 下一次 ECO 同步就把 pad 的 net 換回去，而且不會有任何訊息——
+   * 使用者只會看到「我換過的腳自己跑回來了」。
+   *
+   * `pinSwap` 傳 null 代表清掉（換回原狀），欄位一併移除，不留空物件。
+   */
+  function annotateSwap(pages, schId, pinSwap) {
+    let changed = 0, found = 0;
+    for (const pg of (pages || [])) {
+      const comps = (pg && pg.data && pg.data.components) || [];
+      for (const c of comps) {
+        if (!c || c.id !== schId) continue;
+        found++;
+        const before = JSON.stringify(c.pinSwap || null);
+        if (pinSwap && Object.keys(pinSwap).length) c.pinSwap = pinSwap;
+        else delete c.pinSwap;
+        if (JSON.stringify(c.pinSwap || null) !== before) changed++;
+      }
+    }
+    return { changed, found };
+  }
+
   // 把 PCB 端改的 net 名寫回線路圖。
   // net 名字存在**導線的 net 欄位**上（模型見 net-label.test.js 的檔頭），
   // 不是綁在文字元件或某個座標上，所以改名就是掃過所有 wire 換字串。
@@ -387,7 +427,7 @@
     return m ? m[2] : rest;
   }
 
-  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces, annotateFootprint, annotateRef, renameNet, schIdOf };
+  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces, annotateFootprint, annotateRef, annotateSwap, renameNet, schIdOf };
   if (typeof window !== 'undefined') window.Sch2Pcb = Sch2Pcb;
   if (typeof module !== 'undefined' && module.exports) module.exports = Sch2Pcb;
 })();

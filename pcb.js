@@ -3175,6 +3175,7 @@ const pcbApp = {
       this.render();
     });
     document.getElementById("selRenameBtn")?.addEventListener("click", () => this.renameSelRef());
+    document.getElementById("selSwapBtn")?.addEventListener("click", () => this.swapSelPins());
 
     // net 屬性（NetModel）
     document.getElementById("npApply")?.addEventListener("click", () => this.applyNetProps());
@@ -3982,6 +3983,73 @@ const pcbApp = {
     // 封裝同步狀態掛在這裡一起更新：它跟 net 面板一樣是「換一批元件就會變」的東西，
     // 只在 init 與按鈕更新的話，載入公版／開雲端專案之後面板會停在上一片板的數字。
     this.renderFpSync();
+  },
+
+  // ---- pin swap（SchSwap）----
+  // 佈線時把兩隻等價的腳對調，省掉一個交叉。
+  // **一定要回寫線路圖**：merge() 的 net 以線路圖為準，只改板子的話
+  // 下一次同步就換回去，而且沒有任何訊息。
+  swapSelPins() {
+    const SW = window.SchSwap;
+    const c = this.state.selected;
+    if (!SW || !c) { this.toast(pcbT('pj_swap_nosel'), 'warn'); return false; }
+    const schId = window.Sch2Pcb ? Sch2Pcb.schIdOf(c.id) : null;
+    if (!schId) { this.toast(pcbT('pj_swap_nosch'), 'warn'); return false; }
+    const sch = this.findSchComp(schId);
+    if (!sch) { this.toast(pcbT('pj_swap_nosch'), 'warn'); return false; }
+
+    const groups = SW.groupsFor(sch);
+    if (!groups.length) { this.toast(pcbT('pj_swap_none', { ref: c.ref || c.id, type: sch.type || '?' }), 'warn'); return false; }
+    const flat = groups.map(g => g.join('↔')).join('  /  ');
+    const ans = prompt(pcbT('pj_swap_ask', { ref: c.ref || c.id, groups: flat }), groups[0].slice(0, 2).join(','));
+    if (ans == null) return false;
+    const parts = String(ans).split(/[,\s]+/).map(s => s.trim()).filter(Boolean);
+    if (parts.length !== 2) { this.toast(pcbT('pj_swap_two'), 'warn'); return false; }
+    const r = SW.composeSwap(sch, parts[0], parts[1]);
+    if (!r.ok) {
+      this.toast(pcbT(r.reason === 'same' ? 'pj_swap_two' : 'pj_swap_bad', { a: parts[0], b: parts[1], groups: flat }), 'error');
+      return false;
+    }
+    const back = this._writeSchPages(pages => Sch2Pcb.annotateSwap(pages, schId, r.pinSwap));
+    if (!back.changed) { this.toast(pcbT('pj_swap_nowrite'), 'error'); return false; }
+    this.hist();
+    // 板上的 pad 立刻跟著換，不必等下一次同步——不然使用者會以為沒作用
+    const perm = r.pinSwap || {};
+    const pins = this.schPinNames(sch);
+    const netByPinName = {};
+    (c.pads || []).forEach((pd, i) => { const nm = pins[i]; if (nm) netByPinName[nm] = pd.net || ''; });
+    (c.pads || []).forEach((pd, i) => {
+      const mine = pins[i]; if (!mine) return;
+      const want = perm[mine] || mine;
+      pd.net = netByPinName[want] != null ? netByPinName[want] : pd.net;
+    });
+    this.state.ratsnest = null;
+    this.renderNetPanel();
+    this.render();
+    this.toast(pcbT('pj_swap_done', { ref: c.ref || c.id, a: parts[0], b: parts[1], sch: back.changed }), 'info');
+    return true;
+  },
+
+  // 線路圖那一顆（多頁都找）。交換的規則吃的是線路圖元件的 type / swapGroups，
+  // 板上的元件沒有那些欄位。
+  findSchComp(schId) {
+    const seen = [];
+    try {
+      const sh = JSON.parse(localStorage.getItem('vs-sheets-v1') || 'null');
+      if (sh && Array.isArray(sh.pages)) for (const pg of sh.pages) seen.push(...((pg.data && pg.data.components) || []));
+    } catch (e) { }
+    try {
+      const proj = JSON.parse(localStorage.getItem('voltsketch-project') || 'null');
+      if (proj) seen.push(...(proj.components || []));
+    } catch (e) { }
+    return seen.find(x => x && x.id === schId) || null;
+  },
+
+  // 線路圖元件的腳名（依序）。pad 與腳是照順序或編號對應的，這裡只要順序那一份。
+  schPinNames(sch) {
+    const E = window.CircuitEngine;
+    if (!E || !E.getPins) return [];
+    try { return E.getPins(sch).map(p => String(p.name)); } catch (e) { return []; }
   },
 
   // ---- net 屬性編輯（NetModel）----

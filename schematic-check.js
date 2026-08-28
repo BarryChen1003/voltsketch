@@ -219,6 +219,15 @@ window.SchematicCheck = (function () {
       } catch (e) { /* 多頁存檔壞了不該讓整個檢查掛掉 */ }
     }
 
+    // 13) pin swap（SchSwap）。交換在畫面上**完全看不出來**：線路圖長得一模一樣，
+    //     只有 net 綁到哪一隻 pad 變了。不列出來的話它就是一個隱形的差異。
+    if (window.SchSwap) {
+      for (const f of window.SchSwap.audit(comps)) {
+        const bucket = f.type === 'error' ? out.errors : f.type === 'warning' ? out.warns : out.infos;
+        bucket.push({ msg: f.message, comps: [] });
+      }
+    }
+
     return out;
   }
 
