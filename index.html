@@ -442,6 +442,19 @@
                 <label style="display:grid;gap:2px"><span data-i18n="pj_sp_f0">起始 Hz</span><input type="number" id="spF0" value="1" style="padding:3px"></label>
                 <label style="display:grid;gap:2px"><span data-i18n="pj_sp_f1">終止 Hz</span><input type="number" id="spF1" value="1000000" style="padding:3px"></label>
               </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px">
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_sw_part">掃描對象</span><select id="spSwPart" style="padding:3px"></select></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_sw_span">倍率範圍 ×</span><input type="number" id="spSwSpan" value="4" min="1.1" step="0.5" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_sw_steps">點數</span><input type="number" id="spSwSteps" value="9" min="2" max="200" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_mc_tol">公差 %</span><input type="number" id="spMcTol" value="5" min="0.1" step="0.5" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_mc_runs">抽樣次數</span><input type="number" id="spMcRuns" value="200" min="10" max="2000" style="padding:3px"></label>
+                <label style="display:grid;gap:2px"><span data-i18n="pj_sp_mc_seedlab">亂數種子</span><input type="number" id="spMcSeed" value="1" min="1" style="padding:3px"></label>
+                <label style="display:grid;gap:2px;grid-column:1/-1"><span data-i18n="pj_sp_mc_dist">分布</span><select id="spMcDist" style="padding:3px"><option value="gauss" data-i18n="pj_sp_mc_gauss">常態（公差＝3σ）</option><option value="uniform" data-i18n="pj_sp_mc_uniform">均勻</option></select></label>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+                <button class="small-button" id="spSweep" data-i18n-title="pj_sp_sw_hint" title="把選定元件的值掃過一段範圍，看 −3dB 轉角怎麼跟著跑" data-i18n="pj_sp_sw">參數掃描</button>
+                <button class="small-button" id="spMc" data-i18n-title="pj_sp_mc_hint" title="所有 R/C/L 依公差隨機抽樣，跑很多次看轉角散成什麼樣。同一個種子永遠同一批樣本" data-i18n="pj_sp_mc">蒙地卡羅</button>
+              </div>
               <div id="spOut" style="display:grid;gap:3px;line-height:1.5"></div>
               <div id="spHint" style="color:var(--muted);line-height:1.5"></div>
             </div>
@@ -662,8 +675,10 @@
     <script src="./sch-designs-ui.js?v=1"></script>
     <script src="./sch-annotate-ui.js?v=1"></script>
     <script src="./spice.js?v=1"></script>
+    <script src="./spice-measure.js?v=1"></script>
+    <script src="./spice-sweep.js?v=1"></script>
     <script src="./sch-spice.js?v=1"></script>
-    <script src="./sch-spice-ui.js?v=2"></script>
+    <script src="./sch-spice-ui.js?v=2026-08-28a"></script>
     <script src="./instruments.js"></script>
     <script src="./sim-bench.js"></script>
     <script src="./sheets.js?v=2026-08-06a"></script>

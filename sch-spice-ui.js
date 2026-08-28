@@ -130,10 +130,102 @@
       const d = series[n].map((v, i) => (i ? 'L' : 'M') + px(i).toFixed(1) + ' ' + py(v).toFixed(1)).join(' ');
       parts.push('<path d="' + d + '" fill="none" stroke="' + COLORS[k % COLORS.length] + '" stroke-width="1.2"/>');
     });
-    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="max-width:320px">' + parts.join('') + '</svg>' +
+    // 游標：垂直線 + 頂端標號。畫在最後才不會被波形蓋掉。
+    for (const c of (o.cursors || [])) {
+      if (c.x == null) continue;
+      const cv = xlog ? Math.log10(Math.max(c.x, 1e-12)) : c.x;
+      const cx = ml + ((cv - x0) / ((x1 - x0) || 1)) * (W - ml - mr);
+      if (!isFinite(cx) || cx < ml - 1 || cx > W - mr + 1) continue;
+      parts.push('<line x1="' + cx.toFixed(1) + '" y1="' + mt + '" x2="' + cx.toFixed(1) + '" y2="' + (H - mb) +
+        '" stroke="' + (c.color || '#f59e0b') + '" stroke-width="1" stroke-dasharray="3 3"/>');
+      parts.push('<text x="' + (cx + 2).toFixed(1) + '" y="' + (mt + 9) + '" fill="' + (c.color || '#f59e0b') +
+        '" font-size="9">' + esc(c.label || '') + '</text>');
+    }
+    // 點圖上要能換算回資料座標，把這次的映射記著（每次重畫覆蓋）
+    plotMap = { ml, mr, W, x0, x1, xlog, xs };
+
+    return '<svg id="spPlot" viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="max-width:320px;cursor:crosshair">' + parts.join('') + '</svg>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;font-size:11px;margin-top:2px">' +
       names.map((n, k) => '<span style="color:' + COLORS[k % COLORS.length] + '">■ ' + esc(n) + '</span>').join('') +
       '</div>';
+  }
+
+  // 最近一次模擬的結果與繪圖映射。游標與量測都靠它——
+  // 每次點游標都重跑一次模擬的話，一條線拖過去會卡到動不了。
+  let lastRun = null;      // { kind:'tran'|'ac', res, names }
+  let plotMap = null;      // { ml, mr, W, x0, x1, xlog, xs }
+  let cursors = [null, null];
+  let cursorNext = 0;
+
+  // 螢幕 x（SVG 座標）→ 資料座標。plot() 的 px() 的反函式。
+  function invX(sx) {
+    if (!plotMap) return null;
+    const { ml, mr, W, x0, x1, xlog } = plotMap;
+    const u = (sx - ml) / ((W - ml - mr) || 1);
+    const v = x0 + u * (x1 - x0);
+    return xlog ? Math.pow(10, v) : v;
+  }
+
+  const fmtT = v => (v == null) ? '—' : (Math.abs(v) >= 1e-3 ? (v * 1e3).toFixed(3) + 'ms' : (v * 1e6).toFixed(1) + 'µs');
+  const fmtHz = v => (v == null) ? '—' : (v >= 1e6 ? (v / 1e6).toFixed(3) + 'MHz' : v >= 1e3 ? (v / 1e3).toFixed(3) + 'kHz' : v.toFixed(2) + 'Hz');
+  const fmtNum = (v, unit) => (v == null) ? '—' : (Math.abs(v) >= 1000 ? v.toFixed(0) : Math.abs(v) >= 1 ? v.toFixed(3) : v.toExponential(2)) + (unit || '');
+
+  // 自動量測表。量不出來的欄位顯示「—」，不顯示 0——
+  // 「找不到交越點」跟「上升時間是 0」是兩件完全不同的事。
+  function measureTable() {
+    const M = window.SpiceMeasure;
+    if (!M || !lastRun) return '';
+    const rows = [];
+    if (lastRun.kind === 'tran') {
+      for (const n of lastRun.names) {
+        const s = M.summary(lastRun.res.t, lastRun.res.nodes[n]);
+        if (!s) continue;
+        rows.push('<tr><td>' + esc(n) + '</td><td>' + fmtNum(s.pp, 'V') + '</td><td>' + fmtNum(s.rms, 'V') +
+          '</td><td>' + fmtNum(s.avg, 'V') + '</td><td>' + fmtT(s.rise) + '</td><td>' + fmtHz(s.freq) + '</td></tr>');
+      }
+      if (!rows.length) return '';
+      return '<table style="width:100%;font-size:11px;border-collapse:collapse"><tr style="color:var(--muted)">' +
+        '<th align="left">' + esc(T('pj_sp_m_sig')) + '</th><th align="left">Vpp</th><th align="left">RMS</th>' +
+        '<th align="left">' + esc(T('pj_sp_m_avg')) + '</th><th align="left">' + esc(T('pj_sp_m_rise')) + '</th>' +
+        '<th align="left">' + esc(T('pj_sp_m_freq')) + '</th></tr>' + rows.join('') + '</table>';
+    }
+    for (const n of lastRun.names) {
+      const c = M.cutoff(lastRun.res, n);
+      const g = M.gainAt(lastRun.res, n, lastRun.res.f[0]);
+      rows.push('<tr><td>' + esc(n) + '</td><td>' + (c ? fmtHz(c.f) : '—') + '</td><td>' +
+        (c ? c.refdB.toFixed(1) + 'dB' : '—') + '</td><td>' + (g ? g.dB.toFixed(1) + 'dB' : '—') + '</td></tr>');
+    }
+    if (!rows.length) return '';
+    return '<table style="width:100%;font-size:11px;border-collapse:collapse"><tr style="color:var(--muted)">' +
+      '<th align="left">' + esc(T('pj_sp_m_sig')) + '</th><th align="left">−3dB</th>' +
+      '<th align="left">' + esc(T('pj_sp_m_peak')) + '</th><th align="left">' + esc(T('pj_sp_m_atf0')) + '</th></tr>' +
+      rows.join('') + '</table>';
+  }
+
+  // 游標讀數。兩個游標都放好才給 Δ；只放一個就只報那一點的值。
+  function cursorTable() {
+    const M = window.SpiceMeasure;
+    if (!M || !lastRun || cursors[0] == null) return '';
+    const isTran = lastRun.kind === 'tran';
+    const xs = isTran ? lastRun.res.t : lastRun.res.f;
+    const series = {};
+    for (const n of lastRun.names) series[n] = isTran ? lastRun.res.nodes[n] : lastRun.res.nodes[n].mag;
+    const fx = isTran ? fmtT : fmtHz;
+    const at = x => { const o = {}; for (const n of lastRun.names) o[n] = M.interp(xs, series[n], x); return o; };
+    const a = at(cursors[0]);
+    const bits = ['<div style="font-size:11px;line-height:1.6">'];
+    bits.push('<span style="color:#f59e0b">A</span> ' + esc(fx(cursors[0])) + '：' +
+      lastRun.names.map(n => esc(n) + '=' + fmtNum(a[n], isTran ? 'V' : '')).join('，'));
+    if (cursors[1] != null) {
+      const b = at(cursors[1]);
+      const dx = cursors[1] - cursors[0];
+      bits.push('<br><span style="color:#38bdf8">B</span> ' + esc(fx(cursors[1])) + '：' +
+        lastRun.names.map(n => esc(n) + '=' + fmtNum(b[n], isTran ? 'V' : '')).join('，'));
+      const dv = lastRun.names.map(n => (a[n] == null || b[n] == null) ? esc(n) + '=—' : esc(n) + '=' + fmtNum(b[n] - a[n], isTran ? 'V' : ''));
+      bits.push('<br><b>Δ</b> ' + esc(fx(Math.abs(dx))) + '（' + (isTran && dx !== 0 ? esc(fmtHz(1 / Math.abs(dx))) : '—') + '）：' + dv.join('，'));
+    }
+    bits.push('</div>');
+    return bits.join('');
   }
 
   // 節點多的時候全畫會變成一團。只取前幾條，並說明取了哪幾條。
@@ -168,19 +260,67 @@
     }
 
     const res = window.Spice.tran(nl.elements, { stop, step: stop / 400 });
-    const r = { ok: res.converged, result: res, netlist: nl };
     const names = pick(res.nodes, 4);
-    const series = {};
-    names.forEach(n => { series[n] = res.nodes[n]; });
-    const bits = [netWarnings(r), convergeNote(res)];
-    bits.push('<div style="font-weight:600">' + esc(T('pj_sp_tran_title', { t: stop })) + '</div>');
-    bits.push(plot(res.t, series, {
-      fmtY: v => fmtV(v),
-      fmtX: v => (v >= 1e-3 ? (v * 1e3).toFixed(2) + 'ms' : (v * 1e6).toFixed(0) + 'µs'),
-    }));
+    lastRun = { kind: 'tran', res, names, netlist: nl };
+    cursors = [null, null]; cursorNext = 0;      // 換一次模擬，舊游標的座標就沒有意義了
+    paintRun();
+  }
+
+  // 把「最近一次結果」畫出來。抽出來是因為放游標之後要重畫，
+  // 而重畫**不可以**重跑模擬——每點一下就重解一次 MNA，拖游標會卡到動不了。
+  function paintRun() {
+    if (!lastRun) return;
+    const res = lastRun.res, names = lastRun.names;
+    const cur = [
+      { x: cursors[0], color: '#f59e0b', label: 'A' },
+      { x: cursors[1], color: '#38bdf8', label: 'B' }
+    ];
+    const bits = [];
+    if (lastRun.kind === 'tran') {
+      const series = {};
+      names.forEach(n => { series[n] = res.nodes[n]; });
+      bits.push(netWarnings({ netlist: lastRun.netlist }), convergeNote(res));
+      bits.push('<div style="font-weight:600">' + esc(T('pj_sp_tran_title', { t: res.t[res.t.length - 1] })) + '</div>');
+      bits.push(plot(res.t, series, {
+        cursors: cur,
+        fmtY: v => fmtV(v),
+        fmtX: v => (v >= 1e-3 ? (v * 1e3).toFixed(2) + 'ms' : (v * 1e6).toFixed(0) + 'µs'),
+      }));
+    } else {
+      const series = {};
+      names.forEach(n => { series[n] = res.nodes[n].mag.map(v => 20 * Math.log10(Math.max(v, 1e-12))); });
+      bits.push(netWarnings({ netlist: lastRun.netlist }), convergeNote(res));
+      bits.push('<div style="font-weight:600">' + esc(T('pj_sp_ac_title', { f0: res.f[0], f1: res.f[res.f.length - 1] })) + '</div>');
+      bits.push(plot(res.f, series, {
+        cursors: cur, logX: true,
+        fmtY: v => v.toFixed(1) + 'dB',
+        fmtX: v => (v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(1) + 'k' : v.toFixed(0)) + 'Hz',
+      }));
+      if ((res.warnings || []).some(w => /ac_model_simplified/.test(w))) bits.push(warn(T('pj_sp_ac_simplified')));
+    }
+    bits.push('<div style="color:var(--muted);font-size:11px">' + esc(T('pj_sp_cursor_hint')) + '</div>');
+    bits.push(cursorTable());
+    bits.push(measureTable());
     const total = Object.keys(res.nodes).filter(n => n !== '0').length;
     if (total > names.length) bits.push('<div style="color:var(--muted)">' + esc(T('pj_sp_only', { n: names.length, total })) + '</div>');
     msg(bits.join(''));
+    bindPlotClicks();
+  }
+
+  // 點波形放游標。CSP 不准 inline handler，所以每次重畫都要重新掛。
+  function bindPlotClicks() {
+    const svg = el('spPlot');
+    if (!svg) return;
+    svg.addEventListener('click', ev => {
+      const r = svg.getBoundingClientRect();
+      if (!r.width) return;
+      const sx = (ev.clientX - r.left) / r.width * 300;   // viewBox 寬度固定 300
+      const x = invX(sx);
+      if (x == null) return;
+      cursors[cursorNext] = x;
+      cursorNext = cursorNext ? 0 : 1;                   // A、B 輪流
+      paintRun();
+    });
   }
 
   function runAc() {
@@ -192,21 +332,141 @@
       { start: f0, stop: f1, points: 20, sweep: 'dec' });
     if (!r.ok && r.reason) { msg(explain(r)); return; }
     const res = r.result;
-    const names = pick(res.nodes, 4);
-    const series = {};
-    // 用 dB 顯示：線性刻度會讓 -40dB 以下的東西全部貼在零線上看不見
-    names.forEach(n => { series[n] = res.nodes[n].mag.map(v => 20 * Math.log10(Math.max(v, 1e-12))); });
-    const bits = [netWarnings(r), convergeNote(res)];
-    bits.push('<div style="font-weight:600">' + esc(T('pj_sp_ac_title', { f0, f1 })) + '</div>');
-    bits.push(plot(res.f, series, {
-      logX: true,
-      fmtY: v => v.toFixed(1) + 'dB',
-      fmtX: v => (v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(1) + 'k' : v.toFixed(0)) + 'Hz',
-    }));
-    if ((res.warnings || []).some(w => /ac_model_simplified/.test(w))) {
-      bits.push(warn(T('pj_sp_ac_simplified')));
+    // 用 dB 顯示：線性刻度會讓 -40dB 以下的東西全部貼在零線上看不見（在 paintRun 裡換算）
+    lastRun = { kind: 'ac', res, names: pick(res.nodes, 4), netlist: r.netlist };
+    cursors = [null, null]; cursorNext = 0;
+    paintRun();
+  }
+
+  // ---- 參數掃描 / 蒙地卡羅（SpiceSweep）----
+  // 量的是「AC 的 −3dB 轉角」：那是這個工具算得最準、也最常被公差影響的一個數字。
+  // 換別的指標要動這裡一行；刻意不做成通用表達式輸入——
+  // 那會變成一個沒有人驗得了的小語言。
+  function sweepSetup() {
+    const a = A();
+    if (!a || !window.SchSpice || !window.SpiceSweep || !window.SpiceMeasure) return null;
+    const nl = window.SchSpice.toNetlist(a.state.components, a.state.wires, window.CircuitEngine);
+    if (nl.unsupported.length) { msg(explain({ reason: 'unsupported', netlist: nl })); return null; }
+    if (!nl.elements.length) { msg(explain({ reason: 'empty', netlist: nl })); return null; }
+    const parts = nl.elements.filter(e => e.type === 'R' || e.type === 'C' || e.type === 'L');
+    if (!parts.length) { msg(warn(T('pj_sp_sw_nopart'))); return null; }
+    const f0 = parseFloat((el('spF0') || {}).value) || 1;
+    const f1 = parseFloat((el('spF1') || {}).value) || 1e6;
+    // AC 需要電壓源帶 ac 振幅，而且選項名是 start/stop/points/sweep。
+    // 兩件事任一個弄錯，出來的是一整條 0——圖是平的、−3dB 一律量不到，
+    // 而且不會有任何錯誤訊息。所以這裡跟 SchSpice.ac 走完全一樣的準備。
+    const acOpts = { start: f0, stop: f1, points: 20, sweep: 'dec' };
+    const runAcOn = function (els) {
+      const src = els.find(function (e) { return e.type === 'V'; });
+      if (src && !src.ac) src.ac = 1;
+      return window.Spice.ac(els, acOpts);
+    };
+    const probeRes = runAcOn(nl.elements.map(function (e) { return Object.assign({}, e); }));
+    const out = pick(probeRes.nodes, 1)[0];
+    if (!out) { msg(warn(T('pj_sp_sw_nonode'))); return null; }
+    // 探測那一輪要真的有訊號，不然掃描每一點都會回 null 而看不出原因
+    const peak = Math.max.apply(null, (probeRes.nodes[out] || { mag: [0] }).mag);
+    if (!(peak > 0)) { msg(warn(T('pj_sp_sw_noac'))); return null; }
+    return {
+      nl: nl, parts: parts, out: out,
+      run: runAcOn,
+      metric: function (res) { const c = window.SpiceMeasure.cutoff(res, out); return c ? c.f : null; }
+    };
+  }
+
+  // 結果分布畫成直方圖。散佈的形狀比「平均值 ± 標準差」好懂太多。
+  function histogram(values, lo, hi) {
+    const xs = (values || []).filter(function (v) { return typeof v === 'number' && isFinite(v); });
+    if (xs.length < 2) return '';
+    const mn = Math.min.apply(null, xs), mx = Math.max.apply(null, xs);
+    if (!(mx > mn)) return '';
+    const B = 20, bins = new Array(B).fill(0);
+    for (const v of xs) bins[Math.min(B - 1, Math.floor((v - mn) / (mx - mn) * B))]++;
+    const peak = Math.max.apply(null, bins) || 1;
+    const W = 300, H = 90, mb = 16;
+    const parts = ['<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#0f1720"/>'];
+    bins.forEach(function (c, i) {
+      const h = (c / peak) * (H - mb - 6);
+      const x = 4 + i * ((W - 8) / B);
+      parts.push('<rect x="' + x.toFixed(1) + '" y="' + (H - mb - h).toFixed(1) + '" width="' +
+        ((W - 8) / B - 1).toFixed(1) + '" height="' + h.toFixed(1) + '" fill="#38bdf8"/>');
+    });
+    // 規格界線畫出來，一眼看得出落在外面的那一截
+    for (const L of [lo, hi]) {
+      if (typeof L !== 'number' || !isFinite(L) || L < mn || L > mx) continue;
+      const x = 4 + ((L - mn) / (mx - mn)) * (W - 8);
+      parts.push('<line x1="' + x.toFixed(1) + '" y1="0" x2="' + x.toFixed(1) + '" y2="' + (H - mb) +
+        '" stroke="#f43f5e" stroke-width="1" stroke-dasharray="3 3"/>');
     }
+    parts.push('<text x="4" y="' + (H - 4) + '" fill="#8aa" font-size="9">' + esc(fmtHz(mn)) + '</text>');
+    parts.push('<text x="' + (W - 62) + '" y="' + (H - 4) + '" fill="#8aa" font-size="9">' + esc(fmtHz(mx)) + '</text>');
+    return '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="max-width:320px">' + parts.join('') + '</svg>';
+  }
+
+  function runSweep() {
+    const S = sweepSetup();
+    if (!S) return;
+    const id = (el('spSwPart') || {}).value || S.parts[0].id;
+    const target = S.parts.find(function (e) { return String(e.id) === String(id); }) || S.parts[0];
+    const span = Math.max(1.01, parseFloat((el('spSwSpan') || {}).value) || 4);
+    const steps = Math.max(2, Math.min(200, parseInt((el('spSwSteps') || {}).value, 10) || 9));
+    const r = window.SpiceSweep.sweep(S.nl.elements,
+      { id: target.id, from: target.value / span, to: target.value * span, steps: steps, scale: 'log' },
+      S.run, S.metric);
+    if (!r.ok) { msg(err(T('pj_sp_sw_fail', { why: r.reason }))); return; }
+    const rows = r.points.map(function (pt) {
+      return '<tr><td>' + esc(fmtNum(pt.value)) + '</td><td>' + esc(fmtHz(pt.metric)) + '</td></tr>';
+    }).join('');
+    const bits = ['<div style="font-weight:600">' + esc(T('pj_sp_sw_title', { id: target.id, node: S.out })) + '</div>'];
+    bits.push('<table style="width:100%;font-size:11px;border-collapse:collapse"><tr style="color:var(--muted)">' +
+      '<th align="left">' + esc(String(target.id)) + '</th><th align="left">-3dB</th></tr>' + rows + '</table>');
+    if (r.failed.length) bits.push(warn(T('pj_sp_sw_skipped', { n: r.failed.length })));
     msg(bits.join(''));
+  }
+
+  function runMonteCarlo() {
+    const S = sweepSetup();
+    if (!S) return;
+    const tol = Math.max(0.0001, (parseFloat((el('spMcTol') || {}).value) || 5) / 100);
+    const runs = Math.max(10, Math.min(2000, parseInt((el('spMcRuns') || {}).value, 10) || 200));
+    const seed = parseInt((el('spMcSeed') || {}).value, 10) || 1;
+    const dist = (el('spMcDist') || {}).value || 'gauss';
+    const parts = S.parts.map(function (e) { return { id: e.id, nominal: e.value, tol: tol, dist: dist }; });
+    const r = window.SpiceSweep.monteCarlo(S.nl.elements, parts, S.run, S.metric, { runs: runs, seed: seed });
+    if (!r.ok) { msg(err(T('pj_sp_mc_fail', { why: r.reason }))); return; }
+    const vals = r.samples.map(function (x) { return x.metric; }).filter(function (v) { return typeof v === 'number'; });
+    const st = r.stats;
+    if (!st) { msg(warn(T('pj_sp_mc_nometric'))); return; }
+    // 規格界線＝中位數 ±10%（沒有更好依據時的預設；最終由使用者判斷）
+    const nom = st.p50, lo = nom * 0.9, hi = nom * 1.1;
+    const y = window.SpiceSweep.yieldWithin(vals, lo, hi);
+    const bits = ['<div style="font-weight:600">' +
+      esc(T('pj_sp_mc_title', { n: r.samples.length, tol: (tol * 100).toFixed(1), node: S.out })) + '</div>'];
+    bits.push(histogram(vals, lo, hi));
+    bits.push('<div style="font-size:11px;line-height:1.6">' +
+      esc(T('pj_sp_mc_stats', { p50: fmtHz(st.p50), p1: fmtHz(st.p1), p99: fmtHz(st.p99), sd: fmtHz(st.sd) })) +
+      '<br>' + esc(T('pj_sp_mc_yield', { pct: (y.ratio * 100).toFixed(1), lo: fmtHz(lo), hi: fmtHz(hi) })) +
+      '<br><span style="color:var(--muted)">' + esc(T('pj_sp_mc_seed', { seed: seed })) + '</span></div>');
+    if (r.failed.length) bits.push(warn(T('pj_sp_sw_skipped', { n: r.failed.length })));
+    bits.push('<div style="color:var(--muted);font-size:11px">' + esc(T('pj_sp_mc_honest')) + '</div>');
+    msg(bits.join(''));
+  }
+
+  // 掃描對象下拉：只列 R/C/L（掃電壓源不會動到轉角，列出來只會誤導）
+  function fillSweepParts() {
+    const sel = el('spSwPart');
+    const a = A();
+    if (!sel || !a || !window.SchSpice) return;
+    let list = [];
+    try {
+      const nl = window.SchSpice.toNetlist(a.state.components, a.state.wires, window.CircuitEngine);
+      list = (nl.elements || []).filter(function (e) { return e.type === 'R' || e.type === 'C' || e.type === 'L'; });
+    } catch (e) { list = []; }
+    const cur = sel.value;
+    sel.innerHTML = list.map(function (e) {
+      return '<option value="' + esc(String(e.id)) + '">' + esc(String(e.id)) + '</option>';
+    }).join('');
+    if (cur && list.some(function (e) { return String(e.id) === cur; })) sel.value = cur;
   }
 
   function boot() {
@@ -214,6 +474,10 @@
     el('spDc').addEventListener('click', runDc);
     el('spTran')?.addEventListener('click', runTran);
     el('spAc')?.addEventListener('click', runAc);
+    el('spSweep')?.addEventListener('click', runSweep);
+    el('spMc')?.addEventListener('click', runMonteCarlo);
+    el('spSwPart')?.addEventListener('focus', fillSweepParts);
+    fillSweepParts();
     const paint = () => { const h = el('spHint'); if (h) h.textContent = T('pj_sp_hint'); };
     paint();
     document.addEventListener('vs-lang-change', paint);

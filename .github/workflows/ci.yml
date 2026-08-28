@@ -169,6 +169,10 @@ jobs:
         run: node sch-swap.test.js
       - name: pcb-drag.test（拖整段走線：pad 那一端不可以被拖走）
         run: node pcb-drag.test.js
+      - name: spice-measure.test（波形量測：對解析解、量不出來回 null 不回 0）
+        run: node spice-measure.test.js
+      - name: spice-sweep.test（掃描／蒙地卡羅：可重現、不改原始網表、公差不超標）
+        run: node spice-sweep.test.js
       - name: knowledge-art-audit（知識卡圖：接腳接上、字不貼圖）
         run: node knowledge-art-audit.js --strict --quiet
 
