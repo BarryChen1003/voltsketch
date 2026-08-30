@@ -62,15 +62,27 @@ node pcb-logic.test.js && node gerber-check.js && node gerber-readback.js
 
 **確認線上是不是最新版**（現在是自動部署，但仍要能查）：
 
-```bash
-for f in pcb.js app.js i18n.js; do C=$(curl -s -o /tmp/live.$$ -w '%{http_code}' --max-time 40 https://hardware-ai.org/$f); if [ "$C" != 200 ]; then echo "$f 抓不到（HTTP $C）—— 這不是「不同」，是沒抓到"; continue; fi; L=$(sed 's/\r$//' $f | md5sum | cut -c1-8); R=$(sed 's/\r$//' /tmp/live.$$ | md5sum | cut -c1-8); [ "$L" = "$R" ] && echo "$f ✓" || echo "$f ✗ local=$L live=$R"; done; rm -f /tmp/live.$$
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\live-check.ps1
 ```
 
-這段指令刻意做了兩件事，兩件都是踩過的坑：
+（只查幾個檔就接檔名：`... -File tools\live-check.ps1 pcb.js app.js`。
+全部一致回 exit 0，有不一致回不一致的個數。）
 
-- **`sed 's/\r$//'`**：本機是 CRLF、線上是 LF，不正規化會把**每個檔**都報成「不同」。
-- **先看 HTTP 狀態再比對**：抓取失敗時 `curl -s` 回空字串，md5 是 `d41d8cd9`，
-  看起來就只是「不一樣」——會被誤讀成沒部署。抓不到要說抓不到。
+指令給的是 PowerShell 版本，因為使用者的殼是 PowerShell——bash 的 `for f in ...; do`
+在那邊直接 parse error。腳本裡有三個防呆，三個都是踩過的坑：
+
+- **一律讀原始位元組、明確用 UTF-8 解碼**，不用 `Get-Content -Raw` 也不用
+  `Invoke-WebRequest` 的 `.Content`。站台回 `Content-Type: text/javascript`（無 charset），
+  Windows PowerShell 5.1 會把回應當 ISO-8859-1 解、把無 BOM 的本機檔當 cp950 解，
+  兩邊各爛一種 → **每個檔都報「不同」**，看起來就像整批沒部署。
+  （實測 `i18n.js`：409463 bytes；UTF-8 解 271517 字元、Latin-1 解 409463、cp950 解 303492。）
+- **`` -replace "`r`n","`n" ``**：本機工作區可能是 CRLF、線上一定是 LF，不正規化一樣全報「不同」。
+- **抓不到要說抓不到**。下載失敗時內容是空的，逐字元比對只會顯示「不一樣」，
+  會被誤讀成沒部署。腳本改成印出例外訊息並計入失敗數。
+
+順帶一提：`tools/live-check.ps1` 存成 **UTF-8 with BOM**。沒有 BOM 的話 5.1 會用
+cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條對所有含中文的 `.ps1` 都成立。
 
 ---
 
@@ -254,7 +266,8 @@ node tools/refboard-rebuild.js rp2040-pico30  # 只重建一片
 `gerber-mfg.test.js` 拿兩邊逐列比對，分岔就紅。
 
 ### 需要使用者跑 SQL 的檔
-`supabase/sql/` 底下：`designs.sql`、`footprints.sql`、`design-versions.sql`（**2026-08-28 新增，還沒跑**）。
+`supabase/sql/` 底下：`designs.sql`、`footprints.sql`、`design-versions.sql`
+（`design-versions.sql` **2026-08-30 已由使用者執行**，驗證查詢回 `tbl=1 / policies=4 / trg=1`）。
 照規矩 8：把整段 SQL 貼進對話，不要只給路徑。
 
 ---
@@ -435,7 +448,7 @@ node plan-dates.test.mjs
 | **Altium 匯入只辨識不解析** | 刻意的。`.PcbDoc` 是二進位 OLE、無公開規格，半套逆向會把元件放在錯的位置，比匯入失敗更糟 |
 | **內建 3D 模型庫** | 刻意不做。那是別人的商業資料，跟明確不做的 LCSC 生態同一條線。做的是「匯入你自己的」 |
 | **料件庫存與採購整合** | 同上 |
-| **`design_versions` 表還沒建** | `supabase/sql/design-versions.sql` **要使用者貼進 Supabase 執行**，在那之前變更歷史面板會說「先選一個雲端專案」 |
+| **變更歷史沒走過真實路徑** | 表已於 2026-08-30 建好（`tbl=1 / policies=4 / trg=1`），但「建檢查點 → 改東西 → 還原 → 歷史長出分支」這條**沒有人從瀏覽器實際走過一次**。node 測的是純函式，測不到 RLS 與登入 |
 | **自訂多腳 IC 存元件庫** | 要登入才測得到，**沒人驗過**（封裝庫那條路已驗，這是線路圖端的 IC） |
 | **贊助流程** | `plan='sponsor'` 只入帳不發權益那條路從沒實測 |
 | **備份還原** | `restore-drill.sh` 用合成 dump 自我驗證過，**沒跑過真的 artifact** |
@@ -477,7 +490,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 ### 接下來最該做的（依價值排序）
 
 1. **用真工具開一次匯出檔**（§8 唯一的 🔴，只有站主做得了）。
-2. **跑 `design-versions.sql`**，變更歷史才會真的能用。
+2. **在瀏覽器走一次變更歷史**（表已建好，功能還沒被真的用過一次）。
 3. 3D 檢視接上匯入的 STEP（匯出已經接了，畫面還沒）。
 4. gate swap 的 UI（判準已經有了）。
 5. 匯流排帶進 PCB 端（讓板子知道「這 8 條是一束」）。
@@ -608,3 +621,13 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 - `.gitignore` 擋 git，`.assetsignore` 擋網站，兩個是分開的閘。
 - **前端先上、後端沒跟上＝安靜給錯東西**。
 - **清單型的東西要有「兩邊對照」的檢查**（§6 與 `ci.yml`），不要靠記得同時改兩個地方。
+
+### 環境（給使用者跑的指令）
+
+- **給使用者的指令一律 PowerShell 語法，並且在 PowerShell 裡實跑過再貼**。
+  bash 的 `for f in ...; do` 在他的殼是 parse error；「我在自己的環境跑過」不算驗證。
+- **不要假設是 pwsh 7**。使用者的視窗可能是 Windows PowerShell 5.1，而 5.1 有兩個致命預設：
+  無 charset 的回應用 ISO-8859-1 解、無 BOM 的檔案用系統 ANSI(cp950) 解。
+  比對線上與本機一律**讀原始位元組再明確用 UTF-8 解**，不要比 `.Content` 與 `Get-Content -Raw`。
+- **含中文的 `.ps1` 存成 UTF-8 with BOM**，否則 5.1 讀腳本本身就亂碼、直接 parse error。
+- 兩件都驗過才算數：`powershell.exe -NoProfile -File <script>`（5.1）與 pwsh 7 各跑一次。

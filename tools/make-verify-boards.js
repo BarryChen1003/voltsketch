@@ -298,6 +298,8 @@ async function main() {
       flashes: cu.reduce((n, f) => n + (f.stats ? f.stats.flash : 0), 0),
       pourIslands: pour.islands, pourDropped: pour.dropped,
       gerberWarnings: g.warnings.length, odbWarnings: o.warnings.length, stepOk, kicadOk,
+      // 只留數字的話，看到「警告 G2/O1」也不知道要不要緊。原文一起寫出來。
+      warningText: [].concat(g.warnings, o.warnings),
     });
   }
 
