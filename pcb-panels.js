@@ -32,7 +32,7 @@
     const css = `
     .pcb-float{position:absolute;z-index:${Z_BASE};width:300px;max-width:calc(100vw - 24px);
       background:#fff;border:1px solid var(--line);border-radius:10px;
-      box-shadow:0 10px 30px rgba(15,23,42,.18);display:flex;flex-direction:column;overflow:hidden}
+      box-shadow:0 10px 30px rgba(15,23,42,.18);display:flex;flex-direction:column}
     .pcb-float[hidden]{display:none}
     .pcb-float-head{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:move;
       background:var(--panel-soft);border-bottom:1px solid var(--line);user-select:none;touch-action:none}
@@ -44,8 +44,19 @@
     .pcb-float-body{padding:10px 12px;overflow:auto;max-height:min(62vh,560px)}
     .pcb-float-body .panel-section{border:none;background:none;padding:0;margin:0;box-shadow:none}
     .pcb-float-body .panel-section > h2{margin-top:0}
-    .pcb-float-rs{position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;
+    .pcb-float-rs{position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;pointer-events:none;
       background:linear-gradient(135deg,transparent 50%,var(--line) 50%,var(--line) 70%,transparent 70%)}
+    /* 四邊與四角的抓取區。邊 7px、角 14px：太細抓不到，太粗會擋到內容的捲軸。
+       touch-action:none 是必要的——不設的話觸控／手寫筆會被瀏覽器當成捲動。 */
+    .pcb-rs{position:absolute;z-index:3;touch-action:none}
+    .pcb-rs-n{top:-3px;left:10px;right:10px;height:7px;cursor:ns-resize}
+    .pcb-rs-s{bottom:-3px;left:10px;right:10px;height:7px;cursor:ns-resize}
+    .pcb-rs-w{left:-3px;top:10px;bottom:10px;width:7px;cursor:ew-resize}
+    .pcb-rs-e{right:-3px;top:10px;bottom:10px;width:7px;cursor:ew-resize}
+    .pcb-rs-nw{left:-3px;top:-3px;width:14px;height:14px;cursor:nwse-resize}
+    .pcb-rs-ne{right:-3px;top:-3px;width:14px;height:14px;cursor:nesw-resize}
+    .pcb-rs-sw{left:-3px;bottom:-3px;width:14px;height:14px;cursor:nesw-resize}
+    .pcb-rs-se{right:-3px;bottom:-3px;width:16px;height:16px;cursor:nwse-resize}
     .pcb-menu-wrap{position:relative;display:inline-block}
     .pcb-menu-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:${Z_BASE + 60};min-width:210px;
       background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px;
@@ -98,27 +109,55 @@
     head.addEventListener('pointerup', end);
     head.addEventListener('pointercancel', end);
 
-    const grip = win.querySelector('.pcb-float-rs');
-    let rz = false, rw = 0, rh = 0;
-    grip.addEventListener('pointerdown', e => {
-      rz = true; sx = e.clientX; sy = e.clientY;
-      rw = win.offsetWidth; rh = win.querySelector('.pcb-float-body').offsetHeight;
-      grip.setPointerCapture(e.pointerId); e.preventDefault(); e.stopPropagation();
+    // ---- 縮放：四邊 + 四角 ----
+    // 高度控制的是 body 的 max-height（不是視窗高）：標題列固定高度，
+    // 只有內容區伸縮，往上拉時標題才不會被壓扁。
+    const body = win.querySelector('.pcb-float-body');
+    const MIN_W = 220, MIN_H = 100;
+    let rz = null, rw = 0, rh = 0, rx = 0, ry = 0;
+    win.querySelectorAll('.pcb-rs').forEach(h => {
+      h.addEventListener('pointerdown', e => {
+        rz = h.getAttribute('data-dir');
+        sx = e.clientX; sy = e.clientY;
+        rw = win.offsetWidth; rh = body.offsetHeight;
+        const r = win.getBoundingClientRect();
+        rx = r.left + window.scrollX; ry = r.top + window.scrollY;
+        bringFront(win);
+        h.setPointerCapture(e.pointerId); e.preventDefault(); e.stopPropagation();
+      });
+      h.addEventListener('pointermove', e => {
+        if (!rz) return;
+        const dx = e.clientX - sx, dy = e.clientY - sy;
+        let w = rw, hh = rh, x = rx, y = ry;
+        if (rz.indexOf('e') >= 0) w = rw + dx;
+        if (rz.indexOf('w') >= 0) w = rw - dx;
+        if (rz.indexOf('s') >= 0) hh = rh + dy;
+        if (rz.indexOf('n') >= 0) hh = rh - dy;
+        // 先夾到下限再回推位置：夾完才算位移，往左／往上拉到底時視窗才不會繼續飄走
+        w = Math.max(MIN_W, Math.min(w, document.documentElement.clientWidth - 16));
+        hh = Math.max(MIN_H, hh);
+        if (rz.indexOf('w') >= 0) x = rx + (rw - w);
+        if (rz.indexOf('n') >= 0) y = ry + (rh - hh);
+        win.style.width = w + 'px';
+        // 只設 max-height 的話，內容比拉出來的高度矮時完全沒反應（上限不是高度）。
+        // 設實際 height 並解掉預設上限，拉多大就是多大。
+        body.style.height = hh + 'px';
+        body.style.maxHeight = 'none';
+        if (rz.indexOf('w') >= 0) { win.style.left = Math.max(4, x) + 'px'; win.style.right = 'auto'; }
+        if (rz.indexOf('n') >= 0) win.style.top = Math.max(4, y) + 'px';
+      });
+      const rend = e => {
+        if (!rz) return; rz = null;
+        try { h.releasePointerCapture(e.pointerId); } catch (_) {}
+        const st2 = { w: win.offsetWidth, h: body.offsetHeight };
+        const lx = parseInt(win.style.left, 10), ly = parseInt(win.style.top, 10);
+        if (isFinite(lx)) st2.x = lx;
+        if (isFinite(ly)) st2.y = ly;
+        patch(key, st2);
+      };
+      h.addEventListener('pointerup', rend);
+      h.addEventListener('pointercancel', rend);
     });
-    grip.addEventListener('pointermove', e => {
-      if (!rz) return;
-      const w = Math.max(220, rw + e.clientX - sx);
-      const h = Math.max(120, rh + e.clientY - sy);
-      win.style.width = w + 'px';
-      win.querySelector('.pcb-float-body').style.maxHeight = h + 'px';
-    });
-    const rend = e => {
-      if (!rz) return; rz = false;
-      try { grip.releasePointerCapture(e.pointerId); } catch (_) {}
-      patch(key, { w: win.offsetWidth, h: win.querySelector('.pcb-float-body').offsetHeight });
-    };
-    grip.addEventListener('pointerup', rend);
-    grip.addEventListener('pointercancel', rend);
   }
 
   function setOpen(key, open, remember) {
@@ -161,7 +200,10 @@
       win.innerHTML =
         '<div class="pcb-float-head"><span class="pcb-float-title"></span>' +
         '<button class="pcb-float-x" type="button" aria-label="' + T('pp_close') + '">✕</button></div>' +
-        '<div class="pcb-float-body"></div><div class="pcb-float-rs"></div>';
+        '<div class="pcb-float-body"></div>' +
+        ['n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se']
+          .map(d => '<div class="pcb-rs pcb-rs-' + d + '" data-dir="' + d + '"></div>').join('') +
+        '<div class="pcb-float-rs"></div>';
       win.querySelector('.pcb-float-title').textContent = title;
       win.querySelector('.pcb-float-title').dataset.titleKey = titleKey || '';
       // 搬移原節點（保留所有既有事件與 id）
@@ -177,7 +219,11 @@
       const s = st[key] || {};
       if (typeof s.x === 'number') { win.style.left = s.x + 'px'; win.style.top = (s.y || 80) + 'px'; }
       if (s.w) win.style.width = s.w + 'px';
-      if (s.h) win.querySelector('.pcb-float-body').style.maxHeight = s.h + 'px';
+      if (s.h) {
+        const b0 = win.querySelector('.pcb-float-body');
+        b0.style.height = s.h + 'px';
+        b0.style.maxHeight = 'none';
+      }
     });
 
     buildMenu(st);
