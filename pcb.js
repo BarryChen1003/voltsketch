@@ -2117,6 +2117,72 @@ const pcbApp = {
     this.populateSelFp();
   },
 
+  // ---- 匯流排（從線路圖帶過來的成組關係）----
+  // 板子上沒有「一束」這種東西，只有一條條 net。這一段把成組關係顯示出來，
+  // 並且給兩個真正用得到的動作：整束高亮、整束等長。
+  busReports() {
+    const gs = this.state.busGroups || [];
+    if (!gs.length || !window.SchBus || !window.NetRules) return [];
+    const lenOf = n => window.NetRules.netLength(this.state.traces, n);
+    return gs.map(g => window.SchBus.report(g, lenOf));
+  },
+
+  renderBusPanel() {
+    const box = document.getElementById('busRows');
+    if (!box) return;
+    const reps = this.busReports();
+    if (!reps.length) { box.innerHTML = "<div style='color:var(--muted)'>" + pcbT('pj_bus_none') + '</div>'; return; }
+    const esc = t => String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+    const cur = this.state.highlightBus || '';
+    box.innerHTML = reps.map(r => {
+      const on = cur === r.spec;
+      // 還沒繞的成員單獨標出來：把它們算進 skew 會得到一個假的大數字
+      const sk = r.routed >= 2 ? r.skew.toFixed(2) + ' mm' : '—';
+      return "<div class='bus-row' data-bus='" + esc(r.spec) + "' style='display:grid;grid-template-columns:1fr auto auto;gap:6px;padding:4px 6px;cursor:pointer;border-bottom:1px solid var(--line);" +
+        (on ? 'background:rgba(46,204,113,.15)' : '') + "'>" +
+        '<span>' + esc(r.spec) + '</span>' +
+        "<span style='color:var(--muted)'>" + r.routed + '/' + r.width + '</span>' +
+        "<span title='skew' style='font-family:ui-monospace,Menlo,monospace'>" + sk + '</span></div>';
+    }).join('');
+  },
+
+  toggleBusHighlight(spec) {
+    const g = (this.state.busGroups || []).find(x => x.spec === spec);
+    if (!g) return false;
+    const on = this.state.highlightBus === spec;
+    this.state.highlightBus = on ? '' : spec;
+    this.state.highlightBusNets = on ? [] : g.members.slice();
+    // 單條高亮與整束高亮互斥：兩個同時亮，使用者分不出哪個是哪個
+    if (!on) this.state.highlightNet = null;
+    this.renderBusPanel();
+    this.renderNetPanel();
+    this.render();
+    return true;
+  },
+
+  // 整束等長：全部拉到目前最長的那一條。逐條走既有的蛇形調諧，
+  // 不另外寫一套——兩套等長邏輯遲早會給出不同答案。
+  tuneBus(spec) {
+    const g = (this.state.busGroups || []).find(x => x.spec === spec);
+    if (!g || !window.NetRules) return false;
+    const lenOf = n => window.NetRules.netLength(this.state.traces, n);
+    const rep = window.SchBus.report(g, lenOf);
+    if (rep.routed < 2) { this.toast(pcbT('pj_bus_need2', { spec: spec }), 'warn'); return false; }
+    const target = rep.max;
+    let done = 0, skipped = 0;
+    for (const row of rep.rows) {
+      if (row.len <= 0) { skipped++; continue; }              // 沒繞的跳過，不是失敗
+      if (target - row.len < 0.05) continue;                   // 已經是最長的那條
+      if (this.meanderNet(row.net, target)) done++; else skipped++;
+    }
+    const after = window.SchBus.report(g, lenOf);
+    this.state.ratsnest = null;
+    this.renderBusPanel();
+    this.render();
+    this.toast(pcbT('pj_bus_tuned', { spec: spec, n: done, skew: after.skew.toFixed(2), skipped: skipped }), skipped ? 'warn' : 'info');
+    return true;
+  },
+
   // 走線屬性面板。以前選中走線只能刪：線寬與層都得先退出、改左側欄位、重畫一次。
   syncTracePanel() {
     const box = document.getElementById('traceSelFields');
@@ -2423,38 +2489,29 @@ const pcbApp = {
     return { traces: out, k, amp: A };
   },
 
-  meanderTune() {
-    const msg = document.getElementById('tuneMsg');
-    const say = (t, k) => { if (msg) msg.textContent = t; this.toast(t, k || 'info'); };
-    const net = document.getElementById('tuneNet')?.value?.trim();
-    if (!net) { say(pcbT('pj_tune_nonet'), 'warn'); return; }
-    if (!window.NetRules) return;
+  // 等長調諧的核心：把 net 拉長到 target。不碰 DOM、不彈 toast，
+  // 因為「整束等長」要對每一條呼叫這一支——訊息由呼叫端統一講。
+  // 兩套等長邏輯遲早會給出不同答案，所以只有這一份。
+  meanderNet(net, target) {
+    if (!window.NetRules || !net || !(target > 0)) return { ok: false, why: "args" };
     const L = NetRules.netLength(this.state.traces, net);
-    if (!(L > 0)) { say(pcbT('pj_tune_notrace', { net }), 'warn'); return; }
-    let target = parseFloat(document.getElementById('tuneTarget')?.value);
-    if (!(target > 0)) {
-      const pair = this.pairNetOf(net);
-      if (!pair) { say(pcbT('pj_tune_nopair', { net }), 'warn'); return; }
-      target = NetRules.netLength(this.state.traces, pair);
-    }
+    if (!(L > 0)) return { ok: false, why: "notrace", net: net };
     const dL = target - L;
-    if (dL < 0.05) { say(pcbT('pj_tune_already', { len: L.toFixed(2), target: target.toFixed(2) }), 'info'); return; }
+    if (dL < 0.05) return { ok: true, why: "already", net: net, before: L, after: L, target: target, segs: 0, bumps: 0 };
 
-    // 舊版只挑最長那一段，塞不下就整個放棄。實際上補償量可以攤到好幾段——
-    // 一條 net 常常是好幾段折線，每段都能吃一點。由長到短依序吃，
-    // 每段最多吃到自己的容量上限（bump 數 × 振幅上限）。
+    // 補償量攤到好幾段：一條 net 常常是好幾段折線，每段都能吃一點。
+    // 由長到短依序吃，每段最多吃到自己的容量上限（bump 數 × 振幅上限）。
     const AMP_MAX = 3.0;
     const segs = this.state.traces
-      .filter(t => (t.net || '') === net)
-      .map(t => ({ t, ...this.meanderCapacity(t, AMP_MAX) }))
+      .filter(t => (t.net || "") === net)
+      .map(t => Object.assign({ t: t }, this.meanderCapacity(t, AMP_MAX)))
       .filter(x => x.cap > 0)
       .sort((a, b) => b.cap - a.cap);
-    if (!segs.length) { say(pcbT('pj_tune_nofit'), 'error'); return; }
+    if (!segs.length) return { ok: false, why: "nofit", net: net, before: L, target: target };
 
     const totalCap = segs.reduce((a, x) => a + x.cap, 0);
     if (totalCap < dL - 1e-9) {
-      say(pcbT('pj_tune_short', { need: dL.toFixed(2), cap: totalCap.toFixed(2), n: segs.length }), 'error');
-      return;
+      return { ok: false, why: "short", net: net, need: dL, cap: totalCap, n: segs.length, before: L, target: target };
     }
 
     this.hist();
@@ -2475,10 +2532,35 @@ const pcbApp = {
     });
     this.state.ratsnest = null;
     const after = NetRules.netLength(this.state.traces, net);
-    say(pcbT('pj_tune_done2', {
-      net, before: L.toFixed(2), after: after.toFixed(2), target: target.toFixed(2),
-      segs: used, k: bumps
-    }), Math.abs(after - target) < 0.05 ? 'info' : 'warn');
+    return { ok: true, why: "", net: net, before: L, after: after, target: target, segs: used, bumps: bumps };
+  },
+
+  meanderTune() {
+    const msg = document.getElementById("tuneMsg");
+    const say = (t, k) => { if (msg) msg.textContent = t; this.toast(t, k || "info"); };
+    const net = document.getElementById("tuneNet")?.value?.trim();
+    if (!net) { say(pcbT("pj_tune_nonet"), "warn"); return; }
+    if (!window.NetRules) return;
+    const L = NetRules.netLength(this.state.traces, net);
+    if (!(L > 0)) { say(pcbT("pj_tune_notrace", { net: net }), "warn"); return; }
+    let target = parseFloat(document.getElementById("tuneTarget")?.value);
+    if (!(target > 0)) {
+      const pair = this.pairNetOf(net);
+      if (!pair) { say(pcbT("pj_tune_nopair", { net: net }), "warn"); return; }
+      target = NetRules.netLength(this.state.traces, pair);
+    }
+    const r = this.meanderNet(net, target);
+    if (!r.ok) {
+      if (r.why === "nofit") say(pcbT("pj_tune_nofit"), "error");
+      else if (r.why === "short") say(pcbT("pj_tune_short", { need: r.need.toFixed(2), cap: r.cap.toFixed(2), n: r.n }), "error");
+      else say(pcbT("pj_tune_notrace", { net: net }), "warn");
+      return;
+    }
+    if (r.why === "already") { say(pcbT("pj_tune_already", { len: L.toFixed(2), target: target.toFixed(2) }), "info"); return; }
+    say(pcbT("pj_tune_done2", {
+      net: net, before: r.before.toFixed(2), after: r.after.toFixed(2), target: target.toFixed(2),
+      segs: r.segs, k: r.bumps
+    }), Math.abs(r.after - target) < 0.05 ? "info" : "warn");
     this.render();
   },
 
@@ -2675,15 +2757,19 @@ const pcbApp = {
 
   // 高亮某個網路：走線加粗一層、pad 畫圈。只是檢視，不改資料。
   drawNetHighlight(scale) {
-    const net = this.state.highlightNet;
-    if (!net) return;
+    // 單條高亮，或整束高亮（匯流排）。兩者互斥，同時亮的話分不出哪條是哪條。
+    const set = this.state.highlightBusNets && this.state.highlightBusNets.length
+      ? this.state.highlightBusNets : (this.state.highlightNet ? [this.state.highlightNet] : []);
+    if (!set.length) return;
+    const inSet = n => set.indexOf(n || '') >= 0;
+    const net = set[0];
     const { ctx } = this;
     const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
     ctx.save();
     ctx.strokeStyle = "rgba(241,196,15,0.85)";
     ctx.lineCap = "round";
     for (const t of (this.state.traces || [])) {
-      if ((t.net || "") !== net) continue;
+      if (!inSet(t.net)) continue;
       ctx.lineWidth = Math.max(2, ((t.width || 0.3) + 0.25) * scale);
       ctx.beginPath(); this.tracePath(ctx, t, scale); ctx.stroke();
     }
@@ -3240,6 +3326,8 @@ const pcbApp = {
     s2.schAssumed = conv.assumed;
     s2.selected = null; s2.selectedSet = [];
     s2.ratsnest = null; s2.showRatsnest = true;
+    // 匯流排：轉過來之後就只剩一條條 net，這份清單是板子唯一還知道成組關係的地方
+    s2.busGroups = window.Sch2Pcb.busGroupsFrom(pages) || [];
 
     let bd = { w: s2.boardWidth, h: s2.boardHeight };
     if (!hadLayout) {
@@ -3259,6 +3347,7 @@ const pcbApp = {
     this.syncSelPanel();
     this.renderPartsList();
     this.populateEmiSelects();
+    this.renderBusPanel();
     this.render();
 
     const netN = new Set([...rootName.values()]).size;
@@ -3452,6 +3541,16 @@ const pcbApp = {
     document.querySelector('#zoomOut')?.addEventListener('click', () => this.zoomOut());
     document.querySelector('#zoomFit')?.addEventListener('click', () => this.zoomFit());
     this.initContextMenu();
+    this.renderBusPanel();
+    document.getElementById('busRows')?.addEventListener('click', (e) => {
+      const row = e.target.closest ? e.target.closest('.bus-row') : null;
+      if (row) this.toggleBusHighlight(row.getAttribute('data-bus'));
+    });
+    document.getElementById('busTuneBtn')?.addEventListener('click', () => {
+      const spec = this.state.highlightBus;
+      if (!spec) { this.toast(pcbT('pj_bus_pick'), 'warn'); return; }
+      this.tuneBus(spec);
+    });
     this.renderShortcutHelp();
     window.addEventListener('vs-lang-change', () => this.renderShortcutHelp());
     document.getElementById('tsWidth')?.addEventListener('change', (e) => {

@@ -912,6 +912,15 @@
             </div>
           </section>
 
+          <section class="panel-section" data-panel="bus" data-panel-data-i18n-title="pj_bus_title" title="匯流排">
+            <div class="section-head">
+              <h2 data-i18n="pj_bus_title">匯流排</h2>
+              <button class="small-button" id="busTuneBtn" data-i18n="pj_bus_tune_btn" data-i18n-title="pj_bus_tune_title" title="把選中那一束的所有成員拉到最長那條的長度">〰 整束等長</button>
+            </div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:6px" data-i18n="pj_bus_hint">從線路圖同步 netlist 時帶過來。點一列＝整束高亮；skew 只算已繞的成員（沒繞的算進去會是假的大數字）。</div>
+            <div id="busRows" style="font-size:12px;max-height:180px;overflow-y:auto"></div>
+          </section>
+
           <section class="panel-section">
             <h2 data-i18n="pj_sc_title">快捷鍵</h2>
             <div id="shortcutRows"></div>
@@ -1250,18 +1259,19 @@
     <script src="./pcb-nets.js?v=1"></script>
     <script src="./pcb-drag.js?v=1"></script>
     <script src="./pcb-fpinst.js?v=1"></script>
+    <script src="./sch-bus.js?v=2"></script>
     <script src="./sch-swap.js?v=2"></script>
     <script src="./snp.js?v=1"></script>
     <script src="./snp-ui.js?v=1"></script>
     <script src="./pcb-theme.js?v=1"></script>
     <script src="./pcb-interact.js?v=2"></script>
-    <script src="./pcb.js?v=73"></script>
+    <script src="./pcb.js?v=74"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-08-25a"></script>
     <script src="./pcb-stackup.js?v=2026-08-24b"></script>
     <script src="./pcb-fabs.js?v=5"></script>
     <script src="./pcb-mfg.js?v=10"></script>
-    <script src="./pcb-sch2pcb.js?v=7"></script>
+    <script src="./pcb-sch2pcb.js?v=8"></script>
     <script src="./pcb-dxf.js?v=1"></script>
     <script src="./pcb-step.js?v=2"></script>
     <script src="./pcb-step-model.js?v=1"></script>

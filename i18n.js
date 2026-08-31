@@ -1336,6 +1336,15 @@ window.I18N = (function () {
     pj_ts_del:       { zh: '刪除此段', en: 'Delete this segment', ja: 'この区間を削除', ko: '이 구간 삭제' },
     pj_ts_none:      { zh: '用 select 工具點一條走線，就能在這裡改線寬與層。', en: 'Click a trace with the select tool to change its width and layer here.', ja: '選択ツールで配線をクリックすると、ここで幅とレイヤーを変更できます。', ko: '선택 도구로 배선을 클릭하면 여기서 폭과 레이어를 변경할 수 있습니다.' },
     pj_ts_applied:   { zh: '走線已更新（{what}）', en: 'Trace updated ({what})', ja: '配線を更新しました（{what}）', ko: '배선을 업데이트했습니다({what})' },
+    // ---- 匯流排帶進 PCB（sch-bus.js groups/report）----
+    pj_bus_title:     { zh: '匯流排', en: 'Buses', ja: 'バス', ko: '버스' },
+    pj_bus_hint:      { zh: '從線路圖同步 netlist 時帶過來。點一列＝整束高亮；skew 只算已繞的成員（沒繞的算進去會是假的大數字）。', en: 'Carried over when the netlist is synced from the schematic. Click a row to highlight the whole bus; skew counts only routed members (counting unrouted ones gives a fake large number).', ja: '回路図から netlist を同期したときに引き継がれます。行をクリックすると束全体をハイライト。スキューは配線済みのメンバーのみで計算します（未配線を含めると偽の大きな値になります）。', ko: '회로도에서 netlist를 동기화할 때 넘어옵니다. 행을 클릭하면 버스 전체가 강조됩니다. 스큐는 배선된 멤버만 계산합니다(미배선을 포함하면 가짜로 큰 값이 됩니다).' },
+    pj_bus_none:      { zh: '沒有匯流排（線路圖裡沒畫，或還沒同步 netlist）', en: 'No buses (none drawn in the schematic, or the netlist has not been synced)', ja: 'バスがありません（回路図に無いか、netlist 未同期）', ko: '버스가 없습니다(회로도에 없거나 netlist를 아직 동기화하지 않음)' },
+    pj_bus_tune_btn:  { zh: '〰 整束等長', en: '〰 Match bus lengths', ja: '〰 バス等長化', ko: '〰 버스 등장' },
+    pj_bus_tune_title:{ zh: '把選中那一束的所有成員拉到最長那條的長度', en: 'Stretch every member of the selected bus to the length of its longest trace', ja: '選択したバスの全メンバーを最長の配線長に揃えます', ko: '선택한 버스의 모든 멤버를 가장 긴 배선 길이에 맞춥니다' },
+    pj_bus_pick:      { zh: '先點一束（點列選取）', en: 'Select a bus first (click a row)', ja: '先にバスを選んでください（行をクリック）', ko: '먼저 버스를 선택하세요(행 클릭)' },
+    pj_bus_need2:     { zh: '{spec} 至少要有兩條已繞的成員才談得上等長', en: '{spec} needs at least two routed members before lengths can be matched', ja: '{spec} は配線済みメンバーが 2 本以上ないと等長化できません', ko: '{spec}는 배선된 멤버가 2개 이상이어야 등장할 수 있습니다' },
+    pj_bus_tuned:     { zh: '{spec}：調了 {n} 條，skew 現在 {skew}mm（跳過 {skipped} 條）', en: '{spec}: tuned {n} traces, skew is now {skew} mm ({skipped} skipped)', ja: '{spec}：{n} 本を調整、スキューは {skew}mm（{skipped} 本スキップ）', ko: '{spec}: {n}개 조정, 스큐는 현재 {skew}mm({skipped}개 건너뜀)' },
     // ---- 同型元件對調（gate swap）----
     pj_gate_btn:      { zh: '⇆ 換件', en: '⇆ Swap parts', ja: '⇆ 部品交換', ko: '⇆ 부품 교환' },
     pj_gate_title:    { zh: '選兩顆同型元件（同型別／同料號／同封裝）互換位置，net 跟著走；會回報飛線總長變化', en: 'Select two identical parts (same type, part number and footprint) to swap their placements; nets follow, and the ratsnest length change is reported', ja: '同型部品（同じ型別・型番・フットプリント）を 2 つ選んで位置を入れ替えます。ネットは追従し、ラッツネスト長の変化を表示します', ko: '동일한 부품(같은 형식·부품번호·풋프린트) 두 개를 선택해 위치를 교환합니다. 네트가 따라가며 랫츠네스트 길이 변화를 보고합니다' },

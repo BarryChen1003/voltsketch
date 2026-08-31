@@ -427,7 +427,28 @@
     return m ? m[2] : rest;
   }
 
-  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces, annotateFootprint, annotateRef, annotateSwap, renameNet, schIdOf };
+  /**
+   * 所有頁上的匯流排。轉成 PCB 之後匯流排就散成一條條 net，
+   * 這份清單是板子唯一還知道「這 8 條是一束」的地方。
+   * 跨頁同名（同 spec）算同一束：同名網路本來就會跨頁連在一起。
+   */
+  function busGroupsFrom(pages) {
+    const SB = (typeof window !== 'undefined' && window.SchBus) ||
+               (typeof globalThis !== 'undefined' && globalThis.SchBus) || null;
+    if (!SB || !SB.groups) return [];
+    const out = [], seen = new Set();
+    for (const pg of (pages || [])) {
+      const wires = (pg && pg.data && pg.data.wires) || [];
+      for (const g of SB.groups(wires)) {
+        if (seen.has(g.spec)) continue;
+        seen.add(g.spec);
+        out.push(g);
+      }
+    }
+    return out;
+  }
+
+  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces, annotateFootprint, annotateRef, annotateSwap, renameNet, schIdOf, busGroupsFrom };
   if (typeof window !== 'undefined') window.Sch2Pcb = Sch2Pcb;
   if (typeof module !== 'undefined' && module.exports) module.exports = Sch2Pcb;
 })();

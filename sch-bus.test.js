@@ -190,5 +190,49 @@ const tapW = (x1, y1, x2, y2, member) => ({ x1, y1, x2, y2, busTap: member });
   eq(B.attach([{ x1: 0, y1: 0, x2: 5, y2: 5, busTap: 'D0' }]).length, 1, '8.9 只有分支沒有幹線也要列出來（好報「沒接上」）');
 }
 
+// ---- 帶到 PCB 端：分組與長度報告 ----
+// 轉成 PCB 之後匯流排就散成一條條 net。這兩支是板子唯一還知道成組關係的地方，
+// 錯了不會有任何測試紅——畫面上仍然有 net、仍然畫得出走線。
+{
+  const w = (bus, y) => ({ bus: bus, x1: 0, y1: y, x2: 10, y2: y });
+  // 同一束會被畫成好幾段導線，去重之後只能有一組
+  const g = B.groups([w('D[0..3]', 0), w('D[0..3]', 1), w('A[0..1]', 2)]);
+  eq(g.length, 2, 'bus 分組：同 spec 的多段導線算一束');
+  eq(g[0].members.join(','), 'D0,D1,D2,D3', 'bus 分組：成員照 spec 展開');
+  eq(g[0].width, 4, 'bus 分組：寬度');
+  eq(B.groups([]).length, 0, 'bus 分組：沒有導線回空');
+  eq(B.groups([{ bus: 'D[0]' }]).length, 0, 'bus 分組：只有一條的不算一束');
+  eq(B.groups([{ bus: '???' }]).length, 0, 'bus 分組：解析不出來的不硬湊一組');
+
+  // skew 只算已繞的成員：把沒繞的當 0 會得到一個假的大 skew，
+  // 看起來像等長差很多，其實只是還沒繞——這條是這一段的重點。
+  const rep = B.report(g[0], n => ({ D0: 10, D1: 14, D2: 12, D3: 0 })[n]);
+  eq(rep.routed, 3, 'bus 報告：三條已繞');
+  eq(rep.unrouted, 1, 'bus 報告：一條沒繞');
+  eq(rep.skew, 4, 'bus 報告：skew = 14 - 10，沒繞的那條不參與');
+  eq(rep.max, 14, 'bus 報告：最長');
+  eq(rep.min, 10, 'bus 報告：最短（不是 0）');
+  eq(rep.rows.length, 4, 'bus 報告：每個成員都列出來，包含沒繞的');
+
+  const none = B.report(g[0], () => 0);
+  eq(none.skew, 0, 'bus 報告：一條都沒繞時 skew 是 0，不可以是 NaN');
+  eq(none.routed, 0, 'bus 報告：沒有已繞成員');
+}
+
+// ---- 真的接上 PCB 端 ----
+{
+  const fsx = require('fs'), pathx = require('path');
+  const app = fsx.readFileSync(pathx.join(__dirname, 'pcb.js'), 'utf8');
+  ok(app.indexOf('busGroups') > 0, 'bus: pcb.js 記下匯流排');
+  ok(app.indexOf('tuneBus') > 0, 'bus: 有整束等長');
+  ok(app.indexOf('meanderNet(') > 0, 'bus: 整束等長走既有的蛇形調諧，不是另寫一套');
+  const s2p = fsx.readFileSync(pathx.join(__dirname, 'pcb-sch2pcb.js'), 'utf8');
+  ok(s2p.indexOf('busGroupsFrom') > 0, 'bus: 同步時從頁面收集');
+  const html = fsx.readFileSync(pathx.join(__dirname, 'pcb.html'), 'utf8');
+  ok(html.indexOf('busRows') > 0, 'bus: PCB 頁有面板');
+  // PCB 頁一開始沒有載入 sch-bus.js，面板會安靜地永遠顯示「沒有匯流排」
+  ok(html.indexOf('sch-bus.js') > 0, 'bus: PCB 頁要載入 sch-bus.js');
+}
+
 console.log(`\nsch-bus.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

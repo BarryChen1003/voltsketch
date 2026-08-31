@@ -105,6 +105,49 @@ window.SchBus = (function () {
     });
   }
 
+  // ---------------- 帶到 PCB 端 ----------------
+  /**
+   * 這張圖上有哪幾束匯流排。同一束會被畫成好幾段導線，這裡照 spec 去重，
+   * 回 [{spec, base, members, width}]。
+   *
+   * 為什麼 PCB 端需要這個：轉過去之後匯流排就散成一條條獨立的 net，
+   * 板子不知道「這 8 條是一束」，等長與群組佈線就沒有依據——
+   * 使用者得自己記得 D0..D7 是一組，那正是機器該記的事。
+   */
+  function groups(wires) {
+    const out = [], seen = new Set();
+    for (const b of buses(wires)) {
+      if (seen.has(b.spec)) continue;
+      const pr = parse(b.spec);
+      if (!pr.ok || pr.members.length < 2) continue;   // 解析不出來的不硬湊一組
+      seen.add(b.spec);
+      out.push({ spec: b.spec, base: pr.base, members: pr.members.slice(), width: pr.width });
+    }
+    return out;
+  }
+
+  /**
+   * 一束的長度報告。lengthOf(net) 由呼叫端給（PCB 端才知道走線）。
+   * skew ＝ 最長與最短的差；**只算有走線的成員**——把還沒繞的當成 0 會得到
+   * 一個很大的假 skew，看起來像等長差很多，其實是還沒繞。
+   */
+  function report(group, lengthOf) {
+    const rows = (group && group.members || []).map(n => ({ net: n, len: Number(lengthOf(n)) || 0 }));
+    const routed = rows.filter(r => r.len > 0);
+    const lens = routed.map(r => r.len);
+    const max = lens.length ? Math.max.apply(null, lens) : 0;
+    const min = lens.length ? Math.min.apply(null, lens) : 0;
+    return {
+      spec: group ? group.spec : '',
+      width: group ? group.members.length : 0,
+      routed: routed.length,
+      unrouted: rows.length - routed.length,
+      max: max, min: min,
+      skew: lens.length ? max - min : 0,
+      rows: rows
+    };
+  }
+
   // ---------------- 稽核 ----------------
   /**
    * 回 [{type:'error'|'warning'|'info', message}]，與 schematic 的 DRC 同一種形狀。
@@ -195,7 +238,7 @@ window.SchBus = (function () {
     return '';
   }
 
-  return { parse, format, members, isBus, isTap, buses, taps, attach, audit, nextFree, MAX_WIDTH };
+  return { parse, format, members, isBus, isTap, buses, taps, attach, groups, report, audit, nextFree, MAX_WIDTH };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = window.SchBus;
