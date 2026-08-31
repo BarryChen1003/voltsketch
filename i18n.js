@@ -1336,6 +1336,11 @@ window.I18N = (function () {
     pj_ts_del:       { zh: '刪除此段', en: 'Delete this segment', ja: 'この区間を削除', ko: '이 구간 삭제' },
     pj_ts_none:      { zh: '用 select 工具點一條走線，就能在這裡改線寬與層。', en: 'Click a trace with the select tool to change its width and layer here.', ja: '選択ツールで配線をクリックすると、ここで幅とレイヤーを変更できます。', ko: '선택 도구로 배선을 클릭하면 여기서 폭과 레이어를 변경할 수 있습니다.' },
     pj_ts_applied:   { zh: '走線已更新（{what}）', en: 'Trace updated ({what})', ja: '配線を更新しました（{what}）', ko: '배선을 업데이트했습니다({what})' },
+    // ---- 階層導覽（sheets.js + sch-hier.js navPush/navUp）----
+    sh_up:           { zh: '上一層', en: 'Up one level', ja: '一つ上へ', ko: '한 단계 위로' },
+    sh_up_d:         { zh: '回到放這張子圖的那一頁', en: 'Back to the sheet that instantiates this one', ja: 'このシートを配置している親ページへ戻る', ko: '이 시트를 배치한 상위 페이지로 돌아가기' },
+    sh_no_sheet:     { zh: '找不到名為「{name}」的分頁——圖紙符號指到一張不存在的圖', en: 'No sheet named "{name}" — the sheet symbol points at a page that does not exist', ja: '「{name}」というページが見つかりません——シート記号が存在しないページを指しています', ko: '"{name}" 페이지를 찾을 수 없습니다 — 시트 기호가 존재하지 않는 페이지를 가리킵니다' },
+    sh_enter_hint:   { zh: '雙擊圖紙符號可進入該子圖', en: 'Double-click a sheet symbol to open it', ja: 'シート記号をダブルクリックで中へ', ko: '시트 기호를 더블클릭하면 안으로 들어갑니다' },
     // ---- 匯流排帶進 PCB（sch-bus.js groups/report）----
     pj_bus_title:     { zh: '匯流排', en: 'Buses', ja: 'バス', ko: '버스' },
     pj_bus_hint:      { zh: '從線路圖同步 netlist 時帶過來。點一列＝整束高亮；skew 只算已繞的成員（沒繞的算進去會是假的大數字）。', en: 'Carried over when the netlist is synced from the schematic. Click a row to highlight the whole bus; skew counts only routed members (counting unrouted ones gives a fake large number).', ja: '回路図から netlist を同期したときに引き継がれます。行をクリックすると束全体をハイライト。スキューは配線済みのメンバーのみで計算します（未配線を含めると偽の大きな値になります）。', ko: '회로도에서 netlist를 동기화할 때 넘어옵니다. 행을 클릭하면 버스 전체가 강조됩니다. 스큐는 배선된 멤버만 계산합니다(미배선을 포함하면 가짜로 큰 값이 됩니다).' },

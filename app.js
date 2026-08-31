@@ -1250,6 +1250,9 @@ const app = {
     const pt = this.getSVGPoint(e);
     const hit = this.hitTest(pt.x, pt.y);
     if (hit && hit.type === 'text') { this.setSelection([hit.id]); this.startTextEdit(hit); return; }
+    // 雙擊圖紙符號＝進到那張子圖（跟檔案總管一樣的直覺）。
+    // 以前要自己去分頁列找那一頁，多層之後根本記不住在哪一層。
+    if (hit && hit.type === 'sheetref' && window.Sheets) { window.Sheets.enterSheet(hit); return; }
     if (hit) return;
     this.saveUndo();
     const g = this.snapPoint(pt.x, pt.y);

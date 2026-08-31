@@ -241,5 +241,59 @@ const pinAt = (c, name) => E.getPins(c).find(p => p.name === name);
   eq(H.build([flat], 0, E).comps.map(c => c.id), ['r1'], '7.8 沒有階層時 id 不加前綴（既有的板子不會被當成全部換新）');
 }
 
+// ---- 導覽（進子圖／回上層）----
+// 路徑錯了不會有任何測試紅：圖照樣畫得出來，只是使用者不知道自己在第幾層、
+// 「上一層」跳到不相干的頁。所以這一段守 stack 的行為。
+{
+  const root = { page: 0, name: 'ROOT', label: '' };
+
+  let st = H.navPush([root], { page: 1, name: 'PWR', label: 'PWR1' });
+  eq(st.length, 2, '導覽：進一層');
+  eq(H.navPath(st).join('>'), 'ROOT>PWR1', '導覽：麵包屑用實例名，不是分頁名');
+
+  // 連點兩下不該把路徑變成 PWR1 ▸ PWR1
+  const again = H.navPush(st, { page: 1, name: 'PWR', label: 'PWR1' });
+  eq(again.length, 2, '導覽：重複進同一層不疊第二次');
+  // 但同一頁的另一個實例是不同的路徑，要疊
+  eq(H.navPush(st, { page: 1, name: 'PWR', label: 'PWR2' }).length, 3, '導覽：同頁不同實例要疊');
+
+  const up = H.navUp(st);
+  eq(up.page, 0, '導覽：上一層回到母圖那一頁');
+  eq(up.stack.length, 1, '導覽：stack 少一層');
+  // 已經在頂層再按上一層：不可以變成空的（麵包屑會消失、也回不去）
+  const top = H.navUp(up.stack);
+  eq(top.stack.length, 1, '導覽：頂層再上一層仍留著自己');
+  eq(top.page, 0, '導覽：頂層再上一層回自己');
+  eq(H.navUp([]).page, null, '導覽：空 stack 回 null 而不是 0（0 是一個有效的頁）');
+
+  // 沒有標籤的層要顯示分頁名，兩個都沒有才顯示 ?——空字串看起來像壞掉
+  eq(H.navPath([{ page: 0, name: 'ROOT', label: '' }]).join(''), 'ROOT', '導覽：沒有實例名退回分頁名');
+  eq(H.navPath([{ page: 0, name: '', label: '' }]).join(''), '?', '導覽：兩個都沒有顯示 ?');
+
+  eq(H.navPush([root], null).length, 1, '導覽：垃圾輸入不改 stack');
+  eq(H.navPush([root], { name: 'X' }).length, 1, '導覽：沒有頁碼不算一層');
+  // 不可以就地改：呼叫端拿舊的 stack 還原時會發現它已經被動過
+  const before = [root];
+  H.navPush(before, { page: 1, name: 'A', label: 'A1' });
+  eq(before.length, 1, '導覽：不改原陣列');
+
+  eq(H.pageByName([{ name: 'ROOT' }, { name: 'PWR' }], 'PWR'), 1, '導覽：依名字找頁');
+  eq(H.pageByName([{ name: 'ROOT' }], 'NOPE'), -1, '導覽：找不到回 -1（不可以靜靜跳到第 0 頁）');
+  eq(H.pageByName([{ name: 'ROOT' }], ''), -1, '導覽：空名字回 -1');
+}
+
+// ---- 真的接上畫面 ----
+{
+  const fsx = require('fs'), pathx = require('path');
+  const sh = fsx.readFileSync(pathx.join(__dirname, 'sheets.js'), 'utf8');
+  ok(sh.indexOf('enterSheet') > 0, '導覽：sheets.js 有進子圖');
+  ok(sh.indexOf('window.Sheets') > 0, '導覽：對外開放 API（原本整支是私有 IIFE）');
+  ok(sh.indexOf('hierPath') > 0, '導覽：有麵包屑');
+  // 使用者自己點分頁列時要清掉路徑，否則「上一層」會帶去不相干的頁
+  ok(/keepNav[\s\S]{0,200}navStack = \[\]/.test(sh), '導覽：手動切頁要清 stack');
+  const app = fsx.readFileSync(pathx.join(__dirname, 'app.js'), 'utf8');
+  ok(/sheetref[\s\S]{0,120}enterSheet/.test(app), '導覽：雙擊圖紙符號會進去');
+}
+
 console.log(`\nsch-hier.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

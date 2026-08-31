@@ -44,7 +44,11 @@
   function save() { try { localStorage.setItem(LS, JSON.stringify(store)); } catch (e) { } }
   function saveCur() { if (store) { store.pages[store.cur].data = grab(); save(); } }
 
-  function switchTo(i) {
+  function switchTo(i, keepNav) {
+    // 使用者自己點分頁列＝離開了原本那條階層路徑。不清的話「上一層」會亂跳，
+    // 而且麵包屑顯示的層級跟實際看到的圖對不起來。
+    if (!keepNav) navStack = [];
+    setTimeout(renderPath, 0);
     if (i === store.cur || !store.pages[i]) return;
     saveCur();
     store.cur = i;
@@ -93,16 +97,76 @@
       el.addEventListener('dblclick', () => rename(i));
     });
     bar.querySelector('#sheetAdd').addEventListener('click', addPage);
+    // 麵包屑就掛在分頁列尾巴：使用者的眼睛本來就在這一排找「我在哪一頁」
+    const crumb = document.createElement('span');
+    crumb.id = 'hierPath';
+    crumb.style.cssText = 'display:none;align-items:center;gap:8px;margin-left:auto;color:#475569';
+    bar.appendChild(crumb);
+  }
+
+  // ---- 階層導覽 ----
+  // 進子圖以前要自己去分頁列找那一頁，多層之後根本記不住現在在哪一層。
+  // 路徑本身的邏輯在 SchHier（純函式、測得到），這裡只管切頁與畫麵包屑。
+  let navStack = [];
+
+  function curEntry() {
+    const i = store ? store.cur : 0;
+    return { page: i, name: (store && store.pages[i] && store.pages[i].name) || '', label: '' };
+  }
+
+  function renderPath() {
+    const box = document.getElementById('hierPath');
+    if (!box) return;
+    const H = window.SchHier;
+    if (!H || navStack.length < 2) { box.style.display = 'none'; box.innerHTML = ''; return; }
+    box.style.display = '';
+    const names = H.navPath(navStack);
+    const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    box.innerHTML = '<button type="button" id="hierUp" class="sheet-btn" title="' + esc(T('sh_up_d')) + '">⬆ ' + esc(T('sh_up')) + '</button>' +
+      '<span class="hier-crumbs">' + names.map(esc).join(' ▸ ') + '</span>';
+    document.getElementById('hierUp')?.addEventListener('click', up);
+  }
+
+  /** 從母圖的 sheetref 進到子圖。找不到那一頁要講出來，不可以靜靜跳到第 0 頁。 */
+  function enterSheet(comp) {
+    const H = window.SchHier;
+    if (!H || !store || !comp) return false;
+    const idx = H.pageByName(store.pages, comp.sheet);
+    if (idx < 0) {
+      if (window.app && app.toast) app.toast(T('sh_no_sheet', { name: comp.sheet || '?' }), 'warn');
+      return false;
+    }
+    if (!navStack.length) navStack = [curEntry()];
+    navStack = H.navPush(navStack, { page: idx, name: store.pages[idx].name, label: comp.label || comp.sheet });
+    switchTo(idx, true);
+    return true;
+  }
+
+  function up() {
+    const H = window.SchHier;
+    if (!H || navStack.length < 2) return false;
+    const r = H.navUp(navStack);
+    navStack = r.stack;
+    if (typeof r.page === 'number') switchTo(r.page, true);
+    return true;
   }
 
   function boot() {
     if (typeof app === 'undefined' || !document.querySelector('.topbar') || !app.state) { setTimeout(boot, 300); return; }
-    load(); renderBar();
+    load(); renderBar(); renderPath();
     // load() 已用存檔頁覆寫 state.components；此時才處理 ?addIC=，
     // 讓從 IC 元件庫「+ 放到線路圖」帶來的 IC 疊在目前頁上（否則會被 load() 洗掉）。
     try { if (typeof app.handleAddICParam === 'function') app.handleAddICParam(); } catch (e) { }
     setInterval(saveCur, 4000);
     window.addEventListener('beforeunload', saveCur);
   }
+  // 畫布那邊要叫得到（原本整支是私有 IIFE）
+  window.Sheets = {
+    enterSheet: enterSheet, up: up, switchTo: switchTo,
+    pages: () => (store ? store.pages.map(p => ({ name: p.name })) : []),
+    current: () => (store ? store.cur : 0),
+    navStack: () => navStack.slice()
+  };
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(boot, 100)); else setTimeout(boot, 100);
 })();

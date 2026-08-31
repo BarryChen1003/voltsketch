@@ -293,9 +293,55 @@ window.SchHier = (function () {
     return res;
   }
 
+  // ---------------- 導覽（進子圖／回上層）----------------
+  // 子圖當符號可以了，但要看裡面得自己去分頁列找那一頁——多層之後根本記不住
+  // 現在在哪一層。這幾支管「路徑」這件事：純資料，畫面另外做。
+
+  /**
+   * 進入一層。回新的 stack（不改原陣列）。
+   * entry = { page:分頁索引, name:分頁名, label:實例名 }
+   * 重複進同一層不疊第二次：連點兩下不該讓路徑變成 A ▸ A。
+   */
+  function navPush(stack, entry) {
+    const st = (stack || []).slice();
+    if (!entry || typeof entry.page !== 'number') return st;
+    const top = st[st.length - 1];
+    if (top && top.page === entry.page && top.label === entry.label) return st;
+    if (st.length >= MAX_DEPTH) return st;      // 跟展開同一個保險絲
+    st.push({ page: entry.page, name: S(entry.name), label: S(entry.label) });
+    return st;
+  }
+
+  /** 回上一層。回 { stack, page }；page 是要切回去的分頁索引（沒有上層就回 null）。 */
+  function navUp(stack) {
+    const st = (stack || []).slice();
+    if (st.length < 2) return { stack: st.length ? [st[0]] : [], page: st.length ? st[0].page : null };
+    st.pop();
+    return { stack: st, page: st[st.length - 1].page };
+  }
+
+  /**
+   * 麵包屑文字。實例名優先（使用者看到的是 PWR1 不是 PWR），
+   * 沒有實例名才退回分頁名——兩個都沒有時寫 '?' 而不是空白，空白看起來像壞掉。
+   */
+  function navPath(stack) {
+    return (stack || []).map(e => S(e.label) || S(e.name) || '?');
+  }
+
+  /** 分頁名 → 索引。找不到回 -1（呼叫端要講出來，不可以靜靜跳到第 0 頁）。 */
+  function pageByName(pages, name) {
+    const want = S(name);
+    if (!want) return -1;
+    for (let i = 0; i < (pages || []).length; i++) {
+      if (S(pages[i] && pages[i].name) === want) return i;
+    }
+    return -1;
+  }
+
   return {
     PORT_DIRS, isPort, isInstance, portsOf, instancesOf, pageIndex, hasHierarchy, rootIndex,
-    portsToPins, syncInstance, instanceStatus, cycles, validate, build, MAX_DEPTH
+    portsToPins, syncInstance, instanceStatus, cycles, validate, build, MAX_DEPTH,
+    navPush, navUp, navPath, pageByName
   };
 })();
 
