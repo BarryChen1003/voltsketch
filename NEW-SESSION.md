@@ -105,6 +105,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | `pcb-theme.js` | `PcbTheme` | 2D 配色主題（cam 螢光／EasyEDA／原綠底）＋**對比度與色相距離計算**（用來擋看不見的層色） |
 | `pcb-3d-shapes.js` | `Pcb3DShapes` | 用 pad 佈局反推元件外型（QFP 四邊引腳／排針一根根／電解電容圓柱）；判不出來會標 `guessed` |
 | `snp.js` / `snp-ui.js` | `Snp` / `SnpUI` | Touchstone S 參數匯入。**2 埠檔的行順序是 S11 S21 S12 S22**（照直覺讀會把插入損耗與反射損耗對調）；UI 只讀不改板子 |
+| `pcb-mesh.js` / `pcb-mesh-ui.js` | `PcbMesh` / `PcbMeshUI` | 3D **顯示**用的網格模型（.wrl/.obj）。**KiCad .wrl 的 1 單位 = 2.54mm**；綁定鑰匙沿用 `StepModel.keyOf`（封裝身分），跟 STEP 匯出同一把 |
 | `pcb-shove.js` | `Shove` | 推擠：側推平行鄰居；`planChain` 支援連鎖（只平移、不重繞） |
 | `pcb-drc.js` | `PadDrc` | pad 級 DRC（線距／環寬／孔距／sliver／courtyard…）＋幾何工具 `_geom` |
 | `pcb-constraints.js` | `ConstraintMgr` | net class、間距矩陣、銳角 |
@@ -195,6 +196,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | `pcb-theme.test.js` | 112 | 配色主題：**每層對背景的對比度 >= 4.5**、前四層色相距 >= 55°、換主題不留舊層色 |
 | `pcb-3d-shapes.test.js` | 30 | 元件外型：封裝分類、**每根腳都要壓在 pad 上**、畸形輸入不可產生 NaN／負尺寸 |
 | `snp.test.js` | 47 | Touchstone：**2 埠 S21/S12 換位**、MA/DB/RI 三種格式、四種頻率單位、續行、壞檔要報錯不可回一半 |
+| `pcb-mesh.test.js` | 36 | 網格模型：**KiCad 2.54 換算**、VRML 多邊形扇形三角化、多 Shape 索引平移、索引越界要當場報錯 |
 
 ### 線路圖
 
@@ -365,6 +367,7 @@ node pcb-interact.test.js
 node pcb-theme.test.js
 node pcb-3d-shapes.test.js
 node snp.test.js
+node pcb-mesh.test.js
 node spice-measure.test.js
 node spice-sweep.test.js
 node design-history.test.js
@@ -452,7 +455,7 @@ node plan-dates.test.mjs
 | **net 屬性沒進匯出檔** | 阻抗目標／成對關係只在編輯器與 DRC，板廠拿到的網表仍只有 net 名 |
 | **封裝同步是單向的** | 庫 → 板可以，板上改好的幾何回寫成庫要手動走「從選取建封裝」 |
 | **匯入的 STEP 是攤平的** | 每個實例一份幾何（不是裝配參照），同一顆料放十次檔案就十份。理由見 `pcb-step-model.js` 檔頭 |
-| **3D 元件是推出來的，不是原廠模型** | 2026-08-31 已補阻焊／pad 開窗／絲印貼圖、亮面材質，元件外型改用 pad 佈局反推（QFP 有腳、排針一根根、晶振是金屬罐）。**仍不是原廠 3D 模型**：尺寸與高度是估的，判不出封裝時退回方塊並標 `guessed`。STEP 匯入的真模型還沒接上畫面 |
+| **3D 元件預設是推出來的** | 2026-08-31：阻焊／pad 開窗／絲印貼圖、亮面材質、元件外型用 pad 佈局反推（QFP 有腳、排針一根根、晶振是金屬罐）。綁了 `.wrl`/`.obj` 的封裝會畫**真模型**（`pcb-mesh.js`）。**STEP 仍只走匯出**——B-rep 要 CAD kernel 才畫得出來，為此塞一顆幾 MB 的 WASM 不划算 |
 | **阻抗／熱／EMI** | IPC-2141 ±10%；θ 公式是擬合值無出處；EMI 只算迴路面積。建議線寬只在 IPC-2141 標示的有效範圍內給（microstrip 0.1 ≤ w/h ≤ 3、stripline w ≤ 0.35(2h+t)），超出就明說做不到 |
 | **datasheet PDF 抽腳位** | 193 顆實測：完全正確 77、部分正確 37、錯得多 34、明講讀不出來 35 |
 | **2nd source 比對** | 可用於「講差異」，不可用於「判定能不能換」 |

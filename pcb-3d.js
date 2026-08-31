@@ -386,6 +386,49 @@ window.Pcb3D = (() => {
     // ---- 元件與 pad ----
     for (const c of (state.components || [])) {
       const bottom = (c.side || 'top') === 'bottom';
+      // 綁了真模型（.wrl/.obj）的封裝，畫模型本身；沒綁的才用 pad 佈局推外型。
+      // 座標系換算：模型是 Z 朝上、XY 在板面；three 這邊 Y 朝上、板面是 XZ。
+      // 這裡把模型的 Y 取負再繞 X 轉 -90°，等同板子那個 mesh 的轉法；
+      // 取負會讓三角形繞向反過來，所以索引也要換位，不然法線朝內、整顆模型是黑的。
+      const meshRec = (window.PcbMesh && window.StepModel && window.StepModel.keyOf)
+        ? window.PcbMesh.meshStore.get(window.StepModel.keyOf(c)) : null;
+      if (meshRec && meshRec.positions && meshRec.positions.length) {
+        stats.comps++;
+        const pl = window.PcbMesh.placement(meshRec, c, { fit: !!meshRec.fit });
+        const pos = new Float32Array(meshRec.positions.length);
+        for (let i = 0; i < meshRec.positions.length; i += 3) {
+          pos[i] = meshRec.positions[i] * pl.scale + pl.offset[0];
+          pos[i + 1] = -(meshRec.positions[i + 1] * pl.scale + pl.offset[1]);
+          pos[i + 2] = meshRec.positions[i + 2] * pl.scale + pl.offset[2];
+        }
+        const idx = meshRec.indices.slice();
+        for (let i = 0; i + 2 < idx.length; i += 3) { const t = idx[i + 1]; idx[i + 1] = idx[i + 2]; idx[i + 2] = t; }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        geo.setIndex(idx);
+        geo.computeVertexNormals();
+        const col = meshRec.color
+          ? new THREE.Color(meshRec.color[0], meshRec.color[1], meshRec.color[2]).getHex()
+          : 0x2a2d33;
+        const mm = new THREE.Mesh(geo, shapeMat(col));
+        mm.rotation.x = -Math.PI / 2;
+        const grp = new THREE.Group();
+        grp.add(mm);
+        grp.rotation.y = (c.rot || 0) * Math.PI / 180;
+        grp.position.set(c.x, bottom ? -(TH / 2) : TH / 2, c.y);
+        if (bottom) grp.scale.y = -1;   // 底面元件整顆翻過來
+        scene.add(grp);
+        for (const p of (c.pads || [])) {
+          const a2 = padAbs(c, p);
+          if (p.cu === false) continue;
+          stats.pads++;
+          const pw2 = Math.max(0.2, p.w || 0.5), ph2 = Math.max(0.2, p.h || 0.5);
+          pushBox(mat.pad, { x: a2.x, y: (bottom ? -1 : 1) * (TH / 2 + 0.03), z: a2.y, w: pw2, h: 0.06, d: ph2, rotY: (p.rot || 0) * Math.PI / 180 });
+          if (p.drill > 0) pushCyl(mat.hole, { x: a2.x, y: 0, z: a2.y, r: p.drill / 2, h: TH + 0.3 });
+        }
+        continue;
+      }
+
       // 元件外型：QFP 有四邊引腳、排針一根根、電解電容是圓柱（Pcb3DShapes 判斷）。
       // 模組沒載入才退回一塊方塊——那是舊行為，不是預期行為。
       const shp = window.Pcb3DShapes ? Pcb3DShapes.partsFor(c) : null;
