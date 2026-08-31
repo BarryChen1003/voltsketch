@@ -160,6 +160,11 @@
     });
   }
 
+  // 對外：讓別的模組把某個面板叫出來。
+  // 沒有這個的話，任何「跳到某個功能」的按鈕都只能對著隱藏元素做 scrollIntoView——
+  // 那正是 2026-08-31 發現的「📤 匯出按了沒反應」。
+  function openPanel(key) { setOpen(key, true, true); return panels.has(key); }
+
   function setOpen(key, open, remember) {
     const p = panels.get(key); if (!p) return;
     p.win.hidden = !open;
@@ -305,6 +310,14 @@
     // 還原上次開著的面板
     panels.forEach(p => { if ((st[p.key] || {}).open) setOpen(p.key, true, false); else setOpen(p.key, false, false); });
   }
+
+  // 對外：讓別的模組把某個面板叫出來（原本 setOpen 是私有的）。
+  window.PcbPanels = {
+    open: openPanel,
+    close: key => setOpen(key, false, true),
+    has: key => panels.has(key),
+    keys: () => [...panels.keys()]
+  };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build);
   else build();

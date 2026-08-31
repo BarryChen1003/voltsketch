@@ -101,9 +101,23 @@ const pcbApp = {
 
   // 頂列「匯出」：匯出動作分散在數個面板（製造包 / KiCad / STEP / DXF），
   // 這顆只負責把人帶到那一區並聚焦，不替使用者選格式。
+  // 「📤 匯出」：把匯出面板叫出來。
+  //
+  // 舊版只做 scrollIntoView + focus。面板停靠系統把這一段搬進**預設隱藏**的浮動視窗之後，
+  // 捲到隱藏元素等於什麼都沒發生——使用者按了匯出，畫面毫無反應，
+  // 合理的結論是「這個功能沒做」。實際上 Gerber／ODB++／IPC-2581／組裝圖四種都在。
   revealExportPanel() {
     const btn = document.getElementById('exportGerberBtn');
     if (!btn) return false;
+    // 在「板面檢視／開源公版」分頁時整個編輯區是收起來的，先切回 Layout
+    const tab = document.getElementById('tabLayout');
+    if (tab && !/primary/.test(tab.className || '')) tab.click();
+    // 面板可能被搬進浮動視窗且預設隱藏：先開它
+    const float = btn.closest ? btn.closest('.pcb-float') : null;
+    if (float && window.PcbPanels) {
+      const key = String(float.id || '').replace(/^float-/, '');
+      if (key) window.PcbPanels.open(key);
+    }
     const sec = btn.closest ? (btn.closest('.panel-section') || btn) : btn;
     if (sec.scrollIntoView) sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
     if (btn.focus) btn.focus({ preventScroll: true });
