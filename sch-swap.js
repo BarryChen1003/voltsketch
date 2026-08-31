@@ -113,6 +113,39 @@ window.SchSwap = (function () {
     return true;
   }
 
+  /**
+   * 同 canSwapGates，但回「為什麼不行」。
+   * 只回 true/false 的話，畫面只能說「不能換」，使用者不知道是型別不同、料號不同
+   * 還是封裝不同——三種的處置完全不一樣。
+   */
+  function canSwapGatesWhy(c1, c2) {
+    if (!c1 || !c2) return { ok: false, why: 'need_two' };
+    if (c1 === c2) return { ok: false, why: 'same' };
+    if (S(c1.type) === '' || S(c2.type) === '') return { ok: false, why: 'no_type' };
+    if (S(c1.type) !== S(c2.type)) return { ok: false, why: 'type', a: S(c1.type), b: S(c2.type) };
+    if (S(c1.name) !== S(c2.name)) return { ok: false, why: 'part', a: S(c1.name), b: S(c2.name) };
+    const fp = c => S(c.footprint) || S(c.part) || '';
+    if (fp(c1) !== fp(c2)) return { ok: false, why: 'footprint', a: fp(c1), b: fp(c2) };
+    return { ok: true, why: '' };
+  }
+
+  /**
+   * 對調兩顆的擺放（位置與角度）。回新值，不動原物件——
+   * 呼叫端要先問過 canSwapGates 再套用，順序寫死在這裡的話測試就驗不到那道守門。
+   *
+   * 為什麼是「對調擺放」而不是「對調封裝內的單元」：這個資料模型裡沒有
+   * 「一顆包裝裡有 A/B/C/D 四個閘」這件事，每顆元件就是一顆封裝。
+   * 兩顆同型元件互換位置＝各自的 net 跟著自己走到對方的位置，
+   * 效果就是佈線變短，那正是 gate swap 要的東西。**不假裝我們有單元的概念。**
+   */
+  function swapPlacement(a, b) {
+    if (!a || !b || a === b) return null;
+    return {
+      a: { x: b.x, y: b.y, rot: b.rot || 0 },
+      b: { x: a.x, y: a.y, rot: a.rot || 0 }
+    };
+  }
+
   // ---------------- 稽核 ----------------
   /**
    * 目前有哪些交換生效中。交換是「畫面上看不出來」的東西——
@@ -150,7 +183,7 @@ window.SchSwap = (function () {
 
   const hasSwaps = schComps => (schComps || []).some(c => Object.keys(permutationOf(c)).length > 0);
 
-  return { BUILTIN, groupsFor, canSwapPins, permutationOf, composeSwap, canSwapGates, audit, mapPin, hasSwaps };
+  return { BUILTIN, groupsFor, canSwapPins, permutationOf, composeSwap, canSwapGates, canSwapGatesWhy, swapPlacement, audit, mapPin, hasSwaps };
 })();
 
 if (typeof module !== 'undefined' && module.exports) module.exports = window.SchSwap;

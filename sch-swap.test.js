@@ -155,5 +155,44 @@ const padsOf = comps => Sch2Pcb.convert(comps, twoPin, netOf, {}).components[0].
   eq(SW.audit(null).length, 0, '7.5 null');
 }
 
+// ---- 同型元件對調（gate swap 的 UI 依據）----
+// 判準只回 true/false 的話，畫面只能說「不能換」；使用者不知道是型別不同、
+// 料號不同還是封裝不同——三種的處置完全不一樣，所以這裡守「理由」。
+{
+  const g = (o) => Object.assign({ type: 'nand', name: '74HC00', footprint: 'SOIC-14', x: 0, y: 0, rot: 0 }, o || {});
+  const W = SchSwap.canSwapGatesWhy;
+
+  ok(W(g(), g({ x: 5 })).ok, 'gate: 同型別同料號同封裝可換');
+  eq(W(g(), g({ name: '74HC08' })).why, 'part', 'gate: 料號不同要說是料號');
+  eq(W(g(), g({ type: 'and' })).why, 'type', 'gate: 型別不同要說是型別');
+  eq(W(g(), g({ footprint: 'TSSOP-14' })).why, 'footprint', 'gate: 封裝不同要說是封裝');
+  const one = g();
+  eq(W(one, one).why, 'same', 'gate: 同一顆不可以跟自己換');
+  eq(W(null, g()).why, 'need_two', 'gate: 少一顆要講');
+  eq(W(g({ type: '' }), g({ type: '' })).why, 'no_type', 'gate: 沒有型別就判不了，不可以放行');
+  // 理由要跟 canSwapGates 的判斷一致，否則畫面說不能換、程式卻換了
+  ok(W(g(), g({ x: 5 })).ok === SchSwap.canSwapGates(g(), g({ x: 5 })), 'gate: 兩支判準結果一致');
+
+  const a = g({ x: 1, y: 2, rot: 0 }), b = g({ x: 9, y: 8, rot: 90 });
+  const pl = SchSwap.swapPlacement(a, b);
+  eq(pl.a.x, 9, 'gate: a 拿到 b 的 x');
+  eq(pl.a.rot, 90, 'gate: 角度也要跟著換（不換的話腳位方向不對）');
+  eq(pl.b.y, 2, 'gate: b 拿到 a 的 y');
+  // 回新值、不動原物件：呼叫端要先問過判準再套用，就地改的話那道守門測不到
+  eq(a.x, 1, 'gate: 不可以就地改原物件');
+  eq(SchSwap.swapPlacement(a, a), null, 'gate: 跟自己換回 null');
+  eq(SchSwap.swapPlacement(a, null), null, 'gate: 缺一顆回 null');
+}
+
+// ---- 真的接上畫面 ----
+{
+  const fsx = require('fs'), pathx = require('path');
+  const app = fsx.readFileSync(pathx.join(__dirname, 'pcb.js'), 'utf8');
+  ok(app.indexOf('swapSelGates') > 0, 'gate: pcb.js 有對調入口');
+  ok(app.indexOf('ratsnestLength') > 0, 'gate: 有量飛線總長（不然使用者不知道換了有沒有比較好）');
+  const html = fsx.readFileSync(pathx.join(__dirname, 'pcb.html'), 'utf8');
+  ok(html.indexOf('selSwapGateBtn') > 0, 'gate: pcb.html 有按鈕');
+}
+
 console.log(`\nsch-swap.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

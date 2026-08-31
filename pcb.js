@@ -3545,6 +3545,7 @@ const pcbApp = {
     });
     document.getElementById("selRenameBtn")?.addEventListener("click", () => this.renameSelRef());
     document.getElementById("selSwapBtn")?.addEventListener("click", () => this.swapSelPins());
+    document.getElementById("selSwapGateBtn")?.addEventListener("click", () => this.swapSelGates());
 
     // net 屬性（NetModel）
     document.getElementById("npApply")?.addEventListener("click", () => this.applyNetProps());
@@ -4531,6 +4532,60 @@ const pcbApp = {
     this.renderNetPanel();
     this.render();
     this.toast(pcbT('pj_swap_done', { ref: c.ref || c.id, a: parts[0], b: parts[1], sch: back.changed }), 'info');
+    return true;
+  },
+
+  // 飛線總長：對調前後各量一次，使用者才知道這一下到底有沒有比較好。
+  // 沒有這個數字的話，gate swap 就是「動了一下、看起來差不多」。
+  ratsnestLength() {
+    if (!window.Ratsnest) return null;
+    let list = null;
+    try { list = Ratsnest.compute(this.state, this.padAbs.bind(this)); } catch (e) { return null; }
+    if (!list || !list.length) return 0;
+    return list.reduce((s, r) => s + Math.hypot((r.x2 - r.x1), (r.y2 - r.y1)), 0);
+  },
+
+  // 同型元件對調（gate swap）。
+  // 這個資料模型裡沒有「一顆封裝內含四個閘」的概念，每顆元件就是一顆封裝，
+  // 所以對調的是**擺放位置**：兩顆的 net 各自跟著自己走到對方的位置。
+  // 效果就是佈線變短——那正是 gate swap 要的東西。不假裝我們有單元的概念。
+  swapSelGates() {
+    const SW = window.SchSwap;
+    const set = (this.state.selectedSet || []).filter(Boolean);
+    if (!SW) return false;
+    if (set.length !== 2) { this.toast(pcbT('pj_gate_need2'), 'warn'); return false; }
+    const [a, b] = set;
+    // 判準吃的是線路圖元件（type / name / footprint），板上的元件沒有那些欄位
+    const sa = this.findSchComp(window.Sch2Pcb ? Sch2Pcb.schIdOf(a.id) : null);
+    const sb = this.findSchComp(window.Sch2Pcb ? Sch2Pcb.schIdOf(b.id) : null);
+    // 沒有線路圖來源時退回用板上的欄位比對：公版與匯入的板子都沒有線路圖，
+    // 但「同一種料、同一個封裝」這件事板上也判得出來。
+    const ca = sa || { type: a.kind || '', name: a.part || '', footprint: a.footprint || a.part || '' };
+    const cb = sb || { type: b.kind || '', name: b.part || '', footprint: b.footprint || b.part || '' };
+    const why = SW.canSwapGatesWhy(ca, cb);
+    if (!why.ok) {
+      this.toast(pcbT('pj_gate_no_' + why.why, { a: why.a || '', b: why.b || '' }), 'error');
+      return false;
+    }
+    const before = this.ratsnestLength();
+    const pl = SW.swapPlacement(a, b);
+    if (!pl) return false;
+    this.hist();
+    a.x = pl.a.x; a.y = pl.a.y; a.rot = pl.a.rot;
+    b.x = pl.b.x; b.y = pl.b.y; b.rot = pl.b.rot;
+    this.state.ratsnest = null;
+    const after = this.ratsnestLength();
+    this.renderPartsList();
+    this.syncSelPanel();
+    this.render();
+    // 變長也照講。只報「已對調」的話，使用者不會知道自己讓佈線變難了
+    const d = (before != null && after != null) ? (after - before) : null;
+    // 0.05mm 以內當作沒變：講「少了 0.0mm」讀起來像有改善，其實什麼都沒發生。
+    // 對稱擺放的兩顆、或 pad 根本沒有 net 的板子（公版就是），差值本來就會是 0。
+    const key = d == null ? 'pj_gate_done' : (Math.abs(d) < 0.05 ? 'pj_gate_same' : (d < 0 ? 'pj_gate_better' : 'pj_gate_worse'));
+    this.toast(pcbT(key, {
+      a: a.ref || a.id, b: b.ref || b.id, d: d == null ? '' : Math.abs(d).toFixed(1)
+    }), key === 'pj_gate_worse' ? 'warn' : 'info');
     return true;
   },
 
