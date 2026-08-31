@@ -11,7 +11,10 @@
 #   看起來像沒部署，其實是解碼問題。所以這裡一律讀原始位元組、明確用 UTF-8 解，
 #   只把 CRLF 正規化成 LF（本機工作區可能是 CRLF，線上一定是 LF）。
 
-param([string[]]$Files)
+# 空白分隔的多個檔名要全部收下。只有 [string[]] 的話，PowerShell 只綁第一個位置參數，
+# 其餘被安靜丟掉——腳本會只驗一個檔卻回報「全部一致」，比沒有檢查更糟。
+# （2026-08-31 實測踩到：`... live-check.ps1 a.js b.js` 只驗了 a.js。）
+param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Files)
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot

@@ -658,3 +658,6 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
   比對線上與本機一律**讀原始位元組再明確用 UTF-8 解**，不要比 `.Content` 與 `Get-Content -Raw`。
 - **含中文的 `.ps1` 存成 UTF-8 with BOM**，否則 5.1 讀腳本本身就亂碼、直接 parse error。
 - 兩件都驗過才算數：`powershell.exe -NoProfile -File <script>`（5.1）與 pwsh 7 各跑一次。
+- **PowerShell 的 `[string[]]` 參數只綁第一個位置參數**，其餘安靜丟掉。
+  `live-check.ps1 a.js b.js` 只驗了 a.js 卻回報「全部一致」——比沒有檢查更糟。
+  收多個位置參數一律加 `[Parameter(ValueFromRemainingArguments = $true)]`（2026-08-31 修）。
