@@ -1341,6 +1341,7 @@ window.I18N = (function () {
     sh_up_d:         { zh: '回到放這張子圖的那一頁', en: 'Back to the sheet that instantiates this one', ja: 'このシートを配置している親ページへ戻る', ko: '이 시트를 배치한 상위 페이지로 돌아가기' },
     sh_no_sheet:     { zh: '找不到名為「{name}」的分頁——圖紙符號指到一張不存在的圖', en: 'No sheet named "{name}" — the sheet symbol points at a page that does not exist', ja: '「{name}」というページが見つかりません——シート記号が存在しないページを指しています', ko: '"{name}" 페이지를 찾을 수 없습니다 — 시트 기호가 존재하지 않는 페이지를 가리킵니다' },
     sh_enter_hint:   { zh: '雙擊圖紙符號可進入該子圖', en: 'Double-click a sheet symbol to open it', ja: 'シート記号をダブルクリックで中へ', ko: '시트 기호를 더블클릭하면 안으로 들어갑니다' },
+    pj_shove_detour: { zh: '{n} 條擋路的線改走繞道（兩端焊在 pad 上，推不動）', en: '{n} blocking traces were routed around instead (both ends are on pads, so they cannot be pushed)', ja: '{n} 本の干渉配線を迂回させました（両端がパッドのため移動できません）', ko: '간섭하는 배선 {n}개를 우회시켰습니다(양 끝이 패드에 있어 이동 불가)' },
     // ---- 匯流排帶進 PCB（sch-bus.js groups/report）----
     pj_bus_title:     { zh: '匯流排', en: 'Buses', ja: 'バス', ko: '버스' },
     pj_bus_hint:      { zh: '從線路圖同步 netlist 時帶過來。點一列＝整束高亮；skew 只算已繞的成員（沒繞的算進去會是假的大數字）。', en: 'Carried over when the netlist is synced from the schematic. Click a row to highlight the whole bus; skew counts only routed members (counting unrouted ones gives a fake large number).', ja: '回路図から netlist を同期したときに引き継がれます。行をクリックすると束全体をハイライト。スキューは配線済みのメンバーのみで計算します（未配線を含めると偽の大きな値になります）。', ko: '회로도에서 netlist를 동기화할 때 넘어옵니다. 행을 클릭하면 버스 전체가 강조됩니다. 스큐는 배선된 멤버만 계산합니다(미배선을 포함하면 가짜로 큰 값이 됩니다).' },

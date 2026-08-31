@@ -4,7 +4,9 @@
 // 而不是叫使用者自己繞。這支做的是其中最常見、也最好驗的一種：**把平行的鄰居側推**。
 //
 // 誠實界定 —— 這不是完整的 push-and-shove：
-//   - 只做平移，不重繞。擋路的線維持原本的方向與長度，整條往旁邊挪。
+//   - 先試平移；平移不行（端點卡在 pad、或要挪太遠）才改**繞路**：把那條線改走一段
+//     45° 梯形繞道，端點原地不動。繞道也失敗才放棄。
+//   - 繞路只處理「一條線繞開一條線」，不做整區重繞（那是真正的 router 的工作）。
 //   - 端點卡在 pad 或 via 上的線**不動**：那個端點是連接點，挪了就斷線。
 //   - 推不動就照實回報，由呼叫端決定（我們的呼叫端會保留原本的警告，不會假裝成功）。
 //   - 不做連鎖推擠（A 推 B、B 再推 C）。一輪推不開就算失敗。
@@ -180,6 +182,113 @@
     return null;
   }
 
+  /**
+   * 繞路：把擋路的那一條改走一段繞道，端點原地不動。
+   *
+   * 為什麼需要它：平移對「兩端都卡在 pad 上」的線完全無效——那正是密集板上最常見的情況
+   * （每條線都從某顆 pad 出發、到另一顆 pad）。舊版遇到就回 anchored 放棄，
+   * 使用者看到的是「推擠沒作用」，而擋路的線其實只要繞一個小彎就過得去。
+   *
+   * 形狀是梯形凸起：沿著原線走到衝突區之前，用 45° 斜出去，平行走過衝突區，再 45° 收回來。
+   * **45° 是刻意的**：這個編輯器的走線本來就吸 0/45/90，繞出來的線要跟手畫的長得一樣，
+   * 不然使用者會覺得板子上多了一段「不是我畫的東西」。
+   *
+   * 回 { ok, segments } 或 { ok:false, reason }。不改 state。
+   */
+  function detour(state, padAbs, seg, t, cl, opts) {
+    const gm = geom();
+    if (!gm) return { ok: false, reason: 'noGeom' };
+    const ux = t.x2 - t.x1, uy = t.y2 - t.y1;
+    const len = Math.hypot(ux, uy);
+    if (len < 1e-6) return { ok: false, reason: 'degenerate' };
+    const dx = ux / len, dy = uy / len;
+    let nx = -dy, ny = dx;
+    // 往遠離新線的那一側繞（跟平移同一個判斷）
+    const midT = { x: (t.x1 + t.x2) / 2, y: (t.y1 + t.y2) / 2 };
+    const midS = { x: (seg.x1 + seg.x2) / 2, y: (seg.y1 + seg.y2) / 2 };
+    if ((midT.x - midS.x) * nx + (midT.y - midS.y) * ny < 0) { nx = -nx; ny = -ny; }
+
+    const hw = (t.width || 0.3) / 2, hs = (seg.width || 0.3) / 2;
+    const want = cl.traceToTrace + hw + hs;
+
+    // 衝突區：沿著 t 取樣，找出「離新線太近」的那一段參數區間。
+    // 用取樣而不是解析解：新線可能是任意角度，解析解的分支比取樣容易寫錯，
+    // 而這裡的精度只要夠決定繞道範圍就行（步進 0.1mm）。
+    const step = Math.max(0.05, Math.min(0.25, len / 40));
+    let s0 = Infinity, s1 = -Infinity, worst = 0;
+    for (let d0 = 0; d0 <= len + 1e-9; d0 += step) {
+      const px = t.x1 + dx * d0, py = t.y1 + dy * d0;
+      const gap = gm.ptSegDist(px, py, seg.x1, seg.y1, seg.x2, seg.y2);
+      if (gap < want) { s0 = Math.min(s0, d0); s1 = Math.max(s1, d0); worst = Math.max(worst, want - gap); }
+    }
+    if (!(s1 >= s0)) return { ok: false, reason: 'noConflict' };
+
+    const off = worst + 0.02;                      // 要繞開多遠
+    const maxOff = (opts && opts.maxDetour) || 3;  // 保險絲：繞太遠等於重畫整條線
+    if (off > maxOff) return { ok: false, reason: 'tooFar' };
+
+    // 斜出去/收回來各佔 off（45°）。空間不夠就把梯形壓成三角形。
+    const ramp = off;
+    let a0 = s0 - ramp, a1 = s1 + ramp;
+    if (a0 < 0.05 || a1 > len - 0.05) {
+      // 衝突區太靠近端點：端點是接點不能動，硬繞會把線頭拉離 pad
+      return { ok: false, reason: 'nearEnd' };
+    }
+    const P = (along, side) => ({ x: t.x1 + dx * along + nx * side, y: t.y1 + dy * along + ny * side });
+    const pts = [{ x: t.x1, y: t.y1 }, P(a0, 0), P(s0, off), P(s1, off), P(a1, 0), { x: t.x2, y: t.y2 }];
+
+    const mk = (p1, p2) => Object.assign({}, t, {
+      id: 'sh-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6),
+      x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, detour: true
+    });
+    const segments = [];
+    for (let i = 0; i + 1 < pts.length; i++) {
+      if (Math.hypot(pts[i + 1].x - pts[i].x, pts[i + 1].y - pts[i].y) < 1e-6) continue;
+      segments.push(mk(pts[i], pts[i + 1]));
+    }
+    if (!segments.length) return { ok: false, reason: 'degenerate' };
+
+    // 驗：把原線換成繞道之後，每一段都要合法。**這一步不可以省**——
+    // 繞開 A 卻撞上 B 是這個功能最容易出的錯，而且畫面上看起來很合理。
+    const clone = Object.assign({}, state, {
+      traces: (state.traces || []).filter(x => x !== t).map(x => Object.assign({}, x))
+    });
+    if ((state.traces || []).indexOf(seg) < 0) clone.traces.push(Object.assign({}, seg));
+    clone.traces.push.apply(clone.traces, segments);
+    for (const ns of segments) {
+      const why = violation(clone, padAbs, ns, cl, null);
+      if (why) return { ok: false, reason: 'wouldBreak:' + why };
+    }
+    return { ok: true, segments: segments, offset: off, replaced: t };
+  }
+
+  /** 所有擋路的線都試繞路。只要有一條繞不開就整個放棄——半套結果比失敗更糟。 */
+  function planDetours(state, padAbs, seg, cl, opts) {
+    const gm = geom();
+    if (!gm) return { ok: false, reason: 'noGeom' };
+    const lay = layerOf(seg), hw = (seg.width || 0.3) / 2;
+    const protect = (opts && opts.protect) || null;
+    const reroutes = [];
+    let work = state;
+    for (const t of (state.traces || [])) {
+      if (t === seg) continue;
+      if (protect && protect.indexOf(t) >= 0) continue;
+      if (layerOf(t) !== lay) continue;
+      if (sameNet(t.net, seg.net)) continue;
+      const d = gm.segSegDist(seg.x1, seg.y1, seg.x2, seg.y2, t.x1, t.y1, t.x2, t.y2) - hw - (t.width || 0.3) / 2;
+      if (d >= cl.traceToTrace - 1e-9) continue;
+      const r = detour(work, padAbs, seg, t, cl, opts);
+      if (!r.ok) return { ok: false, reason: 'detour:' + r.reason, moves: [], blockers: reroutes.length + 1 };
+      reroutes.push({ trace: t, segments: r.segments, offset: r.offset });
+      // 下一條要看到「前一條已經繞開」的狀態，否則兩條會繞到同一個位置
+      work = Object.assign({}, work, {
+        traces: (work.traces || []).filter(x => x !== t).concat(r.segments)
+      });
+    }
+    if (!reroutes.length) return { ok: false, reason: 'noBlockers' };
+    return { ok: true, moves: [], reroutes: reroutes, blockers: reroutes.length };
+  }
+
   const Shove = {
     /**
      * 規劃推擠（單輪）。state 不會被改動。
@@ -191,9 +300,25 @@
       const cl = opts.clearance;
       if (!cl) return { ok: false, reason: 'noRules', moves: [], blockers: 0 };
       const r = computeMoves(state, padAbs, seg, cl, opts);
+      // 平移失敗（端點卡在 pad 上、或要挪太遠）時改試繞路。
+      // 兩端都在 pad 上是密集板的常態，舊版遇到就整個放棄——
+      // 使用者看到的是「推擠沒作用」，而那條線其實只要繞個小彎。
+      if (!r.ok && (r.reason === 'anchored' || r.reason === 'tooFar') && opts.detour !== false) {
+        const d = planDetours(state, padAbs, seg, cl, opts);
+        if (d.ok) return d;
+        // reason 保持原本那個列舉值（呼叫端與測試靠它分辨主因），
+        // 繞路為什麼也不行放在另一個欄位——把兩件事併成一個字串，字串就不再是列舉。
+        return { ok: false, reason: r.reason, detourReason: d.reason, moves: [], blockers: r.blockers };
+      }
       if (!r.ok || !r.moves.length) return r;
       const why = verifyMoves(state, padAbs, seg, r.moves, cl);
-      if (why) return { ok: false, reason: why, moves: [], blockers: r.blockers };
+      if (why) {
+        if (opts.detour !== false) {
+          const d = planDetours(state, padAbs, seg, cl, opts);
+          if (d.ok) return d;
+        }
+        return { ok: false, reason: why, moves: [], blockers: r.blockers };
+      }
       return r;
     },
 
@@ -215,6 +340,14 @@
       const cl = opts.clearance;
       if (!cl) return { ok: false, reason: 'noRules', moves: [], blockers: 0, rounds: 0 };
       const depth = Math.max(1, Math.min(8, opts.depth | 0 || 3));
+      // 連鎖失敗時也要能改繞路。只接單輪的話會出現「開了連鎖反而不會繞」，
+      // 那種行為使用者永遠猜不到。
+      const tryDetour = (reason, blockers) => {
+        if (opts.detour === false) return { ok: false, reason: reason, moves: [], blockers: blockers, rounds: 0 };
+        const d = planDetours(state, padAbs, seg, cl, opts);
+        if (d.ok) return Object.assign({ rounds: 0 }, d);
+        return { ok: false, reason: reason, detourReason: d.reason, moves: [], blockers: blockers, rounds: 0 };
+      };
 
       // 工作副本：一輪一輪在上面推，真的 state 一個位元組都不動
       const idxOf = t => (state.traces || []).indexOf(t);
@@ -245,7 +378,8 @@
         let movedThisRound = 0;
         for (const pusher of pushers) {
           const res = computeMoves(work, padAbs, pusher, cl, roundOpts);
-          if (!res.ok) return { ok: false, reason: 'chain:' + res.reason, moves: [], blockers: res.blockers || blockerSet.size, rounds: r };
+          // 平移這一輪推不動 → 整條鏈放棄，改試繞路（繞路是對「端點焊死」唯一有效的手段）
+          if (!res.ok) return tryDetour('chain:' + res.reason, res.blockers || blockerSet.size);
           if (!res.moves.length) continue;
           for (const m of res.moves) {
             // m.trace 是工作副本裡的物件；換回原始的那一條才記得住
@@ -278,10 +412,10 @@
       // 推到 depth 還沒收斂＝還有東西擋著，硬套用會留下違規。照實說。
       for (const pusher of pushers) {
         const still = computeMoves(work, padAbs, pusher, cl, roundOpts);
-        if (still.ok && still.moves.length) return { ok: false, reason: 'chain:tooDeep', moves: [], blockers: blockerSet.size, rounds };
+        if (still.ok && still.moves.length) return tryDetour('chain:tooDeep', blockerSet.size);
       }
       const why = verifyMoves(state, padAbs, seg, moves, cl);
-      if (why) return { ok: false, reason: 'chain:' + why, moves: [], blockers: blockerSet.size, rounds };
+      if (why) return tryDetour('chain:' + why, blockerSet.size);
       return { ok: true, moves, blockers: blockerSet.size, rounds };
     },
 
@@ -289,6 +423,14 @@
     apply(state, planResult) {
       if (!planResult || !planResult.ok) return 0;
       let n = 0;
+      // 繞路：把原線換成一串新線段。先做這個再做平移，兩者不會同時出現，
+      // 但順序寫死比較好推理。
+      for (const rr of (planResult.reroutes || [])) {
+        const i = (state.traces || []).indexOf(rr.trace);
+        if (i < 0) continue;
+        state.traces.splice(i, 1, ...rr.segments);
+        n++;
+      }
       for (const m of planResult.moves) {
         m.trace.x1 += m.dx; m.trace.y1 += m.dy;
         m.trace.x2 += m.dx; m.trace.y2 += m.dy;
@@ -301,6 +443,8 @@
       return n;
     },
 
+    _detour: detour,
+    _planDetours: planDetours,
     _violation: violation,
     _anchored: anchored,
     _computeMoves: computeMoves,

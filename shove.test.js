@@ -279,5 +279,76 @@ const board = (traces, extra) => Object.assign({
   eq(ch.reason, 'noRules', '連鎖 18：要說明是缺規則');
 }
 
+// ---------- 繞路：兩端焊死的平行鄰居 ----------
+// 平移對「兩端都卡在 pad 上」的線完全無效，而那是密集板的常態。舊版遇到就回 anchored 放棄，
+// 使用者看到的是「推擠沒作用」，其實那條線只要中段鼓一個包就讓得開。
+//
+// 這一段最重要的兩條：**端點不可以動**（動了就從 pad 上脫落——畫面上還連著、電性已經斷）；
+// **繞開 A 不可以撞上 B**（這個功能最容易出、而且看起來最合理的錯）。
+{
+  const pads = [{ id: 'C1', x: -12, y: 0.35, pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'OLD' }] },
+                { id: 'C2', x: 12, y: 0.35, pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'OLD' }] }];
+  const old = tr({ x1: -12, y1: 0.35, x2: 12, y2: 0.35, net: 'OLD' });
+  const st = board([old], { components: pads });
+  // 新線只在中段跟它靠太近（兩端離得夠遠，繞道的斜邊才有地方擺）
+  const seg = tr({ x1: -4, y1: 0, x2: 4, y2: 0, net: 'NEW' });
+
+  const r = S.plan(st, padAbs, seg, { clearance: CL });
+  ok(r.ok, '繞路：兩端焊死時要改用繞路，不可以直接放棄');
+  ok(r.reroutes && r.reroutes.length === 1, '繞路：一條擋路的線 → 一筆繞路');
+  const segs = (r.reroutes && r.reroutes[0] && r.reroutes[0].segments) || [];
+  ok(segs.length >= 3, '繞路：至少三段（斜出去、平行過、斜回來）');
+
+  if (segs.length) {
+    const a = segs[0], z = segs[segs.length - 1];
+    ok(Math.abs(a.x1 - old.x1) < 1e-9 && Math.abs(a.y1 - old.y1) < 1e-9, '繞路：起點原地不動');
+    ok(Math.abs(z.x2 - old.x2) < 1e-9 && Math.abs(z.y2 - old.y2) < 1e-9, '繞路：終點原地不動');
+    let joined = true;
+    for (let i = 0; i + 1 < segs.length; i++) {
+      if (Math.hypot(segs[i].x2 - segs[i + 1].x1, segs[i].y2 - segs[i + 1].y1) > 1e-9) joined = false;
+    }
+    ok(joined, '繞路：每一段首尾相接（有斷口的話畫面看起來連著、實際上斷了）');
+    ok(segs.every(x => x.net === 'OLD' && x.layer === old.layer && x.width === old.width),
+       '繞路：net／層／線寬沿用原線');
+    // 繞出去的方向要遠離新線：新線在 y=0，原線在 y=0.35，所以要往 +y 鼓
+    ok(segs.some(x => Math.max(x.y1, x.y2) > old.y1 + 0.1), '繞路：往遠離新線的那一側鼓');
+  }
+
+  // 套用之後真的不再違規
+  const st2 = board([Object.assign({}, old)], { components: pads });
+  const r2 = S.plan(st2, padAbs, seg, { clearance: CL });
+  const n = S.apply(st2, r2);
+  eq(n, 1, '繞路：apply 回報改了一條');
+  ok(st2.traces.length >= 3, '繞路：原線被換成多段');
+  const withSeg = Object.assign({}, st2, { traces: st2.traces.concat([seg]) });
+  ok(st2.traces.every(t => !S._violation(withSeg, padAbs, t, CL, null)), '繞路：套用後沒有任何一段違規');
+}
+
+// ---------- 繞路要拒絕的情況 ----------
+{
+  const pads = [{ id: 'C1', x: -12, y: 0, pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'OLD' }] },
+                { id: 'C2', x: 12, y: 0, pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'OLD' }] }];
+  const old = tr({ x1: -12, y1: 0, x2: 12, y2: 0, net: 'OLD' });
+
+  // 橫穿：同一層上根本繞不開（要換層打 via 才行）。硬繞只會撞到新線本身——
+  // 這種情況必須失敗，不可以生出一條「看起來繞開了、其實還壓著」的線。
+  const cross = board([old], { components: pads });
+  const segCross = tr({ x1: 0, y1: -6, x2: 0, y2: 6, net: 'NEW' });
+  const rCross = S.plan(cross, padAbs, segCross, { clearance: CL });
+  ok(!rCross.ok, '繞路：同層橫穿無解，要失敗');
+  ok(String(rCross.detourReason || '').indexOf('wouldBreak') >= 0, '繞路：失敗理由要說得出是「繞了還是會撞」');
+
+  // 衝突區貼著端點：繞道的斜邊沒地方擺，寧可失敗也不可以把線頭拉離 pad
+  const nearEnd = board([old], { components: pads });
+  const segEnd = tr({ x1: -11.8, y1: -0.35, x2: -11.4, y2: -0.35, net: 'NEW' });
+  const rEnd = S.plan(nearEnd, padAbs, segEnd, { clearance: CL });
+  ok(!rEnd.ok, '繞路：衝突區貼著端點時不硬繞');
+
+  // 同一個網路不算擋路（本來就可以碰）
+  const same = board([tr({ x1: -12, y1: 0.35, x2: 12, y2: 0.35, net: 'NEW' })], { components: pads });
+  const rSame = S.plan(same, padAbs, tr({ x1: -4, y1: 0, x2: 4, y2: 0, net: 'NEW' }), { clearance: CL });
+  eq((rSame.reroutes || []).length, 0, '繞路：同網路不繞');
+}
+
 console.log(`\nshove.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

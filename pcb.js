@@ -4570,8 +4570,12 @@ const pcbApp = {
         : Shove.plan(this.state, this.padAbs.bind(this), tr, opt);
       if (plan.blockers) {
         if (plan.ok) {
+          const rerouted = (plan.reroutes || []).length;
           const n = Shove.apply(this.state, plan);
-          if (n) this.toast(pcbT(plan.rounds > 1 ? "pj_shove_done_chain" : "pj_shove_done", { n, r: plan.rounds }), "info");
+          // 「推開」與「繞開」是兩件事：推開的線位置變了、形狀沒變；
+          // 繞開的線多了兩個彎。訊息混在一起的話，使用者不知道板子上多了什麼。
+          if (rerouted) this.toast(pcbT("pj_shove_detour", { n: rerouted }), "info");
+          else if (n) this.toast(pcbT(plan.rounds > 1 ? "pj_shove_done_chain" : "pj_shove_done", { n, r: plan.rounds }), "info");
         } else {
           // 理由可能帶 chain: 前綴，取最後一段當 i18n key 的字尾；
           // 找不到對應翻譯時 pcbT 會回 key 本身，至少看得出是哪一種失敗。
