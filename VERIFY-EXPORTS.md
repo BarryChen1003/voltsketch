@@ -59,6 +59,17 @@ cd C:\Users\User\Documents\Web ; node tools/make-verify-boards.js
 
 ---
 
+## 2a. 先跑結構自檢（30 秒，不用裝軟體）
+
+```bash
+cd "C:UsersUserDocumentsWeb"; node tools/odb-verify.js "C:UsersUserDownloadshardwareai-odbpphardwareai"
+```
+
+把解開後**含 matrix/ misc/ steps/ 的那一層**路徑丟給它。它檢查：matrix 與 layers/ 雙向一致、
+features 引用的符號有定義、座標落在板框內、profile 有封閉、drill 的跨層名稱存在、單位一致。
+
+**這只是結構自檢，不是「板廠打得開」**——過了只代表沒有明顯壞掉。真正算數的仍是下面第 2 節。
+
 ## 2. ODB++ → CAM350 / Genesis 2000 / ODB++ Viewer
 
 **裝**：正版 CAM 軟體要錢。免費替代：
