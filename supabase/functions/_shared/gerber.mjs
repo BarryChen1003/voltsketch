@@ -16,6 +16,8 @@
  * 座標約定：Gerber Y 軸向上（業界/KiCad plot 慣例）→ 輸出 Y = −板座標 y。
  * 格式：%FSLAX46Y46*%（4.6，mm×1e6 整數）、%MOMM*%。
  */
+
+import { buildNetSpec } from './netspec.mjs';
 'use strict';
 
 
@@ -681,6 +683,10 @@ function build(state, padAbsFn, baseName) {
       { name: base + '-job.gbrjob', text: jobText, stats: null },
       { name: base + '-DrillTable.txt', text: drillTableText, stats: null }
     ]);
+  // 受控阻抗規格：使用者設的阻抗目標與配對關係，以前只活在編輯器裡，板廠收不到。
+  // 沒有任何 net 設過就不放這個檔——空表比沒有表更糟，板廠會以為這片板沒有阻抗要求。
+  const netSpec = buildNetSpec(state, { name: base });
+  if (netSpec) out.push({ name: base + '-NetSpec.txt', text: netSpec.text, stats: null });
   return { files: out, warnings, drillCounts: { pth: pth.length, npth: npth.length, slots: slots.length }, cplCount: cplRows.length - 1, ipcRecords: ipc.recs };
 }
 

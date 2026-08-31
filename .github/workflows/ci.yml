@@ -179,6 +179,8 @@ jobs:
         run: node snp.test.js
       - name: pcb-mesh.test（3D 顯示模型：KiCad 單位換算、三角化、索引越界要報錯）
         run: node pcb-mesh.test.js
+      - name: netspec.test（受控阻抗規格表：沒要求不產檔、沒繞要明講）
+        run: node netspec.test.js
       - name: spice-measure.test（波形量測：對解析解、量不出來回 null 不回 0）
         run: node spice-measure.test.js
       - name: spice-sweep.test（掃描／蒙地卡羅：可重現、不改原始網表、公差不超標）

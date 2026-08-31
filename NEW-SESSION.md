@@ -105,7 +105,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | `pcb-theme.js` | `PcbTheme` | 2D 配色主題（cam 螢光／EasyEDA／原綠底）＋**對比度與色相距離計算**（用來擋看不見的層色） |
 | `pcb-3d-shapes.js` | `Pcb3DShapes` | 用 pad 佈局反推元件外型（QFP 四邊引腳／排針一根根／電解電容圓柱）；判不出來會標 `guessed` |
 | `snp.js` / `snp-ui.js` | `Snp` / `SnpUI` | Touchstone S 參數匯入。**2 埠檔的行順序是 S11 S21 S12 S22**（照直覺讀會把插入損耗與反射損耗對調）；UI 只讀不改板子 |
-| `sch-bus.js` | `SchBus` | 匯流排：解析／稽核，以及帶到 PCB 端的 `groups()`／`report()`（skew 只算已繞成員） |
+| `_shared/netspec.mjs` | — | 受控阻抗規格表（Gerber 包的 `-NetSpec.txt`）。**改到這裡要手動部署 `pcb-export`** |
 | `pcb-mesh.js` / `pcb-mesh-ui.js` | `PcbMesh` / `PcbMeshUI` | 3D **顯示**用的網格模型（.wrl/.obj）。**KiCad .wrl 的 1 單位 = 2.54mm**；綁定鑰匙沿用 `StepModel.keyOf`（封裝身分），跟 STEP 匯出同一把 |
 | `pcb-shove.js` | `Shove` | 推擠：側推平行鄰居；`planChain` 支援連鎖（只平移、不重繞） |
 | `pcb-drc.js` | `PadDrc` | pad 級 DRC（線距／環寬／孔距／sliver／courtyard…）＋幾何工具 `_geom` |
@@ -129,7 +129,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 |---|---|---|
 | `app.js` | `app` | 編輯器主體 |
 | `circuit-engine.js` | `CircuitEngine` | 節點計算（union-find）、腳位定義、**匯流排正規化**（`normalizeBuses`） |
-| `sch-bus.js` | `SchBus` | **匯流排**：寫法解析、分支幾何、稽核 |
+| `sch-bus.js` | `SchBus` | **匯流排**：寫法解析、分支幾何、稽核，以及帶到 PCB 端的 `groups()`／`report()`（skew **只算已繞的成員**） |
 | `sch-hier.js` | `SchHier` | **階層式圖紙**：port／圖紙符號、遞迴偵測、攤平成「元件清單＋netOf」 |
 | `sch-swap.js` | `SchSwap` | **pin/gate swap**：哪些腳可互換（保守表）、排列合成、稽核 |
 | `schematic-check.js` | `SchematicCheck` | net 感知檢查（短路／浮接／I2C 上拉／匯流排／階層／換腳） |
@@ -198,6 +198,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | `pcb-3d-shapes.test.js` | 30 | 元件外型：封裝分類、**每根腳都要壓在 pad 上**、畸形輸入不可產生 NaN／負尺寸 |
 | `snp.test.js` | 47 | Touchstone：**2 埠 S21/S12 換位**、MA/DB/RI 三種格式、四種頻率單位、續行、壞檔要報錯不可回一半 |
 | `pcb-mesh.test.js` | 36 | 網格模型：**KiCad 2.54 換算**、VRML 多邊形扇形三角化、多 Shape 索引平移、索引越界要當場報錯 |
+| `netspec.test.js` | 20 | 受控阻抗規格表：**沒有要求就不產檔**（空表會讓板廠以為沒有要求）、沒繞的要寫 NOT ROUTED、線寬量的是真走線 |
 
 ### 線路圖
 
@@ -369,6 +370,7 @@ node pcb-theme.test.js
 node pcb-3d-shapes.test.js
 node snp.test.js
 node pcb-mesh.test.js
+node netspec.test.js
 node spice-measure.test.js
 node spice-sweep.test.js
 node design-history.test.js
@@ -453,7 +455,7 @@ node plan-dates.test.mjs
 | **階層只到 net 層** | 子圖當符號可以了，但沒有「進入子圖」的導覽（要自己切頁），也沒把階層路徑帶進 PCB 的 refdes |
 | **匯流排在 PCB 端只到「知道成組」** | 2026-08-31：同步 netlist 時把匯流排帶過來（`Sch2Pcb.busGroupsFrom`），PCB 有匯流排面板：整束高亮、每束的 skew（**只算已繞的成員**，把沒繞的算 0 會得到假的大 skew）、一鍵整束等長（走既有的 `meanderNet`，不另寫一套）。**還沒有的**：群組佈線（一次拉一束）、匯流排層級的 DRC 規則 |
 | **gate swap 是「換位置」不是「換封裝內的單元」** | 2026-08-31 補了 UI（選兩顆 → 「⇆ 換件」）。這個資料模型沒有「一顆封裝內含四個閘」的概念，所以對調的是**擺放位置**，net 各自跟著走；會回報飛線總長變化（沒變也照講）。同型別／同料號／同封裝三關過不了就擋下並說是哪一關 |
-| **net 屬性沒進匯出檔** | 阻抗目標／成對關係只在編輯器與 DRC，板廠拿到的網表仍只有 net 名 |
+| **net 屬性只進 Gerber 包** | 2026-08-31：Gerber 打包多一個 `-NetSpec.txt`（阻抗目標／差動目標／容差／配對／實際用到的層與線寬）。**沒有任何 net 設過屬性就不產這個檔**——空表會讓板廠以為這片板沒有阻抗要求。**刻意不在匯出端重算阻抗**：IPC-2141 公式在 `pcb-nets.js` 只有一份，重算會出現「畫面 50Ω、檔案 47Ω」。**還沒進 ODB++／IPC-2581** |
 | **封裝同步是單向的** | 庫 → 板可以，板上改好的幾何回寫成庫要手動走「從選取建封裝」 |
 | **匯入的 STEP 是攤平的** | 每個實例一份幾何（不是裝配參照），同一顆料放十次檔案就十份。理由見 `pcb-step-model.js` 檔頭 |
 | **3D 元件預設是推出來的** | 2026-08-31：阻焊／pad 開窗／絲印貼圖、亮面材質、元件外型用 pad 佈局反推（QFP 有腳、排針一根根、晶振是金屬罐）。綁了 `.wrl`/`.obj` 的封裝會畫**真模型**（`pcb-mesh.js`）。**STEP 仍只走匯出**——B-rep 要 CAD kernel 才畫得出來，為此塞一顆幾 MB 的 WASM 不划算 |
