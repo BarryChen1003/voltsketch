@@ -199,6 +199,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | `snp.test.js` | 47 | Touchstone：**2 埠 S21/S12 換位**、MA/DB/RI 三種格式、四種頻率單位、續行、壞檔要報錯不可回一半 |
 | `pcb-mesh.test.js` | 36 | 網格模型：**KiCad 2.54 換算**、VRML 多邊形扇形三角化、多 Shape 索引平移、索引越界要當場報錯 |
 | `netspec.test.js` | 20 | 受控阻抗規格表：**沒有要求就不產檔**（空表會讓板廠以為沒有要求）、沒繞的要寫 NOT ROUTED、線寬量的是真走線 |
+| `assembly.test.js` | 25 | 組裝圖：**方向斜角要跟第 1 腳同一個角**（固定左上會跟圓點指相反）、pad 要畫、外框來源要誠實、底面鏡射 |
 
 ### 線路圖
 
@@ -371,6 +372,7 @@ node pcb-3d-shapes.test.js
 node snp.test.js
 node pcb-mesh.test.js
 node netspec.test.js
+node assembly.test.js
 node spice-measure.test.js
 node spice-sweep.test.js
 node design-history.test.js
@@ -444,7 +446,7 @@ node plan-dates.test.mjs
 | **公版的 pad 大多沒有 net** | 公版資料本來就沒有 netlist。openrex 1436 顆 pad 裡 1400+ 沒 net。真正的解是匯入原廠 netlist |
 | **ODB++ 仍缺** | 阻焊、絲印、鋼網、屬性（ATTR）、subnet 的完整分類 |
 | **IPC-2581 是可製造子集** | 疊構只有順序與厚度（沒有材料與介電常數，我們沒那資料）、沒有阻抗需求與 DFX 規則集 |
-| **組裝圖的元件外形是方框** | courtyard 矩形近似；極性只靠 refdes 前綴判斷 |
+| **組裝圖的外框一半是估的** | 2026-08-31：有真 courtyard（KiCad 匯入才有）就畫真的，**圖上寫出幾顆是真的**；pad 會畫出來（方向的唯一線索）；**方向斜角改成畫在第 1 腳那個角**——以前固定畫左上，pad 1 在右下的元件會拿到兩個指相反方向的提示。**仍缺**：真實輪廓（沒有那個資料）、courtyard 只有矩形沒有多邊形 |
 | **Gerber 匯入是有損的** | Gerber 沒有 net、沒有元件。用途是「看別人的板子與量距離」 |
 | **Eagle 匯入不還原封裝圖形** | 元件用佔位尺寸放上去、pads 空的 |
 | **SPICE 是一階模型** | 二極體 Shockley、BJT Ebers-Moll、MOSFET 平方律。AC 的非線性小訊號模型是簡化的（有警告） |

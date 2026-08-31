@@ -13,9 +13,12 @@
  * 底面那張**左右鏡射**：那是站在板子底下看的視角，跟實際作業一致。
  *
  * 誠實界定：
- *   - 元件外形用 courtyard 方框近似，不畫真實輪廓（我們沒有那個資料）。
+ *   - 外框：有真的 courtyard（KiCad 匯入才有）就畫真的，沒有才用 w/h 方框估。
+ *     **圖上會寫出「幾顆是真的」**，看圖的人有權知道哪些是估的。
+ *   - pad 會畫出來：方向是這張圖最重要的資訊，空白方框看不出元件轉了幾度。
  *   - 第 1 腳標記畫在 pad 1 的位置；沒有 pad 1 的元件不標。
- *   - 極性元件（二極體、電解電容、LED）目前只靠 refdes 前綴判斷。
+ *   - 方向斜角畫在**第 1 腳那個角**。以前固定畫左上，pad 1 在右下的元件會拿到
+ *     一個跟圓點指相反方向的提示——兩個互相矛盾的標記比只有一個更糟。
  *
  * 純計算，不碰 DOM。測試：assembly.test.js
  */
@@ -31,6 +34,9 @@ const X = s => String(s == null ? '' : s)
 // 極性元件：方向錯了就是壞的，圖上一定要標出來。
 // 靠 refdes 前綴判斷是粗糙的，但比不標好——標錯的成本是「多看一眼」，
 // 不標的成本是「整批裝反」。
+// 有方向的元件：裝反就是壞的。二極體、LED、電解／鉭質電容、IC、電晶體、晶振、連接器。
+// 靠 refdes 前綴判斷是粗糙的，但比不標好——標錯的成本是「多看一眼」，
+// 不標的成本是「整批裝反」。
 const POLARISED = /^(D|LED|CR|C[ET]|U|Q|IC|Y|X)\d/i;
 
 function isPolarised(c) {
@@ -44,6 +50,27 @@ function isPolarised(c) {
  * @param opts { side:'top'|'bottom', dnp:[refdes…], title }
  * @returns { name, text }  一張 SVG
  */
+/**
+ * 一顆 pad 的 SVG。組裝圖畫 pad 不是為了好看：**方向**是這張圖最重要的資訊，
+ * 而一個空白方框看不出元件轉了幾度，pad 排列看得出來。
+ * 座標是相對元件中心（外層的 <g> 已經套好平移與旋轉）。
+ */
+function padOutlineSvg(pd, cls) {
+  const w = Math.max(0.1, Number(pd.w) || 0.5), h = Math.max(0.1, Number(pd.h) || 0.5);
+  const x = Number(pd.x) || 0, y = Number(pd.y) || 0;
+  const rot = Number(pd.rot) || 0;
+  const shape = String(pd.shape || '');
+  const g = rot ? '<g transform="translate(' + N(x) + ',' + N(y) + ') rotate(' + N(-rot) + ')">' : '';
+  const cx = rot ? 0 : x, cy = rot ? 0 : y;
+  let body;
+  if (shape === 'circle' || shape === 'oval') {
+    body = '<ellipse class="' + cls + '" cx="' + N(cx) + '" cy="' + N(cy) + '" rx="' + N(w / 2) + '" ry="' + N(h / 2) + '"/>';
+  } else {
+    body = '<rect class="' + cls + '" x="' + N(cx - w / 2) + '" y="' + N(cy - h / 2) + '" width="' + N(w) + '" height="' + N(h) + '"/>';
+  }
+  return g ? (g + body + '</g>') : body;
+}
+
 function sheet(state, padAbsFn, opts) {
   const o = opts || {};
   const side = o.side === 'bottom' ? 'bottom' : 'top';
@@ -67,6 +94,8 @@ function sheet(state, padAbsFn, opts) {
   el.push('  .dnp{fill:#f2f2f2;stroke:#999;stroke-width:0.12;stroke-dasharray:0.6 0.4}');
   el.push('  .pin1{fill:#000}');
   el.push('  .pol{fill:none;stroke:#000;stroke-width:0.18}');
+  el.push('  .pad{fill:none;stroke:#666;stroke-width:0.06}');
+  el.push('  .cy{fill:none;stroke:#bbb;stroke-width:0.08;stroke-dasharray:0.4 0.3}');
   el.push('  .ref{font-family:sans-serif;font-size:0.9px;text-anchor:middle;dominant-baseline:middle;fill:#000}');
   el.push('  .ttl{font-family:sans-serif;font-size:2.2px;fill:#000}');
   el.push('  .sub{font-family:sans-serif;font-size:1.4px;fill:#444}');
@@ -82,7 +111,7 @@ function sheet(state, padAbsFn, opts) {
     el.push('<rect class="brd" x="' + N(-W / 2) + '" y="' + N(-H / 2) + '" width="' + N(W) + '" height="' + N(H) + '"/>');
   }
 
-  let placed = 0, skipped = 0, dnpCount = 0;
+  let placed = 0, skipped = 0, dnpCount = 0, cyCount = 0, padCount = 0;
   const rows = [];
 
   for (const c of (state.components || [])) {
@@ -99,8 +128,23 @@ function sheet(state, padAbsFn, opts) {
     const g = 'transform="translate(' + px(c.x) + ',' + py(c.y) + ') rotate(' + N(drawRot) + ')"';
 
     el.push('<g ' + g + '>');
+    // 本體外框：KiCad 匯入的元件帶真的 courtyard（crtyd），有就用真的。
+    // 沒有才退回 w/h 近似——並且在圖說裡分別數出來，使用者才知道這張圖有幾顆是猜的。
+    const cy = c.crtyd;
+    const hasCy = !!(cy && Number.isFinite(cy.minx) && Number.isFinite(cy.maxx) && (cy.maxx - cy.minx) > 0);
+    if (hasCy) {
+      cyCount++;
+      el.push('  <rect class="cy" x="' + N(cy.minx) + '" y="' + N(cy.miny) +
+        '" width="' + N(cy.maxx - cy.minx) + '" height="' + N(cy.maxy - cy.miny) + '"/>');
+    }
     el.push('  <rect class="' + (isDnp ? 'dnp' : 'body') + '" x="' + N(-w / 2) + '" y="' + N(-h / 2) +
       '" width="' + N(w) + '" height="' + N(h) + '"/>');
+    // pad：方向的唯一可靠線索。空白方框看不出元件轉了幾度，pad 排列看得出來。
+    for (const pd of (c.pads || [])) {
+      if (pd.cu === false) continue;
+      el.push('  ' + padOutlineSvg(pd, 'pad'));
+      padCount++;
+    }
 
     // 第 1 腳標記：一個實心小圓，畫在 pad 1 的相對位置
     const p1 = (c.pads || []).find(p => String(p.num) === '1' || String(p.num) === 'A1');
@@ -112,8 +156,13 @@ function sheet(state, padAbsFn, opts) {
     // 極性元件：外框加一條斜切角（業界慣例的 chamfer）
     if (isPolarised(c) && !isDnp) {
       const k = Math.min(w, h) * 0.3;
+      // 斜角要跟第 1 腳同一個角。以前固定畫左上，pad 1 在右下的元件就會拿到
+      // 一個跟圓點指相反方向的提示——兩個互相矛盾的方向標記比只有一個更糟。
+      const sx = p1 ? (Number(p1.x) >= 0 ? 1 : -1) : -1;
+      const sy = p1 ? (Number(p1.y) >= 0 ? 1 : -1) : -1;
+      const cxx = sx * w / 2, cyy = sy * h / 2;
       el.push('  <polyline class="pol" points="' +
-        N(-w / 2) + ',' + N(-h / 2 + k) + ' ' + N(-w / 2 + k) + ',' + N(-h / 2) + '"/>');
+        N(cxx) + ',' + N(cyy - sy * k) + ' ' + N(cxx - sx * k) + ',' + N(cyy) + '"/>');
     }
     el.push('</g>');
 
@@ -129,14 +178,18 @@ function sheet(state, padAbsFn, opts) {
     X((o.title || 'Assembly') + ' — ' + (side === 'top' ? 'TOP' : 'BOTTOM' + ' (mirrored)')) + '</text>');
   el.push('<text class="sub" x="' + N(-W / 2) + '" y="' + N(yTitle + 3) + '">' +
     X(placed + ' parts' + (dnpCount ? ' / ' + dnpCount + ' DNP' : '') +
-      '   ● = pin 1   dashed = do not populate') + '</text>');
+      '   ● = pin 1   ◣ = polarity   dashed = do not populate') + '</text>');
+  // 第二行：外框的來源。看圖的人有權知道哪些是量出來的、哪些是估的。
+  el.push('<text class="sub" x="' + N(-W / 2) + '" y="' + N(yTitle + 5.6) + '">' +
+    X(cyCount + ' of ' + placed + ' outlines from real courtyard, rest are body-size boxes' +
+      '   ' + padCount + ' pads drawn') + '</text>');
 
   el.push('</svg>');
 
   return {
     name: (o.base || 'board') + '-assembly-' + side + '.svg',
     text: el.join(NL) + NL,
-    stats: { side, placed, dnp: dnpCount, skipped },
+    stats: { side, placed, dnp: dnpCount, skipped, courtyard: cyCount, pads: padCount },
     rows,
   };
 }
