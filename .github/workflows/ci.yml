@@ -169,6 +169,14 @@ jobs:
         run: node sch-swap.test.js
       - name: pcb-drag.test（拖整段走線：pad 那一端不可以被拖走）
         run: node pcb-drag.test.js
+      - name: pcb-interact.test（互動資料層：弧走線高亮要當弧描邊、選單與快捷鍵四語）
+        run: node pcb-interact.test.js
+      - name: pcb-theme.test（配色主題：層色對比度與色相距離，擋看不見的顏色）
+        run: node pcb-theme.test.js
+      - name: pcb-3d-shapes.test（元件外型：分類與引腳要壓在 pad 上）
+        run: node pcb-3d-shapes.test.js
+      - name: snp.test（Touchstone：2 埠 S21/S12 換位、三種格式、壞檔要報錯）
+        run: node snp.test.js
       - name: spice-measure.test（波形量測：對解析解、量不出來回 null 不回 0）
         run: node spice-measure.test.js
       - name: spice-sweep.test（掃描／蒙地卡羅：可重現、不改原始網表、公差不超標）

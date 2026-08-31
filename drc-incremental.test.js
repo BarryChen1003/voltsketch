@@ -224,5 +224,26 @@ function makeBoard(pairs) {
   eq(n, 3, '8.1 沒有 PcbIndex 時忽略 region、退回全掃（寧可多檢查）');
 }
 
+// ---- 9. 違規座標（畫面標紅要用）----
+// 只有文字訊息時，使用者拿到「@(12.3,45.6)」得自己在板上找那兩條線。
+// 座標是給 pcb.js drawDrcMarks 標紅用的，掉了不會有任何測試紅——所以這裡守著。
+{
+  const st = {
+    components: [{
+      ref: 'U1', x: 0, y: 0,
+      pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', net: 'A' },
+             { num: '2', x: 0.4, y: 0, w: 1, h: 1, side: 'F', net: 'B' }]
+    }],
+    traces: [], vias: [], userZones: []
+  };
+  const out = run(st) || [];
+  const errs = out.filter(x => x.type === 'error' || x.type === 'warning');
+  ok(errs.length > 0, '9.1 兩顆貼在一起的異網 pad 要報違規');
+  const withXY = errs.filter(x => typeof x.x === 'number' && typeof x.y === 'number' &&
+                                  isFinite(x.x) && isFinite(x.y));
+  eq(withXY.length, errs.length, '9.2 每一筆違規都要帶得出座標');
+  ok(withXY.every(x => Math.abs(x.x) <= 5 && Math.abs(x.y) <= 5), '9.3 座標要落在板上，不是 0 或 NaN');
+}
+
 console.log(`\ndrc-incremental.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

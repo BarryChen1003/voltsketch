@@ -900,6 +900,35 @@
           </section>
 
           <section class="panel-section">
+            <h2 data-i18n="pj_ts_title">選取走線</h2>
+            <div id="traceSelHint" data-i18n="pj_ts_none" style="font-size:12px;color:var(--muted)">用 select 工具點一條走線，就能在這裡改線寬與層。</div>
+            <div id="traceSelFields" style="display:none;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+              <label style="display:grid;gap:2px"><span data-i18n="pj_ts_width">線寬 (mm)</span><input type="number" id="tsWidth" step="0.05" min="0.05" style="padding:3px"></label>
+              <label style="display:grid;gap:2px"><span data-i18n="pj_ts_layer">層</span><select id="tsLayer" style="padding:3px"></select></label>
+              <div style="display:grid;gap:2px"><span data-i18n="pj_ts_net">網路</span><span id="tsNet" style="font-family:monospace;color:var(--accent-strong)">—</span></div>
+              <div style="display:grid;gap:2px"><span data-i18n="pj_ts_len">長度</span><span id="tsLen" style="font-family:monospace">0 mm</span></div>
+              <button class="small-button" id="tsDelete" data-i18n="pj_ts_del" style="grid-column:1/-1">🗑 刪除此段</button>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <h2 data-i18n="pj_sc_title">快捷鍵</h2>
+            <div id="shortcutRows"></div>
+          </section>
+
+          <section class="panel-section" data-panel="snp" data-panel-data-i18n-title="snp_title" title="S 參數 (Touchstone)">
+            <h2 data-i18n="snp_title">S 參數 (Touchstone)</h2>
+            <div style="font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:6px" data-i18n="snp_hint">匯入量測或原廠給的 .s1p/.s2p/.s4p，看回波損耗與插入損耗。只讀不改板子。</div>
+            <label class="small-button" style="display:block;text-align:center;cursor:pointer">
+              <span data-i18n="snp_pick">選擇 .sNp 檔</span>
+              <input type="file" id="snpFile" accept=".s1p,.s2p,.s3p,.s4p,.snp,.txt" style="display:none">
+            </label>
+            <div id="snpName" style="font-size:11px;color:var(--muted);margin-top:6px;word-break:break-all"></div>
+            <div id="snpSummary" style="font-size:12px;margin-top:6px"></div>
+            <canvas id="snpChart" width="300" height="180" style="display:none;width:100%;margin-top:8px"></canvas>
+          </section>
+
+          <section class="panel-section">
             <div class="section-head">
               <h2 data-i18n="pcb_drc">DRC 檢查</h2>
               <button class="small-button" id="runDrc" data-i18n="pcb_rundrc">執行檢查</button>
@@ -1059,6 +1088,14 @@
           <section class="panel-section" data-panel="colors" data-panel-data-i18n-title="pj_t_palette" title="整體配色">
             <h2 data-i18n="pcb_colors">🎨 整體配色</h2>
             <p style="font-size:11px;color:var(--muted);margin:0 0 8px" data-i18n="pcbf_h_colors">改的是全域預設色。單一走線／元件可在「選取元件」面板單獨上色，會蓋過這裡。</p>
+            <label style="display:grid;gap:3px;font-size:12px;margin-bottom:8px">
+              <span data-i18n="pt_theme_label">配色主題</span>
+              <select id="paletteTheme" style="padding:4px">
+                <option value="cam" data-i18n="pt_theme_cam">CAM 螢光（黑底多層）</option>
+                <option value="easyeda" data-i18n="pt_theme_easyeda">EasyEDA 風</option>
+                <option value="classic" data-i18n="pt_theme_classic">原本的綠底</option>
+              </select>
+            </label>
             <div id="paletteRows" style="display:grid;gap:6px;font-size:12px"></div>
             <button class="small-button" id="paletteReset" data-i18n="pcbf_palreset" style="margin-top:8px;width:100%">還原預設配色</button>
           </section>
@@ -1139,12 +1176,39 @@
       <div class="toast"></div>
     </template>
     <div id="toastHost" aria-live="polite" aria-atomic="true"></div>
+    <!-- 右鍵選單：項目由 pcb-interact.js 決定，pcb.js 逐項 addEventListener（CSP 不准 inline onclick） -->
+    <div id="pcbCtxMenu" role="menu"></div>
+    <!-- hover 資訊卡：內容由 pcb-interact.js hoverInfo 算，pcb.js 只負責貼上去 -->
+    <div id="pcbHoverTip" role="tooltip" aria-live="polite"></div>
+    <style>
+      #pcbCtxMenu { position: fixed; z-index: 9999; display: none; gap: 2px; min-width: 190px; padding: 4px;
+        background: var(--card, #fff); border: 1px solid var(--line, #d5dbe3); border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+      #pcbCtxMenu .ctx-item { text-align: left; padding: 7px 10px; font-size: 13px; border: 0; border-radius: 6px;
+        background: none; color: inherit; cursor: pointer; }
+      #pcbCtxMenu .ctx-item:hover:not(:disabled) { background: var(--bg-soft, #eef2f7); }
+      #pcbCtxMenu .ctx-item:disabled { opacity: .4; cursor: default; }
+      #pcbCtxMenu .ctx-danger { color: #c0392b; }
+      #pcbHoverTip { position: fixed; z-index: 9998; display: none; pointer-events: none;
+        background: var(--card, #fff); border: 1px solid var(--line, #d5dbe3); border-radius: 8px;
+        padding: 6px 9px; font-size: 12px; box-shadow: 0 6px 18px rgba(0,0,0,.16); max-width: 260px; }
+      #pcbHoverTip .hv-row { display: flex; gap: 10px; justify-content: space-between; line-height: 1.55; }
+      #pcbHoverTip .hv-k { color: var(--muted, #64748b); white-space: nowrap; }
+      #snpSummary .snp-row { display: flex; gap: 10px; justify-content: space-between; line-height: 1.6; }
+      #snpSummary .snp-k { color: var(--muted, #64748b); white-space: nowrap; }
+      #snpSummary .snp-v { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; text-align: right; }
+      #snpSummary .snp-err { color: #c0392b; line-height: 1.5; }
+      #pcbHoverTip .hv-v { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      #shortcutRows { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 12px; }
+      #shortcutRows .sc-key { font-family: monospace; color: var(--accent-strong, #2c3e50); white-space: nowrap; }
+      #shortcutRows .sc-act { color: var(--muted, #64748b); }
+    </style>
 
     <script src="./vendor/supabase-js-2.112.3.min.js"></script>
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./observe.js?v=1"></script>
     <script src="./auth.js?v=2026-08-18a"></script>
-    <script src="./i18n.js?v=2026-08-27a"></script>
+    <script src="./i18n.js?v=2026-08-31a"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-08-26a"></script>
@@ -1157,16 +1221,21 @@
     <script src="./kicad-io.js?v=10"></script>
     <script src="./pcb-index.js?v=1"></script>
     <script src="./pcb-arc.js?v=1"></script>
-    <script src="./pcb-drc.js?v=9"></script>
+    <script src="./pcb-drc.js?v=10"></script>
     <script src="./pcb-rules.js?v=13"></script>
     <script src="./pcb-shove.js?v=2"></script>
-    <script src="./pcb-3d.js?v=2"></script>
+    <script src="./pcb-3d-shapes.js?v=1"></script>
+    <script src="./pcb-3d.js?v=4"></script>
     <script src="./pcb-crossprobe.js?v=1"></script>
     <script src="./pcb-nets.js?v=1"></script>
     <script src="./pcb-drag.js?v=1"></script>
     <script src="./pcb-fpinst.js?v=1"></script>
     <script src="./sch-swap.js?v=1"></script>
-    <script src="./pcb.js?v=67"></script>
+    <script src="./snp.js?v=1"></script>
+    <script src="./snp-ui.js?v=1"></script>
+    <script src="./pcb-theme.js?v=1"></script>
+    <script src="./pcb-interact.js?v=2"></script>
+    <script src="./pcb.js?v=71"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-08-25a"></script>
     <script src="./pcb-stackup.js?v=2026-08-24b"></script>
@@ -1195,6 +1264,6 @@
     <script src="./footprint-editor.js?v=1"></script>
     <script src="./fp-lib.js?v=1"></script>
     <script src="./pcb-fp-ui.js?v=4"></script>
-    <script src="./pcb-panels.js?v=5"></script>
+    <script src="./pcb-panels.js?v=6"></script>
 </body>
 </html>

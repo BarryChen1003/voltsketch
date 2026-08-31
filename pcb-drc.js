@@ -164,9 +164,16 @@ window.PadDrc = (() => {
    */
   const run = (state, padAbs, rules, opts) => {
     const res = [], tally = {}, CAP = 30;
-    const add = (key, type, message) => {
+    const add = (key, type, message, pos) => {
       tally[key] = (tally[key] || 0) + 1;
-      if (tally[key] <= CAP) res.push({ type, message });
+      if (tally[key] > CAP) return;
+      const f = { type: type, message: message };
+      // 座標：畫面要標紅在違規處。光有文字訊息，使用者得自己在板上找那兩條線。
+      // 三種來源：pad 外形是 (cx,cy)、via 是 (x,y)、鑽孔膠囊是 (x1,y1)。
+      const px = pos ? (pos.cx != null ? pos.cx : (pos.x != null ? pos.x : pos.x1)) : null;
+      const py = pos ? (pos.cy != null ? pos.cy : (pos.y != null ? pos.y : pos.y1)) : null;
+      if (typeof px === 'number' && isFinite(px) && typeof py === 'number' && isFinite(py)) { f.x = px; f.y = py; }
+      res.push(f);
     };
     const region = (opts && opts.region) || null;
     const IXM = (typeof window !== 'undefined' && window.PcbIndex) ||
@@ -224,7 +231,7 @@ window.PadDrc = (() => {
       const d = padDist(A.sh, B.sh);
       if (d < cl.padToPad - EPS)
         add('drc_cat_padgap', 'error',
-          T('drc_padgap', { a: A.label, an: NN(A.net), b: B.label, bn: NN(B.net), d: fmt(Math.max(0, d)), lim: cl.padToPad, at: at(A.sh) }));
+          T('drc_padgap', { a: A.label, an: NN(A.net), b: B.label, bn: NN(B.net), d: fmt(Math.max(0, d)), lim: cl.padToPad, at: at(A.sh) }), A.sh);
     }
 
     // 1b) 阻焊橋（mask sliver）：同面兩開窗（=pad 外形，margin 0）之間阻焊條過細會斷
@@ -240,7 +247,7 @@ window.PadDrc = (() => {
         const d = padDist(A.sh, B.sh);
         if (d > EPS && d < sliverMin - EPS)
           add('drc_cat_sliver', 'warning',
-            T('drc_sliver', { a: A.label, b: B.label, d: fmt(d), lim: sliverMin, at: at(A.sh) }));
+            T('drc_sliver', { a: A.label, b: B.label, d: fmt(d), lim: sliverMin, at: at(A.sh) }), A.sh);
       }
     }
 
@@ -276,7 +283,7 @@ window.PadDrc = (() => {
         const d = segPadDist(t.x1, t.y1, t.x2, t.y2, P.sh) - tw;
         if (d < cl.traceToPad - EPS)
           add('drc_cat_trace_pad', 'error',
-            T('drc_trace_pad', { tn: NN(t.net), tl, p: P.label, pn: NN(P.net), d: fmt(Math.max(0, d)), lim: cl.traceToPad, at: at(P.sh) }));
+            T('drc_trace_pad', { tn: NN(t.net), tl, p: P.label, pn: NN(P.net), d: fmt(Math.max(0, d)), lim: cl.traceToPad, at: at(P.sh) }), P.sh);
       }
     }
 
@@ -315,10 +322,10 @@ window.PadDrc = (() => {
       if (d >= cl.traceToTrace - EPS) continue;
       if (!a.net || !b.net) {
         if (d > 0) add('drc_cat_tt_nonet', 'warning',
-          T('drc_tt_nonet', { i: i + 1, j: j + 1, d: fmt(d), lim: cl.traceToTrace }));
+          T('drc_tt_nonet', { i: i + 1, j: j + 1, d: fmt(d), lim: cl.traceToTrace }), { x: a.x1, y: a.y1 });
       } else {
         add('drc_cat_tt', 'error',
-          T('drc_tt', { a: a.net, b: b.net, layer: a.layer || 'F.Cu', d: fmt(Math.max(0, d)), lim: cl.traceToTrace, x: a.x1.toFixed(1), y: a.y1.toFixed(1) }));
+          T('drc_tt', { a: a.net, b: b.net, layer: a.layer || 'F.Cu', d: fmt(Math.max(0, d)), lim: cl.traceToTrace, x: a.x1.toFixed(1), y: a.y1.toFixed(1) }), { x: a.x1, y: a.y1 });
       }
       }
     }
@@ -332,19 +339,19 @@ window.PadDrc = (() => {
         if (vnet && vnet === (u.net || '')) continue;
         const d = Math.hypot(v.x - u.x, v.y - u.y) - vr - (u.od || 0.6) / 2;
         if (d < cl.viaToVia - EPS)
-          add('drc_cat_via_via', 'error', T('drc_via_via', { i: i + 1, an: NN(vnet), j: j + 1, bn: NN(u.net), d: fmt(Math.max(0, d)), lim: cl.viaToVia, x: v.x.toFixed(1), y: v.y.toFixed(1) }));
+          add('drc_cat_via_via', 'error', T('drc_via_via', { i: i + 1, an: NN(vnet), j: j + 1, bn: NN(u.net), d: fmt(Math.max(0, d)), lim: cl.viaToVia, x: v.x.toFixed(1), y: v.y.toFixed(1) }), v);
       }
       for (const t of traces) {
         if (vnet && vnet === (t.net || '')) continue;
         const d = ptSegDist(v.x, v.y, t.x1, t.y1, t.x2, t.y2) - vr - (t.width || 0.3) / 2;
         if (d < cl.traceToTrace - EPS)
-          add('drc_cat_via_trace', 'error', T('drc_via_trace', { i: i + 1, an: NN(vnet), tn: NN(t.net), tl: t.layer || 'F.Cu', d: fmt(Math.max(0, d)), lim: cl.traceToTrace, x: v.x.toFixed(1), y: v.y.toFixed(1) }));
+          add('drc_cat_via_trace', 'error', T('drc_via_trace', { i: i + 1, an: NN(vnet), tn: NN(t.net), tl: t.layer || 'F.Cu', d: fmt(Math.max(0, d)), lim: cl.traceToTrace, x: v.x.toFixed(1), y: v.y.toFixed(1) }), v);
       }
       for (const P of pads) {
         if (vnet && vnet === P.net) continue;
         const d = ptPadDist(v.x, v.y, P.sh) - vr;
         if (d < cl.padToPad - EPS)
-          add('drc_cat_via_pad', 'error', T('drc_via_pad', { i: i + 1, an: NN(vnet), p: P.label, pn: NN(P.net), d: fmt(Math.max(0, d)), lim: cl.padToPad, x: v.x.toFixed(1), y: v.y.toFixed(1) }));
+          add('drc_cat_via_pad', 'error', T('drc_via_pad', { i: i + 1, an: NN(vnet), p: P.label, pn: NN(P.net), d: fmt(Math.max(0, d)), lim: cl.padToPad, x: v.x.toFixed(1), y: v.y.toFixed(1) }), v);
       }
     }
 
@@ -356,25 +363,25 @@ window.PadDrc = (() => {
         ? Math.min((p.w - p.slot.w) / 2, (p.h - p.slot.h) / 2)
         : (Math.min(p.w, p.h) - p.drill) / 2;
       if (ring < -EPS)
-        add('drc_cat_ring', 'error', T('drc_ring_neg', { p: P.label, ring: fmt(ring), at: at(P.sh) }));
+        add('drc_cat_ring', 'error', T('drc_ring_neg', { p: P.label, ring: fmt(ring), at: at(P.sh) }), P.sh);
       else if (ring < via.minRing - EPS)
-        add('drc_cat_ring', 'error', T('drc_ring_small', { p: P.label, ring: fmt(ring), lim: via.minRing, at: at(P.sh) }));
+        add('drc_cat_ring', 'error', T('drc_ring_small', { p: P.label, ring: fmt(ring), lim: via.minRing, at: at(P.sh) }), P.sh);
     }
     vias.forEach((v, i) => {
       const ring = ((v.od || 0.6) - (v.id || 0.3)) / 2;
       if (ring < via.minRing - EPS)
-        add('drc_cat_via_ring', 'warning', T('drc_via_ring', { i: i + 1, ring: fmt(ring), lim: via.minRing, x: v.x.toFixed(1), y: v.y.toFixed(1) }));
+        add('drc_cat_via_ring', 'warning', T('drc_via_ring', { i: i + 1, ring: fmt(ring), lim: via.minRing, x: v.x.toFixed(1), y: v.y.toFixed(1) }), v);
     });
 
     // 6) 鑽孔：最小孔徑 + 孔對孔餘裕（斷鑽風險，與網路無關）
     for (const H of holes) {
       if (H.cap.d > 0 && H.cap.d < via.minDrill - EPS)
-        add('drc_cat_min_drill', 'warning', T('drc_min_drill', { h: H.label, d: fmt(H.cap.d), lim: via.minDrill }));
+        add('drc_cat_min_drill', 'warning', T('drc_min_drill', { h: H.label, d: fmt(H.cap.d), lim: via.minDrill }), H.cap);
     }
     for (let i = 0; i < holes.length; i++) for (let j = i + 1; j < holes.length; j++) {
       const g = capsuleGap(holes[i].cap, holes[j].cap);
       if (g < holeGapMin - EPS)
-        add('drc_cat_hole_hole', 'error', T('drc_hole_hole', { a: holes[i].label, b: holes[j].label, d: fmt(Math.max(0, g)), lim: holeGapMin }));
+        add('drc_cat_hole_hole', 'error', T('drc_hole_hole', { a: holes[i].label, b: holes[j].label, d: fmt(Math.max(0, g)), lim: holeGapMin }), holes[i].cap);
     }
 
     // 7) courtyard 重疊（KiCad 匯入元件有 CrtYd 外框才查；旋轉矩形精確判斷）
@@ -389,7 +396,7 @@ window.PadDrc = (() => {
           .map(([rx, ry]) => [c.x + rx * co + ry * si, c.y - rx * si + ry * co]);
       };
       if (polyDist(poly(A), poly(B)) <= EPS)
-        add('drc_cat_courtyard', 'warning', T('drc_courtyard', { a: A.ref || A.label, b: B.ref || B.label, x: A.x.toFixed(1), y: A.y.toFixed(1) }));
+        add('drc_cat_courtyard', 'warning', T('drc_courtyard', { a: A.ref || A.label, b: B.ref || B.label, x: A.x.toFixed(1), y: A.y.toFixed(1) }), A);
     }
 
     // 8) 絲印壓 pad（同面，絲印線與 pad 銅面真重疊才報，比照 KiCad；文字不查）
@@ -405,7 +412,7 @@ window.PadDrc = (() => {
           if (ptSegDist(P.sh.cx, P.sh.cy, ax, ay, bx, by) - P.sh.circ - (g.w || 0.12) / 2 >= SILK_CL) continue;
           const d = segPadDist(ax, ay, bx, by, P.sh) - (g.w || 0.12) / 2;
           if (d < SILK_CL - EPS)
-            add('drc_cat_silk_pad', 'warning', T('drc_silk_pad', { c: c.ref || c.label, p: P.label, d: fmt(Math.abs(d)), at: at(P.sh) }));
+            add('drc_cat_silk_pad', 'warning', T('drc_silk_pad', { c: c.ref || c.label, p: P.label, d: fmt(Math.abs(d)), at: at(P.sh) }), P.sh);
         }
       }
     }
@@ -425,11 +432,11 @@ window.PadDrc = (() => {
         if (d >= lim - EPS) continue;
         const loc = `@(${t.x1.toFixed(1)},${t.y1.toFixed(1)})`;
         if (d >= -EPS)
-          add('drc_cat_trace_edge', 'warning', T('drc_trace_edge', { i: i + 1, tn: NN(t.net), d: fmt(Math.max(0, d)), lim, at: loc }));
+          add('drc_cat_trace_edge', 'warning', T('drc_trace_edge', { i: i + 1, tn: NN(t.net), d: fmt(Math.max(0, d)), lim, at: loc }), { x: t.x1, y: t.y1 });
         else if (mEnd <= tw + EPS)
-          add('drc_cat_edge_end', 'warning', T('drc_trace_edge_end', { i: i + 1, tn: NN(t.net), at: loc }));
+          add('drc_cat_edge_end', 'warning', T('drc_trace_edge_end', { i: i + 1, tn: NN(t.net), at: loc }), { x: t.x1, y: t.y1 });
         else
-          add('drc_cat_edge_cross', 'error', T('drc_trace_edge_cross', { i: i + 1, tn: NN(t.net), at: loc }));
+          add('drc_cat_edge_cross', 'error', T('drc_trace_edge_cross', { i: i + 1, tn: NN(t.net), at: loc }), { x: t.x1, y: t.y1 });
       }
     }
 

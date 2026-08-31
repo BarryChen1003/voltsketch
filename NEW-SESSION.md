@@ -100,6 +100,11 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | `pcb-nets.js` | `NetModel` | **net 一級物件**：屬性表（阻抗目標／成對關係）、唯一一份 net 參照列舉與 IPC-2141 公式 |
 | `pcb-fpinst.js` | `FpInst` | **元件實例 ／ 封裝庫分離**：fpRef ＋ 幾何雜湊，判斷同不同步、安全同步 |
 | `pcb-drag.js` | `TraceDrag` | 拖整段走線（pad 那端補線不斷線）＋ 對齊輔助線 |
+| `pcb-interact.js` | `PcbInteract` | 互動資料層：走線描邊路徑（**弧要當弧**）、弧長、右鍵選單項目、快捷鍵表 |
+| `pcb-drc.js` | `PadDrc` | pad 級 DRC。**每筆違規帶 `x`/`y`**（pcb.js `drawDrcMarks` 拿去在畫面上標紅；沒有座標的檢查只會進清單） |
+| `pcb-theme.js` | `PcbTheme` | 2D 配色主題（cam 螢光／EasyEDA／原綠底）＋**對比度與色相距離計算**（用來擋看不見的層色） |
+| `pcb-3d-shapes.js` | `Pcb3DShapes` | 用 pad 佈局反推元件外型（QFP 四邊引腳／排針一根根／電解電容圓柱）；判不出來會標 `guessed` |
+| `snp.js` / `snp-ui.js` | `Snp` / `SnpUI` | Touchstone S 參數匯入。**2 埠檔的行順序是 S11 S21 S12 S22**（照直覺讀會把插入損耗與反射損耗對調）；UI 只讀不改板子 |
 | `pcb-shove.js` | `Shove` | 推擠：側推平行鄰居；`planChain` 支援連鎖（只平移、不重繞） |
 | `pcb-drc.js` | `PadDrc` | pad 級 DRC（線距／環寬／孔距／sliver／courtyard…）＋幾何工具 `_geom` |
 | `pcb-constraints.js` | `ConstraintMgr` | net class、間距矩陣、銳角 |
@@ -186,6 +191,10 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | `shove.test.js` | 62 | 推擠：不該推的時候不可推；連鎖推擠與其三個守衛 |
 | `pcb-drag.test.js` | 40 | 拖整段走線：**pad 那一端不可以被拖走**、對齊輔助線 |
 | `pcb-index.test.js` | 60 | 空間索引：300 物件 × 60 查詢與全比對逐一對照 |
+| `pcb-interact.test.js` | 32 | 互動資料層：**圓弧走線的高亮要當弧描邊**、右鍵選單項目、快捷鍵表四語齊全 |
+| `pcb-theme.test.js` | 112 | 配色主題：**每層對背景的對比度 >= 4.5**、前四層色相距 >= 55°、換主題不留舊層色 |
+| `pcb-3d-shapes.test.js` | 30 | 元件外型：封裝分類、**每根腳都要壓在 pad 上**、畸形輸入不可產生 NaN／負尺寸 |
+| `snp.test.js` | 47 | Touchstone：**2 埠 S21/S12 換位**、MA/DB/RI 三種格式、四種頻率單位、續行、壞檔要報錯不可回一半 |
 
 ### 線路圖
 
@@ -233,6 +242,10 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 ### `_headers`（CSP）
 - 改任何 inline `<script>` 之後**一定要跑 `node csp-hash.js`**，否則那段上線被自己的 CSP 擋掉。
 - **不准加 inline 事件處理器**（`onclick=`），`csp-hash.js` 直接 FAIL。
+- **`frame-src` 少 `'self'` → 板面檢視整頁變一塊灰色破圖**（2026-08-31 修）。
+  pcb.html 內嵌自家 `pcb-viewer.html`，CSP 原本只寫 `frame-src https://www.falstad.com`，
+  同源 iframe 一樣被擋。**本機 dev server 不套 `_headers`，所以本機永遠測不出來**——
+  這類問題只有量線上才會發現。
 - 三個 directive 改了會**靜靜壞掉**：`form-action` 少綠界網域 → 付款沒反應；
   `frame-src` 少 `falstad.com` → 模擬器不動；`connect-src` 少 Supabase → 全站 API 死掉。
 
@@ -348,6 +361,10 @@ node sch-bus.test.js
 node sch-hier.test.js
 node sch-swap.test.js
 node pcb-drag.test.js
+node pcb-interact.test.js
+node pcb-theme.test.js
+node pcb-3d-shapes.test.js
+node snp.test.js
 node spice-measure.test.js
 node spice-sweep.test.js
 node design-history.test.js
@@ -435,7 +452,7 @@ node plan-dates.test.mjs
 | **net 屬性沒進匯出檔** | 阻抗目標／成對關係只在編輯器與 DRC，板廠拿到的網表仍只有 net 名 |
 | **封裝同步是單向的** | 庫 → 板可以，板上改好的幾何回寫成庫要手動走「從選取建封裝」 |
 | **匯入的 STEP 是攤平的** | 每個實例一份幾何（不是裝配參照），同一顆料放十次檔案就十份。理由見 `pcb-step-model.js` 檔頭 |
-| **3D 檢視仍是方塊** | STEP **匯出**已可用真模型；`pcb-3d.js` 的畫面還沒接上 |
+| **3D 元件是推出來的，不是原廠模型** | 2026-08-31 已補阻焊／pad 開窗／絲印貼圖、亮面材質，元件外型改用 pad 佈局反推（QFP 有腳、排針一根根、晶振是金屬罐）。**仍不是原廠 3D 模型**：尺寸與高度是估的，判不出封裝時退回方塊並標 `guessed`。STEP 匯入的真模型還沒接上畫面 |
 | **阻抗／熱／EMI** | IPC-2141 ±10%；θ 公式是擬合值無出處；EMI 只算迴路面積。建議線寬只在 IPC-2141 標示的有效範圍內給（microstrip 0.1 ≤ w/h ≤ 3、stripline w ≤ 0.35(2h+t)），超出就明說做不到 |
 | **datasheet PDF 抽腳位** | 193 顆實測：完全正確 77、部分正確 37、錯得多 34、明講讀不出來 35 |
 | **2nd source 比對** | 可用於「講差異」，不可用於「判定能不能換」 |
@@ -491,6 +508,9 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 
 1. **用真工具開一次匯出檔**（§8 唯一的 🔴，只有站主做得了）。
 2. **在瀏覽器走一次變更歷史**（表已建好，功能還沒被真的用過一次）。
+   2026-08-31 已完成：net 點哪亮哪、右鍵選單、走線屬性面板、快捷鍵說明、弧高亮修正、
+   CAM 螢光配色、3D 阻焊/絲印貼圖與元件外型、DRC 違規畫面標紅。
+   手感還缺的：hover 資訊卡、走線中換層自動打 via。
 3. 3D 檢視接上匯入的 STEP（匯出已經接了，畫面還沒）。
 4. gate swap 的 UI（判準已經有了）。
 5. 匯流排帶進 PCB 端（讓板子知道「這 8 條是一束」）。
@@ -620,6 +640,10 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
   webhook 其實四種方案都給 `pcb_access`——文案與實作講的是兩件事，沒有人會回報。
 - `.gitignore` 擋 git，`.assetsignore` 擋網站，兩個是分開的閘。
 - **前端先上、後端沒跟上＝安靜給錯東西**。
+- **CSP 的每個 directive 都要含 `'self'` 才用得到自家資源**。`frame-src` 漏了 `'self'`，
+  板面檢視在線上是一塊破圖，而本機因為不套 `_headers` 看起來完全正常。
+- **選單／清單類 UI 一律給 `max-height` + `overflow-y:auto`**。面板選單有十幾項，
+  沒有上限就直接超出畫面底部，下面幾項永遠選不到——而開發時視窗夠高，看不出來。
 - **清單型的東西要有「兩邊對照」的檢查**（§6 與 `ci.yml`），不要靠記得同時改兩個地方。
 
 ### 環境（給使用者跑的指令）

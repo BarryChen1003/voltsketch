@@ -112,19 +112,33 @@ const pcbApp = {
   },
 
   // 變更動作前呼叫：現狀進復原疊（Ctrl+Z 可回）
-  hist() { if (window.PcbHistory) PcbHistory.push(this.state); },
+  // 任何改動都讓 DRC 標記過期：留著舊標記比沒有標記更糟——
+  // 使用者會以為那裡還有問題，或以為改好了其實沒重驗。
+  hist() {
+    if (this.state.drcMarks && this.state.drcMarks.length) this.state.drcMarks = [];
+    if (window.PcbHistory) PcbHistory.push(this.state);
+  },
 
   // 依層數產生疊層：F.Cu(頂) + In1..In(n-2) + B.Cu(底) + 絲印/板框
   buildLayerStack(n) {
     n = Math.max(1, Math.min(40, n || 2));
-    const palette = ['#e74c3c', '#3498db', '#16a085', '#9b59b6', '#e67e22', '#2ecc71', '#f39c12', '#1abc9c', '#c0392b', '#2980b9', '#8e44ad', '#d35400'];
+    // 層色由主題色環指派（PcbTheme）。相鄰層的色相刻意拉開，
+    // 否則 4 層板疊起來分不出這條線在 In1 還是 In2。模組沒載入才用這組舊的當退路。
+    const fallback = ['#e74c3c', '#3498db', '#16a085', '#9b59b6', '#e67e22', '#2ecc71', '#f39c12', '#1abc9c', '#c0392b', '#2980b9', '#8e44ad', '#d35400'];
+    const themeId = (this.state.palette && this.state.palette.theme) || (window.PcbTheme ? PcbTheme.DEFAULT : '');
+    const layerCol = i => window.PcbTheme ? PcbTheme.layerColor(themeId, i) : fallback[i % fallback.length];
+    const silkCol = side => {
+      if (!window.PcbTheme) return side === 'B' ? '#b7950b' : '#f1c40f';
+      const t = PcbTheme.get(themeId);
+      return side === 'B' ? t.silkB : t.silkF;
+    };
     const cu = [{ id: 'F.Cu', name: 'F.Cu (頂層)', type: 'Signal' }];
     for (let i = 1; i <= n - 2; i++) cu.push({ id: 'In' + i + '.Cu', name: 'In' + i + '.Cu (內層)', type: (i % 2 ? 'GND' : 'PWR') });
     if (n >= 2) cu.push({ id: 'B.Cu', name: 'B.Cu (底層)', type: 'Signal' });
-    cu.forEach((l, i) => { l.color = palette[i % palette.length]; l.kind = 'copper'; });
+    cu.forEach((l, i) => { l.color = layerCol(i); l.kind = 'copper'; });
     return cu.concat([
-      { id: 'F.SilkS', name: 'F.SilkS (絲印)', color: '#f1c40f', kind: 'silk' },
-      { id: 'B.SilkS', name: 'B.SilkS (底絲印)', color: '#b7950b', kind: 'silk' },
+      { id: 'F.SilkS', name: 'F.SilkS (絲印)', color: silkCol('F'), kind: 'silk' },
+      { id: 'B.SilkS', name: 'B.SilkS (底絲印)', color: silkCol('B'), kind: 'silk' },
       { id: 'Edge.Cuts', name: 'Edge.Cuts (板框)', color: '#95a5a6', kind: 'edge' }
     ]);
   },
@@ -169,12 +183,33 @@ const pcbApp = {
 
   // 全域配色：背景／板框／各銅層／元件底色。存 localStorage，重載沿用。
   PALETTE_LS: 'vs-pcb-palette',
-  paletteDefaults() {
+  paletteDefaults(themeId) {
+    if (window.PcbTheme) {
+      const cu = (this.state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+      const id = themeId || (this.state.palette && this.state.palette.theme) || PcbTheme.DEFAULT;
+      return PcbTheme.paletteFor(id, cu);
+    }
     return {
+      theme: 'classic',
       bg: '#1a1a2e', board: '#2d5a3d', grid: '#3d5a4e',
+      silkF: '#f1c40f', silkB: '#b7950b',
       'F.Cu': '#e74c3c', 'B.Cu': '#3498db',
       compTop: '#34495e', compBottom: '#1f3a5f'
     };
+  },
+
+  // 換主題＝整組換掉，不是拿舊的蓋新的：
+  // 留著上一個主題的單層自訂色，會在新背景上變成看不見的那一層。
+  setPaletteTheme(id) {
+    if (!window.PcbTheme) return false;
+    const cu = (this.state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+    this.state.palette = PcbTheme.paletteFor(id, cu);
+    this.applyPalette();
+    this.savePalette();
+    this.renderPalettePanel();
+    this.renderLayerList();
+    this.render();
+    return true;
   },
   loadPalette() {
     let saved = {};
@@ -188,9 +223,16 @@ const pcbApp = {
   // 把配色推進 layerStack（走線/pad 取層色），其餘由 compFill / render 直接讀 palette
   applyPalette() {
     const p = this.state.palette || {};
-    (this.state.layerStack || []).forEach(l => { if (p[l.id]) l.color = p[l.id]; });
+    (this.state.layerStack || []).forEach(l => {
+      if (p[l.id]) { l.color = p[l.id]; return; }
+      // 絲印與板框以前不吃主題：換成黑底之後，暗黃絲印在黑上幾乎看不見
+      if (l.kind === 'silk' && (p.silkF || p.silkB)) l.color = (l.id === 'B.SilkS' ? p.silkB : p.silkF) || l.color;
+    });
   },
   renderPalettePanel() {
+    const sel = document.getElementById('paletteTheme');
+    const cur = (this.state.palette && this.state.palette.theme) || (window.PcbTheme ? PcbTheme.DEFAULT : '');
+    if (sel && cur && sel.value !== cur) sel.value = cur;
     const host = document.getElementById('paletteRows');
     if (!host) return;
     const p = this.state.palette || this.paletteDefaults();
@@ -215,6 +257,7 @@ const pcbApp = {
         this.render();
       });
     });
+    document.getElementById('paletteTheme')?.addEventListener('change', (e) => this.setPaletteTheme(e.target.value));
     document.getElementById('paletteReset')?.addEventListener('click', () => {
       this.state.palette = this.paletteDefaults();
       this.applyPalette();
@@ -305,6 +348,7 @@ const pcbApp = {
 
     // 絲印（KiCad 匯入的 footprint 圖形與文字）
     this.drawSilk(scale);
+    this.drawDrcMarks(scale);
 
     // 飛線與畫線預覽
     this.drawRatsnest(scale);
@@ -440,12 +484,12 @@ const pcbApp = {
     const w = boardWidth * scale;
     const h = boardHeight * scale;
 
-    // Board fill
-    ctx.fillStyle = '#2d4a3e';
+    // Board fill（板材底色跟著主題走；CAM 風幾乎是黑的，只比背景亮一點）
+    ctx.fillStyle = (state.palette && state.palette.boardFill) || '#2d4a3e';
     ctx.fillRect(x, y, w, h);
 
     // Board outline
-    ctx.strokeStyle = '#7f8c8d';
+    ctx.strokeStyle = (state.palette && state.palette.board) || '#7f8c8d';
     ctx.lineWidth = 2;
     ctx.strokeRect(x, y, w, h);
 
@@ -553,7 +597,9 @@ const pcbApp = {
       if (pad.drill > 0) {
         ctx.beginPath();
         ctx.arc(0, 0, Math.max(0.5, pad.drill / 2 * scale), 0, Math.PI * 2);
-        ctx.fillStyle = '#1a1a2e';
+        // 鑽孔是「看穿板子」，顏色必須跟背景一致；寫死舊背景色的話，
+        // 換成黑底主題後每個孔都變成深藍點，看起來像孔沒對準。
+        ctx.fillStyle = (state.palette && state.palette.bg) || '#1a1a2e';
         ctx.fill();
       }
       ctx.restore();
@@ -721,6 +767,16 @@ const pcbApp = {
     });
   },
 
+  // 走線描邊：路徑只有 PcbInteract.pathOf 一份定義。
+  // 以前高亮各自用兩端點畫直線，圓弧走線一選就偏——弧越大偏越多。
+  tracePath(ctx, t, scale) {
+    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const p = window.PcbInteract ? PcbInteract.pathOf(t)
+      : { kind: 'line', x1: t.x1, y1: t.y1, x2: t.x2, y2: t.y2 };
+    if (p.kind === 'arc') ctx.arc(X(p.cx), Y(p.cy), p.r * scale, p.a0, p.a1, false);
+    else { ctx.moveTo(X(p.x1), Y(p.y1)); ctx.lineTo(X(p.x2), Y(p.y2)); }
+  },
+
   drawTraces(scale) {
     const { ctx, state } = this;
     const layerOf = id => (state.layerStack || []).find(l => l.id === id);
@@ -757,8 +813,7 @@ const pcbApp = {
       ctx.globalAlpha = 0.9;
       ctx.lineWidth = Math.max(3, (sel.width || 0.3) * scale + 4);
       ctx.beginPath();
-      ctx.moveTo(this.canvas.width / 2 + sel.x1 * scale, this.canvas.height / 2 + sel.y1 * scale);
-      ctx.lineTo(this.canvas.width / 2 + sel.x2 * scale, this.canvas.height / 2 + sel.y2 * scale);
+      this.tracePath(ctx, sel, scale);
       ctx.stroke();
     }
     ctx.restore();
@@ -773,7 +828,8 @@ const pcbApp = {
       const y = this.canvas.height / 2 + v.y * scale;
       const ro = Math.max(2, (v.od || 0.6) / 2 * scale), ri = Math.max(1, (v.id || 0.3) / 2 * scale);
       ctx.beginPath(); ctx.arc(x, y, ro, 0, Math.PI * 2); ctx.fillStyle = '#b8c2cc'; ctx.fill();
-      ctx.beginPath(); ctx.arc(x, y, ri, 0, Math.PI * 2); ctx.fillStyle = '#1a1a2e'; ctx.fill();
+      // 孔＝看穿板子，顏色要跟背景一致（寫死舊色的話換主題後每個 via 都有深藍點）
+      ctx.beginPath(); ctx.arc(x, y, ri, 0, Math.PI * 2); ctx.fillStyle = (this.state.palette && this.state.palette.bg) || '#1a1a2e'; ctx.fill();
     });
   },
 
@@ -953,6 +1009,11 @@ const pcbApp = {
     // 線距/pad 級檢查全靠這個模組。它沒載入時 DRC 是「不完整」而不是「通過」，
     // 用 info 帶過會讓使用者看到 0 error 就以為線距沒問題。
     else results.push({ type: 'warning', message: pcbT('pj_drc_no_paddrc') });
+
+    // 違規要標在畫面上。只有清單的話，使用者拿到「@(12.3,45.6)」還得自己在板上找。
+    this.state.drcMarks = results
+      .filter(r => (r.type === 'error' || r.type === 'warning') && typeof r.x === 'number' && typeof r.y === 'number')
+      .map(r => ({ x: r.x, y: r.y, type: r.type, message: r.message }));
 
     // Layout 規則稽核（net 線寬下限/線長上限/差分對長度差）
     if (window.NetRules) results.push(...window.NetRules.audit(this.state.netRules || [], this.state));
@@ -2036,6 +2097,7 @@ const pcbApp = {
 
   syncSelPanel() {
     if (this._crossProbe) this._crossProbe.notify();
+    this.syncTracePanel();
     const c = this.state.selected;
     const fields = document.getElementById('selFields'), info = document.getElementById('selInfo');
     if (!fields) return;
@@ -2053,6 +2115,148 @@ const pcbApp = {
     const col = document.getElementById('selColor');
     if (col && document.activeElement !== col) col.value = c.color || this.compFill(c) || '#34495e';
     this.populateSelFp();
+  },
+
+  // 走線屬性面板。以前選中走線只能刪：線寬與層都得先退出、改左側欄位、重畫一次。
+  syncTracePanel() {
+    const box = document.getElementById('traceSelFields');
+    const hint = document.getElementById('traceSelHint');
+    const t = this.state.selectedTrace;
+    if (!box) return;
+    box.style.display = t ? 'grid' : 'none';
+    if (hint) hint.style.display = t ? 'none' : '';
+    if (!t) return;
+    const w = document.getElementById('tsWidth');
+    if (w && document.activeElement !== w) w.value = Math.round((t.width || 0.3) * 1000) / 1000;
+    const sel = document.getElementById('tsLayer');
+    if (sel) {
+      const cu = (this.state.layerStack || []).filter(l => l.kind === 'copper');
+      if (sel.getAttribute('data-built') !== String(cu.length)) {
+        sel.innerHTML = cu.map(l => '<option value="' + l.id + '">' + this.layerDispName(l) + '</option>').join('');
+        sel.setAttribute('data-built', String(cu.length));
+      }
+      if (document.activeElement !== sel) sel.value = t.layer || 'F.Cu';
+    }
+    const net = document.getElementById('tsNet');
+    if (net) net.textContent = t.net || '—';
+    const len = document.getElementById('tsLen');
+    // 弧走線的長度是弧長，不是兩端點的距離（PcbInteract.lengthOf 管這件事）
+    if (len) len.textContent = (window.PcbInteract ? PcbInteract.lengthOf(t) : 0).toFixed(3) + ' mm';
+  },
+
+  deleteSelectedTrace() {
+    const t = this.state.selectedTrace;
+    if (!t) return false;
+    this.hist();
+    const i = this.state.traces.indexOf(t);
+    if (i >= 0) this.state.traces.splice(i, 1);
+    this.state.selectedTrace = null;
+    this.state.ratsnest = null;
+    this.renderPartsList();
+    this.syncSelPanel();
+    this.render();
+    return true;
+  },
+
+  // ---- 右鍵選單 ----
+  // 項目內容由 PcbInteract.menuFor 決定（純資料、node 測得到）；這裡只負責畫與接事件。
+  // CSP 不准 inline onclick，所以每個項目都是 addEventListener。
+  initContextMenu() {
+    if (!this.canvas) return;
+    this.canvas.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      const b = this.screenToBoard(e);
+      const cHit = this.compHit(b.x, b.y);
+      const tHit = cHit ? null : this.traceHit(b.x, b.y);
+      let hit = null;
+      if (cHit) {
+        const sn = this.snapTarget(b.x, b.y);
+        hit = { kind: 'comp', comp: cHit, net: (sn && sn.d <= 0.6) ? sn.net : '' };
+        this.state.selected = cHit; this.state.selectedSet = [cHit]; this.state.selectedTrace = null;
+      } else if (tHit) {
+        hit = { kind: 'trace', trace: tHit };
+        this.state.selectedTrace = tHit; this.state.selected = null; this.state.selectedSet = [];
+      }
+      this.renderPartsList(); this.syncSelPanel(); this.render();
+      this.showCtxMenu(e.clientX, e.clientY, hit);
+    });
+    document.addEventListener('click', () => this.hideCtxMenu());
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.hideCtxMenu(); });
+    window.addEventListener('blur', () => this.hideCtxMenu());
+  },
+
+  showCtxMenu(cx, cy, hit) {
+    const host = document.getElementById('pcbCtxMenu');
+    if (!host || !window.PcbInteract) return;
+    host.innerHTML = '';
+    PcbInteract.menuFor(hit, this.state).forEach(it => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'ctx-item' + (it.danger ? ' ctx-danger' : '');
+      row.textContent = pcbT(it.i18n);
+      row.disabled = !!it.disabled;
+      row.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        this.hideCtxMenu();
+        this.runCtxAction(it.id, hit);
+      });
+      host.appendChild(row);
+    });
+    host.style.display = 'grid';
+    // 先顯示才量得到尺寸；貼著右下角開的話要往回收，不然選單掉出畫面外
+    const r = host.getBoundingClientRect();
+    const x = Math.min(cx, window.innerWidth - r.width - 8);
+    const y = Math.min(cy, window.innerHeight - r.height - 8);
+    host.style.left = Math.max(4, x) + 'px';
+    host.style.top = Math.max(4, y) + 'px';
+  },
+
+  hideCtxMenu() {
+    const host = document.getElementById('pcbCtxMenu');
+    if (host) host.style.display = 'none';
+  },
+
+  runCtxAction(id, hit) {
+    const t = hit && hit.trace;
+    if (id === 'hlnet') {
+      this.state.highlightNet = (t ? t.net : (hit && hit.net)) || null;
+      this.renderNetPanel(); this.render(); return;
+    }
+    if (id === 'flip' && t) {
+      this.hist();
+      t.layer = PcbInteract.flipLayer(t.layer || 'F.Cu');
+      this.state.ratsnest = null;
+      this.syncSelPanel(); this.render();
+      this.toast(pcbT('pj_ts_applied', { what: t.layer }), 'info'); return;
+    }
+    if (id === 'applyw' && t) {
+      const w = this.state.traceWidth || 0.3;
+      this.hist(); t.width = w;
+      this.syncSelPanel(); this.render();
+      this.toast(pcbT('pj_ts_applied', { what: w + ' mm' }), 'info'); return;
+    }
+    if (id === 'delete') { if (t) this.deleteSelectedTrace(); else if (this.state.selected) this.deleteSelected(); return; }
+    if (id === 'rotate') { this.rotateSelected(90); return; }
+    if (id === 'rename') { this.renameSelRef(); return; }
+    if (id === 'paste') { this.pasteClipboard(); return; }
+    if (id === 'fit') { this.zoomFit(); return; }
+    if (id === 'rats') {
+      this.state.showRatsnest = !this.state.showRatsnest;
+      const cb = document.getElementById('ratsnestToggle');
+      if (cb) cb.checked = this.state.showRatsnest;
+      this.state.ratsnest = null; this.render(); return;
+    }
+    if (id === 'clearhl') { this.state.highlightNet = null; this.renderNetPanel(); this.render(); return; }
+  },
+
+  // 快捷鍵說明：跟 keydown 綁定同源（PcbInteract.shortcuts），
+  // 不會出現「說明寫了、程式其實沒綁」。
+  renderShortcutHelp() {
+    const host = document.getElementById('shortcutRows');
+    if (!host || !window.PcbInteract) return;
+    const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    host.innerHTML = PcbInteract.shortcuts().map(s =>
+      '<div class="sc-key">' + esc(s.keys) + '</div><div class="sc-act">' + esc(pcbT(s.i18n)) + '</div>').join('');
   },
 
   toast(msg, kind) {
@@ -2300,6 +2504,11 @@ const pcbApp = {
       out = window.PadDrc.run(this.state, this.padAbs.bind(this), rules, { region }) || [];
     } catch (e) { return; }   // 即時檢查壞掉不可以擋住畫線
     const errs = out.filter(x => x.type === 'error');
+    // toast 會自己消失，違規不會。畫面上標紅，使用者才看得到是「哪一段」出問題。
+    this.state.drcMarks = out
+      .filter(x => (x.type === 'error' || x.type === 'warning') && typeof x.x === 'number' && typeof x.y === 'number')
+      .map(x => ({ x: x.x, y: x.y, type: x.type, message: x.message }));
+    if (this.state.drcMarks.length) this.render();
     if (errs.length) this.toast(pcbT('pj_drc_quick', { n: errs.length }), 'warn');
   },
 
@@ -2476,7 +2685,7 @@ const pcbApp = {
     for (const t of (this.state.traces || [])) {
       if ((t.net || "") !== net) continue;
       ctx.lineWidth = Math.max(2, ((t.width || 0.3) + 0.25) * scale);
-      ctx.beginPath(); ctx.moveTo(X(t.x1), Y(t.y1)); ctx.lineTo(X(t.x2), Y(t.y2)); ctx.stroke();
+      ctx.beginPath(); this.tracePath(ctx, t, scale); ctx.stroke();
     }
     ctx.lineWidth = 2;
     for (const c of (this.state.components || [])) for (const pd of (c.pads || [])) {
@@ -2541,12 +2750,120 @@ const pcbApp = {
     return { x: comp.x + rx * c + ry * s, y: comp.y - rx * s + ry * c };
   },
 
+  // 游標下是什麼：走線 / pad / via / 元件。順序＝視覺上的疊放順序，
+  // 點得到的東西才回報，否則資訊卡講的跟使用者看到的不是同一個東西。
+  hoverHitAt(bx, by) {
+    const t = this.traceHit(bx, by);
+    if (t) return { kind: 'trace', trace: t };
+    for (const v of (this.state.vias || [])) {
+      if (Math.hypot(bx - v.x, by - v.y) <= (v.od || 0.6) / 2 + 0.05)
+        return { kind: 'via', od: v.od, drill: v.id != null ? v.id : v.drill, net: v.net || '' };
+    }
+    for (const c of (this.state.components || [])) {
+      for (const p of (c.pads || [])) {
+        const a = this.padAbs(c, p);
+        const rw = Math.max(0.2, p.w || 0.5) / 2, rh = Math.max(0.2, p.h || 0.5) / 2;
+        if (Math.abs(bx - a.x) <= rw && Math.abs(by - a.y) <= rh)
+          return { kind: 'pad', ref: c.ref || c.label || c.id, pin: p.num, net: p.net || '', drill: p.drill || 0 };
+      }
+    }
+    const hit = this.compHit(bx, by);
+    if (hit) return { kind: 'comp', ref: hit.ref || hit.label || hit.id, part: hit.part || '', pins: (hit.pads || []).length };
+    return null;
+  },
+
+  // 資訊卡本體：內容算在 PcbInteract.hoverInfo（node 測得到），這裡只負責貼上去。
+  showHoverTip(hit, cx, cy) {
+    const el = document.getElementById('pcbHoverTip');
+    if (!el) return;
+    const rows = window.PcbInteract ? PcbInteract.hoverInfo(hit) : [];
+    if (!rows.length) { el.style.display = 'none'; return; }
+    const esc = v => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    el.innerHTML = rows.map(r => '<div class="hv-row"><span class="hv-k">' + esc(pcbT(r.label)) +
+      '</span><span class="hv-v">' + esc(r.value) + '</span></div>').join('');
+    el.style.display = 'block';
+    // 貼著右／下邊界時往回收，否則資訊卡自己會被切掉一半
+    const r = el.getBoundingClientRect();
+    const x = Math.min(cx + 14, window.innerWidth - r.width - 8);
+    const y = Math.min(cy + 16, window.innerHeight - r.height - 8);
+    el.style.left = Math.max(4, x) + 'px';
+    el.style.top = Math.max(4, y) + 'px';
+  },
+
+  hideHoverTip() {
+    const el = document.getElementById('pcbHoverTip');
+    if (el) el.style.display = 'none';
+  },
+
+  // 走線中換層：EasyEDA 按數字鍵直接換層並自動落 via。以前要 Esc 退出、改下拉、重畫。
+  switchLayerWithVia(layer) {
+    const td = this.state.traceDraw;
+    if (!td || !layer) return false;
+    const cu = (this.state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+    if (cu.indexOf(layer) < 0) return false;
+    const cur = this.state.traceLayer || 'F.Cu';
+    if (layer === cur) { this.toast(pcbT('pj_layer_same', { layer }), 'info'); return false; }
+    const res = this.finishTraceSegment();
+    const x = res.committed ? res.x : td.x1, y = res.committed ? res.y : td.y1;
+    const net = res.committed ? (res.net || td.net || '') : (td.net || '');
+    // 換層處一定要有 via，不然兩層之間是斷的——畫面上看起來卻是連著的。
+    // 只看 res.committed 不夠：連續繪製模式下，使用者通常是「畫完一段、在轉角按數字鍵」，
+    // 那時待收的那一段長度是 0（committed=false），接點其實在 td.x1/y1。
+    // 實測就是這個情況——第一版在這裡完全不落 via，兩層之間靜靜斷掉。
+    const joined = (this.state.traces || []).some(t =>
+      Math.hypot(t.x1 - x, t.y1 - y) < 0.05 || Math.hypot(t.x2 - x, t.y2 - y) < 0.05);
+    const dup = (this.state.vias || []).some(v => Math.hypot(v.x - x, v.y - y) < 0.05);
+    // 沒有任何走線接在這裡就不落 via：那會留下一顆浮空的 via，板廠照鑽。
+    if (joined && !dup) {
+      if (!res.committed) this.hist();
+      const ps = window.Padstack ? Padstack.load() : { od: 0.6, drill: 0.3 };
+      this.state.vias.push({ x: x, y: y, od: ps.od, id: ps.drill, net: net, auto: true });
+      this.state.ratsnest = null;
+    }
+    this.state.traceLayer = layer;
+    const sel = document.getElementById('traceLayer');
+    if (sel) sel.value = layer;
+    this.state.traceDraw = { x1: x, y1: y, x2: x, y2: y, net: net };
+    this.renderPartsList();
+    this.render();
+    this.toast(pcbT('pj_layer_via', { layer }), 'info');
+    return true;
+  },
+
+  // DRC 違規標記。畫在最上層（走線與 pad 之上），不然密集區會被蓋掉看不到。
+  drawDrcMarks(scale) {
+    const marks = this.state.drcMarks || [];
+    if (!marks.length) return;
+    const { ctx } = this;
+    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    // 半徑不跟著縮放無限縮小：縮到看不見的標記等於沒標
+    const r = Math.max(6, Math.min(18, 0.9 * scale));
+    ctx.save();
+    ctx.lineWidth = 2;
+    for (const m of marks) {
+      const err = m.type === 'error';
+      const x = X(m.x), y = Y(m.y);
+      ctx.strokeStyle = err ? '#ff3b30' : '#ff9f0a';
+      ctx.fillStyle = err ? 'rgba(255,59,48,0.16)' : 'rgba(255,159,10,0.14)';
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      if (err) {
+        const k = r * 0.55;
+        ctx.beginPath();
+        ctx.moveTo(x - k, y - k); ctx.lineTo(x + k, y + k);
+        ctx.moveTo(x + k, y - k); ctx.lineTo(x - k, y + k);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  },
+
   drawSilk(scale) {
     const { ctx, state } = this;
     const fVis = state.visibleLayers.includes('F.SilkS'), bVis = state.visibleLayers.includes('B.SilkS');
     if (!fVis && !bVis) return;
     const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
-    const colF = '#f1c40f', colB = '#b7950b';
+    const pal = state.palette || {};
+    const colF = pal.silkF || '#f1c40f', colB = pal.silkB || '#b7950b';
     const visOk = side => side === 'B' ? bVis : fVis;
     ctx.save();
     ctx.lineCap = 'round';
@@ -3134,6 +3451,22 @@ const pcbApp = {
     document.querySelector('#zoomIn')?.addEventListener('click', () => this.zoomIn());
     document.querySelector('#zoomOut')?.addEventListener('click', () => this.zoomOut());
     document.querySelector('#zoomFit')?.addEventListener('click', () => this.zoomFit());
+    this.initContextMenu();
+    this.renderShortcutHelp();
+    window.addEventListener('vs-lang-change', () => this.renderShortcutHelp());
+    document.getElementById('tsWidth')?.addEventListener('change', (e) => {
+      const t = this.state.selectedTrace, v = parseFloat(e.target.value);
+      if (!t || !(v > 0)) return;
+      this.hist(); t.width = v; this.render();
+      this.toast(pcbT('pj_ts_applied', { what: v + ' mm' }), 'info');
+    });
+    document.getElementById('tsLayer')?.addEventListener('change', (e) => {
+      const t = this.state.selectedTrace;
+      if (!t) return;
+      this.hist(); t.layer = e.target.value; this.state.ratsnest = null; this.render();
+      this.toast(pcbT('pj_ts_applied', { what: t.layer }), 'info');
+    });
+    document.getElementById('tsDelete')?.addEventListener('click', () => this.deleteSelectedTrace());
     this.bindPanPad();
 
     // DRC
@@ -3364,6 +3697,12 @@ const pcbApp = {
           }
           this.hist(); // 拖曳前的位置可 Ctrl+Z 回復
           this.state.selectedTrace = null;
+          // 點在 pad 上才換高亮；點元件本體不動它，否則想比對兩條網路時會一直被洗掉
+          const padSnap = this.snapTarget(b.x, b.y);
+          if (padSnap && padSnap.net && padSnap.d <= 0.6) {
+            this.state.highlightNet = padSnap.net;
+            this.renderNetPanel();
+          }
           // 抓到多選集內成員 → 群組拖曳；否則單選
           if (this.state.selectedSet.includes(hit) && this.state.selectedSet.length > 1) {
             this.state.dragGroup = this.state.selectedSet.map(c => ({ c, ox: c.x, oy: c.y }));
@@ -3387,6 +3726,10 @@ const pcbApp = {
             this.state.selectedTrace = tHit;
             this.state.selected = null;
             this.state.selectedSet = [];
+            // 點到哪條就把整個網路亮起來。以前只有右側 net 清單點得到，
+            // 使用者在畫布上點了半天，不知道這條線屬於哪個網路。
+            this.state.highlightNet = tHit.net || null;
+            this.renderNetPanel();
             this.renderPartsList();
             this.syncSelPanel();
             this.render();
@@ -3398,10 +3741,12 @@ const pcbApp = {
             this.render();
             return;
           }
-          if (this.state.selected || this.state.selectedTrace || this.state.selectedSet.length) {
+          if (this.state.selected || this.state.selectedTrace || this.state.selectedSet.length || this.state.highlightNet) {
             this.state.selected = null;
             this.state.selectedTrace = null;
             this.state.selectedSet = [];
+            this.state.highlightNet = null;
+            this.renderNetPanel();
             this.renderPartsList();
             this.syncSelPanel();
             this.render();
@@ -3576,6 +3921,7 @@ const pcbApp = {
         return;
       }
       if (this.state.traceDraw) {
+        this.hideHoverTip();
         const td = this.state.traceDraw;
         const b = this.screenToBoard(e);
         let ex = b.x, ey = b.y;
@@ -3662,8 +4008,19 @@ const pcbApp = {
         this.state.panY += pos.y - this.state.lastMouse.y;
         this.state.lastMouse = pos;
         this.render();
+      } else if (this.state.tool === 'select') {
+        // 閒置（沒在拖也沒在畫）才顯示 hover 資訊卡。
+        // 拖曳中還跳卡片會擋住正在對齊的位置，那比沒有資訊更煩。
+        const b = this.screenToBoard(e);
+        const hit = this.hoverHitAt(b.x, b.y);
+        if (hit) this.showHoverTip(hit, e.clientX, e.clientY); else this.hideHoverTip();
+      } else {
+        this.hideHoverTip();
       }
     });
+
+    // 滑鼠離開畫布一定要收起來，不然卡片會留在畫面上
+    this.canvas?.addEventListener('mouseleave', () => this.hideHoverTip());
 
     this.canvas?.addEventListener('mouseup', (e) => {
       // 走線端點拖曳收尾：靠近 pad/via/走線端點就吸附＋接該 net
@@ -3820,6 +4177,12 @@ const pcbApp = {
           this.renderPartsList();
           this.render();
         }
+      } else if (/^[1-9]$/.test(e.key) && this.state.traceDraw && window.PcbInteract) {
+        // 走線中的數字鍵＝換層（跟 EasyEDA 一樣）。沒在走線時數字鍵不攔，
+        // 否則在輸入框打字會被吃掉。
+        const cu = (this.state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+        const layer = PcbInteract.layerForKey(e.key, cu);
+        if (layer) { e.preventDefault(); this.switchLayerWithVia(layer); }
       } else if ((e.key === 'r' || e.key === 'R') && (this.state.selected || this.state.selectedSet.length)) {
         e.preventDefault();
         this.rotateSelected(90);

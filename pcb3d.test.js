@@ -71,5 +71,35 @@ const eq = (a, b, m) => ok(a === b, `${m} (得 ${JSON.stringify(a)}，期望 ${J
   ok(Number.isFinite(h({ kind: 'ic' })), '高度：缺尺寸時要回有限值');
 }
 
+// ---- 絲印攤平（阻焊貼圖的資料來源）----
+// 3D 好不好看是品味，但「絲印有沒有被撿到、座標轉對了沒」算得出來。
+// 這段守的是：元件旋轉後絲印要跟著轉——轉錯的話 2D 看起來對、3D 的字全歪。
+{
+  const S = P3D._silkItems, R = P3D._compRel;
+
+  const st = {
+    components: [{
+      x: 10, y: 5, rot: 0,
+      silk: [{ kind: 'line', x1: -1, y1: 0, x2: 1, y2: 0, side: 'F', w: 0.12 }],
+      silkTexts: [{ text: 'U1', x: 0, y: -2, size: 1, side: 'F' }]
+    }],
+    silkGr: [{ kind: 'circle', cx: 0, cy: 0, r: 2, side: 'B', w: 0.15 }]
+  };
+  const items = S(st);
+  eq(items.length, 3, '絲印：元件圖形＋元件文字＋板上圖形都要撿到');
+  eq(items.filter(i => i.side === 'B').length, 1, '絲印：底層項目分得出來');
+
+  const txt = items.find(i => i.kind === 'text');
+  eq(txt.x, 10, '絲印：文字 x 轉成絕對座標');
+  eq(txt.y, 3, '絲印：文字 y 轉成絕對座標');
+
+  // 旋轉 90°：相對 (0,-2) 應轉到元件的另一側，不可以還在原地
+  const rot = R({ x: 10, y: 5, rot: 90 }, 0, -2);
+  ok(Math.abs(rot.x - 8) < 1e-9, '絲印：旋轉 90° 後 x 要跟著轉');
+  ok(Math.abs(rot.y - 5) < 1e-9, '絲印：旋轉 90° 後 y 要跟著轉');
+  eq(S({}).length, 0, '絲印：空 state 回空陣列，不可以爆');
+  eq(S({ components: [{ x: 0, y: 0 }] }).length, 0, '絲印：元件沒有絲印欄位也不可以爆');
+}
+
 console.log(`\npcb3d.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

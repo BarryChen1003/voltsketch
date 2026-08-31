@@ -49,7 +49,10 @@
     .pcb-menu-wrap{position:relative;display:inline-block}
     .pcb-menu-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:${Z_BASE + 60};min-width:210px;
       background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px;
-      box-shadow:0 10px 30px rgba(15,23,42,.18);display:grid;gap:2px}
+      box-shadow:0 10px 30px rgba(15,23,42,.18);display:grid;gap:2px;
+      /* 項目有十幾個，沒有高度上限就直接超出畫面底部，下面幾項永遠選不到。
+         overscroll-behavior:contain 是避免捲到底之後把整頁一起帶著捲。 */
+      max-height:min(70vh,560px);overflow-y:auto;overscroll-behavior:contain}
     .pcb-menu-pop[hidden]{display:none}
     .pcb-menu-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border:none;background:none;
       border-radius:6px;cursor:pointer;font-size:12.5px;color:var(--ink);text-align:left;width:100%}
