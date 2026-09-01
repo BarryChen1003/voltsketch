@@ -181,6 +181,44 @@ if (infoTxt) {
   }
 }
 
+// ---- 5. 阻抗需求與線段互相對得上 ----
+// impedance.xml 的 Descriptor.Id 是給線段的 .imp_constraint_id 指回來的。
+// 兩種壞法都不會噴錯：有需求沒人指（板廠看到孤兒需求）、指到不存在的 Id（CAM 解不開）。
+for (const st of stepNames) {
+  const impFile = path.join(root, 'steps', st, 'impedance.xml');
+  const impTxt = exists(impFile) ? (rd(impFile) || '') : '';
+  const layersDir = path.join(root, 'steps', st, 'layers');
+  const refs = new Map();          // id -> 幾條線段指過來
+  if (exists(layersDir)) {
+    for (const ln of fs.readdirSync(layersDir)) {
+      const ft = path.join(layersDir, ln, 'features');
+      if (!exists(ft)) continue;
+      const txt = rd(ft) || '';
+      // 這個檔用第幾號屬性代表 .imp_constraint_id
+      const nameLine = txt.split(String.fromCharCode(10)).find(l => /^@\d+\s+\.imp_constraint_id\s*$/.test(l));
+      if (!nameLine) continue;
+      const slot = nameLine.slice(1).split(/\s+/)[0];
+      for (const l of txt.split(String.fromCharCode(10))) {
+        if (l.indexOf(';') < 0 || l[0] !== 'L') continue;
+        for (const a of l.split(';')[1].split(',')) {
+          const kv = a.split('=');
+          if (kv[0] !== slot) continue;
+          refs.set(kv[1], (refs.get(kv[1]) || 0) + 1);
+        }
+      }
+    }
+  }
+  if (!impTxt) {
+    if (refs.size) E(st + '：線段指到 .imp_constraint_id，但沒有 impedance.xml');
+    continue;
+  }
+  const ids = (impTxt.match(/Descriptor\s+Id="(\d+)"/g) || []).map(m => /"(\d+)"/.exec(m)[1]);
+  N(st + '：impedance.xml 有 ' + ids.length + ' 筆阻抗需求，線段指回 ' + refs.size + ' 筆');
+  for (const id of ids) if (!refs.has(id)) W(st + '：需求 Id=' + id + ' 沒有任何線段指回來（板廠會拿到孤兒需求）');
+  for (const id of refs.keys()) if (ids.indexOf(id) < 0) E(st + '：線段指到不存在的需求 Id=' + id);
+  if (!/ValOhms="/.test(impTxt)) E(st + '：impedance.xml 沒有 ValOhms（沒有目標值等於沒有需求）');
+}
+
 // ---- 輸出 ----
 console.log('ODB++ 結構檢查：' + root);
 console.log('');

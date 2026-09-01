@@ -206,7 +206,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | `pcb-3d-shapes.test.js` | 30 | 元件外型：封裝分類、**每根腳都要壓在 pad 上**、畸形輸入不可產生 NaN／負尺寸 |
 | `snp.test.js` | 47 | Touchstone：**2 埠 S21/S12 換位**、MA/DB/RI 三種格式、四種頻率單位、續行、壞檔要報錯不可回一半 |
 | `pcb-mesh.test.js` | 36 | 網格模型：**KiCad 2.54 換算**、VRML 多邊形扇形三角化、多 Shape 索引平移、索引越界要當場報錯 |
-| `netspec.test.js` | 39 | 受控阻抗規格表：**沒有要求就不產檔**（空表會讓板廠以為沒有要求）、沒繞的要寫 NOT ROUTED、線寬量的是真走線、**三包檔（Gerber／ODB++／IPC-2581）要說同一個數字** |
+| `netspec.test.js` | 47 | 受控阻抗規格表：**沒有要求就不產檔**（空表會讓板廠以為沒有要求）、沒繞的要寫 NOT ROUTED、線寬量的是真走線、**三包檔（Gerber／ODB++／IPC-2581）要說同一個數字** |
 | `assembly.test.js` | 25 | 組裝圖：**方向斜角要跟第 1 腳同一個角**（固定左上會跟圓點指相反）、pad 要畫、外框來源要誠實、底面鏡射 |
 
 ### 線路圖
@@ -453,7 +453,7 @@ node plan-dates.test.mjs
 |---|---|
 | **8 片公版的佈局是重建出來的** | DRC error 0，但繞不完的 net 沒有走線（143/197 繞成）。缺陷預算鎖在 `pcb-logic.test.js` 第 21 節（**全 0，只准往下**） |
 | **公版的 pad 大多沒有 net** | 公版資料本來就沒有 netlist。openrex 1436 顆 pad 裡 1400+ 沒 net。真正的解是匯入原廠 netlist |
-| **ODB++ 缺絲印文字與 ATTR** | 2026-08-31 補上阻焊／鋼網／絲印圖形三組層與 netlist 的 subnet（`SNT TOP`）。**仍缺**：絲印文字（ODB++ 字型是另一套資料結構，半套寫出去 CAM 顯示亂碼）、ATTR 屬性、subnet 只標元件腳沒有分 TRACE/VIA/PLANE。開窗規則刻意跟 Gerber 產生器同一套——兩包給同一家板廠，規則不同會得到互相矛盾的答案 |
+| **ODB++ 缺絲印文字；ATTR 只做了阻抗相關** | 2026-08-31 補上阻焊／鋼版／絲印圖形三組層與 netlist 的 subnet（`SNT TOP`）。2026-09-01 依官方規格（8.1 Update 4）補上阻抗相關的**系統屬性**：`steps/pcb/impedance.xml`（p.128／schema p.496）帶目標值與容差、線段 feature 用 `.imp_constraint_id` 指回 Descriptor、net 用 `.diff_pair`、整層單一目標時層寫 `.z0impedance`。**仍缺**：絲印文字（ODB++ 字型是另一套資料結構，半套寫出去 CAM 顯示亂碼）、阻抗以外的其它 ATTR、subnet 只標元件腳沒有分 TRACE/VIA/PLANE。開窗規則刻意跟 Gerber 產生器同一套——兩包給同一家板廠，規則不同會得到互相矛盾的答案 |
 | **IPC-2581 是可製造子集** | 疊構只有順序與厚度（沒有材料與介電常數，我們沒那資料）、沒有 DFX 規則集。2026-09-01：**阻抗需求進來了**，掛在 LogicalNet 底下的 `NonstandardAttribute`（Z0／Zdiff／容差／配對／實際走線的層與線寬）。**刻意不自創 `<Spec>`／`<Impedance>` 這種標準元素**——猜錯 schema 會讓整份檔驗不過，比沒帶更糟；這也表示**讀不讀得懂看 CAM 工具**，權威版本仍是 Gerber 包的 `-NetSpec.txt` |
 | **組裝圖的外框一半是估的** | 2026-08-31：有真 courtyard（KiCad 匯入才有）就畫真的，**圖上寫出幾顆是真的**；pad 會畫出來（方向的唯一線索）；**方向斜角改成畫在第 1 腳那個角**——以前固定畫左上，pad 1 在右下的元件會拿到兩個指相反方向的提示。**仍缺**：真實輪廓（沒有那個資料）、courtyard 只有矩形沒有多邊形 |
 | **Gerber 匯入是有損的** | Gerber 沒有 net、沒有元件。用途是「看別人的板子與量距離」 |
@@ -466,7 +466,7 @@ node plan-dates.test.mjs
 | **階層交叉探測**（2026-09-01 補完） | 2026-08-31：**雙擊圖紙符號可進入子圖**，分頁列右側有麵包屑與「⬆ 上一層」；手動點分頁列會清掉路徑（不清的話「上一層」會跳去不相干的頁）。**階層路徑其實一直都有帶進 refdes**（`SchHier.build` 產出 `PWR1/R1`，`Sch2Pcb` 直接用它當 ref）——更早的版本這份文件寫錯了。2026-09-01：cross-probe 改用**全名**（`PWR1/r12`）當共同語言——線路圖送出時附上自己所在的層，PCB 送的本來就是全名；PCB 選到子圖裡的元件，線路圖會**自動跳進那一層**再選。選取面板新增「線路圖層級」與「選同層」（同一張子圖的元件在板上散在各處）。**修掉的**：階層設計以前 sch→PCB 方向根本對不上（`r12` 對不到 `sch-PWR1/r12`），兩邊各自「有反應」但永遠選不到對方。**還缺的**：從 PCB 反查不會高亮母圖上的那個圖紙符號；跨層多選只會跳到成員最多的那一層（一次只顯示一頁） |
 | **匯流排在 PCB 端只到「知道成組」** | 2026-08-31：同步 netlist 時把匯流排帶過來（`Sch2Pcb.busGroupsFrom`），PCB 有匯流排面板：整束高亮、每束的 skew（**只算已繞的成員**，把沒繞的算 0 會得到假的大 skew）、一鍵整束等長（走既有的 `meanderNet`，不另寫一套）。**還沒有的**：群組佈線（一次拉一束）、匯流排層級的 DRC 規則 |
 | **gate swap 是「換位置」不是「換封裝內的單元」** | 2026-08-31 補了 UI（選兩顆 → 「⇆ 換件」）。這個資料模型沒有「一顆封裝內含四個閘」的概念，所以對調的是**擺放位置**，net 各自跟著走；會回報飛線總長變化（沒變也照講）。同型別／同料號／同封裝三關過不了就擋下並說是哪一關 |
-| **net 屬性三包都進了**（2026-09-01） | 2026-08-31：Gerber 打包多一個 `-NetSpec.txt`（阻抗目標／差動目標／容差／配對／實際用到的層與線寬）。**沒有任何 net 設過屬性就不產這個檔**——空表會讓板廠以為這片板沒有阻抗要求。**刻意不在匯出端重算阻抗**：IPC-2141 公式在 `pcb-nets.js` 只有一份，重算會出現「畫面 50Ω、檔案 47Ω」。2026-09-01 **ODB++ 與 IPC-2581 都帶了**：ODB++ 放 `misc/netspec.txt`（與 Gerber 那份同一段文字，同一個產生器）＋ `eda/data` 每條 net 一行 `#IMP` 註解；IPC-2581 用 `NonstandardAttribute`。**ODB++ 刻意不寫成 ATTR**——屬性名沒在 attrlist 宣告，嚴格的 CAM 會整段解析失敗。**還缺的**：ODB++ 的正式 ATTR（要先做 attrlist）、IPC-2581 的標準阻抗元素（要先確認 schema） |
+| **net 屬性三包都進了**（2026-09-01） | 2026-08-31：Gerber 打包多一個 `-NetSpec.txt`（阻抗目標／差動目標／容差／配對／實際用到的層與線寬）。**沒有任何 net 設過屬性就不產這個檔**——空表會讓板廠以為這片板沒有阻抗要求。**刻意不在匯出端重算阻抗**：IPC-2141 公式在 `pcb-nets.js` 只有一份，重算會出現「畫面 50Ω、檔案 47Ω」。2026-09-01 **ODB++ 與 IPC-2581 都帶了**：ODB++ 走官方位置（`impedance.xml` ＋ `.imp_constraint_id` ＋ `.diff_pair` ＋ `.z0impedance`）外加人看的 `misc/netspec.txt`（與 Gerber 那份同一段文字、同一個產生器）；IPC-2581 用 `NonstandardAttribute`。**還缺的**：IPC-2581 的標準阻抗元素（`<Spec>` 系列，schema 未確認前不自創） |
 | **封裝同步是單向的** | 庫 → 板可以，板上改好的幾何回寫成庫要手動走「從選取建封裝」 |
 | **匯入的 STEP 是攤平的** | 每個實例一份幾何（不是裝配參照），同一顆料放十次檔案就十份。理由見 `pcb-step-model.js` 檔頭 |
 | **3D 元件預設是推出來的** | 2026-08-31：阻焊／pad 開窗／絲印貼圖、亮面材質、元件外型用 pad 佈局反推（QFP 有腳、排針一根根、晶振是金屬罐）。綁了 `.wrl`/`.obj` 的封裝會畫**真模型**（`pcb-mesh.js`）。**STEP 仍只走匯出**——B-rep 要 CAD kernel 才畫得出來，為此塞一顆幾 MB 的 WASM 不划算 |
@@ -563,6 +563,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 | net 屬性進 IPC-2581 | 掛在 `LogicalNet` 底下的 `NonstandardAttribute`（這份檔的 Component 帶 side 也是用同一個機制）。**不自創 `<Spec>`／`<Impedance>`**：schema 猜錯會讓整份檔驗不過，比沒帶更糟。有要求但還沒繞的 net 也要留在檔裡標 `NOT_ROUTED`——那條正是最需要傳出去的 |
 | net 屬性進 ODB++ | `misc/netspec.txt`（與 Gerber 的 `-NetSpec.txt` **同一段文字、同一個產生器**）＋ `eda/data` 每條 net 一行 `#IMP` 註解。**不寫成 ATTR**：屬性名沒在 attrlist 宣告，嚴格的 CAM 會整段解析失敗。註解行任何讀檔器都會略過，人與 grep 找得到 |
 | 修：ODB++ `misc/info` 的 `LAYERS_COUNT` 對不上 matrix | 寫死「銅層 + 1」，補了阻焊／鋼版／絲印與元件層之後變成 info 說 5 層、matrix 列 11 層。對得起來的 CAM 會判這包壞掉。改成直接數 matrix 的 LAYER 筆數，`odb-check` 與 `netspec.test` 各加一條守著 |
+| ODB++ 阻抗改走官方 ATTR（取代 `#IMP` 註解） | 先把 ODB++ 8.1 Update 4 規格 PDF 抓下來查，不憑印象寫：阻抗需求的正式位置是 `steps/<step>/impedance.xml`（Descriptor / RequiredImpedance），線段用系統屬性 `.imp_constraint_id` 指回 Descriptor.Id，差分對用 net 的 `.diff_pair`，`.z0impedance` 是**層**的屬性（不是 net）。因此**完全不需要自訂屬性**，也就不用 `misc/userattr`。`.diff_pair` 的值是「這一對的名字」（兩個 net 名排序後接起來）——各寫對方的 net 名的話 CAM 會看到兩個不同值，認不出是一對 |
 
 ### 接下來
 

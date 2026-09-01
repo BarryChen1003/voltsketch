@@ -126,9 +126,14 @@ function surface(pts, holes) {
   return out;
 }
 
-function featureFile(symLines, feats) {
+function featureFile(symLines, feats, attrNames) {
+  // 屬性查表要放在 features 之前，記錄用索引指回來（規格 p.28 Attribute Value Assignment）。
+  const attrs = (attrNames && attrNames.length)
+    ? ['#', '#Feature attribute names', '#'].concat(attrNames.map((n, i) => '@' + i + ' ' + n))
+    : [];
   return ['#', '#Feature symbol names', '#']
     .concat(symLines)
+    .concat(attrs)
     .concat(['#', '#Layer features', '#'])
     .concat(feats)
     .join(NL) + NL;
@@ -250,7 +255,8 @@ function packageTable(state) {
 }
 
 // steps/pcb/eda/data —— 網表與封裝定義。
-// 這是子集：NET/PKG/PIN 有，屬性（ATTR）、subnet 的完整分類（VIA/TRACE/PLANE）沒有。
+// 這是子集：NET/PKG/PIN 有；net 屬性目前只帶 .diff_pair（系統屬性），
+// subnet 的完整分類（VIA/TRACE/PLANE）沒有。
 function edaData(state, cuStack, nets, packages, layerName, specOf) {
   const L = [];
   L.push('HDR UNITS=MM');
@@ -283,26 +289,40 @@ function edaData(state, cuStack, nets, packages, layerName, specOf) {
     });
   }
 
+  // net 屬性查表。規格：查表必須放在第一筆 NET 之前，記錄用索引指回來（p.109）。
+  // 這裡只用 .diff_pair（Text，系統屬性）——配對關係是 net 層級唯一有標準位置的一項；
+  // 阻抗目標是「線段＋層」的性質，走 impedance.xml，不硬塞到 net 上。
+  // .diff_pair 的值是「這一對的名字」，不是對方的 net 名：
+  // 兩條線各寫對方的名字，CAM 會看到兩個不同的值，也就認不出它們是一對。
+  // 所以兩邊都寫同一個名字（兩個 net 名排序後接起來），而且只設一邊也會補到另一邊。
+  const pairNameOf = new Map();
+  (specOf ? [...specOf.values()] : []).forEach(r => {
+    if (!r.pair) return;
+    const nm = [String(r.net), String(r.pair)].sort().join('-');
+    pairNameOf.set(String(r.net), nm);
+    pairNameOf.set(String(r.pair), nm);
+  });
+  const pairText = [];
+  const pairIdx = new Map();
+  nets.order.forEach(name => {
+    const nm = pairNameOf.get(name);
+    if (!nm || pairIdx.has(nm)) return;
+    pairIdx.set(nm, pairText.length);
+    pairText.push(nm);
+  });
+  if (pairText.length) {
+    L.push('#', '#Net attribute names', '#', '@0 .diff_pair');
+    L.push('#', '#Net attribute text strings', '#');
+    pairText.forEach((t, i) => L.push('&' + i + ' ' + t));
+    L.push('#');
+  }
+
   nets.order.forEach((name, i) => {
-    L.push('NET ' + name);
+    const pv = pairIdx.get(pairNameOf.get(name));
+    L.push('NET ' + name + (pv === undefined ? '' : ';0=' + pv));
     // #NET 編號緊接在 NET 之後（我們自己的索引標記，讀檔的人與測試都靠它）；
     // SNT 放在後面。順序反過來會讓「下一行就是編號」這個假設失效。
     L.push('#NET ' + i);
-    // 阻抗需求寫成**註解行**，不寫成 ODB++ 的 ATTR。
-    // 理由：ATTR 的名字要嘛是系統屬性、要嘛得在 attrlist 裡宣告，兩者我們都還沒做；
-    // 自創一個沒宣告的屬性名，嚴格一點的 CAM 會整段解析失敗——那比沒帶更糟。
-    // 註解行任何讀檔器都會略過，而人與 grep 找得到。完整的表在 misc/netspec.txt。
-    const sp = specOf && specOf.get(name);
-    if (sp) {
-      const bits = [];
-      if (sp.z0 != null) bits.push('Z0=' + sp.z0);
-      if (sp.zdiff != null) bits.push('ZDIFF=' + sp.zdiff);
-      if (sp.z0 != null || sp.zdiff != null) bits.push('TOL=' + sp.tol);
-      if (sp.pair) bits.push('PAIR=' + sp.pair);
-      bits.push(sp.routed ? 'LAYERS=' + sp.layers.join('/') : 'LAYERS=NOT_ROUTED');
-      if (sp.routed) bits.push('WIDTHS=' + sp.widths.join('/'));
-      L.push('#IMP ' + bits.join(' '));
-    }
     for (const [cIdx, pIdx] of (pinsOfNet[name] || [])) L.push('SNT TOP ' + cIdx + ' ' + pIdx);
   });
   L.push('');
@@ -352,6 +372,36 @@ function build(state, padAbsFn, baseName) {
   const layerName = (l, i) => (i === 0 ? 'top' : i === cuStack.length - 1 ? 'bot' : 'in' + i);
   const stats = { layers: 0, features: 0, drills: 0, pads: 0, traces: 0 };
 
+  // --- 受控阻抗：ODB++ 本來就有正式位置，不自創屬性 ---
+  // 出處：ODB++Design Format Specification 8.1 Update 4
+  //   p.28  Attribute Value Assignment（@ 名稱表／& 字串表／記錄用索引指回來）
+  //   p.110 NET 記錄：`NET <net_name>;<attributes>;ID=<id>`
+  //   p.128 steps/<step>/impedance.xml；p.496 Impedances schema
+  //   系統屬性：.imp_constraint_id（Integer，線段 feature 指回 Descriptor.Id）、
+  //             .diff_pair（Text，net 的差分對名）、.z0impedance（Float，Layer 實體）
+  // 沒有任何 net 設過屬性就一個檔都不產（跟 -NetSpec.txt 同一條規則）：
+  // 產空的需求＝告訴板廠「這片板沒有阻抗要求」，那是另一個意思。
+  const netSpec = buildNetSpec(state, { name: base });
+  const specRows = netSpec ? netSpec.rows : [];
+  const specOf = new Map(specRows.map(r => [r.net, r]));
+
+  // Descriptor 一條 (net, 層) 一個 Id，從 1 起算。
+  // 沒繞的 net 沒有 Descriptor：Descriptor 是綁在「那一層的線段」上的，沒有線段就沒有東西可綁。
+  // 那條要求仍在 misc/netspec.txt 裡（標 NOT ROUTED），不會憑空消失。
+  const impIdOf = new Map();
+  const impDescs = [];
+  specRows.forEach(r => {
+    const ohms = r.z0 != null ? r.z0 : r.zdiff;
+    if (ohms == null || !r.routed) return;
+    r.layers.forEach(lid => {
+      const li = cuStack.findIndex(l => l.id === lid);
+      if (li < 0) return;
+      const id = impDescs.length + 1;
+      impIdOf.set(r.net + '|' + lid, id);
+      impDescs.push({ id, layer: layerName(cuStack[li], li), ohms, tol: r.tol, width: r.widths[0] });
+    });
+  });
+
   // --- 每個銅層一個 features 檔 ---
   cuStack.forEach((layer, idx) => {
     const sym = SymbolTable();
@@ -367,10 +417,16 @@ function build(state, padAbsFn, baseName) {
       stats.pads++;
     }));
 
+    // 這一層有阻抗需求的線段要指回 impedance.xml 的 Descriptor。
+    // 屬性索引固定 0（這個檔只用一個 feature 屬性），對應 @0 .imp_constraint_id。
+    let usedImp = false;
     (state.traces || []).forEach(t => {
       if ((t.layer || 'F.Cu') !== layer.id) return;
       const s = sym.round(t.width || 0.3);
-      feats.push('L ' + N(t.x1) + ' ' + NY(t.y1) + ' ' + N(t.x2) + ' ' + NY(t.y2) + ' ' + s + ' P 0');
+      const impId = impIdOf.get(String(t.net || '') + '|' + layer.id);
+      if (impId) usedImp = true;
+      feats.push('L ' + N(t.x1) + ' ' + NY(t.y1) + ' ' + N(t.x2) + ' ' + NY(t.y2) + ' ' + s + ' P 0' +
+        (impId ? ';0=' + impId : ''));
       stats.traces++;
     });
 
@@ -415,10 +471,21 @@ function build(state, padAbsFn, baseName) {
       if (s.outer && s.outer.length >= 3) feats.push.apply(feats, surface(s.outer, s.holes));
     });
 
+    const lname = layerName(layer, idx);
     files.push({
-      name: root + '/steps/' + stepName + '/layers/' + layerName(layer, idx) + '/features',
-      text: featureFile(sym.lines(), feats)
+      name: root + '/steps/' + stepName + '/layers/' + lname + '/features',
+      text: featureFile(sym.lines(), feats, usedImp ? ['.imp_constraint_id'] : null)
     });
+    // .z0impedance 是**層**的屬性（規格：Float／Entity=Layer，「這一層要求的典型特性阻抗」）。
+    // 只有這一層所有需求都指向同一個數字時才寫：兩個不同目標混在同一層，
+    // 寫哪一個都是錯的，那時候讓 impedance.xml 逐條講就好。
+    const ohmsHere = [...new Set(impDescs.filter(d => d.layer === lname).map(d => d.ohms))];
+    if (ohmsHere.length === 1) {
+      files.push({
+        name: root + '/steps/' + stepName + '/layers/' + lname + '/attrlist',
+        text: ['UNITS=MM', '.z0impedance = ' + ohmsHere[0], ''].join(NL)
+      });
+    }
     stats.layers++;
     stats.features += feats.length;
   });
@@ -487,10 +554,6 @@ function build(state, padAbsFn, baseName) {
   // 只有銅層的話，這包 ODB++ 的資訊量其實跟一疊 Gerber 一樣。
   const nets = netTable(state);
   const packages = packageTable(state);
-  // 受控阻抗需求。沒有任何 net 設過屬性就完全不產（跟 -NetSpec.txt 同一條規則）：
-  // 產一張空表等於告訴板廠「這片板沒有阻抗要求」，那是另一個意思。
-  const netSpec = buildNetSpec(state, { name: base });
-  const specOf = new Map((netSpec ? netSpec.rows : []).map(r => [r.net, r]));
   {
     files.push({
       name: root + '/steps/' + stepName + '/eda/data',
@@ -580,6 +643,24 @@ function build(state, padAbsFn, baseName) {
       '}');
   }
   files.push({ name: root + '/matrix/matrix', text: matrix.join(NL) + NL });
+
+  // --- steps/<step>/impedance.xml：阻抗需求的官方載體（規格 p.128、schema p.496）---
+  // Descriptor.Id 是給線段 feature 用 .imp_constraint_id 指回來的；
+  // MaxImpIdValUsed 是「用過的最大 Id」，刪掉 Descriptor 之後也不可以重複使用。
+  if (impDescs.length) {
+    const xml = ['<?xml version="1.0" encoding="UTF-8"?>',
+      '<Impedances Version="8.1" MaxImpIdValUsed="' + impDescs.length + '">'];
+    for (const d of impDescs) {
+      xml.push('  <Descriptor Id="' + d.id + '" TraceLayerName="' + d.layer + '">');
+      // 容差走百分比（ValPercent=true）：面板收的就是 %，換算成絕對值只會多一個會走鐘的數字。
+      xml.push('    <RequiredImpedance ValOhms="' + d.ohms + '" PlusVal="' + d.tol +
+        '" MinusVal="' + d.tol + '" ValPercent="true"/>');
+      if (d.width != null) xml.push('    <OriginalTraceWidth Val="' + d.width + '" Units="MM"/>');
+      xml.push('  </Descriptor>');
+    }
+    xml.push('</Impedances>', '');
+    files.push({ name: root + '/steps/' + stepName + '/impedance.xml', text: xml.join(NL) });
+  }
 
   // --- misc/netspec.txt：受控阻抗需求的完整表 ---
   // 跟 Gerber 包裡的 -NetSpec.txt 是同一份文字（同一個產生器），拿到哪一包都讀得到同一件事。
