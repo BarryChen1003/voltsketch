@@ -766,6 +766,7 @@
                 <button class="small-button" id="fpPlace" data-i18n="pj_fp_place">放到板子上</button>
                 <button class="small-button" id="fpSave" data-i18n="pj_fp_save">存進元件庫</button>
                 <button class="small-button" id="fpFromSel" data-i18n="pj_fp_from">從選取的元件建立</button>
+                <button class="small-button" id="fpPushSel" data-i18n="pj_fp_push" data-i18n-title="pj_fp_push_title" title="把選取元件被手改過的 pad 幾何存回它原本那顆自製封裝（只有自製封裝可以回寫）">↑ 存回這顆封裝</button>
               </div>
               <div id="fpLib" style="display:grid;gap:2px"></div>
               <div id="fpHint" style="color:var(--muted);line-height:1.5"></div>
@@ -1241,7 +1242,7 @@
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./observe.js?v=1"></script>
     <script src="./auth.js?v=2026-08-18a"></script>
-    <script src="./i18n.js?v=2026-09-01c"></script>
+    <script src="./i18n.js?v=2026-09-01d"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-08-26a"></script>
@@ -1264,7 +1265,7 @@
     <script src="./pcb-crossprobe.js?v=2"></script>
     <script src="./pcb-nets.js?v=1"></script>
     <script src="./pcb-drag.js?v=1"></script>
-    <script src="./pcb-fpinst.js?v=1"></script>
+    <script src="./pcb-fpinst.js?v=2"></script>
     <script src="./sch-bus.js?v=2"></script>
     <script src="./sch-swap.js?v=2"></script>
     <script src="./snp.js?v=1"></script>
@@ -1299,7 +1300,7 @@
     <script src="./pcb-import-ui.js?v=1"></script>
     <script src="./footprint-editor.js?v=1"></script>
     <script src="./fp-lib.js?v=1"></script>
-    <script src="./pcb-fp-ui.js?v=4"></script>
+    <script src="./pcb-fp-ui.js?v=5"></script>
     <script src="./pcb-panels.js?v=8"></script>
 </body>
 </html>

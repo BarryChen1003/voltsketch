@@ -317,5 +317,69 @@ function newComp(lib, variant, nets, side) {
   eq(FI.status(c, REAL).status, 'synced', '10.9 attach 之後回到跟庫連動');
 }
 
+// ---- 11. 板 → 庫（回寫）----
+// 這一段守的是兩條界線：能不能覆蓋（只有自製封裝可以），以及送什麼（只送幾何）。
+{
+  const libFp = { name: 'MYFP', pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1 }, { num: '2', x: 2, y: 0, w: 1, h: 1 }] };
+  const INJ = { userFps: [libFp] };
+  const mk = () => ({
+    id: 'c1', ref: 'U9', fpRef: { src: 'user', name: 'MYFP' },
+    pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, net: 'VCC' }, { num: '2', x: 2, y: 0, w: 1, h: 1, net: 'GND' }]
+  });
+
+  // 跟庫一致 → 沒有東西可回寫（硬存一次會讓使用者以為剛才有改到什麼）
+  const same = mk();
+  FI.attach(same);
+  eq(FI.pushPlan(same, INJ).ok, false, '11.1 跟庫一致時不給回寫');
+  eq(FI.pushPlan(same, INJ).reason, 'alreadySynced', '11.2 理由要講清楚');
+
+  // 板上手改過 → 可以回寫，名字要指向庫裡那一份（否則會變成另存新的）
+  const edited = mk();
+  FI.attach(edited);
+  edited.pads[1].x = 3;
+  const st = FI.status(edited, INJ);
+  eq(st.status, 'edited', '11.3 手改過的狀態是 edited');
+  const plan = FI.pushPlan(edited, INJ);
+  eq(plan.ok, true, '11.4 手改過的自製封裝可以回寫');
+  eq(plan.name, 'MYFP', '11.5 要覆蓋庫裡同名那一份，不是另存一顆');
+
+  // 內建庫／IC／公版一律不可覆蓋——那是所有板子的共同基準
+  const builtin = { id: 'c2', ref: 'R1', footprintSource: 'partslib', part: 'res 0603',
+    pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1 }] };
+  eq(FI.pushPlan(builtin, INJ).reason, 'notUserFp', '11.6 內建庫不可回寫');
+
+  // 標記不跟庫的、沒有 pad 的、沒選元件的：各自有明確理由，不可以靜靜什麼都不做
+  const det = mk(); FI.attach(det); det.pads[0].x = 9; FI.detach(det);
+  eq(FI.pushPlan(det, INJ).reason, 'detached', '11.7 detached 要講出來');
+  eq(FI.pushPlan({ fpRef: { src: 'user', name: 'MYFP' }, pads: [] }, INJ).reason, 'noPads', '11.8 沒有 pad 沒東西可回寫');
+  eq(FI.pushPlan(null, INJ).reason, 'noComp', '11.9 沒選元件');
+
+  // 回寫的內容不可以帶 net：庫是所有板子共用的，帶 net 等於把這片板的網路名散出去
+  const fe = require('./footprint-editor.js');
+  const payload = fe.fromComponent(edited, plan.name);
+  ok(payload.pads.every(p => !p.net), '11.10 回寫的 pad 不可以帶 net');
+  eq(payload.name, 'MYFP', '11.11 payload 名字＝庫裡那一份');
+
+  // 回寫之後：這顆跟新庫一致，另一顆舊實例要變成 stale（庫改了、它還沒跟上）
+  const other = mk();
+  FI.attach(other);
+  const newLib = { name: 'MYFP', pads: fe.fromComponent(edited, 'MYFP').pads };
+  const INJ2 = { userFps: [newLib] };
+  FI.attach(edited);                                   // 回寫後 UI 會重新蓋章
+  eq(FI.status(edited, INJ2).status, 'synced', '11.12 回寫的那顆變成 synced');
+  eq(FI.status(other, INJ2).status, 'stale', '11.13 其他實例自動變成可更新（不必另外標記）');
+}
+
+// ---- 12. 真的接上畫面 ----
+{
+  const fsx = require('fs'), pathx = require('path');
+  const ui = fsx.readFileSync(pathx.join(__dirname, 'pcb-fp-ui.js'), 'utf8');
+  const html = fsx.readFileSync(pathx.join(__dirname, 'pcb.html'), 'utf8');
+  ok(ui.indexOf('pushPlan') > 0, '12.1 UI 要走 pushPlan 判斷能不能覆蓋');
+  ok(ui.indexOf('fromComponent') > 0, '12.2 payload 走既有的 fromComponent（它已經剝掉 net）');
+  ok(ui.indexOf('cacheFp(fp)') > 0, '12.3 存完要更新快取，否則狀態還是舊的');
+  ok(html.indexOf('fpPushSel') > 0, '12.4 面板要有回寫按鈕（藏起來等於沒做）');
+}
+
 console.log(`\nfpinst.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

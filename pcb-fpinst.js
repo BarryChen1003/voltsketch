@@ -302,9 +302,33 @@ window.FpInst = (function () {
     return res;
   }
 
+  // ---------------- 板 → 庫（回寫）----------------
+  // 另一個方向（庫 → 板）的界線是「幾何歸庫、net 歸實例」。回寫用同一條界線：
+  // 只送幾何，net 一律剝掉——不剝的話，別的板子套用這顆封裝會拿到這片板的網路名。
+  //
+  // **只有自製封裝（src 'user'）能回寫**。partslib 是依 IPC-7351 算出來的、
+  // ic 來自 IC 資料、reffp 是公版參考——覆蓋它們等於改掉所有板子的共同基準。
+  // 那條路是「另存成新的自製封裝」（面板上的「從選取的元件建立」）。
+  //
+  // 回寫成功之後**不需要**去標記其他實例：status() 每次都跟庫重算，
+  // 庫一變，別的實例自然變成 stale（它們的 fpHash 還是舊的庫雜湊）。
+  function pushPlan(comp, inj) {
+    if (!comp) return { ok: false, reason: 'noComp' };
+    if (!(comp.pads || []).length) return { ok: false, reason: 'noPads' };
+    if (comp.fpDetached === true) return { ok: false, reason: 'detached' };
+    const st = status(comp, inj);
+    const ref = st.fp || refOf(comp);
+    if (!ref || ref.src !== 'user') return { ok: false, reason: 'notUserFp', status: st.status };
+    const name = S(ref.name) || S(ref.variant);
+    if (!name) return { ok: false, reason: 'noName', status: st.status };
+    // 已經跟庫一致就沒有東西可回寫。硬存一次不會壞，但會讓使用者以為剛才有改到什麼。
+    if (st.status === 'synced') return { ok: false, reason: 'alreadySynced', status: st.status };
+    return { ok: true, name: name, ref: ref, status: st.status, hash: hash(comp.pads) };
+  }
+
   return {
     refOf, refKey, resolve, hash, diff, status, sync, syncAll, audit, auditFindings,
-    stamp, detach, attach, lostNets, STATUSES
+    stamp, detach, attach, lostNets, pushPlan, STATUSES
   };
 })();
 

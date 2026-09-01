@@ -205,6 +205,28 @@
     if (save) save.disabled = false;
   }
 
+  // 板 → 庫：把選取元件被手改過的幾何存回它原本那顆自製封裝。
+  // 這是「封裝同步」的另一半：以前只有庫 → 板，板上調好的 pad 只能另存成新封裝，
+  // 於是同一顆封裝在庫裡越積越多份，沒人知道哪一份才是對的。
+  async function pushSelectionToLib() {
+    const app = window.pcbApp;
+    const c = app && app.state.selected;
+    if (!c) { app?.toast(T('pj_fp_no_sel'), 'warn'); return; }
+    if (!window.FpInst || !LIB() || !FE()) return;
+    const plan = window.FpInst.pushPlan(c);
+    if (!plan.ok) { app.toast(T('pj_fp_push_no_' + plan.reason) || plan.reason, 'warn'); return; }
+    if (!window.confirm(T('pj_fp_push_ask', { name: plan.name, ref: c.ref || c.id }))) return;
+    const fp = FE().fromComponent(c, plan.name);      // fromComponent 已經剝掉 net
+    try {
+      const r = await LIB().save(fp);
+      cacheFp(fp);                                    // 快取要跟著新版，否則狀態還是舊的
+      window.FpInst.attach(c, plan.ref);              // 重新蓋章：這顆現在跟庫一致
+      await renderLib();
+      app.renderPartsList?.();
+      app.toast(T('pj_fp_pushed', { name: r.name, n: fp.pads.length }), 'info');
+    } catch (e) { app.toast(libErr(e), 'error'); }
+  }
+
   function boot() {
     if (!el('fpKind') || !FE()) return;
     ['fpKind', 'fpName', 'fpPins', 'fpPitch', 'fpSpan', 'fpPadW', 'fpPadH', 'fpRows', 'fpCols', 'fpTht', 'fpDrill']
@@ -213,6 +235,7 @@
     el('fpSave')?.addEventListener('click', saveCurrent);
     el('fpPlace')?.addEventListener('click', placeOnBoard);
     el('fpFromSel')?.addEventListener('click', fromSelection);
+    el('fpPushSel')?.addEventListener('click', pushSelectionToLib);
     el('fpLib')?.addEventListener('click', async ev => {
       const btn = ev.target.closest('button[data-act]');
       if (!btn || !LIB()) return;
