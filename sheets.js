@@ -104,6 +104,17 @@
     bar.appendChild(crumb);
   }
 
+  // 出訊息。這裡踩過兩個坑，兩個都會讓訊息一路靜默：
+  //   1. 線路圖那支叫 showToast，不是 toast。
+  //   2. `app` 是 script scope 的 const，**不在 window 上**（`window.app` 是 undefined）。
+  // 這支本來就跟 app.js 同一個 script scope，所以直接用裸的 app，並且用 typeof 守衛。
+  function say(msg) {
+    const a = (typeof app !== 'undefined') ? app : null;
+    if (a && typeof a.showToast === 'function') { a.showToast(msg, 5000); return; }
+    if (a && typeof a.toast === 'function') { a.toast(msg, 'warn'); return; }
+    console.warn(msg);
+  }
+
   // ---- 階層導覽 ----
   // 進子圖以前要自己去分頁列找那一頁，多層之後根本記不住現在在哪一層。
   // 路徑本身的邏輯在 SchHier（純函式、測得到），這裡只管切頁與畫麵包屑。
@@ -133,7 +144,7 @@
     if (!H || !store || !comp) return false;
     const idx = H.pageByName(store.pages, comp.sheet);
     if (idx < 0) {
-      if (window.app && app.toast) app.toast(T('sh_no_sheet', { name: comp.sheet || '?' }), 'warn');
+      say(T('sh_no_sheet', { name: comp.sheet || '?' }));
       return false;
     }
     if (!navStack.length) navStack = [curEntry()];
@@ -151,6 +162,34 @@
     return true;
   }
 
+  /**
+   * 目前所在的實例路徑（`PWR1/DRV2`），根層是空字串。
+   * 這是 cross-probe 兩側的共同語言：PCB 的元件 id 自帶這條路徑，
+   * 而這一側送出的是區域 id，要靠它才對得上。
+   */
+  function curPath() {
+    return navStack.slice(1).map(e => String(e.label || '')).filter(Boolean).join('/');
+  }
+
+  /**
+   * 跳到某條實例路徑（PCB 那側選了子圖裡的元件時用）。
+   * 走不到就講出來並留在原頁——靜靜跳到別頁會讓使用者以為選到的是這一層的元件。
+   */
+  function gotoPath(path) {
+    const H = window.SchHier;
+    if (!H || !store) return false;
+    const segs = String(path || '').split('/').filter(Boolean);
+    const r = H.navResolve(store.pages, H.rootIndex(store.pages), segs);
+    if (r.error) {
+      say(T('sh_no_path', { path: String(path || '?'), at: r.at || '?' }));
+      return false;
+    }
+    navStack = r.stack.length > 1 ? r.stack : [];
+    switchTo(r.page, true);
+    setTimeout(renderPath, 0);
+    return true;
+  }
+
   function boot() {
     if (typeof app === 'undefined' || !document.querySelector('.topbar') || !app.state) { setTimeout(boot, 300); return; }
     load(); renderBar(); renderPath();
@@ -162,7 +201,7 @@
   }
   // 畫布那邊要叫得到（原本整支是私有 IIFE）
   window.Sheets = {
-    enterSheet: enterSheet, up: up, switchTo: switchTo,
+    enterSheet: enterSheet, up: up, switchTo: switchTo, curPath: curPath, gotoPath: gotoPath,
     pages: () => (store ? store.pages.map(p => ({ name: p.name })) : []),
     current: () => (store ? store.cur : 0),
     navStack: () => navStack.slice()

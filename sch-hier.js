@@ -328,6 +328,31 @@ window.SchHier = (function () {
     return (stack || []).map(e => S(e.label) || S(e.name) || '?');
   }
 
+  /**
+   * 實例路徑（`PWR1/DRV2`）→ 導覽 stack。
+   * 從 PCB 反查用的：板上的元件 id 自帶實例路徑，但那是「實例名」不是「分頁名」，
+   * 所以要一層一層走——在這一頁找 label 相符的圖紙符號，再用它指的分頁名找頁。
+   * 走不到就回 { error, at }，呼叫端要講出來：靜靜跳到第 0 頁比不動更糟。
+   * 回 { stack, page } 或 { error: 'instance'|'sheet', at }
+   */
+  function navResolve(pages, rootIdx, segs) {
+    const list = pages || [];
+    let idx = (typeof rootIdx === 'number' && list[rootIdx]) ? rootIdx : rootIndex(list);
+    if (!list[idx]) return { error: 'sheet', at: '' };
+    const stack = [{ page: idx, name: S(list[idx].name), label: '' }];
+    const path = (segs || []).map(S).filter(Boolean);
+    for (const seg of path) {
+      if (stack.length >= MAX_DEPTH) return { error: 'instance', at: seg };
+      const inst = instancesOf(list[idx].data).find(c => (S(c.label) || S(c.id)) === seg);
+      if (!inst) return { error: 'instance', at: seg };
+      const next = pageIndex(list, inst.sheet);
+      if (next < 0) return { error: 'sheet', at: S(inst.sheet) };
+      idx = next;
+      stack.push({ page: idx, name: S(list[idx].name), label: seg });
+    }
+    return { stack, page: idx };
+  }
+
   /** 分頁名 → 索引。找不到回 -1（呼叫端要講出來，不可以靜靜跳到第 0 頁）。 */
   function pageByName(pages, name) {
     const want = S(name);
@@ -341,7 +366,7 @@ window.SchHier = (function () {
   return {
     PORT_DIRS, isPort, isInstance, portsOf, instancesOf, pageIndex, hasHierarchy, rootIndex,
     portsToPins, syncInstance, instanceStatus, cycles, validate, build, MAX_DEPTH,
-    navPush, navUp, navPath, pageByName
+    navPush, navUp, navPath, pageByName, navResolve
   };
 })();
 

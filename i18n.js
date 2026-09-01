@@ -1342,6 +1342,11 @@ window.I18N = (function () {
     sh_up_d:         { zh: '回到放這張子圖的那一頁', en: 'Back to the sheet that instantiates this one', ja: 'このシートを配置している親ページへ戻る', ko: '이 시트를 배치한 상위 페이지로 돌아가기' },
     sh_no_sheet:     { zh: '找不到名為「{name}」的分頁——圖紙符號指到一張不存在的圖', en: 'No sheet named "{name}" — the sheet symbol points at a page that does not exist', ja: '「{name}」というページが見つかりません——シート記号が存在しないページを指しています', ko: '"{name}" 페이지를 찾을 수 없습니다 — 시트 기호가 존재하지 않는 페이지를 가리킵니다' },
     sh_enter_hint:   { zh: '雙擊圖紙符號可進入該子圖', en: 'Double-click a sheet symbol to open it', ja: 'シート記号をダブルクリックで中へ', ko: '시트 기호를 더블클릭하면 안으로 들어갑니다' },
+    sh_no_path:      { zh: '跳不到「{path}」這一層——卡在「{at}」（對不到那個實例或子圖）', en: 'Cannot open level "{path}" — stuck at "{at}" (no matching instance or sheet)', ja: '階層「{path}」へ移動できません——「{at}」で停止（該当するインスタンスまたはシートがありません）', ko: '"{path}" 계층으로 이동할 수 없습니다 — "{at}"에서 막힘(일치하는 인스턴스나 시트 없음)' },
+    pcbf_hier:       { zh: '線路圖層級', en: 'Schematic level', ja: '回路図の階層', ko: '회로도 계층' },
+    pcbf_hier_pick:  { zh: '選同層', en: 'Select level', ja: '同じ階層を選択', ko: '같은 계층 선택' },
+    pcbf_hier_pick_t:{ zh: '把同一張子圖的元件整批選起來（在板上通常散在各處）', en: 'Select every component from this sheet (on the board they are usually scattered)', ja: '同じ子シートの部品をまとめて選択（基板上では散らばっていることが多い）', ko: '같은 서브시트의 부품을 한꺼번에 선택(보드에서는 대개 흩어져 있음)' },
+    pj_hier_picked:  { zh: '已選取同層的 {n} 顆元件（{path}）', en: 'Selected {n} components on {path}', ja: '{path} の部品 {n} 個を選択しました', ko: '{path}의 부품 {n}개를 선택했습니다' },
     pj_shove_detour: { zh: '{n} 條擋路的線改走繞道（兩端焊在 pad 上，推不動）', en: '{n} blocking traces were routed around instead (both ends are on pads, so they cannot be pushed)', ja: '{n} 本の干渉配線を迂回させました（両端がパッドのため移動できません）', ko: '간섭하는 배선 {n}개를 우회시켰습니다(양 끝이 패드에 있어 이동 불가)' },
     // ---- 匯流排帶進 PCB（sch-bus.js groups/report）----
     pj_bus_title:     { zh: '匯流排', en: 'Buses', ja: 'バス', ko: '버스' },

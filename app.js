@@ -1409,15 +1409,25 @@ const app = {
     if (this._crossProbe) this._crossProbe.notify();
   },
 
-  // 線路圖 ↔ PCB 選取連動。PCB 那邊的元件 id 是 `sch-<這裡的 id>`（見 pcb-sch2pcb.js）。
+  // 線路圖 ↔ PCB 選取連動。PCB 那邊的元件 id 是 `sch-<這裡的 id>`（見 pcb-sch2pcb.js），
+  // 階層展開後那個 id 還自帶實例路徑（`PWR1/r12`，見 sch-hier.js 的 build）。
+  // 這一側手上只有目前這一頁的區域 id，所以送出時附上自己所在的層；
+  // 收到時先跳到對的那一層，再選——不跳的話階層設計等於完全沒有連動。
   initCrossProbe() {
     if (!window.CrossProbe || this._crossProbe) return;
+    const curPath = () => (window.Sheets && Sheets.curPath) ? Sheets.curPath() : '';
     this._crossProbe = window.CrossProbe.attach({
       side: 'sch',
       getSelection: () => (this.state.selectedIds || []).slice(),
-      applySelection: ids => {
+      getPath: curPath,
+      applySelection: (ids, path) => {
+        const CP = window.CrossProbe;
+        const full = CP.qualify(ids, path);
+        // PCB 一次可以選到跨層的元件，這裡一次只顯示一頁：跳到成員最多的那一層。
+        const want = CP.dominantPath(full);
+        if (want !== curPath() && window.Sheets && Sheets.gotoPath) Sheets.gotoPath(want);
         const known = new Set((this.state.components || []).map(c => c.id));
-        this.setSelection(ids.filter(id => known.has(id)));
+        this.setSelection(CP.localize(full, want).filter(id => known.has(id)));
       }
     });
   },

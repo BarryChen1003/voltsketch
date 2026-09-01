@@ -282,17 +282,56 @@ const pinAt = (c, name) => E.getPins(c).find(p => p.name === name);
   eq(H.pageByName([{ name: 'ROOT' }], ''), -1, '導覽：空名字回 -1');
 }
 
+// ---- 從 PCB 反查是哪一層（navResolve）----
+// 板上的元件 id 帶的是**實例名**（PWR1），不是分頁名（PWR）。要切到對的那一頁
+// 只能一層一層走。走不到就要講出來——靜靜跳到第 0 頁比不動更糟（看起來像選錯元件）。
+{
+  const pages = [
+    { name: 'ROOT', data: { components: [
+      { id: 's1', type: 'sheetref', sheet: 'PWR', label: 'PWR1' },
+      { id: 's2', type: 'sheetref', sheet: 'PWR', label: 'PWR2' },
+      { id: 's3', type: 'sheetref', sheet: 'GONE', label: 'X1' }
+    ], wires: [] } },
+    { name: 'PWR', data: { components: [
+      { id: 'r1', type: 'resistor', label: 'R1' },
+      { id: 's4', type: 'sheetref', sheet: 'FILT', label: 'F1' }
+    ], wires: [] } },
+    { name: 'FILT', data: { components: [{ id: 'c1', type: 'capacitor', label: 'C1' }], wires: [] } }
+  ];
+  const r1 = H.navResolve(pages, 0, ['PWR1']);
+  eq(r1.page, 1, 'navResolve：一層走得到對的分頁');
+  eq(H.navPath(r1.stack), ['ROOT', 'PWR1'], 'navResolve：麵包屑用實例名');
+  const r2 = H.navResolve(pages, 0, ['PWR2', 'F1']);
+  eq(r2.page, 2, 'navResolve：兩層也走得到');
+  eq(H.navPath(r2.stack), ['ROOT', 'PWR2', 'F1'], 'navResolve：第二層的實例名要留在路徑上');
+  eq(H.navResolve(pages, 0, []).page, 0, 'navResolve：空路徑＝留在根層');
+  eq(H.navResolve(pages, 0, ['NOPE']).error, 'instance', 'navResolve：實例名對不上要回報，不可硬跳');
+  eq(H.navResolve(pages, 0, ['NOPE']).at, 'NOPE', 'navResolve：要講出卡在哪一段');
+  eq(H.navResolve(pages, 0, ['X1']).error, 'sheet', 'navResolve：圖紙符號指到不存在的頁');
+  eq(H.navResolve(pages, 0, ['PWR1', 'NOPE']).error, 'instance', 'navResolve：第二層對不上也要擋');
+  // 兩個實例指同一張子圖：走 PWR2 不可以跑去 PWR1 那一份
+  eq(H.navResolve(pages, 0, ['PWR2']).stack[1].label, 'PWR2', 'navResolve：多實例不可互相認錯');
+}
+
 // ---- 真的接上畫面 ----
 {
   const fsx = require('fs'), pathx = require('path');
-  const sh = fsx.readFileSync(pathx.join(__dirname, 'sheets.js'), 'utf8');
+  // 硬規矩 11：距離型正則在 CRLF 工作區會對不上，先正規化換行。
+  const sh = fsx.readFileSync(pathx.join(__dirname, 'sheets.js'), 'utf8').replace(/\r\n/g, '\n');
   ok(sh.indexOf('enterSheet') > 0, '導覽：sheets.js 有進子圖');
   ok(sh.indexOf('window.Sheets') > 0, '導覽：對外開放 API（原本整支是私有 IIFE）');
   ok(sh.indexOf('hierPath') > 0, '導覽：有麵包屑');
   // 使用者自己點分頁列時要清掉路徑，否則「上一層」會帶去不相干的頁
   ok(/keepNav[\s\S]{0,200}navStack = \[\]/.test(sh), '導覽：手動切頁要清 stack');
-  const app = fsx.readFileSync(pathx.join(__dirname, 'app.js'), 'utf8');
+  const app = fsx.readFileSync(pathx.join(__dirname, 'app.js'), 'utf8').replace(/\r\n/g, '\n');
   ok(/sheetref[\s\S]{0,120}enterSheet/.test(app), '導覽：雙擊圖紙符號會進去');
+  ok(sh.indexOf('gotoPath') > 0, '導覽：sheets.js 要能被 cross-probe 叫去指定的層');
+  ok(sh.indexOf('curPath') > 0, '導覽：sheets.js 要說得出目前在哪一層');
+  ok(sh.indexOf('sh_no_path') > 0, '導覽：跳不到要出訊息，不可靜靜留在原頁');
+  // 線路圖那支叫 showToast。猜錯名字＝訊息一次都不會出現，而這裡正是最需要講話的地方。
+  ok(sh.indexOf('showToast') > 0, '導覽：訊息要用線路圖真的有的那支函式');
+  ok(sh.indexOf('app.toast(') < 0, '導覽：不可呼叫線路圖沒有的 app.toast（會一路靜默）');
+  ok(app.indexOf('Sheets.gotoPath') > 0, '導覽：PCB 選到子圖裡的元件時要跳過去');
 }
 
 console.log(`\nsch-hier.test: ${pass} passed, ${fail} failed`);

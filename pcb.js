@@ -1915,8 +1915,10 @@ const pcbApp = {
           ? this.state.selectedSet : (this.state.selected ? [this.state.selected] : []);
         return sel.map(c => window.CrossProbe.schIdOf(c)).filter(Boolean);
       },
-      applySelection: ids => {
-        const want = new Set(ids.map(id => window.CrossProbe.pcbIdOf(id)).filter(Boolean));
+      applySelection: (ids, path) => {
+        // 線路圖送來的是那一頁的區域 id，配上它所在的層才是板上這顆的全名。
+        const full = window.CrossProbe.qualify(ids, path);
+        const want = new Set(full.map(id => window.CrossProbe.pcbIdOf(id)).filter(Boolean));
         const hit = (this.state.components || []).filter(c => want.has(c.id));
         this.state.selectedSet = hit;
         this.state.selected = hit.length === 1 ? hit[0] : null;
@@ -1926,6 +1928,50 @@ const pcbApp = {
         this.render();
       }
     });
+  },
+
+  // ---- 這顆是線路圖哪一層來的（cross-probe 反查）----
+  // 攤平後的線路圖 id 自帶實例路徑，所以板上這一側本來就有答案，只是以前沒顯示：
+  // 佈線到一半要回頭確認「這是哪一塊電路」，只能靠 refdes 猜。
+  selHierPath(c) {
+    if (!window.CrossProbe) return '';
+    const sid = window.CrossProbe.schIdOf(c);
+    if (!sid) return '';
+    return window.CrossProbe.splitPath(sid).path;
+  },
+
+  // 多選時 state.selected 是 null，但整層選取本來就是多選——那時候把層藏起來，
+  // 使用者剛按完「選同層」畫面就少一列，看起來像按壞了。同層就照顯示。
+  selHierPathOfSelection() {
+    const set = (this.state.selectedSet && this.state.selectedSet.length)
+      ? this.state.selectedSet : (this.state.selected ? [this.state.selected] : []);
+    if (!set.length) return '';
+    const paths = new Set(set.map(c => this.selHierPath(c)));
+    return paths.size === 1 ? [...paths][0] : '';
+  },
+
+  syncSelHier(c) {
+    const row = document.getElementById('selHierRow');
+    const box = document.getElementById('selHier');
+    if (!row || !box) return;
+    const p = this.selHierPathOfSelection();
+    row.style.display = p ? 'flex' : 'none';
+    if (p) box.textContent = p.split('/').join(' ▸ ');
+  },
+
+  // 同一張子圖的元件在板上通常散在各處。整層選起來才看得出「這塊電路擺在哪」。
+  selectSameSheet() {
+    const c = this.state.selected;
+    const p = c ? this.selHierPath(c) : '';
+    if (!p) return;
+    const hit = (this.state.components || []).filter(x => this.selHierPath(x) === p);
+    if (!hit.length) return;
+    this.state.selectedSet = hit;
+    this.state.selected = hit.length === 1 ? hit[0] : c;
+    this.state.selectedTrace = null;
+    this.toast(pcbT('pj_hier_picked', { n: hit.length, path: p.split('/').join(' ▸ ') }), 'info');
+    this.syncSelPanel();
+    this.render();
   },
 
   // 把畫面平移到這幾顆元件的中心（連動選取時用；不改縮放，避免畫面亂跳）
@@ -2117,6 +2163,7 @@ const pcbApp = {
     if (!fields) return;
     fields.style.display = c ? 'grid' : 'none';
     if (info) info.style.display = c ? 'none' : '';
+    this.syncSelHier(c);
     if (!c) return;
     const ref = document.getElementById('selRef');
     if (ref) ref.textContent = `${c.ref || c.label || c.id}${c.part ? '｜' + c.part : ''}`;
@@ -3657,6 +3704,7 @@ const pcbApp = {
       this.render();
     });
     document.getElementById("selRenameBtn")?.addEventListener("click", () => this.renameSelRef());
+    document.getElementById("selHierPick")?.addEventListener("click", () => this.selectSameSheet());
     document.getElementById("selSwapBtn")?.addEventListener("click", () => this.swapSelPins());
     document.getElementById("selSwapGateBtn")?.addEventListener("click", () => this.swapSelGates());
 
