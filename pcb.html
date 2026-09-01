@@ -658,6 +658,7 @@
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="ratsnestToggle"><span data-i18n="pcbf_ratsnest">顯示飛線（未連線）</span></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="pinNumToggle" checked><span data-i18n="pcbf_pinnum">顯示 pin number</span></label>
               <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="pinNameToggle" checked><span data-i18n="pcbf_pinname">顯示腳名 / 網路</span></label>
+              <label style="grid-column:1/-1;display:flex;gap:6px;align-items:center;cursor:pointer" data-i18n-title="pcbf_bb_hint" title="允許盲孔／埋孔：換層時只鑽跨到的那幾層。密腳區能繞的路變多，但四家板廠的一般線上下單流程都不接，匯出前 DFM 會擋下來提醒"><input type="checkbox" id="blindBuriedToggle"><span data-i18n="pcbf_bb">允許盲孔／埋孔（板廠多半不接）</span></label>
               <button class="small-button" id="autoRouteBtn" data-i18n="pcb_autoroute" style="grid-column:1/-1">⚡ 自動佈線未連線（單層試驗）</button>
               <button class="small-button" id="syncNetlistBtn" data-i18n="pcb_syncnet" style="grid-column:1/-1" data-i18n-title="pj_t_fromsch" title="讀取線路圖頁自動存檔，建立元件與網路，飛線引導佈局">⇪ 從線路圖同步 netlist</button>
               <button class="small-button" id="view3dBtn" data-i18n="pcb_3d" style="grid-column:1/-1" data-i18n-title="pj_t_3d" title="教學級近似：元件方塊+pad+走線；Three.js 開啟時才載入">🧊 3D 檢視</button>
@@ -1242,7 +1243,7 @@
     <script src="./auth-config.js?v=2026-07-04a"></script>
     <script src="./observe.js?v=1"></script>
     <script src="./auth.js?v=2026-08-18a"></script>
-    <script src="./i18n.js?v=2026-09-01d"></script>
+    <script src="./i18n.js?v=2026-09-01e"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
     <script src="./pcb-refboards.js?v=2026-09-01a"></script>
@@ -1255,8 +1256,8 @@
     <script src="./kicad-io.js?v=10"></script>
     <script src="./pcb-index.js?v=1"></script>
     <script src="./pcb-arc.js?v=1"></script>
-    <script src="./pcb-drc.js?v=11"></script>
-    <script src="./pcb-rules.js?v=16"></script>
+    <script src="./pcb-drc.js?v=12"></script>
+    <script src="./pcb-rules.js?v=17"></script>
     <script src="./pcb-shove.js?v=3"></script>
     <script src="./pcb-mesh.js?v=1"></script>
     <script src="./pcb-mesh-ui.js?v=1"></script>
@@ -1272,7 +1273,7 @@
     <script src="./snp-ui.js?v=1"></script>
     <script src="./pcb-theme.js?v=1"></script>
     <script src="./pcb-interact.js?v=2"></script>
-    <script src="./pcb.js?v=80"></script>
+    <script src="./pcb.js?v=81"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-08-25a"></script>
     <script src="./pcb-stackup.js?v=2026-09-01a"></script>

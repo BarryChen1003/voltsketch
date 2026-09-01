@@ -380,8 +380,27 @@ window.PadDrc = (() => {
 
     // 4) via 淨距（通孔 via 貫穿全層）
     const vias = state.vias || [];
+    // 盲埋孔：via 帶 from/to 就只跨那一段層，銅箔的淨空當然只跟那幾層有關。
+    // 沒有這一段的話，一顆 In1–In2 的埋孔會被拿去跟頂層的走線比距離，
+    // 報一個實體上不存在的違規——使用者只能把功能關掉，等於這個功能不能用。
+    // **鑽孔間距（via↔via）刻意不放寬**：那是鑽頭的事，不是銅箔的事；
+    // 不同跨層的孔能不能靠近，取決於板廠的疊構與壓合次序，不是我們判得了的。
+    const cuIds = (state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+    const spanOf = v => {
+      const a = cuIds.indexOf(v.from), b = cuIds.indexOf(v.to);
+      if (!cuIds.length || a < 0 || b < 0) return [0, Math.max(0, cuIds.length - 1)];
+      return [Math.min(a, b), Math.max(a, b)];
+    };
+    const layerIdxOf = id => { const i = cuIds.indexOf(id || 'F.Cu'); return i < 0 ? 0 : i; };
+    const padSpans = p => {
+      if (!cuIds.length) return [0, 0];
+      if (p.plated || p.side === '*') return [0, cuIds.length - 1];   // 穿孔 pad 每層都有銅
+      return p.side === 'B' ? [cuIds.length - 1, cuIds.length - 1] : [0, 0];
+    };
+    const overlaps = (a, b) => a[0] <= b[1] && b[0] <= a[1];
     for (let i = 0; i < vias.length; i++) {
       const v = vias[i], vr = (v.od || 0.6) / 2, vnet = v.net || '';
+      const vspan = spanOf(v);
       for (let j = i + 1; j < vias.length; j++) {
         const u = vias[j];
         if (vnet && vnet === (u.net || '')) continue;
@@ -391,12 +410,15 @@ window.PadDrc = (() => {
       }
       for (const t of traces) {
         if (vnet && vnet === (t.net || '')) continue;
+        const tl = layerIdxOf(t.layer);
+        if (tl < vspan[0] || tl > vspan[1]) continue;      // 這顆孔沒有跨到那一層
         const d = ptSegDist(v.x, v.y, t.x1, t.y1, t.x2, t.y2) - vr - (t.width || 0.3) / 2;
         if (d < cl.traceToTrace - EPS)
           add('drc_cat_via_trace', 'error', T('drc_via_trace', { i: i + 1, an: NN(vnet), tn: NN(t.net), tl: t.layer || 'F.Cu', d: fmt(Math.max(0, d)), lim: cl.traceToTrace, x: v.x.toFixed(1), y: v.y.toFixed(1) }), v);
       }
       for (const P of pads) {
         if (vnet && vnet === P.net) continue;
+        if (!overlaps(vspan, padSpans(P))) continue;       // 這顆孔沒有跨到那顆 pad 所在的層
         const d = ptPadDist(v.x, v.y, P.sh) - vr;
         if (d < cl.padToPad - EPS)
           add('drc_cat_via_pad', 'error', T('drc_via_pad', { i: i + 1, an: NN(vnet), p: P.label, pn: NN(P.net), d: fmt(Math.max(0, d)), lim: cl.padToPad, x: v.x.toFixed(1), y: v.y.toFixed(1) }), v);

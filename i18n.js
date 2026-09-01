@@ -527,6 +527,9 @@ window.I18N = (function () {
     // ---- PCB Layout 表單欄位 / 選項 / 面試題 ----
     pcbf_tracew:    { zh: '線寬 (mm)', en: 'Trace width (mm)', ja: '線幅 (mm)', ko: '선폭 (mm)' },
     pcbf_layer:     { zh: '層', en: 'Layer', ja: 'レイヤー', ko: '레이어' },
+    pcbf_bb:         { zh: '允許盲孔／埋孔（板廠多半不接）', en: 'Allow blind / buried vias (most fabs decline)', ja: 'ブラインド／ベリアビアを許可（多くの基板メーカーは非対応）', ko: '블라인드/베리드 비아 허용(대부분의 제조사는 미지원)' },
+    pcbf_bb_hint:    { zh: '換層時只鑽跨到的那幾層。密腳區能繞的路變多，但四家板廠的一般線上下單流程都不接——匯出前的板廠檢查會擋下來提醒。', en: 'A layer change then drills only the layers it spans. Dense areas gain routing room, but none of the four fabs accept these through their normal online ordering, and the fab check flags it before export.', ja: '層を移るとき、またぐ層だけを穴あけします。狭ピッチ領域で配線の自由度は上がりますが、4 社とも通常のオンライン発注では受け付けないため、書き出し前のメーカーチェックで警告します。', ko: '층을 바꿀 때 걸치는 층만 뚫습니다. 협피치 영역의 배선 여유는 늘지만 4개 제조사 모두 일반 온라인 주문으로는 받지 않으며, 내보내기 전 제조사 점검에서 경고합니다.' },
+    pj_bb_on:        { zh: '已允許盲孔／埋孔。板廠檢查會把它標成做不出來——確定要用的話，記得先跟板廠確認製程與報價。', en: 'Blind / buried vias are now allowed. The fab check will flag them as unbuildable - if you mean to use them, agree the process and the quote with your fab first.', ja: 'ブラインド／ベリアビアを許可しました。メーカーチェックでは製造不可として表示されます。使う場合は事前に工程と見積りを確認してください。', ko: '블라인드/베리드 비아를 허용했습니다. 제조사 점검에서는 제작 불가로 표시됩니다. 사용하려면 먼저 공정과 견적을 제조사와 확인하세요.' },
     pcbf_ratsnest:  { zh: '顯示飛線（未連線）', en: 'Show ratsnest (unrouted)', ja: 'ラッツネスト表示（未配線）', ko: '랫츠네스트 표시(미배선)' },
     pcbf_impkind:   { zh: '結構', en: 'Structure', ja: '構造', ko: '구조' },
     pcbf_impw:      { zh: '線寬 w', en: 'Width w', ja: '線幅 w', ko: '선폭 w' },

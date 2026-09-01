@@ -374,6 +374,18 @@
       const layers = [...layersHere].filter(l => cu.indexOf(l) >= 0);
       if (layers.length < 2) return { ok: false, reason: 'not_a_layer_join' };
 
+      // 這顆逃逸孔要跨哪一段層。opt.blindBuried 打開時只跨「真的要接的那兩層」，
+      // 於是只有那幾層的銅會擋路——密腳區的死路有一半是穿孔要求「每一層都空」造成的。
+      // 沒打開就是穿孔：從頭跨到尾，行為與舊版相同。
+      const li = layers.map(l => cu.indexOf(l)).filter(i => i >= 0).sort((a, b) => a - b);
+      const span = opt.blindBuried && li.length >= 2
+        ? [li[0], li[li.length - 1]] : [0, Math.max(0, cu.length - 1)];
+      const inSpan = i => i >= span[0] && i <= span[1];
+      const padOnSpan = p => {
+        if (p.side === '*' || p.drill > 0) return true;                 // 穿孔 pad 每層都有銅
+        return inSpan(p.side === 'B' ? cu.length - 1 : 0);
+      };
+
       // 附近的異網銅（只取用得到的範圍，省掉全板掃描）
       const R = 4;
       const foreignPads = [];
@@ -382,10 +394,12 @@
         const a = padAbs(c, p);
         if (Math.hypot(a.x - px, a.y - py) > R) return;
         if (String(p.net || '') === net) return;
+        if (!padOnSpan(p)) return;
         foreignPads.push(G.padShape(c, p, padAbs));
       }));
       const foreignTraces = (state.traces || []).filter(t =>
         String(t.net || '') !== net &&
+        inSpan(cu.indexOf(t.layer || 'F.Cu') < 0 ? 0 : cu.indexOf(t.layer || 'F.Cu')) &&
         Math.min(Math.hypot(t.x1 - px, t.y1 - py), Math.hypot(t.x2 - px, t.y2 - py)) <= R + 2);
       const foreignVias = (state.vias || []).filter(v =>
         String(v.net || '') !== net && Math.hypot(v.x - px, v.y - py) <= R + 1);
@@ -429,7 +443,8 @@
       const dirs = 24;
       for (const r of radii) {
         if (r === 0) {
-          if (fits(px, py)) return { ok: true, r: 0, dir: 0, via: { x: px, y: py, od, drill, net }, stubs: [] };
+          if (fits(px, py)) return { ok: true, r: 0, dir: 0, span,
+            via: { x: px, y: py, od, drill, net, from: cu[span[0]], to: cu[span[1]] }, stubs: [] };
           continue;
         }
         for (let k = 0; k < dirs; k++) {
@@ -437,8 +452,9 @@
           const cx = +(px + Math.cos(th) * r).toFixed(3), cy = +(py + Math.sin(th) * r).toFixed(3);
           if (!fits(cx, cy)) continue;
           return {
-            ok: true, r, dir: th,
-            via: { x: cx, y: cy, od, drill, net },
+            ok: true, r, dir: th, span,
+            // 跨層要寫進 via：盲埋孔匯出照跨層分檔，沒有這兩個欄位板廠不知道鑽多深
+            via: { x: cx, y: cy, od, drill, net, from: cu[span[0]], to: cu[span[1]] },
             // 有既有走線收在這點的層 → 拉端點；其餘（pad 那層）→ 補一段逃逸線
             stubs: layers.filter(l => !endAt.has(l))
               .map(l => ({ x1: px, y1: py, x2: cx, y2: cy, layer: l, width: w, net })),

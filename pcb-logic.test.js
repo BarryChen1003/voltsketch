@@ -2115,5 +2115,70 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   app.state = savedState;
 }
 
+// 44) 盲埋孔：跨層要一路帶到底（繞線器 → DRC → 逃逸孔 → UI）
+// 這個功能在繞線器裡早就有，但**沒有任何呼叫端傳過那個選項**，等於藏起來沒做。
+// 而且 DRC 以前把每顆 via 都當穿孔：一顆 In1–In2 的埋孔會被拿去跟頂層的線比距離，
+// 報一個實體上不存在的違規——使用者只能把功能關掉。
+{
+  const savedState = app.state;
+  const stack4 = app.buildLayerStack(4);
+  const cu = stack4.filter(l => l.kind === 'copper').map(l => l.id);
+  eq(cu.length, 4, '44 前提：四層板有四個銅層');
+
+  // 頂層一條別的 net 的線，正好壓在埋孔的位置上方
+  app.state = Object.assign({}, savedState, {
+    boardWidth: 30, boardHeight: 20, layers: 4, layerStack: stack4,
+    visibleLayers: cu.slice(), components: [], keepouts: [], userZones: [],
+    traces: [{ x1: -5, y1: 0, x2: 5, y2: 0, layer: cu[0], width: 0.3, net: 'OTHER' }],
+    vias: [{ x: 0, y: 0, od: 0.6, drill: 0.3, net: 'SIG', from: cu[1], to: cu[2] }]
+  });
+  const rules = app.loadDrcRules();
+  const errs = () => window.PadDrc.run(app.state, app.padAbs.bind(app), rules).filter(f => f.type === 'error');
+  eq(errs().length, 0, '44 埋孔沒有跨到頂層，不該跟頂層的線報違規');
+
+  // 同一顆改成穿孔（沒有 from/to）就該報——不然這條測試等於什麼都沒測
+  app.state.vias = [{ x: 0, y: 0, od: 0.6, drill: 0.3, net: 'SIG' }];
+  ok(errs().length > 0, '44 穿孔跨到頂層，還是要照報');
+
+  // 逃逸孔：打開盲埋之後，只有**跨到的層**擋得住它。
+  // 所以障礙要放在底層：頂層→In1 的盲孔不必理會底層，穿孔則非閃不可。
+  const pad = (net, side, w, h) => ({ num: '1', x: 0, y: 0, w: w || 0.25, h: h || 0.9, side, net, cu: true });
+  const mk = () => Object.assign({}, savedState, {
+    boardWidth: 30, boardHeight: 20, layers: 4, layerStack: stack4, visibleLayers: cu.slice(),
+    keepouts: [], userZones: [], vias: [],
+    components: [
+      { id: 'u1', ref: 'U1', x: 0, y: 0, rot: 0, pads: [pad('SIG', 'F')] },
+      // 底層四周塞滿別的 net 的 pad：穿孔一定放不下，盲孔不受影響
+      { id: 'b1', ref: 'B1', x: -0.75, y: 0, rot: 0, pads: [pad('X1', 'B', 0.6, 2.4)] },
+      { id: 'b2', ref: 'B2', x: 0.75, y: 0, rot: 0, pads: [pad('X2', 'B', 0.6, 2.4)] },
+      { id: 'b3', ref: 'B3', x: 0, y: -0.75, rot: 0, pads: [pad('X3', 'B', 2.4, 0.6)] },
+      { id: 'b4', ref: 'B4', x: 0, y: 0.75, rot: 0, pads: [pad('X4', 'B', 2.4, 0.6)] }
+    ],
+    traces: [{ x1: 0, y1: 0, x2: 0, y2: -6, layer: cu[1], width: 0.2, net: 'SIG' }]
+  });
+  const opt = { clearance: rules.clearance, viaOd: 0.7, viaDrill: 0.3, width: 0.2 };
+  app.state = mk();
+  const thru = window.AutoRoute.escapeVia(app.state, app.padAbs.bind(app), { x: 0, y: 0, net: 'SIG' }, opt);
+  app.state = mk();
+  const bb = window.AutoRoute.escapeVia(app.state, app.padAbs.bind(app), { x: 0, y: 0, net: 'SIG' },
+    Object.assign({ blindBuried: true }, opt));
+  ok(bb.ok, '44 允許盲埋時，底層的擁擠不該擋住頂層→In1 的逃逸孔');
+  eq(bb.ok ? bb.via.from : '', cu[0], '44 逃逸孔的跨層從 pad 那層起算');
+  eq(bb.ok ? bb.via.to : '', cu[1], '44 跨到走線那層就好，不必鑽穿整疊板');
+  eq(bb.ok ? bb.r : -1, 0, '44 底層的障礙既然跨不到，就該原地放（不必逃逸）');
+  ok(!thru.ok || thru.r > 0, '44 穿孔在同一個點上放不下（不然這條測試沒有意義）');
+
+  // 真的接上畫面：以前這個選項只有測試在用
+  {
+    const fsx = require('fs'), pathx = require('path');
+    const js = fsx.readFileSync(pathx.join(__dirname, 'pcb.js'), 'utf8');
+    const html = fsx.readFileSync(pathx.join(__dirname, 'pcb.html'), 'utf8');
+    ok(js.indexOf('blindBuried: !!this.state.blindBuried') > 0, '44 自動佈線要把選項傳給繞線器');
+    ok(html.indexOf('blindBuriedToggle') > 0, '44 面板要有開關（藏起來等於沒做）');
+    ok(js.indexOf('pj_bb_on') > 0, '44 打開時要講清楚板廠多半不接');
+  }
+  app.state = savedState;
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -38,6 +38,7 @@ const pcbApp = {
     netRules: [],        // Layout 規則（NetRules）
     userZones: [],       // 使用者畫的鋪銅 {layer,net,pts,clearance}
     zoneDraw: null,      // 進行中 zone {pts, net, cursor:[x,y]}
+    blindBuried: false,  // 盲埋孔：預設關（板廠多半不接，見 pcb-fabs 的 blindBuriedUnsupported）
     showPinNums: true,   // pad 上顯示 pin number（Allegro 慣例，預設開）
     showPinNames: true,  // pad 下方顯示腳名/網路（夠大才畫）
     selectedTrace: null, // 選取中的走線（select 工具點走線；Delete 可刪）
@@ -3698,7 +3699,10 @@ const pcbApp = {
       width: this.state.traceWidth || 0.25,
       clearance: rules.clearance,
       viaOd: ps.od, viaDrill: ps.drill,
-      grid: 0.25
+      grid: 0.25,
+      // 盲埋孔：使用者明確打開才用。繞線器早就支援，但以前沒有任何呼叫端傳這個值——
+      // 功能藏起來等於沒有做（硬規矩 16）。
+      blindBuried: !!this.state.blindBuried
     };
     // 差分對先成對繞（走廊要夠寬，等單線切碎空間就進不去了），剩下的才單條繞
     const dp = this.autoRoutePairs(lines, opts);
@@ -3877,6 +3881,11 @@ const pcbApp = {
     });
 
     // 自動佈線（試驗性：逐條飛線單層 A*）
+    document.getElementById('blindBuriedToggle')?.addEventListener('change', (e) => {
+      this.state.blindBuried = !!e.target.checked;
+      // 打開就當場講清楚代價：板廠檢查會擋，不要等匯出才發現
+      if (this.state.blindBuried) this.toast(pcbT('pj_bb_on'), 'warn');
+    });
     document.getElementById('autoRouteBtn')?.addEventListener('click', () => this.autoRoute());
 
     // netlist 同步（線路圖 → PCB）
