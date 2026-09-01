@@ -21,6 +21,11 @@
 'use strict';
 
 // ---------- DOM stub（載 pcb.js 但不跑 init）----------
+// matrix 要對得上的那幾種層檔。用後綴比對而不是正則：正則的反斜線在幾次轉寫裡被吃掉過，
+// 而且這張表順便說明「ODB++ 會產哪幾層」。
+const COMP_SUFFIX = ['/components/comp_+_top', '/components/comp_+_bot'];
+const EXTRA_SUFFIX = ['sm_top', 'sm_bot', 'sp_top', 'sp_bot', 'ss_top', 'ss_bot']
+  .map(n => '/layers/' + n + '/features');
 const noop = () => {};
 const ctxStub = new Proxy({}, { get: () => () => undefined });
 const canvasStub = { width: 680, height: 478, getContext: () => ctxStub, getBoundingClientRect: () => ({ left: 0, top: 0, width: 680, height: 478 }), addEventListener: noop, style: {}, parentElement: { clientWidth: 680, clientHeight: 478 } };
@@ -98,11 +103,18 @@ function parseFeatures(text) {
     const matrix = get('/matrix/matrix');
     if (matrix) {
       const rows = (matrix.text.match(/LAYER \{/g) || []).length;
-      // v2 起 matrix 還會有元件層（comp_+_top / comp_+_bot），而且只列實際產出的那幾面。
-      // 期望值因此是「銅層 + drill + 實際存在的 components 檔數」，不是寫死的 +1。
-      const compFiles = r.files.filter(f => /\/components\/comp_\+_(top|bot)$/.test(f.name)).length;
-      ok(rows === cu.length + 1 + compFiles,
-        `${tag}: matrix LAYER 筆數 ${rows} = 銅層 ${cu.length} + drill + 元件層 ${compFiles}`);
+      // v2 起 matrix 還有元件層（comp_+_top / comp_+_bot），2026-08-31 起再加上
+      // 阻焊／鋼版／絲印（sm_/sp_/ss_），而且**只列實際產出的那幾層**。
+      // 所以期望值不是寫死的公式，而是「每一個真的存在的層檔各一列」——
+      // 寫死公式的下場就是這裡：加了三組層之後這條斷言紅了，但檔案其實是對的。
+      const compFiles = r.files.filter(f => COMP_SUFFIX.some(x => f.name.endsWith(x))).length;
+      const extraFiles = r.files.filter(f => EXTRA_SUFFIX.some(x => f.name.endsWith(x))).length;
+      ok(rows === cu.length + 1 + extraFiles + compFiles,
+        `${tag}: matrix LAYER 筆數 ${rows} = 銅層 ${cu.length} + drill + 阻焊/鋼版/絲印 ${extraFiles} + 元件層 ${compFiles}`);
+      // ROW 撞號的症狀是「打得開、但層是錯的」：一定要驗號碼連續且不重複。
+      const rowNums = matrix.text.split('ROW=').slice(1).map(t => parseInt(t, 10)).sort((a, b) => a - b);
+      ok(rowNums.length === rows && rowNums.every((n, k) => n === k + 1),
+        `${tag}: matrix 的 ROW 應為 1..${rows} 連續且不重複（實得 ${rowNums.join(',')}）`);
       ok((matrix.text.match(/TYPE=COMPONENT/g) || []).length === compFiles,
         `${tag}: matrix 的 COMPONENT 筆數與實際檔案數一致（不可以列出不存在的檔）`);
       ok(matrix.text.includes('START_NAME=' + nameOf(0).toUpperCase()),

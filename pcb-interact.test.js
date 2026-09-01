@@ -137,11 +137,13 @@ const near = (a, b, tol, msg) => ok(Math.abs(a - b) <= tol, msg + ' (得 ' + a +
 // ---- 5. pcb.js 真的有把這些接上去 ----
 {
   // 說明面板寫了鍵、程式沒綁，是最典型的文件謊言。這裡對照 pcb.js 原始碼。
-  const app = fs.readFileSync(path.join(__dirname, 'pcb.js'), 'utf8');
+  // 硬規矩 11：本機工作區可能是 CRLF。距離型正則（[\s\S]{0,N}）在 CRLF 下每行多一個位元組，
+  // 同一份原始碼會忽然對不上——先正規化，測的才是內容而不是換行風格。
+  const app = fs.readFileSync(path.join(__dirname, 'pcb.js'), 'utf8').replace(/\r\n/g, '\n');
   ok(app.indexOf('PcbInteract') > 0, '5.1 pcb.js 有用到 PcbInteract');
   ok(app.indexOf('contextmenu') > 0, '5.2 pcb.js 有掛右鍵選單');
   ok(app.indexOf('pathOf') > 0, '5.3 高亮描邊改用 pathOf');
-  const html = fs.readFileSync(path.join(__dirname, 'pcb.html'), 'utf8');
+  const html = fs.readFileSync(path.join(__dirname, 'pcb.html'), 'utf8').replace(/\r\n/g, '\n');
   ok(html.indexOf('pcb-interact.js') > 0, '5.4 pcb.html 有載入模組');
   ok(html.indexOf('traceSelFields') > 0, '5.5 pcb.html 有走線屬性面板');
   ok(html.indexOf('shortcutRows') > 0, '5.6 pcb.html 有快捷鍵說明面板');
