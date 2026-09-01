@@ -116,6 +116,11 @@ for (const b of boards) {
 
   let routed = 0;
   const addedTraces = [], addedVias = [];
+  // 這裡**刻意不做成對繞**。2026-09-01 試過：接上 app.autoRoutePairs 之後，
+  // esp32 +8、a20-lime +21、openrex +42 個 DRC error（閘門擋下、三片放棄）。
+  // 原因在 autoRoutePairs 本身：它繞的是中心線，再把兩條線左右偏移展開，
+  // **展開後沒有重新檢查淨空**——空板上沒事，密板上兩條線就壓到鄰居。
+  // 那是主線功能要修的事（使用者按「自動繞線」也會踩到），不是補繞工具能繞過去的。
   for (const w of [...groups.keys()].sort((a, b) => b - a)) {
     const grp = groups.get(w);
     const r = window.RouteAll.run(st, padAbs, grp, {

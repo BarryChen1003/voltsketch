@@ -1,27 +1,17 @@
 /**
- * refboard-rebuild.js — 把公版從「示意佈局」重建成「幾何上做得出來的佈局」。
+ * refboard-route-audit.js — 公版「還有多少沒繞、為什麼繞不過」的量測工具（只讀，不寫檔）
  *
- * 為什麼要有這支：公版原本的走線是手畫的示意直線，直接壓過別人的 pad；
- * 有些元件之間的 pad 也擠在一起。8 片合計 388 個 DRC error，而且是新訪客
- * 進站看到的第一個東西。手工重畫八片板不現實，所以把它變成可重跑的流程：
+ * 硬規矩 14「先量再改」的那個「量」。2026-09-01 這支的產出直接改變了要做的事：
+ * 原訂是「改繞線策略提高成功率」，量完發現 134 條未繞裡有 118 條當場就繞得出來——
+ * 真正缺的是「資料從來沒補繞過」與繞線器收線層的 bug（見 NEW-SESSION §8）。
  *
- *   1. 丟掉示意走線與示意 via（它們本來就壓在 pad 上，重繞後也沒有意義）
- *   2. 擺位鬆弛：pad 太近的元件互相推開。安裝孔不動、連接器少動
- *      （它們在真板上就固定在板邊），優先推被動元件。
- *   3. 用真的繞線器重繞：0.15mm 線、多層、拆線重試。
+ * 每片板報四個數字：
+ *   未繞       載入後 Ratsnest 還看得到的連線
+ *   單獨可繞   把那條線放到「只有 pad、沒有其他走線」的板上重繞，繞得過的數量
+ *   幾何不可繞 單獨都繞不過 → pad 擠死／板邊／禁佈區，不是壅塞
+ *   全繞一次   真實板況下（含拆線重試）一次能繞成幾條
  *
- * 一定要從「git 上的原始資料」跑：這支會把結果寫回 pcb-refboards.js，
- * 對著已經重建過的資料再跑一次，等於拿上一輪的走線端點當輸入，一代一代漂移，
- * 也就不再能從原始檔重現。重跑前先 `git checkout pcb-refboards.js`。
- *
- * 用法：
- *   node tools/refboard-rebuild.js            # 全部 8 片，寫回 pcb-refboards.js
- *   node tools/refboard-rebuild.js --dry      # 只跑不寫檔（看數字用）
- *   node tools/refboard-rebuild.js rp2040-pico30 librevna
- *
- * 誠實界定：這不是「照原廠重畫」。公版資料本來就是教學重建版，沒有完整 netlist
- * （pad 的 net 只能從示意走線的端點回推，多數 pad 仍然沒有 net）。所以繞不完的
- * net 會留著飛線，重建後的板子是「幾何上乾淨、電性上仍是近似」。
+ * 用法：node tools/refboard-route-audit.js
  */
 'use strict';
 
@@ -66,10 +56,22 @@ const CL = rules.clearance;
 //   單獨可繞   = 把這條線放到「只有 pad、沒有其他走線」的板上重繞一次還是失敗
 //                → 失敗＝幾何問題（pad 擠死、板邊、禁佈區），不是壅塞
 //   壅塞       = 單獨可繞、但在真實板況下繞不過 → 空間被別的線佔走
-const layersOf = () => app.routableLayers();
-const OPTS = () => ({
-  layers: layersOf(), layer: app.state.traceLayer || 'F.Cu',
-  width: 0.15, clearance: CL, viaOd: 0.7, viaDrill: 0.3, grid: 0.25,
+// 線寬與淨空一定要跟 refboard-fill 走同一份政策（tools/refboard-policy.js）。
+// 用 0.15mm ＋ 預設淨空去量會偏樂觀：POWER class 的下限是 0.3~0.5mm，
+// 量出來「繞得過」的線，補繞時用真正的線寬根本塞不進去。
+const policy = require('./refboard-policy.js').makePolicy(window, CL);
+const netsOn = st => {
+  const all = new Set();
+  (st.components || []).forEach(c => (c.pads || []).forEach(pd => { if (pd.net) all.add(pd.net); }));
+  (st.traces || []).forEach(t => { if (t.net) all.add(t.net); });
+  return all;
+};
+const OPTS = (st, net) => ({
+  layers: (st.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id),
+  layer: 'F.Cu',
+  width: policy.widthOf(net),
+  clearance: policy.clearanceFor([net], netsOn(st)),
+  viaOd: Math.max(0.6, policy.widthOf(net) + 0.3), viaDrill: 0.3, grid: 0.1,
   order: 'short', ripup: true, passes: 3, budgetMs: 12000
 });
 
@@ -86,13 +88,15 @@ for (const b of (window.PCB_REFBOARDS || [])) {
   let soloOk = 0, soloFail = 0;
   const failNets = [];
   for (const l of lines) {
-    const r = window.RouteAll.run(bare, padAbs, [l], Object.assign(OPTS(), { ripup: false, passes: 1, budgetMs: 3000 }));
+    const r = window.RouteAll.run(bare, padAbs, [l], Object.assign(OPTS(st, l.net), { ripup: false, passes: 1, budgetMs: 3000 }));
     if (r.routed.length) soloOk++; else { soloFail++; failNets.push(l.net || '(no net)'); }
   }
 
   // 真實板況：一次全部丟進去（含拆線重試）
   const work = Object.assign({}, st, { traces: (st.traces || []).slice(), vias: (st.vias || []).slice() });
-  const all = window.RouteAll.run(work, padAbs, lines, OPTS());
+  // 一次全部丟進去時，線寬取這批裡最寬的那條（同一批只能有一個 width）
+  const wideNet = lines.map(l => l.net).sort((a, b) => policy.widthOf(b) - policy.widthOf(a))[0];
+  const all = window.RouteAll.run(work, padAbs, lines, OPTS(st, wideNet));
 
   rows.push({
     id: b.id, pads: st.components.reduce((n, c) => n + (c.pads || []).length, 0),
