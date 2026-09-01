@@ -1861,5 +1861,54 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   app.state = savedState;
 }
 
+// 40) 縮放與解析度：放大要真的看得更清楚
+// 站主回報「放大有極限、而且越放大越糊」。兩個原因：
+//   1. 上限寫死 3（30px/mm）——BGA 球距 0.4mm 只有 12px，那還沒開始放大。
+//   2. canvas 的 backing store 沒有乘 devicePixelRatio，在 1.25×／2× 螢幕上
+//      等於用一半解析度畫，放大也不會變清楚（糊的是畫布不是幾何）。
+{
+  const savedState = app.state;
+  const savedDpr = app.dpr;
+
+  // 上限：要能放到看得見 0.4mm 球距的程度（>= 100px/mm）
+  app.state.zoom = 1; app.state.panX = 0; app.state.panY = 0;
+  for (let i = 0; i < 40; i++) app.zoomIn();
+  ok(app.state.zoom * 10 >= 100, '40 放大上限要 >= 100px/mm（實得 ' + (app.state.zoom * 10).toFixed(0) + 'px/mm）');
+  eq(app.state.zoom, app.ZOOM_MAX, '40 連續放大應停在 ZOOM_MAX');
+  for (let i = 0; i < 60; i++) app.zoomOut();
+  eq(app.state.zoom, app.ZOOM_MIN, '40 連續縮小應停在 ZOOM_MIN');
+
+  // 以某一點為錨縮放：那一點底下的板面座標不可以跑掉
+  app.state.zoom = 1; app.state.panX = 0; app.state.panY = 0;
+  const sx = 200, sy = 150;
+  const mmOf = () => ({
+    x: (sx - app.state.panX - app.viewW / 2) / (10 * app.state.zoom),
+    y: (sy - app.state.panY - app.viewH / 2) / (10 * app.state.zoom)
+  });
+  const before = mmOf();
+  app.zoomAt(4, sx, sy);
+  const after = mmOf();
+  ok(Math.hypot(after.x - before.x, after.y - before.y) < 1e-6,
+    '40 以游標為錨縮放時，游標下的板面座標不可位移（差 ' +
+    Math.hypot(after.x - before.x, after.y - before.y).toFixed(4) + 'mm）');
+
+  // backing store 要跟著 devicePixelRatio；繪圖用的邏輯尺寸不受影響
+  const fakeCanvas = { width: 0, height: 0, style: {}, parentElement: { clientWidth: 800, clientHeight: 600 } };
+  const realCanvas = app.canvas, realRender = app.render;
+  app.canvas = fakeCanvas; app.render = () => {};
+  global.window.devicePixelRatio = 2;
+  app.dpr = null;
+  app.resizeCanvas();
+  eq(fakeCanvas.width, 1600, '40 backing store 寬要 = CSS 寬 × dpr');
+  eq(fakeCanvas.height, 1200, '40 backing store 高要 = CSS 高 × dpr');
+  eq(app.viewW, 800, '40 繪圖用的邏輯寬仍是 CSS px');
+  eq(fakeCanvas.style.width, undefined, '40 不可以寫 inline 的 CSS 尺寸（#pcbCanvas 是 100%，寫死會把畫布凍在 1px）');
+  global.window.devicePixelRatio = 1;
+  app.dpr = null; app.resizeCanvas();
+  eq(fakeCanvas.width, 800, '40 dpr 回到 1 時 backing store 要跟著回來');
+  app.canvas = realCanvas; app.render = realRender; app.dpr = savedDpr;
+  app.state = savedState;
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

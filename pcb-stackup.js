@@ -147,7 +147,7 @@
       ctx.setLineDash([2, 2]);
       ctx.lineWidth = 1.2;
       for (const b of st.backdrills) {
-        const sx = app.canvas.width / 2 + b.x * scale, sy = app.canvas.height / 2 + b.y * scale;
+        const sx = app.viewW / 2 + b.x * scale, sy = app.viewH / 2 + b.y * scale;
         ctx.strokeStyle = b.side === 'T' ? '#e67e22' : '#9b59b6';
         ctx.beginPath();
         ctx.arc(sx, sy, Math.max(3, b.d / 2 * scale), 0, Math.PI * 2);

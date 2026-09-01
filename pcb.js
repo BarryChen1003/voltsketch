@@ -186,12 +186,24 @@ const pcbApp = {
     this.populateTraceLayerSel();
   },
 
+  // 畫布的「邏輯尺寸」（CSS px）。所有繪圖座標都用這一組；
+  // 真正的 backing store 是它乘上 devicePixelRatio——那是放大不糊的前提。
+  get viewW() { return this.canvas ? this.canvas.width / (this.dpr || 1) : 0; },
+  get viewH() { return this.canvas ? this.canvas.height / (this.dpr || 1) : 0; },
+
   resizeCanvas() {
     const container = this.canvas.parentElement;
     const w = Math.max(1, container.clientWidth), h = Math.max(1, container.clientHeight);
-    if (this.canvas.width === w && this.canvas.height === h) return;   // 無變化不重畫
-    this.canvas.width = w;
-    this.canvas.height = h;
+    // backing store 用裝置像素。少了這一步，在 1.25×／2× 的螢幕上等於用一半解析度畫：
+    // 線與小字永遠糊，而且**放大也不會變清楚**——糊的是畫布本身，不是幾何。
+    const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
+    if (this.viewW === w && this.viewH === h && this.dpr === dpr) return;   // 無變化不重畫
+    this.dpr = dpr;
+    this.canvas.width = Math.round(w * dpr);
+    this.canvas.height = Math.round(h * dpr);
+    // **不要**寫 inline 的 style.width/height：`#pcbCanvas` 的 CSS 是 width/height:100%，
+    // 寫死 px 會把尺寸凍在當下那一刻，而容器又跟著畫布走——實測會卡在 1px 寬。
+    // CSS 尺寸交給 CSS，這裡只負責 backing store。
     this.render();
   },
 
@@ -293,8 +305,8 @@ const pcbApp = {
       const [dx, dy] = dir[key];
       let hold = null, rep = null;
       const step = k => {
-        this.state.panX += dx * this.canvas.width * k;
-        this.state.panY += dy * this.canvas.height * k;
+        this.state.panX += dx * this.viewW * k;
+        this.state.panY += dy * this.viewH * k;
         this.render();
       };
       const stop = () => { clearTimeout(hold); clearInterval(rep); hold = rep = null; };
@@ -320,12 +332,16 @@ const pcbApp = {
   },
 
   render() {
-    const { ctx, canvas, state } = this;
+    const { ctx, state } = this;
     const { zoom, panX, panY, boardWidth, boardHeight } = state;
+
+    // 每次重畫重設 transform：backing store 是裝置像素、繪圖座標是 CSS px。
+    // 少了這行，dpr 一變（拖到另一台螢幕、改系統縮放）畫面就整個位移。
+    if (ctx.setTransform) ctx.setTransform(this.dpr || 1, 0, 0, this.dpr || 1, 0, 0);
 
     // Clear canvas（背景色可由「整體配色」面板設定）
     ctx.fillStyle = (state.palette && state.palette.bg) || '#1a1a2e';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, this.viewW, this.viewH);
 
     // Calculate scale (1mm = 10px at 100% zoom)
     const scale = 10 * zoom;
@@ -392,7 +408,7 @@ const pcbApp = {
   // ---- 禁止區（keepout）：斜線填充多邊形 ----
   drawKeepouts(scale) {
     const { ctx, state } = this;
-    const toS = p => [this.canvas.width / 2 + p[0] * scale, this.canvas.height / 2 + p[1] * scale];
+    const toS = p => [this.viewW / 2 + p[0] * scale, this.viewH / 2 + p[1] * scale];
     const drawPoly = (pts, closed) => {
       ctx.beginPath();
       pts.forEach((p, i) => { const [sx, sy] = toS(p); i ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy); });
@@ -428,7 +444,7 @@ const pcbApp = {
     const { ctx, state } = this;
     (state.texts || []).forEach(t => {
       if (!state.visibleLayers.includes(t.layer || 'F.SilkS')) return;
-      const sx = this.canvas.width / 2 + t.x * scale, sy = this.canvas.height / 2 + t.y * scale;
+      const sx = this.viewW / 2 + t.x * scale, sy = this.viewH / 2 + t.y * scale;
       ctx.save();
       ctx.font = `${Math.max(8, (t.size || 1.5) * scale)}px sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -441,7 +457,7 @@ const pcbApp = {
   // ---- 尺寸標註：兩端刻度線＋mm 標籤 ----
   drawDimLine(x1, y1, x2, y2, scale, preview) {
     const { ctx } = this;
-    const toX = v => this.canvas.width / 2 + v * scale, toY = v => this.canvas.height / 2 + v * scale;
+    const toX = v => this.viewW / 2 + v * scale, toY = v => this.viewH / 2 + v * scale;
     const len = Math.hypot(x2 - x1, y2 - y1);
     if (len < 1e-6) return;
     const ux = (x2 - x1) / len, uy = (y2 - y1) / len, px = -uy, py = ux;
@@ -476,7 +492,7 @@ const pcbApp = {
     const bs = this.state.boxSel;
     if (!bs) return;
     const { ctx } = this;
-    const toX = v => this.canvas.width / 2 + v * scale, toY = v => this.canvas.height / 2 + v * scale;
+    const toX = v => this.viewW / 2 + v * scale, toY = v => this.viewH / 2 + v * scale;
     const x = toX(Math.min(bs.x1, bs.x2)), y = toY(Math.min(bs.y1, bs.y2));
     const w = Math.abs(bs.x2 - bs.x1) * scale, h = Math.abs(bs.y2 - bs.y1) * scale;
     ctx.save();
@@ -493,8 +509,8 @@ const pcbApp = {
     const { ctx, state } = this;
     const { boardWidth, boardHeight } = state;
 
-    const x = (this.canvas.width / 2 - (boardWidth * scale) / 2);
-    const y = (this.canvas.height / 2 - (boardHeight * scale) / 2);
+    const x = (this.viewW / 2 - (boardWidth * scale) / 2);
+    const y = (this.viewH / 2 - (boardHeight * scale) / 2);
     const w = boardWidth * scale;
     const h = boardHeight * scale;
 
@@ -513,8 +529,8 @@ const pcbApp = {
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       state.edgeSegs.forEach(s => {
-        ctx.moveTo(this.canvas.width / 2 + s.x1 * scale, this.canvas.height / 2 + s.y1 * scale);
-        ctx.lineTo(this.canvas.width / 2 + s.x2 * scale, this.canvas.height / 2 + s.y2 * scale);
+        ctx.moveTo(this.viewW / 2 + s.x1 * scale, this.viewH / 2 + s.y1 * scale);
+        ctx.lineTo(this.viewW / 2 + s.x2 * scale, this.viewH / 2 + s.y2 * scale);
       });
       ctx.stroke();
     }
@@ -535,7 +551,7 @@ const pcbApp = {
     const tds = this.state.teardrops;
     if (!tds || !tds.length) return;
     const { ctx } = this;
-    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const X = x => this.viewW / 2 + x * scale, Y = y => this.viewH / 2 + y * scale;
     const vis = this.state.visibleLayers || [];
     ctx.save();
     for (const t of tds) {
@@ -563,7 +579,7 @@ const pcbApp = {
       ctx.fillStyle = ldef ? ldef.color : '#16a085';
       ctx.beginPath();
       z.pts.forEach((p, i) => {
-        const sx = this.canvas.width / 2 + p[0] * scale, sy = this.canvas.height / 2 + p[1] * scale;
+        const sx = this.viewW / 2 + p[0] * scale, sy = this.viewH / 2 + p[1] * scale;
         i ? ctx.lineTo(sx, sy) : ctx.moveTo(sx, sy);
       });
       ctx.closePath();
@@ -595,7 +611,7 @@ const pcbApp = {
       if (pad.side === 'B' && !bVis) return;
       if (pad.side === '*' && !fVis && !bVis) return;
       const p = this.padAbs(comp, pad);
-      const sx = this.canvas.width / 2 + p.x * scale, sy = this.canvas.height / 2 + p.y * scale;
+      const sx = this.viewW / 2 + p.x * scale, sy = this.viewH / 2 + p.y * scale;
       const w = Math.max(1, pad.w * scale), h = Math.max(1, pad.h * scale);
       ctx.save();
       ctx.translate(sx, sy);
@@ -635,7 +651,9 @@ const pcbApp = {
     ctx.translate(sx, sy);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const fs = Math.max(6, Math.min(11, box * 0.62));
+    // 字大小跟著 pad 的實際大小走。舊版鎖 11px 上限：放大之後 pad 有 300px 寬、
+    // 號碼還是 11px，看起來就是「放大了但沒有更清楚」。上限只留一個防呆值。
+    const fs = Math.max(6, Math.min(160, box * 0.5));
     ctx.font = `600 ${fs}px ui-monospace,SFMono-Regular,Menlo,monospace`;
     ctx.lineWidth = Math.max(2, fs * 0.28);
     ctx.strokeStyle = 'rgba(10,14,32,.85)';    // 描邊：任何 pad 顏色上都讀得到
@@ -646,7 +664,7 @@ const pcbApp = {
     // 腳名／網路：只在夠大時顯示，避免蓋住旁邊的 pad
     const sub = this.state.showPinNames ? (pad.name || pad.net || '') : '';
     if (sub && box >= 16) {
-      const f2 = Math.max(6, Math.min(9, box * 0.34));
+      const f2 = Math.max(6, Math.min(120, box * 0.3));
       ctx.font = `500 ${f2}px ui-sans-serif,system-ui,sans-serif`;
       ctx.lineWidth = Math.max(2, f2 * 0.3);
       ctx.strokeText(sub, 0, h / 2 + f2 * 0.9);
@@ -660,8 +678,8 @@ const pcbApp = {
     const { ctx, state } = this;
     const { boardWidth, boardHeight } = state;
 
-    const startX = (this.canvas.width / 2 - (boardWidth * scale) / 2);
-    const startY = (this.canvas.height / 2 - (boardHeight * scale) / 2);
+    const startX = (this.viewW / 2 - (boardWidth * scale) / 2);
+    const startY = (this.viewH / 2 - (boardHeight * scale) / 2);
     const endX = startX + boardWidth * scale;
     const endY = startY + boardHeight * scale;
 
@@ -703,8 +721,8 @@ const pcbApp = {
   // 元件實際尺寸（mm）；舊資料/手放元件退回 4×3mm
   compRect(comp, scale) {
     const w = (comp.w || 4) * scale, h = (comp.h || 3) * scale;
-    const x = this.canvas.width / 2 + comp.x * scale - w / 2;
-    const y = this.canvas.height / 2 + comp.y * scale - h / 2;
+    const x = this.viewW / 2 + comp.x * scale - w / 2;
+    const y = this.viewH / 2 + comp.y * scale - h / 2;
     return { x, y, w, h };
   },
 
@@ -747,10 +765,12 @@ const pcbApp = {
         this.drawPads(comp, scale);
         const label = comp.ref || comp.label || '';
         if (label && (sel || r.w >= 18)) {
+          // refdes 也跟著元件大小長。固定 9px 在放大之後會變成畫面上最小的東西
+          const fs = Math.max(9, Math.min(72, Math.min(r.w, r.h) * 0.35));
           ctx.fillStyle = sel ? '#f39c12' : '#bdc3c7';
-          ctx.font = '9px monospace';
+          ctx.font = `${fs}px monospace`;
           ctx.textAlign = 'center';
-          ctx.fillText(label, r.x + r.w / 2, r.y - 3);
+          ctx.fillText(label, r.x + r.w / 2, r.y - fs * 0.35);
         }
         return;
       }
@@ -784,7 +804,7 @@ const pcbApp = {
   // 走線描邊：路徑只有 PcbInteract.pathOf 一份定義。
   // 以前高亮各自用兩端點畫直線，圓弧走線一選就偏——弧越大偏越多。
   tracePath(ctx, t, scale) {
-    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const X = x => this.viewW / 2 + x * scale, Y = y => this.viewH / 2 + y * scale;
     const p = window.PcbInteract ? PcbInteract.pathOf(t)
       : { kind: 'line', x1: t.x1, y1: t.y1, x2: t.x2, y2: t.y2 };
     if (p.kind === 'arc') ctx.arc(X(p.cx), Y(p.cy), p.r * scale, p.a0, p.a1, false);
@@ -811,15 +831,58 @@ const pcbApp = {
         // 而 PcbArc 的角度是用 atan2(y−cy, x−cx) 算的（同一個座標系），
         // 所以 a0/a1 可以直接餵進去，anticlockwise 一律 false（a1 一定 > a0）。
         ctx.arc(
-          this.canvas.width / 2 + a.cx * scale,
-          this.canvas.height / 2 + a.cy * scale,
+          this.viewW / 2 + a.cx * scale,
+          this.viewH / 2 + a.cy * scale,
           a.r * scale, a.a0, a.a1, false);
       } else {
-        ctx.moveTo(this.canvas.width / 2 + trace.x1 * scale, this.canvas.height / 2 + trace.y1 * scale);
-        ctx.lineTo(this.canvas.width / 2 + trace.x2 * scale, this.canvas.height / 2 + trace.y2 * scale);
+        ctx.moveTo(this.viewW / 2 + trace.x1 * scale, this.viewH / 2 + trace.y1 * scale);
+        ctx.lineTo(this.viewW / 2 + trace.x2 * scale, this.viewH / 2 + trace.y2 * scale);
       }
       ctx.stroke();
     });
+    // 放大到看得清楚時，直接把 net 名標在走線上（Allegro／Altium 都是這樣）。
+    // 門檻用**畫面上的線寬**判斷，不是 zoom 值：0.1mm 的細線與 0.5mm 的電源線
+    // 在同一個 zoom 下該不該標字，本來就不一樣。
+    // 同一條 net 由很多段組成，每段都標會變成一排重複的字。
+    // 記下已經標過的位置，同一個 net 太近就不再標一次。
+    const labelled = new Map();
+    state.traces.forEach(trace => {
+      const lid = trace.layer || 'F.Cu';
+      if (!state.visibleLayers.includes(lid)) return;
+      const net = String(trace.net || '');
+      if (!net) return;
+      const wpx = (trace.width || 0.3) * scale;
+      if (wpx < 9) return;                                   // 線太細，字會蓋掉線本身
+      const x1 = this.viewW / 2 + trace.x1 * scale, y1 = this.viewH / 2 + trace.y1 * scale;
+      const x2 = this.viewW / 2 + trace.x2 * scale, y2 = this.viewH / 2 + trace.y2 * scale;
+      const len = Math.hypot(x2 - x1, y2 - y1);
+      const fs = Math.min(wpx * 0.75, 28);
+      if (len < net.length * fs * 0.62) return;              // 這一段放不下整個名字就不標
+      // 畫面外的不畫（放大之後大多數線都在畫面外，這一步省掉的成本最多）
+      if (Math.max(x1, x2) < 0 || Math.min(x1, x2) > this.viewW ||
+          Math.max(y1, y2) < 0 || Math.min(y1, y2) > this.viewH) return;
+      const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      const done = labelled.get(net);
+      if (done && done.some(p => Math.hypot(p[0] - mx, p[1] - my) < 260)) return;
+      (labelled.get(net) || labelled.set(net, []).get(net)).push([mx, my]);
+      let ang = Math.atan2(y2 - y1, x2 - x1);
+      if (ang > Math.PI / 2 || ang < -Math.PI / 2) ang += Math.PI;   // 字不要上下顛倒
+      ctx.save();
+      ctx.translate(mx, my);
+      ctx.rotate(ang);
+      ctx.font = `500 ${fs}px ui-monospace,SFMono-Regular,Menlo,monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineWidth = Math.max(2, fs * 0.28);
+      ctx.strokeStyle = 'rgba(10,14,32,.85)';
+      ctx.lineJoin = 'round';
+      ctx.globalAlpha = 1;
+      ctx.strokeText(net, 0, 0);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillText(net, 0, 0);
+      ctx.restore();
+    });
+
     // 選取中的走線：橘色外框高亮（Delete 可刪）
     const sel = state.selectedTrace;
     if (sel && state.traces.includes(sel)) {
@@ -838,8 +901,8 @@ const pcbApp = {
     const anyCu = state.visibleLayers.some(id => (state.layerStack || []).find(l => l.id === id && l.kind === 'copper'));
     if (!anyCu) return;
     state.vias.forEach(v => {
-      const x = this.canvas.width / 2 + v.x * scale;
-      const y = this.canvas.height / 2 + v.y * scale;
+      const x = this.viewW / 2 + v.x * scale;
+      const y = this.viewH / 2 + v.y * scale;
       const ro = Math.max(2, (v.od || 0.6) / 2 * scale), ri = Math.max(1, (v.id || 0.3) / 2 * scale);
       ctx.beginPath(); ctx.arc(x, y, ro, 0, Math.PI * 2); ctx.fillStyle = '#b8c2cc'; ctx.fill();
       // 孔＝看穿板子，顏色要跟背景一致（寫死舊色的話換主題後每個 via 都有深藍點）
@@ -854,23 +917,50 @@ const pcbApp = {
     });
   },
 
-  zoomIn() {
-    this.state.zoom = Math.min(3, this.state.zoom * 1.2);
-    document.querySelector('#zoomLevel').textContent = `${Math.round(this.state.zoom * 100)}%`;
+  // 縮放範圍。1.0 ＝ 10px/mm；上限 40 ＝ 400px/mm（0603 的 pad 會有 300px 寬，
+  // 看得到單一 pad 的圓角與絲印細節）。舊版上限是 3（30px/mm），BGA 球距 0.4mm
+  // 只有 12px——那不是「放大到極限」，是根本還沒開始放大。
+  ZOOM_MIN: 0.15,
+  ZOOM_MAX: 40,
+
+  showZoom() {
+    const el = document.querySelector('#zoomLevel');
+    if (!el) return;
+    const z = this.state.zoom;
+    // 放到 4000% 時 "4000%" 比 "40x" 難讀；超過 10 倍改用倍率
+    el.textContent = z >= 10 ? `${z.toFixed(0)}x` : `${Math.round(z * 100)}%`;
+  },
+
+  /**
+   * 以畫面上某一點為錨縮放：那個點底下的板面座標在縮放前後不動。
+   * 沒有錨點的話（滾輪縮放）游標下的東西會一直跑掉，放大到 10 倍以上根本找不到目標。
+   * sx/sy 是畫布邏輯座標（CSS px）；不給就用畫面中心。
+   */
+  zoomAt(factor, sx, sy) {
+    const z0 = this.state.zoom;
+    const z1 = Math.max(this.ZOOM_MIN, Math.min(this.ZOOM_MAX, z0 * factor));
+    if (z1 === z0) return;
+    const ax = (sx == null) ? this.viewW / 2 : sx;
+    const ay = (sy == null) ? this.viewH / 2 : sy;
+    // 錨點的板面座標（mm）在縮放前後必須相同：
+    //   screen = pan + view/2 + mm * 10z   →   mm = (screen - pan - view/2) / (10z)
+    const mmx = (ax - this.state.panX - this.viewW / 2) / (10 * z0);
+    const mmy = (ay - this.state.panY - this.viewH / 2) / (10 * z0);
+    this.state.zoom = z1;
+    this.state.panX = ax - this.viewW / 2 - mmx * 10 * z1;
+    this.state.panY = ay - this.viewH / 2 - mmy * 10 * z1;
+    this.showZoom();
     this.render();
   },
 
-  zoomOut() {
-    this.state.zoom = Math.max(0.3, this.state.zoom / 1.2);
-    document.querySelector('#zoomLevel').textContent = `${Math.round(this.state.zoom * 100)}%`;
-    this.render();
-  },
+  zoomIn() { this.zoomAt(1.2); },
+  zoomOut() { this.zoomAt(1 / 1.2); },
 
   zoomFit() {
     this.state.zoom = 1;
     this.state.panX = 0;
     this.state.panY = 0;
-    document.querySelector('#zoomLevel').textContent = '100%';
+    this.showZoom();
     this.render();
   },
 
@@ -1702,7 +1792,7 @@ const pcbApp = {
     const loops = this.state.emiLoops;
     if (!loops) return;
     const { ctx } = this;
-    const toScreen = c => ({ x: this.canvas.width / 2 + c.x * scale, y: this.canvas.height / 2 + c.y * scale });
+    const toScreen = c => ({ x: this.viewW / 2 + c.x * scale, y: this.viewH / 2 + c.y * scale });
     const drawLoop = (pts, color) => {
       if (pts.length < 2) return;
       ctx.save();
@@ -1733,8 +1823,8 @@ const pcbApp = {
   // 連帶 compHit 命中不到元件（零件拖不動）。
   getMousePos(e) {
     const rect = this.canvas.getBoundingClientRect();
-    const sx = rect.width ? this.canvas.width / rect.width : 1;
-    const sy = rect.height ? this.canvas.height / rect.height : 1;
+    const sx = rect.width ? this.viewW / rect.width : 1;
+    const sy = rect.height ? this.viewH / rect.height : 1;
     return {
       x: (e.clientX - rect.left) * sx,
       y: (e.clientY - rect.top) * sy
@@ -1745,8 +1835,8 @@ const pcbApp = {
     const pos = this.getMousePos(e);
     const scale = 10 * this.state.zoom;
     return {
-      x: (pos.x - this.state.panX - this.canvas.width / 2) / scale,
-      y: (pos.y - this.state.panY - this.canvas.height / 2) / scale
+      x: (pos.x - this.state.panX - this.viewW / 2) / scale,
+      y: (pos.y - this.state.panY - this.viewH / 2) / scale
     };
   },
 
@@ -2793,15 +2883,15 @@ const pcbApp = {
     const gs = this.state.guides;
     if (!gs || !gs.length) return;
     const { ctx } = this;
-    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const X = x => this.viewW / 2 + x * scale, Y = y => this.viewH / 2 + y * scale;
     ctx.save();
     ctx.strokeStyle = '#f59e0b';
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 4]);
     for (const g of gs) {
       ctx.beginPath();
-      if (g.axis === 'x') { ctx.moveTo(X(g.at), 0); ctx.lineTo(X(g.at), this.canvas.height); }
-      else { ctx.moveTo(0, Y(g.at)); ctx.lineTo(this.canvas.width, Y(g.at)); }
+      if (g.axis === 'x') { ctx.moveTo(X(g.at), 0); ctx.lineTo(X(g.at), this.viewH); }
+      else { ctx.moveTo(0, Y(g.at)); ctx.lineTo(this.viewW, Y(g.at)); }
       ctx.stroke();
     }
     ctx.restore();
@@ -2883,7 +2973,7 @@ const pcbApp = {
     const inSet = n => set.indexOf(n || '') >= 0;
     const net = set[0];
     const { ctx } = this;
-    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const X = x => this.viewW / 2 + x * scale, Y = y => this.viewH / 2 + y * scale;
     ctx.save();
     ctx.strokeStyle = "rgba(241,196,15,0.85)";
     ctx.lineCap = "round";
@@ -2907,7 +2997,7 @@ const pcbApp = {
     const td = this.state.traceDraw;
     if (!td) return;
     const { ctx } = this;
-    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const X = x => this.viewW / 2 + x * scale, Y = y => this.viewH / 2 + y * scale;
     const len = Math.hypot(td.x2 - td.x1, td.y2 - td.y1);
     let over = false, label = `${len.toFixed(2)}mm`;
     if (window.NetRules && td.net) {
@@ -3040,7 +3130,7 @@ const pcbApp = {
     const marks = this.state.drcMarks || [];
     if (!marks.length) return;
     const { ctx } = this;
-    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const X = x => this.viewW / 2 + x * scale, Y = y => this.viewH / 2 + y * scale;
     // 半徑不跟著縮放無限縮小：縮到看不見的標記等於沒標
     const r = Math.max(6, Math.min(18, 0.9 * scale));
     ctx.save();
@@ -3066,7 +3156,7 @@ const pcbApp = {
     const { ctx, state } = this;
     const fVis = state.visibleLayers.includes('F.SilkS'), bVis = state.visibleLayers.includes('B.SilkS');
     if (!fVis && !bVis) return;
-    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const X = x => this.viewW / 2 + x * scale, Y = y => this.viewH / 2 + y * scale;
     const pal = state.palette || {};
     const colF = pal.silkF || '#f1c40f', colB = pal.silkB || '#b7950b';
     const visOk = side => side === 'B' ? bVis : fVis;
@@ -3123,7 +3213,7 @@ const pcbApp = {
     const zs = (state.userZones || []).filter(z => state.visibleLayers.includes(z.layer));
     const zd = state.zoneDraw;
     if (!zs.length && !zd) return;
-    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const X = x => this.viewW / 2 + x * scale, Y = y => this.viewH / 2 + y * scale;
     const layerOf = id => (state.layerStack || []).find(l => l.id === id);
     // 動態填充模式（Status 面板）：smooth=實算避讓+thermal、rough=純半透明、disabled=只畫外框
     const fillMode = localStorage.getItem('pcb-dyn-fill') || 'smooth';
@@ -3160,7 +3250,7 @@ const pcbApp = {
       }
       if (fillMode !== 'disabled') {
         const off = document.createElement('canvas');
-        off.width = this.canvas.width; off.height = this.canvas.height;
+        off.width = this.viewW; off.height = this.viewH;
         const o = off.getContext('2d');
         o.fillStyle = col;
         o.globalAlpha = 0.4;
@@ -3254,7 +3344,7 @@ const pcbApp = {
     if (!this.state.showRatsnest || !window.Ratsnest) return;
     if (!this.state.ratsnest) this.state.ratsnest = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
     const { ctx } = this;
-    const X = x => this.canvas.width / 2 + x * scale, Y = y => this.canvas.height / 2 + y * scale;
+    const X = x => this.viewW / 2 + x * scale, Y = y => this.viewH / 2 + y * scale;
     ctx.save();
     ctx.strokeStyle = '#f1c40f';
     ctx.globalAlpha = 0.6;
@@ -4511,20 +4601,20 @@ const pcbApp = {
       if (this.state.tool === 'pad') {
         const pos = this.getMousePos(e);
         const scale = 10 * this.state.zoom;
-        const x = (pos.x - this.canvas.width / 2 - this.state.panX) / scale;
-        const y = (pos.y - this.canvas.height / 2 - this.state.panY) / scale;
+        const x = (pos.x - this.viewW / 2 - this.state.panX) / scale;
+        const y = (pos.y - this.viewH / 2 - this.state.panY) / scale;
         this.addComponent('pad', x, y);
       }
     });
 
     this.canvas?.addEventListener('wheel', (e) => {
       e.preventDefault();
-      if (e.deltaY < 0) {
-        this.zoomIn();
-      } else {
-        this.zoomOut();
-      }
-    });
+      // 以游標為錨：放大時盯著的那顆 pad 會留在原地，而不是滑出畫面
+      const p = this.getMousePos(e);
+      // 觸控板的 deltaY 是連續值，用它算倍率才不會一格一格跳
+      const step = Math.min(0.25, Math.abs(e.deltaY) / 500) || 0.12;
+      this.zoomAt(e.deltaY < 0 ? 1 + step : 1 / (1 + step), p.x, p.y);
+    }, { passive: false });
 
     // Layer visibility（委派，圖層清單為動態產生）
     const layerList = document.getElementById('layerList');
