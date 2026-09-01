@@ -147,6 +147,66 @@ const ST = {
     eq((mx.text.match(/TYPE=COMPONENT/g) || []).length, 1, '8.5 matrix 只列一筆');
   }
 
-  console.log(`\nodb-cmp.test: ${pass} passed, ${fail} failed`);
+  // ---- 阻焊 / 鋼網 / 絲印 / subnet（2026-08-31 補）----
+// 這四樣以前完全沒有，板廠只能回頭去看 Gerber。新加的東西最容易出的錯是
+// 「matrix 列了層但沒有檔」與「規則跟 Gerber 包不一致」——兩個都是安靜的錯：
+// CAM 打得開，只是一面空的、或開窗規則兩包不同。
+{
+  const padAbs2 = (c, p2) => ({ x: c.x + (p2.x || 0), y: c.y + (p2.y || 0) });
+  const st2 = {
+    boardWidth: 40, boardHeight: 30,
+    layerStack: [{ id: 'F.Cu', kind: 'copper' }, { id: 'B.Cu', kind: 'copper' }],
+    components: [{
+      ref: 'U1', part: 'IC', x: 0, y: 0, w: 4, h: 4, rot: 0, side: 'top',
+      pads: [
+        { num: '1', x: -1.5, y: 0, w: 0.6, h: 0.9, side: 'F', net: 'A' },
+        { num: '2', x: 1.5, y: 0, w: 0.6, h: 0.9, side: 'F', net: 'B' },
+        { num: '3', x: 0, y: 1.8, w: 1, h: 1, side: '*', drill: 0.5, net: 'A' },
+        { num: '4', x: 0, y: -1.8, w: 1, h: 1, side: 'F', paste: false, net: 'B' }
+      ],
+      silk: [{ kind: 'line', x1: -2, y1: -2, x2: 2, y2: -2, w: 0.12, side: 'F' }],
+      silkTexts: [{ text: 'U1', x: 0, y: -3, size: 1, side: 'F' }]
+    }],
+    traces: [], vias: [], userZones: [], zoneFills: [], teardrops: [], silkGr: []
+  };
+  const r2 = mod.build(st2, padAbs2, 'x');
+  const has = n => r2.files.some(f => f.name.endsWith(n));
+  const file = n => (r2.files.find(f => f.name.endsWith(n)) || {}).text || '';
+  const mx = file('/matrix/matrix');
+
+  ok(has('/layers/sm_top/features'), '6.1 有頂面阻焊');
+  ok(has('/layers/sp_top/features'), '6.2 有頂面鋼網');
+  ok(has('/layers/ss_top/features'), '6.3 有頂面絲印');
+  ok(/TYPE=SOLDER_MASK/.test(mx) && /TYPE=SOLDER_PASTE/.test(mx) && /TYPE=SILK_SCREEN/.test(mx),
+     '6.4 matrix 要列出三種型別（不列＝CAM 看不到）');
+
+  // 每個 matrix 列的層都要有檔：列了沒檔＝CAM 顯示空層，跟「這面沒東西」分不出來
+  const named = [...mx.matchAll(/NAME=(\S+)/g)].map(x => x[1].toLowerCase())
+    .filter(n => n !== 'pcb' && !/^comp_/.test(n));
+  const missing = named.filter(n => !has('/layers/' + n + '/features'));
+  eq(missing, [], '6.5 matrix 列的每一層都要有 features 檔');
+
+  // ROW 不可以重號：重號的症狀是 CAM 端層序錯亂——打得開、層是錯的
+  const rows = [...mx.matchAll(/ROW=(\d+)/g)].map(x => +x[1]);
+  eq(rows.length, new Set(rows).size, '6.6 ROW 不重號');
+
+  // 開窗規則要跟 Gerber 包一致：阻焊＝所有銅 pad（含穿孔）；鋼網＝只有 SMD 且未標 paste:false
+  eq((file('/layers/sm_top/features').match(/^P /gm) || []).length, 4, '6.7 阻焊開窗＝該面 4 顆銅 pad');
+  eq((file('/layers/sp_top/features').match(/^P /gm) || []).length, 2, '6.8 鋼網只有 SMD 且排除 paste:false');
+
+  // 絲印文字沒輸出要講出來（ODB++ 的字型是另一套資料結構，半套寫出去會是亂碼）
+  ok(r2.warnings.some(w => w.k === 'odb_w_silktext'), '6.9 有絲印文字時要警告沒輸出');
+
+  // subnet：CAM 網表比對的依據。只有 NET 名稱的話，對方不知道它接到哪裡
+  const eda2 = file('/eda/data');
+  const snt = (eda2.match(/^SNT TOP \d+ \d+$/gm) || []);
+  eq(snt.length, 4, '6.10 四顆有 net 的 pad → 四筆 subnet');
+  ok(/NET A\r?\n#NET 0/.test(eda2), '6.11 #NET 編號仍緊接在 NET 之後（既有解析靠這個）');
+
+  // 空的那一面不可以產空檔
+  ok(!has('/layers/ss_bot/features'), '6.12 底面沒有絲印就不要產檔');
+}
+
+console.log(`\nodb-cmp.test: ${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })();

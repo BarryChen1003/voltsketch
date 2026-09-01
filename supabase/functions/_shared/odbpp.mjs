@@ -10,9 +10,12 @@
  *       元件（components/comp_+_top|bot 的 CMP 與 TOP 記錄）、
  *       netlist（eda/data 的 NET / PKG / PIN）、
  *       **鋪銅的內孔（surface 的 I/H contour，2026-08-27 補上）**。
- *   沒有：阻焊、絲印、鋼網、屬性（ATTR）、字型、subnet 的完整分類
- *       （TRACE/VIA/PLANE 沒有分開標）。這幾樣仍以 Gerber 打版包為準。
- *       build() 會把這件事放進 warnings 帶回前端。
+ *   2026-08-31 補：阻焊（sm_top/bot）、鋼網（sp_top/bot）、絲印圖形（ss_top/bot）、
+ *       netlist 的 subnet（SNT TOP，CAM 網表比對的依據）。
+ *   仍然沒有：**絲印文字**（字型是另一套資料結構，半套寫出去 CAM 會顯示亂碼）、
+ *       **ATTR 屬性**（要在每個 emitter 上串屬性索引，半套的屬性表比沒有更難查）、
+ *       subnet 只標 TOP（元件腳），沒有分 TRACE/VIA/PLANE。
+ *       build() 會把這些放進 warnings 帶回前端。
  *   幾何：弧輸出成弦線近似（與 Gerber 的 arc3 不同），roundrect pad 用 rect 近似。
  *       兩者都在 warnings 裡講明。
  *
@@ -127,6 +130,89 @@ function featureFile(symLines, feats) {
     .join(NL) + NL;
 }
 
+// ---------- 阻焊 / 鋼網 / 絲印 ----------
+// 規則刻意跟 Gerber 產生器同一套（gerber.mjs 的 maskDefs / pasteDefs / 絲印段）：
+// 兩包檔案給同一家板廠，開窗規則不一樣的話，對方會拿到兩個互相矛盾的答案。
+
+/** 阻焊開窗＝該面所有銅 pad 同外形。via 蓋油不開窗（業界常規）。 */
+function maskFeatures(state, padAbsFn, side, sym) {
+  const feats = [];
+  for (const c of (state.components || [])) {
+    for (const pad of (c.pads || [])) {
+      if (pad.cu === false) continue;
+      if (!(pad.side === side || pad.side === '*')) continue;
+      const a = padAbsFn(c, pad);
+      const rot = ((pad.rot || 0) % 360 + 360) % 360;
+      feats.push('P ' + N(a.x) + ' ' + NY(a.y) + ' ' + padSymbol(sym, pad) + ' P ' + N(rot));
+    }
+  }
+  return feats;
+}
+
+/** 鋼網：只有 SMD。有孔的、np_thru_hole、paste:false 的都不上錫膏。 */
+function pasteFeatures(state, padAbsFn, side, sym) {
+  const feats = [];
+  for (const c of (state.components || [])) {
+    for (const pad of (c.pads || [])) {
+      if (pad.drill > 0 || pad.type === 'np_thru_hole') continue;
+      if (pad.side !== side) continue;
+      if (pad.paste === false) continue;
+      const a = padAbsFn(c, pad);
+      const rot = ((pad.rot || 0) % 360 + 360) % 360;
+      feats.push('P ' + N(a.x) + ' ' + NY(a.y) + ' ' + padSymbol(sym, pad) + ' P ' + N(rot));
+    }
+  }
+  return feats;
+}
+
+/** footprint 相對點 → 絕對（跟 pcb.js compRel 同一個公式；不同套會整片轉錯角度）。 */
+function compRel(c, rx, ry) {
+  const th = (c.rot || 0) * Math.PI / 180, cs = Math.cos(th), sn = Math.sin(th);
+  return { x: c.x + rx * cs + ry * sn, y: c.y - rx * sn + ry * cs };
+}
+
+/**
+ * 絲印：元件圖形 + 板級圖形。**文字不畫**——ODB++ 的字型是另一套資料結構，
+ * 半套寫出去 CAM 會顯示成亂碼或直接跳過，那比沒有更糟。這件事進 warnings。
+ */
+function silkFeatures(state, side, sym) {
+  const feats = [];
+  let texts = 0;
+  const line = (a, b, w) => feats.push('L ' + N(a.x) + ' ' + NY(a.y) + ' ' + N(b.x) + ' ' + NY(b.y) + ' ' + sym.round(w || 0.12) + ' P 0');
+  const emit = (g, toAbs) => {
+    if ((g.side || 'F') !== side) return;
+    if (g.kind === 'line') { line(toAbs(g.x1, g.y1), toAbs(g.x2, g.y2), g.w); return; }
+    if (g.kind === 'circle') {
+      // 圓用 12 段折線近似：ODB++ 的 A 記錄要圓心與方向，折線在絲印上看不出差別
+      const c0 = toAbs(g.cx, g.cy), r = g.r || 0.5;
+      let prev = null;
+      for (let i = 0; i <= 12; i++) {
+        const th = i / 12 * Math.PI * 2;
+        const pt = { x: c0.x + Math.cos(th) * r, y: c0.y + Math.sin(th) * r };
+        if (prev) line(prev, pt, g.w);
+        prev = pt;
+      }
+      return;
+    }
+    if (g.kind === 'region' && Array.isArray(g.pts) && g.pts.length >= 3) {
+      const abs = g.pts.map(pt => toAbs(pt[0], pt[1]));
+      feats.push.apply(feats, surface(abs.map(a2 => [a2.x, a2.y]), []));
+      return;
+    }
+    if (g.kind === 'arc') {
+      // 三點弧：兩端直接連線（跟銅層的弧一樣是弦線近似，已在 warnings 講明）
+      line(toAbs(g.x1, g.y1), toAbs(g.x2, g.y2), g.w);
+    }
+  };
+  for (const c of (state.components || [])) {
+    const toAbs = (rx, ry) => compRel(c, rx, ry);
+    for (const g of (c.silk || [])) emit(g, toAbs);
+    for (const t of (c.silkTexts || [])) { if ((t.side || 'F') === side) texts++; }
+  }
+  for (const g of (state.silkGr || [])) emit(g, (x, y) => ({ x: x, y: y }));
+  return { feats: feats, texts: texts };
+}
+
 // ---------- 元件與 netlist ----------
 
 // net 名 → 編號。ODB++ 的 feature 與 toeprint 都用編號互指，名字只出現在 eda/data 一次。
@@ -178,9 +264,27 @@ function edaData(state, cuStack, nets, packages, layerName) {
     L.push('#PKG ' + i);
   });
 
+  // 每個 net 連到哪些腳。ODB++ 的 SNT TOP <元件序號> <腳序號> 是 CAM 網表比對的依據；
+  // 只寫 NET 名稱的話，對方只知道有這個網路、不知道它接到哪裡，比對做不了。
+  const pinsOfNet = {};
+  const compIndex = new Map();
+  let ci = 0;
+  for (const c of (state.components || [])) {
+    if (!(c.pads || []).length) continue;
+    compIndex.set(c, ci++);
+    (c.pads || []).forEach((pd, pi) => {
+      const nm = String(pd.net || '').trim();
+      if (!nm) return;
+      (pinsOfNet[nm] = pinsOfNet[nm] || []).push([compIndex.get(c), pi]);
+    });
+  }
+
   nets.order.forEach((name, i) => {
     L.push('NET ' + name);
+    // #NET 編號緊接在 NET 之後（我們自己的索引標記，讀檔的人與測試都靠它）；
+    // SNT 放在後面。順序反過來會讓「下一行就是編號」這個假設失效。
     L.push('#NET ' + i);
+    for (const [cIdx, pIdx] of (pinsOfNet[name] || [])) L.push('SNT TOP ' + cIdx + ' ' + pIdx);
   });
   L.push('');
   return L.join(NL);
@@ -321,6 +425,38 @@ function build(state, padAbsFn, baseName) {
   }
 
   // --- 板框 ---
+  // --- 阻焊 / 鋼網 / 絲印 ---
+  // 空的那一面不產檔：matrix 列了層卻是空檔，CAM 會顯示一個空層，
+  // 看圖的人分不出「這面沒東西」與「這面漏了」。
+  const extraLayers = [];
+  let silkTexts = 0;
+  for (const [side, tag] of [['F', 'top'], ['B', 'bot']]) {
+    const smSym = SymbolTable();
+    const sm = maskFeatures(state, padAbsFn, side, smSym);
+    if (sm.length) {
+      files.push({ name: root + '/steps/' + stepName + '/layers/sm_' + tag + '/features', text: featureFile(smSym.lines(), sm) });
+      extraLayers.push({ name: 'SM_' + tag.toUpperCase(), type: 'SOLDER_MASK' });
+      stats.features += sm.length;
+    }
+    const spSym = SymbolTable();
+    const sp = pasteFeatures(state, padAbsFn, side, spSym);
+    if (sp.length) {
+      files.push({ name: root + '/steps/' + stepName + '/layers/sp_' + tag + '/features', text: featureFile(spSym.lines(), sp) });
+      extraLayers.push({ name: 'SP_' + tag.toUpperCase(), type: 'SOLDER_PASTE' });
+      stats.features += sp.length;
+    }
+    const ssSym = SymbolTable();
+    const ss = silkFeatures(state, side, ssSym);
+    silkTexts += ss.texts;
+    if (ss.feats.length) {
+      files.push({ name: root + '/steps/' + stepName + '/layers/ss_' + tag + '/features', text: featureFile(ssSym.lines(), ss.feats) });
+      extraLayers.push({ name: 'SS_' + tag.toUpperCase(), type: 'SILK_SCREEN' });
+      stats.features += ss.feats.length;
+    }
+  }
+  // 絲印文字沒有輸出：ODB++ 的字型是另一套資料結構，半套寫出去 CAM 會顯示亂碼
+  if (silkTexts) warnings.push(T('odb_w_silktext', { n: silkTexts }));
+
   files.push({
     name: root + '/steps/' + stepName + '/profile',
     text: surface(outlineOf(state, warnings)).join(NL) + NL
@@ -388,9 +524,26 @@ function build(state, padAbsFn, baseName) {
     '    START_NAME=' + layerName(cuStack[0], 0).toUpperCase(),
     '    END_NAME=' + layerName(cuStack[cuStack.length - 1], cuStack.length - 1).toUpperCase(),
     '}');
+  // 阻焊 / 鋼網 / 絲印。只列**實際產出**的那幾層——列了但沒有檔，
+  // CAM 會顯示空層，跟「這面本來就沒東西」分不出來。
+  let exRow = cuStack.length + 1;
+  for (const ex of extraLayers) {
+    matrix.push('LAYER {',
+      '    ROW=' + (++exRow),
+      '    CONTEXT=BOARD',
+      '    TYPE=' + ex.type,
+      '    NAME=' + ex.name,
+      '    POLARITY=POSITIVE',
+      '    START_NAME=',
+      '    END_NAME=',
+      '}');
+  }
+
   // 元件層要進 matrix，CAM 端才找得到 components/ 底下的檔。
   // 只列實際有產出的那一面——列了但檔案不存在，等於叫對方去開一個不存在的檔。
-  let row = cuStack.length + 1;
+  // row 接在阻焊/鋼網/絲印之後：沿用舊的起算值會跟新層撞號，
+  // 而 ROW 撞號的症狀是 CAM 端層序錯亂——打得開、但層是錯的。
+  let row = exRow;
   for (const side of ['top', 'bot']) {
     if (!files.some(f => f.name.endsWith('/components/comp_+_' + side))) continue;
     matrix.push('LAYER {',
