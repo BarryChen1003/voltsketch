@@ -148,11 +148,18 @@ for (const b of boards) {
   lines.forEach(l => { if (l.net) allNets.add(l.net); });
 
   // 寬的先繞：它的選擇最少，等窄線把通道占滿就再也塞不進去（跟 rebuild 同一條理由）
+  // 分組要照「線寬**與**淨空」，不能只照線寬。
+  // 舊版一個寬度一組、整組用 `clearanceFor(整組 nets)`＝組裡最嚴的那個值去繞：
+  // 群組裡只要有一條 POWER（淨空 0.3~0.5mm），同組的訊號線就一起被綁死。
+  // 量測工具是每條 net 用自己的淨空量的，所以它說「繞得成 21 條」而補繞工具繞不出來——
+  // **量測與被量的東西必須用同一份規則**，這裡是規則用得比量測嚴。
   const groups = new Map();
   lines.forEach(l => {
     const w = policy.widthOf(l.net);
-    if (!groups.has(w)) groups.set(w, []);
-    groups.get(w).push(l);
+    const cl = policy.clearanceFor([l.net], allNets);
+    const key = w + '|' + cl.traceToTrace + '|' + cl.traceToPad;
+    if (!groups.has(key)) groups.set(key, { w, cl, lines: [] });
+    groups.get(key).lines.push(l);
   });
 
   let routed = 0;
@@ -162,12 +169,14 @@ for (const b of boards) {
   // 原因在 autoRoutePairs 本身：它繞的是中心線，再把兩條線左右偏移展開，
   // **展開後沒有重新檢查淨空**——空板上沒事，密板上兩條線就壓到鄰居。
   // 那是主線功能要修的事（使用者按「自動繞線」也會踩到），不是補繞工具能繞過去的。
-  for (const w of [...groups.keys()].sort((a, b) => b - a)) {
-    const grp = groups.get(w);
+  // 寬的先繞（選擇最少），同寬度時淨空嚴的先——理由一樣：可走的空間越少越早排
+  const order = [...groups.values()].sort((a, b) => (b.w - a.w) || (b.cl.traceToTrace - a.cl.traceToTrace));
+  for (const g of order) {
+    const w = g.w, grp = g.lines;
     const r = window.RouteAll.run(st, padAbs, grp, {
       layers: (st.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id),
       layer: 'F.Cu', width: w,
-      clearance: policy.clearanceFor(grp.map(l => l.net), allNets),
+      clearance: g.cl,
       viaOd: Math.max(0.6, w + 0.3), viaDrill: 0.3,
       grid: 0.1, order: 'short', ripup: true, passes: 6,
       // 離線工具，時間給夠：90 秒版本有一批是「時間到才失敗」，不是真的沒有路
@@ -197,6 +206,26 @@ for (const b of boards) {
 
   // 補繞可能自己製造出需要 via 的接點，所以再縫一輪（失敗數以最後一輪為準）
   stitchFail = 0; stitchPass();
+
+  // ---- 補短斷口 ----
+  // 同 net、同一層、只差零點幾 mm 沒接上。A* 補不了：那兩端本來就貼在鄰居的淨空裡
+  //（密腳區），起訖格子被判 blocked。實測 8 片有 8 條，佔未繞數的 15%。
+  let gapsClosed = 0, gapsFail = 0;
+  {
+    const zero = window.Ratsnest.compute(st, padAbs)
+      .filter(l => Math.hypot(l.x2 - l.x1, l.y2 - l.y1) > 1e-6);
+    for (const l of zero) {
+      const g = window.AutoRoute.closeGap(st, padAbs, l, { clearance: CL, width: policy.widthOf(l.net) });
+      if (!g.ok) { if (g.reason === 'not_clear') gapsFail++; continue; }
+      const beforeE = errsOf().length;
+      const beforeOpen = window.Ratsnest.compute(st, padAbs).length;
+      st.traces.push(Object.assign({ id: 'gap-' + st.traces.length }, g.seg));
+      const okNow = errsOf().length <= beforeE;
+      const closed = window.Ratsnest.compute(st, padAbs).length < beforeOpen;
+      if (okNow && closed) gapsClosed++;
+      else { st.traces.pop(); gapsFail++; }
+    }
+  }
 
   // 補繞完、**還沒重新回推 pad net 之前**先量一次未繞數：這是跟開頭同一個基準。
   // 重新回推之後數字會變大，那不是退步——新線碰到原本沒有 net 的 pad，
@@ -248,6 +277,7 @@ for (const b of boards) {
     'DRC ' + before + ' -> ' + after,
     '| 未繞 ' + lines0.length + ' -> ' + openSameBasis + '（回推後 ' + openAfter + '）',
     '| 縫 via ' + stitched + (escaped ? ' + 逃逸 ' + escaped : '') + (stitchFail ? '(放棄 ' + stitchFail + ')' : ''),
+    '| 補斷口 ' + gapsClosed + (gapsFail ? '(放棄 ' + gapsFail + ')' : ''),
     '| 補繞 ' + routed + ' 條（' + addedTraces.length + ' 段、' + addedVias.length + ' via）',
     '| 端點落點 ' + endsOk + '/' + ends,
     (keep ? '' : ' ✕ 放棄這片'));

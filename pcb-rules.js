@@ -321,6 +321,82 @@
   // ---------- 單網 A* 佈線（試驗性：單層、格點 0.25mm、8 向、無推擠無 via 插入） ----------
   const AutoRoute = {
     /**
+     * 補短斷口：兩段同 net、同一層的銅只差零點幾 mm 沒接上時，直接補一段線接起來。
+     *
+     * 為什麼要獨立一支：A* 繞線器補不了這種。它的起點／終點格子若落在鄰居的淨空遮罩裡
+     * 就直接判 `rule_ep_blocked`——而 0.2mm 斷口的兩端**本來就貼在別人的淨空範圍內**
+     * （那是密腳區）。實測 8 片公版有 8 條這種，佔未繞數的 15%。
+     *
+     * 只做「一段直線」，不繞路：要繞路就是真的沒接上，該走繞線器。
+     * 回 { ok, seg } 或 { ok:false, reason }；呼叫端要再跑一次 DRC 確認。
+     */
+    closeGap(state, padAbs, line, opt) {
+      opt = opt || {};
+      const G = (typeof window !== 'undefined' && window.PadDrc && window.PadDrc._geom) || null;
+      if (!G) return { ok: false, reason: 'no_geom' };
+      const net = String(line.net || '');
+      if (!net) return { ok: false, reason: 'no_net' };
+      const len = Math.hypot(line.x2 - line.x1, line.y2 - line.y1);
+      const maxGap = opt.maxGap || 0.6;
+      if (len < 1e-6) return { ok: false, reason: 'zero_length' };   // 那是缺 via，走 escapeVia
+      if (len > maxGap) return { ok: false, reason: 'too_long' };    // 太長就該走繞線器
+
+      const w = opt.width || 0.2;
+      const tol = opt.tol || 0.06;
+      const cu = (state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+      // 兩端各自貼在哪些層的同 net 銅上
+      const layersAt = (x, y) => {
+        const out = new Set();
+        (state.traces || []).forEach(t => {
+          if (String(t.net || '') !== net) return;
+          if (Math.hypot(t.x1 - x, t.y1 - y) <= tol || Math.hypot(t.x2 - x, t.y2 - y) <= tol)
+            out.add(t.layer || 'F.Cu');
+        });
+        (state.components || []).forEach(c => (c.pads || []).forEach(p => {
+          if (p.cu === false || String(p.net || '') !== net) return;
+          const a = padAbs(c, p);
+          if (Math.hypot(a.x - x, a.y - y) > Math.max(p.w || 0.5, p.h || 0.5)) return;
+          if (p.side === '*' || p.drill > 0) cu.forEach(l => out.add(l));
+          else out.add(p.side === 'B' ? cu[cu.length - 1] : cu[0]);
+        }));
+        return out;
+      };
+      const A = layersAt(line.x1, line.y1), B = layersAt(line.x2, line.y2);
+      const common = [...A].filter(l => B.has(l));
+      if (!common.length) return { ok: false, reason: 'no_common_layer' };  // 不同層＝要 via，不是斷口
+
+      const cl = opt.clearance || {};
+      const cTrace = (typeof cl.traceToTrace === 'number') ? cl.traceToTrace : 0.15;
+      const cPad = (typeof cl.traceToPad === 'number') ? cl.traceToPad : cTrace;
+      for (const layer of common) {
+        let clear = true;
+        for (const c of (state.components || [])) {
+          for (const p of (c.pads || [])) {
+            if (p.cu === false || String(p.net || '') === net) continue;
+            const a = padAbs(c, p);
+            if (Math.hypot(a.x - line.x1, a.y - line.y1) > 3 && Math.hypot(a.x - line.x2, a.y - line.y2) > 3) continue;
+            if (p.side !== '*' && !(p.drill > 0)) {
+              const pl = p.side === 'B' ? cu[cu.length - 1] : cu[0];
+              if (pl !== layer) continue;
+            }
+            if (G.segPadDist(line.x1, line.y1, line.x2, line.y2, G.padShape(c, p, padAbs)) - w / 2 < cPad) { clear = false; break; }
+          }
+          if (!clear) break;
+        }
+        if (!clear) continue;
+        for (const t of (state.traces || [])) {
+          if (String(t.net || '') === net) continue;
+          if ((t.layer || 'F.Cu') !== layer) continue;
+          if (G.segSegDist(line.x1, line.y1, line.x2, line.y2, t.x1, t.y1, t.x2, t.y2)
+              - w / 2 - (t.width || 0.3) / 2 < cTrace) { clear = false; break; }
+        }
+        if (!clear) continue;
+        return { ok: true, seg: { x1: line.x1, y1: line.y1, x2: line.x2, y2: line.y2, layer, width: w, net } };
+      }
+      return { ok: false, reason: 'not_clear' };
+    },
+
+    /**
      * 逃逸 via（escape via）。
      *
      * 問題：同一個點上有兩層的同 net 銅（例如 SMD pad 在頂層、走線收在底層），

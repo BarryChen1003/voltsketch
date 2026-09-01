@@ -796,7 +796,7 @@ const minDistToSegs = (px, py, segs) =>
   // 根因是繞線器收線時允許收在別層（已修，見第 39 節），資料端由 tools/refboard-fill.js 縫回來。
   // 這個預算跟 DRC 一樣只准往下：變多就是有人把板子改壞了，或繞線器又退步了。
   const OPEN_BUDGET = {
-    'rp2040-pico30': 11, 'arduino-uno-r3': 10, 'esp32-poe2': 9, 'a20-lime': 3,
+    'rp2040-pico30': 8, 'arduino-uno-r3': 8, 'esp32-poe2': 5, 'a20-lime': 3,
     'imx233-maxi': 2, 'openrex-imx6': 7, 'imx8mp-som': 4, 'librevna': 6
   };
   // 剩下的零長度飛線：那個點要打 via 才接得起來，但 via 放下去會撞到鄰居
@@ -2177,6 +2177,56 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
     ok(html.indexOf('blindBuriedToggle') > 0, '44 面板要有開關（藏起來等於沒做）');
     ok(js.indexOf('pj_bb_on') > 0, '44 打開時要講清楚板廠多半不接');
   }
+  app.state = savedState;
+}
+
+// 45) 補短斷口：同 net、同層、只差零點幾 mm 沒接上
+// A* 繞線器補不了這種——那兩端本來就貼在鄰居的淨空範圍內（密腳區），
+// 起訖格子被判 blocked 就直接放棄。實測 8 片公版有 8 條這種，佔未繞數的 15%。
+{
+  const savedState = app.state;
+  const rules = app.loadDrcRules();
+  const opt = { clearance: rules.clearance, width: 0.2 };
+  const base = () => Object.assign({}, savedState, {
+    boardWidth: 30, boardHeight: 20, layers: 2, layerStack: app.buildLayerStack(2),
+    visibleLayers: ['F.Cu', 'B.Cu'], components: [], vias: [], keepouts: [], userZones: [],
+    traces: [
+      { x1: -5, y1: 0, x2: -0.15, y2: 0, layer: 'F.Cu', width: 0.2, net: 'SIG' },
+      { x1: 0.15, y1: 0, x2: 5, y2: 0, layer: 'F.Cu', width: 0.2, net: 'SIG' }
+    ]
+  });
+  app.state = base();
+  const line = { x1: -0.15, y1: 0, x2: 0.15, y2: 0, net: 'SIG' };
+  const g = window.AutoRoute.closeGap(app.state, app.padAbs.bind(app), line, opt);
+  ok(g.ok, '45 同層 0.3mm 的斷口要補得起來');
+  eq(g.ok ? g.seg.layer : '', 'F.Cu', '45 補在兩端共同的那一層');
+  eq(g.ok ? g.seg.net : '', 'SIG', '45 補的線要是同一條 net');
+
+  // 補完之後飛線要真的消失（不然只是多一段銅）
+  app.state.traces.push(Object.assign({}, g.seg));
+  const after = window.Ratsnest.compute(app.state, app.padAbs.bind(app)).filter(l => l.net === 'SIG');
+  eq(after.length, 0, '45 補完之後 SIG 不該還有飛線');
+
+  // 斷口上有別的 net 的線橫過去 → 不可以硬補（那是短路）
+  app.state = base();
+  app.state.traces.push({ x1: 0, y1: -2, x2: 0, y2: 2, layer: 'F.Cu', width: 0.2, net: 'OTHER' });
+  const blocked = window.AutoRoute.closeGap(app.state, app.padAbs.bind(app), line, opt);
+  eq(blocked.ok, false, '45 斷口上橫著別條 net 就不可以補');
+  eq(blocked.reason, 'not_clear', '45 理由要講清楚是淨空不夠');
+
+  // 兩端在不同層 → 那是缺 via，不是斷口
+  app.state = base();
+  app.state.traces[1].layer = 'B.Cu';
+  const cross = window.AutoRoute.closeGap(app.state, app.padAbs.bind(app), line, opt);
+  eq(cross.ok, false, '45 兩端不同層不該用補線解決');
+  eq(cross.reason, 'no_common_layer', '45 要講清楚是沒有共同層（該走 escapeVia）');
+
+  // 邊界：零長度是缺 via，太長就該走繞線器
+  app.state = base();
+  eq(window.AutoRoute.closeGap(app.state, app.padAbs.bind(app),
+    { x1: 0, y1: 0, x2: 0, y2: 0, net: 'SIG' }, opt).reason, 'zero_length', '45 零長度要交給 escapeVia');
+  eq(window.AutoRoute.closeGap(app.state, app.padAbs.bind(app),
+    { x1: -5, y1: 0, x2: 5, y2: 0, net: 'SIG' }, opt).reason, 'too_long', '45 太長就該走繞線器，不可以一條直線硬穿過去');
   app.state = savedState;
 }
 
