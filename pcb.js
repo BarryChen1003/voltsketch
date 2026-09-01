@@ -4815,16 +4815,24 @@ const pcbApp = {
       // 連鎖開著就走 planChain（A 推 B、B 再推 C）。單輪碰到「B 挪開會撞到 C」
       // 就整個放棄，而那正是密集板上最常見的情況。
       const depth = this.shoveDepth();
-      const plan = (depth > 1 && Shove.planChain)
+      let plan = (depth > 1 && Shove.planChain)
         ? Shove.planChain(this.state, this.padAbs.bind(this), tr, Object.assign({ depth }, opt))
         : Shove.plan(this.state, this.padAbs.bind(this), tr, opt);
+      // 平移與繞路都只在同一層動手腳，所以**同層橫穿**永遠無解——那要換層打 via。
+      // 推不動就把擋路的那幾條丟回繞線器重繞（結果要通過真 DRC 才算數）。
+      if (!plan.ok && plan.blockers && Shove.planRipup) {
+        const rp = Shove.planRipup(this.state, this.padAbs.bind(this), tr,
+          opt.clearance, Object.assign({ drcRules: this.loadDrcRules() }, opt));
+        if (rp.ok) plan = rp;
+      }
       if (plan.blockers) {
         if (plan.ok) {
           const rerouted = (plan.reroutes || []).length;
           const n = Shove.apply(this.state, plan);
           // 「推開」與「繞開」是兩件事：推開的線位置變了、形狀沒變；
           // 繞開的線多了兩個彎。訊息混在一起的話，使用者不知道板子上多了什麼。
-          if (rerouted) this.toast(pcbT("pj_shove_detour", { n: rerouted }), "info");
+          if (plan.ripup) this.toast(pcbT("pj_shove_ripup", { n: rerouted }), "info");
+          else if (rerouted) this.toast(pcbT("pj_shove_detour", { n: rerouted }), "info");
           else if (n) this.toast(pcbT(plan.rounds > 1 ? "pj_shove_done_chain" : "pj_shove_done", { n, r: plan.rounds }), "info");
         } else {
           // 理由可能帶 chain: 前綴，取最後一段當 i18n key 的字尾；

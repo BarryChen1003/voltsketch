@@ -11,6 +11,8 @@
 
 global.window = {};
 require('./pcb-drc.js');
+require('./pcb-index.js');   // 繞線的節點索引
+require('./pcb-rules.js');   // planRipup 要把線丟回 A* 重繞
 const S = require('./pcb-shove.js');
 
 let pass = 0, fail = 0;
@@ -348,6 +350,75 @@ const board = (traces, extra) => Object.assign({
   const same = board([tr({ x1: -12, y1: 0.35, x2: 12, y2: 0.35, net: 'NEW' })], { components: pads });
   const rSame = S.plan(same, padAbs, tr({ x1: -4, y1: 0, x2: 4, y2: 0, net: 'NEW' }), { clearance: CL });
   eq((rSame.reroutes || []).length, 0, '繞路：同網路不繞');
+}
+
+// ---------- 推不動也繞不開 → 拆掉重繞 ----------
+// 平移與繞路都只在同一層動手腳，所以**同層橫穿**永遠無解：那要換層打 via，
+// 而換層是繞線器的事。這一段守「拆掉重繞」這條退路，以及它的驗收條件。
+{
+  const stack = [{ id: 'F.Cu', kind: 'copper' }, { id: 'B.Cu', kind: 'copper' }];
+  // 橫穿：舊線與新線在同一層垂直交叉，兩端都焊在 pad 上（推不動也繞不開）
+  const pads = [
+    { id: 'a', ref: 'A', x: 0, y: -8, pads: [{ num: '1', x: 0, y: 0, w: 0.8, h: 0.8, side: 'F', net: 'OLD', cu: true }] },
+    { id: 'b', ref: 'B', x: 0, y: 8, pads: [{ num: '1', x: 0, y: 0, w: 0.8, h: 0.8, side: 'F', net: 'OLD', cu: true }] }
+  ];
+  const cross = () => Object.assign(board(
+    [tr({ x1: 0, y1: -8, x2: 0, y2: 8, net: 'OLD' })],
+    { components: pads.map(p => JSON.parse(JSON.stringify(p))) }
+  ), { layerStack: stack.slice(), visibleLayers: ['F.Cu', 'B.Cu'] });
+
+  const seg = tr({ x1: -6, y1: 0, x2: 6, y2: 0, net: 'NEW' });
+  const st1 = cross();
+  const plain = S.plan(st1, padAbs, seg, { clearance: CL });
+  ok(!plain.ok, '前提：同層橫穿推不動也繞不開（不然這一段沒有意義）');
+  eq(plain.blockers, 1, '前提：確實有一條擋路');
+
+  const st2 = cross();
+  st2.traces.push(seg);
+  const rp = S.planRipup(st2, padAbs, seg, CL, { grid: 0.25 });
+  ok(rp.ok, '拆掉重繞應該找得到路（可以換層）');
+  eq((rp.reroutes || []).length, 1, '只重繞擋路的那一條');
+  if (rp.ok) {
+    const segs = rp.reroutes[0].segments;
+    ok(segs.length >= 1, '重繞後要有走線');
+    ok(segs.some(s => s.layer === 'B.Cu') || (rp.reroutes[0].vias || []).length > 0,
+      '橫穿只能靠換層解決：要嘛走到另一層、要嘛有 via');
+    // 端點不可以跑掉：重繞只換路徑，不換連接點
+    const xs = segs.map(s => [s.x1, s.y1, s.x2, s.y2]);
+    const hasA = xs.some(a => Math.hypot(a[0] - 0, a[1] + 8) < 0.3 || Math.hypot(a[2] - 0, a[3] + 8) < 0.3);
+    const hasB = xs.some(a => Math.hypot(a[0] - 0, a[1] - 8) < 0.3 || Math.hypot(a[2] - 0, a[3] - 8) < 0.3);
+    ok(hasA && hasB, '重繞後兩端仍要落在原本的 pad 上');
+  }
+
+  // 套用之後：via 要一起放進去，否則那條線在板子上是斷的
+  const st3 = cross();
+  st3.traces.push(seg);
+  const rp3 = S.planRipup(st3, padAbs, seg, CL, { grid: 0.25 });
+  if (rp3.ok) {
+    const viasBefore = st3.vias.length;
+    S.apply(st3, rp3);
+    eq(st3.vias.length, viasBefore + (rp3.reroutes[0].vias || []).length, '重繞帶來的 via 要一起套用');
+  }
+
+  // 驗收閘門：重繞之後 DRC 變差就要退回。
+  // 這裡用「DRC 規則比繞線器用的淨空嚴」來製造那個情況——繞線器找得到路，
+  // 但那條路在 DRC 眼裡是違規。沒有這道閘門的話，使用者會看到「已重繞」
+  // 而板子上多了幾個他沒做過的違規。
+  {
+    const st = cross();
+    st.traces.push(seg);
+    const strict = {
+      clearance: { traceToTrace: 3, traceToPad: 3, padToPad: 3, traceToEdge: 0.3, viaToVia: 3, holeToHole: 3 },
+      via: { annular: 0.05, drill: 0.2 }
+    };
+    const gated = S.planRipup(st, padAbs, seg, CL, { grid: 0.25, drcRules: strict });
+    eq(gated.ok, false, '重繞後 DRC 變差就要退回');
+    eq(gated.reason, 'ripup:drc', '退回的理由要講清楚是 DRC');
+  }
+
+  // 沒有擋路的線就不該回報成功（不然呼叫端會以為做了什麼）
+  const clean = Object.assign(board([]), { layerStack: stack.slice() });
+  eq(S.planRipup(clean, padAbs, seg, CL, {}).reason, 'noBlockers', '沒有擋路的線要回 noBlockers');
 }
 
 console.log(`\nshove.test: ${pass} passed, ${fail} failed`);

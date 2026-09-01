@@ -1352,6 +1352,7 @@ window.I18N = (function () {
     pcbf_hier_pick:  { zh: '選同層', en: 'Select level', ja: '同じ階層を選択', ko: '같은 계층 선택' },
     pcbf_hier_pick_t:{ zh: '把同一張子圖的元件整批選起來（在板上通常散在各處）', en: 'Select every component from this sheet (on the board they are usually scattered)', ja: '同じ子シートの部品をまとめて選択（基板上では散らばっていることが多い）', ko: '같은 서브시트의 부품을 한꺼번에 선택(보드에서는 대개 흩어져 있음)' },
     pj_hier_picked:  { zh: '已選取同層的 {n} 顆元件（{path}）', en: 'Selected {n} components on {path}', ja: '{path} の部品 {n} 個を選択しました', ko: '{path}의 부품 {n}개를 선택했습니다' },
+    pj_shove_ripup:  { zh: '{n} 條擋路的線推不動也繞不開，已拆掉交給繞線器重繞（可能換層打 via）。重繞後的板子有再跑一次 DRC。', en: '{n} blocking traces could be neither pushed nor detoured, so they were ripped up and re-routed - which may change layer through a via. The board was re-checked with DRC afterwards.', ja: '{n} 本の干渉配線は移動も迂回もできないため、いったん削除してルータで引き直しました（ビアで層を変える場合があります）。引き直し後に DRC を再実行しています。', ko: '{n}개의 간섭 배선을 밀 수도 우회할 수도 없어 제거 후 라우터로 다시 배선했습니다(비아로 층이 바뀔 수 있음). 이후 DRC를 다시 실행했습니다.' },
     pj_shove_detour: { zh: '{n} 條擋路的線改走繞道（兩端焊在 pad 上，推不動）', en: '{n} blocking traces were routed around instead (both ends are on pads, so they cannot be pushed)', ja: '{n} 本の干渉配線を迂回させました（両端がパッドのため移動できません）', ko: '간섭하는 배선 {n}개를 우회시켰습니다(양 끝이 패드에 있어 이동 불가)' },
     // ---- 匯流排帶進 PCB（sch-bus.js groups/report）----
     pj_bus_title:     { zh: '匯流排', en: 'Buses', ja: 'バス', ko: '버스' },

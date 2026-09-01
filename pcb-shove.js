@@ -289,6 +289,76 @@
     return { ok: true, moves: [], reroutes: reroutes, blockers: reroutes.length };
   }
 
+  /**
+   * 推不動、也繞不開 → 把擋路的那條**拆掉重繞**，交給既有的 A*。
+   *
+   * 為什麼這一步值得做：平移與繞路都只在「同一層、同一條線的附近」動手腳，
+   * 所以**同層橫穿**永遠無解——那需要換層打 via，而換層是繞線器的事。
+   * 這裡不自己寫繞線，只是把「這條線」丟回繞線器，讓它在新的板況下重找一條路。
+   *
+   * 界線：
+   *   - 只重繞**擋路的那幾條**，不做整區重繞（那是 autoRoute 的工作）。
+   *   - 重繞的結果要通過**真正的 DRC**（error 不可以變多）才算數；
+   *     不驗的話會出現「推擠成功」但板子多了三個違規，而使用者以為是自己畫壞的。
+   *   - 端點原地不動：重繞只換路徑，不換連接點。
+   *
+   * 回 { ok, reroutes:[{trace, segments, vias}], blockers, reason }
+   */
+  function planRipup(state, padAbs, seg, cl, opts) {
+    const gm = geom();
+    const AR = (typeof window !== 'undefined' && window.AutoRoute) || null;
+    if (!gm || !AR || !AR.route) return { ok: false, reason: 'noRouter', moves: [], blockers: 0 };
+    const lay = layerOf(seg), hw = (seg.width || 0.3) / 2;
+    const protect = (opts && opts.protect) || null;
+    const cu = (state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+    if (!cu.length) return { ok: false, reason: 'noLayers', moves: [], blockers: 0 };
+
+    const blockers = (state.traces || []).filter(t => {
+      if (t === seg) return false;
+      if (protect && protect.indexOf(t) >= 0) return false;
+      if (layerOf(t) !== lay) return false;
+      if (sameNet(t.net, seg.net)) return false;
+      const d = gm.segSegDist(seg.x1, seg.y1, seg.x2, seg.y2, t.x1, t.y1, t.x2, t.y2) - hw - (t.width || 0.3) / 2;
+      return d < cl.traceToTrace - 1e-9;
+    });
+    if (!blockers.length) return { ok: false, reason: 'noBlockers', moves: [], blockers: 0 };
+
+    const D = (typeof window !== 'undefined' && window.PadDrc) || null;
+    const rules = (opts && (opts.drcRules || opts.rules)) || null;
+    const errsOf = st => (D && rules && rules.clearance)
+      ? D.run(st, padAbs, rules).filter(f => f.type === 'error').length : null;
+
+    let work = state;
+    const reroutes = [];
+    for (const t of blockers) {
+      const without = Object.assign({}, work, {
+        traces: (work.traces || []).filter(x => x !== t)
+      });
+      const r = AR.route(without, padAbs, { x1: t.x1, y1: t.y1, x2: t.x2, y2: t.y2, net: t.net }, {
+        layers: cu, layer: layerOf(t), width: t.width || 0.3,
+        clearance: cl,
+        viaOd: (opts && opts.viaOd) || 0.7, viaDrill: (opts && opts.viaDrill) || 0.3,
+        grid: (opts && opts.grid) || 0.1, snapEnds: true
+      });
+      if (!r.ok || !r.segs.length) return { ok: false, reason: 'ripup:' + (r.reason || 'no_path'), moves: [], blockers: blockers.length };
+      const segments = r.segs.map(s => Object.assign({}, t, {
+        x1: s.x1, y1: s.y1, x2: s.x2, y2: s.y2, layer: s.layer || layerOf(t)
+      }));
+      const vias = (r.vias || []).map(v => Object.assign({}, v, { net: t.net }));
+      const next = Object.assign({}, without, {
+        traces: (without.traces || []).concat(segments),
+        vias: (without.vias || []).concat(vias)
+      });
+      // 真 DRC 驗收：重繞不可以讓板子變差
+      const before = errsOf(work), after = errsOf(next);
+      if (before !== null && after !== null && after > before)
+        return { ok: false, reason: 'ripup:drc', moves: [], blockers: blockers.length };
+      reroutes.push({ trace: t, segments, vias });
+      work = next;
+    }
+    return { ok: true, moves: [], reroutes, blockers: blockers.length, ripup: true };
+  }
+
   const Shove = {
     /**
      * 規劃推擠（單輪）。state 不會被改動。
@@ -429,6 +499,8 @@
         const i = (state.traces || []).indexOf(rr.trace);
         if (i < 0) continue;
         state.traces.splice(i, 1, ...rr.segments);
+        // 拆掉重繞的路徑可能換層，換層處要有 via——少放的話那條線在板子上是斷的
+        if ((rr.vias || []).length) state.vias = (state.vias || []).concat(rr.vias);
         n++;
       }
       for (const m of planResult.moves) {
@@ -443,6 +515,7 @@
       return n;
     },
 
+    planRipup: planRipup,
     _detour: detour,
     _planDetours: planDetours,
     _violation: violation,
