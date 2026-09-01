@@ -10,7 +10,10 @@
  *       LayerFeature（走線／pad／via／鋪銅，含圓弧與內孔）、
  *       Package/Component（元件與腳位）、DrillSpec（鑽孔）、
  *       BOM（料號與數量）。
- *   沒有：Stackup 的材料與介電常數（我們沒有那些資料）、阻抗需求、
+ *   有（2026-09-01 補）：受控阻抗需求（Z0 / Zdiff / 容差 / 配對 net / 實際走線的層與線寬），
+ *       掛在 LogicalNet 底下的 NonstandardAttribute。**不自創 <Spec>/<Impedance> 這類標準元素**：
+ *       猜錯 schema 會讓整份檔驗不過，比沒帶更糟。目標值來自 netspec.mjs 同一份來源。
+ *   沒有：Stackup 的材料與介電常數（我們沒有那些資料）、
  *       DFX 的完整規則集、Approval/Change history。
  *   幾何：圓弧用 <Arc>（真圓弧，不是弦線）；roundrect pad 以 rect 近似。
  *
@@ -21,6 +24,10 @@
  * 測試：ipc2581.test.js
  */
 'use strict';
+
+// 阻抗目標只有一份來源：netspec.mjs 讀 state.netProps。匯出端各抄一份的下場是
+// 「Gerber 包說 50Ω、XML 說 47Ω」，而收到兩份檔的板廠不知道該信誰。
+import { buildNetSpec } from './netspec.mjs';
 
 const NL = String.fromCharCode(10);
 const T = (k, vars) => ({ k, v: vars || {} });
@@ -146,6 +153,19 @@ function build(state, padAbsFn, baseName) {
   const nets = [...netSet].sort();
   stats.nets = nets.length;
 
+  // --- 受控阻抗需求 ---
+  // 沒有任何 net 設過屬性就完全不寫（跟 -NetSpec.txt 同一條規則）：
+  // 寫出一組空屬性，等於告訴板廠「這片板沒有阻抗要求」，那是另一個意思。
+  const netSpec = buildNetSpec(state, { name: base });
+  const specOf = new Map((netSpec ? netSpec.rows : []).map(r => [r.net, r]));
+  stats.netSpecs = specOf.size;
+  if (netSpec) warnings.push(T('ipc_w_netspec'));
+  // 有要求但還沒畫任何銅的 net 也要留在檔裡（標 NOT_ROUTED）。
+  // 只列有幾何的 net，等於「還沒繞的那條就沒有要求」——那正是最需要傳出去的一條。
+  for (const r of specOf.keys()) if (!netSet.has(r)) nets.push(r);
+  nets.sort();
+  stats.nets = nets.length;
+
   // --- 板框 ---
   const W = state.boardWidth || 100, H = state.boardHeight || 80;
   const outline = (() => {
@@ -269,12 +289,32 @@ function build(state, padAbsFn, baseName) {
   }
 
   // 網表：每條 net 底下列出它接到的腳位
+  const nsAttr = (name, value, type) =>
+    '          <NonstandardAttribute name="' + X(name) + '" value="' + X(value) + '" type="' + type + '"/>';
   for (const net of nets) {
     L.push('        <LogicalNet name="' + X(net) + '">');
     for (const c of (state.components || [])) {
       for (const p of (c.pads || [])) {
         if (String(p.net || '') !== net) continue;
         L.push('          <PinRef componentRef="' + X(c.ref || 'REF') + '" pin="' + X(p.num) + '"/>');
+      }
+    }
+    // 阻抗需求用 NonstandardAttribute 帶出——這份檔的 Component 也是用同一個機制帶 side。
+    // 讀不懂的 CAM 會忽略；讀得懂的至少拿得到設計端的要求，而不是完全收不到。
+    const sp = specOf.get(net);
+    if (sp) {
+      if (sp.z0 != null) L.push(nsAttr('impedanceZ0Ohm', sp.z0, 'FLOAT'));
+      if (sp.zdiff != null) L.push(nsAttr('impedanceZdiffOhm', sp.zdiff, 'FLOAT'));
+      if (sp.z0 != null || sp.zdiff != null) L.push(nsAttr('impedanceTolerancePercent', sp.tol, 'FLOAT'));
+      if (sp.pair) L.push(nsAttr('differentialPairNet', sp.pair, 'STRING'));
+      if (sp.note) L.push(nsAttr('impedanceNote', sp.note, 'STRING'));
+      // 實際畫出來的幾何：板廠要對的是這個，不是規則裡寫的目標線寬。
+      // 沒繞的 net 明講 NOT_ROUTED，留白會被當成漏印。
+      if (sp.routed) {
+        L.push(nsAttr('routedLayers', sp.layers.join('/'), 'STRING'));
+        L.push(nsAttr('routedWidthsMm', sp.widths.join('/'), 'STRING'));
+      } else {
+        L.push(nsAttr('routedLayers', 'NOT_ROUTED', 'STRING'));
       }
     }
     L.push('        </LogicalNet>');

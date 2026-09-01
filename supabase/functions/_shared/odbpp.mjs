@@ -23,6 +23,10 @@
  * 單位：mm（misc/info 的 UNITS=MM 與 stephdr 一致）。
  */
 
+// 阻抗目標只有一份來源：netspec.mjs 讀 state.netProps。匯出端各抄一份的下場是
+// 「Gerber 包說 50Ω、ODB++ 說 47Ω」，而收到兩包檔的板廠不知道該信哪一個。
+import { buildNetSpec } from './netspec.mjs';
+
 const NL = String.fromCharCode(10);
 const T = (k, vars) => ({ k, v: vars || {} });
 const N = mm => (Math.round((mm + Number.EPSILON) * 1e6) / 1e6).toFixed(6);
@@ -247,7 +251,7 @@ function packageTable(state) {
 
 // steps/pcb/eda/data —— 網表與封裝定義。
 // 這是子集：NET/PKG/PIN 有，屬性（ATTR）、subnet 的完整分類（VIA/TRACE/PLANE）沒有。
-function edaData(state, cuStack, nets, packages, layerName) {
+function edaData(state, cuStack, nets, packages, layerName, specOf) {
   const L = [];
   L.push('HDR UNITS=MM');
   L.push('HDR SOURCE=HardwareAI');
@@ -284,6 +288,21 @@ function edaData(state, cuStack, nets, packages, layerName) {
     // #NET 編號緊接在 NET 之後（我們自己的索引標記，讀檔的人與測試都靠它）；
     // SNT 放在後面。順序反過來會讓「下一行就是編號」這個假設失效。
     L.push('#NET ' + i);
+    // 阻抗需求寫成**註解行**，不寫成 ODB++ 的 ATTR。
+    // 理由：ATTR 的名字要嘛是系統屬性、要嘛得在 attrlist 裡宣告，兩者我們都還沒做；
+    // 自創一個沒宣告的屬性名，嚴格一點的 CAM 會整段解析失敗——那比沒帶更糟。
+    // 註解行任何讀檔器都會略過，而人與 grep 找得到。完整的表在 misc/netspec.txt。
+    const sp = specOf && specOf.get(name);
+    if (sp) {
+      const bits = [];
+      if (sp.z0 != null) bits.push('Z0=' + sp.z0);
+      if (sp.zdiff != null) bits.push('ZDIFF=' + sp.zdiff);
+      if (sp.z0 != null || sp.zdiff != null) bits.push('TOL=' + sp.tol);
+      if (sp.pair) bits.push('PAIR=' + sp.pair);
+      bits.push(sp.routed ? 'LAYERS=' + sp.layers.join('/') : 'LAYERS=NOT_ROUTED');
+      if (sp.routed) bits.push('WIDTHS=' + sp.widths.join('/'));
+      L.push('#IMP ' + bits.join(' '));
+    }
     for (const [cIdx, pIdx] of (pinsOfNet[name] || [])) L.push('SNT TOP ' + cIdx + ' ' + pIdx);
   });
   L.push('');
@@ -468,10 +487,14 @@ function build(state, padAbsFn, baseName) {
   // 只有銅層的話，這包 ODB++ 的資訊量其實跟一疊 Gerber 一樣。
   const nets = netTable(state);
   const packages = packageTable(state);
+  // 受控阻抗需求。沒有任何 net 設過屬性就完全不產（跟 -NetSpec.txt 同一條規則）：
+  // 產一張空表等於告訴板廠「這片板沒有阻抗要求」，那是另一個意思。
+  const netSpec = buildNetSpec(state, { name: base });
+  const specOf = new Map((netSpec ? netSpec.rows : []).map(r => [r.net, r]));
   {
     files.push({
       name: root + '/steps/' + stepName + '/eda/data',
-      text: edaData(state, cuStack, nets, packages, layerName)
+      text: edaData(state, cuStack, nets, packages, layerName, specOf)
     });
     for (const side of ['top', 'bot']) {
       const cmp = componentsFile(state, padAbsFn, side, nets, packages);
@@ -558,7 +581,19 @@ function build(state, padAbsFn, baseName) {
   }
   files.push({ name: root + '/matrix/matrix', text: matrix.join(NL) + NL });
 
+  // --- misc/netspec.txt：受控阻抗需求的完整表 ---
+  // 跟 Gerber 包裡的 -NetSpec.txt 是同一份文字（同一個產生器），拿到哪一包都讀得到同一件事。
+  // eda/data 裡的 #IMP 註解只夠 grep；要給人看的表在這裡。
+  if (netSpec) {
+    files.push({ name: root + '/misc/netspec.txt', text: netSpec.text });
+    warnings.push(T('odb_w_netspec'));
+  }
+
   // --- misc/info：不放時間戳，同一塊板匯出兩次要位元組相同（測試要對得起來） ---
+  // LAYERS_COUNT 要跟 matrix 的 LAYER 筆數一致。寫成「銅層 + 1」是 2026-08-31 補了
+  // 阻焊／鋼版／絲印與元件層之後留下的舊帳：info 說 5 層、matrix 列 11 層，
+  // 對得起來的 CAM 會當成這包壞掉。
+  const matrixLayers = matrix.filter(l => l === 'LAYER {').length;
   files.push({
     name: root + '/misc/info',
     text: [
@@ -567,7 +602,7 @@ function build(state, padAbsFn, baseName) {
       'ODB_VERSION_MAJOR=8',
       'ODB_VERSION_MINOR=1',
       'ODB_SOURCE=HardwareAI',
-      'LAYERS_COUNT=' + (cuStack.length + 1),
+      'LAYERS_COUNT=' + matrixLayers,
       'STEPS_COUNT=1',
       ''
     ].join(NL)

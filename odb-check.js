@@ -117,6 +117,13 @@ function parseFeatures(text) {
         `${tag}: matrix 的 ROW 應為 1..${rows} 連續且不重複（實得 ${rowNums.join(',')}）`);
       ok((matrix.text.match(/TYPE=COMPONENT/g) || []).length === compFiles,
         `${tag}: matrix 的 COMPONENT 筆數與實際檔案數一致（不可以列出不存在的檔）`);
+      // misc/info 說幾層、matrix 就要列幾層。兩邊不一致的症狀是 CAM 判這包壞掉，
+      // 而寫死「銅層 + 1」的舊帳正是這樣來的（2026-08-31 補了三組層之後就對不上）。
+      const info = get('/misc/info');
+      if (info) {
+        const declared = Number((info.text.split('LAYERS_COUNT=')[1] || '').split(String.fromCharCode(10))[0]);
+        ok(declared === rows, `${tag}: misc/info 的 LAYERS_COUNT ${declared} 要等於 matrix 的 ${rows} 層`);
+      }
       ok(matrix.text.includes('START_NAME=' + nameOf(0).toUpperCase()),
          `${tag}: drill 起始層 = ${nameOf(0).toUpperCase()}`);
       ok(matrix.text.includes('END_NAME=' + nameOf(cu.length - 1).toUpperCase()),

@@ -16,6 +16,8 @@
 const fs = require('fs');
 const path = require('path');
 const { buildNetSpec } = require('./supabase/functions/_shared/netspec.mjs');
+// 換行字元用 fromCharCode 組：字面跳脫在幾層轉寫裡被吃掉過。
+const NLC = String.fromCharCode(10);
 
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) pass++; else { fail++; console.log('  FAIL: ' + m); } };
@@ -80,5 +82,72 @@ const tr = (net, w, layer, x2) => ({ x1: 0, y1: 0, x2: x2 || 10, y2: 0, width: w
   ok(/netSpec\s*&&|if\s*\(\s*netSpec/.test(g), '5.3 沒有要求就不加檔');
 }
 
-console.log(`\nnetspec.test: ${pass} passed, ${fail} failed`);
-process.exit(fail ? 1 : 0);
+// ---- 6. 三包檔要說同一件事（Gerber / ODB++ / IPC-2581）----
+// 這一節防的是最貴的一種分岔：三個匯出端各自抄一份阻抗，板廠拿到兩包檔、兩個數字。
+// 這裡不比「格式對不對」（那要真 CAM 才算數），只比「同一個要求有沒有以同一個值送出去」。
+(async () => {
+  const padAbs = (c, p) => ({ x: c.x + p.x, y: c.y + p.y });
+  const st = () => ({
+    layerStack: [{ id: 'F.Cu', kind: 'copper' }, { id: 'B.Cu', kind: 'copper' }],
+    boardWidth: 20, boardHeight: 20, edgeSegs: [],
+    components: [{ ref: 'U1', part: 'X', x: 0, y: 0, rot: 0, side: 'top', w: 2, h: 2,
+      pads: [{ num: 1, x: 0, y: 0, w: 1, h: 1, shape: 'rect', net: 'CLK', side: 'F' }] }],
+    traces: [{ x1: 0, y1: 0, x2: 5, y2: 0, layer: 'F.Cu', width: 0.2, net: 'CLK' }],
+    vias: [], userZones: [], keepouts: [], zoneFills: [], teardrops: [],
+    netProps: { CLK: { z0: 50, ztol: 8 }, USB_DP: { zdiff: 90, pair: 'USB_DM' } }
+  });
+
+  const odbm = await import('./supabase/functions/_shared/odbpp.mjs');
+  const ipcm = await import('./supabase/functions/_shared/ipc2581.mjs');
+  const germ = await import('./supabase/functions/_shared/gerber.mjs');
+
+  const withProps = st();
+  const spec = buildNetSpec(withProps, { name: 'demo' });
+
+  const ger = germ.build(withProps, padAbs, 'demo');
+  const gerFile = ger.files.find(f => f.name.indexOf('NetSpec') >= 0);
+  ok(!!gerFile, '6.1 Gerber 包有 -NetSpec.txt');
+  eq(gerFile && gerFile.text, spec.text, '6.2 Gerber 那份來自同一個產生器');
+
+  const odb = odbm.build(withProps, padAbs, 'demo');
+  const odbFile = odb.files.find(f => f.name.endsWith('/misc/netspec.txt'));
+  ok(!!odbFile, '6.3 ODB++ 包有 misc/netspec.txt');
+  eq(odbFile && odbFile.text, spec.text, '6.4 ODB++ 那份與 Gerber 那份是同一段文字');
+
+  const eda = odb.files.find(f => f.name.endsWith('/eda/data'));
+  const impLines = eda.text.split(NLC).filter(l => l.indexOf('#IMP ') === 0);
+  eq(impLines.length, 1, '6.5 只有已在板上的 CLK 有 #IMP（USB_DP 沒幾何，不塞進 netlist）');
+  ok(impLines[0].indexOf('Z0=50') > 0, '6.6 #IMP 帶設計端的目標值');
+  ok(impLines[0].indexOf('TOL=8') > 0, '6.7 容差要帶（沒有容差的目標板廠做不了）');
+  ok(impLines[0].indexOf('LAYERS=F.Cu') > 0, '6.8 帶實際走線的層');
+  eq(eda.text.indexOf('ATTR'), -1, '6.9 不可以自創沒在 attrlist 宣告的 ODB++ ATTR');
+
+  const xml = ipcm.build(withProps, padAbs, 'demo').files[0].text;
+  const netBlock = n => {
+    const i = xml.indexOf('<LogicalNet name="' + n + '">');
+    return i < 0 ? '' : xml.slice(i, xml.indexOf('</LogicalNet>', i));
+  };
+  ok(netBlock('CLK').indexOf('name="impedanceZ0Ohm" value="50"') > 0, '6.10 IPC-2581 帶同一個 Z0');
+  ok(netBlock('CLK').indexOf('name="impedanceTolerancePercent" value="8"') > 0, '6.11 IPC-2581 帶同一個容差');
+  ok(netBlock('USB_DP').indexOf('value="90"') > 0, '6.12 有要求但還沒繞的 net 也要留在檔裡');
+  ok(netBlock('USB_DP').indexOf('NOT_ROUTED') > 0, '6.13 沒繞要明講，不可以留白');
+  ok(netBlock('USB_DP').indexOf('differentialPairNet" value="USB_DM"') > 0, '6.14 配對關係要帶出去');
+
+  const bare = st(); delete bare.netProps;
+  const g2 = germ.build(bare, padAbs, 'demo');
+  const o2 = odbm.build(bare, padAbs, 'demo');
+  const x2 = ipcm.build(bare, padAbs, 'demo').files[0].text;
+  eq(g2.files.filter(f => f.name.indexOf('NetSpec') >= 0).length, 0, '6.15 沒要求時 Gerber 不產表');
+  eq(o2.files.filter(f => f.name.endsWith('/misc/netspec.txt')).length, 0, '6.16 沒要求時 ODB++ 不產表');
+  eq(o2.files.find(f => f.name.endsWith('/eda/data')).text.indexOf('#IMP '), -1, '6.17 沒要求時沒有 #IMP');
+  eq(x2.indexOf('impedanceZ0Ohm'), -1, '6.18 沒要求時 XML 不帶阻抗屬性');
+
+  const info = odb.files.find(f => f.name.endsWith('/misc/info')).text;
+  const matrix = odb.files.find(f => f.name.endsWith('/matrix/matrix')).text;
+  const declared = Number((info.split('LAYERS_COUNT=')[1] || '').split(NLC)[0]);
+  const actual = matrix.split('LAYER ').length - 1;
+  eq(declared, actual, '6.19 misc/info 宣告的層數要等於 matrix 實際列出的層數');
+
+  console.log(`\nnetspec.test: ${pass} passed, ${fail} failed`);
+  process.exit(fail ? 1 : 0);
+})();

@@ -105,6 +105,29 @@ function board() {
   const asm = await import('./supabase/functions/_shared/assembly.mjs');
 
   // ================= IPC-2581 =================
+  // ---- 受控阻抗需求：屬性進了檔，而且沒把 XML 弄壞 ----
+  // 帶新元素最容易出的意外是「值裡有引號或 & 就整份檔解析不了」，
+  // 所以這裡的 note 刻意放特殊字元，再跑一次 well-formed 檢查。
+  {
+    const st = board();
+    st.netProps = { SDA: { z0: 50, ztol: 7, note: 'route away from "SW" & keep 3W' }, USB_DP: { zdiff: 90, pair: 'USB_DM' } };
+    const r = ipc.build(st, padAbs, 'demo');
+    const xml = r.files[0].text;
+    eq(checkXml(xml), null, 'IPC 阻抗：帶屬性之後仍是 well-formed XML');
+    const blockOf = n => {
+      const i = xml.indexOf('<LogicalNet name="' + n + '">');
+      return i < 0 ? '' : xml.slice(i, xml.indexOf('</LogicalNet>', i));
+    };
+    ok(blockOf('SDA').indexOf('name="impedanceZ0Ohm" value="50"') > 0, 'IPC 阻抗：Z0 進了對的那條 net');
+    ok(blockOf('SDA').indexOf('&amp;') > 0, 'IPC 阻抗：註記裡的 & 有跳脫');
+    ok(blockOf('SDA').indexOf('&quot;SW&quot;') > 0, 'IPC 阻抗：註記裡的引號有跳脫');
+    ok(blockOf('GND').indexOf('impedance') < 0, 'IPC 阻抗：沒設屬性的 net 不可以憑空長出要求');
+    ok(blockOf('USB_DP').indexOf('NOT_ROUTED') > 0, 'IPC 阻抗：有要求但沒繞的 net 要標 NOT_ROUTED');
+    const bare = ipc.build(board(), padAbs, 'demo').files[0].text;
+    eq(bare.indexOf('impedanceZ0Ohm'), -1, 'IPC 阻抗：完全沒設就完全不寫（空屬性＝告訴板廠沒有要求）');
+  }
+
+
   {
     const st = board();
     const r = ipc.build(st, padAbs, 'demo');
