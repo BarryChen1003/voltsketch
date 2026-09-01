@@ -2244,6 +2244,64 @@ const pcbApp = {
     return true;
   },
 
+  // 匯流排群組佈線：一次拉一束。
+  //
+  // 誠實界定：這不是真正的束狀繞線（全程等距並行、共同轉彎）——那要另一種求解器。
+  // 這裡做的是「把這一束的飛線整批交給既有的繞線器，並且照匯流排成員順序排隊」。
+  // 順序是重點：既有的 RouteAll 預設照長度排（order:'short'），一束線那樣繞會互相穿過去，
+  // 拉出來像打結；照 D0..Dn 的順序繞，出來才是一疊平行線。所以這裡指定 order:'none'。
+  //
+  // 繞完照樣回報 skew，而且跟面板同一條規則：**只算已繞的成員**。
+  routeBus(spec) {
+    const g = (this.state.busGroups || []).find(x => x.spec === spec);
+    if (!g) return false;
+    if (!window.Ratsnest || !window.RouteAll) return false;
+    const rank = new Map(g.members.map((m, i) => [m, i]));
+    const lines = window.Ratsnest.compute(this.state, this.padAbs.bind(this))
+      .filter(l => rank.has(l.net))
+      .sort((a, b) => (rank.get(a.net) - rank.get(b.net)));
+    if (!lines.length) { this.toast(pcbT('pj_bus_route_none', { spec: spec }), 'info'); return false; }
+
+    this.hist();
+    const rules = this.loadDrcRules();
+    const ps = window.Padstack ? window.Padstack.load() : { od: 0.7, drill: 0.3 };
+    const opts = {
+      layers: this.routableLayers(),
+      layer: this.state.traceLayer || 'F.Cu',
+      width: this.state.traceWidth || 0.25,
+      clearance: rules.clearance,
+      viaOd: ps.od, viaDrill: ps.drill,
+      grid: 0.25,
+      order: 'none',            // 照匯流排順序，不照長度
+      ripup: true, passes: 3, budgetMs: 8000
+    };
+    const r = window.RouteAll.run(this.state, this.padAbs.bind(this), lines, opts);
+    const stamp = Date.now();
+    r.routed.forEach((x, i) => {
+      x.segs.forEach((sg, k) => this.state.traces.push({
+        id: 'trace-' + stamp + '-bus' + i + '-' + k,
+        x1: sg.x1, y1: sg.y1, x2: sg.x2, y2: sg.y2,
+        width: opts.width, layer: sg.layer || opts.layer, net: x.line.net
+      }));
+      (x.vias || []).forEach((v, k) => this.state.vias.push({
+        id: 'via-' + stamp + '-bus' + i + '-' + k,
+        x: v.x, y: v.y, od: v.od, drill: v.drill, net: x.line.net, auto: true
+      }));
+    });
+    this.state.ratsnest = null;
+    this.state.drcMarks = null;               // 動過銅就讓 DRC 標記過期
+    const lenOf = n => window.NetRules ? window.NetRules.netLength(this.state.traces, n) : 0;
+    const rep = window.SchBus ? window.SchBus.report(g, lenOf) : { routed: 0, skew: 0 };
+    this.renderBusPanel();
+    this.renderNetPanel();
+    this.render();
+    this.toast(pcbT('pj_bus_routed', {
+      spec: spec, n: r.routed.length, fail: r.failed.length,
+      skew: (rep.routed >= 2 ? rep.skew.toFixed(2) : '—')
+    }), r.failed.length ? 'warn' : 'info');
+    return true;
+  },
+
   // 走線屬性面板。以前選中走線只能刪：線寬與層都得先退出、改左側欄位、重畫一次。
   syncTracePanel() {
     const box = document.getElementById('traceSelFields');
@@ -3611,6 +3669,11 @@ const pcbApp = {
       const spec = this.state.highlightBus;
       if (!spec) { this.toast(pcbT('pj_bus_pick'), 'warn'); return; }
       this.tuneBus(spec);
+    });
+    document.getElementById('busRouteBtn')?.addEventListener('click', () => {
+      const spec = this.state.highlightBus;
+      if (!spec) { this.toast(pcbT('pj_bus_pick'), 'warn'); return; }
+      this.routeBus(spec);
     });
     this.renderShortcutHelp();
     window.addEventListener('vs-lang-change', () => this.renderShortcutHelp());

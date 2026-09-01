@@ -1745,5 +1745,56 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   app.state = savedState;
 }
 
+// 38) 匯流排群組佈線：一次拉一束
+// 這一節守兩件事：只動這一束（別的 net 不可以被順手繞掉），
+// 以及**照匯流排順序排隊**——照長度排會讓一束線互相穿過去，出來像打結。
+{
+  const savedState = app.state;
+  const members = ['D0', 'D1', 'D2', 'D3'];
+  const padOf = net => [{ num: '1', x: 0, y: 0, w: 0.6, h: 0.6, side: 'F', net: net, cu: true }];
+  const comps = [];
+  members.forEach((n, i) => {
+    comps.push({ id: 'l' + i, ref: 'L' + i, x: -20, y: -6 + i * 4, rot: 0, pads: padOf(n) });
+    comps.push({ id: 'r' + i, ref: 'R' + i, x: 20, y: -6 + i * 4, rot: 0, pads: padOf(n) });
+  });
+  comps.push({ id: 'x1', ref: 'X1', x: -20, y: 14, rot: 0, pads: padOf('SDA') });
+  comps.push({ id: 'x2', ref: 'X2', x: 20, y: 14, rot: 0, pads: padOf('SDA') });
+  app.state = Object.assign({}, savedState, {
+    boardWidth: 60, boardHeight: 44, traces: [], vias: [], keepouts: [], userZones: [],
+    components: comps,
+    busGroups: [{ spec: 'D[0..3]', base: 'D', members: members.slice() }]
+  });
+
+  const okRun = app.routeBus('D[0..3]');
+  ok(okRun === true, '38 整束佈線應回報成功');
+  members.forEach(n => ok(app.state.traces.some(t => t.net === n), '38 ' + n + ' 要繞出走線'));
+  ok(!app.state.traces.some(t => t.net === 'SDA'), '38 不可順手繞掉這一束以外的 net');
+
+  // 排隊順序是這個功能的全部價值：照長度排（RouteAll 的預設）會讓一束線互相穿過去。
+  // 用「幾何看起來沒交叉」去測不可靠——線長一樣時兩種排法結果相同，測不出差別。
+  // 所以直接驗交給繞線器的順序與 order 選項。
+  {
+    const RA = window.RouteAll;
+    const real = RA.run;
+    let sawNets = null, sawOrder = null;
+    // 用 call 保住 this：RouteAll.run 內部呼叫 this.commit，用箭頭函式轉呼叫會直接爆
+    RA.run = (st, pa, lines2, o) => { sawNets = lines2.map(l => l.net); sawOrder = o.order; return real.call(RA, st, pa, lines2, o); };
+    // 線長刻意不同：照長度排會變成 D3,D2,D1,D0，照匯流排排才是 D0..D3
+    app.state.traces = [];
+    app.state.components.forEach(c => {
+      const m = /^R(\d)$/.exec(c.ref);
+      if (m) c.x = 20 - Number(m[1]) * 3;
+    });
+    app.routeBus('D[0..3]');
+    RA.run = real;
+    eq(sawOrder, 'none', '38 要指定 order:none（照匯流排順序，不讓繞線器照長度重排）');
+    eq((sawNets || []).join(','), members.join(','), '38 交給繞線器的順序要照匯流排成員順序');
+  }
+
+  // 不存在的匯流排要安靜回 false，不可以爆
+  eq(app.routeBus('NOPE[0..1]'), false, '38 沒有這束就回 false');
+  app.state = savedState;
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
