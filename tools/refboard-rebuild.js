@@ -239,28 +239,17 @@ for (const b of boards) {
   // 線寬要照 Constraint Manager 的 class 走：POWER（GND/VCC/VIN…）下限 0.3mm。
   // 第一版一律 0.15mm，DRC 幾何全綠，但 cm_e_width 報了 13 條——電源線細到不能用。
   // 寬的先繞：它的選擇最少，等窄線把通道占滿就再也塞不進去。
-  const cmData = window.ConstraintMgr ? ConstraintMgr.load() : null;
-  const widthOf = net => {
-    const cls = cmData ? ConstraintMgr.classOf(cmData, net || "") : null;
-    const minW = cls && cls.phys && cls.phys.minW;
-    // NetRules 是另一套規則（pattern → 最小線寬），預設就有 VIN 0.5mm、GND 0.3mm。
-    // 只看 ConstraintMgr 會漏掉它：node 沒有 localStorage 所以 netRules 是空的，
-    // 瀏覽器一載入就是預設值——工具說 0、使用者打開卻看到「VIN 有 11 段 < 0.5mm」。
-    const nr = window.NetRules ? window.NetRules.match(window.NetRules.load(), net || "") : null;
-    const nrMin = nr && nr.minW > 0 ? nr.minW : 0;
-    return Math.max(0.15, minW || 0, nrMin);
-  };
-  // 淨空也要照 Constraint Manager 的矩陣走：預設 default|power 要 0.2mm、diff|power 要 0.25mm，
-  // 比全域的 0.15 嚴。用全域值繞出來的線會過 PadDrc 但被 cm_e_clear 抓到。
-  const clearanceFor = nets => {
-    if (!cmData) return CL;
+  // 線寬與淨空政策抽到 tools/refboard-policy.js，與 refboard-fill.js 共用：
+  // 兩支各留一份的話會分岔，而分岔的症狀是「補繞出來的線在重建的板上違規」。
+  const policy = require('./refboard-policy.js').makePolicy(window, CL);
+  const widthOf = policy.widthOf;
+  const allNetsOf = () => {
     const all = new Set();
     (st.components || []).forEach(c => (c.pads || []).forEach(pd => { if (pd.net) all.add(pd.net); }));
     lines.forEach(l => { if (l.net) all.add(l.net); });
-    let need = CL.traceToTrace;
-    for (const a of nets) for (const b of all) need = Math.max(need, ConstraintMgr.clearanceBetween(cmData, a, b, CL.traceToTrace));
-    return Object.assign({}, CL, { traceToTrace: need, traceToPad: Math.max(CL.traceToPad, need) });
+    return all;
   };
+  const clearanceFor = nets => policy.clearanceFor(nets, allNetsOf());
   const groups = new Map();
   lines.forEach(l => {
     const w = widthOf(l.net);

@@ -473,6 +473,12 @@
       if (!inb(sx, sy) || !inb(ex, ey)) return { ok: false, reason: T('rule_ep_outside') };
 
       // 端點可以落在哪些層：由該處同 net 的 pad 決定。找不到 pad（端點是走線端或 via）就都可以。
+      // 端點能用哪幾層＝那個點上真的有銅的那幾層。
+      // pad 之外還要看**既有的走線端點與 via**：飛線的一端常常不是 pad，而是另一段走線的端點
+      // （公版就是這樣）。漏掉這一段，set 會是空的而退回「所有層都行」，
+      // 於是繞線器可以在別層收線、不打 via——兩段銅落在同一個座標卻沒有連上。
+      // DRC 不會抗議（銅沒有互相違規），飛線只多出一條**零長度**的線，畫面上看不見。
+      // 2026-09-01 實測：8 片公版 134 條未繞裡，這種零長度的佔一半以上。
       const layersAtEnd = (x, y) => {
         const set = new Set();
         (state.components || []).forEach(c => (c.pads || []).forEach(p => {
@@ -482,6 +488,21 @@
           if (Math.hypot(a.x - x, a.y - y) > Math.hypot(p.w || 0.5, p.h || 0.5) / 2 + g) return;
           padLayers(p).forEach(i => set.add(i));
         }));
+        // via 是穿孔銅柱：落在它上面等於每一層都接得到
+        (state.vias || []).forEach(v => {
+          if (nets.length && !isMine(v.net)) return;
+          if (Math.hypot(v.x - x, v.y - y) > (v.od || 0.6) / 2 + g) return;
+          for (let i = 0; i < L; i++) set.add(i);
+        });
+        // 既有走線的端點：只有它自己那一層
+        if (!set.size) {
+          (state.traces || []).forEach(t => {
+            if (nets.length && !isMine(t.net)) return;
+            if (Math.hypot(t.x1 - x, t.y1 - y) > g && Math.hypot(t.x2 - x, t.y2 - y) > g) return;
+            const li = layers.indexOf(t.layer || 'F.Cu');
+            if (li >= 0) set.add(li);
+          });
+        }
         if (!set.size) for (let i = 0; i < L; i++) set.add(i);
         return [...set];
       };

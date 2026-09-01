@@ -791,6 +791,36 @@ const minDistToSegs = (px, py, segs) =>
   }
   eq(worse.join(' │ '), '', '21 公版的 DRC error 只准變少，不准變多');
 
+  // 21b 未繞預算。DRC 全 0 不代表板子接得起來——2026-09-01 實測 8 片共 134 條未繞，
+  // 其中一半以上是**零長度飛線**：同一點、同 net、不同層、缺 via，畫面上看不見。
+  // 根因是繞線器收線時允許收在別層（已修，見第 39 節），資料端由 tools/refboard-fill.js 縫回來。
+  // 這個預算跟 DRC 一樣只准往下：變多就是有人把板子改壞了，或繞線器又退步了。
+  const OPEN_BUDGET = {
+    'rp2040-pico30': 14, 'arduino-uno-r3': 14, 'esp32-poe2': 8, 'a20-lime': 10,
+    'imx233-maxi': 5, 'openrex-imx6': 8, 'imx8mp-som': 9, 'librevna': 9
+  };
+  // 剩下的零長度飛線：那個點要打 via 才接得起來，但 via 放下去會撞到鄰居
+  //（密腳 B2B／BGA 區，實測 DRC 0 -> 1~4）。正解是逃逸繞線把接點挪開再打，
+  // 不在「補繞」的範圍內，所以先記成預算。同樣只准往下。
+  const ZERO_BUDGET = {
+    'rp2040-pico30': 0, 'arduino-uno-r3': 0, 'esp32-poe2': 1, 'a20-lime': 0,
+    'imx233-maxi': 1, 'openrex-imx6': 3, 'imx8mp-som': 3, 'librevna': 0
+  };
+  const openWorse = [], zeroLen = [];
+  for (const id of boards) {
+    app.loadRefBoard(id);
+    app.state.netRules = window.NetRules ? window.NetRules.load() : [];
+    const rl = window.Ratsnest.compute(app.state, app.padAbs.bind(app));
+    const cap = OPEN_BUDGET[id];
+    ok(cap != null, `21b 公版 ${id} 應列在未繞預算裡`);
+    if (cap != null && rl.length > cap) openWorse.push(`${id}: ${rl.length} > ${cap}`);
+    const z = rl.filter(l => Math.hypot(l.x2 - l.x1, l.y2 - l.y1) < 1e-6).length;
+    if (z > (ZERO_BUDGET[id] || 0)) zeroLen.push(`${id}: ${z} > ${ZERO_BUDGET[id] || 0}`);
+  }
+  eq(openWorse.join(' │ '), '', '21b 公版的未繞條數只准變少');
+  // 零長度飛線＝同一點、同 net、不同層、缺 via 的壞接點：畫面上看不見，使用者只覺得飛線降不下去
+  eq(zeroLen.join(' │ '), '', '21b 公版的零長度飛線只准變少');
+
   // pad 的 net 有兩個來源：公版資料自帶的 padNets 表，以及走線端點回推（assignPadNets）。
   // 2026-08-26 之前只有後者，所以多數 pad 沒有 net、繞線器只能把它們當障礙。
   {
@@ -1793,6 +1823,41 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
 
   // 不存在的匯流排要安靜回 false，不可以爆
   eq(app.routeBus('NOPE[0..1]'), false, '38 沒有這束就回 false');
+  app.state = savedState;
+}
+
+// 39) 繞線收尾要收在「那個點真的有銅」的層——否則產出接不到東西的浮空銅
+// 這個缺陷不會被 DRC 抓到（銅沒有互相違規），飛線只會多一條**零長度**的線，
+// 畫面上看不見。2026-09-01 實測 8 片公版 134 條未繞裡，這種佔一半以上。
+{
+  const savedState = app.state;
+  const ls = app.buildLayerStack(4);
+  const IN1 = ls.filter(l => l.kind === 'copper')[1].id;
+  app.state = Object.assign({}, savedState, {
+    boardWidth: 60, boardHeight: 30, layerStack: ls, visibleLayers: ls.map(l => l.id),
+    components: [{ id: 'u1', ref: 'U1', x: 20, y: 0, rot: 0, pads: [
+      { num: '1', x: 0, y: 0, w: 0.8, h: 0.8, side: 'F', net: 'N1', cu: true }] }],
+    // 既有走線在內層，端點停在 (-5,0)：那裡沒有 pad、也沒有 via
+    traces: [{ x1: -15, y1: 0, x2: -5, y2: 0, layer: IN1, width: 0.2, net: 'N1' }],
+    vias: [], keepouts: [], userZones: []
+  });
+  const line = { x1: -5, y1: 0, x2: 20, y2: 0, net: 'N1' };
+  const r = window.AutoRoute.route(app.state, app.padAbs.bind(app), line, {
+    layers: ls.filter(l => l.kind === 'copper').map(l => l.id), layer: 'F.Cu',
+    width: 0.2, clearance: app.loadDrcRules().clearance, viaOd: 0.7, viaDrill: 0.3, grid: 0.25
+  });
+  ok(r.ok, '39 這條線應該繞得出來');
+  if (r.ok) {
+    const at = (x, y, p) => Math.hypot(p.x - x, p.y - y) < 0.4;
+    // 起點那一端：要嘛第一段就走在既有走線的那一層，要嘛在那個點放一顆 via 換層
+    const first = (r.segs || []).find(s => Math.hypot(s.x1 - line.x1, s.y1 - line.y1) < 0.4 ||
+                                            Math.hypot(s.x2 - line.x1, s.y2 - line.y1) < 0.4);
+    const viaThere = (r.vias || []).some(v => at(line.x1, line.y1, v));
+    ok(!!first || viaThere, '39 起點附近要有線段或 via');
+    const onSameLayer = first && (first.layer === IN1);
+    ok(onSameLayer || viaThere,
+      '39 收在既有走線的端點時，要走同一層或當場打 via（否則那段銅接不到任何東西）');
+  }
   app.state = savedState;
 }
 

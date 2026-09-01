@@ -307,6 +307,7 @@ window.PCB_REFBOARDS = [
     ],
     "traces": [
       {
+        "id": "ref-t-0",
         "x1": -24,
         "y1": 8.5,
         "x2": -22.7,
@@ -316,6 +317,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-1",
         "x1": -22.7,
         "y1": 8.5,
         "x2": -22.5,
@@ -325,6 +327,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-2",
         "x1": -22.5,
         "y1": 8.3,
         "x2": -22.4,
@@ -334,6 +337,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-3",
         "x1": -22.4,
         "y1": 8.3,
         "x2": -22.3,
@@ -343,6 +347,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-4",
         "x1": -22.3,
         "y1": 8.2,
         "x2": -22.1,
@@ -352,6 +357,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-5",
         "x1": -22.1,
         "y1": 8.2,
         "x2": -22,
@@ -361,6 +367,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-6",
         "x1": -22,
         "y1": 8.1,
         "x2": 23.6,
@@ -370,6 +377,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-7",
         "x1": 23.6,
         "y1": 8.1,
         "x2": 24,
@@ -379,6 +387,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-8",
         "x1": -24,
         "y1": -8.5,
         "x2": -22.7,
@@ -388,6 +397,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-9",
         "x1": -22.7,
         "y1": -8.5,
         "x2": -22.5,
@@ -397,6 +407,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-10",
         "x1": -22.5,
         "y1": -8.3,
         "x2": -22.4,
@@ -406,6 +417,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-11",
         "x1": -22.4,
         "y1": -8.3,
         "x2": -22.3,
@@ -415,6 +427,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-12",
         "x1": -22.3,
         "y1": -8.2,
         "x2": -22.1,
@@ -424,6 +437,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-13",
         "x1": -22.1,
         "y1": -8.2,
         "x2": -22,
@@ -433,6 +447,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-14",
         "x1": -22,
         "y1": -8.1,
         "x2": 23.6,
@@ -442,6 +457,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-15",
         "x1": 23.6,
         "y1": -8.1,
         "x2": 24,
@@ -451,6 +467,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-16",
         "x1": 0,
         "y1": -8.5,
         "x2": 0,
@@ -460,6 +477,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-17",
         "x1": 20.8,
         "y1": -1.6,
         "x2": 20.6,
@@ -469,6 +487,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-18",
         "x1": 20.6,
         "y1": -1.8,
         "x2": 20.5,
@@ -478,6 +497,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-19",
         "x1": 20.5,
         "y1": -1.8,
         "x2": 20.4,
@@ -487,6 +507,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-20",
         "x1": 20.4,
         "y1": -1.9,
         "x2": 20.2,
@@ -496,6 +517,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-21",
         "x1": 20.2,
         "y1": -1.9,
         "x2": 20,
@@ -505,6 +527,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-22",
         "x1": 20,
         "y1": -2.1,
         "x2": 19.9,
@@ -514,6 +537,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-23",
         "x1": 19.9,
         "y1": -2.1,
         "x2": 19.8,
@@ -523,6 +547,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-24",
         "x1": 19.8,
         "y1": -2.2,
         "x2": 17.7,
@@ -532,6 +557,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-25",
         "x1": 12.7,
         "y1": -3,
         "x2": 4.7,
@@ -541,6 +567,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-26",
         "x1": 4.7,
         "y1": -2.9,
         "x2": 3.8,
@@ -550,6 +577,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-27",
         "x1": 3.8,
         "y1": -2.9,
         "x2": 3.5,
@@ -559,6 +587,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-28",
         "x1": 3.5,
         "y1": -2.6,
         "x2": -10.8,
@@ -568,6 +597,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-29",
         "x1": -10.8,
         "y1": -2.6,
         "x2": -11,
@@ -577,6 +607,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-30",
         "x1": -11,
         "y1": -2.8,
         "x2": -11,
@@ -586,6 +617,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-31",
         "x1": 17.5,
         "y1": 1,
         "x2": 16.5,
@@ -595,6 +627,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-32",
         "x1": 16.5,
         "y1": 1,
         "x2": 16.4,
@@ -604,6 +637,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-33",
         "x1": 16.4,
         "y1": 0.9,
         "x2": 16.2,
@@ -613,6 +647,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-34",
         "x1": 16.2,
         "y1": 0.9,
         "x2": 16.1,
@@ -622,6 +657,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-35",
         "x1": 16.1,
         "y1": 0.8,
         "x2": 4.1,
@@ -631,6 +667,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-36",
         "x1": 4.1,
         "y1": 0.8,
         "x2": 4,
@@ -640,6 +677,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-37",
         "x1": 4,
         "y1": 0.9,
         "x2": 3.9,
@@ -649,6 +687,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-38",
         "x1": 3.9,
         "y1": 0.9,
         "x2": 3.8,
@@ -658,6 +697,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-39",
         "x1": 3.8,
         "y1": 1,
         "x2": 3.5,
@@ -667,6 +707,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-40",
         "x1": 14.9,
         "y1": 3,
         "x2": 4.2,
@@ -676,6 +717,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DM"
       },
       {
+        "id": "ref-t-41",
         "x1": 4.2,
         "y1": 3,
         "x2": 3.8,
@@ -685,6 +727,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DM"
       },
       {
+        "id": "ref-t-42",
         "x1": 3.8,
         "y1": 2.6,
         "x2": 3.8,
@@ -694,6 +737,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DM"
       },
       {
+        "id": "ref-t-43",
         "x1": 3.8,
         "y1": 2.5,
         "x2": 3.5,
@@ -703,6 +747,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DM"
       },
       {
+        "id": "ref-t-44",
         "x1": -9.3,
         "y1": -1.8,
         "x2": -8.6,
@@ -712,6 +757,7 @@ window.PCB_REFBOARDS = [
         "net": "QSPI_SD0"
       },
       {
+        "id": "ref-t-45",
         "x1": -8.6,
         "y1": -1.8,
         "x2": -8.2,
@@ -721,6 +767,7 @@ window.PCB_REFBOARDS = [
         "net": "QSPI_SD0"
       },
       {
+        "id": "ref-t-46",
         "x1": -8.2,
         "y1": -1.4,
         "x2": -6.1,
@@ -730,6 +777,7 @@ window.PCB_REFBOARDS = [
         "net": "QSPI_SD0"
       },
       {
+        "id": "ref-t-47",
         "x1": -6.1,
         "y1": -1.4,
         "x2": -5.8,
@@ -739,6 +787,7 @@ window.PCB_REFBOARDS = [
         "net": "QSPI_SD0"
       },
       {
+        "id": "ref-t-48",
         "x1": -5.8,
         "y1": -1.4,
         "x2": -5.7,
@@ -748,6 +797,7 @@ window.PCB_REFBOARDS = [
         "net": "QSPI_SD0"
       },
       {
+        "id": "ref-t-49",
         "x1": -5.7,
         "y1": -1.3,
         "x2": -3.9,
@@ -757,6 +807,7 @@ window.PCB_REFBOARDS = [
         "net": "QSPI_SD0"
       },
       {
+        "id": "ref-t-50",
         "x1": -3.9,
         "y1": -1.3,
         "x2": -3.8,
@@ -766,6 +817,7 @@ window.PCB_REFBOARDS = [
         "net": "QSPI_SD0"
       },
       {
+        "id": "ref-t-51",
         "x1": -3.8,
         "y1": -1.4,
         "x2": -3.5,
@@ -775,6 +827,7 @@ window.PCB_REFBOARDS = [
         "net": "QSPI_SD0"
       },
       {
+        "id": "ref-t-52",
         "x1": -9.3,
         "y1": 0.6,
         "x2": -3.5,
@@ -784,6 +837,7 @@ window.PCB_REFBOARDS = [
         "net": "QSPI_SCLK"
       },
       {
+        "id": "ref-t-53",
         "x1": -7.9,
         "y1": 4.7,
         "x2": -7.7,
@@ -793,6 +847,7 @@ window.PCB_REFBOARDS = [
         "net": "XIN"
       },
       {
+        "id": "ref-t-54",
         "x1": -7.7,
         "y1": 4.5,
         "x2": -7.7,
@@ -802,6 +857,7 @@ window.PCB_REFBOARDS = [
         "net": "XIN"
       },
       {
+        "id": "ref-t-55",
         "x1": -7.7,
         "y1": 4.4,
         "x2": -7.6,
@@ -811,6 +867,7 @@ window.PCB_REFBOARDS = [
         "net": "XIN"
       },
       {
+        "id": "ref-t-56",
         "x1": -7.6,
         "y1": 4.3,
         "x2": -7.6,
@@ -820,6 +877,7 @@ window.PCB_REFBOARDS = [
         "net": "XIN"
       },
       {
+        "id": "ref-t-57",
         "x1": -7.6,
         "y1": 4.2,
         "x2": -7,
@@ -829,6 +887,7 @@ window.PCB_REFBOARDS = [
         "net": "XIN"
       },
       {
+        "id": "ref-t-58",
         "x1": -7,
         "y1": 3.6,
         "x2": -2.8,
@@ -838,6 +897,7 @@ window.PCB_REFBOARDS = [
         "net": "XIN"
       },
       {
+        "id": "ref-t-59",
         "x1": -2.8,
         "y1": 3.6,
         "x2": -2.6,
@@ -847,6 +907,7 @@ window.PCB_REFBOARDS = [
         "net": "XIN"
       },
       {
+        "id": "ref-t-60",
         "x1": -5.4,
         "y1": 5,
         "x2": -4.7,
@@ -856,6 +917,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-61",
         "x1": -4.7,
         "y1": 5,
         "x2": -4.5,
@@ -865,6 +927,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-62",
         "x1": -4.5,
         "y1": 4.8,
         "x2": -3.1,
@@ -874,6 +937,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-63",
         "x1": -3.1,
         "y1": 4.8,
         "x2": -3,
@@ -883,6 +947,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-64",
         "x1": -3,
         "y1": 4.7,
         "x2": -3.2,
@@ -892,6 +957,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-65",
         "x1": -3.2,
         "y1": 4.5,
         "x2": -3.2,
@@ -901,6 +967,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-66",
         "x1": -3.2,
         "y1": 4.4,
         "x2": -3.3,
@@ -910,6 +977,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-67",
         "x1": -3.3,
         "y1": 4.3,
         "x2": -3.3,
@@ -919,6 +987,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-68",
         "x1": -3.3,
         "y1": 3.9,
         "x2": -3.4,
@@ -928,6 +997,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-69",
         "x1": -3.4,
         "y1": 3.8,
         "x2": -3.4,
@@ -937,6 +1007,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-70",
         "x1": -3.4,
         "y1": 2.7,
         "x2": -3.5,
@@ -946,6 +1017,7 @@ window.PCB_REFBOARDS = [
         "net": "XOUT"
       },
       {
+        "id": "ref-t-71",
         "x1": 3.5,
         "y1": -7,
         "x2": 6.3,
@@ -955,6 +1027,7 @@ window.PCB_REFBOARDS = [
         "net": "GPIO25"
       },
       {
+        "id": "ref-t-72",
         "x1": 7.7,
         "y1": -7,
         "x2": 8.7,
@@ -964,6 +1037,7 @@ window.PCB_REFBOARDS = [
         "net": "LED_A"
       },
       {
+        "id": "ref-t-73",
         "x1": -19,
         "y1": -3.5,
         "x2": -19.2,
@@ -973,6 +1047,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-74",
         "x1": -19.2,
         "y1": -3.3,
         "x2": -19.2,
@@ -982,6 +1057,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-75",
         "x1": -19.2,
         "y1": -3.2,
         "x2": -19.3,
@@ -991,6 +1067,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-76",
         "x1": -19.3,
         "y1": -3.1,
         "x2": -19.3,
@@ -1000,6 +1077,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-77",
         "x1": -19.3,
         "y1": -2.9,
         "x2": -19.4,
@@ -1009,6 +1087,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-78",
         "x1": -19.4,
         "y1": -2.8,
         "x2": -19.4,
@@ -1018,6 +1097,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-79",
         "x1": -19.4,
         "y1": 6.3,
         "x2": -19.5,
@@ -1027,6 +1107,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-80",
         "x1": -19,
         "y1": 6.7,
         "x2": -18.8,
@@ -1036,6 +1117,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-81",
         "x1": -18.8,
         "y1": 6.5,
         "x2": -18.7,
@@ -1045,6 +1127,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-82",
         "x1": -18.7,
         "y1": 6.5,
         "x2": -18.6,
@@ -1054,6 +1137,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-83",
         "x1": -18.6,
         "y1": 6.4,
         "x2": -18.4,
@@ -1063,6 +1147,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-84",
         "x1": -18.4,
         "y1": 6.4,
         "x2": -18.2,
@@ -1072,6 +1157,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-85",
         "x1": -18.2,
         "y1": 6.2,
         "x2": -17.8,
@@ -1081,6 +1167,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-86",
         "x1": -17.8,
         "y1": 6.2,
         "x2": -17.7,
@@ -1090,6 +1177,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-87",
         "x1": -17.7,
         "y1": 6.1,
         "x2": -13.1,
@@ -1099,6 +1187,7 @@ window.PCB_REFBOARDS = [
         "net": "BOOTSEL"
       },
       {
+        "id": "ref-t-88",
         "x1": -13.1,
         "y1": 6.1,
         "x2": -13,
@@ -1106,6 +1195,60 @@ window.PCB_REFBOARDS = [
         "layer": "F.Cu",
         "width": 0.15,
         "net": "BOOTSEL"
+      },
+      {
+        "x1": -22,
+        "y1": 8.1,
+        "x2": -22,
+        "y2": -8,
+        "layer": "In1.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -22,
+        "y1": -8,
+        "x2": -22,
+        "y2": -8.1,
+        "layer": "In2.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -22,
+        "y1": 8.1,
+        "x2": -0.4,
+        "y2": 8.1,
+        "layer": "In1.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -0.4,
+        "y1": 8.1,
+        "x2": 0,
+        "y2": 8.5,
+        "layer": "B.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": 21,
+        "y1": -1.7,
+        "x2": 21.1,
+        "y2": -1.6,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "VBUS"
+      },
+      {
+        "x1": 19.6,
+        "y1": -1.7,
+        "x2": 19.5,
+        "y2": -1.6,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "VBUS"
       }
     ],
     "vias": [
@@ -1136,6 +1279,41 @@ window.PCB_REFBOARDS = [
         "od": 0.6,
         "drill": 0.3,
         "net": "LED_A"
+      },
+      {
+        "x": -2.6,
+        "y": 3.5,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "XIN"
+      },
+      {
+        "x": 3.5,
+        "y": -2.6,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "3V3"
+      },
+      {
+        "x": -11,
+        "y": -2.8,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "3V3"
+      },
+      {
+        "x": -22,
+        "y": -8,
+        "od": 0.6,
+        "drill": 0.3,
+        "net": "GND"
+      },
+      {
+        "x": -0.4,
+        "y": 8.1,
+        "od": 0.6,
+        "drill": 0.3,
+        "net": "GND"
       }
     ],
     "padNets": {
@@ -1152,32 +1330,51 @@ window.PCB_REFBOARDS = [
         "12": "QSPI_CS",
         "13": "XOUT",
         "14": "XOUT",
+        "15": "XIN",
+        "16": "XIN",
         "29": "USB_DM",
         "30": "USB_DM",
         "31": "USB_DM",
         "32": "USB_DP",
         "33": "USB_DP",
         "34": "USB_DP",
-        "39": "3V3"
+        "39": "3V3",
+        "41": "3V3",
+        "42": "3V3"
       },
       "U2": {
         "6": "QSPI_SCLK",
-        "7": "QSPI_SD1"
+        "7": "QSPI_SD1",
+        "8": "QSPI_SD0"
       },
       "U3": {
         "1": "3V3",
         "2": "3V3",
         "8": "VBUS"
       },
+      "L1": {
+        "2": "USB_DM"
+      },
       "Y1": {
-        "3": "XOUT"
+        "3": "XOUT",
+        "4": "XIN"
+      },
+      "R1": {
+        "1": "GPIO25",
+        "2": "LED_A"
       },
       "LED1": {
         "1": "LED_A"
       },
       "J1": {
+        "A4": "VBUS",
+        "A5": "VBUS",
+        "A6": "VBUS",
         "S1": "VBUS",
         "S3": "USB_DM"
+      },
+      "TP2": {
+        "1": "BOOTSEL"
       }
     }
   },
@@ -1500,6 +1697,7 @@ window.PCB_REFBOARDS = [
     ],
     "traces": [
       {
+        "id": "ref-t-0",
         "x1": 23,
         "y1": 19.6,
         "x2": 22.8,
@@ -1509,6 +1707,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-1",
         "x1": 22.8,
         "y1": 19.4,
         "x2": 22.7,
@@ -1518,6 +1717,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-2",
         "x1": 22.7,
         "y1": 19.4,
         "x2": 22.6,
@@ -1527,6 +1727,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-3",
         "x1": 22.6,
         "y1": 19.3,
         "x2": 22.4,
@@ -1536,6 +1737,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-4",
         "x1": 22.4,
         "y1": 19.3,
         "x2": 22,
@@ -1545,6 +1747,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-5",
         "x1": 22,
         "y1": 18.9,
         "x2": 21.9,
@@ -1554,6 +1757,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-6",
         "x1": 21.9,
         "y1": 18.9,
         "x2": 21.8,
@@ -1563,6 +1767,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-7",
         "x1": 21.8,
         "y1": 18.8,
         "x2": 20.4,
@@ -1572,6 +1777,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-8",
         "x1": 19.6,
         "y1": 18.3,
         "x2": 19.6,
@@ -1581,6 +1787,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-9",
         "x1": 19.6,
         "y1": 16.1,
         "x2": 19.5,
@@ -1590,6 +1797,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-10",
         "x1": 19.5,
         "y1": 16,
         "x2": 16.7,
@@ -1599,6 +1807,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN"
       },
       {
+        "id": "ref-t-11",
         "x1": 0,
         "y1": -23.2,
         "x2": 0,
@@ -1608,6 +1817,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-12",
         "x1": 11.2,
         "y1": 16,
         "x2": 5,
@@ -1617,6 +1827,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-13",
         "x1": 5,
         "y1": 16,
         "x2": 5,
@@ -1626,6 +1837,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-14",
         "x1": 5,
         "y1": 15.6,
         "x2": 4.2,
@@ -1635,6 +1847,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-15",
         "x1": 4.2,
         "y1": 14.8,
         "x2": 4.2,
@@ -1644,6 +1857,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-16",
         "x1": 4.2,
         "y1": 14.7,
         "x2": 3,
@@ -1653,6 +1867,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-17",
         "x1": 3,
         "y1": 13.5,
         "x2": 3,
@@ -1662,6 +1877,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-18",
         "x1": 3,
         "y1": 11,
         "x2": 2.1,
@@ -1671,6 +1887,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-19",
         "x1": 2.1,
         "y1": 10.1,
         "x2": 2.1,
@@ -1680,6 +1897,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-20",
         "x1": 2.1,
         "y1": 10,
         "x2": 2,
@@ -1689,6 +1907,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-21",
         "x1": 2,
         "y1": 9.9,
         "x2": 2,
@@ -1698,6 +1917,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-22",
         "x1": 2,
         "y1": 9.6,
         "x2": 1.9,
@@ -1707,6 +1927,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-23",
         "x1": 1.9,
         "y1": 9.5,
         "x2": 1.9,
@@ -1716,6 +1937,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-24",
         "x1": 1.9,
         "y1": 4.1,
         "x2": 3.8,
@@ -1725,6 +1947,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-25",
         "x1": 3.8,
         "y1": 2.1,
         "x2": 2.6,
@@ -1734,6 +1957,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-26",
         "x1": 18.5,
         "y1": 17,
         "x2": 17.2,
@@ -1743,6 +1967,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-27",
         "x1": 17.2,
         "y1": 17,
         "x2": 16.8,
@@ -1752,6 +1977,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-28",
         "x1": 16.8,
         "y1": 17.4,
         "x2": 16.6,
@@ -1761,6 +1987,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-29",
         "x1": 16.6,
         "y1": 17.4,
         "x2": 16.5,
@@ -1770,6 +1997,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-30",
         "x1": 16.5,
         "y1": 17.5,
         "x2": 9.1,
@@ -1779,6 +2007,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-31",
         "x1": 9.1,
         "y1": 17.5,
         "x2": 8.9,
@@ -1788,6 +2017,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-32",
         "x1": 8.9,
         "y1": 17.7,
         "x2": -13.3,
@@ -1797,6 +2027,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-33",
         "x1": -13.3,
         "y1": 17.7,
         "x2": -14,
@@ -1806,6 +2037,7 @@ window.PCB_REFBOARDS = [
         "net": "5V"
       },
       {
+        "id": "ref-t-34",
         "x1": -28.2,
         "y1": 16.5,
         "x2": -25.8,
@@ -1815,6 +2047,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-35",
         "x1": -25.2,
         "y1": 15.7,
         "x2": -25.25,
@@ -1824,6 +2057,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-36",
         "x1": -9.9,
         "y1": -6.7,
         "x2": -9.7,
@@ -1833,6 +2067,7 @@ window.PCB_REFBOARDS = [
         "net": "XTAL1"
       },
       {
+        "id": "ref-t-37",
         "x1": -9.7,
         "y1": -6.5,
         "x2": -9.7,
@@ -1842,6 +2077,7 @@ window.PCB_REFBOARDS = [
         "net": "XTAL1"
       },
       {
+        "id": "ref-t-38",
         "x1": -9.7,
         "y1": -6.4,
         "x2": -9.6,
@@ -1851,6 +2087,7 @@ window.PCB_REFBOARDS = [
         "net": "XTAL1"
       },
       {
+        "id": "ref-t-39",
         "x1": -9.6,
         "y1": -6.3,
         "x2": -9.6,
@@ -1860,6 +2097,7 @@ window.PCB_REFBOARDS = [
         "net": "XTAL1"
       },
       {
+        "id": "ref-t-40",
         "x1": -9.6,
         "y1": -6.1,
         "x2": -9.2,
@@ -1869,6 +2107,7 @@ window.PCB_REFBOARDS = [
         "net": "XTAL1"
       },
       {
+        "id": "ref-t-41",
         "x1": -9.2,
         "y1": -5.7,
         "x2": -9.2,
@@ -1878,6 +2117,7 @@ window.PCB_REFBOARDS = [
         "net": "XTAL1"
       },
       {
+        "id": "ref-t-42",
         "x1": -9.2,
         "y1": -5.6,
         "x2": -9.1,
@@ -1887,6 +2127,7 @@ window.PCB_REFBOARDS = [
         "net": "XTAL1"
       },
       {
+        "id": "ref-t-43",
         "x1": -9.1,
         "y1": -5.5,
         "x2": -9.1,
@@ -1896,6 +2137,7 @@ window.PCB_REFBOARDS = [
         "net": "XTAL1"
       },
       {
+        "id": "ref-t-44",
         "x1": -9.1,
         "y1": -4.1,
         "x2": -9,
@@ -1905,6 +2147,7 @@ window.PCB_REFBOARDS = [
         "net": "XTAL1"
       },
       {
+        "id": "ref-t-45",
         "x1": -6.5,
         "y1": -6.8,
         "x2": -6.5,
@@ -1914,6 +2157,7 @@ window.PCB_REFBOARDS = [
         "net": "XTAL2"
       },
       {
+        "id": "ref-t-46",
         "x1": -2,
         "y1": -6.5,
         "x2": -2,
@@ -1923,6 +2167,7 @@ window.PCB_REFBOARDS = [
         "net": "D2"
       },
       {
+        "id": "ref-t-47",
         "x1": -2,
         "y1": -23.2,
         "x2": -2.1,
@@ -1930,6 +2175,87 @@ window.PCB_REFBOARDS = [
         "layer": "F.Cu",
         "width": 0.15,
         "net": "D2"
+      },
+      {
+        "x1": 22,
+        "y1": 18.9,
+        "x2": 22.139,
+        "y2": 18.808,
+        "layer": "F.Cu",
+        "width": 0.5,
+        "net": "VIN"
+      },
+      {
+        "x1": 3,
+        "y1": 14,
+        "x2": 3.05,
+        "y2": 14,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "5V"
+      },
+      {
+        "x1": 11.3,
+        "y1": 16.3,
+        "x2": 11.1,
+        "y2": 16.5,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "5V"
+      },
+      {
+        "x1": 11.1,
+        "y1": 16.5,
+        "x2": 11,
+        "y2": 16.5,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "5V"
+      },
+      {
+        "x1": 11,
+        "y1": 16.5,
+        "x2": 10.9,
+        "y2": 16.6,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "5V"
+      },
+      {
+        "x1": 10.9,
+        "y1": 16.6,
+        "x2": 10.7,
+        "y2": 16.6,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "5V"
+      },
+      {
+        "x1": 10.7,
+        "y1": 16.6,
+        "x2": 9.9,
+        "y2": 17.4,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "5V"
+      },
+      {
+        "x1": 9.9,
+        "y1": 17.4,
+        "x2": 9.2,
+        "y2": 17.4,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "5V"
+      },
+      {
+        "x1": 9.2,
+        "y1": 17.4,
+        "x2": 9.1,
+        "y2": 17.5,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "5V"
       }
     ],
     "vias": [
@@ -1946,6 +2272,34 @@ window.PCB_REFBOARDS = [
         "od": 0.6,
         "drill": 0.3,
         "net": "5V"
+      },
+      {
+        "x": 5,
+        "y": 16,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "5V"
+      },
+      {
+        "x": -25.25,
+        "y": 12.5,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "USB_DP"
+      },
+      {
+        "x": 19.5,
+        "y": 16,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "VIN"
+      },
+      {
+        "x": 22,
+        "y": 18.9,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "VIN"
       }
     ],
     "padNets": {
@@ -1954,13 +2308,26 @@ window.PCB_REFBOARDS = [
         "2": "XTAL1",
         "3": "XTAL2",
         "4": "XTAL2",
+        "13": "5V",
+        "14": "5V",
+        "15": "5V",
         "28": "D3",
         "29": "D3"
       },
+      "Y1": {
+        "1": "XTAL1"
+      },
       "U2": {
+        "9": "USB_DP",
+        "10": "USB_DP",
+        "11": "USB_DP",
         "22": "TXD",
         "23": "TXD",
         "24": "RXD"
+      },
+      "U3": {
+        "2": "VIN",
+        "3": "VIN"
       },
       "D1": {
         "1": "5V",
@@ -1978,6 +2345,9 @@ window.PCB_REFBOARDS = [
         "9": "D2",
         "10": "GND",
         "11": "D3"
+      },
+      "LED2": {
+        "1": "5V"
       }
     }
   },
@@ -2250,6 +2620,7 @@ window.PCB_REFBOARDS = [
     ],
     "traces": [
       {
+        "id": "ref-t-0",
         "x1": -37,
         "y1": 0,
         "x2": 37,
@@ -2259,6 +2630,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-1",
         "x1": 22,
         "y1": -3.5,
         "x2": 22,
@@ -2268,6 +2640,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-2",
         "x1": 22,
         "y1": -1,
         "x2": 26,
@@ -2277,6 +2650,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-3",
         "x1": 21,
         "y1": -2.5,
         "x2": 21,
@@ -2286,6 +2660,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-4",
         "x1": 21,
         "y1": 0,
         "x2": 26,
@@ -2295,6 +2670,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-5",
         "x1": -5.5,
         "y1": -1.2,
         "x2": -4.8,
@@ -2304,6 +2680,7 @@ window.PCB_REFBOARDS = [
         "net": "RMII_CLK"
       },
       {
+        "id": "ref-t-6",
         "x1": -4.8,
         "y1": -1.2,
         "x2": -4.6,
@@ -2313,6 +2690,7 @@ window.PCB_REFBOARDS = [
         "net": "RMII_CLK"
       },
       {
+        "id": "ref-t-7",
         "x1": -4.6,
         "y1": -1,
         "x2": -3.2,
@@ -2322,6 +2700,7 @@ window.PCB_REFBOARDS = [
         "net": "RMII_CLK"
       },
       {
+        "id": "ref-t-8",
         "x1": -3.2,
         "y1": -1,
         "x2": -3,
@@ -2331,6 +2710,7 @@ window.PCB_REFBOARDS = [
         "net": "RMII_CLK"
       },
       {
+        "id": "ref-t-9",
         "x1": -3,
         "y1": -0.8,
         "x2": 2.6,
@@ -2340,6 +2720,7 @@ window.PCB_REFBOARDS = [
         "net": "RMII_CLK"
       },
       {
+        "id": "ref-t-10",
         "x1": 2.6,
         "y1": -0.8,
         "x2": 4,
@@ -2349,6 +2730,7 @@ window.PCB_REFBOARDS = [
         "net": "RMII_CLK"
       },
       {
+        "id": "ref-t-11",
         "x1": 4,
         "y1": -0.8,
         "x2": 4.25,
@@ -2358,6 +2740,7 @@ window.PCB_REFBOARDS = [
         "net": "RMII_CLK"
       },
       {
+        "id": "ref-t-12",
         "x1": 25.7,
         "y1": 4.3,
         "x2": 25,
@@ -2367,6 +2750,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-13",
         "x1": 25,
         "y1": 4.3,
         "x2": 24.7,
@@ -2376,6 +2760,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-14",
         "x1": 24.7,
         "y1": 4.6,
         "x2": 24.4,
@@ -2385,6 +2770,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-15",
         "x1": 24.4,
         "y1": 4.6,
         "x2": 24.3,
@@ -2394,6 +2780,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-16",
         "x1": 24.3,
         "y1": 4.7,
         "x2": 19.3,
@@ -2403,6 +2790,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-17",
         "x1": 19.3,
         "y1": 4.7,
         "x2": 19,
@@ -2412,6 +2800,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-18",
         "x1": 19,
         "y1": 5,
         "x2": 19,
@@ -2421,6 +2810,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-19",
         "x1": 19,
         "y1": 11,
         "x2": 18.8,
@@ -2430,6 +2820,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-20",
         "x1": 18.8,
         "y1": 11.2,
         "x2": 18.7,
@@ -2439,6 +2830,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-21",
         "x1": 18.7,
         "y1": 11.2,
         "x2": 18.6,
@@ -2448,6 +2840,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-22",
         "x1": 18.6,
         "y1": 11.3,
         "x2": 18.4,
@@ -2457,6 +2850,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-23",
         "x1": 18.4,
         "y1": 11.3,
         "x2": 18,
@@ -2466,6 +2860,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-24",
         "x1": 18,
         "y1": 11.7,
         "x2": 17.9,
@@ -2475,6 +2870,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-25",
         "x1": 17.9,
         "y1": 11.7,
         "x2": 17.8,
@@ -2484,6 +2880,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-26",
         "x1": 17.8,
         "y1": 11.8,
         "x2": 17.7,
@@ -2493,6 +2890,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-27",
         "x1": 17.7,
         "y1": 11.8,
         "x2": 16.5,
@@ -2502,6 +2900,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-28",
         "x1": 16.5,
         "y1": 13,
         "x2": 13.5,
@@ -2511,6 +2910,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-29",
         "x1": 13.5,
         "y1": 13,
         "x2": 13.4,
@@ -2520,6 +2920,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-30",
         "x1": 13.4,
         "y1": 13.1,
         "x2": 9.8,
@@ -2529,6 +2930,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-31",
         "x1": 9.8,
         "y1": 13.1,
         "x2": 8.3,
@@ -2538,6 +2940,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-32",
         "x1": 8.3,
         "y1": 14.6,
         "x2": 8.2,
@@ -2547,6 +2950,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-33",
         "x1": 8.2,
         "y1": 14.6,
         "x2": 8.1,
@@ -2556,6 +2960,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-34",
         "x1": 8.1,
         "y1": 14.7,
         "x2": 7.9,
@@ -2565,6 +2970,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-35",
         "x1": 7.9,
         "y1": 14.7,
         "x2": 7.8,
@@ -2574,6 +2980,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-36",
         "x1": 7.8,
         "y1": 14.8,
         "x2": -19.8,
@@ -2583,6 +2990,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-37",
         "x1": -19.8,
         "y1": 14.8,
         "x2": -20,
@@ -2592,6 +3000,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-38",
         "x1": -20,
         "y1": 14.8,
         "x2": -20.4,
@@ -2601,6 +3010,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-39",
         "x1": -20.4,
         "y1": 14.4,
         "x2": -20.7,
@@ -2610,6 +3020,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-40",
         "x1": -20.7,
         "y1": 14.1,
         "x2": -20.4,
@@ -2619,6 +3030,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-41",
         "x1": -20.4,
         "y1": 14.1,
         "x2": -19.9,
@@ -2628,6 +3040,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-42",
         "x1": -19.9,
         "y1": 13.6,
         "x2": -19.9,
@@ -2637,6 +3050,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-43",
         "x1": -19.9,
         "y1": 13.4,
         "x2": -19.8,
@@ -2646,6 +3060,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-44",
         "x1": -19.8,
         "y1": 13.3,
         "x2": -19.8,
@@ -2655,6 +3070,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-45",
         "x1": -19.8,
         "y1": 12.6,
         "x2": -19.9,
@@ -2664,6 +3080,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-46",
         "x1": -19.9,
         "y1": 12.5,
         "x2": -19.9,
@@ -2673,6 +3090,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-47",
         "x1": -19.9,
         "y1": 12.4,
         "x2": -20,
@@ -2682,6 +3100,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-48",
         "x1": -20,
         "y1": 12.3,
         "x2": -20,
@@ -2691,6 +3110,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-49",
         "x1": -20,
         "y1": 12.2,
         "x2": -20.4,
@@ -2700,6 +3120,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-50",
         "x1": -20.4,
         "y1": 11.8,
         "x2": -20.5,
@@ -2709,6 +3130,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-51",
         "x1": -20.5,
         "y1": 11.8,
         "x2": -20.6,
@@ -2718,6 +3140,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-52",
         "x1": -20.6,
         "y1": 11.7,
         "x2": -20.7,
@@ -2727,6 +3150,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-53",
         "x1": -11.2,
         "y1": 12.2,
         "x2": -12.1,
@@ -2736,6 +3160,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-54",
         "x1": -12.1,
         "y1": 12.2,
         "x2": -12.5,
@@ -2745,6 +3170,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-55",
         "x1": -12.5,
         "y1": 11.8,
         "x2": -20.3,
@@ -2754,6 +3180,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-56",
         "x1": -20.3,
         "y1": 11.8,
         "x2": -20.6,
@@ -2763,6 +3190,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-57",
         "x1": -20.6,
         "y1": 11.8,
         "x2": -20.7,
@@ -2772,6 +3200,7 @@ window.PCB_REFBOARDS = [
         "net": "VPOE_RAW"
       },
       {
+        "id": "ref-t-58",
         "x1": 0.2,
         "y1": 7.7,
         "x2": 0.4,
@@ -2781,6 +3210,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-59",
         "x1": 0.4,
         "y1": 7.9,
         "x2": 0.5,
@@ -2790,6 +3220,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-60",
         "x1": 0.5,
         "y1": 7.9,
         "x2": 0.6,
@@ -2799,6 +3230,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-61",
         "x1": 0.6,
         "y1": 8,
         "x2": 0.8,
@@ -2808,6 +3240,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-62",
         "x1": 0.8,
         "y1": 8,
         "x2": 1.2,
@@ -2817,6 +3250,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-63",
         "x1": 1.2,
         "y1": 8.4,
         "x2": 1.3,
@@ -2826,6 +3260,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-64",
         "x1": 1.3,
         "y1": 8.4,
         "x2": 1.4,
@@ -2835,6 +3270,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-65",
         "x1": 1.4,
         "y1": 8.5,
         "x2": 13.8,
@@ -2844,6 +3280,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-66",
         "x1": 13.8,
         "y1": 8.5,
         "x2": 14.1,
@@ -2853,6 +3290,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-67",
         "x1": 14.1,
         "y1": 8.8,
         "x2": 14.2,
@@ -2862,6 +3300,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-68",
         "x1": 14.2,
         "y1": 8.8,
         "x2": 14.3,
@@ -2871,6 +3310,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-69",
         "x1": 14.3,
         "y1": 8.9,
         "x2": 14.5,
@@ -2880,6 +3320,7 @@ window.PCB_REFBOARDS = [
         "net": "VRECT"
       },
       {
+        "id": "ref-t-70",
         "x1": 17,
         "y1": 8,
         "x2": 16.8,
@@ -2889,6 +3330,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-71",
         "x1": 16.8,
         "y1": 8,
         "x2": 15.7,
@@ -2898,6 +3340,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-72",
         "x1": 15.7,
         "y1": 6.9,
         "x2": 15.7,
@@ -2907,6 +3350,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-73",
         "x1": 15.7,
         "y1": 6.7,
         "x2": 15.6,
@@ -2916,6 +3360,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-74",
         "x1": 15.6,
         "y1": 6.6,
         "x2": 15.6,
@@ -2925,6 +3370,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-75",
         "x1": 15.6,
         "y1": 6.5,
         "x2": 15.3,
@@ -2934,6 +3380,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-76",
         "x1": 15.3,
         "y1": 6.2,
         "x2": 15.2,
@@ -2943,6 +3390,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-77",
         "x1": 15.2,
         "y1": 6.2,
         "x2": 15.1,
@@ -2952,6 +3400,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-78",
         "x1": 15.1,
         "y1": 6.1,
         "x2": 14.8,
@@ -2961,6 +3410,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-79",
         "x1": 14.8,
         "y1": 6.1,
         "x2": 14.7,
@@ -2970,6 +3420,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-80",
         "x1": 14.7,
         "y1": 6,
         "x2": 1.6,
@@ -2979,6 +3430,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-81",
         "x1": 1.6,
         "y1": 6,
         "x2": 1.2,
@@ -2988,6 +3440,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-82",
         "x1": 1.2,
         "y1": 5.6,
         "x2": 1.1,
@@ -2997,6 +3450,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-83",
         "x1": 1.1,
         "y1": 5.6,
         "x2": 0.9,
@@ -3006,6 +3460,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-84",
         "x1": 0.9,
         "y1": 5.4,
         "x2": 0.8,
@@ -3015,6 +3470,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-85",
         "x1": 0.8,
         "y1": 5.4,
         "x2": 0.7,
@@ -3024,6 +3480,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-86",
         "x1": 0.7,
         "y1": 5.3,
         "x2": 0.6,
@@ -3033,6 +3490,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-87",
         "x1": 0.6,
         "y1": 5.3,
         "x2": 0.5,
@@ -3042,6 +3500,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-88",
         "x1": 0.5,
         "y1": 5.2,
         "x2": 0.1,
@@ -3051,6 +3510,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-89",
         "x1": 0.1,
         "y1": 5.2,
         "x2": 0,
@@ -3060,6 +3520,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-90",
         "x1": 0,
         "y1": 5.1,
         "x2": -4.3,
@@ -3069,6 +3530,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-91",
         "x1": -4.3,
         "y1": 5.1,
         "x2": -5.3,
@@ -3078,6 +3540,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-92",
         "x1": -5.3,
         "y1": 6.1,
         "x2": -5.5,
@@ -3087,6 +3550,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-93",
         "x1": -6.3,
         "y1": 6.1,
         "x2": -6.5,
@@ -3096,6 +3560,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-94",
         "x1": -6.5,
         "y1": 6.1,
         "x2": -7,
@@ -3105,6 +3570,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-95",
         "x1": -7,
         "y1": 5.6,
         "x2": -7,
@@ -3114,6 +3580,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-96",
         "x1": -7,
         "y1": 5.4,
         "x2": -7.1,
@@ -3123,6 +3590,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-97",
         "x1": -7.1,
         "y1": 5.3,
         "x2": -7.1,
@@ -3132,6 +3600,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-98",
         "x1": -7.1,
         "y1": 4.6,
         "x2": -7,
@@ -3141,6 +3610,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-99",
         "x1": -7,
         "y1": 4.5,
         "x2": -7,
@@ -3150,6 +3620,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-100",
         "x1": -7,
         "y1": 4.4,
         "x2": -6.9,
@@ -3159,6 +3630,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-101",
         "x1": -6.9,
         "y1": 4.3,
         "x2": -6.9,
@@ -3168,6 +3640,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-102",
         "x1": -6.9,
         "y1": 4.2,
         "x2": -6.4,
@@ -3177,6 +3650,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-103",
         "x1": -6.4,
         "y1": 3.7,
         "x2": -6.3,
@@ -3186,6 +3660,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-104",
         "x1": -30.5,
         "y1": 0,
         "x2": -29,
@@ -3195,6 +3670,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-105",
         "x1": -29,
         "y1": 0,
         "x2": -29,
@@ -3204,6 +3680,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-106",
         "x1": -29,
         "y1": -1.3,
         "x2": -28.9,
@@ -3213,6 +3690,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-107",
         "x1": -28.9,
         "y1": -1.4,
         "x2": -28.9,
@@ -3222,6 +3700,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-108",
         "x1": -28.9,
         "y1": -3.1,
         "x2": -29,
@@ -3231,6 +3710,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-109",
         "x1": -29,
         "y1": -3.2,
         "x2": -29,
@@ -3240,6 +3720,7 @@ window.PCB_REFBOARDS = [
         "net": "VBUS"
       },
       {
+        "id": "ref-t-110",
         "x1": -37,
         "y1": -9,
         "x2": 37,
@@ -3247,6 +3728,213 @@ window.PCB_REFBOARDS = [
         "layer": "B.Cu",
         "width": 0.15,
         "net": "3V3"
+      },
+      {
+        "x1": -14.1,
+        "y1": 9.6,
+        "x2": -13.7,
+        "y2": 9.6,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "VPOE_RAW"
+      },
+      {
+        "x1": -13.1,
+        "y1": 10,
+        "x2": -13.1,
+        "y2": 10.7,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "VPOE_RAW"
+      },
+      {
+        "x1": -13.1,
+        "y1": 10.7,
+        "x2": -12.5,
+        "y2": 11.3,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "VPOE_RAW"
+      },
+      {
+        "x1": -12.5,
+        "y1": 11.3,
+        "x2": -12.5,
+        "y2": 11.5,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "VPOE_RAW"
+      },
+      {
+        "x1": -12.5,
+        "y1": 11.5,
+        "x2": -12.5,
+        "y2": 11.8,
+        "layer": "In1.Cu",
+        "width": 0.15,
+        "net": "VPOE_RAW"
+      },
+      {
+        "x1": -10.9,
+        "y1": 12.4,
+        "x2": -10.876,
+        "y2": 12.382,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "VPOE_RAW"
+      },
+      {
+        "x1": -21,
+        "y1": 11.4,
+        "x2": -21,
+        "y2": 10.8,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "VPOE_RAW"
+      },
+      {
+        "x1": 17.5,
+        "y1": 7.9,
+        "x2": 17.7,
+        "y2": 7.9,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 17.7,
+        "y1": 7.9,
+        "x2": 19.8,
+        "y2": 5.8,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 19.8,
+        "y1": 5.8,
+        "x2": 19.8,
+        "y2": 2.2,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 19.8,
+        "y1": 2.2,
+        "x2": 22.5,
+        "y2": -0.5,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 22.5,
+        "y1": -0.5,
+        "x2": 22.5,
+        "y2": -0.6,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 22.5,
+        "y1": -0.6,
+        "x2": 22.6,
+        "y2": -0.7,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 22.6,
+        "y1": -0.7,
+        "x2": 22.6,
+        "y2": -1.5,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 22.6,
+        "y1": -1.5,
+        "x2": 22.7,
+        "y2": -1.6,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 22.7,
+        "y1": -1.6,
+        "x2": 23.1,
+        "y2": -1.6,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 23.1,
+        "y1": -1.6,
+        "x2": 26.9,
+        "y2": -5.4,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 26.9,
+        "y1": -5.4,
+        "x2": 27,
+        "y2": -5.4,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 27,
+        "y1": -5.4,
+        "x2": 27.1,
+        "y2": -5.5,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 27.1,
+        "y1": -5.5,
+        "x2": 33.5,
+        "y2": -5.5,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 33.5,
+        "y1": -5.5,
+        "x2": 37,
+        "y2": -9,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 4.25,
+        "y1": -0.5,
+        "x2": 4.25,
+        "y2": -0.5,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "RMII_CLK"
+      },
+      {
+        "x1": -5.9,
+        "y1": -5.6,
+        "x2": -5.9,
+        "y2": -6.1,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "RMII_TXD0"
       }
     ],
     "vias": [
@@ -3270,6 +3958,41 @@ window.PCB_REFBOARDS = [
         "od": 0.6,
         "drill": 0.3,
         "net": "VPOE_RAW"
+      },
+      {
+        "x": 19,
+        "y": 11,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "VPOE_RAW"
+      },
+      {
+        "x": 19,
+        "y": 5,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "VPOE_RAW"
+      },
+      {
+        "x": 22,
+        "y": -1,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "ETH_TXP"
+      },
+      {
+        "x": -12.5,
+        "y": 11.5,
+        "od": 0.6,
+        "drill": 0.3,
+        "net": "VPOE_RAW"
+      },
+      {
+        "x": 19.8,
+        "y": 2.2,
+        "od": 0.6,
+        "drill": 0.3,
+        "net": "3V3"
       }
     ],
     "padNets": {
@@ -3292,6 +4015,8 @@ window.PCB_REFBOARDS = [
         "6": "RMII_RXD0",
         "7": "RMII_RXD0",
         "8": "RMII_RXD1",
+        "9": "RMII_CLK",
+        "10": "RMII_CLK",
         "19": "ETH_TXN",
         "20": "ETH_TXN",
         "21": "ETH_TXP",
@@ -3299,6 +4024,9 @@ window.PCB_REFBOARDS = [
       },
       "J1": {
         "S1": "VPOE_RAW"
+      },
+      "T1": {
+        "2": "VPOE_RAW"
       },
       "U3": {
         "10": "VPOE_RAW",
@@ -3603,6 +4331,7 @@ window.PCB_REFBOARDS = [
     ],
     "traces": [
       {
+        "id": "ref-t-0",
         "x1": -39,
         "y1": 0,
         "x2": 39,
@@ -3612,6 +4341,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-1",
         "x1": 8.5,
         "y1": -16,
         "x2": 13,
@@ -3621,6 +4351,7 @@ window.PCB_REFBOARDS = [
         "net": "DDRA_D0"
       },
       {
+        "id": "ref-t-2",
         "x1": 8.5,
         "y1": -15,
         "x2": 13,
@@ -3630,6 +4361,7 @@ window.PCB_REFBOARDS = [
         "net": "DDRA_D1"
       },
       {
+        "id": "ref-t-3",
         "x1": 8.5,
         "y1": -14,
         "x2": 13,
@@ -3639,6 +4371,7 @@ window.PCB_REFBOARDS = [
         "net": "DDRA_D2"
       },
       {
+        "id": "ref-t-4",
         "x1": 8.5,
         "y1": -13,
         "x2": 13,
@@ -3648,6 +4381,7 @@ window.PCB_REFBOARDS = [
         "net": "DDRA_CLK"
       },
       {
+        "id": "ref-t-5",
         "x1": 8.5,
         "y1": 10,
         "x2": 13,
@@ -3657,6 +4391,7 @@ window.PCB_REFBOARDS = [
         "net": "DDRB_D0"
       },
       {
+        "id": "ref-t-6",
         "x1": 8.5,
         "y1": 11,
         "x2": 13,
@@ -3666,6 +4401,7 @@ window.PCB_REFBOARDS = [
         "net": "DDRB_D1"
       },
       {
+        "id": "ref-t-7",
         "x1": 8.5,
         "y1": 12,
         "x2": 13,
@@ -3675,6 +4411,7 @@ window.PCB_REFBOARDS = [
         "net": "DDRB_D2"
       },
       {
+        "id": "ref-t-8",
         "x1": 8.5,
         "y1": 13,
         "x2": 13,
@@ -3684,6 +4421,7 @@ window.PCB_REFBOARDS = [
         "net": "DDRB_CLK"
       },
       {
+        "id": "ref-t-9",
         "x1": -21,
         "y1": 6.2,
         "x2": -17.4,
@@ -3693,6 +4431,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-10",
         "x1": -16.7,
         "y1": 5.6,
         "x2": -16.5,
@@ -3702,6 +4441,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-11",
         "x1": -16.5,
         "y1": 5.4,
         "x2": -16.5,
@@ -3711,6 +4451,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-12",
         "x1": -16.5,
         "y1": 5.3,
         "x2": -16.4,
@@ -3720,6 +4461,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-13",
         "x1": -16.4,
         "y1": 5.2,
         "x2": -16.4,
@@ -3729,6 +4471,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-14",
         "x1": -16.4,
         "y1": 5,
         "x2": -16.2,
@@ -3738,6 +4481,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-15",
         "x1": -16.2,
         "y1": 4.8,
         "x2": -16.2,
@@ -3747,6 +4491,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-16",
         "x1": -16.2,
         "y1": 4.4,
         "x2": -16.1,
@@ -3756,6 +4501,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-17",
         "x1": -16.1,
         "y1": 4.3,
         "x2": -16.1,
@@ -3765,6 +4511,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-18",
         "x1": -16.1,
         "y1": 2.1,
         "x2": -16,
@@ -3774,6 +4521,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-19",
         "x1": -16,
         "y1": 2,
         "x2": -8.2,
@@ -3783,6 +4531,7 @@ window.PCB_REFBOARDS = [
         "net": "DCDC2_3V3"
       },
       {
+        "id": "ref-t-20",
         "x1": -28.1,
         "y1": -16.7,
         "x2": -28.3,
@@ -3792,6 +4541,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-21",
         "x1": -28.3,
         "y1": -16.5,
         "x2": -28.3,
@@ -3801,6 +4551,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-22",
         "x1": -28.3,
         "y1": -16.4,
         "x2": -28.4,
@@ -3810,6 +4561,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-23",
         "x1": -28.4,
         "y1": -16.3,
         "x2": -28.4,
@@ -3819,6 +4571,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-24",
         "x1": -28.4,
         "y1": -16.1,
         "x2": -28.8,
@@ -3828,6 +4581,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-25",
         "x1": -28.8,
         "y1": -15.7,
         "x2": -28.8,
@@ -3837,6 +4591,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-26",
         "x1": -28.8,
         "y1": -15.6,
         "x2": -28.9,
@@ -3846,6 +4601,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-27",
         "x1": -28.9,
         "y1": -15.5,
         "x2": -28.9,
@@ -3855,6 +4611,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-28",
         "x1": -28.9,
         "y1": -14.6,
         "x2": -29,
@@ -3864,6 +4621,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXP"
       },
       {
+        "id": "ref-t-29",
         "x1": -29.5,
         "y1": -16.8,
         "x2": -29.2,
@@ -3873,6 +4631,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-30",
         "x1": -29.1,
         "y1": -16.7,
         "x2": -29.3,
@@ -3882,6 +4641,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-31",
         "x1": -29.3,
         "y1": -16.5,
         "x2": -29.3,
@@ -3891,6 +4651,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-32",
         "x1": -29.3,
         "y1": -16.4,
         "x2": -29.4,
@@ -3900,6 +4661,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-33",
         "x1": -29.4,
         "y1": -16.3,
         "x2": -29.4,
@@ -3909,6 +4671,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-34",
         "x1": -29.4,
         "y1": -16.1,
         "x2": -29.8,
@@ -3918,6 +4681,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-35",
         "x1": -29.8,
         "y1": -15.7,
         "x2": -29.8,
@@ -3927,6 +4691,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-36",
         "x1": -29.8,
         "y1": -15.6,
         "x2": -29.9,
@@ -3936,6 +4701,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-37",
         "x1": -29.9,
         "y1": -15.5,
         "x2": -29.9,
@@ -3945,6 +4711,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-38",
         "x1": -29.9,
         "y1": -14.6,
         "x2": -30,
@@ -3954,6 +4721,7 @@ window.PCB_REFBOARDS = [
         "net": "ETH_TXN"
       },
       {
+        "id": "ref-t-39",
         "x1": 8.2,
         "y1": -6,
         "x2": 28.5,
@@ -3963,6 +4731,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D2P"
       },
       {
+        "id": "ref-t-40",
         "x1": 8.2,
         "y1": -5.2,
         "x2": 28.3,
@@ -3972,6 +4741,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D2N"
       },
       {
+        "id": "ref-t-41",
         "x1": 28.3,
         "y1": -5.2,
         "x2": 28.5,
@@ -3981,6 +4751,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D2N"
       },
       {
+        "id": "ref-t-42",
         "x1": 8.2,
         "y1": 6,
         "x2": 31,
@@ -3990,6 +4761,7 @@ window.PCB_REFBOARDS = [
         "net": "USB_DP"
       },
       {
+        "id": "ref-t-43",
         "x1": 8.5,
         "y1": 7,
         "x2": 31,
@@ -3997,16 +4769,56 @@ window.PCB_REFBOARDS = [
         "layer": "In1.Cu",
         "width": 0.15,
         "net": "USB_DM"
+      },
+      {
+        "x1": -16.9,
+        "y1": 6,
+        "x2": -16.95,
+        "y2": 6,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "DCDC2_3V3"
       }
     ],
-    "vias": [],
+    "vias": [
+      {
+        "x": -16,
+        "y": 2,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "DCDC2_3V3"
+      },
+      {
+        "x": -21,
+        "y": 6.2,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "DCDC2_3V3"
+      }
+    ],
     "padNets": {
+      "U1": {
+        "F21": "HDMI_D2P",
+        "G21": "HDMI_D2N",
+        "T1": "DCDC2_3V3",
+        "AA21": "USB_DP"
+      },
       "U2": {
         "6": "VBAT",
-        "7": "VBAT"
+        "7": "VBAT",
+        "34": "DCDC2_3V3",
+        "35": "DCDC2_3V3",
+        "36": "DCDC2_3V3"
       },
       "U5": {
-        "8": "ETH_TXP"
+        "8": "ETH_TXP",
+        "10": "ETH_TXN",
+        "11": "ETH_TXN",
+        "12": "ETH_TXP",
+        "13": "ETH_TXP"
+      },
+      "Y1": {
+        "1": "DCDC2_3V3"
       }
     }
   },
@@ -4299,6 +5111,7 @@ window.PCB_REFBOARDS = [
     ],
     "traces": [
       {
+        "id": "ref-t-0",
         "x1": 37.6,
         "y1": -31.1,
         "x2": 37.4,
@@ -4308,6 +5121,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN_5V"
       },
       {
+        "id": "ref-t-1",
         "x1": 37.4,
         "y1": -31.3,
         "x2": 37.4,
@@ -4317,6 +5131,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN_5V"
       },
       {
+        "id": "ref-t-2",
         "x1": 37.4,
         "y1": -31.4,
         "x2": 37.3,
@@ -4326,6 +5141,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN_5V"
       },
       {
+        "id": "ref-t-3",
         "x1": 37.3,
         "y1": -31.5,
         "x2": 37.3,
@@ -4335,6 +5151,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN_5V"
       },
       {
+        "id": "ref-t-4",
         "x1": 37.3,
         "y1": -31.7,
         "x2": 36.5,
@@ -4344,6 +5161,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN_5V"
       },
       {
+        "id": "ref-t-5",
         "x1": 36.5,
         "y1": -32.5,
         "x2": 36.5,
@@ -4353,6 +5171,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN_5V"
       },
       {
+        "id": "ref-t-6",
         "x1": 36.5,
         "y1": -35.5,
         "x2": -28,
@@ -4362,6 +5181,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN_5V"
       },
       {
+        "id": "ref-t-7",
         "x1": -28,
         "y1": -35.5,
         "x2": -28,
@@ -4371,6 +5191,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN_5V"
       },
       {
+        "id": "ref-t-8",
         "x1": -28,
         "y1": -34.8,
         "x2": -28.6,
@@ -4380,6 +5201,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN_5V"
       },
       {
+        "id": "ref-t-9",
         "x1": -28.6,
         "y1": -34.2,
         "x2": -28.6,
@@ -4389,6 +5211,7 @@ window.PCB_REFBOARDS = [
         "net": "VIN_5V"
       },
       {
+        "id": "ref-t-10",
         "x1": -48,
         "y1": -38,
         "x2": 48,
@@ -4398,6 +5221,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-11",
         "x1": -48,
         "y1": 38,
         "x2": 48,
@@ -4407,6 +5231,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-12",
         "x1": 6,
         "y1": -6,
         "x2": 15.5,
@@ -4416,6 +5241,7 @@ window.PCB_REFBOARDS = [
         "net": "mDDR_D0"
       },
       {
+        "id": "ref-t-13",
         "x1": 6,
         "y1": -5,
         "x2": 15.5,
@@ -4425,6 +5251,7 @@ window.PCB_REFBOARDS = [
         "net": "mDDR_D1"
       },
       {
+        "id": "ref-t-14",
         "x1": 6,
         "y1": -4,
         "x2": 15.5,
@@ -4434,6 +5261,7 @@ window.PCB_REFBOARDS = [
         "net": "mDDR_D2"
       },
       {
+        "id": "ref-t-15",
         "x1": 6,
         "y1": -3,
         "x2": 15.5,
@@ -4443,6 +5271,7 @@ window.PCB_REFBOARDS = [
         "net": "mDDR_CLK"
       },
       {
+        "id": "ref-t-16",
         "x1": 6,
         "y1": -2,
         "x2": 15.5,
@@ -4452,6 +5281,7 @@ window.PCB_REFBOARDS = [
         "net": "mDDR_DQS"
       },
       {
+        "id": "ref-t-17",
         "x1": -6,
         "y1": -8,
         "x2": -29,
@@ -4461,6 +5291,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DP"
       },
       {
+        "id": "ref-t-18",
         "x1": -29,
         "y1": -8,
         "x2": -29,
@@ -4470,6 +5301,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DP"
       },
       {
+        "id": "ref-t-19",
         "x1": -6,
         "y1": -7,
         "x2": -30,
@@ -4479,6 +5311,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-20",
         "x1": -30,
         "y1": -7,
         "x2": -29.8,
@@ -4488,6 +5321,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-21",
         "x1": -29.8,
         "y1": -7.2,
         "x2": -29.8,
@@ -4497,6 +5331,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-22",
         "x1": -29.8,
         "y1": -7.3,
         "x2": -29.7,
@@ -4506,6 +5341,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-23",
         "x1": -29.7,
         "y1": -7.4,
         "x2": -29.7,
@@ -4515,6 +5351,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-24",
         "x1": -29.7,
         "y1": -7.6,
         "x2": -29.6,
@@ -4524,6 +5361,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-25",
         "x1": -29.6,
         "y1": -7.7,
         "x2": -29.6,
@@ -4533,6 +5371,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-26",
         "x1": -29.6,
         "y1": -7.9,
         "x2": -29.5,
@@ -4542,6 +5381,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-27",
         "x1": -29.5,
         "y1": -8,
         "x2": -29.5,
@@ -4551,6 +5391,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-28",
         "x1": -29.5,
         "y1": -9.2,
         "x2": -29.9,
@@ -4560,6 +5401,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-29",
         "x1": -29.9,
         "y1": -9.6,
         "x2": -29.9,
@@ -4569,6 +5411,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-30",
         "x1": -29.9,
         "y1": -15.4,
         "x2": -30,
@@ -4578,6 +5421,7 @@ window.PCB_REFBOARDS = [
         "net": "USBH1_DM"
       },
       {
+        "id": "ref-t-31",
         "x1": -6.7,
         "y1": 2,
         "x2": -30,
@@ -4587,6 +5431,7 @@ window.PCB_REFBOARDS = [
         "net": "OTG_DP"
       },
       {
+        "id": "ref-t-32",
         "x1": -30,
         "y1": 2,
         "x2": -30,
@@ -4596,6 +5441,7 @@ window.PCB_REFBOARDS = [
         "net": "OTG_DP"
       },
       {
+        "id": "ref-t-33",
         "x1": -31.5,
         "y1": -30,
         "x2": -40.2,
@@ -4605,6 +5451,7 @@ window.PCB_REFBOARDS = [
         "net": "VBAT"
       },
       {
+        "id": "ref-t-34",
         "x1": -6,
         "y1": -4,
         "x2": 0,
@@ -4614,6 +5461,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-35",
         "x1": -6,
         "y1": -10,
         "x2": -6,
@@ -4623,6 +5471,7 @@ window.PCB_REFBOARDS = [
         "net": "LCD_D0"
       },
       {
+        "id": "ref-t-36",
         "x1": 0,
         "y1": -10,
         "x2": 0,
@@ -4632,6 +5481,7 @@ window.PCB_REFBOARDS = [
         "net": "LCD_CLK"
       },
       {
+        "id": "ref-t-37",
         "x1": 6,
         "y1": -9,
         "x2": 29,
@@ -4641,6 +5491,7 @@ window.PCB_REFBOARDS = [
         "net": "MII_TXD0"
       },
       {
+        "id": "ref-t-38",
         "x1": -49,
         "y1": -10,
         "x2": 49,
@@ -4648,9 +5499,252 @@ window.PCB_REFBOARDS = [
         "layer": "In2.Cu",
         "width": 0.15,
         "net": "3V3"
+      },
+      {
+        "x1": -48,
+        "y1": -38,
+        "x2": -48,
+        "y2": -11.8,
+        "layer": "In2.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -48,
+        "y1": -11.8,
+        "x2": -49.4,
+        "y2": -10.4,
+        "layer": "In2.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -49.4,
+        "y1": -10.4,
+        "x2": -49.4,
+        "y2": -10.3,
+        "layer": "In2.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -49.4,
+        "y1": -10.3,
+        "x2": -49.5,
+        "y2": -10.2,
+        "layer": "In2.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -49.5,
+        "y1": -10.2,
+        "x2": -49.5,
+        "y2": 10.5,
+        "layer": "In2.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -49.5,
+        "y1": 10.5,
+        "x2": -48,
+        "y2": 12,
+        "layer": "In2.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -48,
+        "y1": 12,
+        "x2": -48,
+        "y2": 38,
+        "layer": "In2.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -31.2,
+        "y1": -30,
+        "x2": -31.25,
+        "y2": -30,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "VBAT"
+      },
+      {
+        "x1": -6,
+        "y1": -4,
+        "x2": -6.2,
+        "y2": -4.2,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -6.2,
+        "y1": -4.2,
+        "x2": -6.3,
+        "y2": -4.2,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -6.3,
+        "y1": -4.2,
+        "x2": -6.4,
+        "y2": -4.3,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -6.4,
+        "y1": -4.3,
+        "x2": -6.6,
+        "y2": -4.3,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -6.6,
+        "y1": -4.3,
+        "x2": -7.1,
+        "y2": -4.8,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -7.1,
+        "y1": -4.8,
+        "x2": -7.3,
+        "y2": -4.8,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -7.3,
+        "y1": -4.8,
+        "x2": -8.1,
+        "y2": -5.6,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -8.1,
+        "y1": -5.6,
+        "x2": -29.5,
+        "y2": -5.6,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -29.5,
+        "y1": -5.6,
+        "x2": -29.6,
+        "y2": -5.7,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -29.6,
+        "y1": -5.7,
+        "x2": -29.7,
+        "y2": -5.7,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -29.7,
+        "y1": -5.7,
+        "x2": -29.9,
+        "y2": -5.9,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -29.9,
+        "y1": -5.9,
+        "x2": -30.1,
+        "y2": -5.9,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -30.1,
+        "y1": -5.9,
+        "x2": -30.2,
+        "y2": -6,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -30.2,
+        "y1": -6,
+        "x2": -45,
+        "y2": -6,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -45,
+        "y1": -6,
+        "x2": -49,
+        "y2": -10,
+        "layer": "In2.Cu",
+        "width": 0.15,
+        "net": "3V3"
       }
     ],
-    "vias": [],
+    "vias": [
+      {
+        "x": -28,
+        "y": -35.5,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "VIN_5V"
+      },
+      {
+        "x": 36.5,
+        "y": -35.5,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "VIN_5V"
+      },
+      {
+        "x": -30,
+        "y": 2,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "OTG_DP"
+      },
+      {
+        "x": -30,
+        "y": -7,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "USBH1_DM"
+      },
+      {
+        "x": -45,
+        "y": -6,
+        "od": 0.6,
+        "drill": 0.3,
+        "net": "3V3"
+      }
+    ],
     "padNets": {
       "J7": {
         "1": "VIN_5V"
@@ -4658,6 +5752,13 @@ window.PCB_REFBOARDS = [
       "J8": {
         "1": "VBAT",
         "2": "VBAT"
+      },
+      "U3": {
+        "2": "VBAT",
+        "4": "VIN_5V"
+      },
+      "C1": {
+        "1": "OTG_DP"
       }
     }
   },
@@ -4960,6 +6061,7 @@ window.PCB_REFBOARDS = [
     ],
     "traces": [
       {
+        "id": "ref-t-0",
         "x1": -49,
         "y1": 0,
         "x2": 49,
@@ -4969,6 +6071,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-1",
         "x1": -49,
         "y1": -8,
         "x2": 49,
@@ -4978,6 +6081,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_DDR"
       },
       {
+        "id": "ref-t-2",
         "x1": -49,
         "y1": 8,
         "x2": -44.9,
@@ -4987,6 +6091,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-3",
         "x1": -44.9,
         "y1": 8.05,
         "x2": -44.3,
@@ -4996,6 +6101,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-4",
         "x1": -44.3,
         "y1": 8.65,
         "x2": -39.65,
@@ -5005,6 +6111,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-5",
         "x1": -39.65,
         "y1": 8.65,
         "x2": -39.5,
@@ -5014,6 +6121,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-6",
         "x1": -39.5,
         "y1": 8.8,
         "x2": 26.65,
@@ -5023,6 +6131,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-7",
         "x1": 26.65,
         "y1": 8.8,
         "x2": 27.4,
@@ -5032,6 +6141,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-8",
         "x1": 27.4,
         "y1": 8.05,
         "x2": 49,
@@ -5041,6 +6151,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-9",
         "x1": 8.5,
         "y1": -14,
         "x2": 13,
@@ -5050,6 +6161,7 @@ window.PCB_REFBOARDS = [
         "net": "DDR_D0"
       },
       {
+        "id": "ref-t-10",
         "x1": 8.5,
         "y1": -13,
         "x2": 13,
@@ -5059,6 +6171,7 @@ window.PCB_REFBOARDS = [
         "net": "DDR_D1"
       },
       {
+        "id": "ref-t-11",
         "x1": 13,
         "y1": -14,
         "x2": 25,
@@ -5068,6 +6181,7 @@ window.PCB_REFBOARDS = [
         "net": "DDR_D0"
       },
       {
+        "id": "ref-t-12",
         "x1": 13,
         "y1": -13,
         "x2": 25,
@@ -5077,6 +6191,7 @@ window.PCB_REFBOARDS = [
         "net": "DDR_D1"
       },
       {
+        "id": "ref-t-13",
         "x1": 8.5,
         "y1": 14,
         "x2": 13,
@@ -5086,6 +6201,7 @@ window.PCB_REFBOARDS = [
         "net": "DDR_D2"
       },
       {
+        "id": "ref-t-14",
         "x1": 8.5,
         "y1": 13,
         "x2": 13,
@@ -5095,6 +6211,7 @@ window.PCB_REFBOARDS = [
         "net": "DDR_D3"
       },
       {
+        "id": "ref-t-15",
         "x1": 13,
         "y1": 14,
         "x2": 25,
@@ -5104,6 +6221,7 @@ window.PCB_REFBOARDS = [
         "net": "DDR_D2"
       },
       {
+        "id": "ref-t-16",
         "x1": 13,
         "y1": 13,
         "x2": 25,
@@ -5113,6 +6231,7 @@ window.PCB_REFBOARDS = [
         "net": "DDR_D3"
       },
       {
+        "id": "ref-t-17",
         "x1": -22,
         "y1": -4,
         "x2": -22,
@@ -5122,6 +6241,7 @@ window.PCB_REFBOARDS = [
         "net": "PCIE_TXP"
       },
       {
+        "id": "ref-t-18",
         "x1": -23,
         "y1": -3,
         "x2": -23.3,
@@ -5131,6 +6251,7 @@ window.PCB_REFBOARDS = [
         "net": "PCIE_TXN"
       },
       {
+        "id": "ref-t-19",
         "x1": -23.3,
         "y1": -3.35,
         "x2": -23.3,
@@ -5140,6 +6261,7 @@ window.PCB_REFBOARDS = [
         "net": "PCIE_TXN"
       },
       {
+        "id": "ref-t-20",
         "x1": -23.3,
         "y1": -3.5,
         "x2": -23.45,
@@ -5149,6 +6271,7 @@ window.PCB_REFBOARDS = [
         "net": "PCIE_TXN"
       },
       {
+        "id": "ref-t-21",
         "x1": -23.45,
         "y1": -3.65,
         "x2": -23.45,
@@ -5158,6 +6281,7 @@ window.PCB_REFBOARDS = [
         "net": "PCIE_TXN"
       },
       {
+        "id": "ref-t-22",
         "x1": -23.45,
         "y1": -3.95,
         "x2": -23.6,
@@ -5167,6 +6291,7 @@ window.PCB_REFBOARDS = [
         "net": "PCIE_TXN"
       },
       {
+        "id": "ref-t-23",
         "x1": -23.6,
         "y1": -4.1,
         "x2": -23.6,
@@ -5176,6 +6301,7 @@ window.PCB_REFBOARDS = [
         "net": "PCIE_TXN"
       },
       {
+        "id": "ref-t-24",
         "x1": -23.6,
         "y1": -16.55,
         "x2": -23.75,
@@ -5185,6 +6311,7 @@ window.PCB_REFBOARDS = [
         "net": "PCIE_TXN"
       },
       {
+        "id": "ref-t-25",
         "x1": -8.122,
         "y1": 0.045,
         "x2": -8.6,
@@ -5194,6 +6321,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D0P"
       },
       {
+        "id": "ref-t-26",
         "x1": -8.6,
         "y1": 0.4,
         "x2": -8.75,
@@ -5203,6 +6331,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D0P"
       },
       {
+        "id": "ref-t-27",
         "x1": -8.75,
         "y1": 0.4,
         "x2": -8.9,
@@ -5212,6 +6341,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D0P"
       },
       {
+        "id": "ref-t-28",
         "x1": -8.9,
         "y1": 0.55,
         "x2": -9.2,
@@ -5221,6 +6351,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D0P"
       },
       {
+        "id": "ref-t-29",
         "x1": -9.2,
         "y1": 0.55,
         "x2": -9.8,
@@ -5230,6 +6361,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D0P"
       },
       {
+        "id": "ref-t-30",
         "x1": -9.8,
         "y1": 1.15,
         "x2": -9.95,
@@ -5239,6 +6371,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D0P"
       },
       {
+        "id": "ref-t-31",
         "x1": -9.95,
         "y1": 1.15,
         "x2": -10.1,
@@ -5248,6 +6381,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D0P"
       },
       {
+        "id": "ref-t-32",
         "x1": -10.1,
         "y1": 1.3,
         "x2": -29,
@@ -5257,6 +6391,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D0P"
       },
       {
+        "id": "ref-t-33",
         "x1": -29,
         "y1": 1.3,
         "x2": -29.5,
@@ -5266,6 +6401,7 @@ window.PCB_REFBOARDS = [
         "net": "HDMI_D0P"
       },
       {
+        "id": "ref-t-34",
         "x1": 9.478,
         "y1": 0.045,
         "x2": 10,
@@ -5275,6 +6411,7 @@ window.PCB_REFBOARDS = [
         "net": "SATA_TXN"
       },
       {
+        "id": "ref-t-35",
         "x1": 10,
         "y1": 0.7,
         "x2": 10.45,
@@ -5284,6 +6421,7 @@ window.PCB_REFBOARDS = [
         "net": "SATA_TXN"
       },
       {
+        "id": "ref-t-36",
         "x1": 10.45,
         "y1": 0.7,
         "x2": 11.05,
@@ -5293,6 +6431,7 @@ window.PCB_REFBOARDS = [
         "net": "SATA_TXN"
       },
       {
+        "id": "ref-t-37",
         "x1": 11.05,
         "y1": 1.3,
         "x2": 11.2,
@@ -5302,6 +6441,7 @@ window.PCB_REFBOARDS = [
         "net": "SATA_TXN"
       },
       {
+        "id": "ref-t-38",
         "x1": 11.2,
         "y1": 1.3,
         "x2": 11.35,
@@ -5311,6 +6451,7 @@ window.PCB_REFBOARDS = [
         "net": "SATA_TXN"
       },
       {
+        "id": "ref-t-39",
         "x1": 11.35,
         "y1": 1.45,
         "x2": 23.95,
@@ -5320,6 +6461,7 @@ window.PCB_REFBOARDS = [
         "net": "SATA_TXN"
       },
       {
+        "id": "ref-t-40",
         "x1": 23.95,
         "y1": 1.45,
         "x2": 24.5,
@@ -5327,16 +6469,132 @@ window.PCB_REFBOARDS = [
         "layer": "In6.Cu",
         "width": 0.15,
         "net": "SATA_TXN"
+      },
+      {
+        "x1": -49,
+        "y1": 0,
+        "x2": -48.95,
+        "y2": 8.05,
+        "layer": "In5.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -48.95,
+        "y1": 8.05,
+        "x2": -49,
+        "y2": 8,
+        "layer": "In4.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -8.122,
+        "y1": 0.045,
+        "x2": -8.122,
+        "y2": 0.045,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "HDMI_D0P"
+      },
+      {
+        "x1": -8.9,
+        "y1": 0.85,
+        "x2": -8.922,
+        "y2": 0.845,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "HDMI_D0P"
+      },
+      {
+        "x1": 9.478,
+        "y1": 0.045,
+        "x2": 9.478,
+        "y2": 0.045,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "SATA_TXN"
+      },
+      {
+        "x1": 10.45,
+        "y1": 0.7,
+        "x2": 10.278,
+        "y2": 0.845,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "SATA_TXN"
       }
     ],
-    "vias": [],
+    "vias": [
+      {
+        "x": -23.75,
+        "y": -16.8,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "PCIE_TXN"
+      },
+      {
+        "x": -29.5,
+        "y": 1.8,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "HDMI_D0P"
+      },
+      {
+        "x": 13,
+        "y": -14,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "DDR_D0"
+      },
+      {
+        "x": 13,
+        "y": -13,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "DDR_D1"
+      },
+      {
+        "x": 13,
+        "y": 14,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "DDR_D2"
+      },
+      {
+        "x": 13,
+        "y": 13,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "DDR_D3"
+      },
+      {
+        "x": -48.95,
+        "y": 8.05,
+        "od": 0.6,
+        "drill": 0.3,
+        "net": "GND"
+      }
+    ],
     "padNets": {
       "U1": {
         "H2": "PCIE_TXP",
         "J2": "PCIE_TXN",
         "N24": "DDR_CLK",
         "P24": "SATA_TXP",
+        "R2": "HDMI_D0P",
+        "R24": "SATA_TXN",
+        "T1": "HDMI_D0P",
+        "T25": "SATA_TXN",
         "U2": "HDMI_D0N"
+      },
+      "J1": {
+        "49": "PCIE_TXN",
+        "51": "PCIE_TXN"
+      },
+      "J2": {
+        "18": "HDMI_D0P",
+        "19": "HDMI_D0P"
       },
       "J3": {
         "S2": "GBE_TXN"
@@ -5576,6 +6834,7 @@ window.PCB_REFBOARDS = [
     ],
     "traces": [
       {
+        "id": "ref-t-0",
         "x1": 0,
         "y1": 10.3,
         "x2": 0,
@@ -5585,6 +6844,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_ARM"
       },
       {
+        "id": "ref-t-1",
         "x1": 6.6,
         "y1": 15.8,
         "x2": 6.4,
@@ -5594,6 +6854,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_SNVS"
       },
       {
+        "id": "ref-t-2",
         "x1": 6.4,
         "y1": 15.6,
         "x2": 6.4,
@@ -5603,6 +6864,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_SNVS"
       },
       {
+        "id": "ref-t-3",
         "x1": 6.4,
         "y1": 15.5,
         "x2": 6.3,
@@ -5612,6 +6874,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_SNVS"
       },
       {
+        "id": "ref-t-4",
         "x1": 6.3,
         "y1": 15.4,
         "x2": 6.3,
@@ -5621,6 +6884,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_SNVS"
       },
       {
+        "id": "ref-t-5",
         "x1": 6.3,
         "y1": 15.2,
         "x2": 6.1,
@@ -5630,6 +6894,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_SNVS"
       },
       {
+        "id": "ref-t-6",
         "x1": 6.1,
         "y1": 15,
         "x2": 6.1,
@@ -5639,6 +6904,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_SNVS"
       },
       {
+        "id": "ref-t-7",
         "x1": 6.1,
         "y1": 14.6,
         "x2": 6,
@@ -5648,6 +6914,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_SNVS"
       },
       {
+        "id": "ref-t-8",
         "x1": 6,
         "y1": 14.5,
         "x2": 6,
@@ -5657,6 +6924,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_SNVS"
       },
       {
+        "id": "ref-t-9",
         "x1": -19,
         "y1": 0,
         "x2": 19,
@@ -5666,6 +6934,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-10",
         "x1": -19,
         "y1": -6,
         "x2": 19,
@@ -5675,6 +6944,7 @@ window.PCB_REFBOARDS = [
         "net": "VDD_DDR"
       },
       {
+        "id": "ref-t-11",
         "x1": -19,
         "y1": 6,
         "x2": 19,
@@ -5684,6 +6954,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-12",
         "x1": -18,
         "y1": -28,
         "x2": 18,
@@ -5693,6 +6964,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-13",
         "x1": -18,
         "y1": 28,
         "x2": -17.2,
@@ -5702,6 +6974,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-14",
         "x1": -17.2,
         "y1": 28,
         "x2": -16.9,
@@ -5711,6 +6984,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-15",
         "x1": -16.9,
         "y1": 28.3,
         "x2": -16.8,
@@ -5720,6 +6994,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-16",
         "x1": -16.8,
         "y1": 28.3,
         "x2": -16.7,
@@ -5729,6 +7004,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-17",
         "x1": -16.7,
         "y1": 28.4,
         "x2": -16.5,
@@ -5738,6 +7014,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-18",
         "x1": -16.5,
         "y1": 28.4,
         "x2": -16.4,
@@ -5747,6 +7024,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-19",
         "x1": -16.4,
         "y1": 28.5,
         "x2": 17.5,
@@ -5756,6 +7034,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-20",
         "x1": 17.5,
         "y1": 28.5,
         "x2": 18,
@@ -5765,6 +7044,7 @@ window.PCB_REFBOARDS = [
         "net": "GND"
       },
       {
+        "id": "ref-t-21",
         "x1": -3,
         "y1": -11,
         "x2": -3.5,
@@ -5774,6 +7054,7 @@ window.PCB_REFBOARDS = [
         "net": "LPDDR_D0"
       },
       {
+        "id": "ref-t-22",
         "x1": -3.5,
         "y1": -11.5,
         "x2": -3.5,
@@ -5783,6 +7064,7 @@ window.PCB_REFBOARDS = [
         "net": "LPDDR_D0"
       },
       {
+        "id": "ref-t-23",
         "x1": -3.5,
         "y1": -13.4,
         "x2": -3.1,
@@ -5792,6 +7074,7 @@ window.PCB_REFBOARDS = [
         "net": "LPDDR_D0"
       },
       {
+        "id": "ref-t-24",
         "x1": 3,
         "y1": -11,
         "x2": 3.5,
@@ -5801,6 +7084,7 @@ window.PCB_REFBOARDS = [
         "net": "LPDDR_DQS"
       },
       {
+        "id": "ref-t-25",
         "x1": 3.5,
         "y1": -11.5,
         "x2": 3.5,
@@ -5810,6 +7094,7 @@ window.PCB_REFBOARDS = [
         "net": "LPDDR_DQS"
       },
       {
+        "id": "ref-t-26",
         "x1": 3.5,
         "y1": -13.4,
         "x2": 3.1,
@@ -5819,6 +7104,7 @@ window.PCB_REFBOARDS = [
         "net": "LPDDR_DQS"
       },
       {
+        "id": "ref-t-27",
         "x1": -5.1,
         "y1": 1.7,
         "x2": -5,
@@ -5828,6 +7114,7 @@ window.PCB_REFBOARDS = [
         "net": "EMMC_CLK"
       },
       {
+        "id": "ref-t-28",
         "x1": -5,
         "y1": 4,
         "x2": -4.6,
@@ -5837,6 +7124,7 @@ window.PCB_REFBOARDS = [
         "net": "EMMC_CLK"
       },
       {
+        "id": "ref-t-29",
         "x1": -4.6,
         "y1": 4.4,
         "x2": -4.6,
@@ -5846,6 +7134,7 @@ window.PCB_REFBOARDS = [
         "net": "EMMC_CLK"
       },
       {
+        "id": "ref-t-30",
         "x1": -4.6,
         "y1": 4.6,
         "x2": -4.5,
@@ -5855,6 +7144,7 @@ window.PCB_REFBOARDS = [
         "net": "EMMC_CLK"
       },
       {
+        "id": "ref-t-31",
         "x1": -4.5,
         "y1": 4.7,
         "x2": -4.5,
@@ -5864,6 +7154,7 @@ window.PCB_REFBOARDS = [
         "net": "EMMC_CLK"
       },
       {
+        "id": "ref-t-32",
         "x1": -4.5,
         "y1": 5.8,
         "x2": -4.7,
@@ -5873,6 +7164,7 @@ window.PCB_REFBOARDS = [
         "net": "EMMC_CLK"
       },
       {
+        "id": "ref-t-33",
         "x1": -4.7,
         "y1": 6,
         "x2": -5,
@@ -5882,6 +7174,7 @@ window.PCB_REFBOARDS = [
         "net": "EMMC_CLK"
       },
       {
+        "id": "ref-t-34",
         "x1": -3.4,
         "y1": 14,
         "x2": -5,
@@ -5891,6 +7184,7 @@ window.PCB_REFBOARDS = [
         "net": "BUCK1_OUT"
       },
       {
+        "id": "ref-t-35",
         "x1": -5,
         "y1": 14,
         "x2": -5,
@@ -5900,6 +7194,7 @@ window.PCB_REFBOARDS = [
         "net": "BUCK1_OUT"
       },
       {
+        "id": "ref-t-36",
         "x1": -5,
         "y1": 14.7,
         "x2": -4.5,
@@ -5909,6 +7204,7 @@ window.PCB_REFBOARDS = [
         "net": "BUCK1_OUT"
       },
       {
+        "id": "ref-t-37",
         "x1": -4.5,
         "y1": 15.2,
         "x2": -4.5,
@@ -5918,6 +7214,7 @@ window.PCB_REFBOARDS = [
         "net": "BUCK1_OUT"
       },
       {
+        "id": "ref-t-38",
         "x1": -7,
         "y1": -4,
         "x2": -15.8,
@@ -5927,6 +7224,7 @@ window.PCB_REFBOARDS = [
         "net": "B2B_L_IO0"
       },
       {
+        "id": "ref-t-39",
         "x1": -15.8,
         "y1": -4,
         "x2": -16,
@@ -5936,6 +7234,7 @@ window.PCB_REFBOARDS = [
         "net": "B2B_L_IO0"
       },
       {
+        "id": "ref-t-40",
         "x1": -6.3,
         "y1": -1.9,
         "x2": -15.7,
@@ -5945,6 +7244,7 @@ window.PCB_REFBOARDS = [
         "net": "B2B_L_IO1"
       },
       {
+        "id": "ref-t-41",
         "x1": -15.7,
         "y1": -2,
         "x2": -16,
@@ -5954,6 +7254,7 @@ window.PCB_REFBOARDS = [
         "net": "B2B_L_IO1"
       },
       {
+        "id": "ref-t-42",
         "x1": 7,
         "y1": -4,
         "x2": 15.7,
@@ -5963,6 +7264,7 @@ window.PCB_REFBOARDS = [
         "net": "B2B_R_IO0"
       },
       {
+        "id": "ref-t-43",
         "x1": 15.7,
         "y1": -4,
         "x2": 16,
@@ -5972,6 +7274,7 @@ window.PCB_REFBOARDS = [
         "net": "B2B_R_IO0"
       },
       {
+        "id": "ref-t-44",
         "x1": 6.3,
         "y1": -1.9,
         "x2": 15.8,
@@ -5981,6 +7284,7 @@ window.PCB_REFBOARDS = [
         "net": "B2B_R_IO1"
       },
       {
+        "id": "ref-t-45",
         "x1": 15.8,
         "y1": -2,
         "x2": 16,
@@ -5990,6 +7294,7 @@ window.PCB_REFBOARDS = [
         "net": "B2B_R_IO1"
       },
       {
+        "id": "ref-t-46",
         "x1": 6.9,
         "y1": 8.7,
         "x2": 6.7,
@@ -5999,6 +7304,7 @@ window.PCB_REFBOARDS = [
         "net": "CLK32K"
       },
       {
+        "id": "ref-t-47",
         "x1": 6.7,
         "y1": 8.5,
         "x2": 6.7,
@@ -6008,6 +7314,7 @@ window.PCB_REFBOARDS = [
         "net": "CLK32K"
       },
       {
+        "id": "ref-t-48",
         "x1": 6.7,
         "y1": 8.4,
         "x2": 6.6,
@@ -6017,6 +7324,7 @@ window.PCB_REFBOARDS = [
         "net": "CLK32K"
       },
       {
+        "id": "ref-t-49",
         "x1": 6.6,
         "y1": 8.3,
         "x2": 6.6,
@@ -6026,6 +7334,7 @@ window.PCB_REFBOARDS = [
         "net": "CLK32K"
       },
       {
+        "id": "ref-t-50",
         "x1": 6.6,
         "y1": 8.1,
         "x2": 5.2,
@@ -6035,11 +7344,129 @@ window.PCB_REFBOARDS = [
         "net": "CLK32K"
       },
       {
+        "id": "ref-t-51",
         "x1": 5.2,
         "y1": 6.7,
         "x2": 5.2,
         "y2": 6.4,
         "layer": "In1.Cu",
+        "width": 0.15,
+        "net": "CLK32K"
+      },
+      {
+        "x1": 6.8,
+        "y1": 15.9,
+        "x2": 6.75,
+        "y2": 16,
+        "layer": "F.Cu",
+        "width": 0.3,
+        "net": "VDD_SNVS"
+      },
+      {
+        "x1": -19,
+        "y1": 0,
+        "x2": -19,
+        "y2": 6,
+        "layer": "In1.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -19,
+        "y1": 6,
+        "x2": -19,
+        "y2": 7.1,
+        "layer": "B.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -19,
+        "y1": 7.1,
+        "x2": -18.6,
+        "y2": 7.5,
+        "layer": "B.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -18.6,
+        "y1": 7.5,
+        "x2": -18.6,
+        "y2": 8.3,
+        "layer": "B.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -18.6,
+        "y1": 8.3,
+        "x2": -18.2,
+        "y2": 8.7,
+        "layer": "B.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -18.2,
+        "y1": 8.7,
+        "x2": -18.2,
+        "y2": 27.8,
+        "layer": "B.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -18.2,
+        "y1": 27.8,
+        "x2": -18,
+        "y2": 28,
+        "layer": "B.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -19,
+        "y1": 0,
+        "x2": -19,
+        "y2": -5.3,
+        "layer": "In1.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -19,
+        "y1": -5.3,
+        "x2": -19,
+        "y2": -27,
+        "layer": "B.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -19,
+        "y1": -27,
+        "x2": -18,
+        "y2": -28,
+        "layer": "In1.Cu",
+        "width": 0.3,
+        "net": "GND"
+      },
+      {
+        "x1": -4.9,
+        "y1": 17.4,
+        "x2": -6.4,
+        "y2": 17.4,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "BUCK1_OUT"
+      },
+      {
+        "x1": 5.1,
+        "y1": 6,
+        "x2": 5.05,
+        "y2": 6,
+        "layer": "F.Cu",
         "width": 0.15,
         "net": "CLK32K"
       }
@@ -6051,9 +7478,78 @@ window.PCB_REFBOARDS = [
         "od": 0.6,
         "drill": 0.3,
         "net": "EMMC_CLK"
+      },
+      {
+        "x": -16,
+        "y": -2.25,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "B2B_L_IO1"
+      },
+      {
+        "x": 16,
+        "y": -2.25,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "B2B_R_IO1"
+      },
+      {
+        "x": -5,
+        "y": 14,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "BUCK1_OUT"
+      },
+      {
+        "x": -16,
+        "y": -4.25,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "B2B_L_IO0"
+      },
+      {
+        "x": 16,
+        "y": -4.25,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "B2B_R_IO0"
+      },
+      {
+        "x": -19,
+        "y": 6,
+        "od": 0.6,
+        "drill": 0.3,
+        "net": "GND"
+      },
+      {
+        "x": -19,
+        "y": -5.3,
+        "od": 0.6,
+        "drill": 0.3,
+        "net": "GND"
+      },
+      {
+        "x": -19,
+        "y": -27,
+        "od": 0.6,
+        "drill": 0.3,
+        "net": "GND"
       }
     ],
     "padNets": {
+      "U1": {
+        "R1": "B2B_L_IO1",
+        "R22": "B2B_R_IO1",
+        "AA3": "EMMC_CLK"
+      },
+      "U2": {
+        "7": "BUCK1_OUT",
+        "8": "BUCK1_OUT",
+        "9": "BUCK1_OUT",
+        "49": "VDD_ARM",
+        "50": "VDD_ARM",
+        "51": "VDD_ARM"
+      },
       "U3": {
         "U1": "LPDDR_D0",
         "U4": "LPDDR_D1",
@@ -6064,9 +7560,35 @@ window.PCB_REFBOARDS = [
         "C9": "EMMC_D0",
         "C13": "EMMC_CLK"
       },
+      "J1": {
+        "30": "B2B_L_IO0",
+        "32": "B2B_L_IO0",
+        "34": "B2B_L_IO0",
+        "38": "B2B_L_IO1",
+        "40": "B2B_L_IO1",
+        "42": "B2B_L_IO1"
+      },
+      "J2": {
+        "29": "B2B_R_IO0",
+        "31": "B2B_R_IO0",
+        "33": "B2B_R_IO0",
+        "37": "B2B_R_IO1",
+        "39": "B2B_R_IO1",
+        "41": "B2B_R_IO1"
+      },
+      "Y1": {
+        "3": "CLK32K"
+      },
+      "Y2": {
+        "1": "CLK32K"
+      },
       "L1": {
         "1": "BUCK1_OUT",
         "2": "BUCK1_OUT"
+      },
+      "U5": {
+        "1": "VDD_SNVS",
+        "2": "VDD_SNVS"
       }
     }
   },
@@ -6369,6 +7891,7 @@ window.PCB_REFBOARDS = [
     ],
     "traces": [
       {
+        "id": "ref-t-0",
         "x1": -36.05,
         "y1": 1,
         "x2": -35.7,
@@ -6378,6 +7901,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-1",
         "x1": -35.7,
         "y1": 1.2,
         "x2": -35.6,
@@ -6387,6 +7911,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-2",
         "x1": -35.6,
         "y1": 1.2,
         "x2": -35.5,
@@ -6396,6 +7921,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-3",
         "x1": -35.5,
         "y1": 1.3,
         "x2": -35.3,
@@ -6405,6 +7931,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-4",
         "x1": -35.3,
         "y1": 1.3,
         "x2": -34.9,
@@ -6414,6 +7941,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-5",
         "x1": -34.9,
         "y1": 1.7,
         "x2": -34.8,
@@ -6423,6 +7951,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-6",
         "x1": -34.8,
         "y1": 1.7,
         "x2": -34.7,
@@ -6432,6 +7961,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-7",
         "x1": -34.7,
         "y1": 1.8,
         "x2": -29.2,
@@ -6441,6 +7971,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-8",
         "x1": -29.2,
         "y1": 1.8,
         "x2": -29,
@@ -6450,6 +7981,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-9",
         "x1": -29,
         "y1": 2,
         "x2": -29,
@@ -6459,6 +7991,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-10",
         "x1": -29,
         "y1": -11,
         "x2": -28.8,
@@ -6468,6 +8001,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-11",
         "x1": -28.8,
         "y1": -11.2,
         "x2": -28.7,
@@ -6477,6 +8011,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-12",
         "x1": -28.7,
         "y1": -11.2,
         "x2": -28.6,
@@ -6486,6 +8021,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-13",
         "x1": -28.6,
         "y1": -11.3,
         "x2": -28.3,
@@ -6495,6 +8031,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-14",
         "x1": -28.3,
         "y1": -11.3,
         "x2": -28.2,
@@ -6504,6 +8041,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-15",
         "x1": -28.2,
         "y1": -11.4,
         "x2": -27,
@@ -6513,6 +8051,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-16",
         "x1": -27,
         "y1": -11.4,
         "x2": -26.9,
@@ -6522,6 +8061,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-17",
         "x1": -29,
         "y1": 11,
         "x2": -28.8,
@@ -6531,6 +8071,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-18",
         "x1": -28.8,
         "y1": 11.2,
         "x2": -28.7,
@@ -6540,6 +8081,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-19",
         "x1": -28.7,
         "y1": 11.2,
         "x2": -28.6,
@@ -6549,6 +8091,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-20",
         "x1": -28.6,
         "y1": 11.3,
         "x2": -28.3,
@@ -6558,6 +8101,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-21",
         "x1": -28.3,
         "y1": 11.3,
         "x2": -28.2,
@@ -6567,6 +8111,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-22",
         "x1": -28.2,
         "y1": 11.4,
         "x2": -26.5,
@@ -6576,6 +8121,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-23",
         "x1": -26.5,
         "y1": 11.4,
         "x2": -26.4,
@@ -6585,6 +8131,7 @@ window.PCB_REFBOARDS = [
         "net": "REFCLK"
       },
       {
+        "id": "ref-t-24",
         "x1": -23.5,
         "y1": -13.75,
         "x2": -15.7,
@@ -6594,6 +8141,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-25",
         "x1": -15.7,
         "y1": -13.8,
         "x2": -15.5,
@@ -6603,6 +8151,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-26",
         "x1": -15.5,
         "y1": -14,
         "x2": -15.3,
@@ -6612,6 +8161,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-27",
         "x1": -15.3,
         "y1": -13.8,
         "x2": -15.3,
@@ -6621,6 +8171,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-28",
         "x1": -15.3,
         "y1": -13.7,
         "x2": -15.2,
@@ -6630,6 +8181,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-29",
         "x1": -15.2,
         "y1": -13.6,
         "x2": -15.2,
@@ -6639,6 +8191,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-30",
         "x1": -15.2,
         "y1": -12.7,
         "x2": -15.1,
@@ -6648,6 +8201,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-31",
         "x1": -15.1,
         "y1": -12.6,
         "x2": -15.1,
@@ -6657,6 +8211,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-32",
         "x1": -15.1,
         "y1": -10.9,
         "x2": -15,
@@ -6666,6 +8221,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-33",
         "x1": -14.8,
         "y1": -10.7,
         "x2": 4.2,
@@ -6675,6 +8231,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-34",
         "x1": 4.2,
         "y1": -10.7,
         "x2": 4.5,
@@ -6684,6 +8241,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-35",
         "x1": 4.5,
         "y1": -11,
         "x2": 4.7,
@@ -6693,6 +8251,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-36",
         "x1": 4.7,
         "y1": -11.2,
         "x2": 4.7,
@@ -6702,6 +8261,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-37",
         "x1": 4.7,
         "y1": -11.3,
         "x2": 4.8,
@@ -6711,6 +8271,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-38",
         "x1": 4.8,
         "y1": -11.4,
         "x2": 4.8,
@@ -6720,6 +8281,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-39",
         "x1": 4.8,
         "y1": -12.3,
         "x2": 4.9,
@@ -6729,6 +8291,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-40",
         "x1": 4.9,
         "y1": -12.4,
         "x2": 4.9,
@@ -6738,6 +8301,7 @@ window.PCB_REFBOARDS = [
         "net": "LO_OUT"
       },
       {
+        "id": "ref-t-41",
         "x1": -23.4,
         "y1": 13.8,
         "x2": -9.2,
@@ -6747,6 +8311,7 @@ window.PCB_REFBOARDS = [
         "net": "SRC_OUT"
       },
       {
+        "id": "ref-t-42",
         "x1": -9.2,
         "y1": 13.8,
         "x2": -9,
@@ -6756,6 +8321,7 @@ window.PCB_REFBOARDS = [
         "net": "SRC_OUT"
       },
       {
+        "id": "ref-t-43",
         "x1": -9,
         "y1": 14,
         "x2": -9,
@@ -6765,6 +8331,7 @@ window.PCB_REFBOARDS = [
         "net": "SRC_OUT"
       },
       {
+        "id": "ref-t-44",
         "x1": -9,
         "y1": -18,
         "x2": -8.5,
@@ -6774,6 +8341,7 @@ window.PCB_REFBOARDS = [
         "net": "SRC_OUT"
       },
       {
+        "id": "ref-t-45",
         "x1": -3.5,
         "y1": -18,
         "x2": -3.5,
@@ -6783,6 +8351,7 @@ window.PCB_REFBOARDS = [
         "net": "RF_PORT1"
       },
       {
+        "id": "ref-t-46",
         "x1": 21.25,
         "y1": -12,
         "x2": 21.3,
@@ -6792,6 +8361,7 @@ window.PCB_REFBOARDS = [
         "net": "IF_OUT"
       },
       {
+        "id": "ref-t-47",
         "x1": 21.3,
         "y1": -11.2,
         "x2": 21.7,
@@ -6801,6 +8371,7 @@ window.PCB_REFBOARDS = [
         "net": "IF_OUT"
       },
       {
+        "id": "ref-t-48",
         "x1": 21.7,
         "y1": -10.8,
         "x2": 21.7,
@@ -6810,6 +8381,7 @@ window.PCB_REFBOARDS = [
         "net": "IF_OUT"
       },
       {
+        "id": "ref-t-49",
         "x1": 21.7,
         "y1": -2.8,
         "x2": 22,
@@ -6819,6 +8391,7 @@ window.PCB_REFBOARDS = [
         "net": "IF_OUT"
       },
       {
+        "id": "ref-t-50",
         "x1": 22,
         "y1": -2.5,
         "x2": 5.5,
@@ -6828,6 +8401,7 @@ window.PCB_REFBOARDS = [
         "net": "IF_OUT"
       },
       {
+        "id": "ref-t-51",
         "x1": 5.5,
         "y1": -2.5,
         "x2": 5.5,
@@ -6837,6 +8411,7 @@ window.PCB_REFBOARDS = [
         "net": "IF_OUT"
       },
       {
+        "id": "ref-t-52",
         "x1": 5.5,
         "y1": 2.5,
         "x2": 22,
@@ -6846,6 +8421,7 @@ window.PCB_REFBOARDS = [
         "net": "IF_OUT"
       },
       {
+        "id": "ref-t-53",
         "x1": 22,
         "y1": 2.5,
         "x2": 22,
@@ -6855,6 +8431,7 @@ window.PCB_REFBOARDS = [
         "net": "IF_OUT"
       },
       {
+        "id": "ref-t-54",
         "x1": 22,
         "y1": 10.2,
         "x2": 22.25,
@@ -6864,6 +8441,7 @@ window.PCB_REFBOARDS = [
         "net": "IF_OUT"
       },
       {
+        "id": "ref-t-55",
         "x1": 11,
         "y1": 20,
         "x2": 9.9,
@@ -6873,6 +8451,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-56",
         "x1": 9.9,
         "y1": 20,
         "x2": 7,
@@ -6882,6 +8461,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-57",
         "x1": 7,
         "y1": 20,
         "x2": 6.8,
@@ -6891,6 +8471,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-58",
         "x1": 6.8,
         "y1": 19.8,
         "x2": 6.8,
@@ -6900,6 +8481,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-59",
         "x1": 6.8,
         "y1": 19.7,
         "x2": 6.7,
@@ -6909,6 +8491,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-60",
         "x1": 6.7,
         "y1": 19.6,
         "x2": 6.7,
@@ -6918,6 +8501,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-61",
         "x1": 6.7,
         "y1": 19.4,
         "x2": 6.3,
@@ -6927,6 +8511,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-62",
         "x1": 6.3,
         "y1": 19,
         "x2": 6.3,
@@ -6936,6 +8521,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-63",
         "x1": 6.3,
         "y1": 18.9,
         "x2": 6.2,
@@ -6945,6 +8531,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-64",
         "x1": 6.2,
         "y1": 18.8,
         "x2": 6.2,
@@ -6954,6 +8541,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-65",
         "x1": 6.2,
         "y1": 7.8,
         "x2": 6,
@@ -6963,6 +8551,7 @@ window.PCB_REFBOARDS = [
         "net": "3V3"
       },
       {
+        "id": "ref-t-66",
         "x1": -46,
         "y1": 8,
         "x2": 46,
@@ -6970,6 +8559,60 @@ window.PCB_REFBOARDS = [
         "layer": "B.Cu",
         "width": 0.15,
         "net": "3V3"
+      },
+      {
+        "x1": 11.5,
+        "y1": 19.9,
+        "x2": 12.2,
+        "y2": 19.9,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 12.2,
+        "y1": 19.9,
+        "x2": 13.8,
+        "y2": 18.3,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 13.8,
+        "y1": 18.3,
+        "x2": 13.9,
+        "y2": 18.3,
+        "layer": "F.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 13.9,
+        "y1": 18.3,
+        "x2": 35.7,
+        "y2": 18.3,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": 35.7,
+        "y1": 18.3,
+        "x2": 46,
+        "y2": 8,
+        "layer": "B.Cu",
+        "width": 0.15,
+        "net": "3V3"
+      },
+      {
+        "x1": -29,
+        "y1": 2,
+        "x2": -29,
+        "y2": 11,
+        "layer": "In1.Cu",
+        "width": 0.15,
+        "net": "REFCLK"
       }
     ],
     "vias": [
@@ -6979,23 +8622,159 @@ window.PCB_REFBOARDS = [
         "od": 0.6,
         "drill": 0.3,
         "net": "3V3"
+      },
+      {
+        "x": 6,
+        "y": 7.6,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "3V3"
+      },
+      {
+        "x": 7,
+        "y": 20,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "3V3"
+      },
+      {
+        "x": -29,
+        "y": -11,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "REFCLK"
+      },
+      {
+        "x": -29,
+        "y": 2,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "REFCLK"
+      },
+      {
+        "x": -36.05,
+        "y": 1,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "REFCLK"
+      },
+      {
+        "x": -23.5,
+        "y": -13.75,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "LO_OUT"
+      },
+      {
+        "x": -15.5,
+        "y": -14,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "LO_OUT"
+      },
+      {
+        "x": 4.5,
+        "y": -11,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "LO_OUT"
+      },
+      {
+        "x": -9,
+        "y": 14,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "SRC_OUT"
+      },
+      {
+        "x": -9,
+        "y": -18,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "SRC_OUT"
+      },
+      {
+        "x": 21.25,
+        "y": -12,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "IF_OUT"
+      },
+      {
+        "x": 5.5,
+        "y": 2.5,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "IF_OUT"
+      },
+      {
+        "x": 22,
+        "y": 2.5,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "IF_OUT"
+      },
+      {
+        "x": 22.25,
+        "y": 10.5,
+        "od": 0.7,
+        "drill": 0.3,
+        "net": "IF_OUT"
+      },
+      {
+        "x": 13.9,
+        "y": 18.3,
+        "od": 0.6,
+        "drill": 0.3,
+        "net": "3V3"
       }
     ],
     "padNets": {
       "U1": {
+        "49": "3V3",
+        "50": "3V3",
         "51": "ADC_D2",
         "53": "ADC_D1",
         "55": "ADC_D0",
         "61": "USB_DM",
         "65": "USB_DP"
       },
+      "U2": {
+        "9": "REFCLK",
+        "10": "REFCLK",
+        "11": "REFCLK",
+        "19": "LO_OUT",
+        "20": "LO_OUT",
+        "21": "LO_OUT"
+      },
+      "U3": {
+        "20": "SRC_OUT",
+        "21": "SRC_OUT",
+        "29": "REFCLK",
+        "30": "REFCLK",
+        "32": "REFCLK"
+      },
+      "U4": {
+        "6": "REFCLK",
+        "7": "REFCLK"
+      },
       "U5": {
         "3": "LO_MIXER",
-        "4": "LO_MIXER"
+        "4": "LO_MIXER",
+        "11": "IF_OUT",
+        "12": "IF_OUT"
+      },
+      "U6": {
+        "37": "IF_OUT",
+        "38": "IF_OUT",
+        "39": "IF_OUT"
       },
       "J1": {
         "1": "USB_DP",
         "S1": "USB_DM"
+      },
+      "U7": {
+        "1": "LO_OUT"
       },
       "U8": {
         "1": "LO_OUT",
