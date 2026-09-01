@@ -320,6 +320,136 @@
 
   // ---------- 單網 A* 佈線（試驗性：單層、格點 0.25mm、8 向、無推擠無 via 插入） ----------
   const AutoRoute = {
+    /**
+     * 逃逸 via（escape via）。
+     *
+     * 問題：同一個點上有兩層的同 net 銅（例如 SMD pad 在頂層、走線收在底層），
+     * 中間缺一顆 via。密腳區把 via 直接放在那個點上會撞到隔壁腳的淨空，
+     * 於是那條連線永遠繞不完——症狀是一條**零長度飛線**（畫面上看不見）。
+     *
+     * 作法跟真實 layout 一樣：**把 via 往外挪，用短線接出去**。
+     * 兩層都要接：via 在 C 點連通各層，但兩層的銅都還停在 P 點，
+     * 所以每一層各補一段 P→C 的短線（pad 那層那一段就是逃逸線本身）。
+     *
+     * 先用幾何粗篩（只看附近的銅），選中的候選再交給呼叫端跑一次真正的 DRC 確認——
+     * 每個候選都跑全板 DRC 的話，一個點要幾十秒。
+     *
+     * 回 { ok, via, stubs, r, dir } 或 { ok:false, reason }
+     */
+    escapeVia(state, padAbs, at, opt) {
+      opt = opt || {};
+      const G = (typeof window !== 'undefined' && window.PadDrc && window.PadDrc._geom) || null;
+      if (!G) return { ok: false, reason: 'no_geom' };
+      const net = String(at.net || '');
+      if (!net) return { ok: false, reason: 'no_net' };
+      const px = at.x, py = at.y;
+      const cl = opt.clearance || {};
+      const cTrace = (typeof cl.traceToTrace === 'number') ? cl.traceToTrace : 0.15;
+      const cPad = (typeof cl.traceToPad === 'number') ? cl.traceToPad : cTrace;
+      const cVia = (typeof cl.viaToVia === 'number') ? cl.viaToVia : cTrace;
+      const cEdge = (typeof cl.traceToEdge === 'number') ? cl.traceToEdge : 0.3;
+      const od = opt.viaOd || 0.7, drill = opt.viaDrill || 0.3, w = opt.width || 0.2;
+      const cu = (state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+      const EPS = 1e-6;
+
+      // 這個點上，哪幾層有這條 net 的銅？兩層以上才需要 via。
+      const layersHere = new Set();
+      (state.components || []).forEach(c => (c.pads || []).forEach(p => {
+        if (p.cu === false || String(p.net || '') !== net) return;
+        const a = padAbs(c, p);
+        if (Math.hypot(a.x - px, a.y - py) > Math.max(p.w || 0.5, p.h || 0.5)) return;
+        if (p.side === '*') cu.forEach(l => layersHere.add(l));
+        else layersHere.add(p.side === 'B' ? cu[cu.length - 1] : cu[0]);
+      }));
+      // 哪一層已經有走線收在這一點——那一層不必補新線，把既有那條的端點拉過去就好。
+      // 兩層各放一段幾何完全相同的短線，會被 gerber-readback 判成「走線漏到別的銅層」，
+      // 而且真實 layout 也是拉端點，不是疊一段一模一樣的線。
+      const endAt = new Map();
+      (state.traces || []).forEach((t, idx) => {
+        if (String(t.net || '') !== net) return;
+        const l = t.layer || 'F.Cu';
+        if (Math.hypot(t.x1 - px, t.y1 - py) < 1e-3) { layersHere.add(l); if (!endAt.has(l)) endAt.set(l, { index: idx, end: 1 }); }
+        else if (Math.hypot(t.x2 - px, t.y2 - py) < 1e-3) { layersHere.add(l); if (!endAt.has(l)) endAt.set(l, { index: idx, end: 2 }); }
+      });
+      const layers = [...layersHere].filter(l => cu.indexOf(l) >= 0);
+      if (layers.length < 2) return { ok: false, reason: 'not_a_layer_join' };
+
+      // 附近的異網銅（只取用得到的範圍，省掉全板掃描）
+      const R = 4;
+      const foreignPads = [];
+      (state.components || []).forEach(c => (c.pads || []).forEach(p => {
+        if (p.cu === false) return;
+        const a = padAbs(c, p);
+        if (Math.hypot(a.x - px, a.y - py) > R) return;
+        if (String(p.net || '') === net) return;
+        foreignPads.push(G.padShape(c, p, padAbs));
+      }));
+      const foreignTraces = (state.traces || []).filter(t =>
+        String(t.net || '') !== net &&
+        Math.min(Math.hypot(t.x1 - px, t.y1 - py), Math.hypot(t.x2 - px, t.y2 - py)) <= R + 2);
+      const foreignVias = (state.vias || []).filter(v =>
+        String(v.net || '') !== net && Math.hypot(v.x - px, v.y - py) <= R + 1);
+
+      // 既有走線的「幾何指紋」（端點排序後的字串，方向無關）。
+      // 逃逸線如果剛好跟別層的同 net 走線完全重合，gerber-readback 會判成
+      // 「同一條線出現在兩層」——那條檢查是用來抓「Gerber 寫錯層」的，不能為了這裡放寬。
+      const segKey = (x1, y1, x2, y2) => {
+        const a = [+x1.toFixed(3), +y1.toFixed(3)], b = [+x2.toFixed(3), +y2.toFixed(3)];
+        const [p, q] = (a[0] < b[0] || (a[0] === b[0] && a[1] <= b[1])) ? [a, b] : [b, a];
+        return p.concat(q).join(',');
+      };
+      const existing = new Set((state.traces || []).map(t => segKey(t.x1, t.y1, t.x2, t.y2)));
+
+      const halfW = (state.boardWidth || 100) / 2, halfH = (state.boardHeight || 80) / 2;
+      const fits = (cx, cy) => {
+        if (Math.hypot(cx - px, cy - py) > EPS && existing.has(segKey(px, py, cx, cy))) return false;
+        // 板邊
+        if (Math.abs(cx) + od / 2 + cEdge > halfW || Math.abs(cy) + od / 2 + cEdge > halfH) return false;
+        // via 對異網 pad／走線／via
+        for (const s of foreignPads) if (G.ptPadDist(cx, cy, s) - od / 2 < cPad) return false;
+        for (const t of foreignTraces)
+          if (G.ptSegDist(cx, cy, t.x1, t.y1, t.x2, t.y2) - od / 2 - (t.width || 0.3) / 2 < cTrace) return false;
+        for (const v of foreignVias)
+          if (Math.hypot(v.x - cx, v.y - cy) - od / 2 - (v.od || 0.6) / 2 < cVia) return false;
+        // 短線（P→C）對異網銅。兩層共用同一條幾何，取最嚴的判定。
+        if (Math.hypot(cx - px, cy - py) > EPS) {
+          for (const s of foreignPads)
+            if (G.segPadDist(px, py, cx, cy, s) - w / 2 < cPad) return false;
+          for (const t of foreignTraces)
+            if (G.segSegDist(px, py, cx, cy, t.x1, t.y1, t.x2, t.y2) - w / 2 - (t.width || 0.3) / 2 < cTrace) return false;
+          for (const v of foreignVias)
+            if (G.ptSegDist(v.x, v.y, px, py, cx, cy) - w / 2 - (v.od || 0.6) / 2 < cTrace) return false;
+        }
+        return true;
+      };
+
+      // 先試原地（不必逃逸就別逃），再一圈一圈往外找。
+      // 角度取 24 個方向：密腳區能出去的縫隙常常只有一個方向。
+      const radii = [0, 0.35, 0.5, 0.7, 0.9, 1.2, 1.6, 2.0];
+      const dirs = 24;
+      for (const r of radii) {
+        if (r === 0) {
+          if (fits(px, py)) return { ok: true, r: 0, dir: 0, via: { x: px, y: py, od, drill, net }, stubs: [] };
+          continue;
+        }
+        for (let k = 0; k < dirs; k++) {
+          const th = (k / dirs) * Math.PI * 2;
+          const cx = +(px + Math.cos(th) * r).toFixed(3), cy = +(py + Math.sin(th) * r).toFixed(3);
+          if (!fits(cx, cy)) continue;
+          return {
+            ok: true, r, dir: th,
+            via: { x: cx, y: cy, od, drill, net },
+            // 有既有走線收在這點的層 → 拉端點；其餘（pad 那層）→ 補一段逃逸線
+            stubs: layers.filter(l => !endAt.has(l))
+              .map(l => ({ x1: px, y1: py, x2: cx, y2: cy, layer: l, width: w, net })),
+            extend: layers.filter(l => endAt.has(l))
+              .map(l => Object.assign({ layer: l, to: { x: cx, y: cy } }, endAt.get(l)))
+          };
+        }
+      }
+      return { ok: false, reason: 'no_room' };
+    },
+
     // 網格 A* 繞線。opt.layers 給銅層 id 陣列就會做多層繞線（穿孔 via 換層）；
     // 不給就退回單層，行為與舊版一致（既有呼叫端不必改）。
     //

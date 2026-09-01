@@ -70,13 +70,9 @@ for (const b of boards) {
   const st = app.state;
   // 驗收要跟瀏覽器同條件：init() 會載入 NetRules，node 不跑 init 所以自己補
   st.netRules = window.NetRules ? window.NetRules.load() : [];
-  // 先重建 pad 的 net。公版資料裡存的那張 padNets 表本來就是「從走線端點回推」來的，
-  // 而舊版的回推用 pad 外接圓判定，0.4mm 間距的 QFN 會把一條線同時貼給相鄰兩顆腳
-  //（rp2040 的 pin15/16 都被標成 XIN，但 XIN／XOUT 是石英振盪器的兩條不同 net）。
-  // 判定已修（pcb.js assignPadNets），這裡把錯的資料一起重算掉。
-  (st.components || []).forEach(c => (c.pads || []).forEach(pd => { pd.net = ''; }));
-  const repad = app.assignPadNets(st.components, st.traces);
-
+  // 不要清掉 pad 的 net 再重推。那張 padNets 表記的是**意圖**（這根腳該接哪條 net），
+  // 其中一半（實測 115/230）根本沒有走線支持——因為那些 net 還沒繞完，
+  // 而那正是飛線要顯示的東西。清掉等於把「還沒繞」偽裝成「不用繞」。
   const before = errsOf().length;
   const lines0 = window.Ratsnest.compute(st, padAbs);
   const tracesBefore = (st.traces || []).length;
@@ -89,19 +85,57 @@ for (const b of boards) {
   const ps = window.Padstack ? window.Padstack.load() : { od: 0.7, drill: 0.3 };
   // 縫一輪。補繞之後要**再縫一次**：新走線也可能收在需要 via 的點上，
   // 只縫前面那一輪的話，補繞自己製造出來的壞接點會留在板上（rp2040 實測就是這樣）。
+  let escaped = 0;
   const stitchPass = () => {
     const zero = window.Ratsnest.compute(st, padAbs)
       .filter(l => Math.hypot(l.x2 - l.x1, l.y2 - l.y1) < 1e-6);
     for (const z of zero) {
       const before = errsOf().length;
-      const v = { x: +z.x1.toFixed(3), y: +z.y1.toFixed(3), od: ps.od, drill: ps.drill, net: z.net };
-      st.vias.push(v);
-      const okNow = errsOf().length <= before;
-      // 縫完那條零長度飛線要真的消失，否則這顆 via 沒有用（只是多一個孔）
-      const gone = !window.Ratsnest.compute(st, padAbs)
+      const gone = () => !window.Ratsnest.compute(st, padAbs)
         .some(l => Math.hypot(l.x2 - l.x1, l.y2 - l.y1) < 1e-6 &&
                    Math.hypot(l.x1 - z.x1, l.y1 - z.y1) < 1e-6 && l.net === z.net);
-      if (okNow && gone) { stitched++; } else { st.vias.pop(); stitchFail++; }
+      const v = { x: +z.x1.toFixed(3), y: +z.y1.toFixed(3), od: ps.od, drill: ps.drill, net: z.net };
+      st.vias.push(v);
+      if (errsOf().length <= before && gone()) { stitched++; continue; }
+      st.vias.pop();
+
+      // 原地放不下 → 逃逸：把 via 往外挪，兩層各補一段短線接過去。
+      // 密腳區（BGA／QFN／B2B）本來就沒有空間把 via 放在 pad 正下方，
+      // 真實 layout 也是這樣做的。粗篩由 escapeVia 做，這裡再跑一次真 DRC 確認。
+      const esc = window.AutoRoute.escapeVia(st, padAbs, { x: z.x1, y: z.y1, net: z.net }, {
+        clearance: CL, viaOd: ps.od, viaDrill: ps.drill, width: 0.2
+      });
+      if (!esc.ok) { stitchFail++; continue; }
+      const nT = (esc.stubs || []).length, nV = st.vias.length;
+      // 既有走線的端點：拉到新 via 的位置（不是再疊一段一模一樣的線）
+      const undo = [];
+      (esc.extend || []).forEach(e => {
+        const t = st.traces[e.index];
+        if (!t) return;
+        if (e.end === 1) { undo.push([t, 'x1', t.x1, 'y1', t.y1]); t.x1 = e.to.x; t.y1 = e.to.y; }
+        else { undo.push([t, 'x2', t.x2, 'y2', t.y2]); t.x2 = e.to.x; t.y2 = e.to.y; }
+      });
+      (esc.stubs || []).forEach(s => st.traces.push(Object.assign({ id: 'esc-' + st.traces.length }, s)));
+      st.vias.push(esc.via);
+      // 不變式：同一段幾何不可以同時出現在兩個銅層（gerber-readback 會判成寫錯層）。
+      // escapeVia 自己也會避開，這裡再驗一次——不變式要守在「寫進資料」的那一關，
+      // 不能只靠產生端記得。
+      const kk = t => { const a = [+(+t.x1).toFixed(3), +(+t.y1).toFixed(3)], b = [+(+t.x2).toFixed(3), +(+t.y2).toFixed(3)];
+        const [p, q] = (a[0] < b[0] || (a[0] === b[0] && a[1] <= b[1])) ? [a, b] : [b, a]; return p.concat(q).join(','); };
+      const byGeom = new Map();
+      let crossLayer = false;
+      for (const t of st.traces) {
+        const k = kk(t), l = t.layer || 'F.Cu';
+        if (byGeom.has(k) && byGeom.get(k) !== l) { crossLayer = true; break; }
+        byGeom.set(k, l);
+      }
+      if (!crossLayer && errsOf().length <= before && gone()) { escaped++; }
+      else {
+        st.vias.length = nV;
+        st.traces.length = st.traces.length - nT;
+        undo.forEach(([t, kx, vx, ky, vy]) => { t[kx] = vx; t[ky] = vy; });
+        stitchFail++;
+      }
     }
   };
   stitchFail = 0; stitchPass();
@@ -172,10 +206,7 @@ for (const b of boards) {
 
   // 驗收要用使用者實際會看到的狀態：照 loadRefBoard 的順序重來一次
   //（清空 pad net → 套 padNets → 從走線回推），否則工具說 0、載進來卻有錯。
-  // 收尾一律從走線重推一次，再把結果存成 padNets：
-  // 存進資料的是「這份走線推得出來的」，而不是上一輪留下來的舊值。
-  (st.components || []).forEach(c => (c.pads || []).forEach(pd => { pd.net = ''; }));
-  app.assignPadNets(st.components, st.traces);
+  // padNets 照實存目前每顆 pad 身上的 net（意圖表 ＋ 這一輪新繞出來的）
   const padNets = {};
   (st.components || []).forEach(c => (c.pads || []).forEach(pd => {
     if (pd.net) (padNets[c.ref] = padNets[c.ref] || {})[pd.num] = pd.net;
@@ -216,8 +247,7 @@ for (const b of boards) {
   console.log(b.id.padEnd(16),
     'DRC ' + before + ' -> ' + after,
     '| 未繞 ' + lines0.length + ' -> ' + openSameBasis + '（回推後 ' + openAfter + '）',
-    '| pad net 重推 ' + repad.assigned + (repad.conflicts ? '(矛盾 ' + repad.conflicts + ')' : ''),
-    '| 縫 via ' + stitched + (stitchFail ? '(放棄 ' + stitchFail + ')' : ''),
+    '| 縫 via ' + stitched + (escaped ? ' + 逃逸 ' + escaped : '') + (stitchFail ? '(放棄 ' + stitchFail + ')' : ''),
     '| 補繞 ' + routed + ' 條（' + addedTraces.length + ' 段、' + addedVias.length + ' via）',
     '| 端點落點 ' + endsOk + '/' + ends,
     (keep ? '' : ' ✕ 放棄這片'));

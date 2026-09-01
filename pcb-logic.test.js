@@ -796,15 +796,15 @@ const minDistToSegs = (px, py, segs) =>
   // 根因是繞線器收線時允許收在別層（已修，見第 39 節），資料端由 tools/refboard-fill.js 縫回來。
   // 這個預算跟 DRC 一樣只准往下：變多就是有人把板子改壞了，或繞線器又退步了。
   const OPEN_BUDGET = {
-    'rp2040-pico30': 13, 'arduino-uno-r3': 15, 'esp32-poe2': 21, 'a20-lime': 3,
-    'imx233-maxi': 4, 'openrex-imx6': 10, 'imx8mp-som': 12, 'librevna': 6
+    'rp2040-pico30': 11, 'arduino-uno-r3': 10, 'esp32-poe2': 9, 'a20-lime': 3,
+    'imx233-maxi': 2, 'openrex-imx6': 7, 'imx8mp-som': 4, 'librevna': 6
   };
   // 剩下的零長度飛線：那個點要打 via 才接得起來，但 via 放下去會撞到鄰居
   //（密腳 B2B／BGA 區，實測 DRC 0 -> 1~4）。正解是逃逸繞線把接點挪開再打，
   // 不在「補繞」的範圍內，所以先記成預算。同樣只准往下。
   const ZERO_BUDGET = {
-    'rp2040-pico30': 1, 'arduino-uno-r3': 2, 'esp32-poe2': 4, 'a20-lime': 0,
-    'imx233-maxi': 2, 'openrex-imx6': 2, 'imx8mp-som': 7, 'librevna': 0
+    'rp2040-pico30': 1, 'arduino-uno-r3': 0, 'esp32-poe2': 0, 'a20-lime': 0,
+    'imx233-maxi': 2, 'openrex-imx6': 1, 'imx8mp-som': 2, 'librevna': 0
   };
   const openWorse = [], zeroLen = [];
   for (const id of boards) {
@@ -2013,6 +2013,105 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   const g = window.AutoRoute._pairClearance(app.state, app.padAbs.bind(app),
     [[{ x1: -20, y1: -0.5, x2: 20, y2: -0.5, layer: 'F.Cu' }]], ['D_P', 'D_N'], opts);
   ok(g === null || g.kind !== 'pad' || g.ref !== 'J1', '42 同一對自己的 pad 不算違規');
+  app.state = savedState;
+}
+
+// 43) 逃逸 via：密腳區放不下 via 時，往外挪並補短線
+// 零長度飛線＝同一點有兩層的同 net 銅、中間缺 via。BGA／QFN 底下沒有空間把 via
+// 放在 pad 正下方，真實 layout 的作法就是逃逸：via 往外挪，兩層各補一段短線。
+{
+  const savedState = app.state;
+  // 0.5mm 間距的一排 pad，中間那顆的 net 在底層也有一段線收在同一點
+  const row = [];
+  for (let i = 0; i < 5; i++) {
+    row.push({ num: String(i + 1), x: (i - 2) * 0.5, y: 0, w: 0.25, h: 0.9, side: 'F',
+      net: i === 2 ? 'SIG' : ('N' + i), cu: true });
+  }
+  const mk = () => Object.assign({}, savedState, {
+    boardWidth: 30, boardHeight: 20, layers: 2, layerStack: app.buildLayerStack(2),
+    visibleLayers: ['F.Cu', 'B.Cu'], keepouts: [], userZones: [], vias: [],
+    components: [{ id: 'u1', ref: 'U1', x: 0, y: 0, rot: 0, pads: row.map(p => Object.assign({}, p)) }],
+    traces: [{ x1: 0, y1: 0, x2: 0, y2: -6, layer: 'B.Cu', width: 0.2, net: 'SIG' }]
+  });
+  app.state = mk();
+  const rules = app.loadDrcRules();
+  const opt = { clearance: rules.clearance, viaOd: 0.7, viaDrill: 0.3, width: 0.2 };
+
+  // 原地放不下：0.7mm 的 via 放在 0.5mm 間距的 pad 正中央，一定撞到左右鄰居
+  const errs = () => window.PadDrc.run(app.state, app.padAbs.bind(app), rules).filter(f => f.type === 'error').length;
+  const base = errs();
+  app.state.vias.push({ x: 0, y: 0, od: 0.7, drill: 0.3, net: 'SIG' });
+  ok(errs() > base, '43 前提：via 直接放在密腳中央會違規（不然這個測試沒有意義）');
+  app.state.vias.pop();
+
+  const esc = window.AutoRoute.escapeVia(app.state, app.padAbs.bind(app), { x: 0, y: 0, net: 'SIG' }, opt);
+  ok(esc.ok, '43 應該找得到逃逸位置');
+  ok(esc.r > 0, '43 逃逸的 via 要離開原點（實得 ' + (esc.r || 0).toFixed(2) + 'mm）');
+  // 兩層都要接到新 via，但**不是各放一段一模一樣的線**：
+  // 已經有走線收在該點的層（這裡是 B.Cu）要拉端點，pad 那層才補新的逃逸線。
+  // 兩層疊同一段幾何會被 gerber-readback 判成「走線漏到別的銅層」，實測紅過。
+  const touched = esc.stubs.map(s => s.layer).concat((esc.extend || []).map(e => e.layer)).sort();
+  eq(touched.join(','), 'B.Cu,F.Cu', '43 兩層都要接到新 via（一層補線、一層拉端點）');
+  eq(esc.stubs.length, 1, '43 只有 pad 那層需要新的逃逸線');
+  eq((esc.extend || []).length, 1, '43 既有走線那層要拉端點，不可以疊一段一樣的線');
+  eq(esc.extend[0].layer, 'B.Cu', '43 拉的是底層那條');
+
+  // 套用之後：不可以產生新的 DRC 違規
+  esc.stubs.forEach(s => app.state.traces.push(Object.assign({}, s)));
+  esc.extend.forEach(e => {
+    const t = app.state.traces[e.index];
+    if (e.end === 1) { t.x1 = e.to.x; t.y1 = e.to.y; } else { t.x2 = e.to.x; t.y2 = e.to.y; }
+  });
+  app.state.vias.push(esc.via);
+  eq(errs(), base, '43 逃逸之後不可以留下新的違規');
+
+  // 完全沒有空間時要老實回失敗，不可以硬放
+  app.state = mk();
+  app.state.boardWidth = 1.2; app.state.boardHeight = 1.2;      // 板子只比那排 pad 大一點點
+  const tight = window.AutoRoute.escapeVia(app.state, app.padAbs.bind(app), { x: 0, y: 0, net: 'SIG' }, opt);
+  eq(tight.ok, false, '43 真的沒空間就要回失敗');
+  eq(tight.reason, 'no_room', '43 失敗原因要講清楚');
+
+  // via 放得下、但**短線會穿過別條 net 的線**：這種也要拒絕。
+  // 只檢查 via 位置的話，會放出一顆「接得到、但半路短路」的逃逸孔。
+  // 佈置：SIG pad 四周圍一圈異網 pad（只留正東一個缺口），缺口上橫著一條細的異網走線。
+  // 東邊夠遠的地方 via 放得下，但從原點過去的短線一定會穿過那條線。
+  {
+    const st = Object.assign({}, savedState, {
+      boardWidth: 30, boardHeight: 20, layers: 2, layerStack: app.buildLayerStack(2),
+      visibleLayers: ['F.Cu', 'B.Cu'], keepouts: [], userZones: [], vias: [],
+      components: [{ id: 'u1', ref: 'U1', x: 0, y: 0, rot: 0,
+        pads: [{ num: '1', x: 0, y: 0, w: 0.25, h: 0.9, side: 'F', net: 'SIG', cu: true }] }],
+      traces: [
+        { x1: 0, y1: 0, x2: 0, y2: -6, layer: 'B.Cu', width: 0.2, net: 'SIG' },
+        { x1: 0.8, y1: -1.5, x2: 0.8, y2: 1.5, layer: 'F.Cu', width: 0.05, net: 'WALL' }
+      ]
+    });
+    for (let k = 1; k < 8; k++) {
+      const th = (k / 8) * Math.PI * 2;
+      st.components.push({ id: 'w' + k, ref: 'W' + k, x: Math.cos(th) * 0.75, y: Math.sin(th) * 0.75, rot: 0,
+        pads: [{ num: '1', x: 0, y: 0, w: 0.6, h: 0.6, side: 'F', net: 'W' + k, cu: true }] });
+    }
+    app.state = st;
+    const blocked = window.AutoRoute.escapeVia(app.state, app.padAbs.bind(app), { x: 0, y: 0, net: 'SIG' }, opt);
+    if (blocked.ok) {
+      const G = window.PadDrc._geom;
+      const wall = st.traces.find(t => t.net === 'WALL');
+      const worst = Math.min.apply(null, blocked.stubs.map(s =>
+        G.segSegDist(s.x1, s.y1, s.x2, s.y2, wall.x1, wall.y1, wall.x2, wall.y2) - s.width / 2 - wall.width / 2));
+      ok(worst >= rules.clearance.traceToTrace - 1e-6,
+        '43 逃逸的短線不可以穿過別條 net（最近 ' + worst.toFixed(3) + 'mm，門檻 ' + rules.clearance.traceToTrace + '）');
+    } else {
+      eq(blocked.reason, 'no_room', '43 出不去就老實回 no_room');
+    }
+  }
+
+  // 這個點只有一層有銅 → 不是「缺 via」，不該亂放
+  app.state = mk();
+  app.state.traces = [];
+  const solo = window.AutoRoute.escapeVia(app.state, app.padAbs.bind(app), { x: 0, y: 0, net: 'SIG' }, opt);
+  eq(solo.ok, false, '43 只有一層有銅時不該放 via');
+  eq(solo.reason, 'not_a_layer_join', '43 要說明是「不是換層點」而不是「沒空間」');
   app.state = savedState;
 }
 
