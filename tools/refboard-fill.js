@@ -70,6 +70,13 @@ for (const b of boards) {
   const st = app.state;
   // 驗收要跟瀏覽器同條件：init() 會載入 NetRules，node 不跑 init 所以自己補
   st.netRules = window.NetRules ? window.NetRules.load() : [];
+  // 先重建 pad 的 net。公版資料裡存的那張 padNets 表本來就是「從走線端點回推」來的，
+  // 而舊版的回推用 pad 外接圓判定，0.4mm 間距的 QFN 會把一條線同時貼給相鄰兩顆腳
+  //（rp2040 的 pin15/16 都被標成 XIN，但 XIN／XOUT 是石英振盪器的兩條不同 net）。
+  // 判定已修（pcb.js assignPadNets），這裡把錯的資料一起重算掉。
+  (st.components || []).forEach(c => (c.pads || []).forEach(pd => { pd.net = ''; }));
+  const repad = app.assignPadNets(st.components, st.traces);
+
   const before = errsOf().length;
   const lines0 = window.Ratsnest.compute(st, padAbs);
   const tracesBefore = (st.traces || []).length;
@@ -165,16 +172,14 @@ for (const b of boards) {
 
   // 驗收要用使用者實際會看到的狀態：照 loadRefBoard 的順序重來一次
   //（清空 pad net → 套 padNets → 從走線回推），否則工具說 0、載進來卻有錯。
+  // 收尾一律從走線重推一次，再把結果存成 padNets：
+  // 存進資料的是「這份走線推得出來的」，而不是上一輪留下來的舊值。
+  (st.components || []).forEach(c => (c.pads || []).forEach(pd => { pd.net = ''; }));
+  app.assignPadNets(st.components, st.traces);
   const padNets = {};
   (st.components || []).forEach(c => (c.pads || []).forEach(pd => {
     if (pd.net) (padNets[c.ref] = padNets[c.ref] || {})[pd.num] = pd.net;
   }));
-  (st.components || []).forEach(c => (c.pads || []).forEach(pd => { pd.net = ''; }));
-  (st.components || []).forEach(c => {
-    const m = padNets[c.ref]; if (!m) return;
-    (c.pads || []).forEach(pd => { if (m[pd.num]) pd.net = m[pd.num]; });
-  });
-  app.assignPadNets(st.components, st.traces);
   st.netRules = window.NetRules ? window.NetRules.load() : [];
   const after = errsOf().length;
   const openAfter = window.Ratsnest.compute(st, padAbs).length;
@@ -211,6 +216,7 @@ for (const b of boards) {
   console.log(b.id.padEnd(16),
     'DRC ' + before + ' -> ' + after,
     '| 未繞 ' + lines0.length + ' -> ' + openSameBasis + '（回推後 ' + openAfter + '）',
+    '| pad net 重推 ' + repad.assigned + (repad.conflicts ? '(矛盾 ' + repad.conflicts + ')' : ''),
     '| 縫 via ' + stitched + (stitchFail ? '(放棄 ' + stitchFail + ')' : ''),
     '| 補繞 ' + routed + ' 條（' + addedTraces.length + ' 段、' + addedVias.length + ' via）',
     '| 端點落點 ' + endsOk + '/' + ends,

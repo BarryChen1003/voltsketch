@@ -1571,6 +1571,16 @@ const pcbApp = {
   // 結果 DRC 的「同 net 略過」永遠不成立，每條線碰到自己的 pad 都報一次淨距錯誤
   // （8 片公版各 32～64 個 error，全是假的）。這裡用走線端點把 net 回填到 pad 上。
   // 純函式化：吃 components/traces，回統計，方便 node 測。
+  /**
+   * 從走線端點回推 pad 的 net。
+   *
+   * 判定必須是「端點真的落在這顆 pad 的銅箔上」，不能用外接圓近似：
+   * 舊版用 `hypot(w,h)/2`（對角半徑），0.2×0.85mm 的 QFN pad 半徑就有 0.44mm，
+   * 在 0.4mm 間距下直接伸進隔壁腳——rp2040 公版的 pin15/pin16 因此都被標成 XIN，
+   * 而 XIN／XOUT 是石英振盪器的兩條不同 net。錯的 net 會一路錯到飛線、netlist 與匯出。
+   *
+   * 另外：一個端點若同時落在兩顆 pad 上（pad 相鄰又有容差），只給**最近的那一顆**。
+   */
   assignPadNets(components, traces, tol) {
     const t0 = (typeof tol === 'number' && tol >= 0) ? tol : 0.05;
     let assigned = 0, conflicts = 0;
@@ -1580,21 +1590,42 @@ const pcbApp = {
       ends.push([t.x1, t.y1, t.net], [t.x2, t.y2, t.net]);
     }
     if (!ends.length) return { assigned, conflicts };
+
+    // pad 的絕對位置與方向先算一次
+    const pads = [];
     for (const c of (components || [])) {
       for (const p of (c.pads || [])) {
         if (p.cu === false) continue;
         const a = this.padAbs(c, p);
-        // 端點落在 pad 範圍內（含容差）就算接上。公版走線都是拉到 pad 中心，
-        // 用外接圓半徑判定即可，不必做旋轉矩形的精確內含測試。
-        const r = Math.hypot(p.w || 0.5, p.h || 0.5) / 2 + t0;
-        let hit = '';
-        for (const [x, y, net] of ends) {
-          if (Math.hypot(x - a.x, y - a.y) > r) continue;
-          if (!hit) { hit = net; continue; }
-          if (hit !== net) { conflicts++; break; }   // 同一個 pad 被兩個 net 拉到＝資料本身矛盾
-        }
-        if (hit && !p.net) { p.net = hit; assigned++; }
+        const rot = ((c.rot || 0) + (p.rot || 0)) * Math.PI / 180;
+        pads.push({ p, x: a.x, y: a.y, w: p.w || 0.5, h: p.h || 0.5, rot, round: p.shape === 'circle' || p.shape === 'oval' });
       }
+    }
+    // 點在 pad 內（pad 自己的座標系；圓／橢圓走橢圓式，其餘走矩形）
+    const inside = (q, x, y) => {
+      const dx = x - q.x, dy = y - q.y;
+      const co = Math.cos(-q.rot), si = Math.sin(-q.rot);
+      const lx = dx * co - dy * si, ly = dx * si + dy * co;
+      const hw = q.w / 2 + t0, hh = q.h / 2 + t0;
+      if (q.round) return (lx * lx) / (hw * hw) + (ly * ly) / (hh * hh) <= 1;
+      return Math.abs(lx) <= hw && Math.abs(ly) <= hh;
+    };
+
+    const hitOf = new Map();      // pad → net（同一顆 pad 被兩個 net 拉到＝資料矛盾）
+    for (const [x, y, net] of ends) {
+      let best = null, bestD = Infinity;
+      for (const q of pads) {
+        if (!inside(q, x, y)) continue;
+        const d = Math.hypot(q.x - x, q.y - y);
+        if (d < bestD) { bestD = d; best = q; }
+      }
+      if (!best) continue;
+      const had = hitOf.get(best.p);
+      if (had === undefined) hitOf.set(best.p, net);
+      else if (had !== net) { hitOf.set(best.p, null); conflicts++; }
+    }
+    for (const [p, net] of hitOf) {
+      if (net && !p.net) { p.net = net; assigned++; }
     }
     return { assigned, conflicts };
   },

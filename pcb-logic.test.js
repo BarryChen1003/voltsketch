@@ -1910,5 +1910,61 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   app.state = savedState;
 }
 
+// 41) pad 的 net 回推：端點要真的落在那顆 pad 上，而且只給最近的一顆
+// 舊版用外接圓（對角半徑）判定：0.2×0.85mm 的 QFN pad 半徑 0.44mm，
+// 在 0.4mm 間距下會伸進隔壁腳——rp2040 公版的 pin15/16 因此都被標成 XIN，
+// 而 XIN／XOUT 是石英振盪器的兩條不同 net。
+{
+  const savedState = app.state;
+  const pad = (num, x, y) => ({ num, x, y, w: 0.2, h: 0.85, side: 'F', cu: true, shape: 'rect' });
+  app.state = Object.assign({}, savedState, {
+    components: [{ id: 'u1', ref: 'U1', x: 0, y: 0, rot: 0,
+      pads: [pad('15', 0, 0), pad('16', 0.4, 0), pad('17', 0.8, 0)] }],
+    traces: [{ x1: 0, y1: 0, x2: -5, y2: 0, layer: 'F.Cu', width: 0.15, net: 'XIN' }],
+    vias: []
+  });
+  const r = app.assignPadNets(app.state.components, app.state.traces);
+  const pads = app.state.components[0].pads;
+  eq(pads[0].net, 'XIN', '41 端點落在 pin15 上，pin15 要拿到 net');
+  eq(pads[1].net || '', '', '41 隔壁的 pin16 不可以被同一條線標上（0.4mm 間距）');
+  eq(pads[2].net || '', '', '41 更遠的 pin17 當然也不行');
+  eq(r.assigned, 1, '41 只該指派一顆');
+
+  // 端點落在兩顆 pad 中間的空隙：兩顆都不該拿到 net。
+  // 這一條才是真正在測「落點判定」——上面那條被「取最近的一顆」擋著也會過。
+  app.state.components[0].pads.forEach(p => { p.net = ''; });
+  app.state.traces = [{ x1: 0.22, y1: 0, x2: -5, y2: 0, layer: 'F.Cu', width: 0.15, net: 'XIN' }];
+  const rGap = app.assignPadNets(app.state.components, app.state.traces);
+  eq(rGap.assigned, 0, '41 端點在 pad 之間的空隙時，不可以硬塞給最近的那一顆');
+  eq(app.state.components[0].pads[0].net || '', '', '41 空隙上的端點不算落在 pin15 上');
+
+  // 端點落在 pad 邊緣（逃逸繞線常態）仍要算命中
+  app.state.components[0].pads.forEach(p => { p.net = ''; });
+  app.state.traces = [{ x1: 0, y1: 0.4, x2: -5, y2: 5, layer: 'F.Cu', width: 0.15, net: 'XIN' }];
+  app.assignPadNets(app.state.components, app.state.traces);
+  eq(app.state.components[0].pads[0].net, 'XIN', '41 端點在 pad 長邊邊緣也要算落在 pad 上');
+
+  // 同一顆 pad 被兩個 net 拉到＝資料矛盾，回報 conflicts 且不指派
+  app.state.components[0].pads.forEach(p => { p.net = ''; });
+  app.state.traces = [
+    { x1: 0, y1: 0, x2: -5, y2: 0, layer: 'F.Cu', width: 0.15, net: 'XIN' },
+    { x1: 0, y1: 0, x2: -5, y2: 3, layer: 'F.Cu', width: 0.15, net: 'GND' }
+  ];
+  const r2 = app.assignPadNets(app.state.components, app.state.traces);
+  ok(r2.conflicts >= 1, '41 同一顆 pad 兩個 net 要回報 conflict');
+  eq(app.state.components[0].pads[0].net || '', '', '41 矛盾時不可以隨便挑一個指派');
+
+  // 圓形 pad 用橢圓判定，不是外接方形
+  app.state = Object.assign({}, savedState, {
+    components: [{ id: 'j1', ref: 'J1', x: 0, y: 0, rot: 0,
+      pads: [{ num: '1', x: 0, y: 0, w: 1, h: 1, side: 'F', cu: true, shape: 'circle' }] }],
+    traces: [{ x1: 0.45, y1: 0.45, x2: 5, y2: 5, layer: 'F.Cu', width: 0.15, net: 'N1' }],
+    vias: []
+  });
+  app.assignPadNets(app.state.components, app.state.traces);
+  eq(app.state.components[0].pads[0].net || '', '', '41 圓形 pad 的角落不算在 pad 內（0.45,0.45 在外接方形內、圓外）');
+  app.state = savedState;
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
