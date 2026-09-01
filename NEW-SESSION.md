@@ -271,6 +271,9 @@ npx --yes supabase functions deploy <名稱> --project-ref dmkxjawjrmltmrmkebbs 
 - `ecpay-webhook` 要加 `--no-verify-jwt`；**`pcb-export` 與 `create-order` 絕對不要加**。
 - `--use-api` 是必要的（本機沒跑 Docker）。
 - webhook：**任何 DB 失敗都不准回 `1|OK`**。
+- ⚠️ **金流已經是正式收款**（`ECPAY_MODE=live`，站主 2026-09-01 確認真實小額測試通過）。
+  改 `create-order` / `ecpay-webhook` / `_shared/ecpay*` 動到的是**真的錢**：
+  先在沙盒驗，切回正式前確認 `ECPAY_MODE` 仍是 `live`——那是唯一擋住「真客戶被送去沙盒付款頁」的保險絲。
 - `pcb-export` 同時吃 `gerber` / `odb` / `ipc2581` / `assembly`；**前端有按鈕但後端沒重部署的話，
   使用者會拿到一包 Gerber 卻叫 `-odbpp.zip`**——安靜給錯東西，比報錯嚴重。
 

@@ -1,6 +1,6 @@
 # HardwareAI TODO / 待辦總表
 
-> 更新：2026-08-15。狀態：✅完成 🔄進行中 ⬜未開始 ❌卡外部 ⏸依指示暫緩。
+> 更新：2026-09-01。狀態：✅完成 🔄進行中 ⬜未開始 ❌卡外部 ⏸依指示暫緩。
 > **上線順序看 `LAUNCH-GUIDE.md`**（含這張表沒列的：安全標頭、CDN 供應鏈、備份未啟用、法遵）。
 > 原始願景見 `PROJECT_ROADMAP.md`；金流/帳號部署步驟見 `SETUP-PAYMENT.md`、`SETUP-AUTH.md`、`SETUP-EXPORT-QUOTA.md`。
 
@@ -11,15 +11,15 @@
 | A0 | **正式網域** | github.io 為暫時網址，成品後換自訂網域並關閉舊址。遷移 checklist（工程端屆時執行）：canonical/OG URL 全站改、Supabase Auth redirect URL、ECPay ReturnURL/ClientBackURL、CORS、GitHub Pages custom domain + HTTPS、（可能）舊址 301 | ✅ 2026-08-15 `hardware-ai.org` 上線（Cloudflare Workers）；canonical/sitemap/robots/security.txt 全站已換 |
 | A1 | Search Console + GA4 | **必須站主本人 Google 帳號登入操作**（工程端只能備 meta 驗證檔/sitemap＋一步步指引，不能代登入）。⚠️ 建議**等 A0 網域定案再辦**——現在對 github.io 驗證，換網域要整套重來 | 🔄 Search Console ✅ 2026-08-18（網域名稱供應商驗證）；GA4 暫緩（改用站內 observe.js，見 D-9） |
 | A2 | Email 服務 | 對外聯絡信箱＋Supabase Auth SMTP（密碼重設/驗證信寄送品質）。同樣需站主本人開通，建議與 A0/A1 一起辦 | ✅ 2026-08-15 Resend SMTP 已接、DKIM/SPF/DMARC 綠勾、驗證碼模板已貼、實測收得到 |
-| A3 | 綠界特約商店 | 申請正式商店 → 取 MerchantID/HashKey/HashIV → `supabase secrets set` → ECPAY_ACTION_URL 換正式 → 真實小額測試 | 🔄 **2026-08-18 已送件**，等審核（3–5 工作天） |
-| A4 | 電子發票 | 正式收款（台灣）需開立發票：綠界電子發票加值服務或其他方案，接進 webhook 入帳流程 | ⬜ A3 之後 |
-| A5 | Supabase 正式部署核對 | 🔄 2026-08-15：建表 ✅、owner-unlock ✅、Site URL ✅、SMTP ✅、備份 ✅、**面試題 SQL 全部跑完 ✅**。**Functions 已部署 ✅ 2026-08-18**（create-order／ecpay-webhook --no-verify-jwt，走 --use-api 免 Docker）；沙盒 secrets 已設。**2026-08-18 全部補完**：observability 兩張表（先前實測不存在，已補跑並驗證 201）、額度白名單、Functions 二次部署（D-2/3/6/7/8 已生效，CORS 白名單實打驗過） |
+| A3 | 綠界特約商店 | 申請正式商店 → 取 MerchantID/HashKey/HashIV → `supabase secrets set` → ECPAY_ACTION_URL 換正式 → 真實小額測試 | ✅ **正式收款已上線**：`ECPAY_MODE=live`、四個正式值都已設，**真實小額測試通過**（站主 2026-09-01 確認；實際切換日期未記錄）。沙盒 fallback 只在 `ECPAY_MODE` 不是 live 時才會發生，見 `_shared/ecpay-config.mjs` |
+| A4 | 電子發票 | 正式收款（台灣）需開立發票：綠界電子發票加值服務或其他方案，接進 webhook 入帳流程 | ⬜ **A 段唯一還沒結案的一項**（A3 已上線收款，發票是接下來要辦的） |
+| A5 | Supabase 正式部署核對 | 🔄 2026-08-15：建表 ✅、owner-unlock ✅、Site URL ✅、SMTP ✅、備份 ✅、**面試題 SQL 全部跑完 ✅**。**Functions 已部署 ✅ 2026-08-18**（create-order／ecpay-webhook --no-verify-jwt，走 --use-api 免 Docker）；secrets 後來已由沙盒換成正式（見 A3）。**2026-08-18 全部補完**：observability 兩張表（先前實測不存在，已補跑並驗證 201）、額度白名單、Functions 二次部署（D-2/3/6/7/8 已生效，CORS 白名單實打驗過） |
 
 ## B. 工程（可自主）
 
 | # | 項目 | 內容 | 狀態 |
 |---|---|---|---|
-| B1 | 贊助後端 | ✅ 程式碼完成（create-order sponsor 分支：後端驗 30–30000 整數；webhook sponsor 只入帳不升級＋未知方案安全 fallback）。**待站主部署**：`supabase functions deploy create-order` ＋ `supabase functions deploy ecpay-webhook --no-verify-jwt`，再走沙盒贊助測試（SETUP-PAYMENT.md） | 🔄 code-ready，卡部署 |
+| B1 | 贊助後端 | ✅ 程式碼完成（create-order sponsor 分支：後端驗 30–30000 整數；webhook sponsor 只入帳不升級＋未知方案安全 fallback）。**待站主部署**：`supabase functions deploy create-order` ＋ `supabase functions deploy ecpay-webhook --no-verify-jwt`，再走沙盒贊助測試（SETUP-PAYMENT.md） | 🔄 **部署已完成**（A5／G 段兩支 Function 都重新部署過），卡的是**贊助流程實測**：`plan='sponsor'` 只入帳不發權益那條從沒真的走過 |
 | B2 | PCB JS 動態字串 i18n 殘量 | 站主 2026-07-16 視翻譯為完結；並行 session 已做 pcb-practice（54c9f7e）。做 B4 時順手核對殘量（pcb.js toast/pcb-drc 訊息），不另開專輪 | 🔄 併入 B4 |
 | B3 | 剩餘頁面內文 i18n | ✅5 commits（8154383/3ef6221/b52a491/320a018/16ce827）：upgrade 方案卡+贊助+付款訊息、login、interview UI、architecture 編輯器、terms/privacy 全文法律文本（附「歧異以中文版為準」條款）。contact 盤點後本已全譯。i18n.js ?v=2026-07-17a 全站統一 | ✅ 完成 |
 | B4 | **PCB 企業級四模組** | ①Constraint Manager（net class/間距矩陣/銳角 DRC）✅e3f108f ②鋪銅實算（thermal relief/避讓/動態填充/KiCad zone 匯出）✅ed37bc4 ③佈線強化（差分對佈線+等長蛇形+即時間距提示）✅28fe289（push&shove 結構性不追） ④疊層編輯器＋via padstack＋backdrill（Gerber 背鑽檔/Status 列）✅6663490 | ✅ 四模組全數完成 |
@@ -50,7 +50,7 @@
 
 | # | 項目 | 實測結果 |
 |---|---|---|
-| H1 | **2nd source 比對不可信** | 一組真 PDF：14 個參數只有 3 個兩邊都抽到；「靜態電流 IQ = 160 mA」明顯誤抽；該顆 IC 無 secondSource 準則 → 判定區塊全空。**推廣前最該修的一項**，細節見 NEW-SESSION.md §7 |
+| H1 | ~~2nd source 比對不可信~~ ✅ 已修 | 當時：14 個參數只有 3 個兩邊都抽到、IQ 明顯誤抽、判定區塊全空。已修（8 個 commit）：`1ceb853` 讀不到就不講、`0308087` 講「板上會變什麼」而不只是差異、`269c1fb` 停掉五個錯值、`211863f`／`183ca51` 每個參數標出處行、`349a679` 指到真正帶值的那一列。**界線仍在**（NEW-SESSION §8）：可用於「講差異」，不可用於「判定能不能換」 |
 | H2 | 腳位抽取正確率 | 193 顆：完全正確 77、部分 37、錯得多 34、明講讀不出來 35 |
 | H3 | OrCAD Tcl 是樣板 | 程式碼自註「建 pin API 依版本微調」 |
 | H4 | KiCad 符號未用真軟體開過 | 結構驗過（腳數 5/17/207 全對），但沒人用 KiCad 實開 |
@@ -85,4 +85,5 @@
 - 翻譯：IC 條目/secondSource/pins 100%、知識卡 133 張詳情全譯、全站靜態 UI（含 PCB 靜態 markup 100%、knowledge 左欄、nav/brand、IC 庫）
 - SEO/Analytics 技術面（meta/canonical/OG）
 - 綠界沙盒 E2E、匯出額度閘門、面試題 RLS
+- **綠界正式收款上線**（`ECPAY_MODE=live`＋真實小額測試通過，站主 2026-09-01 確認）
 - 升級VIP 全頁入口、贊助前端 UI、PCB Allegro 風 Status 面板

@@ -59,7 +59,7 @@
 ## 其餘上線項（先前已交接，未變）
 - 註冊網域 hardwareai.app → canonical/og:url 仍指 github.io 舊址，遷移時一起改。
 - repo secret `SUPABASE_DB_URL` → 啟用 backup.yml 自動備份（見 backup-supabase.ps1）。
-- 綠界特約商店送件（正式收款；審核查退款政策，已補進 terms.html ✅）。
+- ~~綠界特約商店送件~~ ✅ 已過件並切正式（`ECPAY_MODE=live`），真實小額測試通過（站主 2026-09-01 確認）。退款政策已在 terms.html。**電子發票仍未接**。
 - D1 資安總檢（你說了才做）。
 
 ## 觀測資料（你設成 admin 後）
