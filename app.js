@@ -597,7 +597,8 @@ const app = {
     });
     // 動態屬性欄位：委派輸入 → 存到 comp.params
     const pf = document.getElementById('paramFields');
-    if (pf) pf.addEventListener('input', (e) => {
+    // select 只發 change，input 不夠；兩種都聽（同一個處理器）
+    const onParamEdit = (e) => {
       const comp = this.state.components.find(c => c.id === this.state.selectedId);
       if (!comp) return;
       // 顏色 / 大小 / 文字
@@ -610,11 +611,27 @@ const app = {
         }
         this.render(); this.schedulePersist(); return;
       }
+      // 封裝選擇：兩個 select 合成 "lib:variant"，清空就是「交給轉換器挑」
+      const fp = e.target.dataset.fp;
+      if (fp) {
+        const host = document.getElementById('paramFields');
+        const lib = (host.querySelector('[data-fp="lib"]') || {}).value || '';
+        let variant = (host.querySelector('[data-fp="var"]') || {}).value || '';
+        if (fp === 'lib') {
+          const L = window.PartsLib, c = L && (L.list() || []).find(x => x.id === lib);
+          variant = c && (c.variants || [])[0] || '';       // 換類別時變體要跟著換第一個
+        }
+        if (lib && variant) comp.footprint = lib + ':' + variant; else delete comp.footprint;
+        this.renderParamFields(comp);                        // 重畫才看得到新的變體清單
+        this.schedulePersist();
+        return;
+      }
       const key = e.target.dataset.pkey; if (!key) return;
       comp.params = comp.params || {};
       comp.params[key] = e.target.value;
       this.schedulePersist();
-    });
+    };
+    if (pf) { pf.addEventListener('input', onParamEdit); pf.addEventListener('change', onParamEdit); }
 
     // 左上樣式列：選元件/線後即時改顏色、大小（邊畫邊改）
     // 改顏色的意思分兩種模式：
@@ -1462,14 +1479,40 @@ const app = {
       const pf = document.getElementById('paramFields'); if (pf) pf.innerHTML = '';
       const idxs = this.state.selectedWireIndices.slice();
       const w0 = this.state.wires[idxs[0]];
+      // net class 在線路圖端指定。以前 PCB 是拿 net **名字**去比對 pattern 猜的
+      // （GND/VCC → POWER、_P/_N → DIFF），猜不到就是 default。
+      // 但「這條是電源」是設計意圖，不是命名巧合：名字叫 SYS_RAIL 的電源永遠猜不到。
+      const CM = window.ConstraintMgr;
+      let clsOpts = '';
+      if (CM) {
+        const data = CM.load();
+        const cur = String((w0 && w0.netClass) || '');
+        clsOpts = '<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#0f172a;margin-top:8px">'
+          + uiT('Net class')
+          + '<select id="wireClassInput"><option value="">' + uiT('（自動：照名字猜）') + '</option>'
+          + (data.classes || []).map(c => '<option value="' + c.name + '"' + (c.name === cur ? ' selected' : '') + '>' + c.name + '</option>').join('')
+          + '</select></label>'
+          + '<div style="font-size:11px;color:#94a3b8;margin-top:4px">'
+          + uiT('指定之後，PCB 端的線寬與淨空直接照這個 class 走，不再用名字猜') + '</div>';
+      }
       empty.innerHTML = `<div style="padding:10px">
         <div style="font-size:12px;color:#64748b;margin-bottom:6px">${uiT('已選 {n} 條導線', { n: idxs.length })}</div>
         <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#0f172a">${uiT('顏色')}
-          <input type="color" id="wireColorInput" value="${(w0 && w0.color) || '#2563eb'}"/></label></div>`;
+          <input type="color" id="wireColorInput" value="${(w0 && w0.color) || '#2563eb'}"/></label>${clsOpts}</div>`;
       const inp = document.getElementById('wireColorInput');
       if (inp) inp.oninput = (e) => {
         idxs.forEach(i => { if (this.state.wires[i]) this.state.wires[i].color = e.target.value; });
         this.render(); this.schedulePersist();
+      };
+      const clsEl = document.getElementById('wireClassInput');
+      if (clsEl) clsEl.onchange = (e) => {
+        const v = e.target.value;
+        idxs.forEach(i => {
+          const w = this.state.wires[i];
+          if (!w) return;
+          if (v) w.netClass = v; else delete w.netClass;
+        });
+        this.schedulePersist();
       };
     } else {
       form.hidden = true; empty.hidden = false;
@@ -1588,6 +1631,42 @@ const app = {
   },
 
   // 依元件類型動態渲染屬性欄位（存到 comp.params）
+  // 線路圖端就能挑封裝。
+  //
+  // 為什麼要在這裡挑：轉換到 PCB 時封裝的來源有三個（PCB 端的覆寫 → 線路圖元件自帶的
+  // footprint → MAP 的預設值）。以前只有前兩個能填，而第二個**只有 PCB 端回寫才會出現**——
+  // 也就是說第一次轉換一定是用猜的（標成 assumed）。在線路圖階段就綁定，
+  // 那顆料是什麼從一開始就是設計資料的一部分，不是轉換時的猜測。
+  //
+  // 格式跟 Sch2Pcb 認的一致："lib:variant"（見 pcb-sch2pcb.js 的 fromSch）。
+  footprintPicker(comp) {
+    const L = window.PartsLib;
+    if (!L || !comp) return '';
+    const NON = ['ground', 'text', 'grid', 'shield', 'ammeter', 'voltmeter', 'port', 'sheetref'];
+    if (NON.indexOf(comp.type) >= 0) return '';     // 這些不是料件，沒有封裝可言
+    const cur = String(comp.footprint || '');
+    const at = cur.indexOf(':');
+    const curLib = at > 0 ? cur.slice(0, at) : '', curVar = at > 0 ? cur.slice(at + 1) : '';
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    let libs = [];
+    try { libs = L.list() || []; } catch (e) { libs = []; }     // [{id, ref, variants}]
+    const opts = ['<option value="">' + uiT('（自動：轉換時挑預設）') + '</option>']
+      .concat(libs.map(c => '<option value="' + esc(c.id) + '"' + (c.id === curLib ? ' selected' : '') + '>'
+        + esc(c.id) + '（' + esc(c.ref) + '）</option>'));
+    const hit = libs.find(c => c.id === curLib);
+    const vars = hit ? (hit.variants || []) : [];
+    const vopts = vars.map(v => '<option value="' + esc(v) + '"' + (v === curVar ? ' selected' : '') + '>' + esc(v) + '</option>');
+    return '<div style="margin-top:8px;border-top:1px solid #e2e8f0;padding-top:6px">'
+      + '<div style="font-size:12px;color:#64748b;margin-bottom:4px">' + uiT('封裝（帶到 PCB）') + '</div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'
+      + '<select data-fp="lib">' + opts.join('') + '</select>'
+      + '<select data-fp="var"' + (vars.length ? '' : ' disabled') + '>' + (vopts.join('') || '<option value=""></option>') + '</select>'
+      + '</div>'
+      + '<div style="font-size:11px;color:#94a3b8;margin-top:4px">'
+      + (cur ? uiT('轉換時直接用這個，不會標成「猜的」') : uiT('沒指定就由轉換器挑預設，並在報告裡標成「猜的」'))
+      + '</div></div>';
+  },
+
   renderParamFields(comp) {
     const host = document.getElementById('paramFields');
     if (!host) return;
@@ -1629,7 +1708,7 @@ const app = {
       return `<label><span>${uiT(f.l)}${f.u ? ` (${f.u})` : ''}</span><input type="text" data-pkey="${f.k}" value="${esc(val)}" placeholder="${f.u || ''}"/></label>`;
     }).join('');
     html += `<label><span>${uiT('其他參數/備註（自由填）')}</span><textarea data-pkey="__notes" rows="2" placeholder="${uiT('任何會影響特性的條件...')}">${esc(p.__notes || '')}</textarea></label>`;
-    host.innerHTML = html;
+    host.innerHTML = html + this.footprintPicker(comp);
 
     const bindBtn = host.querySelector('[data-netbind]');
     if (bindBtn) bindBtn.addEventListener('click', () => this.startNetBind(bindBtn.dataset.netbind));

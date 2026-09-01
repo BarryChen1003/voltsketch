@@ -126,7 +126,7 @@
       let netFilter = null;
       if (window.ConstraintMgr) {
         const cls = ConstraintMgr.load();
-        netFilter = net => { const c = ConstraintMgr.classOf(cls, net); return !!c && sel.has(c.id); };
+        netFilter = net => { const c = ConstraintMgr.classOf(cls, net, (app && app.state && app.state.netClasses) || null); return !!c && sel.has(c.id); };
       }
       st.backdrills = this.compute(st, copperIds(st), netFilter);
       st._bdHash = this.hash(st);

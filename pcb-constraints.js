@@ -57,8 +57,25 @@
     },
     reset() { const d = DEFAULTS(); this.save(d); return d; },
 
+    /**
+     * net → class。
+     * explicit（線路圖帶過來的 {net: className}）**優先於 patterns**：
+     * 「這條是電源」是設計意圖，名字叫 SYS_RAIL 的電源永遠猜不到。
+     * 沒指定的才照名字猜，行為與舊版相同。
+     */
+    classOf(data, net, explicit) {
+      if (explicit && net) {
+        const want = explicit[net];
+        if (want) {
+          const hit = (data.classes || []).find(c => c.name === want || c.id === want);
+          if (hit) return hit;      // 找不到就當沒指定：class 定義可能被刪掉了，不要整條 net 失去規則
+        }
+      }
+      return this.classOfByPattern(data, net);
+    },
+
     // net → class（patterns 第一命中；default class 收尾）
-    classOf(data, net) {
+    classOfByPattern(data, net) {
       let def = null;
       for (const c of data.classes) {
         if (c.id === 'default') { def = c; continue; }

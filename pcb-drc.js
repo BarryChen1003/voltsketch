@@ -328,7 +328,7 @@ window.PadDrc = (() => {
       const W = (typeof window !== 'undefined') ? window : {};
       try {
         if (W.ConstraintMgr) {
-          const cls = W.ConstraintMgr.classOf(W.ConstraintMgr.load(), net);
+          const cls = W.ConstraintMgr.classOf(W.ConstraintMgr.load(), net, state.netClasses);
           if (cls && cls.elec && cls.elec.pairGap > 0) return cls.elec.pairGap;
         }
       } catch (e) { }

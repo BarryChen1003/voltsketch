@@ -14,6 +14,14 @@
  */
 (function () {
   const D = {
+    // ── 線路圖端綁封裝 / 指定 net class（2026-09-02）──
+    '封裝（帶到 PCB）': { en: 'Footprint (carried to the PCB)', ja: 'フットプリント（PCB へ引き継ぐ）', ko: '풋프린트(PCB로 전달)' },
+    '（自動：轉換時挑預設）': { en: '(automatic: the converter picks a default)', ja: '（自動：変換時に既定値を選択）', ko: '(자동: 변환 시 기본값 선택)' },
+    '轉換時直接用這個，不會標成「猜的」': { en: 'The converter uses this as given and will not mark it as a guess', ja: '変換時にそのまま使用し、「推測」とは表示されません', ko: '변환 시 그대로 사용하며 "추측"으로 표시되지 않습니다' },
+    '沒指定就由轉換器挑預設，並在報告裡標成「猜的」': { en: 'Left unset, the converter picks a default and reports it as a guess', ja: '未指定の場合は変換器が既定値を選び、レポートに「推測」と記載します', ko: '지정하지 않으면 변환기가 기본값을 고르고 보고서에 "추측"으로 표시합니다' },
+    'Net class': { en: 'Net class', ja: 'ネットクラス', ko: 'Net class' },
+    '（自動：照名字猜）': { en: '(automatic: guessed from the name)', ja: '（自動：名前から推測）', ko: '(자동: 이름으로 추측)' },
+    '指定之後，PCB 端的線寬與淨空直接照這個 class 走，不再用名字猜': { en: 'Once set, trace width and clearance on the PCB follow this class instead of a guess from the name', ja: '指定すると、PCB 側の線幅とクリアランスは名前からの推測ではなくこのクラスに従います', ko: '지정하면 PCB의 선폭과 클리어런스가 이름 추측 대신 이 클래스를 따릅니다' },
     // ── 自訂 IC 的保留機制（需登入）──
     '已建立 {name}（{pins} 腳），並存進元件庫可重複使用': { en: 'Created {name} ({pins} pins) and saved it to your library for reuse', ja: '{name}（{pins} ピン）を作成し、部品ライブラリに保存しました（再利用可）', ko: '{name}({pins}핀)을 만들고 부품 라이브러리에 저장했습니다(재사용 가능)' },
     '自訂 IC 要登入才能保留下來，否則換一張圖就不見了': { en: 'Custom ICs need an account to persist, otherwise they vanish when you open another sheet', ja: 'カスタム IC を保持するにはログインが必要です。ログインしないと別の図面を開いた時点で消えます', ko: '커스텀 IC를 보관하려면 로그인이 필요합니다. 그렇지 않으면 다른 도면을 열면 사라집니다' },

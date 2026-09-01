@@ -2683,7 +2683,7 @@ const pcbApp = {
   diffGapOf(net) {
     try {
       if (window.ConstraintMgr) {
-        const cls = ConstraintMgr.classOf(ConstraintMgr.load(), net);
+        const cls = ConstraintMgr.classOf(ConstraintMgr.load(), net, this.state.netClasses);
         if (cls && cls.elec && cls.elec.pairGap > 0) return cls.elec.pairGap;
       }
     } catch (e) { }
@@ -3577,6 +3577,16 @@ const pcbApp = {
     s2.ratsnest = null; s2.showRatsnest = true;
     // 匯流排：轉過來之後就只剩一條條 net，這份清單是板子唯一還知道成組關係的地方
     s2.busGroups = window.Sch2Pcb.busGroupsFrom(pages) || [];
+    // net class 從線路圖帶過來（明講的優先；沒指定的仍照名字猜）。
+    // 衝突不猜：同一條 net 兩段導線指定成不同 class 時報出來，讓使用者決定。
+    if (window.Sch2Pcb.netClassesFrom) {
+      const nc = window.Sch2Pcb.netClassesFrom(pages);
+      s2.netClasses = nc.classes || {};
+      if ((nc.conflicts || []).length) {
+        const c0 = nc.conflicts[0];
+        this.toast(pcbT('pj_netclass_conflict', { n: nc.conflicts.length, net: c0.net, a: c0.a, b: c0.b }), 'warn');
+      }
+    }
 
     let bd = { w: s2.boardWidth, h: s2.boardHeight };
     if (!hadLayout) {

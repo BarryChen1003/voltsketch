@@ -2230,5 +2230,68 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   app.state = savedState;
 }
 
+// 46) 線路圖端就綁封裝、指定 net class（不要到 PCB 才用名字猜）
+{
+  const savedState = app.state;
+
+  // ---- 封裝：線路圖元件自帶的 footprint 要贏過轉換器的預設 ----
+  require('./pcb-sch2pcb.js');            // 這一節才用得到，不放檔頭免得影響其他節的環境
+  const S2 = window.Sch2Pcb;
+  const conv = nets => S2.mapFootprint(nets, {});
+  // lamp 這種「沒有唯一正解」的符號，預設值本來就標成猜的（MAP 裡 assumed:true）
+  const auto = conv({ id: 'l1', type: 'lamp', label: 'LED1' });
+  ok(auto.ok, '46 沒指定封裝時仍要轉得出來');
+  eq(auto.assumed, true, '46 沒指定就是猜的，要標 assumed');
+  const boundLamp = conv({ id: 'l1', type: 'lamp', label: 'LED1', footprint: 'led:0805' });
+  eq(boundLamp.assumed, false, '46 線路圖指定過就不是猜的了');
+  const bound = conv({ id: 'r1', type: 'resistor', label: 'R1', footprint: 'res:1206' });
+  ok(bound.ok, '46 線路圖指定的封裝要用得出來');
+  eq(bound.variant, '1206', '46 用的是線路圖指定的那個變體');
+  eq(bound.assumed, false, '46 指定過的不可以再標成「猜的」');
+
+  // ---- net class：明講的贏過名字猜 ----
+  const CM = window.ConstraintMgr;
+  const data = CM.load();
+  eq(CM.classOf(data, 'GND').name, 'POWER', '46 沒指定時照名字猜（GND → POWER）');
+  eq(CM.classOf(data, 'SYS_RAIL').name, 'DEFAULT', '46 名字猜不到的電源只能是 DEFAULT');
+  eq(CM.classOf(data, 'SYS_RAIL', { SYS_RAIL: 'POWER' }).name, 'POWER',
+    '46 線路圖明講就照明講的（名字猜不到也沒關係）');
+  eq(CM.classOf(data, 'GND', { GND: 'DEFAULT' }).name, 'DEFAULT',
+    '46 明講要能覆蓋名字猜出來的結果');
+  eq(CM.classOf(data, 'GND', { GND: 'NO_SUCH_CLASS' }).name, 'POWER',
+    '46 指到不存在的 class 時退回名字猜，不可以讓那條 net 失去規則');
+
+  // ---- 從線路圖收集 ----
+  const pages = [{ name: 'P1', data: { components: [], wires: [
+    { x1: 0, y1: 0, x2: 10, y2: 0, net: 'SYS_RAIL', netClass: 'POWER' },
+    { x1: 10, y1: 0, x2: 20, y2: 0, net: 'SYS_RAIL', netClass: 'POWER' },
+    { x1: 0, y1: 5, x2: 10, y2: 5, net: 'SIG' }
+  ] } }];
+  const got = S2.netClassesFrom(pages);
+  eq(got.classes.SYS_RAIL, 'POWER', '46 收得到導線上指定的 class');
+  eq(got.classes.SIG, undefined, '46 沒指定的不要硬塞');
+  eq(got.conflicts.length, 0, '46 同一條 net 指定成一樣的不算衝突');
+
+  // 同一條 net 兩種 class → 回報衝突、不挑（線寬忽大忽小而且看不出原因）
+  pages[0].data.wires.push({ x1: 20, y1: 0, x2: 30, y2: 0, net: 'SYS_RAIL', netClass: 'DIFF' });
+  const bad = S2.netClassesFrom(pages);
+  eq(bad.conflicts.length, 1, '46 兩種 class 要回報衝突');
+  eq(bad.classes.SYS_RAIL, 'POWER', '46 衝突時保留先看到的，不改成後來那個');
+
+  // ---- 真的接上畫面 ----
+  {
+    const fsx = require('fs'), pathx = require('path');
+    const appjs = fsx.readFileSync(pathx.join(__dirname, 'app.js'), 'utf8');
+    const html = fsx.readFileSync(pathx.join(__dirname, 'index.html'), 'utf8');
+    const pcbjs = fsx.readFileSync(pathx.join(__dirname, 'pcb.js'), 'utf8');
+    ok(appjs.indexOf('footprintPicker') > 0, '46 線路圖要有封裝選擇器');
+    ok(appjs.indexOf('wireClassInput') > 0, '46 線路圖要能指定 net class');
+    ok(html.indexOf('parts-lib.js') > 0, '46 線路圖頁要載入封裝庫（不然選單是空的）');
+    ok(html.indexOf('pcb-constraints.js') > 0, '46 線路圖頁要載入 class 定義');
+    ok(pcbjs.indexOf('netClassesFrom') > 0, '46 同步時要把 class 帶過來');
+  }
+  app.state = savedState;
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

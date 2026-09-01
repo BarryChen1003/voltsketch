@@ -432,6 +432,32 @@
    * 這份清單是板子唯一還知道「這 8 條是一束」的地方。
    * 跨頁同名（同 spec）算同一束：同名網路本來就會跨頁連在一起。
    */
+  /**
+   * 從線路圖收集「這條 net 屬於哪個 class」。
+   *
+   * 為什麼要有：PCB 端本來是拿 net **名字**去比對 pattern 猜的（GND/VCC → POWER、
+   * _P/_N → DIFF）。名字叫 SYS_RAIL 的電源永遠猜不到，而「這條是電源」是設計意圖，
+   * 不是命名巧合。指定在導線上，跟著存檔與階層走。
+   *
+   * 同一條 net 的兩段導線指定成不同 class → **不猜**，回報衝突讓使用者自己決定；
+   * 隨便挑一個的話，線寬會忽大忽小，而且看不出原因。
+   * 回 { classes: {net: className}, conflicts: [{net, a, b}] }
+   */
+  function netClassesFrom(pages) {
+    const classes = {}, conflicts = [];
+    for (const pg of (pages || [])) {
+      for (const w of ((pg && pg.data && pg.data.wires) || [])) {
+        const net = String((w && w.net) || '').trim();
+        const cls = String((w && w.netClass) || '').trim();
+        if (!net || !cls) continue;
+        const had = classes[net];
+        if (had && had !== cls) { conflicts.push({ net: net, a: had, b: cls }); continue; }
+        classes[net] = cls;
+      }
+    }
+    return { classes: classes, conflicts: conflicts };
+  }
+
   function busGroupsFrom(pages) {
     const SB = (typeof window !== 'undefined' && window.SchBus) ||
                (typeof globalThis !== 'undefined' && globalThis.SchBus) || null;
@@ -448,7 +474,7 @@
     return out;
   }
 
-  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces, annotateFootprint, annotateRef, annotateSwap, renameNet, schIdOf, busGroupsFrom };
+  const Sch2Pcb = { MAP, NON_PHYSICAL, IC_TYPES, mapFootprint, bindNets, convert, place, suggestBoard, merge, orphanTraces, annotateFootprint, annotateRef, annotateSwap, renameNet, schIdOf, busGroupsFrom, netClassesFrom };
   if (typeof window !== 'undefined') window.Sch2Pcb = Sch2Pcb;
   if (typeof module !== 'undefined' && module.exports) module.exports = Sch2Pcb;
 })();
