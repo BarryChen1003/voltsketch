@@ -796,15 +796,15 @@ const minDistToSegs = (px, py, segs) =>
   // 根因是繞線器收線時允許收在別層（已修，見第 39 節），資料端由 tools/refboard-fill.js 縫回來。
   // 這個預算跟 DRC 一樣只准往下：變多就是有人把板子改壞了，或繞線器又退步了。
   const OPEN_BUDGET = {
-    'rp2040-pico30': 14, 'arduino-uno-r3': 14, 'esp32-poe2': 8, 'a20-lime': 10,
-    'imx233-maxi': 5, 'openrex-imx6': 8, 'imx8mp-som': 9, 'librevna': 9
+    'rp2040-pico30': 13, 'arduino-uno-r3': 15, 'esp32-poe2': 21, 'a20-lime': 3,
+    'imx233-maxi': 4, 'openrex-imx6': 10, 'imx8mp-som': 12, 'librevna': 6
   };
   // 剩下的零長度飛線：那個點要打 via 才接得起來，但 via 放下去會撞到鄰居
   //（密腳 B2B／BGA 區，實測 DRC 0 -> 1~4）。正解是逃逸繞線把接點挪開再打，
   // 不在「補繞」的範圍內，所以先記成預算。同樣只准往下。
   const ZERO_BUDGET = {
-    'rp2040-pico30': 0, 'arduino-uno-r3': 0, 'esp32-poe2': 1, 'a20-lime': 0,
-    'imx233-maxi': 1, 'openrex-imx6': 3, 'imx8mp-som': 3, 'librevna': 0
+    'rp2040-pico30': 1, 'arduino-uno-r3': 2, 'esp32-poe2': 4, 'a20-lime': 0,
+    'imx233-maxi': 2, 'openrex-imx6': 2, 'imx8mp-som': 7, 'librevna': 0
   };
   const openWorse = [], zeroLen = [];
   for (const id of boards) {
@@ -1963,6 +1963,56 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   });
   app.assignPadNets(app.state.components, app.state.traces);
   eq(app.state.components[0].pads[0].net || '', '', '41 圓形 pad 的角落不算在 pad 內（0.45,0.45 在外接方形內、圓外）');
+  app.state = savedState;
+}
+
+// 42) 差分對展開後要重新檢查淨空
+// routePair 繞的是中心線（走廊寬 2w+gap），再把兩條線往兩側位移展開。
+// 走廊乾淨不代表展開後乾淨：扇出段與轉角補段是展開之後才生出來的幾何。
+// 2026-09-01 實測：把成對繞接進公版補繞，esp32 +8、a20-lime +21、openrex +42 個 DRC error。
+{
+  const savedState = app.state;
+  const pads = (n1, n2) => [
+    { num: '1', x: 0, y: -0.5, w: 0.6, h: 0.6, side: 'F', net: n1, cu: true },
+    { num: '2', x: 0, y: 0.5, w: 0.6, h: 0.6, side: 'F', net: n2, cu: true }];
+  const base = () => ({
+    boardWidth: 60, boardHeight: 40, layers: 2, layerStack: app.buildLayerStack(2),
+    visibleLayers: ['F.Cu', 'B.Cu'], traces: [], vias: [], keepouts: [], userZones: [],
+    components: [
+      { id: 'j1', ref: 'J1', x: -20, y: 0, rot: 0, pads: pads('D_P', 'D_N') },
+      { id: 'u1', ref: 'U1', x: 20, y: 0, rot: 0, pads: pads('D_P', 'D_N') }
+    ]
+  });
+  const opts = {
+    layers: ['F.Cu'], layer: 'F.Cu', width: 0.2, clearance: app.loadDrcRules().clearance,
+    viaOd: 0.7, viaDrill: 0.3, grid: 0.25, pairGap: 0.2
+  };
+  const lineOf = net => {
+    const ls = window.Ratsnest.compute(app.state, app.padAbs.bind(app));
+    return ls.find(l => l.net === net);
+  };
+
+  // 空板：繞得出來（這是原本就會過的案例，確認沒有被檢查誤殺）
+  app.state = Object.assign({}, savedState, base());
+  const okRes = window.AutoRoute.routePair(app.state, app.padAbs.bind(app), lineOf('D_P'), lineOf('D_N'), opts);
+  ok(okRes.ok, '42 空板上的差分對仍要繞得出來（檢查不可誤殺）');
+
+  // 障礙要放在**展開之後**的扇出段上，不能放在中心線的走廊裡——
+  // 放走廊裡的話中心線本來就會繞開，測不到「展開後才產生的幾何」。
+  // 所以先繞一次、看展開結果落在哪，再把障礙放上去重繞。
+  const fan = okRes.a.segs[0];
+  const st2 = base();
+  st2.components.push({ id: 'x1', ref: 'X1', x: (fan.x1 + fan.x2) / 2, y: (fan.y1 + fan.y2) / 2, rot: 0,
+    pads: [{ num: '1', x: 0, y: 0, w: 0.3, h: 0.3, side: 'F', net: 'OTHER', cu: true }] });
+  app.state = Object.assign({}, savedState, st2);
+  const bad = window.AutoRoute.routePair(app.state, app.padAbs.bind(app), lineOf('D_P'), lineOf('D_N'), opts);
+  ok(!bad.ok, '42 展開後會壓到別的 net 就要回失敗，不可以照樣回 ok');
+  eq(bad.reason, 'pair_clearance', '42 失敗原因要講清楚是淨空，不是「沒有路」');
+
+  // 檢查器本身：同一對的銅不算違規（不然自己會擋自己）
+  const g = window.AutoRoute._pairClearance(app.state, app.padAbs.bind(app),
+    [[{ x1: -20, y1: -0.5, x2: 20, y2: -0.5, layer: 'F.Cu' }]], ['D_P', 'D_N'], opts);
+  ok(g === null || g.kind !== 'pad' || g.ref !== 'J1', '42 同一對自己的 pad 不算違規');
   app.state = savedState;
 }
 

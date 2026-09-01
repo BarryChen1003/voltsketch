@@ -297,6 +297,50 @@ window.PadDrc = (() => {
     const ttCell = Math.max(1, 2 * (cl.traceToTrace + 1));
     const ttGrid = SpatialGrid(ttCell);
     for (let i = 0; i < traces.length; i++) ttGrid.insert(i, tb[i].minx, tb[i].miny, tb[i].maxx, tb[i].maxy);
+    // 差分對：宣告成一對的兩條線，間距本來就小於一般淨空——那是阻抗規格，不是違規。
+    // 沒有這一段的話，任何一對差分線都會報一整排 drc_tt，等於差分對繞線不能用。
+    // 成對關係的來源是 net 屬性（state.netProps[x].pair，跟匯出檔帶出去的是同一份），
+    // 間距規格優先用 ConstraintMgr 的 pairGap，其次 NetRules，都沒有才用 0.2mm 預設。
+    // 配對規則只留一份：NetModel.pairOf（明講的優先，其次照命名 _P/_N、+/- 推）。
+    // 這裡自己再寫一套的話，會出現「繞線器認為是一對、DRC 不認」——
+    // 然後每一對差分線都報一排 drc_tt，而兩邊的程式看起來都對。
+    const pairPartner = new Map();
+    {
+      const NM = (typeof window !== 'undefined') && window.NetModel;
+      const seen = new Set();
+      (traces || []).forEach(t => { if (t.net) seen.add(t.net); });
+      (state.components || []).forEach(c => (c.pads || []).forEach(p => { if (p.net) seen.add(p.net); }));
+      const all = [...seen];
+      if (NM && NM.pairOf) {
+        all.forEach(n => {
+          const pr = NM.pairOf(state, n, all);
+          if (pr && pr.net) pairPartner.set(n, pr.net);
+        });
+      } else {
+        const P = (state && state.netProps) || {};
+        for (const n of Object.keys(P)) {
+          const q = P[n] && P[n].pair;
+          if (q) { pairPartner.set(n, String(q)); pairPartner.set(String(q), n); }
+        }
+      }
+    }
+    const pairGapOf = net => {
+      const W = (typeof window !== 'undefined') ? window : {};
+      try {
+        if (W.ConstraintMgr) {
+          const cls = W.ConstraintMgr.classOf(W.ConstraintMgr.load(), net);
+          if (cls && cls.elec && cls.elec.pairGap > 0) return cls.elec.pairGap;
+        }
+      } catch (e) { }
+      try {
+        if (W.NetRules) {
+          const r = W.NetRules.match((state && state.netRules) || [], net);
+          if (r && r.gap > 0) return r.gap;
+        }
+      } catch (e) { }
+      return 0.2;
+    };
+
     for (let i = 0; i < traces.length; i++) {
       const cand = [...ttGrid.query(tb[i].minx - cl.traceToTrace, tb[i].miny - cl.traceToTrace,
                                     tb[i].maxx + cl.traceToTrace, tb[i].maxy + cl.traceToTrace)]
@@ -319,7 +363,11 @@ window.PadDrc = (() => {
         d = segSegDist(a.x1, a.y1, a.x2, a.y2, b.x1, b.y1, b.x2, b.y2)
           - (a.width || 0.3) / 2 - (b.width || 0.3) / 2;
       }
-      if (d >= cl.traceToTrace - EPS) continue;
+      // 這一對是宣告過的差分對 → 用它自己的間距規格，不用全域淨空。
+      // 取 min(全域, 該對規格)：規格比全域鬆時沒有放寬的道理（板廠做不到就是做不到）。
+      const paired = a.net && b.net && pairPartner.get(a.net) === b.net;
+      const lim = paired ? Math.max(0.05, Math.min(cl.traceToTrace, pairGapOf(a.net))) : cl.traceToTrace;
+      if (d >= lim - EPS) continue;
       if (!a.net || !b.net) {
         if (d > 0) add('drc_cat_tt_nonet', 'warning',
           T('drc_tt_nonet', { i: i + 1, j: j + 1, d: fmt(d), lim: cl.traceToTrace }), { x: a.x1, y: a.y1 });

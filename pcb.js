@@ -2641,16 +2641,24 @@ const pcbApp = {
 
   // ---- 差分對佈線 / 等長調諧（B4-③）----
   // 配對網名：X_P↔X_N、…P↔…N、…+↔…-（存在於板上才算）
+  // 差分對的配對規則只留一份：NetModel.pairOf（明講的優先，其次照命名推）。
+  // 這裡以前自己寫了一套 _P/_N 比對，跟 DRC 用的那一套不同步——
+  // 結果是繞線器成對繞出來的線，DRC 不認為它們是一對，每一對都報 drc_tt。
   pairNetOf(net) {
     if (!net) return null;
-    const subs = [['_P', '_N'], ['_N', '_P'], ['_p', '_n'], ['_n', '_p'], ['P', 'N'], ['N', 'P'], ['+', '-'], ['-', '+']];
-    for (const [a, b] of subs) {
-      if (net.endsWith(a)) {
-        const cand = net.slice(0, net.length - a.length) + b;
-        if (cand !== net && this.netExists(cand)) return cand;
-      }
+    if (window.NetModel && NetModel.pairOf) {
+      const pr = NetModel.pairOf(this.state, net, this.allNetNames());
+      if (pr && pr.net && this.netExists(pr.net)) return pr.net;
+      return null;
     }
     return null;
+  },
+
+  allNetNames() {
+    const s = new Set();
+    for (const c of this.state.components) for (const p of (c.pads || [])) if (p.net) s.add(p.net);
+    for (const t of this.state.traces) if (t.net) s.add(t.net);
+    return [...s];
   },
 
   netExists(net) {
@@ -3651,7 +3659,8 @@ const pcbApp = {
       }
       if (j < 0 || bestD > 10) { rest.push(a); continue; }
       const r = AutoRoute.routePair(this.state, this.padAbs.bind(this), a, lines[j],
-        Object.assign({}, opts, { pairGap: this.diffGapOf(a.net) }));
+        // drcRules 一起傳：展開後的檢查要用**跟 DRC 同一份規則**，不是繞線器自己的淨空值
+        Object.assign({}, opts, { pairGap: this.diffGapOf(a.net), drcRules: this.loadDrcRules() }));
       used.add(j);
       if (!r.ok) { out.failed++; rest.push(a, lines[j]); continue; }
       const stamp = Date.now();

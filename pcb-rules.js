@@ -696,6 +696,49 @@
     // 不會出現「中心線過得去、展開後壓到別人」。
     //
     // 回 { ok, a:{segs,vias}, b:{segs,vias}, gap, skew, grid, coarsened } 或 { ok:false, reason }
+    /**
+     * 差分對展開後的檢查：把候選的線放進板子的副本跑**真正的 DRC**，
+     * error 變多就回第一個違規、否則回 null。
+     *
+     * 為什麼不自己寫一套比距離的檢查：寫過，然後漏掉 pad 外形／圓角／旋轉的判定細節，
+     * 結果是「繞線說可以、DRC 說不行」，而使用者兩邊都看不出誰對。判定只留一份。
+     *
+     * **兩條線分開驗**（各自跟板子上既有的銅比），不是一起丟進去：
+     * 一對差分線的間距本來就小於一般淨空，而 DRC 的 `traceToTrace` 是一個平的數字、
+     * 不認識差分對——一起驗的話，每一對都會報一堆 `drc_tt`，等於這個功能不能用。
+     * 對內間距由 `pairGap`（阻抗規格）決定，那是另一件事，不在這裡判。
+     */
+    _pairClearance(state, padAbs, paths, nets, opt, viasA, viasB) {
+      const D = (typeof window !== 'undefined' && window.PadDrc) || null;
+      if (!D || !D.run) return null;                 // 沒載入 DRC 就不擋（測試環境會載）
+      // DRC 需要完整的 rules（clearance ＋ via）。呼叫端沒給就跟編輯器要同一份；
+      // 兩邊都沒有就不擋——寧可不檢查，也不要用半套規則產生假警報。
+      const rules = opt.drcRules || opt.rules ||
+        ((typeof window !== 'undefined' && window.pcbApp && window.pcbApp.loadDrcRules)
+          ? window.pcbApp.loadDrcRules() : null);
+      if (!rules || !rules.clearance) return null;
+      const errsOf = st => D.run(st, padAbs, rules).filter(f => f.type === 'error');
+      const before = errsOf(state).length;
+      const vias = [viasA, viasB];
+      for (let k = 0; k < paths.length; k++) {
+        const segs = (paths[k] || []).map(s => ({
+          x1: s.x1, y1: s.y1, x2: s.x2, y2: s.y2, layer: s.layer || opt.layer || 'F.Cu',
+          width: opt.width || 0.25, net: nets[k]
+        }));
+        const vs = (vias[k] || []).map(v => ({ x: v.x, y: v.y, od: v.od, drill: v.drill, net: nets[k] }));
+        const probe = Object.assign({}, state, {
+          traces: (state.traces || []).concat(segs),
+          vias: (state.vias || []).concat(vs)
+        });
+        const after = errsOf(probe);
+        if (after.length > before) {
+          const e = after[after.length - 1] || {};
+          return { kind: e.message || 'drc', net: nets[k], x: e.x, y: e.y, added: after.length - before };
+        }
+      }
+      return null;
+    },
+
     routePair(state, padAbs, lineA, lineB, opt) {
       opt = Object.assign({ width: 0.25, pairGap: 0.2 }, opt || {});
       const w = opt.width, gap = opt.pairGap;
@@ -767,12 +810,39 @@
       };
       const pathA = fanout(offsetPath(r.segs, sideA), lineA.x1, lineA.y1, lineA.x2, lineA.y2);
       const pathB = fanout(offsetPath(r.segs, -sideA), B.x1, B.y1, B.x2, B.y2);
+
+      // 展開之後要**重新檢查淨空**。
+      // 中心線是拿「2w + gap」的走廊繞出來的，走廊本身乾淨；但扇出段與轉角補段
+      // 是展開之後才生出來的幾何，**不在那條走廊裡**。空板上看不出來（附近沒別的銅），
+      // 密板上就直接壓到鄰居：2026-09-01 把成對繞接進公版補繞，實測
+      // esp32 +8、a20-lime +21、openrex-imx6 +42 個 DRC error。
+      // 檢查不過就回失敗，讓呼叫端退回「兩條各自單獨繞」——那條路本來就有完整的淨空檢查。
+      const vA = offsetVias(r.vias, sideA), vB = offsetVias(r.vias, -sideA);
+      const viol = AutoRoute._pairClearance(state, padAbs, [pathA, pathB],
+        [lineA.net, B.net], Object.assign({}, opt, { width: w }), vA, vB);
+      if (viol) {
+        // 最常見的原因不是「真的沒空間」，而是**中心線落在格點上**：
+        // 格點 0.25 時中心線可能整體偏半格，展開後那半格就把其中一條推到鄰居的 pad 上。
+        // 實測（USB 差分對、pad 相距 1.0mm）：grid 0.25 與 0.125 都違規，0.05 剛好落在中心線上、檢查通過。
+        // 所以往細裡試幾階，全都不行才算真的沒空間。
+        if (!opt._fine) {
+          const g0 = opt.grid || 0.25;
+          const ladder = [g0 / 2, g0 / 4, 0.05].filter(g => g < g0 - 1e-9 && g >= 0.02);
+          for (const g of ladder) {
+            const r2 = AutoRoute.routePair(state, padAbs, lineA, lineB,
+              Object.assign({}, opt, { grid: g, _fine: true }));
+            if (r2.ok) return r2;
+          }
+        }
+        return { ok: false, reason: 'pair_clearance', at: viol };
+      }
+
       const total = segs2 => segs2.reduce((a, sg) => a + Math.hypot(sg.x2 - sg.x1, sg.y2 - sg.y1), 0);
 
       return {
         ok: true,
-        a: { net: lineA.net, segs: pathA, vias: offsetVias(r.vias, sideA) },
-        b: { net: B.net, segs: pathB, vias: offsetVias(r.vias, -sideA) },
+        a: { net: lineA.net, segs: pathA, vias: vA },
+        b: { net: B.net, segs: pathB, vias: vB },
         gap, skew: Math.abs(total(pathA) - total(pathB)),
         grid: r.grid, coarsened: r.coarsened
       };
