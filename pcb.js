@@ -1593,8 +1593,11 @@ const pcbApp = {
     // 推估來的尺寸要講出來。IC 家族是 FootprintGen 用「家族＋腳數」推的，
     // 跟被動件那種查表出來的不是同一種可靠度——不說的話使用者無從分辨。
     const warns = (r.meta && r.meta.warnings) || [];
+    // 出處照實講。連接器是照原廠 datasheet 的 PC board layout 建的，對它說
+    // 「IPC-7351 名目近似、請覆核原廠 land pattern」是假的——我們已經用了原廠的圖。
+    const srcNote = (r.meta && r.meta.src === 'datasheet') ? pcbT('pj_fp_src_ds') : pcbT('pj_fp_src');
     say(pcbT('pl_placed', { ref, name: comp.part, pads: r.pads.length })
-      + (warns.length ? '；⚠ ' + warns.join('；') : '') + ' ' + pcbT('pj_fp_src'));
+      + (warns.length ? '；⚠ ' + warns.join('；') : '') + ' ' + srcNote);
   },
 
   // 公版元件來源：schema v2 用 components（含尺寸/正反面），舊資料退回 blocks

@@ -121,6 +121,38 @@ window.PartsLib = (function () {
     return { pads, body: { w: n * 5.08, h: 8.1 } };
   }
 
+  // ---- JST 線對板連接器（THT 上進線 header）----
+  //
+  // 為什麼這幾顆要單獨刻、不能用家族推估：連接器的孔位是**廠商規定的**，
+  // 不是從封裝名推得出來的。推錯的後果不是線寬差一點，是接頭插不進去。
+  // 所以只做「原廠 datasheet 有 PC board layout 那一頁」的型號，數字逐個對過。
+  //
+  // 出處（2026-09-02 取自 JST 官方 datasheet）：
+  //   PH  https://www.jst-mfg.com/product/pdf/eng/ePH.pdf
+  //       pitch 2.0±0.05、孔 φ0.7 +0.1/0、header B*B-PH-K-S 本體 B = (n−1)×2.0 + 3.9、寬 4.5、高 6
+  //   XH  https://www.jst-mfg.com/product/pdf/eng/eXH.pdf
+  //       pitch 2.5±0.05、孔 φ0.9 +0.1/0（2 腳版是 φ1）、header B*B-XH-A 本體 B = (n−1)×2.5 + 4.9、寬 5.75、高 7
+  //
+  // 孔徑取公差帶的上緣（PH 0.8、XH 1.0）：兩份 datasheet 的 Note 都明講
+  // 「玻纖板請考慮加大孔徑」，而我們的使用者做的就是 FR4。
+  // pad 外徑 = 孔 + 2×0.25 環寬（JLCPCB 建議值 0.25，絕對下限 0.18）——datasheet 不規定 pad，
+  // 那是板廠能力的事，不是連接器的事。
+  //
+  // 本體外框置中：PH 的 layout 其實標了「腳列離外框 1.7」（另一側 2.8），但 PartsLib 的
+  // body 只有寬高、沒有偏移，表達不了。pad 位置不受影響（那才是碰到銅的東西），
+  // 外框只是示意——要精確外框的話得先讓 body 支援偏移。
+  const jstTht = (n, pitch, hole, bodyExtra, bodyW) => {
+    const pads = [];
+    const od = r2(hole + 0.5);                    // 環寬 0.25 × 2
+    for (let i = 0; i < n; i++) {
+      pads.push(P(i + 1, String(i + 1), (i - (n - 1) / 2) * pitch, 0, od, od,
+        Object.assign({}, THT, { drill: hole }, i === 0 ? { shape: 'rect' } : { shape: 'circle' })));
+    }
+    return { pads, body: { w: r2((n - 1) * pitch + bodyExtra), h: bodyW } };
+  };
+  const JST_N = ['2P', '3P', '4P', '5P', '6P', '7P', '8P', '9P', '10P', '12P', '14P', '16P'];
+  const jstN = v => parseInt(v, 10);
+
   // ---- 測試點 / 安裝孔 ----
   const tp = d => ({ pads: [P(1, 'TP', 0, 0, d, d, { shape: 'circle', rr: 0 })], body: { w: d + 0.4, h: d + 0.4 } });
   const hole = d => ({ pads: [P(1, 'NPTH', 0, 0, d, d, { shape: 'circle', rr: 0, drill: d, type: 'np_thru_hole', side: '*', cu: false })], body: { w: d + 0.6, h: d + 0.6 } });
@@ -183,6 +215,9 @@ window.PartsLib = (function () {
     { id: 'tp',   ref: 'TP', variants: ['Ø1.0', 'Ø1.5', 'Ø2.0'], gen: v => tp(parseFloat(v.slice(1))) },
     { id: 'hole', ref: 'H',  variants: ['M2 (Ø2.2)', 'M2.5 (Ø2.7)', 'M3 (Ø3.2)', 'M4 (Ø4.3)'],
       gen: v => hole(parseFloat(v.match(/Ø([\d.]+)/)[1])) },
+    // JST：孔徑照 datasheet 公差帶上緣（FR4），本體長度照 header 表的 B 欄
+    { id: 'jstph', ref: 'J', variants: JST_N, src: "datasheet", gen: v => jstTht(jstN(v), 2.0, 0.8, 3.9, 4.5) },
+    { id: 'jstxh', ref: 'J', variants: JST_N, src: "datasheet", gen: v => jstTht(jstN(v), 2.5, 1.0, 4.9, 5.75) },
     { id: 'soic',  ref: 'U', variants: IC_PKGS.soic,  gen: icGen },
     { id: 'tssop', ref: 'U', variants: IC_PKGS.tssop, gen: icGen },
     { id: 'ssop',  ref: 'U', variants: IC_PKGS.ssop,  gen: icGen },
@@ -205,6 +240,11 @@ window.PartsLib = (function () {
       ok: true, ref: cat.ref, name: variant,
       pads: r.pads, body: r.body,
       meta: {
+        // 出處要照實講。連接器是照原廠 datasheet 的 PC board layout 建的，
+        // 對它說「IPC-7351 名目近似、請覆核原廠 land pattern」是假的——我們已經用了原廠的圖。
+        // 而且這兩類的可靠度不同：被動件推估差一點只是焊點大小差一點，
+        // 連接器孔位推估錯的後果是那顆料裝不上去。呼叫端要能分辨。
+        src: cat.src === 'datasheet' ? 'datasheet' : 'ipc',
         source: 'IPC-7351 名目近似（量產前以原廠 land pattern 覆核）',
         // 推估來的尺寸原樣往上帶：吞掉的話，使用者會以為這個 footprint 跟被動件一樣可靠
         warnings: r.warnings || []

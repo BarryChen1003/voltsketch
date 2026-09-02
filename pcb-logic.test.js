@@ -3079,5 +3079,110 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   }
 }
 
+// 53) JST 線對板連接器：孔位是廠商規定的，錯了接頭插不進去
+//
+// 這一節的數字全部來自原廠 datasheet（2026-09-02 取）：
+//   PH  https://www.jst-mfg.com/product/pdf/eng/ePH.pdf
+//   XH  https://www.jst-mfg.com/product/pdf/eng/eXH.pdf
+// 被動件用 IPC-7351 家族推估可以接受（差一點就是焊點大小差一點）；連接器不行——
+// 推錯的後果是那顆料裝不上去。所以這裡逐個對 datasheet 的數字，而不是驗「看起來合理」。
+{
+  const L = window.PartsLib;
+
+  // ---- 孔位與孔徑照 datasheet ----
+  // PH：pitch 2.0±0.05、孔 φ0.7 +0.1/0；XH：pitch 2.5±0.05、孔 φ0.9 +0.1/0
+  // 孔徑取公差帶上緣（兩份 Note 都寫「玻纖板請考慮加大孔徑」，我們的使用者做 FR4）
+  const geom = (lib, v) => {
+    const b = L.build(lib, v);
+    const xs = b.pads.map(p => p.x).sort((a, c) => a - c);
+    return { ok: b.ok, n: b.pads.length, pitch: +(xs[1] - xs[0]).toFixed(4),
+             drill: b.pads[0].drill, od: b.pads[0].w, body: b.body };
+  };
+  {
+    const ph = geom('jstph', '6P');
+    eq(ph.pitch, 2.0, '53 PH 的 pitch 是 2.0mm');
+    eq(ph.drill, 0.8, '53 PH 的孔是 φ0.7 +0.1 → FR4 取 0.8');
+    const xh = geom('jstxh', '6P');
+    eq(xh.pitch, 2.5, '53 XH 的 pitch 是 2.5mm');
+    eq(xh.drill, 1.0, '53 XH 的孔是 φ0.9 +0.1 → FR4 取 1.0');
+  }
+
+  // ---- 本體長度照 header 表的 B 欄（不是自己算的近似）----
+  // PH  B = (n−1)×2.0 + 3.9：2 腳 5.9、6 腳 13.9、16 腳 33.9
+  // XH  B = (n−1)×2.5 + 4.9：2 腳 7.4、6 腳 17.4、16 腳 42.4
+  {
+    const B = (lib, v) => L.build(lib, v).body.w;
+    eq(B('jstph', '2P'), 5.9, '53 PH 2 腳的本體長 5.9（datasheet B 欄）');
+    eq(B('jstph', '6P'), 13.9, '53 PH 6 腳的本體長 13.9');
+    eq(B('jstph', '16P'), 33.9, '53 PH 16 腳的本體長 33.9');
+    eq(B('jstxh', '2P'), 7.4, '53 XH 2 腳的本體長 7.4（datasheet B 欄）');
+    eq(B('jstxh', '6P'), 17.4, '53 XH 6 腳的本體長 17.4');
+    eq(B('jstxh', '16P'), 42.4, '53 XH 16 腳的本體長 42.4');
+    eq(L.build('jstph', '6P').body.h, 4.5, '53 PH 本體寬 4.5');
+    eq(L.build('jstxh', '6P').body.h, 5.75, '53 XH 本體寬 5.75');
+  }
+
+  // ---- 全部變體都是合法的 THT pad ----
+  {
+    const bad = [];
+    for (const lib of ['jstph', 'jstxh']) {
+      const cat = L.list().find(c => c.id === lib);
+      ok(!!cat, '53 型錄要有 ' + lib);
+      for (const v of cat.variants) {
+        const b = L.build(lib, v);
+        if (!b.ok) { bad.push(lib + ':' + v + ' 做不出來'); continue; }
+        if (b.pads.length !== parseInt(v, 10)) bad.push(lib + ':' + v + ' 腳數不對');
+        for (const p of b.pads) {
+          // 鍍通孔：兩面都要有銅，而且孔一定要小於 pad（否則環寬是負的）
+          if (p.type !== 'thru_hole' || p.side !== '*') bad.push(lib + ':' + v + ' pad 不是鍍通孔');
+          if (!(p.drill > 0 && p.drill < p.w)) bad.push(lib + ':' + v + ' 孔徑不小於 pad');
+          const ring = (p.w - p.drill) / 2;
+          if (ring < 0.18) bad.push(lib + ':' + v + ' 環寬 ' + ring + ' 低於板廠絕對下限 0.18');
+        }
+        // pad 之間不可以重疊：pitch 要大於 pad 外徑
+        const od = b.pads[0].w;
+        const pitch = lib === 'jstph' ? 2.0 : 2.5;
+        if (od >= pitch) bad.push(lib + ':' + v + ' pad 外徑 ' + od + ' ≥ pitch ' + pitch + '，會黏在一起');
+      }
+    }
+    // 同一個毛病會在每個變體的每隻腳各報一次（16 腳 × 12 變體）。去重＋只留前幾條，
+    // 不然真的壞掉時訊息長到看不出是什麼問題。
+    const uniq = [...new Set(bad)];
+    const shown = uniq.slice(0, 4).join(' │ ') + (uniq.length > 4 ? ` │ …另外 ${uniq.length - 4} 種` : '');
+    eq(uniq.length ? shown : '', '', '53 每個變體都要是合法的鍍通孔 pad');
+  }
+
+  // ---- 第 1 腳要看得出來 ----
+  // THT 連接器插反是最常見的裝配錯誤，方形 pad 是產線唯一的線索。
+  {
+    const b = L.build('jstph', '4P');
+    eq(b.pads[0].shape, 'rect', '53 第 1 腳要是方形 pad');
+    eq(b.pads.slice(1).every(p => p.shape === 'circle'), true, '53 其餘腳是圓形');
+  }
+
+  // ---- 出處要照實講 ----
+  // 對照原廠 land pattern 建的東西說「IPC-7351 名目近似、請覆核原廠 land pattern」是假的：
+  // 我們已經用了原廠的圖。而且兩類的可靠度不同——被動件推估差一點只是焊點差一點，
+  // 連接器孔位推估錯是那顆料裝不上去。
+  {
+    eq(L.build('jstph', '4P').meta.src, 'datasheet', '53 JST 是照 datasheet 建的');
+    eq(L.build('jstxh', '4P').meta.src, 'datasheet', '53 XH 同上');
+    eq(L.build('res', '0603').meta.src, 'ipc', '53 被動件仍是 IPC 推估');
+    eq(L.build('soic', 'SOIC-8').meta.src, 'ipc', '53 通用 IC 封裝也是推估');
+    const fsx = require('fs'), pathx = require('path');
+    const pcbjs = fsx.readFileSync(pathx.join(__dirname, 'pcb.js'), 'utf8');
+    ok(pcbjs.indexOf('pj_fp_src_ds') > 0, '53 放件訊息要分辨兩種出處');
+  }
+
+  // ---- 線路圖端綁得到 ----
+  {
+    const S2 = window.Sch2Pcb;
+    const r = S2.mapFootprint({ id: 'j1', type: 'io', label: 'J1', footprint: 'jstph:4P' }, {});
+    eq(r.ok, true, '53 線路圖上綁 jstph:4P 要轉得出來');
+    eq(r.pads.length, 4, '53 轉出來要有 4 隻腳');
+    eq(r.assumed, false, '53 明講的封裝不可以標成猜的');
+  }
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

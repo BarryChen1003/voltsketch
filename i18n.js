@@ -1056,6 +1056,7 @@ window.I18N = (function () {
 
     // --- PCB 基本元件放料（parts-lib.js＋pcb.js placePart）---
     pl_title:  { zh: '基本元件放料', en: 'Basic parts placement', ja: '基本部品の配置', ko: '기본 부품 배치' },
+    pj_fp_src_ds: { zh: '孔位照原廠 datasheet 的 PC board layout（不是推估的）', en: 'Hole pattern taken from the vendor datasheet PC board layout, not estimated', ja: '穴位置はメーカー datasheet の PC board layout に準拠（推定ではありません）', ko: '홀 위치는 제조사 datasheet의 PC board layout 기준(추정 아님)' },
     pj_fp_src: { zh: '參數化 IPC-7351 名目近似（量產前以原廠 land pattern 覆核）', en: 'Parametric IPC-7351 nominal approximation (verify against the vendor land pattern before production)', ja: 'パラメトリック IPC-7351 名目近似（量産前にメーカーの land pattern と照合）', ko: '파라메트릭 IPC-7351 명목 근사(양산 전 제조사 land pattern과 대조)' },
     fg_n4:      { zh: '腳數 {n} 非 4 倍數，改用雙列近似', en: 'Pin count {n} not a multiple of 4; using dual-row approximation', ja: 'ピン数 {n} が 4 の倍数でないため 2 列近似を使用', ko: '핀 수 {n}이 4의 배수가 아니어서 2열 근사 사용' },
     fg_pitch:   { zh: 'pitch 未載，預設 {p}mm', en: 'Pitch not given; defaulting to {p}mm', ja: 'ピッチ記載なし。既定 {p}mm を使用', ko: '피치 미기재, 기본 {p}mm 사용' },
