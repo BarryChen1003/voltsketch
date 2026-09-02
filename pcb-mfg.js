@@ -223,7 +223,7 @@
       };
       // 分組規則必須與 gerber.mjs 的匯出端一字不差，否則面板顯示的表跟送廠的表會不一樣。
       // gerber-mfg.test.js 拿兩邊逐列比對，分岔就會紅。
-      (state.vias || []).forEach(v => add(v.id || 0.3, true));
+      (state.vias || []).forEach(v => add(v.id || v.drill || 0.3, true));
       (state.components || []).forEach(c => (c.pads || []).forEach(p => {
         if (!(p.drill > 0)) return;
         // 開槽走長圓孔，尺寸取短邊，一律鍍通

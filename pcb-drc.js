@@ -211,7 +211,7 @@ window.PadDrc = (() => {
                   plated: p.drill > 0, label: `${c.ref || c.label}.${p.num}` });
     }));
     (state.vias || []).forEach((v, i) => {
-      const r = (v.id || 0.3) / 2;
+      const r = (v.id || v.drill || 0.3) / 2;
       const cap = { x1: v.x, y1: v.y, x2: v.x, y2: v.y, r, d: r * 2 };
       if (region && !inRegion({ x0: v.x - r, y0: v.y - r, x1: v.x + r, y1: v.y + r })) return;
       holes.push({ cap, label: `via#${i + 1}` });
@@ -438,7 +438,7 @@ window.PadDrc = (() => {
         add('drc_cat_ring', 'error', T('drc_ring_small', { p: P.label, ring: fmt(ring), lim: via.minRing, at: at(P.sh) }), P.sh);
     }
     vias.forEach((v, i) => {
-      const ring = ((v.od || 0.6) - (v.id || 0.3)) / 2;
+      const ring = ((v.od || 0.6) - (v.id || v.drill || 0.3)) / 2;
       if (ring < via.minRing - EPS)
         add('drc_cat_via_ring', 'warning', T('drc_via_ring', { i: i + 1, ring: fmt(ring), lim: via.minRing, x: v.x.toFixed(1), y: v.y.toFixed(1) }), v);
     });

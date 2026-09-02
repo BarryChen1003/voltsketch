@@ -94,6 +94,12 @@ for (const b of boards) {
     ok(drl.text.startsWith('M48') && /METRIC/.test(drl.text), `${tag}: PTH 表頭 M48/METRIC`);
     ok(/M30\s*$/.test(drl.text), `${tag}: PTH 以 M30 收尾`);
     ok(!/NaN/.test(drl.text), `${tag}: PTH 無 NaN`);
+    // 刀徑一定要帶小數點。整數寫成 `T4C1` 在 TZ（去尾零）格式下是真歧義：
+    // 讀成 1mm 還是 0.001mm 由讀檔的人決定，而那是鑽孔尺寸。
+    // 2026-09-02 用 gerbonara（第三方解析器）實測：`T4C1` 直接讓它解析失敗；
+    // 板廠的 CAM 不見得會失敗，可能安靜地鑽錯。
+    const badTool = (drl.text.match(/^T\d+C[\d]+$/gm) || []);
+    ok(badTool.length === 0, `${tag}: 刀徑要帶小數點（${badTool.join(',')}）`);
   }
 
   // 5) 鑽孔數 = via + THT pad（drillCounts.pth）

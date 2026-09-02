@@ -2943,5 +2943,110 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   }
 }
 
+// 52) KiCad 匯出：拿進 KiCad 的人要拿到一片**接得起來**的板
+//
+// 這一節整節是 2026-09-02 用 kicad-cli 對我們的匯出跑 KiCad 自己的 DRC 之後補的。
+// 那次一口氣抓到四件內部檢查完全看不到的事（因為我們的檢查讀的是自己的 state，
+// 不是產出的檔）：pad 沒有 net、底面 pad 掛在頂層、via 鑽徑欄位讀錯、安裝孔變成鍍通孔。
+{
+  require('./kicad-io.js');
+  const K = window.KicadIO;
+  const st = {
+    boardWidth: 40, boardHeight: 30, layers: 2,
+    layerStack: [{ id: 'F.Cu', kind: 'copper' }, { id: 'B.Cu', kind: 'copper' }],
+    traces: [{ x1: -5, y1: 0, x2: 5, y2: 0, layer: 'F.Cu', width: 0.25, net: 'SDA' }],
+    // 這顆 via 的鑽徑用 `drill` 欄位（繞線器與公版資料都是這個名字），不是 `id`
+    vias: [{ x: 5, y: 0, od: 0.5, drill: 0.2, net: 'SDA' }],
+    userZones: [],
+    components: [
+      { ref: 'U1', x: 0, y: 5, rot: 0, w: 4, h: 4, side: 'top',
+        pads: [{ num: '1', x: -1, y: 0, w: 1, h: 0.6, shape: 'rect', net: 'SDA', side: 'F' },
+               { num: '2', x: 1, y: 0, w: 1, h: 0.6, shape: 'rect', net: 'GND', side: 'F' }] },
+      { ref: 'R1', x: 0, y: -5, rot: 0, w: 2, h: 1, side: 'bottom',
+        pads: [{ num: '1', x: -0.7, y: 0, w: 0.8, h: 0.9, shape: 'rect', net: 'GND', side: 'B' }] },
+      { ref: 'MH1', x: 10, y: 10, rot: 0, w: 3.2, h: 3.2, side: 'top',
+        pads: [{ num: '1', x: 0, y: 0, w: 3.2, h: 3.2, shape: 'circle',
+                 drill: 3.2, type: 'np_thru_hole', side: '*', cu: false, net: '' }] }
+    ]
+  };
+  const txt = K.buildNew(st);
+
+  // ---- pad 要帶 net ----
+  // 沒有的話銅箔畫得出來但連線全沒了，KiCad 報一整排 shorting_items
+  //（無 net 的 pad 疊在有 net 的 via 上）。實測公版 177 個 pad 只有 1 個帶 net。
+  {
+    const pads = txt.split('(pad ').slice(1);
+    const withNet = pads.filter(p => /\(net \d+ "/.test(p.slice(0, 500)));
+    eq(pads.length, 4, '52 四個 pad 都要寫出來');
+    eq(withNet.length, 3, '52 有 net 的三個 pad 都要帶 (net 編號 "名字")；NPTH 那個不掛');
+    ok(/\(net \d+ "SDA"\)/.test(txt), '52 net 名字要一起寫，不能只有編號');
+    // 還沒繞的 net 也要被宣告，否則 pad 指到一個不存在的編號
+    ok(/\(net \d+ "GND"\)/.test(txt), '52 只出現在 pad 上的 net 也要宣告');
+  }
+
+  // ---- 底面元件的 pad 要掛在 B 面 ----
+  // 以前一律寫 F.Cu，於是底面所有 SMD 在 KiCad 裡都跑到頂層去了。
+  {
+    // 序列化會把長節點斷行，所以先把空白壓平再找
+    const flat = txt.replace(/\s+/g, ' ');
+    const m = /\(pad "1" smd rect \(at -0\.7 0\) \(size [^)]*\) \(layers ([^)]*)\)/.exec(flat);
+    ok(!!m, '52 底面元件的 pad 要在檔裡');
+    if (m) {
+      ok(/B\.Cu/.test(m[1]), '52 底面 pad 要掛 B.Cu');
+      ok(!/F\.Cu/.test(m[1]), '52 底面 pad 不可以掛在 F.Cu');
+    }
+  }
+
+  // ---- via 的鑽徑：兩個欄位名都要認 ----
+  // 匯出器只讀 `id`，公版 83 顆 via 全是 `drill` → 一律退回預設 0.3mm。
+  // 症狀是 KiCad 報環寬不足（0.5 的外徑配 0.3 的孔＝環寬 0.1，我們的下限是 0.15）。
+  {
+    const m = /\(via \(at [^)]*\) \(size ([\d.]+)\) \(drill ([\d.]+)\)/.exec(txt.replace(/\n\s*/g, ' '));
+    ok(!!m, '52 via 要寫出來');
+    eq(m[1], '0.5', '52 via 外徑照 od');
+    eq(m[2], '0.2', '52 via 鑽徑要照 drill 欄位，不可以退回預設 0.3');
+  }
+
+  // ---- 安裝孔是非金屬化孔，不是鍍通孔 ----
+  // 寫成 thru_hole ＋ "*.Cu" 的話，板廠會把安裝孔鍍上銅，
+  // KiCad 也會因為「外徑＝鑽徑」每片板報 2～4 條環寬 0。
+  {
+    ok(/np_thru_hole/.test(txt), '52 NPTH 要寫成 np_thru_hole');
+    // 只看這一個 pad 節點本身：往後多切幾行會撈到別的節點的 (net …)
+    const flat = txt.replace(/\s+/g, ' ');
+    const m = /\(pad "" np_thru_hole [^)]*\)[^(]*\(size [^)]*\) \(drill [^)]*\) \(layers ([^)]*)\)([^)]*)\)/.exec(flat);
+    ok(!!m, '52 NPTH pad 節點要抓得到');
+    if (m) {
+      ok(!/\*\.Cu/.test(m[1]), '52 NPTH 不可以掛 *.Cu（那是鍍通孔）');
+      ok(m[2].indexOf('(net ') < 0, '52 NPTH 不可以掛 net');
+    }
+  }
+
+  // ---- 專案檔：KiCad 7 之後設計規則不在板檔裡 ----
+  // 只給 .kicad_pcb 的話，KiCad 用它自己的預設值檢查我們的板（實測多出 123 條
+  // track_width 與 37 條 clearance 假警報）。
+  {
+    ok(typeof K.buildProject === 'function', '52 要能產出專案檔');
+    const pro = JSON.parse(K.buildProject({
+      clearance: { traceToTrace: 0.15, traceToEdge: 0.3, holeToHole: 0.25 },
+      width: { minTrace: 0.1 }, via: { minDrill: 0.2, minRing: 0.15 }
+    }, 'board'));
+    eq(pro.board.design_settings.rules.min_clearance, 0.15, '52 淨空要照我們的規則');
+    eq(pro.board.design_settings.rules.min_track_width, 0.1, '52 線寬下限要照我們的規則');
+    eq(pro.board.design_settings.rules.min_via_annular_width, 0.15, '52 環寬下限要照我們的規則');
+    eq(pro.net_settings.classes[0].clearance, 0.15, '52 net class 也要帶著同一組數字');
+    eq(pro.meta.filename, 'board.kicad_pro', '52 檔名要跟板檔配得起來');
+  }
+
+  // ---- 匯出時真的會一起下載專案檔 ----
+  {
+    const fsx = require('fs'), pathx = require('path');
+    const pcbjs = fsx.readFileSync(pathx.join(__dirname, 'pcb.js'), 'utf8');
+    const at = pcbjs.indexOf('exportKicad()');
+    ok(at > 0, '52 exportKicad 要還在');
+    ok(pcbjs.slice(at, at + 1600).indexOf('buildProject') > 0, '52 匯出要一起給 .kicad_pro');
+  }
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

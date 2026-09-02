@@ -254,7 +254,7 @@
     segs.forEach(s => line(s.x1, s.y1, s.x2, s.y2, 'Edge_Cuts'));
     if (opts.holes !== false) {
       (state.vias || []).forEach(v => {
-        const r = (v.id || 0.3) / 2;
+        const r = (v.id || v.drill || 0.3) / 2;
         L.push('0', 'CIRCLE', '8', 'Drill', '10', String(v.x), '20', String(-v.y), '30', '0', '40', String(r));
       });
     }

@@ -489,7 +489,10 @@ function build(state, padAbsFn, baseName) {
   files.push({ name: base + '-Edge_Cuts.gbr', gf: gfEdge, fn: 'Profile,NP', pol: 'Positive' });
 
   // ---------- Excellon 鑽孔 ----------
-  const fd = mm => (Math.round(mm * 1000) / 1000).toString();
+  // 刀徑一律帶小數點與三位小數。整數寫成 `C1` 在 TZ（去尾零）格式下是真歧義——
+  // 讀成 1mm 還是 0.001mm 由讀檔的人決定，而那是鑽孔尺寸。實測 gerbonara 直接解析失敗；
+  // 板廠的 CAM 不見得會失敗，可能安靜地鑽錯。座標可以去尾零（那是格式的一部分），刀徑不行。
+  const fd = mm => (Math.round(mm * 1000) / 1000).toFixed(3);
   function drillFile(entries, slots) { // entries: [{x,y,d}], slots: [{x1,y1,x2,y2,d}]
     const tools = [...new Set(entries.map(e => e.d).concat(slots.map(s => s.d)))].sort((a, b) => a - b);
     const lines = ['M48', 'METRIC,TZ'];
@@ -518,10 +521,10 @@ function build(state, padAbsFn, baseName) {
   const bySpan = new Map();
   (state.vias || []).forEach(v => {
     const k = spanKey(v);
-    if (k === 'through') { pth.push({ x: v.x, y: v.y, d: v.id || 0.3 }); return; }
+    if (k === 'through') { pth.push({ x: v.x, y: v.y, d: v.id || v.drill || 0.3 }); return; }
     let a = bySpan.get(k);
     if (!a) { a = []; bySpan.set(k, a); }
-    a.push({ x: v.x, y: v.y, d: v.id || 0.3 });
+    a.push({ x: v.x, y: v.y, d: v.id || v.drill || 0.3 });
   });
   (state.components || []).forEach(c => {
     (c.pads || []).forEach(pad => {
@@ -609,7 +612,7 @@ function build(state, padAbsFn, baseName) {
     });
     (state.vias || []).forEach(v => {
       let rec = '317' + netf(v.net) + '   ' + reff('VIA') + '-' + pinf('');
-      rec += 'D' + f4(tm(v.id || 0.3)) + 'PA00';
+      rec += 'D' + f4(tm(v.id || v.drill || 0.3)) + 'PA00';
       rec += 'X' + f6(tm(v.x)) + 'Y' + f6(tm(-v.y));
       rec += 'X' + f4(tm(v.od || 0.6)) + 'Y' + f4(tm(v.od || 0.6));
       rec += 'R000 S3'; // 蓋油 via

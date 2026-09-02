@@ -443,7 +443,7 @@ window.KicadIO = (function () {
       if (!v.user) continue;
       tree.push(['via',
         ['at', fmt(v.x + off.x), fmt(v.y + off.y)],
-        ['size', fmt(v.od || 0.6)], ['drill', fmt(v.id || 0.3)],
+        ['size', fmt(v.od || 0.6)], ['drill', fmt(v.id || v.drill || 0.3)],
         ['layers', { q: true, v: 'F.Cu' }, { q: true, v: 'B.Cu' }],
         ['net', '0']
       ]);
@@ -460,10 +460,19 @@ window.KicadIO = (function () {
     cu.push(['31', { q: true, v: 'B.Cu' }, 'signal']);
     cu.push(['44', { q: true, v: 'Edge.Cuts' }, 'user']);
     cu.push(['37', { q: true, v: 'F.SilkS' }, 'user']);
+    // net 清單要**含 pad 的 net**。以前只收走線／via／鋪銅，於是還沒繞的 net 根本不會
+    // 被宣告；再加上 pad 也沒寫 net 節點，拿我們的 .kicad_pcb 進 KiCad 的人會拿到
+    // 「銅箔畫得出來但連線全沒了」的板子——KiCad 自己的 DRC 報一整排 shorting_items
+    // （無 net 的 pad 疊在有 net 的 via 上）。實測 rp2040-pico30：177 個 pad 只有 1 個帶 net。
+    const padNets = [];
+    for (const c of (appState.components || [])) {
+      for (const p of (c.pads || [])) { if (p.cu !== false && p.net) padNets.push(p.net); }
+    }
     const netNames = ['', ...new Set([
       ...appState.traces.map(t => t.net),
       ...(appState.vias || []).map(v => v.net),
-      ...(appState.userZones || []).map(z => z.net)
+      ...(appState.userZones || []).map(z => z.net),
+      ...padNets
     ].filter(Boolean))];
     const tree = ['kicad_pcb',
       ['version', '20240108'], ['generator', { q: true, v: 'hardwareai' }],
@@ -494,15 +503,32 @@ window.KicadIO = (function () {
       ];
       for (const p of (c.pads || [])) {
         const at = p.rot ? ['at', fmt(p.x), fmt(p.y), fmt(p.rot)] : ['at', fmt(p.x), fmt(p.y)];
-        if (p.type === 'thru_hole' || p.side === '*') {
+        // pad 的 net：KiCad 的寫法是 (net <編號> "<名字>")，編號與名字都要給。
+        // 沒有這一段，整片板在 KiCad 裡就是「有銅、沒連線」。
+        // 非導體 pad（NPTH 安裝孔）不掛 net——掛了會變成一個假的連接點。
+        const netNode = (p.cu !== false && p.net)
+          ? [['net', netNo(p.net), { q: true, v: String(p.net) }]] : [];
+        // 非導體孔（安裝孔、定位孔）要寫成 np_thru_hole，而且不掛 net。
+        // 以前一律寫 thru_hole ＋ "*.Cu"：那是**鍍通孔**，板廠會把安裝孔鍍上銅；
+        // KiCad 的 DRC 也因此每片板報 2～4 條「環寬 0」——因為 pad 外徑就等於鑽徑。
+        if (p.cu === false || p.type === 'np_thru_hole') {
+          fp.push(['pad', { q: true, v: '' }, 'np_thru_hole', p.shape === 'oval' ? 'oval' : 'circle',
+            at, ['size', fmt(p.w), fmt(p.h)], ['drill', fmt(p.drill || p.w || 1)],
+            ['layers', { q: true, v: 'F&B.Cu' }, { q: true, v: '*.Mask' }]]);
+        } else if (p.type === 'thru_hole' || p.side === '*') {
           fp.push(['pad', { q: true, v: String(p.num) }, 'thru_hole', p.shape === 'circle' ? 'circle' : 'oval',
             at, ['size', fmt(p.w), fmt(p.h)], ['drill', fmt(p.drill || 0.8)],
-            ['layers', { q: true, v: '*.Cu' }, { q: true, v: '*.Mask' }]]);
+            ['layers', { q: true, v: '*.Cu' }, { q: true, v: '*.Mask' }], ...netNode]);
         } else {
           const shape = p.shape === 'circle' ? 'circle' : (p.shape === 'rect' ? 'rect' : 'roundrect');
           const pad = ['pad', { q: true, v: String(p.num) }, 'smd', shape, at, ['size', fmt(p.w), fmt(p.h)]];
           if (shape === 'roundrect') pad.push(['roundrect_rratio', fmt(p.rr || 0.25)]);
-          pad.push(['layers', { q: true, v: 'F.Cu' }, { q: true, v: 'F.Paste' }, { q: true, v: 'F.Mask' }]);
+          // 底面元件的 pad 要掛在 B 面的層，不是 F 面。以前一律寫 F.Cu，
+          // 於是底面所有 SMD 在 KiCad 裡都跑到頂層去了。
+          const bot = (c.side === 'bottom' || c.side === 'B');
+          pad.push(['layers', { q: true, v: bot ? 'B.Cu' : 'F.Cu' },
+            { q: true, v: bot ? 'B.Paste' : 'F.Paste' }, { q: true, v: bot ? 'B.Mask' : 'F.Mask' }]);
+          pad.push(...netNode);
           fp.push(pad);
         }
       }
@@ -513,7 +539,7 @@ window.KicadIO = (function () {
         ['width', fmt(t.width || 0.3)], ['layer', { q: true, v: t.layer || 'F.Cu' }], ['net', netNo(t.net)]]);
     }
     for (const v of appState.vias) {
-      tree.push(['via', ['at', fmt(v.x + ox), fmt(v.y + oy)], ['size', fmt(v.od || 0.6)], ['drill', fmt(v.id || 0.3)],
+      tree.push(['via', ['at', fmt(v.x + ox), fmt(v.y + oy)], ['size', fmt(v.od || 0.6)], ['drill', fmt(v.id || v.drill || 0.3)],
         ['layers', { q: true, v: 'F.Cu' }, { q: true, v: 'B.Cu' }], ['net', netNo(v.net)]]);
     }
     // 使用者鋪銅 → zone 外框（KiCad 開檔後按 B 重灌銅；thermal=false 出實心連接）
@@ -530,5 +556,57 @@ window.KicadIO = (function () {
     return serialize(tree, 0) + '\n';
   }
 
-  return { parse, serialize, importText, exportText, buildNew, _arcPoints: arcPoints };
+  /**
+   * 一起產出 `.kicad_pro`（KiCad 專案檔）。
+   *
+   * 為什麼要有：KiCad 7 之後**設計規則不在板檔裡**，在專案檔。只給 .kicad_pcb 的話，
+   * KiCad 會拿它自己的預設值來檢查我們的板——實測 rp2040-pico30 因此多出
+   * 123 條 track_width 與 37 條 clearance「違規」，全部是規則不一樣造成的假警報。
+   * 把我們的 DRC 規則寫進專案檔之後，同一片板的違規從 242 降到 97，
+   * 剩下的才是值得看的東西。
+   *
+   * 檔名要跟板檔同名（KiCad 靠檔名配對），呼叫端負責存成 `<同名>.kicad_pro`。
+   */
+  function buildProject(rules, baseName) {
+    const cl = (rules && rules.clearance) || {};
+    const wd = (rules && rules.width) || {};
+    const via = (rules && rules.via) || {};
+    const n = v => (typeof v === 'number' && isFinite(v) && v > 0) ? v : undefined;
+    const minClear = n(cl.traceToTrace) || 0.15;
+    const minTrack = n(wd.minTrace) || 0.1;
+    const netClass = {
+      name: 'Default', clearance: minClear, track_width: minTrack,
+      via_diameter: 0.6, via_drill: n(via.minDrill) || 0.3,
+      diff_pair_gap: 0.2, diff_pair_width: minTrack,
+      microvia_diameter: 0.3, microvia_drill: 0.1,
+      bus_width: 12, line_style: 0, wire_width: 6,
+      pcb_color: 'rgba(0,0,0,0.000)', schematic_color: 'rgba(0,0,0,0.000)'
+    };
+    return JSON.stringify({
+      board: {
+        design_settings: {
+          defaults: {},
+          rules: {
+            min_clearance: minClear,
+            min_track_width: minTrack,
+            min_through_hole_diameter: n(via.minDrill) || 0.2,
+            min_via_annular_width: n(via.minRing) || 0.15,
+            min_hole_to_hole: n(cl.holeToHole) || 0.25,
+            min_copper_edge_clearance: n(cl.traceToEdge) || 0.3,
+            min_silk_clearance: 0,
+            min_resolved_spokes: 1,
+            min_text_height: 0.8,
+            min_text_thickness: 0.08
+          },
+          track_widths: [0, minTrack],
+          via_dimensions: []
+        }
+      },
+      net_settings: { classes: [netClass], meta: { version: 3 } },
+      meta: { filename: String(baseName || 'board') + '.kicad_pro', version: 1 },
+      version: 1
+    }, null, 2) + '\n';
+  }
+
+  return { parse, serialize, importText, exportText, buildNew, buildProject, _arcPoints: arcPoints };
 })();

@@ -904,7 +904,7 @@ const pcbApp = {
     state.vias.forEach(v => {
       const x = this.viewW / 2 + v.x * scale;
       const y = this.viewH / 2 + v.y * scale;
-      const ro = Math.max(2, (v.od || 0.6) / 2 * scale), ri = Math.max(1, (v.id || 0.3) / 2 * scale);
+      const ro = Math.max(2, (v.od || 0.6) / 2 * scale), ri = Math.max(1, (v.id || v.drill || 0.3) / 2 * scale);
       ctx.beginPath(); ctx.arc(x, y, ro, 0, Math.PI * 2); ctx.fillStyle = '#b8c2cc'; ctx.fill();
       // 孔＝看穿板子，顏色要跟背景一致（寫死舊色的話換主題後每個 via 都有深藍點）
       ctx.beginPath(); ctx.arc(x, y, ri, 0, Math.PI * 2); ctx.fillStyle = (this.state.palette && this.state.palette.bg) || '#1a1a2e'; ctx.fill();
@@ -1330,6 +1330,18 @@ const pcbApp = {
     a.download = name;
     a.click();
     URL.revokeObjectURL(a.href);
+    // 一起給 .kicad_pro：KiCad 7 之後設計規則不在板檔裡，在專案檔。只給板檔的話，
+    // KiCad 會拿它自己的預設值來檢查我們的板——實測公版因此多出 123 條 track_width
+    // 與 37 條 clearance 假警報，使用者會以為我們產的板一團糟。檔名要同名才配得起來。
+    if (window.KicadIO && KicadIO.buildProject) {
+      const base = name.replace(/\.kicad_pcb$/i, '');
+      const pro = new Blob([KicadIO.buildProject(this.loadDrcRules(), base)], { type: 'application/json' });
+      const b = document.createElement('a');
+      b.href = URL.createObjectURL(pro);
+      b.download = base + '.kicad_pro';
+      b.click();
+      URL.revokeObjectURL(b.href);
+    }
     const el = document.getElementById('kicadIoMsg');
     if (el) el.textContent = s.kicad
       ? pcbT('pj_kicad_exported_tree', { name })

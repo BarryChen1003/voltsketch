@@ -36,3 +36,7 @@ tools/ic-extract/out/
 
 # 匯出驗證用的測試板產物（node tools/make-verify-boards.js 隨時可重生）
 verify-out/
+
+# 本機驗證工具鏈的 venv（gerbonara 等第三方讀檔器；工具本身進 git，環境不進）
+tools/verify/.venv/
+tools/verify/out/

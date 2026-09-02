@@ -299,5 +299,122 @@ const segsOf = pts => pts.map((p, i) => {
   }
 }
 
+// 8) 真的 CAD 打得開：產品結構 ＋ 面的平面必須真的含著那圈邊
+//
+// 這一節是 2026-09-02 用 FreeCAD／OCCT 開我們的檔之後補的。當時 62 條斷言全綠，
+// OCCT 讀出來卻是**空的**（0 物件、shape isNull），修好之後又報
+// 「Self-intersecting wire / Unorientable shape」。兩個問題內部檢查都看不到，
+// 因為它們驗的是拓樸（每條邊被兩個面用到、尤拉示性數 2），而錯的是**幾何與入口**。
+{
+  const r = S.build({
+    boardWidth: 30, boardHeight: 20, components: [
+      { ref: 'U1', x: 2, y: 1, rot: 0, w: 5, h: 4, side: 'top' }
+    ]
+  }, { thickness: 1.6, name: 'geo' });
+  const txt = r.text;
+
+  // ---- 入口：STEP reader 是從 PRODUCT_DEFINITION 走進來的 ----
+  // 只寫 ADVANCED_BREP_SHAPE_REPRESENTATION 的話，幾何全對但沒有門，CAD 讀到 0 個物件。
+  for (const kw of ['APPLICATION_CONTEXT', 'PRODUCT(', 'PRODUCT_DEFINITION_FORMATION',
+    'PRODUCT_DEFINITION(', 'PRODUCT_DEFINITION_SHAPE', 'SHAPE_DEFINITION_REPRESENTATION']) {
+    ok(txt.indexOf(kw) > 0, '8 缺少產品結構的 ' + kw + '（CAD 會讀成空檔）');
+  }
+  // 那條鏈要真的接得起來：SHAPE_DEFINITION_REPRESENTATION 指到的必須是我們寫的那個 rep
+  {
+    const ent = new Map();
+    for (const ln of txt.split(/\r?\n/)) {
+      // 型別名含數字（AXIS2_PLACEMENT_3D）；字元類少了 0-9 會被切成 AXIS
+      const m = /^#(\d+) = ([A-Z0-9_]+|\()(.*);$/.exec(ln);
+      if (m) ent.set(+m[1], { type: m[2] === '(' ? 'COMPLEX' : m[2], body: m[3] });
+    }
+    const sdr = [...ent.entries()].find(([, e]) => e.type === 'SHAPE_DEFINITION_REPRESENTATION');
+    ok(!!sdr, '8 要有 SHAPE_DEFINITION_REPRESENTATION');
+    const targets = [...sdr[1].body.matchAll(/#(\d+)/g)].map(x => ent.get(+x[1]));
+    ok(targets.some(t => t && t.type === 'ADVANCED_BREP_SHAPE_REPRESENTATION'),
+      '8 產品結構要接到真正的形狀表示（接不到就等於沒接）');
+    ok(targets.some(t => t && t.type === 'PRODUCT_DEFINITION_SHAPE'),
+      '8 另一端要接到 PRODUCT_DEFINITION_SHAPE');
+
+    // ---- 幾何：每個面的平面必須真的含著那圈邊的每一個頂點 ----
+    // 舊版所有面都用 +Z 當平面法向，四個側面的平面根本不含那圈邊——
+    // 拓樸完全正確，OCCT 判定 wire 自交、面不可定向。
+    const xyz = id => {
+      const e = ent.get(id);
+      if (!e) return null;
+      const m = /\(([-\d.eE+,]+)\)\)?\s*$/.exec(e.body);
+      return m ? m[1].split(',').map(Number) : null;
+    };
+    const refsOf = body => [...body.matchAll(/#(\d+)/g)].map(x => +x[1]);
+    let checked = 0, offPlane = 0, worst = 0;
+    for (const [fid, fe] of ent) {
+      if (fe.type !== 'ADVANCED_FACE') continue;
+      const fr = refsOf(fe.body);
+      const plane = fr.map(i => ent.get(i)).find(e => e && e.type === 'PLANE');
+      const bound = fr.map(i => ent.get(i)).find(e => e && e.type === 'FACE_OUTER_BOUND');
+      if (!plane || !bound) continue;
+      const ax = ent.get(refsOf(plane.body)[0]);
+      if (!ax || ax.type !== 'AXIS2_PLACEMENT_3D') continue;
+      const [oid, nid] = refsOf(ax.body);
+      const O = xyz(oid), N = xyz(nid);
+      if (!O || !N) continue;
+      // 這個面用到的所有頂點
+      const loop = refsOf(bound.body).map(i => ent.get(i)).find(e => e && e.type === 'EDGE_LOOP');
+      if (!loop) continue;
+      for (const oe of refsOf(loop.body)) {
+        const o = ent.get(oe);
+        if (!o || o.type !== 'ORIENTED_EDGE') continue;
+        for (const ecId of refsOf(o.body)) {
+          const ec = ent.get(ecId);
+          if (!ec || ec.type !== 'EDGE_CURVE') continue;
+          for (const vpId of refsOf(ec.body)) {
+            const vp = ent.get(vpId);
+            if (!vp || vp.type !== 'VERTEX_POINT') continue;
+            const P = xyz(refsOf(vp.body)[0]);
+            if (!P) continue;
+            const d = Math.abs((P[0] - O[0]) * N[0] + (P[1] - O[1]) * N[1] + (P[2] - O[2]) * N[2]);
+            checked++;
+            if (d > 1e-6) { offPlane++; worst = Math.max(worst, d); }
+          }
+        }
+      }
+    }
+    ok(checked > 0, '8 至少要檢查到一些頂點（沒檢查到就是解析壞了）');
+    eq(offPlane, 0, '8 每個面的平面都要真的含著那圈邊的頂點（最遠偏離 ' + worst.toFixed(4) + 'mm）');
+  }
+
+  // ---- 邊的曲線要通過自己的兩個端點 ----
+  // 舊版所有邊共用一條「過原點、方向 +X」的 LINE，端點與曲線完全對不上。
+  {
+    const ent = new Map();
+    for (const ln of txt.split(/\r?\n/)) {
+      const m = /^#(\d+) = ([A-Z0-9_]+|\()(.*);$/.exec(ln);
+      if (m) ent.set(+m[1], { type: m[2] === '(' ? 'COMPLEX' : m[2], body: m[3] });
+    }
+    const refsOf = body => [...body.matchAll(/#(\d+)/g)].map(x => +x[1]);
+    const xyz = id => {
+      const e = ent.get(id);
+      if (!e) return null;
+      const m = /\(([-\d.eE+,]+)\)\)?\s*$/.exec(e.body);
+      return m ? m[1].split(',').map(Number) : null;
+    };
+    let bad = 0, n = 0;
+    for (const [, e] of ent) {
+      if (e.type !== 'EDGE_CURVE') continue;
+      const parts = refsOf(e.body).map(i => ent.get(i));
+      const vs = parts.filter(p => p && p.type === 'VERTEX_POINT');
+      const line = parts.find(p => p && p.type === 'LINE');
+      if (vs.length !== 2 || !line) continue;
+      const A = xyz(refsOf(vs[0].body)[0]), B = xyz(refsOf(vs[1].body)[0]);
+      const lp = xyz(refsOf(line.body)[0]);
+      if (!A || !B || !lp) continue;
+      n++;
+      // 曲線的起點要就是這條邊的起點
+      if (Math.hypot(lp[0] - A[0], lp[1] - A[1], lp[2] - A[2]) > 1e-6) bad++;
+    }
+    ok(n > 0, '8 要檢查到邊');
+    eq(bad, 0, '8 每條邊的 LINE 要從自己的起點出發（共用一條假直線也能通過拓樸檢查）');
+  }
+}
+
 console.log(`\nstep.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

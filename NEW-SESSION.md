@@ -188,7 +188,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | 測試 | 斷言 | 守什麼 |
 |---|---|---|
 | `gerber-check.js` | 473 | 匯出**結構**：表頭、層數、鑽孔對齊 pad、CPL／IPC 行數 |
-| `pcb-logic.test.js` | 638 | 編輯器邏輯、DRC、繞線策略、差分對、橡皮筋、公版缺陷預算 |
+| `pcb-logic.test.js` | 660 | 編輯器邏輯、DRC、繞線策略、差分對、橡皮筋、公版缺陷預算 |
 | `odb-check.js` | 387 | ODB++ 結構 + **readback**：features 讀回來逐筆比對 |
 | `gerber-readback.js` | 195 | Gerber **幾何**：解析回來跟原始板逐條比對 |
 | `pcb-mfg.test.js` | 137 | 淚滴／縫合孔／鑽孔表／拼板／轉角導角的幾何合法性 |
@@ -239,7 +239,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | 測試 | 斷言 | 守什麼 |
 |---|---|---|
 | `ipc2581.test.js` | 91 | IPC-2581 ＋ 組裝圖；第一條就是 **well-formed XML**（阻抗註記帶 `&` 與引號也要跳脫得掉） |
-| `step.test.js` | 74 | STEP：參照完整性、**流形性**、尤拉示性數 |
+| `step.test.js` | 87 | STEP：參照完整性、**流形性**、尤拉示性數 |
 | `pcb-step-model.test.js` | 47 | 匯入 STEP：**方向不可被平移**、編號平移後參照不可斷 |
 | `gerber-import.test.js` | 76 | Gerber/Excellon 匯入：拿自家產生器的輸出 round-trip |
 | `alien-import.test.js` | 63 | Eagle／LTspice：認不得的元件**不可以**被硬塞成別的 |
@@ -429,6 +429,19 @@ node ci-parity-check.js
 node ecpay-config.test.mjs
 node plan-dates.test.mjs
 ```
+
+### 第三方驗證（本機，不在 CI）
+
+上面那些檢查驗的是「我們寫出來的東西符合**我們對格式的理解**」。理解錯了，自己驗自己永遠是綠的
+（實測：STEP 62 條斷言全綠，CAD 開起來 0 個物件）。動到匯出相關的東西就手動跑這個：
+
+```powershell
+pwsh -File toolserifyerify.ps1
+```
+
+三個跟我們無關的判官：kicad-cli 的 DRC、FreeCAD 的 OCCT、gerbonara。裝法與已知例外見
+`tools/verify/README.md`。**CI 上沒有 KiCad 與 FreeCAD，所以它不在 `ci.yml` 裡**——
+這是唯一一個要靠人記得跑的閘門。
 
 預覽用 `preview_start({ name: "web-static" })`，**不要用 Bash 起 server**。
 
@@ -646,6 +659,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 | 互動 | 推擠會繞路但**不重繞**（同層橫穿仍明確拒絕）；cross-probe 反查不到母圖上的圖紙符號 |
 | 製造 | 🔴 沒人用真 CAM／CAD 開過匯出檔（站主無 CAD，等打樣時板廠代驗）；IPC-2581 疊構沒有材料；組裝圖外形只有矩形 courtyard |
 | 模擬 | 元件模型一階；量測精度受取樣間隔限制；掃描指標只有 −3dB |
+| 匯出檔的第三方驗證 | 2026-09-02 起**本機就驗得完**（`tools/verify/`，見那裡的 README）：kicad-cli 跑 KiCad 自己的 DRC、FreeCAD 的 OCCT 開 STEP、gerbonara 讀 Gerber/Excellon。第一次跑就抓到六個內部檢查完全看不到的真 bug（最大的一個：STEP 沒有產品結構，CAD 開起來是 0 個物件）。**還沒有第三方背書的**：IPC-2581 與 ODB++ 沒有夠成熟的開源讀檔器 |
 | 資料 | 匯入的 STEP **仍是攤平**（每個實例一份幾何）——2026-09-02 起會把代價量出來（唯一模型數／放置次數／多寫了幾個實體）並顯示在匯出訊息裡，但真正的裝配結構要有 CAD 才驗得了，跟 #1 卡在同一件事。IPC-2581 的阻抗與**介電厚度／Dk** 走非標準屬性（`<Spec>`、`DIELCORE` 這些標準元素的 schema 抓不到，webstds.ipc.org 擋外部存取，不照猜的寫） |
 | 匯流排 | 束狀繞線與層級 DRC 都在（2026-09-02）。**還沒有的**：束狀繞線不會自己換層（整束只走 pad 所在的那一層，要跨層得先手動放 via）；扇出是 45° 直線，不做真實工具那種弧形收束 |
 
@@ -683,6 +697,17 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
   往回走的尖刺；四條一束展開後直接打結、跨到隔壁那條上（實測一次 30 個 `drc_tt`）。
   正解是把頂點移到兩條位移線的**交點**（斜接），太尖的角再夾一個上限。差分對與束狀
   現在共用同一份 `_offsetSegs`——兩套位移邏輯遲早分岔。
+- **自己驗自己永遠是綠的**。`step.test.js` 62 條斷言全綠——流形性、尤拉示性數、參照完整性
+  一條不漏——而 OCCT 打開那份 STEP 讀到 **0 個物件**。原因是檔裡沒有 `PRODUCT_DEFINITION`
+  那條產品結構：幾何一直是對的，只是沒有門讓人走進來。我們的檢查驗的是「我們對格式的理解」，
+  而錯的正是那個理解。**任何格式的匯出，最終都要有一個跟我們無關的讀檔器點頭**——
+  工具鏈在 `tools/verify/`，本機跑得完，不用找人。
+- **內部檢查讀的是 state，不是產出的檔**。KiCad 匯出的 177 個 pad 只有 1 個帶 net、底面 pad
+  掛在頂層、安裝孔變成鍍通孔、via 鑽徑欄位讀錯——四個都在同一次第三方 DRC 裡現形，
+  而我們所有的測試都是綠的。要抓這一類，測試就得**打開產出的檔案**去看，不能只看記憶體。
+- **同一個東西有兩個欄位名，遲早有人只讀其中一個**。via 的鑽徑在 KiCad 匯入寫 `id`、
+  繞線器與公版資料寫 `drill`，而 Gerber／Excellon／DXF／鑽孔表／DRC **全部只讀 `id`**，
+  於是公版 83 顆 via 一律按 0.3mm 鑽。0.3 剛好是預設值，所以十個月沒人發現。
 - **寫死的預設值比留白危險**。IPC-2581 的疊構一直寫 totalFinishedThickness="1.6"、每層銅
   0.035mm，不管使用者在疊層編輯器設了什麼——因為那份資料在 localStorage，Edge Function
   讀不到。板廠會照著那個數字報價與壓合。**有資料沒送過去**跟「沒有資料」是兩回事：

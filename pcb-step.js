@@ -120,45 +120,66 @@
     const n = pts.length;
     // 逆時針化，側面法向才會一致朝外
     const poly = area2(pts) < 0 ? pts.slice().reverse() : pts.slice();
-    const dirZ = w.put('DIRECTION(\'\',(0.,0.,1.))');
-    const dirX = w.put('DIRECTION(\'\',(1.,0.,0.))');
+
+    const pt = (x, y, z) => w.put('CARTESIAN_POINT(\'\',(' + f(x) + ',' + f(y) + ',' + f(z) + '))');
+    const dir = (x, y, z) => w.put('DIRECTION(\'\',(' + f(x) + ',' + f(y) + ',' + f(z) + '))');
 
     const vLo = [], vHi = [];
     for (const p of poly) {
-      vLo.push(w.put('VERTEX_POINT(\'\',#' + w.put('CARTESIAN_POINT(\'\',(' + f(p[0]) + ',' + f(p[1]) + ',' + f(z0) + '))') + ')'));
-      vHi.push(w.put('VERTEX_POINT(\'\',#' + w.put('CARTESIAN_POINT(\'\',(' + f(p[0]) + ',' + f(p[1]) + ',' + f(z1) + '))') + ')'));
+      vLo.push(w.put('VERTEX_POINT(\'\',#' + pt(p[0], p[1], z0) + ')'));
+      vHi.push(w.put('VERTEX_POINT(\'\',#' + pt(p[0], p[1], z1) + ')'));
     }
-    // 邊：底 n、頂 n、垂直 n
-    const line = (a, b) => {
-      const pa = w.put('CARTESIAN_POINT(\'\',(0.,0.,0.))');   // 佔位方向向量的原點
-      return w.put('EDGE_CURVE(\'\',#' + a + ',#' + b + ',#' +
-        w.put('LINE(\'\',#' + pa + ',#' + w.put('VECTOR(\'\',#' + dirX + ',1.)') + ')') + ',.T.)');
+
+    // 邊的曲線要**真的通過那兩個端點**。
+    // 舊版所有邊共用一條「過原點、方向 +X」的 LINE：拓樸看起來對（每條邊剛好被兩個面用到、
+    // 方向相反），尤拉示性數也對，所以我們自己的檢查全綠——但幾何整個是假的。
+    // OCCT 開起來的症狀是「Self-intersecting wire / Unorientable shape」。
+    const line = (ax, ay, az, bx, by, bz, va, vb) => {
+      const dx = bx - ax, dy = by - ay, dz = bz - az;
+      const L = Math.hypot(dx, dy, dz) || 1;
+      const crv = w.put('LINE(\'\',#' + pt(ax, ay, az) + ',#' +
+        w.put('VECTOR(\'\',#' + dir(dx / L, dy / L, dz / L) + ',' + f(L) + ')') + ')');
+      return w.put('EDGE_CURVE(\'\',#' + va + ',#' + vb + ',#' + crv + ',.T.)');
     };
     const eLo = [], eHi = [], eUp = [];
     for (let i = 0; i < n; i++) {
-      eLo.push(line(vLo[i], vLo[(i + 1) % n]));
-      eHi.push(line(vHi[i], vHi[(i + 1) % n]));
-      eUp.push(line(vLo[i], vHi[i]));
+      const j = (i + 1) % n;
+      eLo.push(line(poly[i][0], poly[i][1], z0, poly[j][0], poly[j][1], z0, vLo[i], vLo[j]));
+      eHi.push(line(poly[i][0], poly[i][1], z1, poly[j][0], poly[j][1], z1, vHi[i], vHi[j]));
+      eUp.push(line(poly[i][0], poly[i][1], z0, poly[i][0], poly[i][1], z1, vLo[i], vHi[i]));
     }
-    const face = (loopEdges, z, normalUp) => {
-      const oriented = loopEdges.map(([e, dir]) => w.put('ORIENTED_EDGE(\'\',*,*,#' + e + ',' + (dir ? '.T.' : '.F.') + ')'));
+
+    /**
+     * 一個面。法向（nx,ny,nz）給的是**這個面真正朝外的方向**，參考方向 rx.. 要跟它垂直。
+     * 舊版所有面都用 +Z 當平面法向——頂面底面剛好對，四個側面的平面根本不含那圈邊，
+     * 於是 OCCT 判定 wire 自交、面不可定向。same_sense 一律 .T.：
+     * 方向靠「平面本身就朝外」表達，不靠翻轉旗標，少一層可以搞錯的間接。
+     */
+    const face = (loopEdges, ox, oy, oz, nx, ny, nz, rx, ry, rz) => {
+      const oriented = loopEdges.map(([e, fwd]) => w.put('ORIENTED_EDGE(\'\',*,*,#' + e + ',' + (fwd ? '.T.' : '.F.') + ')'));
       const loop = w.put('EDGE_LOOP(\'\',(' + oriented.map(o => '#' + o).join(',') + '))');
       const bound = w.put('FACE_OUTER_BOUND(\'\',#' + loop + ',.T.)');
-      const org = w.put('CARTESIAN_POINT(\'\',(' + f(poly[0][0]) + ',' + f(poly[0][1]) + ',' + f(z) + '))');
-      const ax = w.put('AXIS2_PLACEMENT_3D(\'\',#' + org + ',#' + dirZ + ',#' + dirX + ')');
+      const ax = w.put('AXIS2_PLACEMENT_3D(\'\',#' + pt(ox, oy, oz) + ',#' + dir(nx, ny, nz) + ',#' + dir(rx, ry, rz) + ')');
       const pl = w.put('PLANE(\'\',#' + ax + ')');
-      return w.put('ADVANCED_FACE(\'\',(#' + bound + '),#' + pl + ',' + (normalUp ? '.T.' : '.F.') + ')');
+      return w.put('ADVANCED_FACE(\'\',(#' + bound + '),#' + pl + ',.T.)');
     };
 
     const faces = [];
-    // 底面：法向 −Z，邊要反向繞
-    faces.push(face(eLo.map((e, i) => [eLo[n - 1 - i], false]), z0, false));
-    // 頂面：法向 +Z
-    faces.push(face(eHi.map(e => [e, true]), z1, true));
+    // 底面：法向 −Z。從下往上看要逆時針＝從上往下看是順時針，所以邊反向繞。
+    faces.push(face(eLo.map((e, i) => [eLo[n - 1 - i], false]),
+      poly[0][0], poly[0][1], z0, 0, 0, -1, 1, 0, 0));
+    // 頂面：法向 +Z，照原本的逆時針
+    faces.push(face(eHi.map(e => [e, true]),
+      poly[0][0], poly[0][1], z1, 0, 0, 1, 1, 0, 0));
     // 側面：底邊(正) → 右垂直(正) → 頂邊(反) → 左垂直(反)
+    // 逆時針多邊形的外側法向＝把邊方向 (dx,dy) 轉 −90°，也就是 (dy,−dx)。
+    // 參考方向取邊本身，於是面內座標 X＝沿邊、Y＝向上，那圈邊剛好逆時針繞著法向。
     for (let i = 0; i < n; i++) {
       const j = (i + 1) % n;
-      faces.push(face([[eLo[i], true], [eUp[j], true], [eHi[i], false], [eUp[i], false]], z0, true));
+      const dx = poly[j][0] - poly[i][0], dy = poly[j][1] - poly[i][1];
+      const L = Math.hypot(dx, dy) || 1;
+      faces.push(face([[eLo[i], true], [eUp[j], true], [eHi[i], false], [eUp[i], false]],
+        poly[i][0], poly[i][1], z0, dy / L, -dx / L, 0, dx / L, dy / L, 0));
     }
     if (stats) {
       stats.V += 2 * n; stats.E += 3 * n; stats.F += n + 2;
@@ -260,8 +281,30 @@
     const unc = w.put('UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.E-07),#' + uLen + ",'distance_accuracy_value','')");
     const ctx = w.put('( GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#' + unc +
       ')) GLOBAL_UNIT_ASSIGNED_CONTEXT((#' + uLen + ',#' + uAng + ',#' + uSol + ')) REPRESENTATION_CONTEXT(\'\',\'3D\') )');
-    w.put('ADVANCED_BREP_SHAPE_REPRESENTATION(\'' + opts.name + '\',(#' + ax + ',' +
+    const rep = w.put('ADVANCED_BREP_SHAPE_REPRESENTATION(\'' + opts.name + '\',(#' + ax + ',' +
       solids.map(s => '#' + s).join(',') + '),#' + ctx + ')');
+
+    // ---- 產品結構：沒有這一段，真的 CAD 讀出來是**空的** ----
+    //
+    // STEP reader 不是從 shape representation 進去的，是從 PRODUCT_DEFINITION 走
+    // PRODUCT_DEFINITION_SHAPE → SHAPE_DEFINITION_REPRESENTATION 才找到幾何。
+    // 以前這裡只寫了 ADVANCED_BREP_SHAPE_REPRESENTATION，於是：
+    //   - 我們自己的 step.test.js 全綠（參照完整、流形、尤拉示性數都對）
+    //   - FreeCAD／OCCT 開起來 **0 個物件、shape isNull**（2026-09-02 實測 146KB 的檔）
+    // 幾何一直都是對的，只是沒有任何門讓人走進來。
+    // 這也是「自己驗自己永遠是綠的」最貴的一課：驗的是我們對格式的理解，
+    // 而錯的正是那個理解。
+    const appCtx = w.put("APPLICATION_CONTEXT('automotive design')");
+    w.put("APPLICATION_PROTOCOL_DEFINITION('international standard','automotive_design',2000,#" + appCtx + ')');
+    const prodCtx = w.put("PRODUCT_CONTEXT('',#" + appCtx + ",'mechanical')");
+    const nm = String(opts.name || 'board').replace(/'/g, "''");
+    const prod = w.put("PRODUCT('" + nm + "','" + nm + "','',(#" + prodCtx + '))');
+    w.put("PRODUCT_RELATED_PRODUCT_CATEGORY('part','',(#" + prod + '))');
+    const pdf = w.put("PRODUCT_DEFINITION_FORMATION('','',#" + prod + ')');
+    const pdCtx = w.put("PRODUCT_DEFINITION_CONTEXT('part definition',#" + appCtx + ",'design')");
+    const pd = w.put("PRODUCT_DEFINITION('design','',#" + pdf + ',#' + pdCtx + ')');
+    const pds = w.put("PRODUCT_DEFINITION_SHAPE('','',#" + pd + ')');
+    w.put('SHAPE_DEFINITION_REPRESENTATION(#' + pds + ',#' + rep + ')');
 
     // 幾何被複製了幾份：唯一模型數 vs 放置次數。裝配結構做得出來的話，
     // 省下來的就是 dupEntities 這些實體。這是給「該不該改成裝配」的判斷依據，
