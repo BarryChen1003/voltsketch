@@ -1802,11 +1802,15 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   members.forEach(n => ok(app.state.traces.some(t => t.net === n), '38 ' + n + ' 要繞出走線'));
   ok(!app.state.traces.some(t => t.net === 'SDA'), '38 不可順手繞掉這一束以外的 net');
 
-  // 排隊順序是這個功能的全部價值：照長度排（RouteAll 的預設）會讓一束線互相穿過去。
-  // 用「幾何看起來沒交叉」去測不可靠——線長一樣時兩種排法結果相同，測不出差別。
+  // 退路（束狀繞線失敗時走的批次繞）：排隊順序是它的全部價值——照長度排（RouteAll 的預設）
+  // 會讓一束線互相穿過去。用「幾何看起來沒交叉」去測不可靠（線長一樣時兩種排法結果相同），
   // 所以直接驗交給繞線器的順序與 order 選項。
+  // 這裡刻意讓束狀繞線失敗，否則走不到批次那條路。
   {
     const RA = window.RouteAll;
+    const AR2 = window.AutoRoute;
+    const realBundle = AR2.routeBundle;
+    AR2.routeBundle = () => ({ ok: false, reason: 'test_forced' });
     const real = RA.run;
     let sawNets = null, sawOrder = null;
     // 用 call 保住 this：RouteAll.run 內部呼叫 this.commit，用箭頭函式轉呼叫會直接爆
@@ -1819,7 +1823,8 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
     });
     app.routeBus('D[0..3]');
     RA.run = real;
-    eq(sawOrder, 'none', '38 要指定 order:none（照匯流排順序，不讓繞線器照長度重排）');
+    AR2.routeBundle = realBundle;
+    eq(sawOrder, 'none', '38 退路要指定 order:none（照匯流排順序，不讓繞線器照長度重排）');
     eq((sawNets || []).join(','), members.join(','), '38 交給繞線器的順序要照匯流排成員順序');
   }
 
@@ -2549,6 +2554,215 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
     const res2 = app.runDrc();
     eq(res2.filter(r => String(r.message).indexOf('pj_drc_zero_air') === 0).length, 0,
       '48 補上 via 之後不可以再報');
+  }
+  app.state = savedState;
+}
+
+// 49) 束狀繞線：中心線繞一次、N 條展開（不是「照順序各繞各的」）
+{
+  const savedState = app.state;
+  const AR = window.AutoRoute;
+  const padAbs = app.padAbs.bind(app);
+  const board = () => ({
+    boardWidth: 60, boardHeight: 40, layers: 2,
+    layerStack: [{ id: 'F.Cu', kind: 'copper' }, { id: 'B.Cu', kind: 'copper' }],
+    visibleLayers: ['F.Cu', 'B.Cu'], components: [], traces: [], vias: [], netProps: {}, netRules: []
+  });
+  const opt = {
+    grid: 0.25, clearance: { traceToTrace: 0.2, traceToPad: 0.2, traceToEdge: 0.3, viaToVia: 0.2 },
+    width: 0.2, pitch: 0.2, layers: ['F.Cu'], layer: 'F.Cu'
+  };
+  const busLines = n => Array.from({ length: n }, (_, i) =>
+    ({ net: 'D' + i, x1: -20, y1: -1.5 + i, x2: 20, y2: -1.5 + i }));
+
+  ok(typeof AR.routeBundle === 'function', '49 AutoRoute.routeBundle 應存在');
+
+  // ---- 轉角要用斜接（miter），不是「各段位移完再補一小段接起來」----
+  // L 形折線 (0,0)→(10,0)→(10,10) 往左側位移 1mm：正解是兩條位移線的交點 (9,1)。
+  // 補段做法會把頂點放在 (10,0)+單位角平分線×1 ≈ (9.29,0.71)，於是轉角內側兩段重疊、
+  // 補段往回走——展開後整束會打結，跨到隔壁那條上。
+  {
+    const segs = [
+      { x1: 0, y1: 0, x2: 10, y2: 0, layer: 'F.Cu' },
+      { x1: 10, y1: 0, x2: 10, y2: 10, layer: 'F.Cu' }
+    ];
+    const off = AR._offsetSegs(segs, 1);
+    eq(off.length, 2, '49 位移後的段數要跟原本一樣（多出來的就是補段）');
+    ok(Math.abs(off[0].x2 - 9) < 1e-9 && Math.abs(off[0].y2 - 1) < 1e-9,
+      '49 轉角要落在兩條位移線的交點（斜接點）上');
+    ok(Math.abs(off[1].x1 - 9) < 1e-9 && Math.abs(off[1].y1 - 1) < 1e-9,
+      '49 轉角前後兩段要接在同一個斜接點');
+    // 位移後的方向不可以翻過來（翻了就是那一段在往回走）
+    const sameDir = (a, b) => (a.x2 - a.x1) * (b.x2 - b.x1) + (a.y2 - a.y1) * (b.y2 - b.y1) > 0;
+    ok(segs.every((s, i) => sameDir(s, off[i])), '49 位移後每一段的方向要跟原本一致');
+    // 換層處不接：那裡本來就要放 via
+    const cross = AR._offsetSegs([
+      { x1: 0, y1: 0, x2: 5, y2: 0, layer: 'F.Cu' },
+      { x1: 5, y1: 0, x2: 10, y2: 0, layer: 'B.Cu' }
+    ], 1);
+    eq(cross.length, 2, '49 換層處不可以補連接段');
+  }
+
+  // ---- 束內互相壓到也算違規（跟差分對相反）----
+  // 差分對的對內間距小於淨空是規格，所以那邊一條一條分開驗；一束的間距預設就是全域淨空，
+  // 成員互相擦到就是真的違規。這個檢查被關掉的話，扇出段互相壓到會一路混到板廠。
+  {
+    app.state = board();
+    app.state.traces = [{ net: 'OTHER', x1: -10, y1: 0, x2: 10, y2: 0, layer: 'F.Cu', width: 0.2 }];
+    const rules = app.loadDrcRules();
+    const clean = AR._bundleClearance(app.state, padAbs,
+      [{ net: 'A', segs: [{ x1: -10, y1: 5, x2: 10, y2: 5, layer: 'F.Cu' }], vias: [] }],
+      { width: 0.2, layer: 'F.Cu', drcRules: rules });
+    eq(clean, null, '49 離得遠的束不可以被判違規');
+    const dirty = AR._bundleClearance(app.state, padAbs, [
+      { net: 'A', segs: [{ x1: -10, y1: 2, x2: 10, y2: 2, layer: 'F.Cu' }], vias: [] },
+      { net: 'B', segs: [{ x1: -10, y1: 2.05, x2: 10, y2: 2.05, layer: 'F.Cu' }], vias: [] }
+    ], { width: 0.2, layer: 'F.Cu', drcRules: rules });
+    ok(!!dirty, '49 兩個成員貼在一起要判違規（分開驗的話完全看不到）');
+  }
+
+  // ---- 四條一束：每條都有線，而且平行段真的等距 ----
+  {
+    app.state = board();
+    const r = AR.routeBundle(app.state, padAbs, busLines(4), opt);
+    eq(r.ok, true, '49 空板上的一束要繞得出來');
+    eq(r.members.length, 4, '49 每個成員都要有自己的路徑');
+    eq(r.members.map(m => m.net).join(','), 'D0,D1,D2,D3', '49 成員順序要跟傳進去的一致');
+    ok(r.members.every(m => m.segs.length > 0), '49 每條都要有實際線段');
+    eq(r.pitch, 0.2, '49 間距要照要求');
+    // 平行段：取每條最長那一段的中點 y，相鄰兩條要差「線寬＋間距」
+    const midY = m => {
+      let best = m.segs[0], bl = 0;
+      for (const s of m.segs) { const L = Math.hypot(s.x2 - s.x1, s.y2 - s.y1); if (L > bl) { bl = L; best = s; } }
+      return (best.y1 + best.y2) / 2;
+    };
+    const ys = r.members.map(midY).sort((a, b) => a - b);
+    const steps = ys.slice(1).map((y, i) => y - ys[i]);
+    ok(steps.every(s => Math.abs(s - (opt.width + opt.pitch)) < 1e-6),
+      '49 平行段相鄰間距要處處相同（這才是束狀繞線，不是各繞各的）');
+  }
+
+  // ---- 誰走哪一側照 pad 的位置排，不是照 net 名字 ----
+  // 照名字排的話，pad 順序反過來的那一束扇出段會互相穿過去。
+  {
+    app.state = board();
+    const rev = busLines(4).map((l, i) => ({ net: 'D' + i, x1: l.x1, y1: 1.5 - i, x2: l.x2, y2: 1.5 - i }));
+    const r = AR.routeBundle(app.state, padAbs, rev, opt);
+    eq(r.ok, true, '49 pad 順序相反的一束也要繞得出來');
+    const midY = m => {
+      let best = m.segs[0], bl = 0;
+      for (const s of m.segs) { const L = Math.hypot(s.x2 - s.x1, s.y2 - s.y1); if (L > bl) { bl = L; best = s; } }
+      return (best.y1 + best.y2) / 2;
+    };
+    // D0 的 pad 在最上面（y 最大）→ 它的平行段也要在最上面
+    const byNet = {}; r.members.forEach(m => { byNet[m.net] = midY(m); });
+    ok(byNet.D0 > byNet.D1 && byNet.D1 > byNet.D2 && byNet.D2 > byNet.D3,
+      '49 側邊指派要照 pad 的位置，不是照 net 名字（照名字排扇出會交叉）');
+  }
+
+  // ---- 飛線方向不一致也要接得對 ----
+  {
+    app.state = board();
+    const mixed = busLines(3).map((l, i) => i % 2
+      ? { net: l.net, x1: l.x2, y1: l.y2, x2: l.x1, y2: l.y1 }   // 這條反著畫
+      : l);
+    const r = AR.routeBundle(app.state, padAbs, mixed, opt);
+    eq(r.ok, true, '49 方向不一致的飛線要先對齊再繞');
+    // 每條的頭尾必須落在自己那條飛線的兩個端點上（接錯就是接到別人的 pad）
+    const near = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]) < 1e-6;
+    const bad = r.members.filter(m => {
+      const src = mixed.find(l => l.net === m.net);
+      const s = m.segs[0], e = m.segs[m.segs.length - 1];
+      const ends = [[s.x1, s.y1], [e.x2, e.y2]];
+      return !(ends.some(p => near(p, [src.x1, src.y1])) && ends.some(p => near(p, [src.x2, src.y2])));
+    });
+    eq(bad.length, 0, '49 每條的兩端要落在自己的 pad 上');
+  }
+
+  // ---- 束要落在 pad 所在的層 ----
+  // 中心線的兩端是「所有 pad 的重心」，那個位置通常不在任何 pad 上，繞線器對它沒有層的約束。
+  // 不管的話整束會被繞到 B.Cu 而 pad 全在 F.Cu：畫面上線都在，每個 pad 卻多一條零長度飛線，
+  // 未連線數不減反增（瀏覽器實測 4 → 8）。
+  {
+    app.state = board();
+    for (let i = 0; i < 4; i++) {
+      app.state.components.push({ id: 'L' + i, ref: 'L' + i, x: -22, y: (-1.5 + i) * 2, rot: 0,
+        pads: [{ num: 1, x: 0, y: 0, w: 0.6, h: 0.6, net: 'D' + i, side: 'F' }] });
+      app.state.components.push({ id: 'R' + i, ref: 'R' + i, x: 22, y: (-1.5 + i) * 2, rot: 0,
+        pads: [{ num: 1, x: 0, y: 0, w: 0.6, h: 0.6, net: 'D' + i, side: 'F' }] });
+    }
+    // 頂層放一顆障礙，逼繞線器有動機改走底層——瀏覽器實測就是這個情境下整束跑到 B.Cu
+    app.state.components.push({ id: 'OB', ref: 'OB1', x: 0, y: 4.2, rot: 0,
+      pads: [{ num: 1, x: 0, y: 0, w: 2, h: 2, net: 'OTHER', side: 'F' }] });
+    const padLines = [0, 1, 2, 3].map(i => ({ net: 'D' + i, x1: -22, y1: (-1.5 + i) * 2, x2: 22, y2: (-1.5 + i) * 2 }));
+    // 偏好層刻意設成底層（瀏覽器裡就是這樣：使用者上次畫線選的是 B.Cu），pad 卻全在頂層。
+    // 驗的是**交給繞線器的層清單**，不是最後長出來的線：沒有約束時繞線器也可能剛好選對，
+    // 那樣測不出約束有沒有生效。瀏覽器實測（有障礙、偏好 B.Cu）它真的選了 B.Cu，
+    // 於是每個 pad 多一條零長度飛線，未連線 4 → 8。
+    const realRoute = AR.route;
+    let sawLayers = null;
+    AR.route = (st2, pa2, line2, o2) => {
+      if (sawLayers == null) sawLayers = (o2.layers || []).slice();
+      return realRoute.call(AR, st2, pa2, line2, o2);
+    };
+    const r = AR.routeBundle(app.state, padAbs, padLines,
+      Object.assign({}, opt, { layers: ['F.Cu', 'B.Cu'], layer: 'B.Cu', drcRules: app.loadDrcRules() }));
+    AR.route = realRoute;
+    eq((sawLayers || []).join(','), 'F.Cu',
+      '49 pad 都在頂層時只准在頂層繞（跑到別層＝每個 pad 都多一條零長度飛線）');
+    eq(r.ok, true, '49 pad 都在頂層的一束要繞得出來');
+    const used = [...new Set(r.members.reduce((a, m) => a.concat(m.segs.map(s => s.layer)), []))];
+    eq(used.join(','), 'F.Cu', '49 繞出來的線也要全在頂層');
+  }
+
+  // ---- 擋不住的情況要老實失敗，讓呼叫端退回批次繞 ----
+  {
+    app.state = board();
+    eq(AR.routeBundle(app.state, padAbs, busLines(1), opt).reason, 'bundle_too_few',
+      '49 一條線不成束');
+    const dup = [{ net: 'D0', x1: -20, y1: 0, x2: 20, y2: 0 }, { net: 'D0', x1: -20, y1: 1, x2: 20, y2: 1 }];
+    eq(AR.routeBundle(app.state, padAbs, dup, opt).reason, 'bundle_dup_net',
+      '49 同一個 net 出現兩次是呼叫端傳錯，不可以硬繞');
+    // 走廊塞不進板子 → 失敗，不是硬擠出一束壓在板邊
+    const narrow = Object.assign({}, opt, { pitch: 30 });   // 走廊 90mm，60×40 的板放不下
+    eq(AR.routeBundle(app.state, padAbs, busLines(4), narrow).ok, false,
+      '49 走廊塞不下就要失敗（呼叫端才知道要退回批次繞）');
+  }
+
+  // ---- 展開後的幾何要真的沒有違規（不是只有中心線乾淨）----
+  {
+    app.state = board();
+    // 束的正上方擺一顆別的 net 的 pad，逼展開後的最外側那條貼上去
+    app.state.components = [{
+      id: 'blk', ref: 'U9', x: 0, y: 1.1, rot: 0,
+      pads: [{ num: 1, x: 0, y: 0, w: 1.2, h: 1.2, net: 'OTHER', side: 'F' }]
+    }];
+    const r = AR.routeBundle(app.state, padAbs, busLines(4),
+      Object.assign({}, opt, { drcRules: app.loadDrcRules() }));
+    // 這一題有障礙物 → 中心線一定會轉彎，所以它同時在測轉角的**斜接**位移：
+    // 用「每段各自位移、轉角補一小段接起來」的話，轉角內側兩段會重疊、補段往回走，
+    // 展開後自己打結並跨到隔壁那條上（實測一次 30 個 drc_tt），這條就會紅。
+    eq(r.ok, true, '49 有障礙物要轉彎的一束也要繞得出來（轉角要能正確位移）');
+    const probe = Object.assign({}, app.state, {
+      traces: r.members.reduce((a, m) => a.concat(m.segs.map(s => ({
+        x1: s.x1, y1: s.y1, x2: s.x2, y2: s.y2, layer: s.layer, width: opt.width, net: m.net
+      }))), [])
+    });
+    const errs = window.PadDrc.run(probe, padAbs, app.loadDrcRules()).filter(f => f.type === 'error');
+    eq(errs.length, 0, '49 回報成功的束，展開後的幾何不可以有 DRC error（含成員互相之間）');
+  }
+
+  // ---- 真的接上畫面：routeBus 先試束狀，失敗才退回批次 ----
+  {
+    const fsx = require('fs'), pathx = require('path');
+    const pcbjs = fsx.readFileSync(pathx.join(__dirname, 'pcb.js'), 'utf8');
+    const at = pcbjs.indexOf('routeBus(spec)');
+    ok(at > 0, '49 routeBus 要還在');
+    const body = pcbjs.slice(at, at + 4200);
+    ok(body.indexOf('routeBundle') > 0, '49 routeBus 要先試束狀繞線');
+    ok(body.indexOf('routeBundle') < body.indexOf('RouteAll.run'),
+      '49 束狀要排在批次繞之前（順序反了等於這個功能沒接上）');
+    ok(body.indexOf('pj_bus_bundled') > 0, '49 走了哪一條路要講給使用者聽');
   }
   app.state = savedState;
 }

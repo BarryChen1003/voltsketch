@@ -938,7 +938,101 @@
      * 不認識差分對——一起驗的話，每一對都會報一堆 `drc_tt`，等於這個功能不能用。
      * 對內間距由 `pairGap`（阻抗規格）決定，那是另一件事，不在這裡判。
      */
-    _pairClearance(state, padAbs, paths, nets, opt, viasA, viasB) {
+    /**
+     * 把一串走線段沿法線位移 d，用**斜接（miter）**處理轉角。
+     *
+     * 為什麼不能「每段各自位移、轉角補一小段接起來」：位移之後，轉角內側的兩段會**重疊**，
+     * 補的那一段就變成往回走。實測 4 條一束繞過一顆 pad：展開後的路徑自己打結、
+     * 跨到隔壁那條上，一次 30 個 `drc_tt`。正解是把折線的頂點位移到「兩條位移線的交點」，
+     * 也就是斜接點——轉角處四條線才會一起轉、間距處處不變。
+     *
+     * 轉角太尖時斜接長度會爆掉（cos 趨近 0），所以夾一個上限：超過就退回角平分線方向，
+     * 寧可那個角稍微圓一點，也不要甩出一根尖刺去撞鄰居。
+     *
+     * 換層處**不接**：那裡本來就要放 via，硬接會生出一段不該存在的斜線。
+     */
+    _offsetSegs(segs, d) {
+      // 先切成「同層且首尾相接」的折線
+      const runs = [];
+      let cur = null;
+      for (const sg of (segs || [])) {
+        if (Math.hypot(sg.x2 - sg.x1, sg.y2 - sg.y1) < 1e-9) continue;
+        const tail = cur && cur.pts[cur.pts.length - 1];
+        if (cur && cur.layer === sg.layer && Math.hypot(sg.x1 - tail[0], sg.y1 - tail[1]) < 1e-6) {
+          cur.pts.push([sg.x2, sg.y2]);
+        } else {
+          cur = { layer: sg.layer, pts: [[sg.x1, sg.y1], [sg.x2, sg.y2]] };
+          runs.push(cur);
+        }
+      }
+      const MITER_MIN_COS = 0.2;          // ≈ 157° 的轉角就停止繼續尖出去
+      const out = [];
+      for (const run of runs) {
+        const pts = run.pts, n = pts.length;
+        const nor = [];
+        for (let i = 0; i < n - 1; i++) {
+          const dx = pts[i + 1][0] - pts[i][0], dy = pts[i + 1][1] - pts[i][1];
+          const L = Math.hypot(dx, dy) || 1;
+          nor.push([-dy / L, dx / L]);
+        }
+        const moved = [];
+        moved.push([pts[0][0] + nor[0][0] * d, pts[0][1] + nor[0][1] * d]);
+        for (let i = 1; i < n - 1; i++) {
+          const a = nor[i - 1], b = nor[i];
+          const bx = a[0] + b[0], by = a[1] + b[1];
+          const bl = Math.hypot(bx, by);
+          if (bl < 1e-9) {                 // 原地折返：沒有斜接點可言，照前一段的法線走
+            moved.push([pts[i][0] + a[0] * d, pts[i][1] + a[1] * d]);
+            continue;
+          }
+          const ux = bx / bl, uy = by / bl;
+          const cos = ux * a[0] + uy * a[1];         // = cos(轉角的一半)
+          const k = Math.abs(cos) >= MITER_MIN_COS ? d / cos : d / MITER_MIN_COS;
+          moved.push([pts[i][0] + ux * k, pts[i][1] + uy * k]);
+        }
+        moved.push([pts[n - 1][0] + nor[n - 2][0] * d, pts[n - 1][1] + nor[n - 2][1] * d]);
+        for (let i = 0; i < moved.length - 1; i++)
+          out.push({ x1: moved[i][0], y1: moved[i][1], x2: moved[i + 1][0], y2: moved[i + 1][1], layer: run.layer });
+      }
+      return out;
+    },
+
+    /**
+     * 束狀展開後的檢查：**整束一起**放進板子副本跑真正的 DRC，error 變多就回第一個違規。
+     *
+     * 跟 `_pairClearance`（一條一條各自驗）分開寫，是因為兩者要問的問題不同：
+     * 差分對的對內間距小於一般淨空是規格，一起驗會每對都報一排 `drc_tt`；
+     * 一束的間距預設就是全域淨空，成員之間本來就該守一般規則，**互相壓到就是違規**。
+     * 實測：扇出段四條一起收斂時彼此距離會低於間距，分開驗完全看不到。
+     */
+    _bundleClearance(state, padAbs, members, opt) {
+      const D = (typeof window !== 'undefined' && window.PadDrc) || null;
+      if (!D || !D.run) return null;
+      const rules = opt.drcRules || opt.rules ||
+        ((typeof window !== 'undefined' && window.pcbApp && window.pcbApp.loadDrcRules)
+          ? window.pcbApp.loadDrcRules() : null);
+      if (!rules || !rules.clearance) return null;   // 沒有完整規則就不擋，不用半套規則產生假警報
+      const errsOf = st => D.run(st, padAbs, rules).filter(f => f.type === 'error');
+      const before = errsOf(state).length;
+      const traces = [], vias = [];
+      for (const m of members) {
+        (m.segs || []).forEach(s => traces.push({
+          x1: s.x1, y1: s.y1, x2: s.x2, y2: s.y2,
+          layer: s.layer || opt.layer || 'F.Cu', width: opt.width || 0.25, net: m.net
+        }));
+        (m.vias || []).forEach(v => vias.push({ x: v.x, y: v.y, od: v.od, drill: v.drill, net: m.net }));
+      }
+      const probe = Object.assign({}, state, {
+        traces: (state.traces || []).concat(traces),
+        vias: (state.vias || []).concat(vias)
+      });
+      const after = errsOf(probe);
+      if (after.length <= before) return null;
+      const e = after[after.length - 1] || {};
+      return { kind: e.message || 'drc', x: e.x, y: e.y, added: after.length - before };
+    },
+
+    _pairClearance(state, padAbs, paths, nets, opt, ...viaSets) {
       const D = (typeof window !== 'undefined' && window.PadDrc) || null;
       if (!D || !D.run) return null;                 // 沒載入 DRC 就不擋（測試環境會載）
       // DRC 需要完整的 rules（clearance ＋ via）。呼叫端沒給就跟編輯器要同一份；
@@ -949,7 +1043,9 @@
       if (!rules || !rules.clearance) return null;
       const errsOf = st => D.run(st, padAbs, rules).filter(f => f.type === 'error');
       const before = errsOf(state).length;
-      const vias = [viasA, viasB];
+      // 差分對是兩條，束狀繞線是 N 條——收成不定長的清單，一份檢查兩邊共用。
+      // 每條線各自跟板子上既有的銅比（不互相比）：束內間距是規格，不是違規。
+      const vias = viaSets;
       for (let k = 0; k < paths.length; k++) {
         const segs = (paths[k] || []).map(s => ({
           x1: s.x1, y1: s.y1, x2: s.x2, y2: s.y2, layer: s.layer || opt.layer || 'F.Cu',
@@ -993,23 +1089,10 @@
       if (!r.segs.length) return { ok: false, reason: 'no_path' };
 
       const off = (gap + w) / 2;
-      // 展開：每段沿法線位移 d。轉角處兩段位移後接不起來，補一小段連接；
-      // 換層處不補（那裡本來就要放 via）。
-      const offsetPath = (segs, d) => {
-        const out = [];
-        let prev = null;
-        for (const sg of segs) {
-          const dx = sg.x2 - sg.x1, dy = sg.y2 - sg.y1, len = Math.hypot(dx, dy);
-          if (len < 1e-9) continue;
-          const nx2 = -dy / len * d, ny2 = dx / len * d;
-          const cur = { x1: sg.x1 + nx2, y1: sg.y1 + ny2, x2: sg.x2 + nx2, y2: sg.y2 + ny2, layer: sg.layer };
-          if (prev && prev.layer === cur.layer && Math.hypot(cur.x1 - prev.x2, cur.y1 - prev.y2) > 1e-9)
-            out.push({ x1: prev.x2, y1: prev.y2, x2: cur.x1, y2: cur.y1, layer: cur.layer });
-          out.push(cur);
-          prev = cur;
-        }
-        return out;
-      };
+      // 展開：沿法線位移 d，轉角走斜接——跟束狀繞線共用同一份 `_offsetSegs`。
+      // 以前這裡自己寫一份「各段位移完再補一小段接起來」，轉角內側兩段會重疊、補段往回走。
+      // 兩套位移邏輯遲早分岔：差分對這邊修好的轉角，束狀那邊不會跟著好。
+      const offsetPath = (segs, d) => AutoRoute._offsetSegs(segs, d);
       // via 也要跟著分開兩顆：取離它最近那一段的法線方向位移
       const offsetVias = (vias, d) => (vias || []).map(v => {
         let best = null;
@@ -1074,6 +1157,217 @@
         a: { net: lineA.net, segs: pathA, vias: vA },
         b: { net: B.net, segs: pathB, vias: vB },
         gap, skew: Math.abs(total(pathA) - total(pathB)),
+        grid: r.grid, coarsened: r.coarsened
+      };
+    },
+
+    /**
+     * 束狀繞線：一束 N 條走同一條路，全程等距並行、一起轉彎。
+     *
+     * 跟「照順序批次交給繞線器」（`RouteAll` order:'none'）的差別是根本的：
+     * 那個做法每條各自找路，出來只是「大致平行」——一條遇到障礙就自己繞開，
+     * 間距、長度、轉彎點全部各走各的。這裡走差分對那條路的推廣：
+     * **中心線只繞一次**，再把 N 條沿法線位移展開，所以間距天生固定、
+     * 轉彎天生同步，長度只在轉角與扇出差一點（回 skew 讓呼叫端決定要不要補償）。
+     *
+     * 走廊寬度＝N×線寬＋(N−1)×間距。用這個寬度繞中心線，展開後整束才真的塞得下；
+     * 用單線寬度繞會出現「中心線過得去、展開後壓到鄰居」。
+     *
+     * 誰走哪一側**不能照 net 名字排**，要照它的 pad 落在中心線的哪一邊排：
+     * 照名字排會讓扇出段互相穿過去（D0 的 pad 在最上面卻被指派到最下面那條）。
+     *
+     * 展開後一定要重新跑真正的 DRC：扇出段與轉角補段是展開之後才生出來的幾何，
+     * 不在中心線那條乾淨的走廊裡。差分對那次就是漏了這步，密板上一次多出 42 個 error。
+     *
+     * 回 { ok, members:[{net,segs,vias}], pitch, skew, grid, coarsened }
+     * 或 { ok:false, reason }——失敗時呼叫端該退回批次繞，那條路有完整的淨空檢查。
+     */
+    routeBundle(state, padAbs, lines, opt) {
+      opt = Object.assign({ width: 0.25, pitch: 0 }, opt || {});
+      const w = opt.width;
+      const t0 = Date.now();
+      const budget = opt.budgetMs > 0 ? opt.budgetMs : 4000;
+      const src = (lines || []).filter(l => l && l.net);
+      if (src.length < 2) return { ok: false, reason: 'bundle_too_few' };
+      if (new Set(src.map(l => l.net)).size !== src.length) return { ok: false, reason: 'bundle_dup_net' };
+      // 束內間距預設取全域淨空：比它小就是自己製造 DRC 違規。
+      const cl = opt.clearance || {};
+      const pitch = opt.pitch > 0 ? opt.pitch : ((typeof cl.traceToTrace === 'number' ? cl.traceToTrace : 0.2));
+      if (!(pitch > 0)) return { ok: false, reason: 'bundle_pitch' };
+
+      // 飛線的方向不保證一致（有的從左到右、有的從右到左）。以第一條為基準，
+      // 起點離它比較遠的就翻過來——不翻的話中心線會被拉成一個 X。
+      const ref = src[0];
+      const mem = src.map(l => {
+        const straight = Math.hypot(l.x1 - ref.x1, l.y1 - ref.y1) + Math.hypot(l.x2 - ref.x2, l.y2 - ref.y2);
+        const flipped = Math.hypot(l.x2 - ref.x1, l.y2 - ref.y1) + Math.hypot(l.x1 - ref.x2, l.y1 - ref.y2);
+        return flipped < straight
+          ? { net: l.net, x1: l.x2, y1: l.y2, x2: l.x1, y2: l.y1 }
+          : { net: l.net, x1: l.x1, y1: l.y1, x2: l.x2, y2: l.y2 };
+      });
+
+      const n = mem.length;
+      const avg = f => mem.reduce((a, m) => a + f(m), 0) / n;
+      const center = {
+        x1: avg(m => m.x1), y1: avg(m => m.y1), x2: avg(m => m.x2), y2: avg(m => m.y2),
+        nets: mem.map(m => m.net)          // 整束都算「自己人」，中心線不會被自家 pad 擋住
+      };
+      const corridor = n * w + (n - 1) * pitch;
+      // 走廊比板子還寬就直接認輸。不擋的話 `route` 會靠端點的逃逸泡泡「繞得出來」——
+      // 那個泡泡是為了讓貼邊的 pad 出得去，不是用來讓一束 90mm 寬的線擠進 60mm 的板。
+      const edgeCl = (typeof cl.traceToEdge === 'number') ? cl.traceToEdge : 0.3;
+      if (corridor + 2 * edgeCl > Math.min(state.boardWidth || 100, state.boardHeight || 80))
+        return { ok: false, reason: 'bundle_too_wide' };
+
+      // 中心線的兩端是「所有 pad 的重心」，那個位置通常不在任何 pad 上，
+      // 所以繞線器對它**沒有層的約束**——實測整束被繞到 B.Cu，而 pad 全在 F.Cu：
+      // 每個 pad 都變成一條零長度飛線（同一點、不同層、缺 via），畫面上看起來線都在、
+      // 未連線數卻不減反增。所以先算出「每個成員的兩端都有銅」的層，只准在那裡繞。
+      const cu = (state.layerStack || []).filter(l => l.kind === 'copper').map(l => l.id);
+      const layersAt = (x, y, net) => {
+        const out = new Set();
+        (state.components || []).forEach(c => (c.pads || []).forEach(p => {
+          if (p.cu === false || String(p.net || '') !== net) return;
+          const a = padAbs(c, p);
+          if (Math.hypot(a.x - x, a.y - y) > Math.max(p.w || 0.5, p.h || 0.5)) return;
+          if (p.side === '*' || p.drill > 0) cu.forEach(l => out.add(l));
+          else out.add(p.side === 'B' ? cu[cu.length - 1] : cu[0]);
+        }));
+        return out;
+      };
+      let common = null;
+      for (const m of mem) {
+        for (const end of [[m.x1, m.y1], [m.x2, m.y2]]) {
+          const here = layersAt(end[0], end[1], m.net);
+          if (!here.size) continue;                       // 那一端不是 pad（走線端點）：不設限
+          common = common == null ? here : new Set([...common].filter(l => here.has(l)));
+        }
+      }
+      const allowed = (common && common.size)
+        ? cu.filter(l => common.has(l))
+        : ((Array.isArray(opt.layers) && opt.layers.length) ? opt.layers : [opt.layer || 'F.Cu']);
+      const r = AutoRoute.route(state, padAbs, center,
+        Object.assign({}, opt, { width: corridor, snapEnds: true, layers: allowed, layer: allowed[0] }));
+      if (!r.ok) return { ok: false, reason: r.reason || 'rule_no_path' };
+      if (!r.segs.length) return { ok: false, reason: 'rule_no_geometry' };
+
+      const offsetPath = (segs, d) => AutoRoute._offsetSegs(segs, d);
+      const offsetVias = (vias, d) => (vias || []).map(v => {
+        let best = null;
+        for (const sg of r.segs) {
+          const dd = Math.min(Math.hypot(sg.x1 - v.x, sg.y1 - v.y), Math.hypot(sg.x2 - v.x, sg.y2 - v.y));
+          if (!best || dd < best.d) best = { d: dd, sg };
+        }
+        if (!best) return Object.assign({}, v);
+        const dx = best.sg.x2 - best.sg.x1, dy = best.sg.y2 - best.sg.y1, len = Math.hypot(dx, dy) || 1;
+        return Object.assign({}, v, { x: v.x + (-dy / len) * d, y: v.y + (dx / len) * d });
+      });
+
+      // 誰在哪一側：把每條的起點投影到中心線第一段的法線上，照投影值由小到大
+      // 對應由負到正的位移。這樣扇出段不會互相穿過去。
+      const f0 = r.segs[0];
+      const fdx = f0.x2 - f0.x1, fdy = f0.y2 - f0.y1, flen = Math.hypot(fdx, fdy) || 1;
+      const nx = -fdy / flen, ny = fdx / flen;
+      const order = mem.map((m, i) => ({
+        i, proj: (m.x1 - center.x1) * nx + (m.y1 - center.y1) * ny
+      })).sort((a, b) => (a.proj - b.proj) || (a.i - b.i));
+
+      const step = w + pitch;
+
+      // 扇出不能是「pad 直接斜拉到車道起點」。N 條斜線一起收斂時，彼此的垂直距離
+      // 會小於間距（實測 4 條一束就違規），而那幾段又不在中心線的走廊裡。
+      // 改成階梯式：先沿束的方向走一段，再垂直切進自己的車道；每條錯開一格（step），
+      // 所以垂直段彼此至少差一個 step，水平段各自留在 pad 的間距上。
+      const cutFront = (segs, dist) => {
+        const out = segs.slice();
+        let d = dist;
+        while (out.length && d > 1e-9) {
+          const s = out[0], L = Math.hypot(s.x2 - s.x1, s.y2 - s.y1);
+          if (L <= d + 1e-9) { d -= L; out.shift(); continue; }
+          const t = d / L;
+          out[0] = { x1: s.x1 + (s.x2 - s.x1) * t, y1: s.y1 + (s.y2 - s.y1) * t, x2: s.x2, y2: s.y2, layer: s.layer };
+          d = 0;
+        }
+        return out;
+      };
+      const cutBack = (segs, dist) => {
+        const out = segs.slice();
+        let d = dist;
+        while (out.length && d > 1e-9) {
+          const s = out[out.length - 1], L = Math.hypot(s.x2 - s.x1, s.y2 - s.y1);
+          if (L <= d + 1e-9) { d -= L; out.pop(); continue; }
+          const t = d / L;
+          out[out.length - 1] = { x1: s.x1, y1: s.y1, x2: s.x2 - (s.x2 - s.x1) * t, y2: s.y2 - (s.y2 - s.y1) * t, layer: s.layer };
+          d = 0;
+        }
+        return out;
+      };
+      const dirAt = sg => {
+        const dx = sg.x2 - sg.x1, dy = sg.y2 - sg.y1, L = Math.hypot(dx, dy) || 1;
+        return [dx / L, dy / L];
+      };
+      // 扇出：pad 一條 45° 斜線進自己的車道，進場點沿束的方向錯開。
+      //
+      // 試過先沿束方向走一段、再垂直切進車道（階梯式）：不行。pad 排得比車道寬時，
+      // 內側成員的**水平段**會貼著外側成員的車道跑（實測差 0.1mm，淨空要 0.2）。
+      // 45° 斜線沒有這個問題：進場點錯開之後，相鄰兩條斜線是平行的，
+      // 垂直距離就是 pad 間距 × cos45°，比車道間距還寬。這也是真實 layout 的畫法。
+      const fanDiagonal = (path, px, py, adv, fromStart) => {
+        if (!path.length) return path;
+        const trimmed = fromStart ? cutFront(path, adv) : cutBack(path, adv);
+        if (!trimmed.length) return path;            // 車道太短就不錯開，維持原樣
+        const edge = fromStart ? trimmed[0] : trimmed[trimmed.length - 1];
+        const S = fromStart ? [edge.x1, edge.y1] : [edge.x2, edge.y2];
+        if (Math.hypot(S[0] - px, S[1] - py) < 1e-9) return trimmed;
+        const leg = { x1: px, y1: py, x2: S[0], y2: S[1], layer: edge.layer };
+        return fromStart
+          ? [leg].concat(trimmed)
+          : trimmed.concat([{ x1: S[0], y1: S[1], x2: px, y2: py, layer: edge.layer }]);
+      };
+
+      const members = new Array(n);
+      order.forEach((o, k) => {
+        const d = (k - (n - 1) / 2) * step;
+        const m = mem[o.i];
+        // 錯開量＝這條要橫移多少（pad 離中心線多遠 vs 車道在哪），所以斜線正好 45°。
+        // 橫移越多的錯開越多，相鄰兩條的斜線因此平行而不是交會。
+        const adv = Math.max(Math.abs(o.proj - d), step / 2);
+        let segs = offsetPath(r.segs, d);
+        segs = fanDiagonal(segs, m.x1, m.y1, adv, true);
+        segs = fanDiagonal(segs, m.x2, m.y2, adv, false);
+        members[o.i] = { net: m.net, segs, vias: offsetVias(r.vias, d) };
+      });
+
+      // 檢查方式跟差分對**不一樣**，這是刻意的：
+      // 差分對的對內間距本來就小於一般淨空（那是阻抗規格），所以兩條要分開驗；
+      // 一束的間距預設就取全域淨空，成員之間本來就該守一般規則。所以整束一起丟進去驗，
+      // 成員互相壓到也要算違規——不然扇出段互相擦到會一路混到板廠。
+      const viol = AutoRoute._bundleClearance(state, padAbs, members,
+        Object.assign({}, opt, { width: w }));
+      if (viol) {
+        // 跟差分對同一個坑：違規多半不是沒空間，而是中心線落在格點上整體偏了半格，
+        // 展開後最外側那條就被推到鄰居身上。往細裡試幾階，全不行才算真的塞不下。
+        // 只往細裡試**兩階**，而且看時間。差分對那邊可以試到 0.05，因為一對線的走廊很窄、
+        // 一次 A* 很快；一束的走廊寬、格子細一倍就是四倍的格數，實測 60×40 的板試到
+        // 0.0625 要 29 秒——那在瀏覽器裡就是整個畫面凍住，使用者會以為當掉。
+        // 這是「退回批次繞」比較划算的情況：那條路慢歸慢，至少不會卡住 UI。
+        if (!opt._fine && Date.now() - t0 < budget) {
+          const g0 = opt.grid || 0.25;
+          for (const g of [g0 / 2, g0 / 4].filter(x => x < g0 - 1e-9 && x >= 0.05)) {
+            if (Date.now() - t0 > budget) break;
+            const r2 = AutoRoute.routeBundle(state, padAbs, lines,
+              Object.assign({}, opt, { grid: g, _fine: true }));
+            if (r2.ok) return r2;
+          }
+        }
+        return { ok: false, reason: 'bundle_clearance', at: viol };
+      }
+
+      const total = segs => segs.reduce((a, sg) => a + Math.hypot(sg.x2 - sg.x1, sg.y2 - sg.y1), 0);
+      const lens = members.map(m => total(m.segs));
+      return {
+        ok: true, members, pitch,
+        skew: Math.max.apply(null, lens) - Math.min.apply(null, lens),
         grid: r.grid, coarsened: r.coarsened
       };
     }

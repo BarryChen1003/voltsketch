@@ -2463,8 +2463,44 @@ const pcbApp = {
       order: 'none',            // 照匯流排順序，不照長度
       ripup: true, passes: 3, budgetMs: 8000
     };
-    const r = window.RouteAll.run(this.state, this.padAbs.bind(this), lines, opts);
+    // 先試真正的束狀繞線：中心線只繞一次，N 條沿法線展開，所以全程等距、一起轉彎。
+    // 繞不出來（走廊塞不下、展開後壓到鄰居）就退回批次繞——那條路每條各自找路，
+    // 出來只是「大致平行」，但它有完整的淨空檢查，總比繞不出來好。
+    // 兩條路的差別會講給使用者聽：他看到的線長什麼樣，取決於走了哪一條。
+    let bundled = null;
+    if (window.AutoRoute && window.AutoRoute.routeBundle && lines.length >= 2) {
+      const b = window.AutoRoute.routeBundle(this.state, this.padAbs.bind(this), lines,
+        Object.assign({}, opts, { drcRules: rules }));
+      if (b.ok) bundled = b;
+    }
     const stamp = Date.now();
+    if (bundled) {
+      bundled.members.forEach((m, i) => {
+        m.segs.forEach((sg, k) => this.state.traces.push({
+          id: 'trace-' + stamp + '-bnd' + i + '-' + k,
+          x1: sg.x1, y1: sg.y1, x2: sg.x2, y2: sg.y2,
+          width: opts.width, layer: sg.layer || opts.layer, net: m.net
+        }));
+        (m.vias || []).forEach((v, k) => this.state.vias.push({
+          id: 'via-' + stamp + '-bnd' + i + '-' + k,
+          x: v.x, y: v.y, od: v.od, drill: v.drill, net: m.net, auto: true
+        }));
+      });
+      this.state.ratsnest = null;
+      this.state.drcMarks = null;
+      const lenOf0 = n => window.NetRules ? window.NetRules.netLength(this.state.traces, n) : 0;
+      const rep0 = window.SchBus ? window.SchBus.report(g, lenOf0) : { routed: 0, skew: 0 };
+      this.renderBusPanel();
+      this.renderNetPanel();
+      this.render();
+      this.toast(pcbT('pj_bus_bundled', {
+        spec: spec, n: bundled.members.length, pitch: bundled.pitch.toFixed(2),
+        skew: (rep0.routed >= 2 ? rep0.skew.toFixed(2) : '—')
+      }), 'info');
+      return true;
+    }
+
+    const r = window.RouteAll.run(this.state, this.padAbs.bind(this), lines, opts);
     r.routed.forEach((x, i) => {
       x.segs.forEach((sg, k) => this.state.traces.push({
         id: 'trace-' + stamp + '-bus' + i + '-' + k,
