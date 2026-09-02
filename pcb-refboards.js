@@ -1865,6 +1865,13 @@ window.PCB_REFBOARDS = [
         "od": 0.7,
         "drill": 0.3,
         "net": "XIN"
+      },
+      {
+        "x": -5.341,
+        "y": -2.025,
+        "od": 0.5,
+        "drill": 0.2,
+        "net": "QSPI_SD0"
       }
     ],
     "padNets": {
@@ -9669,6 +9676,7 @@ window.PCB_REFBOARDS = [
         "net": "LPDDR_D0"
       },
       {
+        "id": "ref-t-91",
         "x1": -2.9,
         "y1": -12,
         "x2": -2.9,

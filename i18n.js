@@ -626,6 +626,7 @@ window.I18N = (function () {
     rule_grid_too_big: { zh: '網格過大（板太大或格太細）', en: 'Grid too large (board too big or grid too fine)', ja: 'グリッドが大きすぎます（基板が大きすぎるかグリッドが細かすぎ）', ko: '그리드 과대(보드가 너무 크거나 그리드가 너무 촘촘함)' },
     rule_ep_outside: { zh: '端點在板框外', en: 'Endpoint outside the board outline', ja: '端点が基板外形の外です', ko: '끝점이 보드 외곽선 밖에 있음' },
     rule_ep_blocked: { zh: '端點被異網障礙包住', en: 'Endpoint enclosed by other-net obstacles', ja: '端点が他ネットの障害物に囲まれています', ko: '끝점이 다른 네트 장애물에 둘러싸임' },
+    rule_no_geometry: { zh: '這一次繞線沒有產生任何銅（起點與終點落在同一格，多半是缺 via 的壞接點）', en: 'The attempt produced no copper at all (start and goal land on the same cell - usually a junction that needs a via)', ja: 'この配線では銅がまったく生成されませんでした（始点と終点が同じセル＝ビア不足の接続点であることが多い）', ko: '이번 배선에서 구리가 전혀 생성되지 않았습니다(시작점과 도착점이 같은 셀 — 대개 비아가 빠진 접합점)' },
     rule_no_path:   { zh: '找不到路徑（單層擁擠或被隔斷）', en: 'No path found (single layer congested or blocked)', ja: '経路が見つかりません（単層が混雑または遮断）', ko: '경로를 찾을 수 없음(단층 혼잡 또는 차단)' },
 
     // --- PCB JS 執行期動態字串：pcb-drc.js（pad 級 DRC 訊息＋分類）---
@@ -775,6 +776,7 @@ window.I18N = (function () {
     pj_tune_short: { zh: '補不夠：還差 {need}mm，但這 {n} 段全部加起來只塞得下 {cap}mm。把走線拉長或放寬振幅', en: 'Not enough room: {need}mm needed but the {n} segments can only absorb {cap}mm. Lengthen the route or allow a larger amplitude', ja: '不足：{need}mm 必要ですが {n} セグメント合計で {cap}mm しか吸収できません', ko: '부족: {need}mm 필요하나 {n}개 구간 합계 {cap}mm만 흡수 가능' },
     pj_ar_ripped: { zh: '；拆掉重繞 {n} 段', en: '; {n} segments ripped up and re-routed', ja: '；{n} セグメントを剥がして再配線', ko: '; {n}개 세그먼트를 뜯어 재배선' },
     pj_ar_why_rule_ep_blocked: { zh: '{n} 條的起點／終點被鄰近銅的淨空封住（那個腳位用目前線寬出不來）', en: '{n} could not leave the pad: the endpoint is enclosed by neighbouring clearance at this trace width', ja: '{n} 本はパッドから出られません：現在の線幅では隣接クリアランスに囲まれています', ko: '{n}개는 패드에서 나올 수 없음: 현재 선폭으로는 인접 클리어런스에 막힘' },
+    pj_ar_why_rule_no_geometry: { zh: '{n} 條繞出來是空的（起終點同格）——那是缺 via 的壞接點，在該點補一顆 via', en: '{n} produced no copper (start and goal on the same cell) - those are junctions missing a via; add one at that point', ja: '{n} 本は銅が生成されませんでした（始点と終点が同じセル）——ビア不足の接続点です。その位置にビアを追加してください', ko: '{n}개는 구리가 생성되지 않았습니다(시작점과 도착점이 같은 셀) — 비아가 빠진 접합점이므로 해당 지점에 비아를 추가하세요' },
     pj_ar_why_rule_no_path: { zh: '{n} 條找不到路徑（真的被擋死，或需要更多層）', en: '{n} found no path (genuinely blocked, or needs more layers)', ja: '{n} 本は経路なし（完全に塞がれているか層数不足）', ko: '{n}개는 경로 없음(완전히 막혔거나 층이 부족)' },
     pj_ar_why_rule_ep_outside: { zh: '{n} 條的端點在板框外', en: '{n} have an endpoint outside the board outline', ja: '{n} 本は端点が基板外', ko: '{n}개는 끝점이 보드 외곽 밖' },
     pj_ar_why_rule_grid_too_big: { zh: '{n} 條的板面太大、格點放不下', en: '{n} need a grid too large for this board', ja: '{n} 本はグリッドが大きすぎます', ko: '{n}개는 그리드가 너무 큼' },
@@ -1368,6 +1370,8 @@ window.I18N = (function () {
     pj_bus_pick:      { zh: '先點一束（點列選取）', en: 'Select a bus first (click a row)', ja: '先にバスを選んでください（行をクリック）', ko: '먼저 버스를 선택하세요(행 클릭)' },
     pj_bus_need2:     { zh: '{spec} 至少要有兩條已繞的成員才談得上等長', en: '{spec} needs at least two routed members before lengths can be matched', ja: '{spec} は配線済みメンバーが 2 本以上ないと等長化できません', ko: '{spec}는 배선된 멤버가 2개 이상이어야 등장할 수 있습니다' },
     pj_bus_tuned:     { zh: '{spec}：調了 {n} 條，skew 現在 {skew}mm（跳過 {skipped} 條）', en: '{spec}: tuned {n} traces, skew is now {skew} mm ({skipped} skipped)', ja: '{spec}：{n} 本を調整、スキューは {skew}mm（{skipped} 本スキップ）', ko: '{spec}: {n}개 조정, 스큐는 현재 {skew}mm({skipped}개 건너뜀)' },
+    pj_drc_zero_air:  { zh: '{net} 在 ({x}, {y}) 有零長度飛線：同一點、同 net、不同層、缺 via。畫面上看不到這條線，但它就是「未連線」降不下去的原因——在這一點補一顆 via（放不下就換小 padstack 或挪開附近的腳）', en: 'Net {net} has a zero-length airwire at ({x}, {y}): same point, same net, different layers, no via. The line is invisible on screen, yet it is exactly why the unrouted count will not drop - drop a via here, or use a smaller padstack / move the neighbouring pads if it does not fit', ja: 'ネット {net} の ({x}, {y}) に長さ 0 のラッツネストがあります：同一点・同一ネット・異なる層・ビア無し。画面には描かれませんが、未接続数が減らない原因はこれです。ここにビアを追加してください（入らなければパッドスタックを小さくするか、周囲のパッドをずらす）', ko: '넷 {net}의 ({x}, {y})에 길이 0 랫츠네스트가 있습니다: 같은 지점, 같은 넷, 다른 레이어, 비아 없음. 화면에는 그려지지 않지만 미연결 수가 줄지 않는 이유가 바로 이것입니다. 이 지점에 비아를 추가하세요(들어가지 않으면 더 작은 패드스택을 쓰거나 주변 패드를 옮기세요)' },
+    pj_drc_zero_air_more: { zh: '另有 {n} 條零長度飛線（只列前 8 條）', en: '{n} more zero-length airwires (only the first 8 are listed)', ja: '他に {n} 本の長さ 0 ラッツネストがあります（先頭 8 本のみ表示）', ko: '길이 0 랫츠네스트가 {n}개 더 있습니다(앞 8개만 표시)' },
     // ---- 匯流排層級 DRC（pcb-bus-drc.js）----
     pj_busr_pick:     { zh: '先點一束才看得到它的規則', en: 'Select a bus to see its rules', ja: 'バスを選ぶとそのルールが表示されます', ko: '버스를 선택하면 해당 규칙이 표시됩니다' },
     pj_busr_for:      { zh: '「{spec}」的規則', en: 'Rules for "{spec}"', ja: '「{spec}」のルール', ko: '"{spec}"의 규칙' },

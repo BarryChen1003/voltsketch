@@ -565,7 +565,7 @@
         g *= 1.5; coarsened = true;
         nx = Math.floor(W / g) + 1; ny = Math.floor(H / g) + 1;
       }
-      if (nx * ny * L > opt.maxCells) return { ok: false, reason: T('rule_grid_too_big') };
+      if (nx * ny * L > opt.maxCells) return { ok: false, reason: 'rule_grid_too_big' };
       const ox = -W / 2, oy = -H / 2;
 
       const plane = nx * ny;
@@ -692,7 +692,7 @@
 
       const toCell = (x, y) => [Math.round((x - ox) / g), Math.round((y - oy) / g)];
       const [sx, sy] = toCell(line.x1, line.y1), [ex, ey] = toCell(line.x2, line.y2);
-      if (!inb(sx, sy) || !inb(ex, ey)) return { ok: false, reason: T('rule_ep_outside') };
+      if (!inb(sx, sy) || !inb(ex, ey)) return { ok: false, reason: 'rule_ep_outside' };
 
       // 端點可以落在哪些層：由該處同 net 的 pad 決定。找不到 pad（端點是走線端或 via）就都可以。
       // 端點能用哪幾層＝那個點上真的有銅的那幾層。
@@ -774,7 +774,7 @@
         // room = 到最近異網 pad 邊緣的距離；扣掉淨空之後乘 2 就是還塞得下的線寬
         const fits = (room === Infinity) ? null : Math.max(0, (room - cPad) * 2);
         return {
-          ok: false, reason: T('rule_ep_blocked'),
+          ok: false, reason: 'rule_ep_blocked',
           detail: { at: which, x: px, y: py, maxWidth: fits == null ? null : Math.floor(fits * 1000) / 1000 }
         };
       }
@@ -861,7 +861,7 @@
           }
         }
       }
-      if (found < 0) return { ok: false, reason: T('rule_no_path') };
+      if (found < 0) return { ok: false, reason: 'rule_no_path' };
 
       // 回溯：同層連續格合併成線段，換層處吐一顆 via
       const path = [];
@@ -905,6 +905,14 @@
         const first = segs[0];
         if (Math.hypot(first.x1 - line.x1, first.y1 - line.y1) < g * 1.5) { first.x1 = line.x1; first.y1 = line.y1; }
       }
+      // 一段線也沒有、一顆 via 也沒有＝這次繞線什麼都沒改變，那不可能接起任何東西。
+      // 舊版照樣回 ok:true，於是呼叫端「成功繞了 N 條」但板上一條線都沒多、飛線數字
+      // 動也不動——refboard-route-audit 說 12 條繞得成、refboard-fill 說補繞 12 條、
+      // 實際加 0 段，三邊各自看起來都對。成功的定義必須是「板子真的變了」。
+      //
+      // 失敗原因一律回 **key** 不回譯文（上面那幾個 return 也是）：呼叫端要拿它去組
+      // `pj_ar_why_<key>`，回譯文的話畫面上會印出「pj_ar_why_端點被異網障礙包住」。
+      if (!segs.length && !vias.length) return { ok: false, reason: 'rule_no_geometry' };
       return { ok: true, segs, vias, grid: g, coarsened };
     },
 

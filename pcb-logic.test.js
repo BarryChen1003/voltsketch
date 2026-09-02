@@ -22,8 +22,10 @@ const canvasStub = {
   parentElement: { clientWidth: 680, clientHeight: 478 },
 };
 const elStub = { addEventListener: noop, style: {}, innerHTML: '', value: '', textContent: '', click: noop, querySelector: () => null, querySelectorAll: () => [], appendChild: noop };
+// runDrc 會把結果寫進 #drcResults；沒有這個殼它會在 innerHTML 那一行直接炸掉。
+const drcBoxStub = { innerHTML: '' };
 const documentStub = {
-  querySelector: (s) => (s === '#pcbCanvas' ? canvasStub : null),
+  querySelector: (s) => (s === '#pcbCanvas' ? canvasStub : (s === '#drcResults' ? drcBoxStub : null)),
   querySelectorAll: () => [],
   getElementById: () => null,
   createElement: () => Object.assign({}, elStub),
@@ -796,14 +798,14 @@ const minDistToSegs = (px, py, segs) =>
   // 根因是繞線器收線時允許收在別層（已修，見第 39 節），資料端由 tools/refboard-fill.js 縫回來。
   // 這個預算跟 DRC 一樣只准往下：變多就是有人把板子改壞了，或繞線器又退步了。
   const OPEN_BUDGET = {
-    'rp2040-pico30': 8, 'arduino-uno-r3': 8, 'esp32-poe2': 5, 'a20-lime': 3,
+    'rp2040-pico30': 7, 'arduino-uno-r3': 8, 'esp32-poe2': 5, 'a20-lime': 3,
     'imx233-maxi': 2, 'openrex-imx6': 7, 'imx8mp-som': 4, 'librevna': 6
   };
   // 剩下的零長度飛線：那個點要打 via 才接得起來，但 via 放下去會撞到鄰居
   //（密腳 B2B／BGA 區，實測 DRC 0 -> 1~4）。正解是逃逸繞線把接點挪開再打，
   // 不在「補繞」的範圍內，所以先記成預算。同樣只准往下。
   const ZERO_BUDGET = {
-    'rp2040-pico30': 1, 'arduino-uno-r3': 0, 'esp32-poe2': 0, 'a20-lime': 0,
+    'rp2040-pico30': 0, 'arduino-uno-r3': 0, 'esp32-poe2': 0, 'a20-lime': 0,
     'imx233-maxi': 2, 'openrex-imx6': 1, 'imx8mp-som': 2, 'librevna': 0
   };
   const openWorse = [], zeroLen = [];
@@ -2464,6 +2466,89 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
     // 欄位標籤是 render 時才翻的：切語言不重畫，DRC 訊息換了語言、旁邊欄位還是中文
     const lang = pcbjs.slice(pcbjs.indexOf("document.addEventListener('vs-lang-change'"));
     ok(lang.slice(0, 600).indexOf('renderBusPanel') > 0, '47 切語言要重畫匯流排面板');
+  }
+  app.state = savedState;
+}
+
+// 48) 「繞成功」的定義：板子真的要變。以及縫合用的 padstack 梯子
+{
+  const savedState = app.state;
+  const blank = () => ({
+    boardWidth: 40, boardHeight: 30, layers: 2,
+    layerStack: [{ id: 'F.Cu', kind: 'copper' }, { id: 'B.Cu', kind: 'copper' }],
+    visibleLayers: ['F.Cu', 'B.Cu'],
+    components: [], traces: [], vias: [], netProps: {}, netRules: []
+  });
+
+  // ---- 沒產生任何銅就不算成功 ----
+  // 舊版：起終點落在同一格時 A* 立刻抵達，回 ok:true 但 segs/vias 全空。
+  // 於是 refboard-route-audit 說「12 條繞得成」、refboard-fill 說「補繞 12 條」、
+  // 實際加 0 段、未繞數動也不動——三邊各自看起來都對。
+  {
+    app.state = blank();
+    const opt = { grid: 0.25, clearance: { traceToTrace: 0.2, traceToPad: 0.2, traceToEdge: 0.3 }, width: 0.25, layers: ['F.Cu', 'B.Cu'], layer: 'F.Cu' };
+    const same = window.AutoRoute.route(app.state, app.padAbs.bind(app), { x1: 0, y1: 0, x2: 0, y2: 0, net: 'SIG' }, opt);
+    eq(same.ok, false, '48 起終點同一點＝什麼都沒接到，不可以回成功');
+    eq(same.reason, 'rule_no_geometry', '48 要講清楚是「沒產生任何銅」');
+
+    const real = window.AutoRoute.route(app.state, app.padAbs.bind(app), { x1: -10, y1: 0, x2: 10, y2: 0, net: 'SIG' }, opt);
+    eq(real.ok, true, '48 正常的一條要繞得出來');
+    ok(real.segs.length > 0, '48 成功的結果必須帶著實際的線段');
+  }
+
+  // ---- 失敗原因回 key，不回譯文 ----
+  // 呼叫端要拿它組 `pj_ar_why_<key>`；回譯文的話畫面會印出
+  // 「pj_ar_why_端點被異網障礙包住」這種字串（node 沒載 I18N 時看不出來，瀏覽器才炸）。
+  {
+    app.state = blank();
+    const opt = { grid: 0.25, clearance: { traceToTrace: 0.2, traceToPad: 0.2, traceToEdge: 0.3 }, width: 0.25, layers: ['F.Cu'], layer: 'F.Cu' };
+    const outside = window.AutoRoute.route(app.state, app.padAbs.bind(app), { x1: -500, y1: -500, x2: 5, y2: 0, net: 'SIG' }, opt);
+    eq(outside.ok, false, '48 端點在板框外要失敗');
+    ok(/^rule_/.test(String(outside.reason)), '48 失敗原因要是 rule_ 開頭的 key，不是翻好的句子');
+    ok(String(outside.reason).indexOf(' ') < 0, '48 key 裡不會有空白（有空白就是譯文跑進來了）');
+  }
+
+  // ---- padstack 梯子：往小裡試，但下限取板廠能力檔 ----
+  {
+    const F = window.FabProfiles;
+    const id = F.list[0].id;                       // jlcpcb
+    const L4 = F.viaLadder(id, 4, { od: 0.7, drill: 0.3 });
+    ok(L4.length > 1, '48 梯子要有得往下試，不然等於沒有梯子');
+    eq(L4[0].od, 0.7, '48 先試最大的：撐得住就不要縮');
+    ok(L4.every((v, i) => i === 0 || v.od <= L4[i - 1].od), '48 梯子要由大到小');
+    const tier = F.tierFor(F.byId(id), 4).rules;
+    ok(L4.every(v => v.drill >= tier.minDrill - 1e-9), '48 不可以低於板廠的最小鑽孔');
+    ok(L4.every(v => (v.od - v.drill) / 2 >= tier.minAnnular - 1e-9), '48 不可以低於板廠的最小環寬');
+    ok(L4.every(v => !tier.minViaPad || v.od >= tier.minViaPad - 1e-9), '48 不可以低於板廠的最小 via 焊盤');
+    // 2 層的環寬下限比多層嚴（0.18 vs 0.15）→ 同樣的孔徑要配更大的外徑
+    const L2 = F.viaLadder(id, 2, { od: 0.7, drill: 0.3 });
+    const min4 = Math.min(...L4.map(v => (v.od - v.drill) / 2));
+    const min2 = Math.min(...L2.map(v => (v.od - v.drill) / 2));
+    ok(min2 > min4 - 1e-9, '48 兩層板的環寬下限不可以比多層還鬆');
+    // 這家做不了的層數／不認得的板廠 → 只回原本那一組，不自己編一個下限
+    eq(F.viaLadder('no-such-fab', 4, { od: 0.7, drill: 0.3 }).length, 1, '48 不認得的板廠不可以自己編下限');
+    eq(F.viaLadder(id, 999, { od: 0.7, drill: 0.3 }).length, 1, '48 超出層數能力時不可以自己編下限');
+  }
+
+  // ---- 零長度飛線要單獨報，而且帶座標 ----
+  // 它畫不出來（兩端重疊），混在「未連線 N 條」裡等於藏起來。
+  {
+    app.state = blank();
+    app.state.traces = [
+      { net: 'SIG', x1: -6, y1: 3, x2: 0, y2: 3, layer: 'F.Cu', width: 0.25 },
+      { net: 'SIG', x1: 0, y1: 3, x2: 6, y2: 3, layer: 'B.Cu', width: 0.25 }   // 同一點、不同層、缺 via
+    ];
+    const res = app.runDrc();
+    const zero = res.filter(r => String(r.message).indexOf('pj_drc_zero_air') === 0);
+    eq(zero.length, 1, '48 零長度飛線要單獨報一筆');
+    eq(zero[0].x, 0, '48 要帶 x 座標');
+    eq(zero[0].y, 3, '48 要帶 y 座標');
+    ok((app.state.drcMarks || []).some(m => m.x === 0 && m.y === 3),
+      '48 零長度飛線要進 drcMarks（沒進去就等於只有清單、板上找不到）');
+    app.state.vias = [{ x: 0, y: 3, od: 0.7, drill: 0.3, net: 'SIG' }];
+    const res2 = app.runDrc();
+    eq(res2.filter(r => String(r.message).indexOf('pj_drc_zero_air') === 0).length, 0,
+      '48 補上 via 之後不可以再報');
   }
   app.state = savedState;
 }

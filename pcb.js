@@ -1116,13 +1116,7 @@ const pcbApp = {
     else results.push({ type: 'warning', message: pcbT('pj_drc_no_paddrc') });
 
     // 匯流排層級：一束要一起遵守的規則（成員主要層一致／via 數一致／skew 上限／束內間距）。
-    // 放在 drcMarks 之前，違規才標得到畫面上——這一類錯「是哪一條跟大家不一樣」比數量重要。
     if (window.BusDrc) results.push(...window.BusDrc.audit(this.state, rules.clearance.traceToTrace));
-
-    // 違規要標在畫面上。只有清單的話，使用者拿到「@(12.3,45.6)」還得自己在板上找。
-    this.state.drcMarks = results
-      .filter(r => (r.type === 'error' || r.type === 'warning') && typeof r.x === 'number' && typeof r.y === 'number')
-      .map(r => ({ x: r.x, y: r.y, type: r.type, message: r.message }));
 
     // Layout 規則稽核（net 線寬下限/線長上限/差分對長度差）
     if (window.NetRules) results.push(...window.NetRules.audit(this.state.netRules || [], this.state));
@@ -1146,7 +1140,23 @@ const pcbApp = {
     if (window.Ratsnest) {
       const rl = window.Ratsnest.compute(this.state, this.padAbs.bind(this));
       if (rl.length) results.push({ type: 'warning', message: pcbT('pj_drc_ratsnest', { n: rl.length }) });
+      // 零長度飛線要單獨報，而且要帶座標。它是「同一點、同 net、不同層、缺 via」的壞接點：
+      // 兩端重疊，畫面上根本畫不出那條線，使用者只看到未連線的數字降不下去、
+      // 卻在板上找不到任何缺口。混在總數裡等於藏起來。
+      const zero = rl.filter(l => Math.hypot(l.x2 - l.x1, l.y2 - l.y1) < 1e-6);
+      zero.slice(0, 8).forEach(l => results.push({
+        type: 'warning', x: l.x1, y: l.y1,
+        message: pcbT('pj_drc_zero_air', { net: l.net || '?', x: l.x1.toFixed(2), y: l.y1.toFixed(2) })
+      }));
+      if (zero.length > 8) results.push({ type: 'warning', message: pcbT('pj_drc_zero_air_more', { n: zero.length - 8 }) });
     }
+
+    // 違規要標在畫面上。只有清單的話，使用者拿到「@(12.3,45.6)」還得自己在板上找。
+    // 這段擺在所有檢查跑完之後：以前夾在中間，後面才 push 的檢查（規則稽核、net 屬性、
+    // 匯流排、零長度飛線）就算帶了座標也標不出來，看起來像那些檢查沒有位置資訊。
+    this.state.drcMarks = results
+      .filter(r => (r.type === 'error' || r.type === 'warning') && typeof r.x === 'number' && typeof r.y === 'number')
+      .map(r => ({ x: r.x, y: r.y, type: r.type, message: r.message }));
 
     // Display results
     const container = document.querySelector('#drcResults');

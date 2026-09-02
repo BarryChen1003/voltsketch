@@ -83,6 +83,14 @@ for (const b of boards) {
   // 只補 via，不動任何既有走線；DRC 沒過就把那顆 via 收回去。
   let stitched = 0, stitchFail = 0;
   const ps = window.Padstack ? window.Padstack.load() : { od: 0.7, drill: 0.3 };
+  // 預設 padstack 放不下不代表沒救：密腳區（BGA／QFN／B2B）真實 layout 就是換更小的孔。
+  // 梯子由板廠能力檔算（`FabProfiles.viaLadder`），大的排前面——先試撐得住的，
+  // 撐不住才縮，縮到這一家做得出來的下限為止。自己編一個「反正更小就好」的數字，
+  // 只是把「繞不過」換成「打樣退件」。
+  const copperN = (st.layerStack || []).filter(l => l.kind === 'copper').length || st.layers || 2;
+  const ladder = (window.FabProfiles && window.FabProfiles.viaLadder)
+    ? window.FabProfiles.viaLadder(window.FabProfiles.selectedId(), copperN, ps)
+    : [{ od: ps.od, drill: ps.drill }];
   // 縫一輪。補繞之後要**再縫一次**：新走線也可能收在需要 via 的點上，
   // 只縫前面那一輪的話，補繞自己製造出來的壞接點會留在板上（rp2040 實測就是這樣）。
   let escaped = 0;
@@ -94,17 +102,27 @@ for (const b of boards) {
       const gone = () => !window.Ratsnest.compute(st, padAbs)
         .some(l => Math.hypot(l.x2 - l.x1, l.y2 - l.y1) < 1e-6 &&
                    Math.hypot(l.x1 - z.x1, l.y1 - z.y1) < 1e-6 && l.net === z.net);
-      const v = { x: +z.x1.toFixed(3), y: +z.y1.toFixed(3), od: ps.od, drill: ps.drill, net: z.net };
-      st.vias.push(v);
-      if (errsOf().length <= before && gone()) { stitched++; continue; }
-      st.vias.pop();
+      // 原地放：整條梯子從大到小試一遍，第一個過 DRC 的就收下。
+      let placed = false;
+      for (const cand of ladder) {
+        const v = { x: +z.x1.toFixed(3), y: +z.y1.toFixed(3), od: cand.od, drill: cand.drill, net: z.net };
+        st.vias.push(v);
+        if (errsOf().length <= before && gone()) { stitched++; placed = true; break; }
+        st.vias.pop();
+      }
+      if (placed) continue;
 
       // 原地放不下 → 逃逸：把 via 往外挪，兩層各補一段短線接過去。
       // 密腳區（BGA／QFN／B2B）本來就沒有空間把 via 放在 pad 正下方，
       // 真實 layout 也是這樣做的。粗篩由 escapeVia 做，這裡再跑一次真 DRC 確認。
-      const esc = window.AutoRoute.escapeVia(st, padAbs, { x: z.x1, y: z.y1, net: z.net }, {
-        clearance: CL, viaOd: ps.od, viaDrill: ps.drill, width: 0.2
-      });
+      // 逃逸也照梯子由大到小試：往外挪找不到位置的，換小孔可能就找得到。
+      let esc = { ok: false };
+      for (const cand of ladder) {
+        esc = window.AutoRoute.escapeVia(st, padAbs, { x: z.x1, y: z.y1, net: z.net }, {
+          clearance: CL, viaOd: cand.od, viaDrill: cand.drill, width: 0.2
+        });
+        if (esc.ok) break;
+      }
       if (!esc.ok) { stitchFail++; continue; }
       const nT = (esc.stubs || []).length, nV = st.vias.length;
       // 既有走線的端點：拉到新 via 的位置（不是再疊一段一模一樣的線）
@@ -189,19 +207,22 @@ for (const b of boards) {
     const have = new Set();
     (st.traces || []).forEach(t => { have.add(segKey(t)); have.add(segKeyRev(t)); });
     r.routed.forEach(x => {
+      // 這一條到底有沒有讓板子多出東西。整條都被去重掉＝繞線器只是沿著既有的銅走了一遍，
+      // 什麼都沒接到；那不算補繞成功。不分開算的話，報告會說「補繞 12 條」而未繞數不動。
+      let gained = 0;
       x.segs.forEach(sg => {
         const t = { x1: +sg.x1.toFixed(3), y1: +sg.y1.toFixed(3), x2: +sg.x2.toFixed(3), y2: +sg.y2.toFixed(3),
           layer: sg.layer || 'F.Cu', width: w, net: x.line.net };
         if (have.has(segKey(t))) return;
         have.add(segKey(t)); have.add(segKeyRev(t));
-        st.traces.push(t); addedTraces.push(t);
+        st.traces.push(t); addedTraces.push(t); gained++;
       });
       (x.vias || []).forEach(v => {
         const q = { x: +v.x.toFixed(3), y: +v.y.toFixed(3), od: v.od, drill: v.drill, net: x.line.net };
-        st.vias.push(q); addedVias.push(q);
+        st.vias.push(q); addedVias.push(q); gained++;
       });
+      if (gained) routed++;
     });
-    routed += r.routed.length;
   }
 
   // 補繞可能自己製造出需要 via 的接點，所以再縫一輪（失敗數以最後一輪為準）

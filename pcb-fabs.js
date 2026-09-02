@@ -331,6 +331,44 @@
       };
     },
 
+    /**
+     * 縫合壞接點用的 padstack 梯子：從 start 一階一階往小試。
+     *
+     * 為什麼要有梯子：密腳區（BGA／QFN／B2B）放不下預設的 0.7/0.3，不代表沒救——
+     * 真實 layout 在那裡就是換更小的孔。但「更小」有底線：板廠做不出來的孔
+     * 只是把「繞不過」換成「打樣退件」，所以下限一律取這一家的能力檔
+     * （minDrill / minAnnular / minViaPad），不自己編一個數字。
+     *
+     * 回 [{od, drill}]，大的排前面——先試撐得住的，撐不住才縮。
+     * 板層數超出這家能力（tierFor 回 null）時只回 start：那種情況該報「這家做不了」，
+     * 不是偷偷用一組不知道哪來的下限。
+     */
+    viaLadder(profileId, layers, start) {
+      const s = (start && start.drill > 0 && start.od > 0) ? { od: start.od, drill: start.drill } : { od: 0.7, drill: 0.3 };
+      const profile = this.byId(profileId);
+      const tier = profile ? this.tierFor(profile, layers) : null;
+      if (!tier) return [s];
+      const R = tier.rules || {};
+      const minDrill = num(R.minDrill) ? R.minDrill : s.drill;
+      const minAnn = num(R.minAnnular) ? R.minAnnular : (s.od - s.drill) / 2;
+      const minPad = num(R.minViaPad) ? R.minViaPad : 0;
+      const out = [];
+      const push = (od, drill) => {
+        od = +od.toFixed(3); drill = +drill.toFixed(3);
+        if (drill < minDrill - 1e-9) return;
+        if ((od - drill) / 2 < minAnn - 1e-9) return;
+        if (minPad && od < minPad - 1e-9) return;
+        if (out.some(v => v.od === od && v.drill === drill)) return;
+        out.push({ od, drill });
+      };
+      push(s.od, s.drill);
+      // 兩條路徑：先只縮孔、環寬照舊（機械強度不變），再連環寬一起降到板廠下限。
+      const ann0 = Math.max(minAnn, (s.od - s.drill) / 2);
+      for (let d = s.drill - 0.05; d >= minDrill - 1e-9; d -= 0.05) push(d + 2 * ann0, d);
+      for (let d = s.drill; d >= minDrill - 1e-9; d -= 0.05) push(d + 2 * minAnn, d);
+      return out.sort((a, b) => (b.od - a.od) || (b.drill - a.drill));
+    },
+
     // ---- 選定板廠（單一真相來源：DRC 面板與匯出閘門都讀這裡）----
     SEL_KEY: 'vs-fab-sel-v1',
     selectedId() {
