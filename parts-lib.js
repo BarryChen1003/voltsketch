@@ -1,7 +1,8 @@
 /**
  * parts-lib.js — 基本電子零件庫（被動／分立／機構件的參數化 footprint ＋ 通用 IC 封裝）
  * pad schema 與 footprint-gen / kicad-io 相同：{num,name,x,y,rot,w,h,shape,drill,side,type,net,rr,cu}
- * 尺寸為 IPC-7351 名目近似；量產前以原廠 datasheet land pattern 覆核。
+ * 尺寸來源分三態，見 build() 的 meta.src：原廠 land pattern（照抄）／原廠尺寸＋IPC-7251
+ * 推導／IPC-7351 名目近似。只有最後一態才需要量產前覆核原廠 land pattern。
  * 座標：元件中心為原點，mm，y 向下。
  */
 window.PartsLib = (function () {
@@ -153,6 +154,112 @@ window.PartsLib = (function () {
   const JST_N = ['2P', '3P', '4P', '5P', '6P', '7P', '8P', '9P', '10P', '12P', '14P', '16P'];
   const jstN = v => parseInt(v, 10);
 
+  // ---- THT 分立件（TO-220 / TO-92 / 軸向二極體與電阻）----
+  //
+  // 規矩跟 JST 一樣：只照原廠或標準建，抓不到出處就不做那顆。但分立件的出處分兩層，
+  // 不能混為一談，所以 CATALOG 的 src 也分兩種：
+  //   'datasheet' — 原廠自己畫了 land pattern，孔徑/pad/pitch 全部照抄。
+  //   'derived'   — 原廠只給封裝尺寸（跨距本來就由設計者定），孔與 pad 依 IPC-7251
+  //                 Table 3-1 Level A 推導。推導寫在下面，每個數字都能自己算一次對答案。
+  //
+  // 出處（2026-09-02 取得）：
+  //   TO-220  TI KCS0003B，圖號 4222214/B 08/2018（在 LM317 datasheet 內）
+  //           https://www.ti.com/lit/ds/symlink/lm317.pdf
+  //           EXAMPLE BOARD LAYOUT：3X ⌀1.2 孔、⌀1.7 metal、pin1 方形、(2.54) pitch、(5.08) 跨距
+  //           PACKAGE OUTLINE：本體 10.36/9.96 寬 × 4.7/4.4 厚（參考 JEDEC TO-220）
+  //   TO-92   TI LP0003A，圖號 4215214/C 04/2025（在 TL431 datasheet 內）
+  //           https://www.ti.com/lit/ds/symlink/tl431.pdf
+  //           直腳版 3X ⌀0.85 孔、pad (1.07)×(1.5)、(1.27) pitch
+  //           折腳版 3X ⌀0.9 孔、pad ⌀(1.4)、(2.6) pitch
+  //           PACKAGE OUTLINE：本體 5.21/4.44 寬 × 4.19/3.17 深（參考 JEDEC TO-226 變體 AA）
+  //   DO-41   Vishay 88503 Rev. 29-Apr-2020（1N4001-1N4007）
+  //           https://www.vishay.com/docs/88503/1n4001.pdf
+  //           腳徑 0.86/0.71（0.66/0.58 只適用 "E" 尾碼）、本體 5.2/4.1 長 × 2.7/2.0 徑
+  //   DO-35   Vishay 81857 Rev. 1.6, 07-Nov-2024（1N4148）
+  //           https://www.vishay.com/docs/81857/1n4148.pdf
+  //           腳徑 0.55 max、本體 3.4 max 長 × 1.75/1.5 徑
+  //   軸向電阻 Vishay 28766 Revision 11-Jul-2018（MBA/SMA 0204、MBB/SMA 0207、MBE/SMA 0414）
+  //           https://www.vishay.com/docs/28766/mbxsma.pdf
+  //           Dmax/Lmax/dnom/Mmin＝1.6/3.6/0.5/5.0、2.5/6.5/0.6/10.0、4.2/11.9/0.8/15.0
+  //   IPC-7251 Generic Requirements for Through-Hole Design and Land Pattern Standard,
+  //           1st Working Draft, June 2008（Table 3-1 軸向、Table 3-7 三腳立裝、Figure 3-5 彎折半徑）
+  //           https://azitech.dk/wp-content/uploads/2023/05/IPC-7251-req-for-Through-Hole-Designs.pdf
+  //
+  // 誠實界定：那份 IPC-7251 是 2008 年的 1st Working Draft，不是發行版（正式版要付費），
+  // 而且它的 §8/§10 是空的——實際圖樣在隨附光碟的 LP Viewer，文件本身只給規則。
+  // 之所以還敢用它的數字，是因為被兩邊夾住了：孔徑係數（Level A/B/C = +0.25/+0.20/+0.15）
+  // 與廣為引用的 IPC-2222 表一致；環寬（land 外徑 = 孔 + 0.50）則被 TI 自己的 land pattern
+  // 反向驗證——TO-220 是 1.7 − 1.2 = 0.50、TO-92 折腳是 1.4 − 0.9 = 0.50，兩顆都正好落在
+  // Level A。這兩件事互相獨立，同時對上不太可能是巧合，所以照 Level A 用。
+  const IPC_HOLE_A = 0.25;                          // Table 3-1/3-7 Level A：孔 = 最大腳徑 + 0.25
+  const IPC_RING_A = 0.50;                          // 同表 Level A：land 外徑 = 孔 + 0.50（環寬 0.25/邊）
+  const up05 = v => Math.ceil(v * 20 - 1e-9) / 20;  // 進位到 0.05：孔只准比標準大，不准小
+
+  const T = (k, v) => (typeof window !== 'undefined' && window.I18N ? window.I18N.t(k, v) : k);
+  // 本體外框：TO-220 立裝時板上投影是「寬 × 厚」＝ 10.36 × 4.7，不是 19.65 那個立面高度；
+  // TO-92 同理用 5.21 × 4.19。兩者的腳都不在本體厚度的中線上（TO-220 的腳離其中一面
+  // 1.32/1.22、TO-92 的腳偏向平邊那側），但 PartsLib 的 body 只有寬高、沒有偏移，表達不了。
+  // pad 位置不受影響（那才是碰到銅的東西），外框只是示意——跟 JST 那邊同一個限制。
+  const tht3 = (pitch, drill, padW, padH, bodyW, bodyH, warnKey) => ({
+    pads: [1, 2, 3].map(i => P(i, String(i), (i - 2) * pitch, 0, padW, padH,
+      Object.assign({}, THT, { drill },
+        i === 1 ? { shape: 'rect' } : { shape: padW === padH ? 'circle' : 'oval' }))),
+    body: { w: bodyW, h: bodyH },
+    warnings: warnKey ? [T(warnKey)] : []
+  });
+  const THT3 = {
+    'TO-220': () => tht3(2.54, 1.2, 1.7, 1.7, 10.36, 4.7),
+    // 直腳版窄邊環寬 (1.07 − 0.85) / 2 = 0.11，低於本編輯器 0.15 的建議下限——那是 TI 原圖
+    // 就這麼緊，不是我們算錯。規矩是照原廠建，所以不把 pad 放大成非原廠值，改成放件時講明白：
+    // 使用者看到 DRC 亮紅才知道是設計取捨，不是 bug；要寬鬆就改用折腳版（環寬 0.25）。
+    'TO-92 (straight 1.27)': () => tht3(1.27, 0.85, 1.07, 1.5, 5.21, 4.19, 'pl_to92_ring'),
+    'TO-92 (formed 2.6)': () => tht3(2.6, 0.9, 1.4, 1.4, 5.21, 4.19)
+  };
+
+  // 軸向跨距怎麼定：原廠不規定（那本來就是設計者的事），所以取兩個下限的大者，再往上挑
+  // 標準格點。兩個下限：
+  //   (a) IPC-7251 Table 3-1 Level A 的引腳伸出量。Figure 3-5 給彎折半徑 R：腳徑 ≤0.8 →
+  //       R = 1×腳徑；0.8–1.2 → 1.5×腳徑；>1.2 → 2×腳徑。Table 3-1 的 Level A 欄，腳徑
+  //       0.2–0.8 是「直段 1.2 mm ＋ 1 倍徑彎折半徑」（1.2/1.0/0.8 這組是 mm 不是倍徑：
+  //       Figure 3-5 寫「直段不得小於 0.8 mm」，正好等於 Level C 那格），腳徑 0.85–1.20
+  //       是「直段 2.2 倍徑 ＋ 1.5 倍徑彎折半徑」。跨距下限 = 本體長 + 2×每側伸出量。
+  //   (b) 原廠若自己標了最小裝配跨距（Vishay 電阻的 M min），一併取。
+  // 逐顆算（本體長取 max、腳徑取 max，沒給 max 的用 nom）：
+  //   DO-35  3.4  + 2×(1.2 + 0.55)   = 6.90                 → 7.62、10.16
+  //   DO-41  5.2  + 2×(2.2+1.5)×0.86 = 11.56                → 12.7、15.24
+  //   0204   3.6  + 2×(1.2 + 0.5)    = 7.00  （M min 5.0）   → 7.62、10.16
+  //   0207   6.5  + 2×(1.2 + 0.6)    = 10.10 （M min 10.0）  → 10.16、12.7
+  //   0414   11.9 + 2×(1.2 + 0.8)    = 15.90 （M min 15.0）  → 17.78、20.32
+  // 0414 的 15.24 只滿足 Level C、不滿足 Level A，所以不列——這顆的可選跨距比市面常見值大
+  // 一格，是照規則算出來的，不是打錯。
+  // note：Vishay 電阻的 d 只給 nom 沒給 max，孔徑是拿 nom 算的。實際腳徑跑到公差上緣時，
+  // 孔仍在 IPC Level C（+0.15）之上，但已經不是 Level A 了。這點不吞掉。
+  const axial = (pitch, leadDia, bodyL, bodyD, n1, n2) => {
+    const drill = up05(leadDia + IPC_HOLE_A);
+    const od = r2(drill + IPC_RING_A);
+    return {
+      pads: [P(1, n1 || '1', -pitch / 2, 0, od, od, Object.assign({}, THT, { drill, shape: 'rect' })),
+             P(2, n2 || '2', pitch / 2, 0, od, od, Object.assign({}, THT, { drill, shape: 'circle' }))],
+      body: { w: bodyL, h: bodyD }
+    };
+  };
+  // [腳徑, 本體長, 本體徑, 跨距, pin1 名, pin2 名]
+  const AXIAL_D = {
+    'DO-35 (7.62)': [0.55, 3.4, 1.75, 7.62, 'K', 'A'],
+    'DO-35 (10.16)': [0.55, 3.4, 1.75, 10.16, 'K', 'A'],
+    'DO-41 (12.7)': [0.86, 5.2, 2.7, 12.7, 'K', 'A'],
+    'DO-41 (15.24)': [0.86, 5.2, 2.7, 15.24, 'K', 'A']
+  };
+  const AXIAL_R = {
+    '0204 (7.62)': [0.5, 3.6, 1.6, 7.62],
+    '0204 (10.16)': [0.5, 3.6, 1.6, 10.16],
+    '0207 (10.16)': [0.6, 6.5, 2.5, 10.16],
+    '0207 (12.7)': [0.6, 6.5, 2.5, 12.7],
+    '0414 (17.78)': [0.8, 11.9, 4.2, 17.78],
+    '0414 (20.32)': [0.8, 11.9, 4.2, 20.32]
+  };
+  const axialOf = t => axial(t[3], t[0], t[1], t[2], t[4], t[5]);
+
   // ---- 測試點 / 安裝孔 ----
   const tp = d => ({ pads: [P(1, 'TP', 0, 0, d, d, { shape: 'circle', rr: 0 })], body: { w: d + 0.4, h: d + 0.4 } });
   const hole = d => ({ pads: [P(1, 'NPTH', 0, 0, d, d, { shape: 'circle', rr: 0, drill: d, type: 'np_thru_hole', side: '*', cu: false })], body: { w: d + 0.6, h: d + 0.6 } });
@@ -218,6 +325,11 @@ window.PartsLib = (function () {
     // JST：孔徑照 datasheet 公差帶上緣（FR4），本體長度照 header 表的 B 欄
     { id: 'jstph', ref: 'J', variants: JST_N, src: "datasheet", gen: v => jstTht(jstN(v), 2.0, 0.8, 3.9, 4.5) },
     { id: 'jstxh', ref: 'J', variants: JST_N, src: "datasheet", gen: v => jstTht(jstN(v), 2.5, 1.0, 4.9, 5.75) },
+    // TO-220 / TO-92：孔徑、pad、pitch 全部照 TI 的 EXAMPLE BOARD LAYOUT
+    { id: 'tht3',  ref: 'Q', variants: Object.keys(THT3), src: 'datasheet', gen: v => THT3[v]() },
+    // 軸向：原廠尺寸 ＋ IPC-7251 Level A 推導（跨距是標準格點，不是原廠規定）
+    { id: 'axdio', ref: 'D', variants: Object.keys(AXIAL_D), src: 'derived', gen: v => axialOf(AXIAL_D[v]) },
+    { id: 'axres', ref: 'R', variants: Object.keys(AXIAL_R), src: 'derived', gen: v => axialOf(AXIAL_R[v]) },
     { id: 'soic',  ref: 'U', variants: IC_PKGS.soic,  gen: icGen },
     { id: 'tssop', ref: 'U', variants: IC_PKGS.tssop, gen: icGen },
     { id: 'ssop',  ref: 'U', variants: IC_PKGS.ssop,  gen: icGen },
@@ -226,6 +338,14 @@ window.PartsLib = (function () {
     { id: 'qfp',   ref: 'U', variants: IC_PKGS.qfp,   gen: icGen },
     { id: 'dip',   ref: 'U', variants: IC_PKGS.dip,   gen: icGen }
   ];
+
+  // meta.source 是給不走 i18n 的呼叫端看的純文字，內容必須跟 meta.src 一致——以前這裡
+  // 不分來源一律寫「IPC-7351 名目近似」，對照原廠圖建的料而言那是假的。
+  const SRC_NOTE = {
+    datasheet: '原廠 datasheet 的 land pattern（孔徑/pad/pitch 照抄）',
+    derived: '原廠 datasheet 封裝尺寸 ＋ IPC-7251 Level A 推導（跨距為標準格點）',
+    ipc: 'IPC-7351 名目近似（量產前以原廠 land pattern 覆核）'
+  };
 
   function list() { return CATALOG.map(c => ({ id: c.id, ref: c.ref, variants: c.variants })); }
 
@@ -244,8 +364,10 @@ window.PartsLib = (function () {
         // 對它說「IPC-7351 名目近似、請覆核原廠 land pattern」是假的——我們已經用了原廠的圖。
         // 而且這兩類的可靠度不同：被動件推估差一點只是焊點大小差一點，
         // 連接器孔位推估錯的後果是那顆料裝不上去。呼叫端要能分辨。
-        src: cat.src === 'datasheet' ? 'datasheet' : 'ipc',
-        source: 'IPC-7351 名目近似（量產前以原廠 land pattern 覆核）',
+        // 三態：原廠 land pattern／原廠尺寸＋標準推導／IPC 名目近似。中間那態不能併進
+        // 任一邊：併進 datasheet 是謊，併進 ipc 是把有出處的東西講成推估。
+        src: (cat.src === 'datasheet' || cat.src === 'derived') ? cat.src : 'ipc',
+        source: SRC_NOTE[(cat.src === 'datasheet' || cat.src === 'derived') ? cat.src : 'ipc'],
         // 推估來的尺寸原樣往上帶：吞掉的話，使用者會以為這個 footprint 跟被動件一樣可靠
         warnings: r.warnings || []
       }

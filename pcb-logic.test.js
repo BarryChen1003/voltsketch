@@ -3174,6 +3174,100 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
     ok(pcbjs.indexOf('pj_fp_src_ds') > 0, '53 放件訊息要分辨兩種出處');
   }
 
+  // ---- 第 54 組：THT 分立件（TO-220 / TO-92 / 軸向二極體與電阻）----
+  // 這幾顆的尺寸錯了不是焊點大小差一點，是零件插不進孔、或環寬薄到剝離。所以測試釘的是
+  // datasheet 上的數字本身，不是「程式現在跑出來的值」——後者改壞了測試會跟著壞掉一起放行。
+  {
+    // TO-220：TI KCS0003B EXAMPLE BOARD LAYOUT，圖號 4222214/B
+    const q = L.build('tht3', 'TO-220');
+    eq(q.pads.length, 3, '54 TO-220 三隻腳');
+    eq(q.pads.every(p => p.drill === 1.2), true, '54 TO-220 孔徑 ⌀1.2（TI 圖上的值）');
+    eq(q.pads.every(p => p.w === 1.7 && p.h === 1.7), true, '54 TO-220 pad ⌀1.7');
+    eq(q.pads[1].x - q.pads[0].x, 2.54, '54 TO-220 pitch 2.54');
+    eq(q.pads[2].x - q.pads[0].x, 5.08, '54 TO-220 跨距 5.08');
+    eq(q.pads[0].shape, 'rect', '54 TO-220 第 1 腳方形');
+
+    // TO-92：TI LP0003A，圖號 4215214/C。直腳與折腳是兩張不同的 land pattern，不能共用一組
+    const st = L.build('tht3', 'TO-92 (straight 1.27)');
+    eq(st.pads.every(p => p.drill === 0.85), true, '54 TO-92 直腳孔徑 ⌀0.85');
+    eq(st.pads[0].w === 1.07 && st.pads[0].h === 1.5, true, '54 TO-92 直腳 pad 1.07×1.5');
+    eq(st.pads[2].x - st.pads[0].x, 2.54, '54 TO-92 直腳跨距 2.54（pitch 1.27）');
+    eq(st.pads[1].shape, 'oval', '54 TO-92 直腳非第 1 腳是長圓（1.07≠1.5，當成圓會少掉銅）');
+
+    const fm = L.build('tht3', 'TO-92 (formed 2.6)');
+    eq(fm.pads.every(p => p.drill === 0.9), true, '54 TO-92 折腳孔徑 ⌀0.9');
+    eq(fm.pads.every(p => p.w === 1.4 && p.h === 1.4), true, '54 TO-92 折腳 pad ⌀1.4');
+    eq(fm.pads[2].x - fm.pads[0].x, 5.2, '54 TO-92 折腳跨距 5.2（pitch 2.6）');
+
+    // TI 直腳版的窄邊環寬本來就只有 0.11（低於編輯器 0.15 的建議下限）。照原廠建 = 不把 pad
+    // 放大，但要在放件時講明白。這裡把數字釘住：pad/孔改了而警告文案沒跟著改，就會紅。
+    eq(Math.round(((st.pads[0].w - st.pads[0].drill) / 2) * 100) / 100, 0.11, '54 TO-92 直腳窄邊環寬 0.11');
+    eq(st.meta.warnings.length, 1, '54 TO-92 直腳要帶環寬偏小的警告');
+    eq(Math.round(((fm.pads[0].w - fm.pads[0].drill) / 2) * 100) / 100, 0.25, '54 TO-92 折腳環寬 0.25');
+    eq(fm.meta.warnings.length, 0, '54 TO-92 折腳不需要警告');
+    eq(Math.round(((q.pads[0].w - q.pads[0].drill) / 2) * 100) / 100, 0.25, '54 TO-220 環寬 0.25');
+    eq(q.meta.warnings.length, 0, '54 TO-220 不需要警告');
+  }
+
+  // ---- 軸向件：孔與 pad 是推導出來的，推導要能被獨立算一次 ----
+  // 下面這張表直接抄 datasheet，extA() 直接抄 IPC-7251 Table 3-1 Level A ＋ Figure 3-5，
+  // 都不引用 parts-lib 的常數。parts-lib 把係數改錯的話，這裡會紅。
+  {
+    const DS = {
+      'DO-35': { lead: 0.55, bodyL: 3.4, vendorMin: 0 },    // Vishay 81857 Rev.1.6
+      'DO-41': { lead: 0.86, bodyL: 5.2, vendorMin: 0 },    // Vishay 88503 Rev.29-Apr-2020
+      '0204': { lead: 0.5, bodyL: 3.6, vendorMin: 5.0 },    // Vishay 28766，M min 是原廠標的
+      '0207': { lead: 0.6, bodyL: 6.5, vendorMin: 10.0 },
+      '0414': { lead: 0.8, bodyL: 11.9, vendorMin: 15.0 }
+    };
+    // 每側引腳伸出量：腳徑 ≤0.8 是「直段 1.2 mm ＋ 1 倍徑彎折半徑」，
+    // 0.85–1.20 是「直段 2.2 倍徑 ＋ 1.5 倍徑彎折半徑」
+    const extA = d => (d <= 0.8 ? 1.2 + d : 3.7 * d);
+    const bad = [];
+    for (const [lib, fams] of [['axdio', ['DO-35', 'DO-41']], ['axres', ['0204', '0207', '0414']]]) {
+      const cat = L.list().find(c => c.id === lib);
+      ok(!!cat && cat.variants.length > 0, '54 ' + lib + ' 要在型錄裡');
+      for (const v of cat.variants) {
+        const b = L.build(lib, v);
+        const ds = DS[fams.find(f => v.indexOf(f) === 0)];
+        if (!ds) { bad.push(v + ' 對不到 datasheet 表'); continue; }
+        const pitch = Math.round((b.pads[1].x - b.pads[0].x) * 1000) / 1000;
+        const minPitch = Math.max(ds.vendorMin, ds.bodyL + 2 * extA(ds.lead));
+        if (pitch < minPitch) bad.push(v + ' 跨距 ' + pitch + ' < 下限 ' + Math.round(minPitch * 100) / 100);
+        const wantDrill = Math.ceil((ds.lead + 0.25) * 20 - 1e-9) / 20;   // 孔 = 最大腳徑 + 0.25，進位 0.05
+        if (b.pads[0].drill !== wantDrill) bad.push(v + ' 孔徑 ' + b.pads[0].drill + ' ≠ ' + wantDrill);
+        if (Math.abs(b.pads[0].w - (wantDrill + 0.5)) > 1e-9) {        // land 外徑 = 孔 + 0.50
+          bad.push(v + ' pad 外徑 ' + b.pads[0].w + ' ≠ ' + (wantDrill + 0.5));
+        }
+        if (b.body.w !== ds.bodyL) bad.push(v + ' 本體長 ' + b.body.w + ' ≠ ' + ds.bodyL);
+        if (b.pads[0].shape !== 'rect') bad.push(v + ' 第 1 腳不是方形');
+      }
+    }
+    const uq = [...new Set(bad)];
+    eq(uq.length ? uq.slice(0, 4).join(' │ ') + (uq.length > 4 ? ` │ …另外 ${uq.length - 4} 種` : '') : '',
+      '', '54 軸向件的孔/pad/跨距要對得上 datasheet 與 IPC-7251 Level A');
+    eq(L.build('axdio', 'DO-41 (12.7)').pads[0].name, 'K', '54 二極體第 1 腳是陰極（有標記的那端）');
+  }
+
+  // ---- 出處三態要分得開 ----
+  // 併成兩態就會出現：把「跨距是我們挑的、不是原廠規定」這句吞掉，
+  // 或反過來對照原廠圖建的料說「請覆核原廠 land pattern」。兩種都是假話。
+  {
+    eq(L.build('tht3', 'TO-220').meta.src, 'datasheet', '54 TO-220 有原廠 land pattern');
+    eq(L.build('tht3', 'TO-92 (formed 2.6)').meta.src, 'datasheet', '54 TO-92 同上');
+    eq(L.build('axdio', 'DO-41 (12.7)').meta.src, 'derived', '54 軸向二極體是原廠尺寸＋標準推導');
+    eq(L.build('axres', '0207 (10.16)').meta.src, 'derived', '54 軸向電阻同上');
+    eq(L.build('res', '0603').meta.src, 'ipc', '54 貼片被動件仍是 IPC 名目近似');
+    const fsy = require('fs'), pathy = require('path');
+    const pcbjs2 = fsy.readFileSync(pathy.join(__dirname, 'pcb.js'), 'utf8');
+    ok(pcbjs2.indexOf('pj_fp_src_drv') > 0, '54 放件訊息要認得第三態');
+    const i18njs = fsy.readFileSync(pathy.join(__dirname, 'i18n.js'), 'utf8');
+    const mm = /pj_fp_src_drv: \{([^}]*)\}/.exec(i18njs);
+    ok(!!mm && ['zh:', 'en:', 'ja:', 'ko:'].every(k => mm[1].indexOf(k) >= 0),
+      '54 第三態的說明要四語齊全');
+    ok(i18njs.indexOf('pl_to92_ring:') > 0, '54 TO-92 環寬警告要有 i18n 條目');
+  }
+
   // ---- 線路圖端綁得到 ----
   {
     const S2 = window.Sch2Pcb;

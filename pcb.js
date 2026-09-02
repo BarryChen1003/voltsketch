@@ -1595,7 +1595,10 @@ const pcbApp = {
     const warns = (r.meta && r.meta.warnings) || [];
     // 出處照實講。連接器是照原廠 datasheet 的 PC board layout 建的，對它說
     // 「IPC-7351 名目近似、請覆核原廠 land pattern」是假的——我們已經用了原廠的圖。
-    const srcNote = (r.meta && r.meta.src === 'datasheet') ? pcbT('pj_fp_src_ds') : pcbT('pj_fp_src');
+    // 軸向分立件是第三態：原廠只給封裝尺寸，孔與 pad 照 IPC-7251 推、跨距是我們挑的標準
+    // 格點。講成「照原廠 land pattern」會蓋掉「跨距不是原廠規定的」這件事。
+    const srcNote = pcbT(r.meta && r.meta.src === 'datasheet' ? 'pj_fp_src_ds'
+      : r.meta && r.meta.src === 'derived' ? 'pj_fp_src_drv' : 'pj_fp_src');
     say(pcbT('pl_placed', { ref, name: comp.part, pads: r.pads.length })
       + (warns.length ? '；⚠ ' + warns.join('；') : '') + ' ' + srcNote);
   },
