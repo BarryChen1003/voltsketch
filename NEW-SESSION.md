@@ -440,8 +440,9 @@ pwsh -File toolserifyerify.ps1
 ```
 
 三個跟我們無關的判官：kicad-cli 的 DRC、FreeCAD 的 OCCT、gerbonara。裝法與已知例外見
-`tools/verify/README.md`。**CI 上沒有 KiCad 與 FreeCAD，所以它不在 `ci.yml` 裡**——
-這是唯一一個要靠人記得跑的閘門。
+`tools/verify/README.md`。**其中兩個已經在 CI**（`verify-3p` job，2026-09-02 起）：
+gerbonara 與 kicad-cli 每次 push 都跑。**只有 STEP 的 OCCT 檢查要靠人記得跑**——
+動到 `pcb-step.js` 就跑一次上面那行。
 
 預覽用 `preview_start({ name: "web-static" })`，**不要用 Bash 起 server**。
 

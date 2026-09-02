@@ -43,8 +43,11 @@ pwsh -File tools\verify\verify.ps1 rp2040-pico30   # 單片
 exit 0 ＝ 三個判官都沒話說。產物與各自的報告在 `tools/verify/out/<板>/`：
 `kicad-drc.json`、`step-occt.json`、`gerber-3p.json`。
 
-**這不在 CI 裡**，因為 CI 上沒有 KiCad 與 FreeCAD。它是本機的閘門，動到匯出相關的東西
-（`pcb-step.js`、`kicad-io.js`、`supabase/functions/_shared/gerber.mjs`）就手動跑一次。
+**三個判官裡有兩個已經在 CI**（`ci.yml` 的 `verify-3p` job，2026-09-02 起）：
+gerbonara 走 pip、kicad-cli 走官方 `kicad/kicad:10.0` image，每次 push 都跑。
+**STEP 的 OCCT 檢查只有本機有**——那要 FreeCAD 或 OCP，為了一個檢查在 runner 上裝幾百 MB
+不划算，而當初那兩個坑（產品結構、面的平面）已經被 `step.test.js` 釘成斷言了。
+所以：動到 `pcb-step.js` 就手動跑一次這支；動到 `kicad-io.js` 或 `gerber.mjs`，CI 會替你跑。
 
 ## baseline.json
 
