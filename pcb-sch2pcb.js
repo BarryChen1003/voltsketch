@@ -4,7 +4,8 @@
 // 位置直接拿線路圖符號的腳位座標乘 0.08。電阻符號兩腳距 60px → 4.8mm 腳距、1.2mm 方 pad，
 // 那不是任何真實封裝。飛線會出來、DRC 跑得動、看起來像成功了，但那片板做不出來。
 //
-// 這裡改成用真封裝：被動件走 PartsLib（15 類、含 0201～2512 與各種 SOT/SOD），
+// 這裡改成用真封裝：被動件與通用 IC 封裝走 PartsLib（22 類：0201～2512、各種 SOT/SOD，
+// 以及 SOIC/TSSOP/SSOP/MSOP/QFN/QFP/DIP——後者由 FootprintGen 產，所以料號不在庫裡也綁得了封裝），
 // IC 走 FootprintGen.fromIC（IC_DATA 全覆蓋）。**對不出來的就標出來讓使用者指定，
 // 不編一個假的方塊塞過去**——這是跟 EasyEDA 最大的差別：它要求你在線路圖階段就綁好封裝，
 // 我們允許你之後補，但絕不假裝已經有了。
@@ -84,7 +85,10 @@
       const b = PartsLib.build(m.lib, m.variant);
       if (b && b.ok) return {
         ok: true, pads: b.pads, body: b.body, source: 'partslib',
-        lib: m.lib, variant: m.variant, assumed: !ov && !!m.assumed
+        lib: m.lib, variant: m.variant, assumed: !ov && !!m.assumed,
+        // 通用 IC 封裝是 FootprintGen 推估出來的，警告要跟著走完整條路——
+        // 在這一層吞掉的話，推估出來的封裝在報告裡看起來會跟查表的一樣可靠
+        meta: b.meta
       };
       return { ok: false, reason: 'variantNotFound', lib: m.lib, variant: m.variant };
     }

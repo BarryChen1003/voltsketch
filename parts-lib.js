@@ -1,5 +1,5 @@
 /**
- * parts-lib.js — 基本電子零件庫（被動/分立/機構件的參數化 footprint）
+ * parts-lib.js — 基本電子零件庫（被動／分立／機構件的參數化 footprint ＋ 通用 IC 封裝）
  * pad schema 與 footprint-gen / kicad-io 相同：{num,name,x,y,rot,w,h,shape,drill,side,type,net,rr,cu}
  * 尺寸為 IPC-7351 名目近似；量產前以原廠 datasheet land pattern 覆核。
  * 座標：元件中心為原點，mm，y 向下。
@@ -125,6 +125,43 @@ window.PartsLib = (function () {
   const tp = d => ({ pads: [P(1, 'TP', 0, 0, d, d, { shape: 'circle', rr: 0 })], body: { w: d + 0.4, h: d + 0.4 } });
   const hole = d => ({ pads: [P(1, 'NPTH', 0, 0, d, d, { shape: 'circle', rr: 0, drill: d, type: 'np_thru_hole', side: '*', cu: false })], body: { w: d + 0.6, h: d + 0.6 } });
 
+  // ---- 通用 IC 封裝（走 FootprintGen，不另刻一套幾何）----
+  //
+  // 為什麼要有這一組：以前 IC 的封裝**只能由料號決定**——`Sch2Pcb` 在 ic-data 裡找不到
+  // 那顆料就整個放棄（`icNotInLibrary`）。可是「這顆是 SOIC-8」是設計者知道、而且跟料號
+  // 無關的事實：拿一顆還沒進庫的 MCU 畫板，不該因此連封裝都綁不了。
+  //
+  // 幾何一律交給 `FootprintGen.fromIC`（同一份 IPC-7351 名目近似），這裡只是把
+  // 「封裝名＋腳數」包成它認得的形狀。自己再刻一套 SOIC/QFN 的話，同一個封裝會在兩個
+  // 地方長出不一樣的 pad，而兩邊看起來都對。
+  //
+  // 誠實界定：`fromIC` 對尺寸缺漏的家族會用「家族＋腳數」推估並回 `meta.warnings`，
+  // 那些警告原樣往上帶——不要在這一層吞掉。
+  const icFp = (pkg, n) => {
+    const FG = (typeof window !== 'undefined' && window.FootprintGen) ||
+               (typeof globalThis !== 'undefined' && globalThis.FootprintGen) || null;
+    if (!FG || !FG.fromIC) return null;       // 沒載產生器就是「做不到」，不要自己編一個
+    const ic = { part: pkg, package: pkg, pins: [] };
+    for (let i = 1; i <= n; i++) ic.pins.push({ num: String(i), name: String(i) });
+    const r = FG.fromIC(ic);
+    if (!r || !r.ok || !r.pads || !r.pads.length) return null;
+    return { pads: r.pads, body: r.body, warnings: (r.meta && r.meta.warnings) || [] };
+  };
+  // 變體名字本身就是封裝名（"SOIC-8"），腳數直接從名字尾巴取，不另外維護一張對照表
+  const icGen = v => {
+    const m = /(\d{1,3})$/.exec(String(v));
+    return m ? icFp(String(v), parseInt(m[1], 10)) : null;
+  };
+  const IC_PKGS = {
+    soic:  ['SOIC-8', 'SOIC-14', 'SOIC-16', 'SOIC-18', 'SOIC-20', 'SOIC-24', 'SOIC-28'],
+    tssop: ['TSSOP-8', 'TSSOP-14', 'TSSOP-16', 'TSSOP-20', 'TSSOP-24', 'TSSOP-28', 'TSSOP-38'],
+    ssop:  ['SSOP-8', 'SSOP-16', 'SSOP-20', 'SSOP-24', 'SSOP-28'],
+    msop:  ['MSOP-8', 'MSOP-10', 'MSOP-12', 'MSOP-16'],
+    qfn:   ['QFN-16', 'QFN-20', 'QFN-24', 'QFN-28', 'QFN-32', 'QFN-40', 'QFN-48', 'QFN-64'],
+    qfp:   ['LQFP-32', 'LQFP-44', 'LQFP-48', 'LQFP-64', 'LQFP-80', 'LQFP-100', 'TQFP-32', 'TQFP-44', 'TQFP-64', 'TQFP-100'],
+    dip:   ['DIP-4', 'DIP-6', 'DIP-8', 'DIP-14', 'DIP-16', 'DIP-18', 'DIP-20', 'DIP-24', 'DIP-28', 'DIP-40']
+  };
+
   // ---- 型錄：id / refdes 前綴 / 規格表 ----
   const CHIP_R = ['0201', '0402', '0603', '0805', '1206', '1210', '2512'];
   const CHIP_S = ['0402', '0603', '0805', '1206'];
@@ -145,7 +182,14 @@ window.PartsLib = (function () {
     { id: 'fuse', ref: 'F',  variants: ['0603', '1206', '1812'], gen: v => chipOf(v) },
     { id: 'tp',   ref: 'TP', variants: ['Ø1.0', 'Ø1.5', 'Ø2.0'], gen: v => tp(parseFloat(v.slice(1))) },
     { id: 'hole', ref: 'H',  variants: ['M2 (Ø2.2)', 'M2.5 (Ø2.7)', 'M3 (Ø3.2)', 'M4 (Ø4.3)'],
-      gen: v => hole(parseFloat(v.match(/Ø([\d.]+)/)[1])) }
+      gen: v => hole(parseFloat(v.match(/Ø([\d.]+)/)[1])) },
+    { id: 'soic',  ref: 'U', variants: IC_PKGS.soic,  gen: icGen },
+    { id: 'tssop', ref: 'U', variants: IC_PKGS.tssop, gen: icGen },
+    { id: 'ssop',  ref: 'U', variants: IC_PKGS.ssop,  gen: icGen },
+    { id: 'msop',  ref: 'U', variants: IC_PKGS.msop,  gen: icGen },
+    { id: 'qfn',   ref: 'U', variants: IC_PKGS.qfn,   gen: icGen },
+    { id: 'qfp',   ref: 'U', variants: IC_PKGS.qfp,   gen: icGen },
+    { id: 'dip',   ref: 'U', variants: IC_PKGS.dip,   gen: icGen }
   ];
 
   function list() { return CATALOG.map(c => ({ id: c.id, ref: c.ref, variants: c.variants })); }
@@ -154,10 +198,17 @@ window.PartsLib = (function () {
     const cat = CATALOG.find(c => c.id === catId);
     if (!cat || !cat.variants.includes(variant)) return { ok: false };
     const r = cat.gen(variant);
+    // IC 家族是交給 FootprintGen 產的，它可能產不出來（沒載入、或那個封裝它認不得）。
+    // 回一個 pads 是 undefined 的「成功」會讓呼叫端在放件時才爆，而且看不出是誰的錯。
+    if (!r || !r.pads || !r.pads.length) return { ok: false, reason: 'generatorFailed', lib: catId, variant };
     return {
       ok: true, ref: cat.ref, name: variant,
       pads: r.pads, body: r.body,
-      meta: { source: 'IPC-7351 名目近似（量產前以原廠 land pattern 覆核）' }
+      meta: {
+        source: 'IPC-7351 名目近似（量產前以原廠 land pattern 覆核）',
+        // 推估來的尺寸原樣往上帶：吞掉的話，使用者會以為這個 footprint 跟被動件一樣可靠
+        warnings: r.warnings || []
+      }
     };
   }
 

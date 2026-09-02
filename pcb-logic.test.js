@@ -2767,5 +2767,88 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   app.state = savedState;
 }
 
+// 50) 通用 IC 封裝：料號不在庫裡也綁得了封裝
+{
+  const L = window.PartsLib;
+  const cats = L.list();
+
+  // ---- 型錄長出來了，而且每一個變體都真的做得出來 ----
+  {
+    const ids = cats.map(c => c.id);
+    ['soic', 'tssop', 'ssop', 'msop', 'qfn', 'qfp', 'dip'].forEach(id =>
+      ok(ids.indexOf(id) >= 0, '50 型錄要有 ' + id));
+    let bad = [];
+    for (const c of cats) for (const v of c.variants) {
+      const b = L.build(c.id, v);
+      if (!b.ok || !b.pads || !b.pads.length) bad.push(c.id + ':' + v);
+    }
+    eq(bad.join(','), '', '50 型錄列出來的每個變體都要做得出來（列了做不出來＝點下去才發現）');
+  }
+
+  // ---- 腳數要跟封裝名對得上 ----
+  {
+    const check = (lib, v, n) => eq(L.build(lib, v).pads.length, n, '50 ' + v + ' 要有 ' + n + ' 個 pad');
+    check('soic', 'SOIC-8', 8);
+    check('tssop', 'TSSOP-20', 20);
+    check('qfn', 'QFN-32', 32);
+    check('qfp', 'LQFP-64', 64);
+    check('dip', 'DIP-14', 14);
+  }
+
+  // ---- 幾何交給 FootprintGen，不另刻一套 ----
+  // 自己刻的話，同一個封裝會在兩個地方長出不一樣的 pad，而兩邊看起來都對。
+  {
+    const FG = window.FootprintGen;
+    const ic = { part: 'SOIC-16', package: 'SOIC-16', pins: [] };
+    for (let i = 1; i <= 16; i++) ic.pins.push({ num: String(i), name: String(i) });
+    const direct = FG.fromIC(ic);
+    const viaLib = L.build('soic', 'SOIC-16');
+    eq(JSON.stringify(viaLib.pads), JSON.stringify(direct.pads),
+      '50 PartsLib 的 IC 封裝要跟 FootprintGen 直接產的一模一樣');
+  }
+
+  // ---- 推估來的尺寸要往上帶，不可以吞掉 ----
+  // QFN 沒有給尺寸時 FootprintGen 用「家族＋腳數」推，那跟被動件查表出來的不是同一種可靠度。
+  {
+    const q = L.build('qfn', 'QFN-32');
+    ok((q.meta.warnings || []).length > 0, '50 推估來的封裝要帶著警告');
+    const r = L.build('res', '0603');
+    eq((r.meta.warnings || []).length, 0, '50 查表出來的被動件不該無中生有警告');
+  }
+
+  // ---- 產生器沒載入時要老實說做不到 ----
+  // 回一個 pads 是 undefined 的「成功」會讓呼叫端在放件時才爆，而且看不出是誰的錯。
+  {
+    const saved = window.FootprintGen;
+    window.FootprintGen = null; global.FootprintGen = null;
+    const b = L.build('soic', 'SOIC-8');
+    eq(b.ok, false, '50 沒有產生器就要回失敗');
+    eq(b.reason, 'generatorFailed', '50 失敗理由要講清楚是產生器的事');
+    ok(L.build('res', '0603').ok, '50 被動件不依賴產生器，仍要做得出來');
+    window.FootprintGen = saved; global.FootprintGen = saved;
+  }
+
+  // ---- 線路圖端：料號不在 IC_DATA 裡，但綁了封裝就轉得出來 ----
+  // 這是這一節的重點。以前 IC 的封裝**只能由料號決定**，庫裡沒有那顆料就整個放棄。
+  {
+    const S2 = window.Sch2Pcb;
+    const unknown = { id: 'u1', type: 'ic', label: 'U1', name: 'NO-SUCH-PART-9999' };
+    const before = S2.mapFootprint(unknown, {});
+    eq(before.ok, false, '50 料號不在庫裡、又沒綁封裝 → 照樣要失敗（不可以自己編一顆）');
+    eq(before.reason, 'icNotInLibrary', '50 理由要是「料號不在庫裡」');
+
+    const bound = S2.mapFootprint(Object.assign({ footprint: 'soic:SOIC-8' }, unknown), {});
+    eq(bound.ok, true, '50 綁了通用封裝就轉得出來');
+    eq(bound.pads.length, 8, '50 轉出來的要是 SOIC-8 的 8 隻腳');
+    eq(bound.source, 'partslib', '50 來源是封裝庫，不是料號');
+    eq(bound.assumed, false, '50 明講的封裝不可以標成「猜的」');
+
+    const qfn = S2.mapFootprint(Object.assign({ footprint: 'qfn:QFN-32' }, unknown), {});
+    eq(qfn.ok, true, '50 QFN 也要通');
+    ok(qfn.meta && (qfn.meta.warnings || []).length > 0,
+      '50 推估來的封裝，警告要一路帶到轉換結果（在半路吞掉的話報告會看起來很可靠）');
+  }
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

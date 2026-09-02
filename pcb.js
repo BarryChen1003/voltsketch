@@ -1551,7 +1551,11 @@ const pcbApp = {
     this.renderPartsList();
     this.populateEmiSelects();
     this.render();
-    say(pcbT('pl_placed', { ref, name: comp.part, pads: r.pads.length }) + ' ' + pcbT('pj_fp_src'));
+    // 推估來的尺寸要講出來。IC 家族是 FootprintGen 用「家族＋腳數」推的，
+    // 跟被動件那種查表出來的不是同一種可靠度——不說的話使用者無從分辨。
+    const warns = (r.meta && r.meta.warnings) || [];
+    say(pcbT('pl_placed', { ref, name: comp.part, pads: r.pads.length })
+      + (warns.length ? '；⚠ ' + warns.join('；') : '') + ' ' + pcbT('pj_fp_src'));
   },
 
   // 公版元件來源：schema v2 用 components（含尺寸/正反面），舊資料退回 blocks

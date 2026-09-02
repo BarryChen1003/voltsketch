@@ -89,6 +89,10 @@ powershell -ExecutionPolicy Bypass -File tools\live-check.ps1
 - **抓不到要說抓不到**。下載失敗時內容是空的，逐字元比對只會顯示「不一樣」，
   會被誤讀成沒部署。腳本改成印出例外訊息並計入失敗數。
 
+**HTML 一定會報「不同」，那不是沒部署**：Cloudflare 會往線上的 HTML 注入一段
+analytics beacon（`static.cloudflareinsights.com/beacon.min.js`，實測 `pcb.html` 多 359 字元）。
+`.js` 檔不會被動到，所以判斷有沒有部署**看 js**；HTML 要比對就得先把 beacon 那一段拿掉。
+
 順帶一提：`tools/live-check.ps1` 存成 **UTF-8 with BOM**。沒有 BOM 的話 5.1 會用
 cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條對所有含中文的 `.ps1` 都成立。
 
@@ -184,7 +188,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | 測試 | 斷言 | 守什麼 |
 |---|---|---|
 | `gerber-check.js` | 473 | 匯出**結構**：表頭、層數、鑽孔對齊 pad、CPL／IPC 行數 |
-| `pcb-logic.test.js` | 594 | 編輯器邏輯、DRC、繞線策略、差分對、橡皮筋、公版缺陷預算 |
+| `pcb-logic.test.js` | 621 | 編輯器邏輯、DRC、繞線策略、差分對、橡皮筋、公版缺陷預算 |
 | `odb-check.js` | 387 | ODB++ 結構 + **readback**：features 讀回來逐筆比對 |
 | `gerber-readback.js` | 195 | Gerber **幾何**：解析回來跟原始板逐條比對 |
 | `pcb-mfg.test.js` | 137 | 淚滴／縫合孔／鑽孔表／拼板／轉角導角的幾何合法性 |
@@ -638,7 +642,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 
 | 面向 | 還缺什麼 |
 |---|---|
-| 線路圖 ↔ Layout | 2026-09-02 補上：封裝可在線路圖端綁定、net class 可在導線上指定並帶到 PCB。**還缺**：封裝庫只有 PartsLib 那 16 類（IC 仍由料號決定）、class 只能整條 net 指定（不能只指定某一段） |
+| 線路圖 ↔ Layout | 2026-09-02 補上：封裝可在線路圖端綁定、net class 可在導線上指定並帶到 PCB。2026-09-02 再補上**通用 IC 封裝**：`PartsLib` 從 15 類長到 22 類（多了 SOIC／TSSOP／SSOP／MSOP／QFN／QFP／DIP，共 124 個變體），幾何交給 `FootprintGen.fromIC`（不另刻一套，否則同一個封裝會在兩處長出不一樣的 pad）。意義是**料號不在 `ic-data.js` 裡也綁得了封裝**——以前 IC 的封裝只能由料號決定，庫裡沒有那顆料就整個 `icNotInLibrary`。推估來的尺寸（QFN 的 pitch／body）警告一路帶到轉換報告，不在中間吞掉。**還缺**：class 只能整條 net 指定（不能只指定某一段）；連接器（USB／JST／RJ45）與 THT 分立件（TO-220／TO-92／DO-41）沒有，那些要照原廠 land pattern 建，不能用家族推估 |
 | 互動 | 推擠會繞路但**不重繞**（同層橫穿仍明確拒絕）；cross-probe 反查不到母圖上的圖紙符號 |
 | 製造 | 🔴 沒人用真 CAM／CAD 開過匯出檔（站主無 CAD，等打樣時板廠代驗）；IPC-2581 疊構沒有材料；組裝圖外形只有矩形 courtyard |
 | 模擬 | 元件模型一階；量測精度受取樣間隔限制；掃描指標只有 −3dB |
