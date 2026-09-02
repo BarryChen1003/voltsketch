@@ -310,3 +310,82 @@ jobs:
             if (bad) process.exit(1);
             console.log("HTML script 引用全部存在");
           '
+
+  # ---------------------------------------------------------------------------
+  # 第三方驗證：用跟我們無關的讀檔器開我們產出的板廠檔。
+  #
+  # 為什麼要獨立一個 job：上面那些檢查驗的是「我們寫出來的東西符合**我們對格式的理解**」。
+  # 理解錯了，自己驗自己永遠是綠的——2026-09-02 實測：STEP 內部 62 條斷言全綠，
+  # 而 CAD 打開是空檔；KiCad 匯出的 177 個 pad 只有 1 個帶 net，所有測試也都綠的。
+  #
+  # 這裡跑得動的兩個判官：
+  #   gerbonara（pip）        讀 Gerber/Excellon
+  #   kicad-cli（官方 image） 對我們匯出的 .kicad_pcb 跑 KiCad 自己的 DRC
+  # STEP 的 OCCT 檢查留在本機（tools/verify/verify.ps1）：那要 FreeCAD／OCP，
+  # 在 CI 裝要好幾百 MB，而 step.test.js 已經把當初那兩個坑（產品結構、面的平面）
+  # 釘成斷言了。這件事寫在 tools/verify/README.md，不要讓人以為 CI 全包。
+  verify-3p:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 產出匯出檔
+        run: node tools/verify/emit.js
+
+      - name: gerbonara 讀 Gerber/Excellon
+        run: |
+          set -e
+          python3 -m venv /tmp/v3p
+          /tmp/v3p/bin/pip install --quiet --upgrade pip
+          /tmp/v3p/bin/pip install --quiet gerbonara
+          node -e '
+            const idx = require("./tools/verify/out/index.json");
+            const fs = require("fs");
+            for (const b of idx) fs.writeFileSync("tools/verify/out/" + b.id + "/expect.json", JSON.stringify(b.expect));
+          '
+          fail=0
+          for d in tools/verify/out/*/; do
+            id=$(basename "$d")
+            /tmp/v3p/bin/python tools/verify/gerber-check.py "$d/gerber" "$d/expect.json" "$d/gerber-3p.json" || true
+            node -e '
+              const r = require("./" + process.argv[1]);
+              if (!r.ok) { console.error("::error::" + process.argv[2] + " gerbonara: " + (r.problems || []).join("; ")); process.exit(1); }
+              console.log(process.argv[2] + ": " + r.gerberFiles + " 層可讀，鑽孔 " + r.holes);
+            ' "$d/gerber-3p.json" "$id" || fail=1
+          done
+          [ $fail -eq 0 ]
+
+      - name: kicad-cli 跑 KiCad 自己的 DRC
+        run: |
+          set -e
+          docker pull --quiet kicad/kicad:10.0
+          fail=0
+          for d in tools/verify/out/*/; do
+            id=$(basename "$d")
+            docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/$d":/w -w /w kicad/kicad:10.0 kicad-cli pcb drc --format json --output kicad-drc.json --severity-error board.kicad_pcb || true
+            node -e '
+              const fs = require("fs");
+              const p = process.argv[1], id = process.argv[2];
+              if (!fs.existsSync(p)) { console.error("::error::" + id + " KiCad DRC 沒產出報告"); process.exit(1); }
+              const drc = JSON.parse(fs.readFileSync(p, "utf8"));
+              const base = JSON.parse(fs.readFileSync("tools/verify/baseline.json", "utf8"));
+              const errs = (drc.violations || []).filter(v => v.severity === "error");
+              const by = {};
+              errs.forEach(v => { by[v.type] = (by[v.type] || 0) + 1; });
+              const unexpected = Object.entries(by).filter(([t, n]) => {
+                const acc = base.acceptedErrors[t];
+                return !(acc && acc.boards.includes(id) && n <= acc.max);
+              });
+              if (unexpected.length) {
+                console.error("::error::" + id + " KiCad DRC 有沒查過的 error：" +
+                  unexpected.map(([t, n]) => t + "×" + n).join(", ") +
+                  "（查清楚再寫進 tools/verify/baseline.json，附理由）");
+                process.exit(1);
+              }
+              console.log(id + ": KiCad DRC error " + errs.length + "，都在 baseline 裡");
+            ' "$d/kicad-drc.json" "$id" || fail=1
+          done
+          [ $fail -eq 0 ]
