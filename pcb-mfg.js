@@ -644,6 +644,16 @@
       setTimeout(() => URL.revokeObjectURL(a.href), 1000);
       let msg = T('step_done', { n: r.stats.solids, p: r.stats.parts, e: r.entities, th });
       if (r.warnings.some(x => x.code === 'outlineNotClosed')) msg += ' │ ' + T('step_openoutline');
+      // 綁了模型卻解析不了的會安靜退回佔位方塊。不講的話機構端會以為那顆料真的長那樣。
+      // pcb-step.js 早就把這個警告產出來了，只是以前沒有人顯示它。
+      const unusable = r.warnings.filter(x => x.code === 'modelUnusable');
+      if (unusable.length) msg += ' │ ' + T('step_model_bad', {
+        n: unusable.length, refs: unusable.slice(0, 5).map(x => x.ref).join(', ')
+      });
+      // 攤平的代價：同一顆料放 N 次就有 N 份幾何。講出數字，使用者才有依據判斷值不值得。
+      if (r.stats.dupEntities > 0) msg += ' │ ' + T('step_flat_cost', {
+        u: r.stats.modelUnique, p: r.stats.modelPlacements, e: r.stats.dupEntities
+      });
       msg += ' │ ' + T('step_caveat');
       say('stepOut', msg);
       toast(msg, r.warnings.length ? 'warn' : 'info');

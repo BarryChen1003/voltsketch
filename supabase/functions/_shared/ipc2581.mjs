@@ -237,11 +237,52 @@ function build(state, padAbsFn, baseName) {
   });
   L.push('      <Layer name="Edge.Cuts" layerFunction="BOARD_OUTLINE" side="NONE" polarity="POSITIVE"/>');
 
-  // 疊構（只有順序與厚度，沒有材料——我們沒有那些資料）
-  L.push('      <Stackup stackupStatus="PROPOSED" totalFinishedThickness="1.600000">');
-  L.push('        <StackupGroup name="primary" thickness="1.600000">');
+  // --- 疊構 ---
+  //
+  // 以前這一段整個是寫死的：總厚 1.6mm、每層銅 0.035mm，不管使用者在疊層編輯器
+  // 設了什麼。那不是「沒有資料」，是**有資料卻沒送過來**——安靜地宣稱一個假數字，
+  // 比留白危險：板廠會照著它報價與壓合。
+  // 現在客戶端會把疊層帶過來（`state.stackup`，見 pcb.js 的 exportFab）：
+  //   oz[層id] → 銅厚（1 oz ≈ 0.0348mm，IPC-4562 的名目值）
+  //   diel[i]  → 第 i 層介電的厚度 t 與介電常數 er
+  //
+  // **材料與 Dk 不寫進 <Spec>／<Layer layerFunction="DIELCORE">**：那些標準元素的
+  // schema 我們沒有查證到（webstds.ipc.org 擋外部存取），照猜的寫出去就是
+  // 「打得開但欄位是錯的」。走本檔既有的 NonstandardAttribute——跟阻抗那邊同一條規則：
+  // 不確定標準怎麼寫，就放在明確標示為非標準的地方，不要假裝它是標準欄位。
+  const OZ_MM = 0.0348;                       // 1 oz/ft² 銅的名目厚度
+  const sk = (state.stackup && typeof state.stackup === 'object') ? state.stackup : null;
+  const ozOf = id => {
+    const v = sk && sk.oz ? Number(sk.oz[id]) : NaN;
+    return (isFinite(v) && v > 0) ? v : 1;
+  };
+  const diel = (sk && Array.isArray(sk.diel)) ? sk.diel : [];
+  const cuTh = cu.map(l => (sk ? ozOf(l.id) : 1) * OZ_MM);
+  const dielTh = [];
+  for (let i = 0; i < Math.max(0, cu.length - 1); i++) {
+    const d = diel[i] || {};
+    const t = Number(d.t);
+    dielTh.push(isFinite(t) && t > 0 ? t : 0.2);
+  }
+  const total = cuTh.reduce((a, b) => a + b, 0) + dielTh.reduce((a, b) => a + b, 0);
+  const f6 = v => Number(v).toFixed(6);
+  if (!sk) warnings.push(T('ipc_w_stackup_default'));
+  if (dielTh.length) warnings.push(T('ipc_w_stackup_ns'));
+  stats.stackupTotal = Math.round(total * 1000) / 1000;
+
+  L.push('      <Stackup stackupStatus="PROPOSED" totalFinishedThickness="' + f6(total) + '">');
+  L.push('        <StackupGroup name="primary" thickness="' + f6(total) + '">');
   cu.forEach((l, i) => {
-    L.push('          <StackupLayer layerOrGroupRef="' + X(l.id) + '" thickness="0.035000" sequence="' + (i + 1) + '"/>');
+    L.push('          <StackupLayer layerOrGroupRef="' + X(l.id) + '" thickness="' + f6(cuTh[i]) + '" sequence="' + (i + 1) + '"/>');
+  });
+  // 介電層：厚度與 Dk 走非標準屬性（理由見上面）。順序照銅層之間的位置編號。
+  dielTh.forEach((t, i) => {
+    const er = Number((diel[i] || {}).er);
+    L.push('          <NonstandardAttribute name="dielectric' + (i + 1) + 'ThicknessMm" value="' + f6(t) + '" type="FLOAT"/>');
+    L.push('          <NonstandardAttribute name="dielectric' + (i + 1) + 'Dk" value="' +
+      f6(isFinite(er) && er > 0 ? er : 4.4) + '" type="FLOAT"/>');
+    L.push('          <NonstandardAttribute name="dielectric' + (i + 1) + 'Between" value="' +
+      X(cu[i].id + '/' + cu[i + 1].id) + '" type="STRING"/>');
   });
   L.push('        </StackupGroup>');
   L.push('      </Stackup>');

@@ -222,6 +222,12 @@
             for (const e of moved) { w.raw(e.id, e.body); if (e.id > top) top = e.id; }
             for (const sid of SM.solidsOf(pr.entities)) solids.push(sid + (top - pr.maxId));
             stats.parts++; stats.models = (stats.models || 0) + 1;
+            // 攤平的代價要量出來：同一顆料放十次就有十份幾何（理由見 pcb-step-model.js 檔頭）。
+            // 不量的話，使用者只看到「檔案怎麼這麼大」，不會知道那是這個取捨造成的，
+            // 也就沒有依據判斷「值不值得改成裝配結構」。
+            stats.modelUse = stats.modelUse || {};
+            stats.modelUse[key] = (stats.modelUse[key] || 0) + 1;
+            if (stats.modelUse[key] > 1) stats.dupEntities = (stats.dupEntities || 0) + pr.entities.length;
             continue;
           }
           // 解析不了就退回方塊，並且**說出來**——安靜地少一顆模型，
@@ -257,6 +263,15 @@
     w.put('ADVANCED_BREP_SHAPE_REPRESENTATION(\'' + opts.name + '\',(#' + ax + ',' +
       solids.map(s => '#' + s).join(',') + '),#' + ctx + ')');
 
+    // 幾何被複製了幾份：唯一模型數 vs 放置次數。裝配結構做得出來的話，
+    // 省下來的就是 dupEntities 這些實體。這是給「該不該改成裝配」的判斷依據，
+    // 不是警告——攤平是刻意的選擇，不是 bug。
+    if (stats.modelUse) {
+      stats.modelUnique = Object.keys(stats.modelUse).length;
+      stats.modelPlacements = Object.values(stats.modelUse).reduce((a, n) => a + n, 0);
+      stats.dupEntities = stats.dupEntities || 0;
+      delete stats.modelUse;                 // 中繼資料，不進對外的統計
+    }
     return { text: w.text(opts.name), stats, warnings, entities: w.count };
   }
 

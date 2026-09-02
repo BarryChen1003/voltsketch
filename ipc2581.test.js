@@ -310,6 +310,68 @@ function board() {
     eq(asm._isPolarised({ ref: 'C1', part: '0603' }), false, '9.5 一般陶瓷電容沒有方向');
   }
 
+  // ---- 疊構：厚度與 Dk 要來自使用者設定，不是寫死的 1.6mm ----
+  // 以前不管疊層編輯器設了什麼，都寫 totalFinishedThickness=1.6、每層銅 0.035。
+  // 那不是「沒有資料」，是有資料沒送過來——而板廠會照著那個假數字報價與壓合。
+  {
+    const st = board();
+    st.layerStack = [{ id: 'F.Cu', kind: 'copper' }, { id: 'In1.Cu', kind: 'copper' },
+                     { id: 'In2.Cu', kind: 'copper' }, { id: 'B.Cu', kind: 'copper' }];
+    st.stackup = { oz: { 'F.Cu': 1, 'In1.Cu': 0.5, 'In2.Cu': 0.5, 'B.Cu': 2 },
+                   diel: [{ t: 0.2, er: 4.4 }, { t: 1.0, er: 4.2 }, { t: 0.2, er: 4.4 }] };
+    const xml = ipc.build(st, padAbs, 'demo').files[0].text;
+    eq(checkXml(xml), null, 'IPC 疊構：帶疊層之後仍是 well-formed XML');
+    // 1oz = 0.0348mm；0.5oz 減半、2oz 加倍
+    ok(/StackupLayer layerOrGroupRef="F.Cu" thickness="0.034800"/.test(xml), 'IPC 疊構：1oz 銅厚要照算');
+    ok(/StackupLayer layerOrGroupRef="In1.Cu" thickness="0.017400"/.test(xml), 'IPC 疊構：0.5oz 要減半');
+    ok(/StackupLayer layerOrGroupRef="B.Cu" thickness="0.069600"/.test(xml), 'IPC 疊構：2oz 要加倍');
+    // 總厚＝所有銅＋所有介電，不可以再是寫死的 1.6
+    ok(/totalFinishedThickness="1.539200"/.test(xml), 'IPC 疊構：總厚要是加總出來的');
+    ok(!/totalFinishedThickness="1.600000"/.test(xml), 'IPC 疊構：不可以還留著寫死的 1.6mm');
+    // 介電：厚度與 Dk 走 NonstandardAttribute（標準 <Spec>/DIELCORE 的 schema 沒查證到）
+    ok(/name="dielectric2ThicknessMm" value="1.000000"/.test(xml), 'IPC 疊構：介電厚度要帶出去');
+    ok(/name="dielectric2Dk" value="4.200000"/.test(xml), 'IPC 疊構：Dk 要帶出去');
+    ok(xml.indexOf('name="dielectric2Between" value="In1.Cu/In2.Cu"') > 0, 'IPC 疊構：要講清楚夾在哪兩層之間');
+    ok(!/DIELCORE|<Spec /.test(xml), 'IPC 疊構：不可以自創沒查證過 schema 的標準元素');
+  }
+
+  // ---- 沒帶疊層就要說出來，不可以安靜地用預設值假裝 ----
+  {
+    const st = board();
+    delete st.stackup;
+    const r = ipc.build(st, padAbs, 'demo');
+    ok(r.warnings.some(w => w.k === 'ipc_w_stackup_default'), 'IPC 疊構：沒帶疊層要警告');
+    const st2 = board();
+    st2.stackup = { oz: { 'F.Cu': 1, 'B.Cu': 1 }, diel: [{ t: 0.2, er: 4.4 }] };
+    ok(!ipc.build(st2, padAbs, 'demo').warnings.some(w => w.k === 'ipc_w_stackup_default'),
+      'IPC 疊構：帶了就不該再警告');
+  }
+
+  // ---- 組裝圖：有真的 courtyard 線段就畫真的形狀，不是外接矩形 ----
+  // L 形、帶缺角的封裝畫成方塊，看圖的人會以為那是「沒資料的佔位」，明明資料就在檔裡。
+  {
+    const st = board();
+    st.components = [Object.assign({}, st.components[0], {
+      crtyd: {
+        minx: -3, miny: -3, maxx: 3, maxy: 3,
+        segs: [{ x1: -3, y1: -3, x2: 3, y2: -3 }, { x1: 3, y1: -3, x2: 3, y2: 0 },
+               { x1: 3, y1: 0, x2: 0, y2: 0 }, { x1: 0, y1: 0, x2: 0, y2: 3 },
+               { x1: 0, y1: 3, x2: -3, y2: 3 }, { x1: -3, y1: 3, x2: -3, y2: -3 }]
+      }
+    })];
+    const r = asm.sheet(st, padAbs, { side: 'top' });
+    ok(/<path class="cy"/.test(r.text), '組裝圖：有線段就畫實際外框');
+    ok(!/<rect class="cy"/.test(r.text), '組裝圖：有線段時不可以再畫外接矩形');
+    eq(r.stats.courtyardShape, 1, '組裝圖：真形狀要單獨算一格');
+    ok(/1 of 1 outlines are the real courtyard shape/.test(r.text), '組裝圖：圖說要寫出幾顆是真形狀');
+    // 只有 bbox 的仍然退回矩形，而且算在另一格
+    const st2 = board();
+    st2.components = [Object.assign({}, st2.components[0], { crtyd: { minx: -3, miny: -3, maxx: 3, maxy: 3 } })];
+    const r2 = asm.sheet(st2, padAbs, { side: 'top' });
+    ok(/<rect class="cy"/.test(r2.text), '組裝圖：只有 bbox 就畫矩形');
+    eq(r2.stats.courtyardShape, 0, '組裝圖：bbox 不算真形狀');
+  }
+
   console.log(`\nipc2581.test: ${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 })();

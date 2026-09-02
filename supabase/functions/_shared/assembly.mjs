@@ -111,7 +111,7 @@ function sheet(state, padAbsFn, opts) {
     el.push('<rect class="brd" x="' + N(-W / 2) + '" y="' + N(-H / 2) + '" width="' + N(W) + '" height="' + N(H) + '"/>');
   }
 
-  let placed = 0, skipped = 0, dnpCount = 0, cyCount = 0, padCount = 0;
+  let placed = 0, skipped = 0, dnpCount = 0, cyCount = 0, cyShapeCount = 0, padCount = 0;
   const rows = [];
 
   for (const c of (state.components || [])) {
@@ -134,8 +134,20 @@ function sheet(state, padAbsFn, opts) {
     const hasCy = !!(cy && Number.isFinite(cy.minx) && Number.isFinite(cy.maxx) && (cy.maxx - cy.minx) > 0);
     if (hasCy) {
       cyCount++;
-      el.push('  <rect class="cy" x="' + N(cy.minx) + '" y="' + N(cy.miny) +
-        '" width="' + N(cy.maxx - cy.minx) + '" height="' + N(cy.maxy - cy.miny) + '"/>');
+      // 有實際線段就畫實際形狀。以前一律畫外接矩形——L 形、帶缺角、雙體的封裝
+      // 全被畫成方塊，看圖的人會以為那是「沒資料的佔位」，明明資料就在檔裡。
+      // 圓／弧的 courtyard 只有 bbox（線段化是另一件事），那種仍然退回矩形。
+      const segs = Array.isArray(cy.segs) ? cy.segs.filter(s =>
+        Number.isFinite(s.x1) && Number.isFinite(s.y1) && Number.isFinite(s.x2) && Number.isFinite(s.y2) &&
+        (Math.abs(s.x2 - s.x1) > 1e-9 || Math.abs(s.y2 - s.y1) > 1e-9)) : [];
+      if (segs.length) {
+        cyShapeCount++;
+        const d = segs.map(s => 'M' + N(s.x1) + ',' + N(s.y1) + 'L' + N(s.x2) + ',' + N(s.y2)).join('');
+        el.push('  <path class="cy" d="' + d + '"/>');
+      } else {
+        el.push('  <rect class="cy" x="' + N(cy.minx) + '" y="' + N(cy.miny) +
+          '" width="' + N(cy.maxx - cy.minx) + '" height="' + N(cy.maxy - cy.miny) + '"/>');
+      }
     }
     el.push('  <rect class="' + (isDnp ? 'dnp' : 'body') + '" x="' + N(-w / 2) + '" y="' + N(-h / 2) +
       '" width="' + N(w) + '" height="' + N(h) + '"/>');
@@ -181,7 +193,8 @@ function sheet(state, padAbsFn, opts) {
       '   ● = pin 1   ◣ = polarity   dashed = do not populate') + '</text>');
   // 第二行：外框的來源。看圖的人有權知道哪些是量出來的、哪些是估的。
   el.push('<text class="sub" x="' + N(-W / 2) + '" y="' + N(yTitle + 5.6) + '">' +
-    X(cyCount + ' of ' + placed + ' outlines from real courtyard, rest are body-size boxes' +
+    X(cyShapeCount + ' of ' + placed + ' outlines are the real courtyard shape, ' +
+      (cyCount - cyShapeCount) + ' are its bounding box, rest are body-size boxes' +
       '   ' + padCount + ' pads drawn') + '</text>');
 
   el.push('</svg>');
@@ -189,7 +202,7 @@ function sheet(state, padAbsFn, opts) {
   return {
     name: (o.base || 'board') + '-assembly-' + side + '.svg',
     text: el.join(NL) + NL,
-    stats: { side, placed, dnp: dnpCount, skipped, courtyard: cyCount, pads: padCount },
+    stats: { side, placed, dnp: dnpCount, skipped, courtyard: cyCount, courtyardShape: cyShapeCount, pads: padCount },
     rows,
   };
 }

@@ -72,7 +72,9 @@ const count = (txt, cls) => (txt.match(new RegExp('class="' + cls + '"', 'g')) |
   eq(r.stats.placed, 2, '3.1 兩顆都放');
   eq(r.stats.courtyard, 1, '3.2 只有一顆有真的 courtyard');
   eq(count(r.text, 'cy'), 1, '3.3 只畫一個 courtyard 框');
-  ok(/1 of 2 outlines from real courtyard/.test(r.text), '3.4 **圖上要寫出幾顆是真的**');
+  // 只有 bbox（沒有 segs）的算「外接矩形」那一格，不是「真的形狀」那一格
+  ok(/0 of 2 outlines are the real courtyard shape, 1 are its bounding box/.test(r.text),
+    '3.4 **圖上要分開寫出真形狀／外接矩形／估的各幾顆**');
   // 壞掉的 courtyard（寬度 0 或 NaN）不算，寧可退回估的也不要畫一條線
   const bad = comp({ ref: 'U2', crtyd: { minx: 1, miny: 1, maxx: 1, maxy: 5 }, pads: [pad(1, 0, 0)] });
   eq(A.sheet(board([bad]), padAbs, { side: 'top' }).stats.courtyard, 0, '3.5 寬度 0 的 courtyard 不算');

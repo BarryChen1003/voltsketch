@@ -159,7 +159,7 @@ window.KicadIO = (function () {
         const st = find(n, 'stroke');
         return num((find(st || [], 'width') || [])[1]) || num((find(n, 'width') || [])[1]) || 0.12;
       };
-      const silk = [], cyPts = [];
+      const silk = [], cyPts = [], cySegs = [];
       const shapeNodes = [
         ...findAll(fp, 'fp_line').map(n => ['line', n]),
         ...findAll(fp, 'fp_rect').map(n => ['rect', n]),
@@ -176,7 +176,7 @@ window.KicadIO = (function () {
           const s = P('start'), e = P('end');
           if (!s || !e) continue;
           if (silky) silk.push({ kind: 'line', x1: s[0], y1: s[1], x2: e[0], y2: e[1], w: strokeW(n), side });
-          if (cy) cyPts.push(s, e);
+          if (cy) { cyPts.push(s, e); cySegs.push({ x1: s[0], y1: s[1], x2: e[0], y2: e[1] }); }
         } else if (kind === 'rect') {
           const s = P('start'), e = P('end');
           if (!s || !e) continue;
@@ -187,7 +187,11 @@ window.KicadIO = (function () {
             silk.push({ kind: 'line', x1: e[0], y1: e[1], x2: s[0], y2: e[1], w, side });
             silk.push({ kind: 'line', x1: s[0], y1: e[1], x2: s[0], y2: s[1], w, side });
           }
-          if (cy) cyPts.push(s, e);
+          if (cy) {
+            cyPts.push(s, e);
+            cySegs.push({ x1: s[0], y1: s[1], x2: e[0], y2: s[1] }, { x1: e[0], y1: s[1], x2: e[0], y2: e[1] },
+                         { x1: e[0], y1: e[1], x2: s[0], y2: e[1] }, { x1: s[0], y1: e[1], x2: s[0], y2: s[1] });
+          }
         } else if (kind === 'circle') {
           const c = P('center'), e = P('end');
           if (!c || !e) continue;
@@ -204,7 +208,11 @@ window.KicadIO = (function () {
       let crtyd = null;
       if (cyPts.length) {
         const xs = cyPts.map(p => p[0]), ys = cyPts.map(p => p[1]);
+        // segs 是**實際的 courtyard 線段**。bbox 留著是因為 DRC 只需要外接矩形，
+        // 但組裝圖要畫真的形狀——L 形、帶缺角的封裝畫成矩形會讓看圖的人以為那是佔位。
+        // 圓與弧只進 bbox（畫成線段要細分，那是另一件事），所以 segs 可能不完整。
         crtyd = { minx: Math.min(...xs), miny: Math.min(...ys), maxx: Math.max(...xs), maxy: Math.max(...ys) };
+        if (cySegs.length) crtyd.segs = cySegs;
       }
       // 可見絲印文字（reference/value/user；hide 略過）
       const silkTexts = [];

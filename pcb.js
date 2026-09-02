@@ -1398,6 +1398,13 @@ const pcbApp = {
       }
     } catch (e) { /* 帶不過去就只是少一欄註記，不該擋住匯出 */ }
 
+    // 疊層也要帶過去。它存在 localStorage，Edge Function 讀不到——以前 IPC-2581 因此
+    // 把總厚寫死 1.6mm、每層銅寫死 0.035mm。那不是「沒有資料」，是有資料沒送，
+    // 而板廠會照著那個假數字報價與壓合。
+    try {
+      if (window.Stackup) s.stackup = window.Stackup.load(s);
+    } catch (e) { /* 帶不過去就退回預設值，並由匯出端警告 */ }
+
     const base = s.kicad ? s.kicad.fileName : 'hardwareai';
     say(pcbT('pj_gerber_working'));
 

@@ -242,5 +242,62 @@ const segsOf = pts => pts.map((p, i) => {
   ok(S.verify(zeroSize.text).ok, '6 尺寸 0 的元件不可產生壞檔');
 }
 
+// 7) 攤平的代價要量得出來，而且讀不進來的模型要說出來
+//
+// 匯入的 STEP 是**攤平**進來的（每個實例一份幾何，理由見 pcb-step-model.js 檔頭）。
+// 那是刻意的取捨，不是 bug；但代價要有數字，否則使用者只看到「檔案怎麼這麼大」，
+// 也就沒有依據判斷「值不值得改成裝配結構」。
+{
+  global.window = global.window || {};       // pcb-step-model.js 是瀏覽器模組，掛在 window 上
+  const SM = require('./pcb-step-model.js');
+  global.StepModel = SM;
+
+  // 模型用我們自己的匯出產生（不自己手刻 STEP，手刻的會變成另一套格式假設）
+  const one = S.build({ boardWidth: 10, boardHeight: 10, components: [], edgeSegs: [] },
+    { thickness: 1.0, components: false, name: 'blk' });
+  const key = 'testfp';
+  const models = {}; models[key] = { text: one.text, scale: 1 };
+  const modelEnts = SM.parse(one.text).entities.length;
+
+  const comps = n => Array.from({ length: n }, (_, i) =>
+    ({ id: 'c' + i, ref: 'U' + i, x: i * 12, y: 0, rot: 0, w: 4, h: 4, side: 'top', footprintVariant: key }));
+
+  const realKeyOf = SM.keyOf;
+  SM.keyOf = () => key;                     // 這一節要測模型那條路，鑰匙直接給定
+
+  const r3 = S.build({ boardWidth: 60, boardHeight: 20, components: comps(3), edgeSegs: [] },
+    { thickness: 1.6, components: true, models, name: 'b' });
+  eq(r3.stats.modelUnique, 1, '7 三顆同型料只有一種模型');
+  eq(r3.stats.modelPlacements, 3, '7 但放了三次');
+  eq(r3.stats.dupEntities, 2 * modelEnts, '7 多出來的實體＝重複那兩次的整份幾何');
+  ok(S.verify(r3.text).ok, '7 攤平出來的檔仍然要是好檔');
+
+  const r1 = S.build({ boardWidth: 20, boardHeight: 20, components: comps(1), edgeSegs: [] },
+    { thickness: 1.6, components: true, models, name: 'b' });
+  eq(r1.stats.dupEntities, 0, '7 只放一次不該報重複');
+  eq(r1.stats.modelPlacements, 1, '7 放置次數要照實算');
+
+  // 模型讀不進來 → 退回佔位方塊，而且**要留下警告**：
+  // 安靜退回的話，機構端會以為那顆料真的長成一個方塊。
+  const bad = {}; bad[key] = { text: 'NOT A STEP FILE', scale: 1 };
+  const rb = S.build({ boardWidth: 20, boardHeight: 20, components: comps(2), edgeSegs: [] },
+    { thickness: 1.6, components: true, models: bad, name: 'b' });
+  const un = rb.warnings.filter(x => x.code === 'modelUnusable');
+  eq(un.length, 2, '7 兩顆都讀不進來就要兩筆警告');
+  ok(!!un[0].ref, '7 警告要講是哪一顆');
+  eq(rb.stats.dupEntities || 0, 0, '7 退回方塊的不算模型重複');
+  ok(S.verify(rb.text).ok, '7 退回方塊的檔也要是好檔');
+
+  SM.keyOf = realKeyOf;
+
+  // 這兩件事要真的顯示出來——modelUnusable 以前 pcb-step.js 產了、UI 沒人接
+  {
+    const fs = require('fs');
+    const mfg = fs.readFileSync(__dirname + '/pcb-mfg.js', 'utf8');
+    ok(mfg.indexOf('modelUnusable') > 0, '7 匯出訊息要接上「模型讀不進來」的警告');
+    ok(mfg.indexOf('step_flat_cost') > 0, '7 匯出訊息要講出攤平的代價');
+  }
+}
+
 console.log(`\nstep.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
