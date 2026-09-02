@@ -1115,6 +1115,10 @@ const pcbApp = {
     // 用 info 帶過會讓使用者看到 0 error 就以為線距沒問題。
     else results.push({ type: 'warning', message: pcbT('pj_drc_no_paddrc') });
 
+    // 匯流排層級：一束要一起遵守的規則（成員主要層一致／via 數一致／skew 上限／束內間距）。
+    // 放在 drcMarks 之前，違規才標得到畫面上——這一類錯「是哪一條跟大家不一樣」比數量重要。
+    if (window.BusDrc) results.push(...window.BusDrc.audit(this.state, rules.clearance.traceToTrace));
+
     // 違規要標在畫面上。只有清單的話，使用者拿到「@(12.3,45.6)」還得自己在板上找。
     this.state.drcMarks = results
       .filter(r => (r.type === 'error' || r.type === 'warning') && typeof r.x === 'number' && typeof r.y === 'number')
@@ -2314,7 +2318,11 @@ const pcbApp = {
     const box = document.getElementById('busRows');
     if (!box) return;
     const reps = this.busReports();
-    if (!reps.length) { box.innerHTML = "<div style='color:var(--muted)'>" + pcbT('pj_bus_none') + '</div>'; return; }
+    if (!reps.length) {
+      box.innerHTML = "<div style='color:var(--muted)'>" + pcbT('pj_bus_none') + '</div>';
+      this.renderBusRules();
+      return;
+    }
     const esc = t => String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
     const cur = this.state.highlightBus || '';
     box.innerHTML = reps.map(r => {
@@ -2327,6 +2335,54 @@ const pcbApp = {
         "<span style='color:var(--muted)'>" + r.routed + '/' + r.width + '</span>' +
         "<span title='skew' style='font-family:ui-monospace,Menlo,monospace'>" + sk + '</span></div>';
     }).join('');
+    this.renderBusRules();
+  },
+
+  // ---- 每一束的規則（BusDrc）----
+  // 規則掛在選中的那一束上，不是全域：DDR 的資料線要等長、I2C 那兩條不必，
+  // 一組全域數字套下去只會逼使用者關掉整個檢查。
+  // 空白＝不檢查（不是 0）；一致性那兩條預設就開，不必填任何數字。
+  renderBusRules() {
+    const box = document.getElementById('busRuleBox');
+    if (!box || !window.BusDrc) return;
+    const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+    const spec = this.state.highlightBus || '';
+    if (!spec) { box.innerHTML = "<div style='color:var(--muted)'>" + esc(pcbT('pj_busr_pick')) + '</div>'; return; }
+    const r = window.BusDrc.rulesFor(this.state, spec);
+    const num = (k, label, title, step) =>
+      "<label title='" + esc(title) + "' style='display:flex;align-items:center;gap:4px'>" +
+      "<span style='color:var(--muted)'>" + esc(label) + '</span>' +
+      "<input class='busr-num' data-k='" + k + "' type='number' min='0' step='" + step + "' value='" +
+      (r[k] > 0 ? r[k] : '') + "' placeholder='—' style='width:56px;padding:2px'></label>";
+    const chk = (k, label, title) =>
+      "<label title='" + esc(title) + "' style='display:flex;align-items:center;gap:4px'>" +
+      "<input class='busr-chk' data-k='" + k + "' type='checkbox'" + (r[k] ? ' checked' : '') + '>' +
+      "<span style='color:var(--muted)'>" + esc(label) + '</span></label>';
+    box.innerHTML =
+      "<div style='font-size:11px;margin-bottom:4px'>" + esc(pcbT('pj_busr_for', { spec: spec })) + '</div>' +
+      "<div style='display:flex;flex-wrap:wrap;gap:8px;font-size:11px'>" +
+      num('maxSkew', pcbT('pj_busr_skew'), pcbT('pj_busr_skew_t'), '0.05') +
+      num('intraGap', pcbT('pj_busr_gap'), pcbT('pj_busr_gap_t'), '0.05') +
+      num('maxVias', pcbT('pj_busr_maxvias'), pcbT('pj_busr_maxvias_t'), '1') +
+      chk('sameLayer', pcbT('pj_busr_samelayer'), pcbT('pj_busr_samelayer_t')) +
+      chk('viaMatch', pcbT('pj_busr_viamatch'), pcbT('pj_busr_viamatch_t')) +
+      chk('requireAll', pcbT('pj_busr_all'), pcbT('pj_busr_all_t')) +
+      '</div>' +
+      "<p style='font-size:11px;color:var(--muted);margin:6px 0 0'>" + esc(pcbT('pj_busr_hint')) + '</p>';
+  },
+
+  // 規則寫回 state（跟著板子存檔走），並立刻重跑 DRC——
+  // 改完規則卻要自己再按一次 DRC 的話，使用者無從知道這條規則有沒有效。
+  setBusRule(spec, key, value) {
+    if (!window.BusDrc || !spec) return false;
+    this.hist();
+    window.BusDrc.setRule(this.state, spec, key, value);
+    this.renderBusRules();
+    // 只在 DRC 清單已經有內容時重跑：跟語言切換那條路同一個判準。
+    // 每改一個欄位就跑一次全量 DRC（公版 240ms）會讓輸入框卡住。
+    const drc = document.querySelector('#drcResults');
+    if (drc && drc.innerHTML.trim()) this.runDrc();
+    return true;
   },
 
   toggleBusHighlight(spec) {
@@ -2957,7 +3013,7 @@ const pcbApp = {
       if ((t.layer || "F.Cu") !== lay) continue;
       if (td.net && t.net && t.net === td.net) continue;
       const d = gm.segSegDist(td.x1, td.y1, td.x2, td.y2, t.x1, t.y1, t.x2, t.y2) - w2 - (t.width || 0.3) / 2;
-      const req = cmData ? ConstraintMgr.clearanceBetween(cmData, td.net || "", t.net || "", cl.traceToTrace) : cl.traceToTrace;
+      const req = cmData ? ConstraintMgr.clearanceBetween(cmData, td.net || "", t.net || "", cl.traceToTrace, this.state.netClasses) : cl.traceToTrace;
       consider(d, req, pcbT("pj_obj_trace", { net: t.net || "?" }));
     }
 
@@ -3790,6 +3846,9 @@ const pcbApp = {
       this.renderNetRules();
       this.renderRefBoards();
       this.populatePartsPicker();
+      // 匯流排面板的欄位標籤是 render 時才翻的，不重畫就會停在切換前的語言——
+      // DRC 訊息換了語言、旁邊的規則欄位還是中文，看起來像漏翻。
+      this.renderBusPanel();
       const drc = document.querySelector('#drcResults');
       if (drc && drc.innerHTML.trim()) this.runDrc();
     });
@@ -3818,6 +3877,16 @@ const pcbApp = {
       const spec = this.state.highlightBus;
       if (!spec) { this.toast(pcbT('pj_bus_pick'), 'warn'); return; }
       this.routeBus(spec);
+    });
+    // 規則欄位是每次重畫都換掉的節點，所以聽在不會被換掉的容器上（委派）。
+    // 直接綁在 input 上的話，改一次規則之後那些參照就變孤兒節點，第二次改沒有反應。
+    document.getElementById('busRuleBox')?.addEventListener('change', (e) => {
+      const el = e.target;
+      if (!el || !el.dataset || !el.dataset.k) return;
+      const spec = this.state.highlightBus;
+      if (!spec) return;
+      if (el.type === 'checkbox') this.setBusRule(spec, el.dataset.k, el.checked);
+      else this.setBusRule(spec, el.dataset.k, parseFloat(el.value));
     });
     this.renderShortcutHelp();
     window.addEventListener('vs-lang-change', () => this.renderShortcutHelp());

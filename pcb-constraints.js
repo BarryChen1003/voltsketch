@@ -84,22 +84,28 @@
       return def || data.classes[0] || null;
     },
     // 兩 net 的要求間距：matrix 命中取之，否則 fallback（全域 DRC clearance 由呼叫端傳入）
-    clearanceBetween(data, netA, netB, fallback) {
-      const ca = this.classOf(data, netA), cb = this.classOf(data, netB);
+    // explicit（線路圖帶過來的 {net: className}）要一起傳，否則「明講的 class」在這條路上失效：
+    // 畫線時的即時間距提示會用名字猜出來的 class，跟 DRC 報的不是同一套規則。
+    clearanceBetween(data, netA, netB, fallback, explicit) {
+      const ca = this.classOf(data, netA, explicit), cb = this.classOf(data, netB, explicit);
       if (!ca || !cb) return fallback;
       const m = data.matrix[pairKey(ca.id, cb.id)];
       return (typeof m === 'number' && m > 0) ? Math.max(m, fallback || 0) : (fallback || 0);
     },
 
     // 全面稽核：class 線寬/線長 + 矩陣間距 + 銳角。回 [{type,message}]（併入 runDrc）
+    // 線路圖明講的 class（state.netClasses）在這裡一樣優先：只在 classOf 支援還不夠，
+    // 稽核不傳的話「指定成 POWER 的 SYS_RAIL」在 DRC 眼裡仍然是 DEFAULT，
+    // 面板寫 POWER、DRC 用 DEFAULT 的線寬下限——兩邊各自看起來都對。
     audit(data, state, globalClearance) {
       const res = [];
+      const explicit = (state && state.netClasses) || null;
       const traces = (state.traces || []).filter(t => t.x1 !== t.x2 || t.y1 !== t.y2);
       const nets = [...new Set(traces.map(t => t.net).filter(Boolean))];
 
       // 1) class 實體線寬 + 電氣線長
       for (const net of nets) {
-        const cls = this.classOf(data, net);
+        const cls = this.classOf(data, net, explicit);
         if (!cls) continue;
         const segs = traces.filter(t => t.net === net);
         const minW = cls.phys && cls.phys.minW;
@@ -127,7 +133,7 @@
       const clsCache = new Map();
       const classOfCached = net => {
         if (clsCache.has(net)) return clsCache.get(net);
-        const c = this.classOf(data, net);
+        const c = this.classOf(data, net, explicit);
         clsCache.set(net, c);
         return c;
       };
@@ -313,7 +319,7 @@
         const nets = new Set();
         (st.components || []).forEach(c => (c.pads || []).forEach(p => { if (p.net) nets.add(p.net); }));
         (st.traces || []).forEach(t => { if (t.net) nets.add(t.net); });
-        const out = [...nets].sort().map(n => { const c = this.classOf(data, n); return esc(n) + ' → ' + esc(c ? c.name : '?'); });
+        const out = [...nets].sort().map(n => { const c = this.classOf(data, n, st.netClasses); return esc(n) + ' → ' + esc(c ? c.name : '?'); });
         document.getElementById('cmNetsOut').innerHTML = out.length ? out.join('<br>') : esc(T('cm_no_nets'));
       });
     }

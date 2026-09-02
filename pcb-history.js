@@ -57,6 +57,9 @@ window.PcbHistory = (function () {
     // net 面板（含 net 屬性與封裝同步狀態）也要跟著換：復原／開雲端專案／匯入版面
     // 都是整批換掉 components 與 traces，不重畫的話面板會停在上一片板的數字。
     if (app.renderNetPanel) app.renderNetPanel();
+    // 匯流排面板同理：skew 與每束的規則都存在 state 裡，復原後不重畫就會停在舊數字，
+    // 而且規則欄位還顯示上一片板的值——看起來像規則沒被存到。
+    if (app.renderBusPanel) app.renderBusPanel();
     app.syncSelPanel();
     app.render();
   }

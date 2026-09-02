@@ -2293,5 +2293,180 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   app.state = savedState;
 }
 
+// 47) 匯流排層級 DRC：一束要一起遵守的規則（pcb-bus-drc.js）
+{
+  const savedState = app.state;
+  require('./sch-bus.js');        // skew 的定義只有一份，BusDrc 直接呼叫它
+  require('./pcb-bus-drc.js');
+  global.SchBus = window.SchBus;
+  const BD = window.BusDrc;
+
+  // 一束四條：D1 比別人長 2mm、D2 走底層且多一個 via
+  const base = () => ({
+    busGroups: [{ spec: 'D[0..3]', base: 'D', members: ['D0', 'D1', 'D2', 'D3'], width: 4 }],
+    traces: [
+      { net: 'D0', x1: 0, y1: 0, x2: 10, y2: 0, layer: 'F.Cu', width: 0.25 },
+      { net: 'D1', x1: 0, y1: 1, x2: 12, y2: 1, layer: 'F.Cu', width: 0.25 },
+      { net: 'D2', x1: 0, y1: 2, x2: 10, y2: 2, layer: 'B.Cu', width: 0.25 },
+      { net: 'D3', x1: 0, y1: 3, x2: 10, y2: 3, layer: 'F.Cu', width: 0.25 }
+    ],
+    vias: [{ net: 'D2', x: 5, y: 2, od: 0.6 }]
+  });
+  const kinds = res => res.map(r => r.message).join('|');
+
+  // ---- 規則的預設值：一致性檢查開、數值上限關 ----
+  {
+    const r = BD.rulesFor(base(), 'D[0..3]');
+    eq(r.sameLayer, true, '47 主要層一致預設要開（不用填數字就抓得到問題）');
+    eq(r.viaMatch, true, '47 via 數一致預設要開');
+    eq(r.maxSkew, 0, '47 skew 上限預設是關的（沒有規格就沒有超標可言）');
+    eq(r.requireAll, false, '47 「必須全繞完」預設要關，設計到一半是常態');
+  }
+
+  // ---- 覆寫與寫回 ----
+  {
+    const st = base();
+    BD.setRule(st, 'D[0..3]', 'maxSkew', 0.5);
+    eq(BD.rulesFor(st, 'D[0..3]').maxSkew, 0.5, '47 覆寫要生效');
+    BD.setRule(st, 'D[0..3]', 'maxSkew', -3);
+    eq(BD.rulesFor(st, 'D[0..3]').maxSkew, 0, '47 負數當成「不檢查」，不是負的上限');
+    eq(BD.setRule(st, 'D[0..3]', 'nonsense', 1), null, '47 不認得的欄位不准塞進存檔');
+    eq(st.busRules['D[0..3]'].nonsense, undefined, '47 不認得的欄位不可以留在 state 裡');
+    BD.setRule(st, 'D[0..3]', 'sameLayer', false);
+    eq(BD.rulesFor(st, 'D[0..3]').sameLayer, false, '47 布林規則要關得掉');
+  }
+
+  // ---- 主要層 = 走最長的那一層，不是第一段的層 ----
+  {
+    const st = base();
+    st.traces.push({ net: 'D0', x1: 10, y1: 0, x2: 10.5, y2: 0, layer: 'B.Cu', width: 0.25 });
+    eq(BD.statsOf(st, 'D0').layer, 'F.Cu', '47 有一小段跨到別層不會改變主要層');
+    eq(BD.statsOf(st, 'D2').vias, 1, '47 via 要照 net 算');
+    eq(BD.statsOf(st, 'D9').at, null, '47 沒有走線也沒有 via 就沒有可標記的位置');
+  }
+
+  // ---- 預設就抓得到：主要層不一致、via 數不一致 ----
+  {
+    const res = BD.audit(base(), 0.2);
+    eq(res.length, 2, '47 預設要報兩件事（層不一致、via 數不一致）');
+    ok(kinds(res).indexOf('bdrc_layer') >= 0, '47 要報主要層不一致');
+    ok(kinds(res).indexOf('bdrc_via_mismatch') >= 0, '47 要報 via 數不一致');
+    ok(res.every(r => r.type === 'warning'), '47 一致性問題是 warning，不可以讓既有板子突然噴 error');
+    ok(res.every(r => typeof r.x === 'number' && typeof r.y === 'number'),
+      '47 每筆違規都要帶座標，drawDrcMarks 才標得出來');
+    eq(res[0].y, 2, '47 層不一致要標在少數派那條（D2 在 y=2）上，不是標在多數派');
+  }
+
+  // ---- 整束一致就沒事 ----
+  {
+    const st = base();
+    st.traces[2].layer = 'F.Cu'; st.vias = [];
+    st.traces[1].x2 = 10;
+    eq(BD.audit(st, 0.2).length, 0, '47 同層同 via 同長度不可以報任何東西');
+  }
+
+  // ---- skew：沒設上限不報；設了才報，而且標在最短那條上 ----
+  {
+    const st = base();
+    st.traces[2].layer = 'F.Cu'; st.vias = [];
+    eq(BD.audit(st, 0.2).length, 0, '47 skew 上限沒設就不該報 skew');
+    BD.setRule(st, 'D[0..3]', 'maxSkew', 0.5);
+    const res = BD.audit(st, 0.2);
+    eq(res.length, 1, '47 skew 超標要報一筆');
+    ok(res[0].message.indexOf('bdrc_skew') >= 0, '47 報的要是 skew');
+    eq(res[0].type, 'error', '47 明講的上限被超過就是 error');
+    eq(res[0].y, 0, '47 skew 要標在最短的那一條上（要補長度的是它）');
+    BD.setRule(st, 'D[0..3]', 'maxSkew', 3);
+    eq(BD.audit(st, 0.2).length, 0, '47 上限放寬到超過實際 skew 就不該再報');
+  }
+
+  // ---- skew 只算已繞的成員：沒繞的算 0 會得到假的大 skew ----
+  {
+    const st = base();
+    st.traces = st.traces.slice(0, 2);          // 只剩 D0(10mm)、D1(12mm)，D2/D3 沒繞
+    st.vias = [];
+    BD.setRule(st, 'D[0..3]', 'maxSkew', 5);
+    eq(BD.audit(st, 0.2).length, 0, '47 沒繞的成員不可以被當成長度 0 算進 skew');
+    BD.setRule(st, 'D[0..3]', 'requireAll', true);
+    const res = BD.audit(st, 0.2);
+    eq(res.length, 1, '47 打開「必須全繞完」才報沒繞完');
+    ok(res[0].message.indexOf('bdrc_unrouted') >= 0, '47 報的要是沒繞完');
+  }
+
+  // ---- 只有一條繞好時，「一束的規則」無從比起 ----
+  {
+    const st = base();
+    st.traces = [st.traces[0]]; st.vias = [];
+    eq(BD.audit(st, 0.2).length, 0, '47 只有一條已繞時不可以報「不一致」');
+  }
+
+  // ---- via 上限 ----
+  {
+    const st = base();
+    st.traces[2].layer = 'F.Cu';
+    st.vias = [{ net: 'D0', x: 1, y: 0 }, { net: 'D1', x: 1, y: 1 },
+               { net: 'D2', x: 1, y: 2 }, { net: 'D3', x: 1, y: 3 }];
+    eq(BD.audit(st, 0.2).length, 0, '47 每條都一個 via＝一致，預設不報');
+    st.vias.push({ net: 'D2', x: 2, y: 2 });
+    BD.setRule(st, 'D[0..3]', 'viaMatch', false);
+    eq(BD.audit(st, 0.2).length, 0, '47 關掉 via 一致就不該再報');
+    BD.setRule(st, 'D[0..3]', 'maxVias', 1);
+    const res = BD.audit(st, 0.2);
+    eq(res.length, 1, '47 超過 via 上限要報');
+    ok(res[0].message.indexOf('bdrc_via_max') >= 0, '47 報的要是 via 上限');
+  }
+
+  // ---- 束內間距：比全域鬆的不重複報（PadDrc 已經管了）----
+  {
+    const st = base();
+    st.traces[2].layer = 'F.Cu'; st.vias = []; st.traces[1].x2 = 10;
+    st.traces[1].y1 = st.traces[1].y2 = 0.3;   // D0 與 D1 中心距 0.3mm，扣掉線寬淨空 0.05mm
+    // 要求 0.06 > 實際 0.05（真的不合格），但 0.06 ≤ 全域 0.1 → 這一筆該由一般 DRC 報，
+    // 這裡不可以再報一次。少了「比全域嚴才報」那道判斷的話，這條會變紅。
+    BD.setRule(st, 'D[0..3]', 'intraGap', 0.06);
+    eq(BD.audit(st, 0.1).length, 0, '47 要求比全域淨空鬆時不可以另外報（同一個問題報兩次）');
+    BD.setRule(st, 'D[0..3]', 'intraGap', 0.5);
+    const res = BD.audit(st, 0.1);
+    eq(res.length, 1, '47 要求比全域嚴、而且真的太近，才報束內間距');
+    ok(res[0].message.indexOf('bdrc_gap') >= 0, '47 報的要是束內間距');
+    ok(typeof res[0].x === 'number', '47 束內間距違規也要帶座標');
+    st.traces[1].y1 = st.traces[1].y2 = 5;     // 拉開
+    eq(BD.audit(st, 0.1).length, 0, '47 拉開之後就不該再報');
+  }
+
+  // ---- 線路圖明講的 net class 要一路吃到 ConstraintMgr 的稽核 ----
+  // classOf 支援 explicit 還不夠：audit 不傳的話，面板寫 POWER、DRC 用 DEFAULT 的線寬下限。
+  {
+    const CM = window.ConstraintMgr;
+    const data = CM.load();
+    const st = {
+      traces: [{ net: 'SYS_RAIL', x1: 0, y1: 0, x2: 10, y2: 0, layer: 'F.Cu', width: 0.2 }],
+      components: []
+    };
+    eq(CM.audit(data, st, 0.2).length, 0, '47 沒指定 class 時 SYS_RAIL 是 DEFAULT，0.2mm 合格');
+    st.netClasses = { SYS_RAIL: 'POWER' };
+    const res = CM.audit(data, st, 0.2);
+    eq(res.length, 1, '47 指定成 POWER 之後 0.2mm 就低於 POWER 的線寬下限');
+    ok(!!res[0] && res[0].message.indexOf('cm_e_width') >= 0, '47 報的要是線寬不足');
+  }
+
+  // ---- 真的接上畫面 ----
+  {
+    const fsx = require('fs'), pathx = require('path');
+    const html = fsx.readFileSync(pathx.join(__dirname, 'pcb.html'), 'utf8');
+    const pcbjs = fsx.readFileSync(pathx.join(__dirname, 'pcb.js'), 'utf8');
+    ok(html.indexOf('pcb-bus-drc.js') > 0, '47 pcb.html 要載入匯流排 DRC 模組');
+    ok(html.indexOf('busRuleBox') > 0, '47 匯流排面板要有規則編輯區（藏起來等於沒做）');
+    ok(pcbjs.indexOf('BusDrc.audit') > 0, '47 runDrc 要把匯流排 DRC 併進來');
+    ok(pcbjs.indexOf('renderBusRules') > 0, '47 規則要畫得出來');
+    ok(pcbjs.indexOf("getElementById('busRuleBox')?.addEventListener") > 0,
+      '47 規則欄位要用委派聽在容器上（每次重畫都換節點）');
+    // 欄位標籤是 render 時才翻的：切語言不重畫，DRC 訊息換了語言、旁邊欄位還是中文
+    const lang = pcbjs.slice(pcbjs.indexOf("document.addEventListener('vs-lang-change'"));
+    ok(lang.slice(0, 600).indexOf('renderBusPanel') > 0, '47 切語言要重畫匯流排面板');
+  }
+  app.state = savedState;
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

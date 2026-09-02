@@ -927,6 +927,7 @@
             </div>
             <div style="font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:6px" data-i18n="pj_bus_hint">從線路圖同步 netlist 時帶過來。點一列＝整束高亮；skew 只算已繞的成員（沒繞的算進去會是假的大數字）。</div>
             <div id="busRows" style="font-size:12px;max-height:180px;overflow-y:auto"></div>
+            <div id="busRuleBox" style="font-size:11px;margin-top:6px;border-top:1px solid var(--line);padding-top:6px"></div>
           </section>
 
           <section class="panel-section">
@@ -1252,7 +1253,7 @@
     <script src="./footprint-gen.js?v=4"></script>
     <script src="./parts-lib.js?v=1"></script>
     <script src="./pcb-ref-fp.js?v=2"></script>
-    <script src="./pcb-history.js?v=6"></script>
+    <script src="./pcb-history.js?v=7"></script>
     <script src="./kicad-io.js?v=10"></script>
     <script src="./pcb-index.js?v=1"></script>
     <script src="./pcb-arc.js?v=1"></script>
@@ -1268,14 +1269,15 @@
     <script src="./pcb-drag.js?v=1"></script>
     <script src="./pcb-fpinst.js?v=2"></script>
     <script src="./sch-bus.js?v=2"></script>
+    <script src="./pcb-bus-drc.js?v=1"></script>
     <script src="./sch-swap.js?v=2"></script>
     <script src="./snp.js?v=1"></script>
     <script src="./snp-ui.js?v=1"></script>
     <script src="./pcb-theme.js?v=1"></script>
     <script src="./pcb-interact.js?v=2"></script>
-    <script src="./pcb.js?v=83"></script>
+    <script src="./pcb.js?v=84"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
-    <script src="./pcb-constraints.js?v=2026-09-02a"></script>
+    <script src="./pcb-constraints.js?v=2026-09-02b"></script>
     <script src="./pcb-stackup.js?v=2026-09-01a"></script>
     <script src="./pcb-fabs.js?v=5"></script>
     <script src="./pcb-mfg.js?v=10"></script>
