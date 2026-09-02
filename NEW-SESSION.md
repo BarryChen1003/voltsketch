@@ -121,7 +121,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | `pcb-mesh.js` / `pcb-mesh-ui.js` | `PcbMesh` / `PcbMeshUI` | 3D **顯示**用的網格模型（.wrl/.obj）。**KiCad .wrl 的 1 單位 = 2.54mm**；綁定鑰匙沿用 `StepModel.keyOf`（封裝身分），跟 STEP 匯出同一把 |
 | `pcb-shove.js` | `Shove` | 推擠：側推平行鄰居；`planChain` 支援連鎖（只平移、不重繞） |
 | `pcb-drc.js` | `PadDrc` | pad 級 DRC（線距／環寬／孔距／sliver／courtyard…）＋幾何工具 `_geom` |
-| `pcb-constraints.js` | `ConstraintMgr` | net class、間距矩陣、銳角 |
+| `pcb-constraints.js` | `ConstraintMgr` | net class（**可逐段指定**：`classOfTrace`）、間距矩陣、銳角 |
 | `pcb-bus-drc.js` | `BusDrc` | **匯流排層級 DRC**：每束一套規則（主要層一致／via 數一致／skew 上限／束內間距／via 上限／必須全繞完），規則存 `state.busRules` 跟板子走 |
 | `pcb-stackup.js` | `Stackup` `Padstack` `Backdrill` | 疊層、via 預設、背鑽 |
 | `pcb-fabs.js` | `FabProfiles` | 四廠能力檔與 DFM 檢查（規矩見 §5） |
@@ -188,7 +188,7 @@ cp950 讀腳本本身，中文註解變亂碼、直接 parse error——這條�
 | 測試 | 斷言 | 守什麼 |
 |---|---|---|
 | `gerber-check.js` | 473 | 匯出**結構**：表頭、層數、鑽孔對齊 pad、CPL／IPC 行數 |
-| `pcb-logic.test.js` | 621 | 編輯器邏輯、DRC、繞線策略、差分對、橡皮筋、公版缺陷預算 |
+| `pcb-logic.test.js` | 638 | 編輯器邏輯、DRC、繞線策略、差分對、橡皮筋、公版缺陷預算 |
 | `odb-check.js` | 387 | ODB++ 結構 + **readback**：features 讀回來逐筆比對 |
 | `gerber-readback.js` | 195 | Gerber **幾何**：解析回來跟原始板逐條比對 |
 | `pcb-mfg.test.js` | 137 | 淚滴／縫合孔／鑽孔表／拼板／轉角導角的幾何合法性 |
@@ -642,7 +642,7 @@ repo 是**公開**的，所以「還沒修好的問題清單」不能進 git：
 
 | 面向 | 還缺什麼 |
 |---|---|
-| 線路圖 ↔ Layout | 2026-09-02 補上：封裝可在線路圖端綁定、net class 可在導線上指定並帶到 PCB。2026-09-02 再補上**通用 IC 封裝**：`PartsLib` 從 15 類長到 22 類（多了 SOIC／TSSOP／SSOP／MSOP／QFN／QFP／DIP，共 124 個變體），幾何交給 `FootprintGen.fromIC`（不另刻一套，否則同一個封裝會在兩處長出不一樣的 pad）。意義是**料號不在 `ic-data.js` 裡也綁得了封裝**——以前 IC 的封裝只能由料號決定，庫裡沒有那顆料就整個 `icNotInLibrary`。推估來的尺寸（QFN 的 pitch／body）警告一路帶到轉換報告，不在中間吞掉。**還缺**：class 只能整條 net 指定（不能只指定某一段）；連接器（USB／JST／RJ45）與 THT 分立件（TO-220／TO-92／DO-41）沒有，那些要照原廠 land pattern 建，不能用家族推估 |
+| 線路圖 ↔ Layout | 2026-09-02 補上：封裝可在線路圖端綁定、net class 可在導線上指定並帶到 PCB。2026-09-02 再補上**通用 IC 封裝**：`PartsLib` 從 15 類長到 22 類（多了 SOIC／TSSOP／SSOP／MSOP／QFN／QFP／DIP，共 124 個變體），幾何交給 `FootprintGen.fromIC`（不另刻一套，否則同一個封裝會在兩處長出不一樣的 pad）。意義是**料號不在 `ic-data.js` 裡也綁得了封裝**——以前 IC 的封裝只能由料號決定，庫裡沒有那顆料就整個 `icNotInLibrary`。推估來的尺寸（QFN 的 pitch／body）警告一路帶到轉換報告，不在中間吞掉。2026-09-02 再補上**分段 class**：指定在走線物件上（`trace.netClass`），所以跟著存檔、復原、匯出與拖動走，換 net 名字也不會失效。優先序＝這一段指定的 → 線路圖明講的 → 名字猜的；指到不存在的 class 退回整條 net 的規則（class 被刪掉不該讓那一段變成沒有規則）。**線寬逐段判、線長仍看整條 net**——一段線談不上「太長」，兩邊都逐段判的話長度上限形同虛設。間距矩陣也改成逐段查 class。**還缺**：連接器（USB／JST／RJ45）與 THT 分立件（TO-220／TO-92／DO-41）沒有，那些要照原廠 land pattern 建，不能用家族推估 |
 | 互動 | 推擠會繞路但**不重繞**（同層橫穿仍明確拒絕）；cross-probe 反查不到母圖上的圖紙符號 |
 | 製造 | 🔴 沒人用真 CAM／CAD 開過匯出檔（站主無 CAD，等打樣時板廠代驗）；IPC-2581 疊構沒有材料；組裝圖外形只有矩形 courtyard |
 | 模擬 | 元件模型一階；量測精度受取樣間隔限制；掃描指標只有 −3dB |

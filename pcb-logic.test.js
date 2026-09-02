@@ -2850,5 +2850,98 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
   }
 }
 
+// 51) 分段 net class：規則指定在「這一段」上，不是整條 net
+{
+  const CM = window.ConstraintMgr;
+  const data = CM.load();
+
+  // ---- 優先序：這一段指定的 → 整條 net 的 → 名字猜的 ----
+  {
+    eq(CM.classOfTrace(data, { net: 'SIG' }).name, 'DEFAULT', '51 沒指定就照名字猜');
+    eq(CM.classOfTrace(data, { net: 'SIG', netClass: 'POWER' }).name, 'POWER', '51 這一段指定的要贏');
+    eq(CM.classOfTrace(data, { net: 'GND' }).name, 'POWER', '51 名字猜得到的照舊（GND → POWER）');
+    eq(CM.classOfTrace(data, { net: 'GND', netClass: 'DEFAULT' }).name, 'DEFAULT',
+      '51 這一段指定的要蓋過名字猜的');
+    // class 定義被刪掉時退回整條 net 的規則，不可以讓那一段變成沒有規則
+    eq(CM.classOfTrace(data, { net: 'GND', netClass: 'NO-SUCH-CLASS' }).name, 'POWER',
+      '51 指到不存在的 class 要退回整條 net 的，不是變成沒有規則');
+    // 線路圖明講的 net class 仍然是第二順位
+    eq(CM.classOfTrace(data, { net: 'SYS_RAIL' }, { SYS_RAIL: 'POWER' }).name, 'POWER',
+      '51 沒有分段指定時，線路圖明講的仍然生效');
+    eq(CM.classOfTrace(data, { net: 'SYS_RAIL', netClass: 'DEFAULT' }, { SYS_RAIL: 'POWER' }).name, 'DEFAULT',
+      '51 分段指定要贏過線路圖明講的');
+  }
+
+  // ---- 線寬逐段判 ----
+  // 同一條 net：出扇出區那一段窄（DEFAULT 下限 0.1），幹道那一段指定 POWER（下限 0.3）。
+  {
+    const st = {
+      components: [],
+      traces: [
+        { net: 'VOUT', x1: 0, y1: 0, x2: 5, y2: 0, layer: 'F.Cu', width: 0.12 },                      // 窄，DEFAULT → 合格
+        { net: 'VOUT', x1: 5, y1: 0, x2: 20, y2: 0, layer: 'F.Cu', width: 0.5, netClass: 'POWER' }    // 寬，POWER → 合格
+      ]
+    };
+    eq(CM.audit(data, st, 0.2).length, 0, '51 一條 net 分兩種 class，各自合格就不該報');
+
+    // 幹道那一段沒加寬 → 只有那一段違規
+    st.traces[1].width = 0.12;
+    const res = CM.audit(data, st, 0.2);
+    eq(res.length, 1, '51 只有指定成 POWER 的那一段要報');
+    ok(res[0].message.indexOf('cm_e_width') >= 0, '51 報的要是線寬不足');
+
+    // 反過來：整條都當 POWER 判的話，窄的那一段也會被報——那是假警報
+    st.traces[1].width = 0.5;
+    st.traces[0].netClass = '';
+    eq(CM.audit(data, st, 0.2).length, 0, '51 窄的那一段不可以被拿 POWER 的下限去量');
+  }
+
+  // ---- 線長仍看整條 net ----
+  // 一段線談不上「太長」；把 maxLen 也改成逐段判的話，長度上限就形同虛設。
+  {
+    const d2 = CM.load();
+    d2.classes = d2.classes.map(c => c.id === 'default'
+      ? Object.assign({}, c, { elec: Object.assign({}, c.elec, { maxLen: 10 }) }) : c);
+    const st = {
+      components: [],
+      traces: [
+        { net: 'CLK', x1: 0, y1: 0, x2: 8, y2: 0, layer: 'F.Cu', width: 0.3 },
+        { net: 'CLK', x1: 8, y1: 0, x2: 16, y2: 0, layer: 'F.Cu', width: 0.3, netClass: 'POWER' }
+      ]
+    };
+    const res = CM.audit(d2, st, 0.2);
+    const lenErrs = res.filter(r => r.message.indexOf('cm_e_len') >= 0);
+    eq(lenErrs.length, 1, '51 線長要用整條 net 算（兩段加起來 16 > 10），不是逐段算');
+  }
+
+  // ---- 間距矩陣也走分段 class ----
+  {
+    const d3 = CM.load();
+    d3.matrix = { 'default|power': 1.0 };            // 只有 DEFAULT↔POWER 要 1.0mm
+    const st = {
+      components: [],
+      traces: [
+        { net: 'A', x1: 0, y1: 0, x2: 10, y2: 0, layer: 'F.Cu', width: 0.2 },
+        { net: 'B', x1: 0, y1: 0.5, x2: 10, y2: 0.5, layer: 'F.Cu', width: 0.2 }
+      ]
+    };
+    eq(CM.audit(d3, st, 0.2).filter(r => r.message.indexOf('cm_e_clear') >= 0).length, 0,
+      '51 兩段都是 DEFAULT，矩陣沒有那一格，不該報');
+    st.traces[1].netClass = 'POWER';
+    eq(CM.audit(d3, st, 0.2).filter(r => r.message.indexOf('cm_e_clear') >= 0).length, 1,
+      '51 其中一段指定成 POWER 之後，DEFAULT↔POWER 的 1.0mm 就該生效');
+  }
+
+  // ---- 真的接上畫面 ----
+  {
+    const fsx = require('fs'), pathx = require('path');
+    const html = fsx.readFileSync(pathx.join(__dirname, 'pcb.html'), 'utf8');
+    const pcbjs = fsx.readFileSync(pathx.join(__dirname, 'pcb.js'), 'utf8');
+    ok(html.indexOf('id="tsClass"') > 0, '51 走線面板要有分段 class 的選單');
+    ok(pcbjs.indexOf("getElementById('tsClass')") > 0, '51 選單要接上事件');
+    ok(pcbjs.indexOf('classOfTrace') > 0, '51 面板要顯示目前實際生效的 class');
+  }
+}
+
 console.log(`\npcb-logic.test: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

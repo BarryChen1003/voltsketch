@@ -2550,6 +2550,22 @@ const pcbApp = {
       }
       if (document.activeElement !== sel) sel.value = t.layer || 'F.Cu';
     }
+    // 分段 class 選單。清單每次重建：class 是使用者在約束管理面板隨時會加減的，
+    // 只建一次的話，剛新增的 class 在這裡選不到，而且看不出為什麼。
+    const cls = document.getElementById('tsClass');
+    if (cls && window.ConstraintMgr) {
+      const data = ConstraintMgr.load();
+      const eff = ConstraintMgr.classOfTrace(data, t, this.state.netClasses);
+      const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+      // 空選項要講清楚「不指定＝跟著整條 net」，並且把目前實際生效的 class 寫出來——
+      // 只寫「（跟著 net）」的話，使用者不知道那到底是哪一個。
+      const follow = pcbT('pj_ts_class_follow') + (eff ? '：' + eff.name : '');
+      const opts = ['<option value="">' + esc(follow) + '</option>']
+        .concat((data.classes || []).map(c =>
+          '<option value="' + esc(c.name) + '">' + esc(c.name) + '</option>'));
+      cls.innerHTML = opts.join('');
+      if (document.activeElement !== cls) cls.value = String(t.netClass || '');
+    }
     const net = document.getElementById('tsNet');
     if (net) net.textContent = t.net || '—';
     const len = document.getElementById('tsLen');
@@ -3951,6 +3967,20 @@ const pcbApp = {
       if (!t) return;
       this.hist(); t.layer = e.target.value; this.state.ratsnest = null; this.render();
       this.toast(pcbT('pj_ts_applied', { what: t.layer }), 'info');
+    });
+    // 分段 class：指定在這一段走線上，不是整條 net。
+    // 出 BGA 走 0.1、幹道走 0.3 是同一條 net 的常態；整條一個 class 的話，
+    // 使用者只能在「沒必要的壓降」與「扇出區繞不出來」之間二選一。
+    document.getElementById('tsClass')?.addEventListener('change', (e) => {
+      const t = this.state.selectedTrace;
+      if (!t) return;
+      this.hist();
+      const v = String(e.target.value || '');
+      if (v) t.netClass = v; else delete t.netClass;
+      this.render();
+      const drc = document.querySelector('#drcResults');
+      if (drc && drc.innerHTML.trim()) this.runDrc();     // 跟語言切換同一個判準，不主動跑全量
+      this.toast(pcbT('pj_ts_applied', { what: v || pcbT('pj_ts_class_follow') }), 'info');
     });
     document.getElementById('tsDelete')?.addEventListener('click', () => this.deleteSelectedTrace());
     this.bindPanPad();

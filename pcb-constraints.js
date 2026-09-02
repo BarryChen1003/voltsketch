@@ -74,6 +74,28 @@
       return this.classOfByPattern(data, net);
     },
 
+    /**
+     * 一「段」走線的 class。優先序：這一段自己指定的 → 整條 net 的 → 名字猜的。
+     *
+     * 為什麼需要分段：同一條 net 在不同位置本來就有不同的規格——出 BGA 的那一段
+     * 只能走 0.1mm，離開扇出區之後應該加寬到 0.3mm 才不會壓降。整條 net 一個 class
+     * 的話，使用者只能兩害相權：要嘛整條走窄的（沒必要的壓降），要嘛整條走寬的
+     * （扇出區直接繞不出來）。
+     *
+     * 指定在**走線物件上**（`trace.netClass`），所以它跟著存檔、復原、匯出走，
+     * 也跟著那一段被拖動——換 net 名字不會讓它失效。
+     * 指到不存在的 class 就退回整條 net 的規則（class 定義可能被刪掉了，
+     * 不該讓那一段變成沒有規則）。
+     */
+    classOfTrace(data, trace, explicit) {
+      const want = trace && String(trace.netClass || '').trim();
+      if (want) {
+        const hit = (data.classes || []).find(c => c.name === want || c.id === want);
+        if (hit) return hit;
+      }
+      return this.classOf(data, (trace && trace.net) || '', explicit);
+    },
+
     // net → class（patterns 第一命中；default class 收尾）
     classOfByPattern(data, net) {
       let def = null;
@@ -103,24 +125,39 @@
       const traces = (state.traces || []).filter(t => t.x1 !== t.x2 || t.y1 !== t.y2);
       const nets = [...new Set(traces.map(t => t.net).filter(Boolean))];
 
-      // 1) class 實體線寬 + 電氣線長
+      // 1) class 實體線寬（逐段判）＋ 電氣線長（整條 net 判）
+      //
+      // 線寬要**逐段**判，因為 class 可以指定在單獨一段上（出 BGA 走 0.1、幹道走 0.3
+      // 是同一條 net 的常態）。用整條 net 一個 class 去判的話，加寬過的那一段會被
+      // 拿窄 class 的下限去量，或反過來——兩種都是假警報。
+      // 報告仍照「net × class」聚合：同一條 net 的十段窄線報十次沒人看得完。
+      const byGroup = new Map();
+      for (const t of traces) {
+        if (!t.net) continue;
+        const cls = this.classOfTrace(data, t, explicit);
+        if (!cls) continue;
+        const k = t.net + '\u0000' + cls.id;
+        if (!byGroup.has(k)) byGroup.set(k, { net: t.net, cls, segs: [] });
+        byGroup.get(k).segs.push(t);
+      }
+      for (const g of byGroup.values()) {
+        const minW = g.cls.phys && g.cls.phys.minW;
+        if (!(minW > 0)) continue;
+        const bad = g.segs.filter(t => (t.width || 0.3) < minW - 1e-9);
+        if (!bad.length) continue;
+        const seen = Math.min(...bad.map(t => t.width || 0.3));
+        res.push({ type: 'error', message: T('cm_e_width', { net: g.net, cls: g.cls.name, n: bad.length, min: minW, seen }) });
+      }
+      // 線長是**整條 net** 的性質，不是一段的：一段線談不上「太長」。
+      // 所以這一條照舊用整條 net 的 class（分段指定不影響它）。
       for (const net of nets) {
         const cls = this.classOf(data, net, explicit);
         if (!cls) continue;
-        const segs = traces.filter(t => t.net === net);
-        const minW = cls.phys && cls.phys.minW;
-        if (minW > 0) {
-          const bad = segs.filter(t => (t.width || 0.3) < minW - 1e-9);
-          if (bad.length) {
-            const seen = Math.min(...bad.map(t => t.width || 0.3));
-            res.push({ type: 'error', message: T('cm_e_width', { net, cls: cls.name, n: bad.length, min: minW, seen }) });
-          }
-        }
         const maxLen = cls.elec && cls.elec.maxLen;
-        if (maxLen > 0) {
-          let L = 0; for (const t of segs) L += Math.hypot(t.x2 - t.x1, t.y2 - t.y1);
-          if (L > maxLen) res.push({ type: 'error', message: T('cm_e_len', { net, cls: cls.name, len: L.toFixed(2), max: maxLen }) });
-        }
+        if (!(maxLen > 0)) continue;
+        let L = 0;
+        for (const t of traces) if (t.net === net) L += Math.hypot(t.x2 - t.x1, t.y2 - t.y1);
+        if (L > maxLen) res.push({ type: 'error', message: T('cm_e_len', { net, cls: cls.name, len: L.toFixed(2), max: maxLen }) });
       }
 
       // 2) 矩陣間距（不同 net、同層、要求 > 全域才另報，避免與 PadDrc 全域檢查重複）
@@ -130,23 +167,18 @@
       // 1000 條走線＝50 萬次查表，量到 535ms，是整個 DRC 最慢的一段。
       // 兩件事：① class 與 net-pair 的查表結果記起來 ② 用空間網格只比可能靠近的。
       // 網格桶邊長取矩陣裡的最大要求間距，所以候選一定涵蓋所有可能違規的配對。
-      const clsCache = new Map();
-      const classOfCached = net => {
-        if (clsCache.has(net)) return clsCache.get(net);
-        const c = this.classOf(data, net, explicit);
-        clsCache.set(net, c);
-        return c;
-      };
+      // class 現在是**逐段**的，所以快取的鑰匙從 net 換成走線索引；
+      // 每一對都去查 class 太慢，先整批算好（每段一次，不是每一對一次）。
+      const clsOfIdx = traces.map(t => this.classOfTrace(data, t, explicit));
+      const classOfCached = idx => clsOfIdx[idx];
       const reqCache = new Map();
-      const reqOf = (netA, netB) => {
-        const k = netA < netB ? netA + '\u0000' + netB : netB + '\u0000' + netA;
+      const reqOf = (ia, ib) => {
+        const ca = classOfCached(ia), cb = classOfCached(ib);
+        if (!ca || !cb) return fb;
+        const k = ca.id < cb.id ? ca.id + "|" + cb.id : cb.id + "|" + ca.id;
         if (reqCache.has(k)) return reqCache.get(k);
-        const ca = classOfCached(netA), cb = classOfCached(netB);
-        let v = fb;
-        if (ca && cb) {
-          const m = data.matrix[pairKey(ca.id, cb.id)];
-          v = (typeof m === 'number' && m > 0) ? Math.max(m, fb) : fb;
-        }
+        const m = data.matrix[pairKey(ca.id, cb.id)];
+        const v = (typeof m === "number" && m > 0) ? Math.max(m, fb) : fb;
         reqCache.set(k, v);
         return v;
       };
@@ -190,14 +222,14 @@
         const A = traces[i], B = traces[j];
         if (!A.net || !B.net || A.net === B.net) continue;
         if ((A.layer || 'F.Cu') !== (B.layer || 'F.Cu')) continue;
-        const req = reqOf(A.net, B.net);
+        const req = reqOf(i, j);
         if (req <= fb) continue; // 全域檢查已涵蓋
         const d = segDist(A, B) - ((A.width || 0.3) + (B.width || 0.3)) / 2;
         if (d < req - 1e-9) {
           const k = pairKey(A.net, B.net);
           if (reported.has(k)) continue;
           reported.add(k);
-          const ca = classOfCached(A.net), cb = classOfCached(B.net);
+          const ca = classOfCached(i), cb = classOfCached(j);
           res.push({ type: 'error', message: T('cm_e_clear', { netA: A.net, clsA: ca.name, netB: B.net, clsB: cb.name, d: Math.max(0, d).toFixed(3), req }) });
         }
         }

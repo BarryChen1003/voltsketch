@@ -913,6 +913,7 @@
             <div id="traceSelFields" style="display:none;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
               <label style="display:grid;gap:2px"><span data-i18n="pj_ts_width">線寬 (mm)</span><input type="number" id="tsWidth" step="0.05" min="0.05" style="padding:3px"></label>
               <label style="display:grid;gap:2px"><span data-i18n="pj_ts_layer">層</span><select id="tsLayer" style="padding:3px"></select></label>
+              <label style="display:grid;gap:2px;grid-column:1/-1"><span data-i18n="pj_ts_class" data-i18n-title="pj_ts_class_t" title="只套用在這一段。出 BGA 走窄線、幹道走寬線是同一條 net 的常態；不指定就跟著整條 net 的 class。">這一段的 class</span><select id="tsClass" style="padding:3px"></select></label>
               <div style="display:grid;gap:2px"><span data-i18n="pj_ts_net">網路</span><span id="tsNet" style="font-family:monospace;color:var(--accent-strong)">—</span></div>
               <div style="display:grid;gap:2px"><span data-i18n="pj_ts_len">長度</span><span id="tsLen" style="font-family:monospace">0 mm</span></div>
               <button class="small-button" id="tsDelete" data-i18n="pj_ts_del" style="grid-column:1/-1">🗑 刪除此段</button>
@@ -1275,9 +1276,9 @@
     <script src="./snp-ui.js?v=1"></script>
     <script src="./pcb-theme.js?v=1"></script>
     <script src="./pcb-interact.js?v=2"></script>
-    <script src="./pcb.js?v=85"></script>
+    <script src="./pcb.js?v=86"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
-    <script src="./pcb-constraints.js?v=2026-09-02b"></script>
+    <script src="./pcb-constraints.js?v=2026-09-02c"></script>
     <script src="./pcb-stackup.js?v=2026-09-01a"></script>
     <script src="./pcb-fabs.js?v=6"></script>
     <script src="./pcb-mfg.js?v=10"></script>
