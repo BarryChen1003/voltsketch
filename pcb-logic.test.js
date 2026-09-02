@@ -823,6 +823,37 @@ const minDistToSegs = (px, py, segs) =>
   // 零長度飛線＝同一點、同 net、不同層、缺 via 的壞接點：畫面上看不見，使用者只覺得飛線降不下去
   eq(zeroLen.join(' │ '), '', '21b 公版的零長度飛線只准變少');
 
+  // 21c 卡片上寫給使用者看的狀態，必須跟實測一致。
+  //
+  // 公版卡片會寫「照真板重建，還有 N 條沒繞」——那個 N 存在資料裡
+  //（`status`，由 tools/refboard-status.js 量出來寫回去），因為即時算要跑 8 次 Ratsnest。
+  // 存起來就會過期，而**過期的誠實標示比沒有標示更糟**：使用者會照著一個假數字判斷。
+  // 所以這裡拿實測值對照存進去的值，對不上就紅，並且指名要重跑哪一支工具。
+  {
+    const stale = [];
+    for (const b of (window.PCB_REFBOARDS || [])) {
+      if (!boards.includes(b.id)) continue;
+      app.loadRefBoard(b.id);
+      app.state.netRules = window.NetRules ? window.NetRules.load() : [];
+      const rl = window.Ratsnest.compute(app.state, app.padAbs.bind(app));
+      const zero = rl.filter(l => Math.hypot(l.x2 - l.x1, l.y2 - l.y1) < 1e-6).length;
+      const s = b.status;
+      if (!s) { stale.push(`${b.id}: 沒有 status`); continue; }
+      if (s.unrouted !== rl.length) stale.push(`${b.id}: status.unrouted ${s.unrouted} ≠ 實測 ${rl.length}`);
+      if (s.zeroLen !== zero) stale.push(`${b.id}: status.zeroLen ${s.zeroLen} ≠ 實測 ${zero}`);
+    }
+    eq(stale.join(' │ '), '', '21c 公版卡片上的狀態要跟實測一致（跑 node tools/refboard-status.js 重新量）');
+    // 卡片真的要把它顯示出來，否則量了也是白量
+    {
+      const fsx = require('fs'), pathx = require('path');
+      const pcbjs = fsx.readFileSync(pathx.join(__dirname, 'pcb.js'), 'utf8');
+      // 要找的是方法定義，不是第 80 行那個呼叫點
+      const at = pcbjs.indexOf('\n  renderRefBoards() {');
+      ok(at > 0 && pcbjs.slice(at, at + 2200).indexOf('pj_ref_open') > 0,
+        '21c 公版卡片要把「還有幾條沒繞」寫出來');
+    }
+  }
+
   // pad 的 net 有兩個來源：公版資料自帶的 padNets 表，以及走線端點回推（assignPadNets）。
   // 2026-08-26 之前只有後者，所以多數 pad 沒有 net、繞線器只能把它們當障礙。
   {

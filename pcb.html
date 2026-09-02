@@ -806,6 +806,12 @@
 
           <section class="panel-section" data-panel="kicad" data-panel-data-i18n-title="pj_t_kicad" title="匯出 / 匯入（Gerber・ODB++・IPC-2581・組裝圖・KiCad）">
             <h2 data-i18n="pcb_kicad">匯出 / 匯入</h2>
+            <!-- 已知缺陷告示：匯出檔曾經是壞的，拿過舊檔的人必須知道。
+                 關掉之後不再顯示（localStorage），但這段不刪——刪掉等於當作沒發生過。 -->
+            <div id="exportRecallBox" style="display:none;font-size:11px;line-height:1.6;border:1px solid var(--line);border-left:3px solid #e67e22;border-radius:4px;padding:6px 8px;margin-bottom:6px">
+              <div data-i18n="pj_recall_20260902">2026-09-02 修掉了匯出檔的六個缺陷：STEP 在 CAD 裡打開是空的、KiCad 檔的 pad 沒有 net、via 鑽徑退回預設 0.3mm、安裝孔被寫成鍍通孔、Excellon 刀徑少小數點。在那之前匯出的檔請務必重新匯出一次；已經送廠的請對照新檔確認。</div>
+              <button class="small-button" id="exportRecallOk" data-i18n="pj_recall_ok" style="margin-top:6px">知道了，不再顯示</button>
+            </div>
             <div style="display:grid;gap:6px;font-size:12px">
               <label class="small-button" style="text-align:center;cursor:pointer">
                 <span data-i18n="pcbf_kicad_import">📂 匯入 .kicad_pcb</span><input type="file" id="kicadFile" accept=".kicad_pcb" style="display:none">
@@ -1248,7 +1254,7 @@
     <script src="./i18n.js?v=2026-09-02b"></script>
     <!-- 教學/練習模式已從 PCB 頁移除（內容改放硬體知識庫的 PCB 知識卡）；
          pcb-tutorial.js / pcb-practice.js 原檔保留，轉成知識卡前不刪除。 -->
-    <script src="./pcb-refboards.js?v=2026-09-01a"></script>
+    <script src="./pcb-refboards.js?v=2026-09-02a"></script>
     <script src="./circuit-engine.js?v=34"></script>
     <script src="./ic-data.js?v=44"></script>
     <script src="./footprint-gen.js?v=4"></script>
@@ -1276,12 +1282,12 @@
     <script src="./snp-ui.js?v=1"></script>
     <script src="./pcb-theme.js?v=1"></script>
     <script src="./pcb-interact.js?v=2"></script>
-    <script src="./pcb.js?v=88"></script>
+    <script src="./pcb.js?v=89"></script>
     <script src="./pcb-status.js?v=2026-07-16a"></script>
     <script src="./pcb-constraints.js?v=2026-09-02c"></script>
     <script src="./pcb-stackup.js?v=2026-09-01a"></script>
     <script src="./pcb-fabs.js?v=6"></script>
-    <script src="./pcb-mfg.js?v=11"></script>
+    <script src="./pcb-mfg.js?v=12"></script>
     <script src="./pcb-sch2pcb.js?v=10"></script>
     <script src="./pcb-dxf.js?v=2"></script>
     <script src="./pcb-step.js?v=4"></script>

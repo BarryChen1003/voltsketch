@@ -628,6 +628,9 @@
 
     on('stepExport', () => {
       if (!window.PcbStep) return;
+      // 埋點，理由同 pcb.js 的 exportKicad：這條路徑不經額度閘門，
+      // 2026-09-02 匯出壞掉時完全查不到誰拿過。
+      try { window.Observe && window.Observe.track('export:step'); } catch (e) { }
       const th = num('stepThick', 1.6);
       const r = window.PcbStep.build(app.state, { thickness: th, name: 'hardwareai-board' });
       const v = window.PcbStep.verify(r.text);

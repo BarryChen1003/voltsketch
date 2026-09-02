@@ -10,6 +10,7 @@
 window.PCB_REFBOARDS = [
   {
     "id": "rp2040-pico30",
+    "status": { "unrouted": 7, "zeroLen": 0, "measured": "2026-09-02" },
     "name": "Olimex RP2040-PICO30",
     "soc": "RP2040 (Cortex-M0+)",
     "layers": 4,
@@ -1950,6 +1951,7 @@ window.PCB_REFBOARDS = [
   },
   {
     "id": "arduino-uno-r3",
+    "status": { "unrouted": 8, "zeroLen": 0, "measured": "2026-09-02" },
     "name": "Arduino Uno R3 (from scratch)",
     "soc": "ATmega328P (AVR)",
     "layers": 2,
@@ -3094,6 +3096,7 @@ window.PCB_REFBOARDS = [
   },
   {
     "id": "esp32-poe2",
+    "status": { "unrouted": 5, "zeroLen": 0, "measured": "2026-09-02" },
     "name": "Olimex ESP32-POE2",
     "soc": "ESP32 (Wi-Fi/BT)",
     "layers": 4,
@@ -5792,6 +5795,7 @@ window.PCB_REFBOARDS = [
   },
   {
     "id": "a20-lime",
+    "status": { "unrouted": 3, "zeroLen": 0, "measured": "2026-09-02" },
     "name": "Olimex A20-OLinuXino-LIME",
     "soc": "Allwinner A20 (dual A7)",
     "layers": 4,
@@ -6520,6 +6524,7 @@ window.PCB_REFBOARDS = [
   },
   {
     "id": "imx233-maxi",
+    "status": { "unrouted": 2, "zeroLen": 2, "measured": "2026-09-02" },
     "name": "Olimex iMX233-OLinuXino-Maxi",
     "soc": "i.MX233 (ARM926)",
     "layers": 4,
@@ -7510,6 +7515,7 @@ window.PCB_REFBOARDS = [
   },
   {
     "id": "openrex-imx6",
+    "status": { "unrouted": 7, "zeroLen": 1, "measured": "2026-09-02" },
     "name": "OpenRex i.MX6 (FEDEVEL)",
     "soc": "i.MX6 Quad (Cortex-A9)",
     "layers": 8,
@@ -8549,6 +8555,7 @@ window.PCB_REFBOARDS = [
   },
   {
     "id": "imx8mp-som",
+    "status": { "unrouted": 4, "zeroLen": 2, "measured": "2026-09-02" },
     "name": "Olimex iMX8MP-SOM",
     "soc": "i.MX8M Plus (quad A53 + NPU)",
     "layers": 8,
@@ -9858,6 +9865,7 @@ window.PCB_REFBOARDS = [
   },
   {
     "id": "librevna",
+    "status": { "unrouted": 6, "zeroLen": 0, "measured": "2026-09-02" },
     "name": "LibreVNA (開源向量網路分析儀)",
     "soc": "FPGA + MAX2871 合成器",
     "layers": 4,

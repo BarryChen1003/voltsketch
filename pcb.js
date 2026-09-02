@@ -1248,12 +1248,26 @@ const pcbApp = {
     const host = document.querySelector('#refBoardList');
     if (!host) return;
     const boards = window.PCB_REFBOARDS || [];
+    // 公版是**照真板重建**的，不是做完的板：有未繞的線、有缺 via 的壞接點。
+    // 卡片以前只寫名字／SoC／層數／尺寸，看起來就像一片完成品——使用者按下載入之後
+    // 才發現飛線降不下去，而他無從判斷那是資料的狀態還是自己操作錯了。
+    // 數字存在資料裡（tools/refboard-status.js 量的），第 21b 節的測試會擋它過期。
+    const statusOf = b => {
+      const s = b.status;
+      if (!s) return '';
+      const bits = [pcbT('pj_ref_open', { n: s.unrouted })];
+      if (s.zeroLen > 0) bits.push(pcbT('pj_ref_zero', { n: s.zeroLen }));
+      const clean = s.unrouted === 0 && !s.zeroLen;
+      return `<div style="font-size:11px;margin:4px 0;color:${clean ? 'var(--accent-strong)' : '#e67e22'}">`
+        + (clean ? pcbT('pj_ref_complete') : bits.join(' · ')) + '</div>';
+    };
     host.innerHTML = boards.map(b => `
       <div class="ref-card" style="border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--panel-soft)">
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap">
           <b style="color:var(--ink);font-size:14px">${b.name}</b>
           <span style="font-size:11px;color:var(--accent-strong)">${b.soc} · ${pcbT('pj_ref_layers', { n: b.layers })} · ${b.w}×${b.h}mm</span>
         </div>
+        ${statusOf(b)}
         <div style="font-size:12px;color:var(--muted);margin:6px 0;line-height:1.6">${b.note}</div>
         <ul style="margin:6px 0;padding-left:16px;font-size:12px;color:var(--muted);line-height:1.6">
           ${b.circuits.map(c => `<li>${c}</li>`).join('')}
@@ -1320,6 +1334,9 @@ const pcbApp = {
 
   exportKicad() {
     const s = this.state;
+    // 埋點。2026-09-02 那次匯出壞掉時，這條路徑**什麼都沒留下**——不經額度閘門、
+    // 沒有事件——所以「誰拿到了壞檔」根本答不出來。留一個事件名就夠回答那個問題。
+    try { window.Observe && window.Observe.track('export:kicad'); } catch (e) { }
     const text = s.kicad
       ? window.KicadIO.exportText(s.kicad, s)          // 零落差：整樹回寫
       : window.KicadIO.buildNew(s);                    // 從零：基本檔（元件無 pad，見文件）
@@ -1362,6 +1379,9 @@ const pcbApp = {
   async exportFab(format) {
     const el = document.getElementById('kicadIoMsg');
     const say = (html) => { if (el) el.innerHTML = html; };
+    // 板廠包這條有額度記錄（export_usage），但那張表是**月累計**，只知道「誰在哪個月匯過幾次」。
+    // 出事要回答「哪一天」得靠事件，所以這裡也補一個。
+    try { window.Observe && window.Observe.track('export:' + format); } catch (e) { }
 
     if (!(window.Auth && Auth.enabled && Auth.enabled())) { say('⚠ ' + pcbT('pj_gerber_need_login')); return; }
     const sess = await Auth.raw().auth.getSession();
@@ -4001,6 +4021,22 @@ const pcbApp = {
       if (drc && drc.innerHTML.trim()) this.runDrc();     // 跟語言切換同一個判準，不主動跑全量
       this.toast(pcbT('pj_ts_applied', { what: v || pcbT('pj_ts_class_follow') }), 'info');
     });
+    // 匯出檔曾經是壞的（2026-09-02 修）。拿過舊檔的人必須知道，所以預設顯示，
+    // 按過「知道了」才不再出現。用 localStorage 而不是「顯示 N 天」：
+    // 一個月才回來一次的使用者，那個告示對他一樣是新的。
+    {
+      const box = document.getElementById('exportRecallBox');
+      const KEY = 'vs-recall-20260902';
+      if (box) {
+        let seen = false;
+        try { seen = localStorage.getItem(KEY) === '1'; } catch (e) { }
+        box.style.display = seen ? 'none' : '';
+        document.getElementById('exportRecallOk')?.addEventListener('click', () => {
+          try { localStorage.setItem(KEY, '1'); } catch (e) { }
+          box.style.display = 'none';
+        });
+      }
+    }
     document.getElementById('tsDelete')?.addEventListener('click', () => this.deleteSelectedTrace());
     this.bindPanPad();
 
