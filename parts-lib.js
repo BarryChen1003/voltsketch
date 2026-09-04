@@ -260,6 +260,75 @@ window.PartsLib = (function () {
   };
   const axialOf = t => axial(t[3], t[0], t[1], t[2], t[4], t[5]);
 
+  // ---- USB-C 與 DC 桶插（原廠 Recommended PCB Layout）----
+  //
+  // 兩顆都有槽孔（USB-C 的四個固定腳、桶插的三隻端子）。pad 的 `slot:{w,h}` 就是為這個
+  // 存在的：端子是扁的，用圓孔硬塞不是焊點差一點，是插不進去。`drill` 純量取槽的短邊，
+  // 跟 gerber.mjs 與 pcb-mfg.js 既有的慣例一致（都用 Math.min(slot.w, slot.h)）。
+  //
+  // 出處（2026-09-05 取得）：
+  //   USB-C   GCT USB4085，Revision B（圖面 28/02/23），USB 2.0 Type C Receptacle, Dip Type
+  //           https://gct.co/files/drawings/usb4085.pdf
+  //           Recommended PCB Layout（as viewed from component side，公差 ±0.05）：
+  //             訊號腳 16 個，孔 ⌀0.40、pad ⌀0.65；8 欄 pitch 0.85（圖上 5.95 = 7×0.85，
+  //             4.25 = 5×0.85、2.55 = 3×0.85 三個跨距互相對得上）
+  //             上下兩排相距 1.35，圖上另外標的 0.98 與 0.37 相加正好是 1.35
+  //             固定腳 4 個，左右中心距 8.65；上排在 A 排下方 0.98，下排再往下 3.38
+  //             槽孔寬 0.60（上排高 2.10、下排高 1.40）、pad 寬 0.90（高 2.40 / 1.70）
+  //             四處環寬一律 0.15：(0.90−0.60)/2 = (2.40−2.10)/2 = (1.70−1.40)/2
+  //           訊號名照同一份圖第 1 頁的 pin 表（A5 CC1／B5 CC2、A6 Dp1／B6 Dp2…），不是我填的
+  //   桶插    Same Sky（原 CUI Devices）PJ-102A，圖面日期 03/11/2025
+  //           https://www.sameskydevices.com/product/resource/pj-102a.pdf
+  //           Recommended PCB Layout（top view）：3 個槽孔，圖上記為 3−1.60 與 3−1.00
+  //             1# 與 2# 直立（1.00 寬 × 1.60 高）、3# 橫躺（1.60 寬 × 1.00 高）
+  //             沿軸向從外框前緣量：2# 在 7.70、3# 在 10.70、1# 在 13.70（圖上標 10.70
+  //             ＋兩段 3.00）；3# 另外橫向偏 4.70
+  //             本體 14.40 長 × 9.00 寬，桶軸在寬度中線上
+  //           腳位照圖上的 SCHEMATIC 方塊：1 = 中心針、2 = 外筒、3 = 插入時與 2 斷開的開關
+  //
+  // 誠實界定：GCT 那張圖把 pad 外徑（solder area）也畫了，所以 USB-C 是純照抄。
+  // PJ-102A 只畫槽孔、沒給 land 尺寸，所以 pad 外徑 = 槽 + 0.50 是依 IPC-7251 Level A 推的
+  // ——孔位與槽孔尺寸是原廠的，pad 不是。這個差別掛在該顆的 warning 上，不含混帶過。
+  //
+  // 本體外框一樣只有寬高、沒有偏移（跟 JST／TO-220 同一個限制）。USB-C 的 Y 原點取
+  // 「A 排 ↔ 下排固定腳」的中點，桶插取本體中心，兩者都讓元件不會整個偏到框外。
+  const usbC = () => {
+    const col = i => r2((i - 3.5) * 0.85);
+    const yA = -2.18, yPegTop = -1.20, yB = -0.83, yPegBot = 2.18;
+    const sig = (num, name, x, y) => P(num, name, x, y, 0.65, 0.65,
+      Object.assign({}, THT, { drill: 0.40 }));
+    const peg = (num, x, y, padH, slotH) => P(num, 'SHIELD', x, y, 0.90, padH,
+      Object.assign({}, THT, { shape: 'oval', drill: 0.60, slot: { w: 0.60, h: slotH } }));
+    const ROW_A = [['A1', 'GND'], ['A4', 'VBUS'], ['A5', 'CC1'], ['A6', 'D+'],
+                   ['A7', 'D-'], ['A8', 'SBU1'], ['A9', 'VBUS'], ['A12', 'GND']];
+    const ROW_B = [['B12', 'GND'], ['B9', 'VBUS'], ['B8', 'SBU2'], ['B7', 'D-'],
+                   ['B6', 'D+'], ['B5', 'CC2'], ['B4', 'VBUS'], ['B1', 'GND']];
+    const pads = [];
+    ROW_A.forEach((p, i) => pads.push(sig(p[0], p[1], col(i), yA)));
+    ROW_B.forEach((p, i) => pads.push(sig(p[0], p[1], col(i), yB)));
+    pads.push(peg('S1', -4.325, yPegTop, 2.40, 2.10), peg('S2', 4.325, yPegTop, 2.40, 2.10),
+              peg('S3', -4.325, yPegBot, 1.70, 1.40), peg('S4', 4.325, yPegBot, 1.70, 1.40));
+    // 訊號腳環寬 (0.65 − 0.40) / 2 = 0.125，低於本編輯器 0.15 的建議下限，放上去 DRC 會亮
+    // 16 條紅字。那是 GCT 原圖就這麼緊（0.5mm pitch 的 USB-C 本來就沒有多少空間），不是抄錯。
+    // 跟 TO-92 直腳版同一個處理：不把 pad 放大成非原廠值，改成放件時講明白。
+    // 固定腳那四個反而剛好是 0.15，不在此列。
+    return { pads, body: { w: 8.94, h: 9.17 }, warnings: [T('pl_usbc_ring')] };
+  };
+
+  const barrelJack = () => {
+    // 圖上的 X 是從外框前緣量的；本體長 14.40，所以減 7.20 就是以本體中心為原點
+    const sp = (num, name, x, y, sw, sh) => P(num, name, r2(x - 7.20), y,
+      r2(sw + IPC_RING_A), r2(sh + IPC_RING_A),
+      Object.assign({}, THT, { shape: 'oval', drill: Math.min(sw, sh), slot: { w: sw, h: sh } }));
+    return {
+      pads: [sp('1', 'TIP', 13.70, 0, 1.00, 1.60),
+             sp('2', 'SLEEVE', 7.70, 0, 1.00, 1.60),
+             sp('3', 'SW', 10.70, 4.70, 1.60, 1.00)],
+      body: { w: 14.40, h: 9.00 },
+      warnings: [T('pl_pj102a_land')]
+    };
+  };
+
   // ---- 測試點 / 安裝孔 ----
   const tp = d => ({ pads: [P(1, 'TP', 0, 0, d, d, { shape: 'circle', rr: 0 })], body: { w: d + 0.4, h: d + 0.4 } });
   const hole = d => ({ pads: [P(1, 'NPTH', 0, 0, d, d, { shape: 'circle', rr: 0, drill: d, type: 'np_thru_hole', side: '*', cu: false })], body: { w: d + 0.6, h: d + 0.6 } });
@@ -330,6 +399,10 @@ window.PartsLib = (function () {
     // 軸向：原廠尺寸 ＋ IPC-7251 Level A 推導（跨距是標準格點，不是原廠規定）
     { id: 'axdio', ref: 'D', variants: Object.keys(AXIAL_D), src: 'derived', gen: v => axialOf(AXIAL_D[v]) },
     { id: 'axres', ref: 'R', variants: Object.keys(AXIAL_R), src: 'derived', gen: v => axialOf(AXIAL_R[v]) },
+    // USB-C：孔、pad、pitch、固定腳全部照 GCT 的 Recommended PCB Layout
+    { id: 'usbc',   ref: 'J', variants: ['USB4085 (USB 2.0, THT)'], src: 'datasheet', gen: () => usbC() },
+    // 桶插：孔位與槽孔照原廠，pad 外徑是推的（見該顆 warning）
+    { id: 'barrel', ref: 'J', variants: ['PJ-102A (5.5×2.0)'], src: 'derived', gen: () => barrelJack() },
     { id: 'soic',  ref: 'U', variants: IC_PKGS.soic,  gen: icGen },
     { id: 'tssop', ref: 'U', variants: IC_PKGS.tssop, gen: icGen },
     { id: 'ssop',  ref: 'U', variants: IC_PKGS.ssop,  gen: icGen },

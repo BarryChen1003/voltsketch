@@ -3268,6 +3268,105 @@ if (window.PcbHistory && typeof app.newBoard === 'function') {
     ok(i18njs.indexOf('pl_to92_ring:') > 0, '54 TO-92 環寬警告要有 i18n 條目');
   }
 
+  // ---- 第 55 組：USB-C 與 DC 桶插（原廠 Recommended PCB Layout）----
+  // 連接器孔錯了就是那顆料裝不上去。這裡釘的是兩張原廠圖上的數字，而且盡量拿圖上
+  // **互相獨立**的標註互相驗證：pitch × 欄數要等於另外標的跨距、0.98 + 0.37 要等於 1.35、
+  // 固定腳四個尺寸兩兩相減要得到同一個環寬。抄錯一個數字這些等式就對不上。
+  {
+    const r3 = v => Math.round(v * 1000) / 1000;
+    const u = L.build('usbc', 'USB4085 (USB 2.0, THT)');
+    eq(u.pads.length, 20, '55 USB-C 16 訊號腳 + 4 固定腳');
+
+    const sig = u.pads.filter(p => /^[AB]\d/.test(p.num));
+    eq(sig.length, 16, '55 訊號腳 16 個');
+    eq(sig.every(p => p.drill === 0.4 && p.w === 0.65 && p.h === 0.65), true,
+      '55 訊號腳孔 ⌀0.40、pad ⌀0.65');
+    const xs = [...new Set(sig.map(p => p.x))].sort((a, b) => a - b);
+    eq(xs.length, 8, '55 8 欄');
+    eq(r3(xs[1] - xs[0]), 0.85, '55 pitch 0.85');
+    eq(r3(xs[7] - xs[0]), 5.95, '55 跨距 5.95 = 7 × 0.85（圖上另外標的數字要對得上）');
+    const ys = [...new Set(sig.map(p => p.y))].sort((a, b) => a - b);
+    eq(ys.length, 2, '55 訊號腳兩排');
+    eq(r3(ys[1] - ys[0]), 1.35, '55 A↔B 兩排相距 1.35');
+
+    const pegs = u.pads.filter(p => p.name === 'SHIELD');
+    eq(pegs.length, 4, '55 4 個固定腳');
+    // 每一個都要在 ±4.325。只驗整體跨距不夠：只挪動其中一對的話 max−min 仍是 8.65，
+    // 這個洞是突變測試抓出來的（把 S1/S2 改成 ±4.30，原本的寫法照樣綠）。
+    eq([...new Set(pegs.map(p => r3(Math.abs(p.x))))].join(','), '4.325', '55 四個固定腳都在 ±4.325');
+    const pxs = pegs.map(p => p.x);
+    eq(r3(Math.max(...pxs) - Math.min(...pxs)), 8.65, '55 固定腳左右中心距 8.65');
+    const pys = [...new Set(pegs.map(p => p.y))].sort((a, b) => a - b);
+    eq(r3(pys[1] - pys[0]), 3.38, '55 上下排固定腳相距 3.38');
+    eq(r3(pys[0] - ys[0]), 0.98, '55 上排固定腳在 A 排下方 0.98');
+    eq(r3(ys[1] - pys[0]), 0.37, '55 B 排在上排固定腳下方 0.37（0.98 + 0.37 = 1.35）');
+    eq(pegs.every(p => p.slot && p.slot.w === 0.6 && p.w === 0.9), true,
+      '55 固定腳槽寬 0.60、pad 寬 0.90');
+    eq(pegs.map(p => p.slot.h + '/' + p.h).sort().join(' '), '1.4/1.7 1.4/1.7 2.1/2.4 2.1/2.4',
+      '55 上排槽 2.10/pad 2.40、下排槽 1.40/pad 1.70');
+    const rings = pegs.map(p => r3(Math.min((p.w - p.slot.w) / 2, (p.h - p.slot.h) / 2)));
+    eq([...new Set(rings)].join(','), '0.15', '55 固定腳四處環寬一律 0.15');
+
+    const byNum = {};
+    sig.forEach(p => { byNum[p.num] = p.name; });
+    eq([byNum.A1, byNum.A5, byNum.A6, byNum.A8, byNum.B5, byNum.B8, byNum.B12].join(','),
+      'GND,CC1,D+,SBU1,CC2,SBU2,GND', '55 訊號名照 GCT 圖第 1 頁的 pin 表');
+
+    // ---- DC 桶插 ----
+    const j = L.build('barrel', 'PJ-102A (5.5×2.0)');
+    eq(j.pads.length, 3, '55 桶插 3 隻腳');
+    const N = {};
+    j.pads.forEach(p => { N[p.num] = p; });
+    eq(N['1'].slot.w === 1.0 && N['1'].slot.h === 1.6, true, '55 1# 是直立槽 1.00×1.60');
+    eq(N['2'].slot.w === 1.0 && N['2'].slot.h === 1.6, true, '55 2# 同為直立槽');
+    eq(N['3'].slot.w === 1.6 && N['3'].slot.h === 1.0, true, '55 3# 是橫躺槽 1.60×1.00');
+    eq(r3(N['1'].x - N['2'].x), 6, '55 1# 與 2# 相距 6.00（圖上 3.00 + 3.00）');
+    eq(r3(N['3'].x - N['2'].x), 3, '55 3# 在 2# 右方 3.00');
+    eq(r3(N['3'].y - N['1'].y), 4.7, '55 3# 橫向偏 4.70');
+    eq([N['1'].name, N['2'].name, N['3'].name].join(','), 'TIP,SLEEVE,SW',
+      '55 腳位名照圖上的 SCHEMATIC 方塊');
+
+    // 有槽孔的 pad，drill 純量要等於槽的短邊——gerber.mjs 與 pcb-mfg 都拿它當刀徑
+    eq(u.pads.concat(j.pads).filter(p => p.slot).every(p => p.drill === Math.min(p.slot.w, p.slot.h)),
+      true, '55 槽孔的 drill 純量 = 槽的短邊');
+
+    // 出處：USB-C 連 pad 外徑都是原廠給的；桶插只給槽孔，pad 是推的
+    eq(u.meta.src, 'datasheet', '55 USB-C 是純照抄原廠 land pattern');
+    // GCT 原圖的訊號腳環寬只有 0.125（低於編輯器 0.15 下限），固定腳才剛好 0.15。
+    // 照原廠建 = 不把 pad 放大，但要在放件時講明白，否則 16 條紅字看起來像 bug。
+    eq(r3((sig[0].w - sig[0].drill) / 2), 0.125, '55 訊號腳環寬 0.125（GCT 原圖就這麼緊）');
+    eq(u.meta.warnings.length, 1, '55 USB-C 要帶訊號腳環寬偏小的警告');
+    eq(j.meta.src, 'derived', '55 桶插不是完整的原廠 land pattern');
+    eq(j.pads.every(p => r3(p.w - p.slot.w) === 0.5 && r3(p.h - p.slot.h) === 0.5), true,
+      '55 桶插 pad = 槽 + 0.50（IPC-7251 Level A）');
+    eq(j.meta.warnings.length, 1, '55 桶插要講明 pad 外徑是推的');
+  }
+
+  // ---- 槽孔要寫得進 KiCad，不是只讀得進來 ----
+  // 匯入端一直有解析 (drill oval w h)，匯出端卻只寫得出純量鑽徑：帶槽孔的板子
+  // 進得來、出不去，扁端子到板廠變圓孔＝插不進去。這一條擋的是那個不對稱。
+  {
+    require('./kicad-io.js');
+    const K = window.KicadIO;
+    const u = L.build('usbc', 'USB4085 (USB 2.0, THT)');
+    const st = {
+      boardWidth: 40, boardHeight: 30, layers: 2,
+      layerStack: [{ id: 'F.Cu', kind: 'copper' }, { id: 'B.Cu', kind: 'copper' }],
+      traces: [], vias: [], userZones: [],
+      components: [{ ref: 'J1', x: 20, y: 15, rot: 0, w: u.body.w, h: u.body.h, side: 'top', pads: u.pads }]
+    };
+    const txt = K.buildNew(st);
+    eq((txt.match(/\(drill oval /g) || []).length, 4, '55 四個固定腳要寫成 oval drill');
+    ok(/\(drill oval 0\.6 2\.1\)/.test(txt), '55 上排固定腳是 0.6 × 2.1 的槽');
+    ok(/\(drill oval 0\.6 1\.4\)/.test(txt), '55 下排固定腳是 0.6 × 1.4 的槽');
+    eq((txt.match(/\(drill 0\.4\)/g) || []).length, 16, '55 訊號腳仍是 ⌀0.40 圓孔，不要被一起改掉');
+
+    const imp = K.importText(txt);                 // 回傳 { tree, model }，元件在 model.comps
+    const comps = (imp.model && imp.model.comps) || [];
+    const back = comps.reduce((n, c) => n + (c.pads || []).filter(p => p.slot).length, 0);
+    eq(back, 4, '55 匯出再讀回來，四個槽孔還在（匯入匯出要對稱）');
+  }
+
   // ---- 線路圖端綁得到 ----
   {
     const S2 = window.Sch2Pcb;

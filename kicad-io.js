@@ -393,6 +393,13 @@ window.KicadIO = (function () {
   // ---------- 匯出（整樹回寫）----------
   function fmt(x) { return (Math.round(x * 1e6) / 1e6).toString(); }
 
+  // 槽孔（扁端子：USB-C 的固定腳、DC 桶插的三隻腳）要寫成 KiCad 的 `(drill oval w h)`。
+  // 以前這裡只寫得出純量鑽徑，於是 parse() 讀進來的 pad.slot 一匯出就變回圓孔——
+  // 匯入匯出不對稱，而且送到板廠是「孔比端子窄，插不進去」這種等級的錯，不是差一點。
+  function drillNode(p, fallback) {
+    return p.slot ? ['drill', 'oval', fmt(p.slot.w), fmt(p.slot.h)] : ['drill', fmt(fallback)];
+  }
+
   function exportText(kicad, appState) {
     const { tree, off } = kicad;
     // 1) 元件位置回寫（編輯器移動過的）
@@ -513,11 +520,11 @@ window.KicadIO = (function () {
         // KiCad 的 DRC 也因此每片板報 2～4 條「環寬 0」——因為 pad 外徑就等於鑽徑。
         if (p.cu === false || p.type === 'np_thru_hole') {
           fp.push(['pad', { q: true, v: '' }, 'np_thru_hole', p.shape === 'oval' ? 'oval' : 'circle',
-            at, ['size', fmt(p.w), fmt(p.h)], ['drill', fmt(p.drill || p.w || 1)],
+            at, ['size', fmt(p.w), fmt(p.h)], drillNode(p, p.drill || p.w || 1),
             ['layers', { q: true, v: 'F&B.Cu' }, { q: true, v: '*.Mask' }]]);
         } else if (p.type === 'thru_hole' || p.side === '*') {
           fp.push(['pad', { q: true, v: String(p.num) }, 'thru_hole', p.shape === 'circle' ? 'circle' : 'oval',
-            at, ['size', fmt(p.w), fmt(p.h)], ['drill', fmt(p.drill || 0.8)],
+            at, ['size', fmt(p.w), fmt(p.h)], drillNode(p, p.drill || 0.8),
             ['layers', { q: true, v: '*.Cu' }, { q: true, v: '*.Mask' }], ...netNode]);
         } else {
           const shape = p.shape === 'circle' ? 'circle' : (p.shape === 'rect' ? 'rect' : 'roundrect');
